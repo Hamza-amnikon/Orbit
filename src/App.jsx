@@ -27,7 +27,7 @@ const [page, setPage] = useState("Home");
 {page === "HRMS" && <Employee />}
 
 </div>
-
+<h1>mahio</h1>
     </div>
   );
 }
