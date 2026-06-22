@@ -156,6 +156,9 @@ function editEmployee(emp) {
               Name
             </th>
             <th style={{ borderBottom: "1px solid #ddd", padding: "10px" }}>
+              Email
+            </th>
+            <th style={{ borderBottom: "1px solid #ddd", padding: "10px" }}>
               Department
             </th>
             <th style={{ borderBottom: "1px solid #ddd", padding: "10px" }}>
@@ -169,6 +172,7 @@ function editEmployee(emp) {
             <tr key={emp.id}>
               <td style={{ padding: "10px" }}>{emp.id}</td>
               <td style={{ padding: "10px" }}>{emp.name}</td>
+              <td style={{ padding: "10px" }}>{emp.email}</td>
               <td style={{ padding: "10px" }}>{emp.department}</td>
               <td style={{ padding: "10px" }}>
   
