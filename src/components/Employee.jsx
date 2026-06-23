@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { validateEmployee } from "./Employee/EmployeeValidation";
 function Employee() {
     // Show or hide Add Employee form
   const [showForm, setShowForm] = useState(false);
@@ -14,26 +15,51 @@ const [mobile, setMobile] = useState("");
 const [designation, setDesignation] = useState("");
   // Store employee id while editing
 const [editId, setEditId] = useState(null);
-  // Employee list
-  const [employees, setEmployees] = useState([
-  { id: "EMP001", name: "Mahinoor", department: "IT" },
-  { id: "EMP002", name: "Rahul", department: "HR" },
-  { id: "EMP003", name: "Priya", department: "Finance" }
+  // Employee List
+const [employees, setEmployees] = useState([
+  {
+    id: "EMP001",
+    name: "Mahinoor",
+    email: "mahinoor@gmail.com",
+    department: "IT"
+  },
+  {
+    id: "EMP002",
+    name: "Rahul",
+    email: "rahul@gmail.com",
+    department: "HR"
+  },
+  {
+    id: "EMP003",
+    name: "Priya",
+    email: "priya@gmail.com",
+    department: "Finance"
+  }
 ]);
 // Add new employee to employee list
 function addEmployee() {
+  const isValid = validateEmployee(
+  employeeName,
+  email,
+  department
+);
+
+if (!isValid) {
+  return;
+}
 
   const newEmployee = {
     id: "EMP00" + (employees.length + 1),
     name: employeeName,
+    email: email,
     department: department
   };
 
   setEmployees([...employees, newEmployee]);
 
   setEmployeeName("");
+  setEmail("");
   setDepartment("");
-
   setShowForm(false);
 }
 // Delete employee from table
@@ -125,7 +151,15 @@ function editEmployee(emp) {
 />
 
     <br /><br />
+{/* Email Input */}
+<input
+type="email"
+placeholder="Employee Email"
+value={email}
+onChange={(e) => setEmail(e.target.value)}
+/>
 
+<br /><br />
     <input
   type="text"
   placeholder="Department"
