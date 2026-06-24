@@ -1,0 +1,22 @@
+.welcome-banner{
+
+    margin-bottom:30px;
+}
+
+.welcome-banner h1{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+    color:#0f172a;
+}
+
+.welcome-banner p{
+
+    color:#64748b;
+
+    font-size:17px;
+}
