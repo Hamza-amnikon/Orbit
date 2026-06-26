@@ -1,5 +1,5 @@
 import "./ModulesGrid.css";
-
+import { useNavigate } from "react-router-dom";
 import ModuleCard from "../ModuleCard/ModuleCard";
 
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
@@ -12,6 +12,7 @@ import PercentRoundedIcon from "@mui/icons-material/PercentRounded";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 
 function ModulesGrid(){
+    const navigate = useNavigate();
 
     const modules=[
 
@@ -19,7 +20,7 @@ function ModulesGrid(){
             title:"HRMS",
             description:"Manage employees, attendance and organization.",
             icon:<GroupsRoundedIcon/>,
-            color:"#2563eb"
+            color:"#2563eb",
         },
 
         {
@@ -33,7 +34,10 @@ function ModulesGrid(){
             title:"Employee Management",
             description:"Manage employee profiles and departments.",
             icon:<PersonOutlineRoundedIcon/>,
-            color:"#9333ea"
+            color:"#9333ea",
+            route: "/employees"
+
+        
         },
 
         {
@@ -88,6 +92,14 @@ function ModulesGrid(){
                         <ModuleCard
                             key={module.title}
                             {...module}
+                            onClick={() => {
+    console.log("Clicked:", module.title);
+    console.log("Route:", module.route);
+
+    if (module.route) {
+        navigate(module.route);
+    }
+                           }}
                         />
 
                     ))

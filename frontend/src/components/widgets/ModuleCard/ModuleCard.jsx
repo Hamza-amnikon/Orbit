@@ -1,5 +1,4 @@
 import "./ModuleCard.css";
-
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 function ModuleCard({
@@ -7,14 +6,20 @@ function ModuleCard({
     title,
     description,
     icon,
-    color
+    color,
+    onClick 
 
 }){
 
     return(
 
-        <div className="module-card">
-
+        <div   className="module-card"
+               onClick={() => {
+                {
+              onClick();
+            }
+        }}>
+            
             <div
                 className="module-icon"
                 style={{background:color}}
@@ -24,8 +29,8 @@ function ModuleCard({
 
             </div>
 
-            <h3>{title}</h3>
-
+            
+<h3>{title}</h3>
             <p>{description}</p>
 
             <button>
