@@ -1,0 +1,94 @@
+.module-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:28px;
+
+    border:1px solid #edf2f7;
+
+    transition:.35s;
+
+    cursor:pointer;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    text-align:center;
+}
+
+.module-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 20px 40px rgba(0,0,0,.08);
+}
+
+.module-icon{
+
+    width:78px;
+
+    height:78px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:white;
+
+    font-size:34px;
+
+    margin-bottom:22px;
+}
+
+.module-card h3{
+
+    margin:0;
+
+    font-size:22px;
+
+    color:#111827;
+}
+
+.module-card p{
+
+    margin:15px 0 25px;
+
+    color:#64748b;
+
+    line-height:1.6;
+
+    font-size:15px;
+}
+
+.module-card button{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#2563eb;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.module-card:hover button{
+
+    transform:translateX(6px);
+}

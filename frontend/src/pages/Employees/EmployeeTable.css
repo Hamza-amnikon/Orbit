@@ -1,0 +1,76 @@
+/* ===========================
+   Employee Table
+=========================== */
+
+.employee-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.employee-table thead {
+    background: #0d1b4c;
+}
+
+.employee-table th {
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.employee-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+    font-size: 14px;
+}
+
+.employee-table tbody tr:hover {
+    background: #f8fafc;
+    transition: 0.3s;
+}
+
+.employee-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ===========================
+   Buttons
+=========================== */
+
+.edit-btn {
+    background: #0d1b4c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.edit-btn:hover {
+    background: #162a73;
+}
+
+.delete-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.delete-btn:hover {
+    background: #b91c1c;
+}

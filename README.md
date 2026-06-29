@@ -1,2 +1,7 @@
 # SPARK
+<<<<<<< HEAD
 HELLOascd
+=======
+HELLO
+1234567890
+>>>>>>> 0b5d6723a3a842ffd97f840d02bf415bb23e1f82
