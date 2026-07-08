@@ -44,7 +44,8 @@ function ModulesGrid(){
             title:"Ticketing",
             description:"Raise and track support tickets.",
             icon:<ConfirmationNumberRoundedIcon/>,
-            color:"#ea580c"
+            color:"#ea580c",
+            route: "/tickets"
         },
 
         {

@@ -21,7 +21,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 import { loginSchema } from "../../features/auth/validation/loginSchema";
-import { useLogin } from "../../features/auth/auth/hooks/useLogin";
+import { useLogin } from "../../features/auth/hooks/useLogin";
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
 

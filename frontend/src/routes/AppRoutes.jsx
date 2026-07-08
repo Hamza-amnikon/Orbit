@@ -10,7 +10,10 @@ import Reports from "../pages/Reports/Reports";
 import Tickets from "../pages/Tickets/Tickets";
 import Settings from "../pages/Settings/Settings";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
-
+import AddEmployee from "../pages/Employees/AddEmployee";
+import EmployeeList from "../pages/Employees/EmployeeList";
+import Departments from "../pages/Employees/Departments";
+import Designations from "../pages/Employees/Designations";
 import PrivateRoute from "./PrivateRoute";
 
 function AppRoutes() {
@@ -27,6 +30,14 @@ function AppRoutes() {
             <Route path="/" element={<Dashboard />} />
 
             <Route path="/employees" element={<Employees />} />
+
+            <Route path="/employees/add" element={<AddEmployee />} />
+
+            <Route path="/employees/list" element={<EmployeeList />} />
+
+            <Route path="/employees/departments" element={<Departments />} />
+
+            <Route path="/employees/designations" element={<Designations />} />
 
             <Route path="/attendance" element={<Attendance />} />
 
