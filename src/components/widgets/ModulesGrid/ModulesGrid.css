@@ -1,0 +1,20 @@
+.modules{
+
+    margin-top:40px;
+}
+
+.modules h2{
+
+    margin-bottom:25px;
+
+    color:#111827;
+}
+
+.modules-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:22px;
+}

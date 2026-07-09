@@ -1,0 +1,394 @@
+/* ==========================================
+   Employee List
+========================================== */
+
+.employee-list-page{
+    padding:32px;
+    background:#f5f7fb;
+    min-height:100vh;
+}
+
+/* ==========================================
+   Header
+========================================== */
+
+.employee-page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:35px;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.employee-page-header h1{
+    font-size:36px;
+    font-weight:700;
+    color:#0f172a;
+    margin-bottom:8px;
+}
+
+.employee-page-header p{
+    color:#64748b;
+    font-size:15px;
+}
+
+/* ==========================================
+   Buttons
+========================================== */
+
+.header-buttons{
+    display:flex;
+    gap:15px;
+}
+
+.header-buttons .MuiButton-root{
+    height:48px;
+    border-radius:14px;
+    text-transform:none;
+    font-weight:600;
+    padding:0 22px;
+}
+
+.header-buttons .MuiButton-contained{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    box-shadow:0 15px 30px rgba(37,99,235,.25);
+}
+
+.header-buttons .MuiButton-contained:hover{
+    transform:translateY(-3px);
+}
+
+.header-buttons .MuiButton-outlined{
+    border:1px solid #dbe4ff;
+}
+
+/* ==========================================
+   Statistics
+========================================== */
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+
+    gap:24px;
+
+    margin-bottom:35px;
+
+}
+
+.stats-card{
+
+    border-radius:22px !important;
+
+    box-shadow:0 15px 40px rgba(15,23,42,.06) !important;
+
+    border:1px solid #eef2ff;
+
+    transition:.3s;
+
+}
+
+.stats-card:hover{
+
+    transform:translateY(-6px);
+
+}
+
+.stats-card .MuiCardContent-root{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.stats-icon{
+
+    width:64px;
+
+    height:64px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    margin-bottom:20px;
+
+}
+
+.stats-icon svg{
+
+    font-size:30px;
+
+}
+
+.blue{
+
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+
+}
+
+.green{
+
+    background:linear-gradient(135deg,#10b981,#059669);
+
+}
+
+.red{
+
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+
+}
+
+.purple{
+
+    background:linear-gradient(135deg,#7c3aed,#6d28d9);
+
+}
+
+.stats-card span{
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+.stats-card h2{
+
+    margin-top:10px;
+
+    font-size:34px;
+
+    color:#0f172a;
+
+}
+
+/* ==========================================
+   Toolbar
+========================================== */
+
+.toolbar-card{
+
+    border-radius:20px !important;
+
+    margin-bottom:30px;
+
+    box-shadow:0 12px 35px rgba(15,23,42,.05)!important;
+
+}
+
+.toolbar{
+
+    display:flex;
+
+    gap:18px;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+}
+
+.toolbar .MuiTextField-root{
+
+    flex:1;
+
+    min-width:300px;
+
+}
+
+.toolbar .MuiOutlinedInput-root{
+
+    border-radius:14px;
+
+    background:white;
+
+}
+
+.toolbar .MuiOutlinedInput-root:hover fieldset{
+
+    border-color:#2563eb;
+
+}
+
+.toolbar .Mui-focused fieldset{
+
+    border-color:#2563eb !important;
+
+}
+
+.toolbar .MuiFormControl-root{
+
+    background:white;
+
+    border-radius:14px;
+
+}
+
+/* ==========================================
+   Table
+========================================== */
+
+.table-card{
+
+    border-radius:22px !important;
+
+    box-shadow:0 15px 35px rgba(15,23,42,.06)!important;
+
+    overflow:hidden;
+
+}
+
+/* ==========================================
+   Loading
+========================================== */
+
+.loading-card{
+
+    background:white;
+
+    border-radius:22px;
+
+    text-align:center;
+
+    padding:80px;
+
+    box-shadow:0 15px 35px rgba(15,23,42,.06);
+
+}
+
+.loader{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:50%;
+
+    margin:auto;
+
+    border:5px solid #dbeafe;
+
+    border-top:5px solid #2563eb;
+
+    animation:spin .8s linear infinite;
+
+    margin-bottom:25px;
+
+}
+
+@keyframes spin{
+
+100%{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+/* ==========================================
+   Empty
+========================================== */
+
+.empty-card{
+
+    text-align:center;
+
+    padding:80px 30px;
+
+    border-radius:22px!important;
+
+    box-shadow:0 15px 35px rgba(15,23,42,.06)!important;
+
+}
+
+.empty-card h2{
+
+    margin-bottom:10px;
+
+    color:#0f172a;
+
+}
+
+.empty-card p{
+
+    color:#64748b;
+
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media(max-width:992px){
+
+.employee-page-header{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+}
+
+.header-buttons{
+
+width:100%;
+
+flex-wrap:wrap;
+
+}
+
+.header-buttons .MuiButton-root{
+
+flex:1;
+
+}
+
+.toolbar{
+
+flex-direction:column;
+
+align-items:stretch;
+
+}
+
+.toolbar .MuiTextField-root{
+
+min-width:100%;
+
+}
+
+}
+
+@media(max-width:600px){
+
+.employee-list-page{
+
+padding:18px;
+
+}
+
+.employee-page-header h1{
+
+font-size:28px;
+
+}
+
+.stats-grid{
+
+grid-template-columns:1fr;
+
+}
+
+}

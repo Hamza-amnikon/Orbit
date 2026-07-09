@@ -1,0 +1,333 @@
+/* ==========================================================
+   EMPLOYEE FORM
+========================================================== */
+
+.employee-form-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+    margin-bottom: 35px;
+    animation: fadeUp .4s ease;
+}
+
+/* ==========================================================
+   Header
+========================================================== */
+
+.form-header{
+    margin-bottom:35px;
+}
+
+.form-header h2{
+    font-size:30px;
+    font-weight:700;
+    color:#0f172a;
+    margin-bottom:8px;
+}
+
+.form-header p{
+    color:#64748b;
+    font-size:15px;
+}
+
+/* ==========================================================
+   Section
+========================================================== */
+
+.form-section{
+    margin-top:35px;
+}
+
+.form-section h3{
+    font-size:18px;
+    font-weight:600;
+    color:#1e293b;
+    margin-bottom:20px;
+    padding-bottom:12px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+/* ==========================================================
+   Grid
+========================================================== */
+
+.form-row,
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:24px;
+
+}
+
+/* ==========================================================
+   Form Group
+========================================================== */
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.form-group label{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#334155;
+
+    margin-bottom:8px;
+
+}
+
+/* Required */
+
+.required{
+
+    color:#ef4444;
+
+    margin-left:3px;
+
+}
+
+/* ==========================================================
+   Inputs
+========================================================== */
+
+.form-group input,
+.form-group select{
+
+    height:52px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:12px;
+
+    padding:0 16px;
+
+    font-size:15px;
+
+    background:#fff;
+
+    transition:all .25s ease;
+
+}
+
+.form-group input::placeholder{
+
+    color:#94a3b8;
+
+}
+
+.form-group input:hover,
+.form-group select:hover{
+
+    border-color:#94a3b8;
+
+}
+
+.form-group input:focus,
+.form-group select:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+
+}
+
+/* ==========================================================
+   Select Arrow
+========================================================== */
+
+.form-group select{
+
+    cursor:pointer;
+
+}
+
+/* ==========================================================
+   Buttons
+========================================================== */
+
+.form-actions{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:15px;
+
+    margin-top:40px;
+
+}
+
+.cancel-btn{
+
+    height:48px;
+
+    min-width:140px;
+
+    border-radius:12px;
+
+    border:1px solid #cbd5e1;
+
+    background:#fff;
+
+    color:#334155;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.cancel-btn:hover{
+
+    background:#f8fafc;
+
+    transform:translateY(-2px);
+
+}
+
+.save-btn{
+
+    height:48px;
+
+    min-width:180px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#2563eb;
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.save-btn:hover{
+
+    background:#1d4ed8;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 25px rgba(37,99,235,.30);
+
+}
+
+.save-btn:disabled{
+
+    background:#94a3b8;
+
+    cursor:not-allowed;
+
+    box-shadow:none;
+
+    transform:none;
+
+    opacity:.7;
+
+}
+
+/* ==========================================================
+   Disabled Inputs
+========================================================== */
+
+input:disabled,
+select:disabled{
+
+    background:#f8fafc;
+
+    cursor:not-allowed;
+
+}
+
+/* ==========================================================
+   Animation
+========================================================== */
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ==========================================================
+   Responsive
+========================================================== */
+
+@media (max-width:992px){
+
+    .employee-form-card{
+
+        padding:25px;
+
+    }
+
+    .form-row,
+    .form-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media (max-width:768px){
+
+    .form-header h2{
+
+        font-size:24px;
+
+    }
+
+    .form-actions{
+
+        flex-direction:column;
+
+    }
+
+    .cancel-btn,
+    .save-btn{
+
+        width:100%;
+
+    }
+
+}

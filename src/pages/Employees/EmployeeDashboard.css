@@ -1,0 +1,145 @@
+.employee-dashboard{
+
+    padding:35px;
+
+}
+
+.employee-header{
+
+    margin-bottom:35px;
+
+}
+
+.employee-header h1{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    color:#111827;
+
+}
+
+.employee-header p{
+
+    margin-top:8px;
+
+    color:#6b7280;
+
+    font-size:16px;
+
+}
+
+.employee-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:30px;
+
+}
+
+.employee-card{
+
+    background:#fff;
+
+    border-radius:22px;
+
+    border:1px solid #e5e7eb;
+
+    padding:35px;
+
+    transition:.35s;
+
+    cursor:pointer;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.employee-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 20px 45px rgba(0,0,0,.08);
+
+    border-color:#2563eb;
+
+}
+
+.employee-icon{
+
+    width:78px;
+
+    height:78px;
+
+    border-radius:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#fff;
+
+    margin-bottom:25px;
+
+}
+
+.employee-icon svg{
+
+    font-size:38px;
+
+}
+
+.employee-card h3{
+
+    font-size:24px;
+
+    margin-bottom:12px;
+
+    color:#111827;
+
+}
+
+.employee-card p{
+
+    color:#64748b;
+
+    line-height:1.7;
+
+    flex:1;
+
+}
+
+.card-footer{
+
+    margin-top:30px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    color:#2563eb;
+
+    font-weight:600;
+
+}
+
+.card-footer svg{
+
+    transition:.3s;
+
+}
+
+.employee-card:hover .card-footer svg{
+
+    transform:translateX(8px);
+
+}

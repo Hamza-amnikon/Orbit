@@ -1,0 +1,166 @@
+.sidebar{
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:280px;
+    height:100vh;
+
+    background:#fff;
+
+    border-right:1px solid #e5e7eb;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+
+    padding:24px;
+
+    overflow:hidden;
+
+    z-index:1000;
+}
+
+.sidebar-top{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+}
+
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:18px;
+}
+
+.logo-image {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-text h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #2563eb;
+    letter-spacing: 0.5px;
+}
+
+.logo-text span {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+}
+.sidebar-menu{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    text-decoration: none;
+
+    color: #444;
+
+    padding: 14px 16px;
+
+    border-radius: 12px;
+
+    transition: .3s;
+}
+
+.menu-item:hover {
+    background: #f3f4f6;
+}
+
+.menu-item.active {
+    background: #2563eb;
+    color: white;
+}
+
+.menu-item svg {
+    font-size: 22px;
+}
+
+.sidebar-footer {
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 50%;
+
+    background: #2563eb;
+
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: bold;
+}
+
+.profile h4 {
+    margin: 0;
+}
+
+.profile p {
+    margin: 0;
+    font-size: 13px;
+    color: #777;
+}
+
+.logout-btn {
+    margin-top: 25px;
+
+    width: 100%;
+
+    border: none;
+
+    background: #ef4444;
+
+    color: white;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition: .3s;
+}
+
+.logout-btn:hover {
+    background: #dc2626;
+}
