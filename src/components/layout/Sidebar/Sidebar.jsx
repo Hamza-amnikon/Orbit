@@ -1,7 +1,7 @@
 import "./Sidebar.css";
 
 import { NavLink } from "react-router-dom";
-import logo from "../../../assets/logo/amnikon-logo.png";
+import logo from "../../../assets/logo/test.png";
 
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
@@ -63,8 +63,7 @@ function Sidebar() {
   <img src={logo} alt="AMNIKON Logo" className="logo-image" />
 
   <div className="logo-text">
-    <h2>AMNIKON</h2>
-    <span>ORBIT</span>
+   
   </div>
 </div>
 

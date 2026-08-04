@@ -1,180 +1,87 @@
-import "./Login.css";
-
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
 
-import {
-  Paper,
-  TextField,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
+import "./styles/Login.css";
 
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import LoginLeftPanel from "./components/LoginLeftPanel";
+import LoginHeader from "./components/LoginHeader";
+import LoginForm from "./components/LoginForm";
+import AzureLoginButton from "./components/AzureLoginButton";
+import LoginLoader from "./components/LoginLoader";
 
-import { loginSchema } from "../../features/auth/validation/loginSchema";
-import { useLogin } from "../../features/auth/hooks/useLogin";
 function Login() {
-  const [showPassword, setShowPassword] = useState(false);
 
-  const { login } = useLogin();
+    const [loading, setLoading] = useState(false);
 
-const {
-  control,
-  handleSubmit,
-  formState: { errors, isSubmitting },
-} = useForm({
-  resolver: zodResolver(loginSchema),
-  mode: "onTouched",
-  defaultValues: {
-    email: "",
-    password: "",
-  },
-});
+    const handleLogin = async (credentials) => {
 
-const onSubmit = async (data) => {
-  try {
-    const response = await login(data);
+        setLoading(true);
 
-    console.log(response);
-  } catch (error) {
-    console.error(error);
-  }
-};
+        try {
 
-  return (
-    <div className="login-page">
-      {/* LEFT PANEL */}
+            // Temporary API simulation
+            console.log("Login Request:", credentials);
 
-      <div className="login-left">
-        <h1>AMNIKON</h1>
+            await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        <h2>Enterprise HRMS</h2>
+            console.log("Login Successful");
 
-        <p>
-          Secure Human Resource Management Platform for modern organizations.
-        </p>
+            // Later:
+            // const response = await authService.login(credentials);
+            // navigate("/dashboard");
 
-        <ul>
-          <li>Employee Management</li>
-          <li>Attendance Tracking</li>
-          <li>Payroll Management</li>
-          <li>Reports & Analytics</li>
-        </ul>
-      </div>
+        }
+        catch (error) {
 
-      {/* RIGHT PANEL */}
+            console.error(error);
 
-      <div className="login-right">
-        <Paper elevation={0} className="login-card">
-          <h2>Welcome Back</h2>
+        }
+        finally {
 
-          <p>Sign in to continue</p>
+            setLoading(false);
 
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            {/* EMAIL */}
+        }
 
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="Email Address"
-                  margin="normal"
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <EmailOutlinedIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-            />
+    };
 
-            {/* PASSWORD */}
+    return (
 
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="Password"
-                  margin="normal"
-                  type={showPassword ? "text" : "password"}
-                  error={!!errors.password}
-                  helperText={errors.password?.message}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockOutlinedIcon />
-                      </InputAdornment>
-                    ),
+        <div className="login-page">
 
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          edge="end"
-                          onClick={() =>
-                            setShowPassword((prev) => !prev)
-                          }
-                        >
-                          {showPassword ? (
-                            <VisibilityOffOutlinedIcon />
-                          ) : (
-                            <VisibilityOutlinedIcon />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-            />
+            <div className="login-container">
 
-            {/* OPTIONS */}
+                {/* Left Panel */}
 
-            <div className="login-options">
-              <FormControlLabel
-                control={<Checkbox />}
-                label="Remember Me"
-              />
-              <Link to="/forgot-password" className="forgot-link">
-                Forgot Password?
-              </Link>
+                <LoginLeftPanel />
+
+                {/* Right Panel */}
+
+                <div className="login-right">
+
+                    <LoginHeader />
+
+                    <LoginForm
+                        onLogin={handleLogin}
+                        loading={loading}
+                    />
+
+                    <div className="divider">
+                        <span>OR</span>
+                    </div>
+
+                    <AzureLoginButton />
+
+                </div>
+
             </div>
 
-            {/* BUTTON */}
+            {/* Loading Overlay */}
 
-            <Button
-              fullWidth
-              type="submit"
-              variant="contained"
-              size="large"
-              className="login-btn"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Signing In..." : "Access Dashboard"}
-            </Button>
-          </form>
-        </Paper>
-      </div>
-    </div>
-  );
+            <LoginLoader open={loading} />
+
+        </div>
+
+    );
+
 }
 
 export default Login;

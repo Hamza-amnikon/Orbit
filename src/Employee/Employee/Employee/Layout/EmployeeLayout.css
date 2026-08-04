@@ -1,0 +1,16 @@
+.employee-layout {
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+.employee-main {
+    margin-left: 260px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.employee-content {
+    flex: 1;
+    padding: 30px;
+}

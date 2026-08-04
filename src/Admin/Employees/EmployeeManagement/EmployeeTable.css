@@ -1,0 +1,638 @@
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+.employee-table-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:26px 30px;
+
+    background:#fff;
+
+    border-bottom:1px solid #edf2f7;
+
+}
+
+/* Left */
+
+.employee-table-title{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.employee-table-tag{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    width:max-content;
+
+    padding:6px 14px;
+
+    border-radius:999px;
+
+    background:#eef4ff;
+
+    color:#2563eb;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+    text-transform:uppercase;
+
+}
+
+.employee-table-title h2{
+
+    margin:0;
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#0f172a;
+
+}
+
+.employee-table-title p{
+
+    margin:0;
+
+    color:#64748b;
+
+    font-size:15px;
+
+}
+
+/* Right */
+
+.employee-table-count{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:14px 22px;
+
+    border-radius:16px;
+
+    background:#f8fafc;
+
+    border:1px solid #e2e8f0;
+
+    color:#475569;
+
+    font-weight:600;
+
+    font-size:15px;
+
+}
+
+.employee-table-count span{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
+
+    color:#fff;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    box-shadow:0 8px 18px rgba(37,99,235,.25);
+
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+.employee-table-header{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:20px;
+
+}
+
+.employee-table-count{
+
+    width:100%;
+
+    justify-content:center;
+
+}
+
+}
+
+
+
+
+
+/* ==========================================================
+   EMPLOYEE TABLE WRAPPER
+========================================================== */
+
+.employee-table-wrapper{
+    background:#fff;
+    border-radius:22px;
+    overflow:hidden;
+    border:1px solid #e8edf6;
+    box-shadow:0 12px 35px rgba(15,23,42,.06);
+}
+
+/* ==========================================================
+   TABLE SCROLL
+========================================================== */
+
+.table-responsive{
+    width:100%;
+    overflow-x:auto;
+}
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.employee-table{
+    width:100%;
+    min-width:1350px;
+    border-collapse:collapse;
+}
+
+.employee-table thead{
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.employee-table th{
+
+    background:#1e2b5d;
+
+    color:#fff;
+
+    padding:18px 20px;
+
+    text-align:left;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    letter-spacing:.4px;
+
+    white-space:nowrap;
+
+}
+
+.employee-table td{
+
+    padding:15px 15px;
+
+    border-bottom:1px solid #eef2f8;
+
+    vertical-align:middle;
+
+    color:#334155;
+
+    font-size:14px;
+
+    transition:.25s;
+
+}
+
+.employee-table tbody tr{
+
+    transition:.25s ease;
+
+}
+
+.employee-table tbody tr:nth-child(even){
+
+    background:#fbfcfe;
+
+}
+
+.employee-table tbody tr:hover{
+
+    background:#eef5ff;
+
+}
+
+/* ==========================================================
+   EMPLOYEE COLUMN
+========================================================== */
+
+.employee-info{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    min-width:260px;
+
+}
+
+.employee-avatar{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    flex-shrink:0;
+
+    box-shadow:0 8px 20px rgba(37,99,235,.25);
+
+}
+
+.employee-details{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.admin-employee-name{
+
+    font-size:16px;
+
+    font-weight:700;
+
+    color:#000000;
+
+    line-height:1.2;
+
+    margin-bottom:5px;
+
+}
+
+.employee-email{
+
+    font-size:13px;
+
+    color:#64748b;
+
+    word-break:break-word;
+
+}
+
+/* ==========================================================
+   TEXT CELLS
+========================================================== */
+
+.employee-table td:nth-child(1){
+
+    font-weight:600;
+
+    color:#475569;
+
+}
+
+.employee-table td:nth-child(3),
+.employee-table td:nth-child(4),
+.employee-table td:nth-child(5),
+.employee-table td:nth-child(6),
+.employee-table td:nth-child(7){
+
+    font-size:14px;
+
+    color:#334155;
+
+}
+
+/* ==========================================================
+   STATUS BADGE
+========================================================== */
+
+.status-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-width:90px;
+
+    padding:8px 18px;
+
+    border-radius:999px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.status-badge.active{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+}
+
+.status-badge.inactive{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+
+}
+
+/* ==========================================================
+   ACTION BUTTONS
+========================================================== */
+
+.action-buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.action-buttons .MuiIconButton-root{
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:12px;
+
+    transition:.25s ease;
+
+}
+
+/* View */
+
+.view-btn{
+
+    background:#eff6ff !important;
+
+    color:#2563eb !important;
+
+}
+
+.view-btn:hover{
+
+    background:#2563eb !important;
+
+    color:#fff !important;
+
+    transform:translateY(-2px);
+
+}
+
+/* Edit */
+
+.edit-btn{
+
+    background:#ede9fe !important;
+
+    color:#7c3aed !important;
+
+}
+
+.edit-btn:hover{
+
+    background:#7c3aed !important;
+
+    color:#fff !important;
+
+    transform:translateY(-2px);
+
+}
+
+/* Delete */
+
+.delete-btn{
+
+    background:#fef2f2 !important;
+
+    color:#ef4444 !important;
+
+}
+
+.delete-btn:hover{
+
+    background:#ef4444 !important;
+
+    color:#fff !important;
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.no-records{
+
+    padding:70px;
+
+    text-align:center;
+
+    color:#64748b;
+
+    font-size:16px;
+
+}
+
+/* ==========================================================
+   SCROLLBAR
+========================================================== */
+
+.table-responsive::-webkit-scrollbar{
+
+    height:10px;
+
+}
+
+.table-responsive::-webkit-scrollbar-track{
+
+    background:#f3f6fb;
+
+}
+
+.table-responsive::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:999px;
+
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover{
+
+    background:#94a3b8;
+
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:1200px){
+
+.employee-table{
+
+    min-width:1200px;
+
+}
+
+}
+
+@media(max-width:992px){
+
+.employee-avatar{
+
+    width:46px;
+
+    height:46px;
+
+    font-size:18px;
+
+}
+
+.employee-name{
+
+    font-size:18px;
+
+}
+
+.employee-table th,
+.employee-table td{
+
+    padding:16px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.employee-table{
+
+    min-width:1100px;
+
+}
+
+.employee-name{
+
+    font-size:17px;
+
+}
+
+.employee-email{
+
+    font-size:12px;
+
+}
+
+.employee-avatar{
+
+    width:42px;
+
+    height:42px;
+
+    font-size:16px;
+
+}
+
+.action-buttons .MuiIconButton-root{
+
+    width:36px;
+
+    height:36px;
+
+}
+
+}
+
+@media(max-width:480px){
+
+.employee-table{
+
+    min-width:1000px;
+
+}
+
+.employee-table th,
+.employee-table td{
+
+    padding:14px;
+
+    font-size:13px;
+
+}
+
+.employee-name{
+
+    font-size:16px;
+
+}
+
+}
