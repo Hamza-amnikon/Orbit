@@ -1,0 +1,445 @@
+.attendance-logs{
+
+    padding:30px;
+
+}
+
+/* ================= Header ================= */
+
+.attendance-header-card{
+
+    background:#fff;
+
+    border-radius:22px;
+
+    padding:30px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+    box-shadow:0 8px 30px rgba(15,23,42,.06);
+
+    flex-wrap:wrap;
+
+    gap:20px;
+
+}
+
+.attendance-header-card h2{
+
+    margin:0;
+
+    font-size:40px;
+
+    font-weight:700;
+
+    color:#0f172a;
+
+}
+
+.attendance-header-card p{
+
+    margin-top:8px;
+
+    color:#64748b;
+
+    font-size:16px;
+
+}
+
+.attendance-header-actions{
+
+    display:flex;
+
+    gap:14px;
+
+    flex-wrap:wrap;
+
+}
+
+.outline-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:12px 18px;
+
+    background:#fff;
+
+    border:1px solid #dbe4f0;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#2563eb;
+
+    transition:.25s;
+
+}
+
+.outline-btn:hover{
+
+    background:#f8fafc;
+
+}
+
+.primary-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:12px 22px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#2563eb;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.primary-btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* ================= Summary ================= */
+
+.attendance-summary-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+
+    gap:22px;
+
+    margin-bottom:30px;
+
+}
+
+/* ================= Filters ================= */
+
+.attendance-filter-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr 1fr 1fr;
+
+    gap:18px;
+
+    margin-bottom:30px;
+
+    box-shadow:0 8px 30px rgba(15,23,42,.06);
+
+}
+
+.attendance-filter-card input,
+
+.attendance-filter-card select{
+
+    width:100%;
+
+    padding:13px 15px;
+
+    border:1px solid #dbe4f0;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    outline:none;
+
+}
+
+.attendance-filter-card input:focus,
+
+.attendance-filter-card select:focus{
+
+    border-color:#2563eb;
+
+}
+
+/* ================= Table ================= */
+
+.attendance-table-card{
+
+    background:#fff;
+
+    border-radius:22px;
+
+    box-shadow:0 8px 30px rgba(15,23,42,.06);
+
+    overflow:hidden;
+
+}
+
+.table-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    padding:28px;
+
+    border-bottom:1px solid #edf2f7;
+
+    flex-wrap:wrap;
+
+    gap:20px;
+
+}
+
+.table-tag{
+
+    display:inline-block;
+
+    background:#eef4ff;
+
+    color:#2563eb;
+
+    padding:6px 14px;
+
+    border-radius:50px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+    margin-bottom:12px;
+
+}
+
+.table-header h3{
+
+    margin:0;
+
+    font-size:34px;
+
+    color:#0f172a;
+
+}
+
+.table-header p{
+
+    margin-top:8px;
+
+    color:#64748b;
+
+}
+
+.record-count{
+
+    width:140px;
+
+    height:70px;
+
+    border-radius:16px;
+
+    background:#f8fbff;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#2563eb;
+
+    font-weight:600;
+
+}
+
+.record-count strong{
+
+    font-size:28px;
+
+}
+
+/* ================= Responsive ================= */
+
+@media(max-width:992px){
+
+    .attendance-filter-card{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .attendance-header-card{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .attendance-header-actions{
+
+        width:100%;
+
+    }
+
+    .attendance-header-actions button{
+
+        flex:1;
+
+        justify-content:center;
+
+    }
+
+}
+
+/* ================= Table Header ================= */
+
+.table-header-left{
+
+    flex:1;
+
+}
+
+.table-header-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+.table-btn{
+
+    border:1px solid #dbe4f0;
+
+    background:#fff;
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.table-btn:hover{
+
+    background:#2563eb;
+
+    color:#fff;
+
+    border-color:#2563eb;
+
+}
+
+/* ================= Footer ================= */
+
+.table-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 25px;
+
+    border-top:1px solid #edf2f7;
+
+    flex-wrap:wrap;
+
+    gap:20px;
+
+}
+
+.table-footer span{
+
+    color:#64748b;
+
+}
+
+.pagination{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.pagination button{
+
+    border:1px solid #dbe4f0;
+
+    background:#fff;
+
+    padding:8px 15px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.pagination button:hover{
+
+    background:#2563eb;
+
+    color:#fff;
+
+}
+
+.active-page{
+
+    background:#2563eb !important;
+
+    color:#fff;
+
+    border-color:#2563eb !important;
+
+}

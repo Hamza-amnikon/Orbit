@@ -1,0 +1,357 @@
+/* ================= Dialog ================= */
+
+.MuiDialog-paper {
+    border-radius: 18px !important;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18) !important;
+}
+
+/* ================= Title ================= */
+
+.attendance-details-title {
+    font-size: 30px !important;
+    font-weight: 700 !important;
+    color: #0F172A;
+    padding: 24px 28px 18px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+/* ================= Content ================= */
+
+.attendance-details-content {
+    padding: 28px !important;
+    background: #ffffff;
+}
+
+/* ================= Section ================= */
+
+.details-section {
+    margin-bottom: 28px;
+}
+
+.details-section:last-child {
+    margin-bottom: 0;
+}
+
+.details-section h3 {
+    margin: 0 0 22px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2563EB;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+/* ================= Labels ================= */
+
+.details-section label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+/* ================= Values ================= */
+
+.details-section p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #0F172A;
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+/* ================= Grid ================= */
+
+.details-item {
+    margin-bottom: 22px;
+}
+
+/* ================= Status Chip ================= */
+
+.details-status {
+    margin-top: 2px;
+}
+
+.details-status .MuiChip-root {
+    border-radius: 20px;
+    font-weight: 600;
+    min-width: 100px;
+}
+
+/* ================= Actions ================= */
+
+.MuiDialogActions-root {
+    padding: 18px 28px 22px !important;
+    border-top: 1px solid #E5E7EB;
+    gap: 12px;
+}
+
+.MuiDialogActions-root .MuiButton-root {
+    min-width: 140px;
+    height: 44px;
+    border-radius: 10px;
+    text-transform: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.MuiDialogActions-root .MuiButton-contained {
+    box-shadow: none;
+}
+
+.MuiDialogActions-root .MuiButton-contained:hover {
+    box-shadow: none;
+}
+
+/* ================= Divider ================= */
+
+.details-divider {
+    margin: 28px 0;
+    border-top: 1px solid #E5E7EB;
+}
+
+/* ================= Responsive ================= */
+
+@media (max-width: 768px) {
+
+    .attendance-details-title {
+        font-size: 24px !important;
+        padding: 20px;
+    }
+
+    .attendance-details-content {
+        padding: 20px !important;
+    }
+
+    .details-section h3 {
+        font-size: 18px;
+    }
+
+    .details-section label {
+        font-size: 12px;
+    }
+
+    .details-section p {
+        font-size: 14px;
+    }
+
+    .MuiDialogActions-root {
+        flex-direction: column;
+        padding: 20px !important;
+    }
+
+    .MuiDialogActions-root .MuiButton-root {
+        width: 100%;
+    }
+
+}
+
+
+
+
+
+
+
+
+/* ================= Dialog ================= */
+
+.MuiDialog-paper {
+    border-radius: 18px !important;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18) !important;
+}
+
+/* ================= Title ================= */
+
+.delete-dialog-title {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: #0F172A;
+    padding: 24px 28px 18px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+/* ================= Content ================= */
+
+.delete-dialog-content {
+    padding: 32px !important;
+    text-align: center;
+}
+
+/* ================= Warning Icon ================= */
+
+.delete-icon-wrapper {
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #FEF2F2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-icon-wrapper svg {
+    font-size: 42px;
+    color: #DC2626;
+}
+
+/* ================= Heading ================= */
+
+.delete-heading {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #0F172A;
+}
+
+.delete-message {
+    margin-top: 12px;
+    font-size: 15px;
+    color: #64748B;
+    line-height: 1.7;
+}
+
+/* ================= Employee Card ================= */
+
+.delete-card {
+    margin-top: 28px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: left;
+}
+
+.delete-card h4 {
+    margin: 0 0 16px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1E293B;
+}
+
+.delete-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.delete-row:last-child {
+    border-bottom: none;
+}
+
+.delete-row label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748B;
+}
+
+.delete-row span {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0F172A;
+}
+
+/* ================= Warning Note ================= */
+
+.delete-warning {
+    margin-top: 22px;
+    padding: 14px 18px;
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 12px;
+    color: #C2410C;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+/* ================= Footer ================= */
+
+.MuiDialogActions-root {
+    padding: 20px 28px !important;
+    border-top: 1px solid #E5E7EB;
+    gap: 12px;
+}
+
+/* ================= Buttons ================= */
+
+.MuiDialogActions-root .MuiButton-root {
+    min-width: 140px;
+    height: 44px;
+    border-radius: 10px;
+    text-transform: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.MuiDialogActions-root .MuiButton-outlined {
+    border-color: #CBD5E1;
+}
+
+.MuiDialogActions-root .MuiButton-outlined:hover {
+    border-color: #94A3B8;
+    background: #F8FAFC;
+}
+
+.MuiDialogActions-root .MuiButton-containedError {
+    box-shadow: none;
+}
+
+.MuiDialogActions-root .MuiButton-containedError:hover {
+    box-shadow: none;
+}
+
+/* ================= Responsive ================= */
+
+@media (max-width:768px) {
+
+    .delete-dialog-title {
+        font-size: 24px !important;
+        padding: 20px;
+    }
+
+    .delete-dialog-content {
+        padding: 20px !important;
+    }
+
+    .delete-icon-wrapper {
+        width: 70px;
+        height: 70px;
+    }
+
+    .delete-icon-wrapper svg {
+        font-size: 34px;
+    }
+
+    .delete-heading {
+        font-size: 20px;
+    }
+
+    .delete-card {
+        padding: 16px;
+    }
+
+    .delete-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .MuiDialogActions-root {
+        flex-direction: column;
+        padding: 20px !important;
+    }
+
+    .MuiDialogActions-root .MuiButton-root {
+        width: 100%;
+    }
+
+}

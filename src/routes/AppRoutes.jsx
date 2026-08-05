@@ -3,12 +3,11 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
 
 import Dashboard from "../pages/Dashboard/Dashboard";
-import Attendance from "../pages/Attendance/Attendance";
-import Leave from "../pages/Leave/Leave";
 import Payroll from "../pages/Payroll/Payroll";
 import Reports from "../pages/Reports/Reports";
 import Tickets from "../pages/Tickets/Tickets";
 import Settings from "../pages/Settings/Settings";
+import Leave from "../pages/Leave/Leave";
 import Login from "../pages/Login/Login";
 import AuthCallback from "../pages/Auth/AuthCallback";
 
@@ -24,6 +23,16 @@ import Designations from "../Admin/Employees/Designations/Designations";
 import Locations from "../Admin/Employees/Locations/Locations";
 import EmployeeType from "../Admin/Employees/EmployeeType/EmployeeType";
 import Role from "../Admin/Roles/Role";
+
+// ================= Attendance =================
+
+import Attendance from "../Admin/AttendanceManagement/Attendance";
+import AttendanceDashboard from "../Admin/AttendanceManagement/Dashboard/AttendanceDashboard";
+import AttendanceLogs from "../Admin/AttendanceManagement/AttendanceLogs/AttendanceLogs";
+import Regularization from "../Admin/AttendanceManagement/Regularization/Regularization";
+import ShiftManagement from "../Admin/AttendanceManagement/ShiftManagement/ShiftManagement";
+import Holidays from "../Admin/AttendanceManagement/Holidays/Holidays";
+import AttendanceReports from "../Admin/AttendanceManagement/Reports/AttendanceReports";
 
 // ================= Employee =================
 
@@ -70,7 +79,11 @@ function AppRoutes() {
             <Route element={<PrivateRoute />}>
                 <Route element={<DashboardLayout />}>
 
+                    {/* Dashboard */}
+
                     <Route path="/" element={<Dashboard />} />
+
+                    {/* Employee Management */}
 
                     <Route path="/employees" element={<Employees />} />
                     <Route path="/employees/add" element={<AddEmployee />} />
@@ -81,7 +94,18 @@ function AppRoutes() {
                     <Route path="/employees/types" element={<EmployeeType />} />
                     <Route path="/employees/roles" element={<Role />} />
 
+                    {/* Attendance Management */}
+
                     <Route path="/attendance" element={<Attendance />} />
+                    <Route path="/attendance/dashboard" element={<AttendanceDashboard />} />
+                    <Route path="/attendance/logs" element={<AttendanceLogs />} />
+                    <Route path="/attendance/regularization" element={<Regularization />} />
+                    <Route path="/attendance/shifts" element={<ShiftManagement />} />
+                    <Route path="/attendance/holidays" element={<Holidays />} />
+                    <Route path="/attendance/reports" element={<AttendanceReports />} />
+
+                    {/* Other Modules */}
+
                     <Route path="/leave" element={<Leave />} />
                     <Route path="/payroll" element={<Payroll />} />
                     <Route path="/reports" element={<Reports />} />
