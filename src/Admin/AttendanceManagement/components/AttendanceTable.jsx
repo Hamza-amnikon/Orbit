@@ -1,8 +1,18 @@
 import "./AttendanceTable.css";
 
-import { Avatar, Checkbox, Chip, IconButton, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Checkbox,
+  Chip,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 
-import { Visibility, Edit, Delete } from "@mui/icons-material";
+import {
+  Visibility,
+  Edit,
+  Delete,
+} from "@mui/icons-material";
 
 export default function AttendanceTable({
   rows = [],
@@ -37,6 +47,18 @@ export default function AttendanceTable({
     );
   }
 
+  const formatDate = (date) => {
+    if (!date) return "-";
+
+    return new Date(date).toLocaleDateString("en-GB");
+  };
+
+  const formatTime = (time) => {
+    if (!time) return "-";
+
+    return time.substring(0, 5);
+  };
+
   return (
     <table className="attendance-table">
       <thead>
@@ -48,6 +70,8 @@ export default function AttendanceTable({
           <th>Employee ID</th>
 
           <th>Employee</th>
+
+          <th>Date</th>
 
           <th>Shift</th>
 
@@ -70,58 +94,75 @@ export default function AttendanceTable({
               <Checkbox />
             </td>
 
-            {/* Azure Employee ID */}
-
-            <td>{row.azureEmployeeId ? row.azureEmployeeId : "-"}</td>
-
-            {/* Employee Details */}
+            <td>{row.azureEmployeeId || "-"}</td>
 
             <td>
               <div className="employee-cell">
                 <Avatar className="employee-avatar">
-                  {row.employeeName ? row.employeeName.charAt(0) : "?"}
+                  {row.employeeName
+                    ? row.employeeName.charAt(0).toUpperCase()
+                    : "?"}
                 </Avatar>
 
                 <div>
-                  <strong>{row.employeeName ? row.employeeName : "-"}</strong>
+                  <strong>{row.employeeName || "-"}</strong>
 
-                  <span>{row.employeeCode ? row.employeeCode : "-"}</span>
+                  <span>{row.employeeCode || "-"}</span>
                 </div>
               </div>
             </td>
 
-            <td>{row.shift ? row.shift : "-"}</td>
+            <td>{formatDate(row.attendanceDate)}</td>
 
-            <td>{row.checkIn ? row.checkIn : "-"}</td>
+            <td>{row.shift || "-"}</td>
 
-            <td>{row.checkOut ? row.checkOut : "-"}</td>
+            <td>{formatTime(row.checkIn)}</td>
 
-            <td>{row.totalHours ? row.totalHours : "-"}</td>
+            <td>{formatTime(row.checkOut)}</td>
+
+            <td>{row.totalHours || "-"}</td>
 
             <td>
               <Chip
-                label={row.status ? row.status : "-"}
-                className={`status-chip ${
-                  row.status ? row.status.toLowerCase() : ""
-                }`}
+                label={row.status || "-"}
+                color={
+                  row.status === "Present"
+                    ? "success"
+                    : row.status === "Late"
+                    ? "warning"
+                    : row.status === "Absent"
+                    ? "error"
+                    : row.status === "Leave"
+                    ? "secondary"
+                    : row.status === "WFH"
+                    ? "info"
+                    : "default"
+                }
+                size="small"
               />
             </td>
 
             <td>
               <div className="attendance-actions">
-                <Tooltip title="View">
-                  <IconButton className="view-btn" onClick={() => onView(row)}>
+                <Tooltip title="View Attendance">
+                  <IconButton
+                    className="view-btn"
+                    onClick={() => onView(row)}
+                  >
                     <Visibility fontSize="small" />
                   </IconButton>
                 </Tooltip>
 
-                <Tooltip title="Edit">
-                  <IconButton className="edit-btn" onClick={() => onEdit(row)}>
+                <Tooltip title="Edit Attendance">
+                  <IconButton
+                    className="edit-btn"
+                    onClick={() => onEdit(row)}
+                  >
                     <Edit fontSize="small" />
                   </IconButton>
                 </Tooltip>
 
-                <Tooltip title="Delete">
+                <Tooltip title="Delete Attendance">
                   <IconButton
                     className="delete-btn"
                     onClick={() => onDelete(row)}

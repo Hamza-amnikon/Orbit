@@ -9,6 +9,7 @@ function AddEmployee() {
   // ==========================================
 
 const EMPLOYEE_API = "http://localhost:5151/api/Employee";
+const PROVISION_API = "http://localhost:5151/api/provision";
 const EMPLOYEE_TYPE_API = "http://localhost:5085/api/EmployeeType";
 const LOCATION_API = "http://localhost:5140/api/Location/active";
 const DESIGNATION_API = "http://localhost:5041/api/Designation";
@@ -174,9 +175,14 @@ async function addEmployee() {
 
   try {
 
-    const response = await axios.post(EMPLOYEE_API, employee);
+    // Provision Employee (Create AD User + Save Employee)
+    const response = await axios.post(PROVISION_API, employee);
 
     console.log("Employee Saved:", response.data);
+
+    // Optional: Fetch latest employee list
+    const employees = await axios.get(EMPLOYEE_API);
+    console.log("Updated Employees:", employees.data);
 
     alert("Employee Added Successfully");
 
@@ -203,19 +209,14 @@ async function addEmployee() {
     console.error(error);
 
     if (error.response) {
-
       console.log(error.response.data);
       alert(JSON.stringify(error.response.data, null, 2));
-
     }
     else {
-
       alert("Unable to connect to API.");
-
     }
 
   }
-
 }
 
   return (

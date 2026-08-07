@@ -20,17 +20,18 @@ const actions = [
         color: "#10B981",
         path: "/attendance/shifts"
     },
-    {
-        title: "Regularization",
-        icon: <AssignmentTurnedInIcon />,
-        color: "#F59E0B",
-        path: "/attendance/regularization"
-    },
+
     {
         title: "Holidays",
         icon: <EventIcon />,
         color: "#8B5CF6",
         path: "/attendance/holidays"
+    },
+    {
+        title: "Reports",
+        icon: <AssignmentTurnedInIcon />,
+        color: "#42b996",
+        path: "/attendance/reports"
     }
 ];
 

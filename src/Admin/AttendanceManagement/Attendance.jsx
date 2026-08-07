@@ -25,13 +25,7 @@ const menuItems = [
     color: "#10B981",
     path: "/attendance/logs",
   },
-  {
-    title: "Regularization",
-    description: "Approve attendance corrections",
-    icon: <AssignmentTurnedInIcon />,
-    color: "#F59E0B",
-    path: "/attendance/regularization",
-  },
+
   {
     title: "Shift Management",
     description: "Manage employee shifts",

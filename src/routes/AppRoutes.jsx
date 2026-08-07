@@ -29,7 +29,7 @@ import Role from "../Admin/Roles/Role";
 import Attendance from "../Admin/AttendanceManagement/Attendance";
 import AttendanceDashboard from "../Admin/AttendanceManagement/Dashboard/AttendanceDashboard";
 import AttendanceLogs from "../Admin/AttendanceManagement/AttendanceLogs/AttendanceLogs";
-import Regularization from "../Admin/AttendanceManagement/Regularization/Regularization";
+
 import ShiftManagement from "../Admin/AttendanceManagement/ShiftManagement/ShiftManagement";
 import Holidays from "../Admin/AttendanceManagement/Holidays/Holidays";
 import AttendanceReports from "../Admin/AttendanceManagement/Reports/AttendanceReports";
@@ -99,7 +99,7 @@ function AppRoutes() {
                     <Route path="/attendance" element={<Attendance />} />
                     <Route path="/attendance/dashboard" element={<AttendanceDashboard />} />
                     <Route path="/attendance/logs" element={<AttendanceLogs />} />
-                    <Route path="/attendance/regularization" element={<Regularization />} />
+        
                     <Route path="/attendance/shifts" element={<ShiftManagement />} />
                     <Route path="/attendance/holidays" element={<Holidays />} />
                     <Route path="/attendance/reports" element={<AttendanceReports />} />

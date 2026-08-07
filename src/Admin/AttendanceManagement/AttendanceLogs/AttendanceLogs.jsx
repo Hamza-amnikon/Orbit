@@ -1,7 +1,20 @@
 import "./AttendanceLogs.css";
 
 import { useState, useEffect } from "react";
+import {
+  Box,
+  Grid,
+  TextField,
+  MenuItem,
+  Button,
+  InputAdornment,
+} from "@mui/material";
 
+import SearchIcon from "@mui/icons-material/Search";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import BusinessIcon from "@mui/icons-material/Business";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import AttendanceTable from "../components/AttendanceTable";
 import DashboardCard from "../Dashboard/DashboardCard";
 
@@ -18,14 +31,16 @@ import TimerIcon from "@mui/icons-material/Timer";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
 
-import RefreshIcon from "@mui/icons-material/Refresh";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import AddIcon from "@mui/icons-material/Add";
 
 export default function AttendanceLogs() {
   const [search, setSearch] = useState("");
 
-  const [department, setDepartment] = useState("");
+  const [shift, setShift] = useState("");
 
   const [status, setStatus] = useState("");
 
@@ -89,19 +104,66 @@ export default function AttendanceLogs() {
     loadDashboard();
   };
 
-  const filteredAttendance = attendanceList.filter((item) => {
-    const searchMatch =
-      item.employeeName?.toLowerCase().includes(search.toLowerCase()) ||
-      item.employeeCode?.toLowerCase().includes(search.toLowerCase());
+  const handleGenerateAttendance = async () => {
+    try {
+      const result = await AttendanceService.generateAttendance();
 
-    const departmentMatch = department === "" || item.department === department;
+      alert(
+        `Attendance Generated Successfully
+
+Generated : ${result.generated}
+Skipped : ${result.skipped}
+Weekly Off : ${result.weeklyOff}`,
+      );
+
+      refreshData();
+    } catch (error) {
+      console.error(error);
+
+      alert("Failed to generate attendance.");
+    }
+  };
+
+  const resetFilters = () => {
+    setSearch("");
+    setShift("");
+    setStatus("");
+    setDate("");
+  };
+  const filteredAttendance = attendanceList.filter((item) => {
+    const keyword = search.toLowerCase().trim();
+
+    const searchMatch =
+      keyword === "" ||
+      item.employeeName?.toLowerCase().includes(keyword) ||
+      item.employeeCode?.toLowerCase().includes(keyword) ||
+      item.department?.toLowerCase().includes(keyword) ||
+      item.designation?.toLowerCase().includes(keyword);
+
+    const shiftMatch = shift === "" || item.shift === shift;
 
     const statusMatch = status === "" || item.status === status;
-
-    const dateMatch = date === "" || item.attendanceDate?.startsWith(date);
-
-    return searchMatch && departmentMatch && statusMatch && dateMatch;
+    const dateMatch = !date || item.attendanceDate?.split("T")[0] === date;
+    return searchMatch && shiftMatch && statusMatch && dateMatch;
   });
+
+
+const filteredDashboard = {
+  present: filteredAttendance.filter(x => x.status === "Present").length,
+
+  absent: filteredAttendance.filter(x => x.status === "Absent").length,
+
+  late: filteredAttendance.filter(x => x.status === "Late").length,
+
+  leave: filteredAttendance.filter(
+    x =>
+      x.status === "Leave" ||
+      x.status === "On Leave"
+  ).length,
+
+  wfh: filteredAttendance.filter(x => x.status === "WFH").length,
+};
+
 
   const handleDelete = async () => {
     try {
@@ -116,6 +178,11 @@ export default function AttendanceLogs() {
       console.error("Delete Error", error);
     }
   };
+  const shifts = [...new Set(attendanceList.map((x) => x.shift))].filter(
+    Boolean,
+  );
+
+  const statuses = [...new Set(attendanceList.map((x) => x.status))];
 
   return (
     <div className="attendance-logs">
@@ -132,6 +199,11 @@ export default function AttendanceLogs() {
           <button className="outline-btn" onClick={refreshData}>
             <RefreshIcon />
             Refresh
+          </button>
+
+          <button className="outline-btn" onClick={handleGenerateAttendance}>
+            <AutorenewIcon />
+            Generate Attendance
           </button>
 
           <button className="outline-btn">
@@ -151,7 +223,7 @@ export default function AttendanceLogs() {
       <div className="attendance-summary-grid">
         <DashboardCard
           title="Present"
-          value={dashboard.present}
+          value={filteredDashboard.present}
           subtitle="Employees Present"
           color="#10B981"
           icon={<GroupsIcon />}
@@ -159,7 +231,7 @@ export default function AttendanceLogs() {
 
         <DashboardCard
           title="Absent"
-          value={dashboard.absent}
+          value={filteredDashboard.absent}
           subtitle="Employees Absent"
           color="#EF4444"
           icon={<PersonOffIcon />}
@@ -167,7 +239,7 @@ export default function AttendanceLogs() {
 
         <DashboardCard
           title="Late"
-          value={dashboard.late}
+          value={filteredDashboard.late}
           subtitle="Late Check-ins"
           color="#F59E0B"
           icon={<TimerIcon />}
@@ -175,7 +247,7 @@ export default function AttendanceLogs() {
 
         <DashboardCard
           title="On Leave"
-          value={dashboard.leave}
+          value={filteredDashboard.leave}
           subtitle="Approved Leave"
           color="#8B5CF6"
           icon={<BeachAccessIcon />}
@@ -183,7 +255,7 @@ export default function AttendanceLogs() {
 
         <DashboardCard
           title="WFH"
-          value={dashboard.wfh}
+          value={filteredDashboard.wfh}
           subtitle="Work From Home"
           color="#06B6D4"
           icon={<HomeWorkIcon />}
@@ -193,47 +265,97 @@ export default function AttendanceLogs() {
       {/* FILTERS */}
 
       <div className="attendance-filter-card">
-        <input
-          type="text"
-          placeholder="Search employee or Employee ID..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <Grid container spacing={2} alignItems="center">
+          <Grid size={{ xs: 12, md: 5 }}>
+            <TextField
+              fullWidth
+              placeholder="Search by name, employee ID or department..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
 
-        <select
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-        >
-          <option value="">All Departments</option>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <TextField
+              select
+              fullWidth
+              value={shift}
+              label="Shift"
+              onChange={(e) => setShift(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AccessTimeIcon />
+                  </InputAdornment>
+                ),
+              }}
+            >
+              <MenuItem value="">All Shifts</MenuItem>
+              <MenuItem value="Morning">Morning Shift</MenuItem>
+              <MenuItem value="General">General Shift</MenuItem>
+              <MenuItem value="Evening">Evening Shift</MenuItem>
+              <MenuItem value="Night">Night Shift</MenuItem>
+            </TextField>
+          </Grid>
 
-          <option value="IT">IT</option>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <TextField
+              select
+              fullWidth
+              value={status}
+              label="Status"
+              onChange={(e) => setStatus(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <TaskAltIcon />
+                  </InputAdornment>
+                ),
+              }}
+            >
+              <MenuItem value="">All Status</MenuItem>
 
-          <option value="HR">HR</option>
+              {statuses.map((item) => (
+                <MenuItem key={item} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
 
-          <option value="Finance">Finance</option>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <TextField
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+            />
+          </Grid>
 
-          <option value="Admin">Admin</option>
-        </select>
-
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
-          <option value="">All Status</option>
-
-          <option value="Present">Present</option>
-
-          <option value="Late">Late</option>
-
-          <option value="Absent">Absent</option>
-
-          <option value="Leave">Leave</option>
-
-          <option value="WFH">WFH</option>
-        </select>
-
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
+          <Grid size={{ xs: 12, sm: 6, md: 1 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              startIcon={<RefreshIcon />}
+              onClick={resetFilters}
+              sx={{
+                height: 56,
+                borderRadius: 3,
+                textTransform: "none",
+              }}
+            >
+              Reset
+            </Button>
+          </Grid>
+        </Grid>
       </div>
 
       {/* TABLE */}
@@ -295,21 +417,21 @@ export default function AttendanceLogs() {
         attendance={selectedAttendance}
         onClose={() => setDetailsOpen(false)}
       />
-{/* EDIT */}
+      {/* EDIT */}
 
-<EditAttendanceDialog
-  open={editOpen}
-  attendance={selectedAttendance}
-  onClose={() => {
-    setEditOpen(false);
-    setSelectedAttendance(null);
-  }}
-  onUpdated={() => {
-    setEditOpen(false);
-    setSelectedAttendance(null);
-    refreshData();
-  }}
-/>
+      <EditAttendanceDialog
+        open={editOpen}
+        attendance={selectedAttendance}
+        onClose={() => {
+          setEditOpen(false);
+          setSelectedAttendance(null);
+        }}
+        onUpdated={() => {
+          setEditOpen(false);
+          setSelectedAttendance(null);
+          refreshData();
+        }}
+      />
 
       <DeleteAttendanceDialog
         open={deleteOpen}

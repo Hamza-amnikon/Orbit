@@ -1,28 +1,34 @@
 import "./DashboardCard.css";
 
 export default function DashboardCard({
-    title,
-    value,
-    subtitle,
-    icon,
-    color
+  title,
+  value,
+  subtitle,
+  icon,
+  color,
 }) {
-    return (
-        <div className="dashboard-card">
+  return (
+    <div className="dashboard-card">
 
-            <div
-                className="dashboard-card-icon"
-                style={{ backgroundColor: color }}
-            >
-                {icon}
-            </div>
+      <div
+        className="dashboard-card-icon"
+        style={{ backgroundColor: color }}
+      >
+        {icon}
+      </div>
 
-            <div className="dashboard-card-content">
-                <span>{title}</span>
-                <h2>{value}</h2>
-                <p>{subtitle}</p>
-            </div>
+      <div className="dashboard-card-title">
+        <h4>{title}</h4>
+      </div>
 
-        </div>
-    );
+      <div className="dashboard-card-value">
+        {value}
+      </div>
+
+      <div className="dashboard-card-subtitle">
+        {subtitle}
+      </div>
+
+    </div>
+  );
 }

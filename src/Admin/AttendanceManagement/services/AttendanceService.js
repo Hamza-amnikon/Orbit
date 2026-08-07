@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const API_URL = "http://localhost:5172/api/Attendance";
-// Replace xxxx with your Attendance API port
 
 const AttendanceService = {
 
@@ -40,6 +39,12 @@ const AttendanceService = {
     return response.data;
   },
 
+  // ✅ Generate Today's Attendance
+  generateAttendance: async () => {
+    const response = await axios.post(`${API_URL}/generate`);
+    return response.data;
+  },
+
   create: async (data) => {
     const response = await axios.post(API_URL, data);
     return response.data;
@@ -50,6 +55,8 @@ const AttendanceService = {
     return response.data;
   },
 
+
+  
   delete: async (id) => {
     const response = await axios.delete(`${API_URL}/${id}`);
     return response.data;
