@@ -1,0 +1,476 @@
+/* =========================================
+   LEAVE OVERVIEW PAGE
+========================================= */
+
+.leave-overview {
+    padding: 30px;
+    min-height: 100%;
+    background: #f8fafc;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.leave-overview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.leave-overview-header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.leave-overview-header p {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.leave-period-btn {
+    padding: 9px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+/* =========================================
+   SUMMARY CARDS
+========================================= */
+
+.leave-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.leave-summary-card {
+    min-height: 125px;
+    padding: 18px 20px;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.leave-summary-card:nth-child(1) {
+    background: #e9f5ee;
+}
+
+.leave-summary-card:nth-child(2) {
+    background: #f8eadf;
+}
+
+.leave-summary-card:nth-child(3) {
+    background: #f7e7eb;
+}
+
+.leave-summary-card:nth-child(4) {
+    background: #e6f3f8;
+}
+
+
+/* Card Header */
+
+.summary-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.summary-card-top > span:first-child {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.summary-menu {
+    font-size: 20px;
+    color: #64748b;
+}
+
+
+/* Card Number */
+
+.summary-card-bottom {
+    margin-top: 24px;
+}
+
+.summary-card-bottom h2 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.summary-card-bottom span {
+    display: block;
+    margin-top: 3px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+
+    .leave-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+
+    .leave-overview {
+        padding: 20px;
+    }
+
+    .leave-overview-header {
+        align-items: flex-start;
+        gap: 16px;
+        flex-direction: column;
+    }
+
+    .leave-summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   DASHBOARD MIDDLE SECTION
+========================================= */
+
+.leave-dashboard-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    margin-top: 24px;
+    align-items: stretch;
+}
+
+
+/* Panels */
+
+.leave-trend-panel,
+.upcoming-leaves-panel {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    min-height: 300px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+/* Panel Header */
+
+.dashboard-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.dashboard-panel-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+
+/* Weekly View Button */
+
+.view-filter-btn {
+    padding: 7px 11px;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #64748b;
+
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.view-filter-btn:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================================
+   LEAVE TREND PLACEHOLDER
+========================================= */
+
+.leave-trend-placeholder {
+    height: 210px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #94a3b8;
+    font-size: 13px;
+
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+
+/* =========================================
+   UPCOMING LEAVES
+========================================= */
+
+.upcoming-leaves-table {
+    width: 100%;
+}
+
+.upcoming-table-header,
+.upcoming-table-row {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr 1.6fr 0.8fr;
+    gap: 12px;
+    align-items: center;
+}
+
+.upcoming-table-header {
+    padding: 10px 8px;
+
+    background: #f8fafc;
+
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    border-radius: 6px;
+}
+
+.upcoming-table-row {
+    padding: 14px 8px;
+
+    color: #475569;
+    font-size: 12px;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.upcoming-table-row:last-child {
+    border-bottom: none;
+}
+
+
+/* No Upcoming Leaves */
+
+.no-upcoming-leaves {
+    padding: 60px 20px;
+    text-align: center;
+
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+
+/* Responsive */
+
+@media (max-width: 750px) {
+    .leave-dashboard-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   UPCOMING EVENTS
+========================================= */
+
+.upcoming-events-panel {
+    margin-top: 20px;
+    padding: 20px;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    box-sizing: border-box;
+}
+
+.upcoming-events-panel .dashboard-panel-header {
+    margin-bottom: 18px;
+}
+
+.upcoming-events-panel .dashboard-panel-header p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+
+/* Events List */
+
+.upcoming-events-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+
+/* Individual Event */
+
+.upcoming-event-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 16px;
+
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    border-radius: 10px;
+
+    transition: 0.2s ease;
+}
+
+.upcoming-event-item:hover {
+    background: #ffffff;
+    border-color: #dbeafe;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+
+/* Event Date */
+
+.event-date-box {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background: #eaf4ff;
+    border-radius: 9px;
+}
+
+.event-date-box strong {
+    font-size: 18px;
+    line-height: 20px;
+    color: #2563eb;
+}
+
+.event-date-box span {
+    margin-top: 2px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #64748b;
+}
+
+
+/* Event Information */
+
+.event-details h3 {
+    margin: 0;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #1e293b;
+}
+
+.event-details p {
+    margin: 5px 0 0;
+
+    font-size: 12px;
+
+    color: #94a3b8;
+}
+
+
+/* =========================================
+   UPCOMING EVENTS RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .upcoming-events-list {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================================
+   LEAVE DASHBOARD HEADER ACTIONS
+========================================= */
+
+.leave-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.leave-action-btn {
+    padding: 8px 13px;
+
+    background: #ffffff;
+    color: #2563eb;
+
+    border: 1px solid #2563eb;
+    border-radius: 7px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.leave-action-btn:hover {
+    background: #eff6ff;
+}
+
+/* Summary Card Hover Effect */
+.leave-summary-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+.leave-summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+
+/* Rejected Leave Card */
+.leave-summary-card.rejected-leave {
+    background: #fce8e8;
+}
+
+.leave-summary-card.rejected-leave h2 {
+    color: #312e2e;
+}
+
+.leave-summary-card.rejected-leave span {
+    color: #312e2e;
+}

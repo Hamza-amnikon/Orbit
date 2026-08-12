@@ -1,0 +1,452 @@
+.leave-balance-page {
+  padding: 32px 40px;
+  min-height: 100vh;
+  background: #f5f7fb;
+}
+
+.leave-balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.leave-balance-header h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #172033;
+}
+
+.leave-balance-header p {
+  margin: 7px 0 0;
+  font-size: 14px;
+  color: #697386;
+}
+
+.refresh-balance-btn {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.refresh-balance-btn:hover {
+  background: #1d4ed8;
+}
+
+.leave-balance-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e4e8ef;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.leave-balance-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.leave-balance-table thead {
+  background: #203b7a;
+  color: white;
+}
+
+.leave-balance-table th {
+  padding: 14px 18px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.leave-balance-table td {
+  padding: 15px 18px;
+  border-bottom: 1px solid #edf0f5;
+  color: #344054;
+}
+
+.leave-balance-table tbody tr:hover {
+  background: #f8faff;
+}
+
+.leave-balance-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.balance-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 55px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #e8f7ee;
+  color: #16803c;
+  font-weight: 700;
+}
+
+.leave-balance-loading,
+.leave-balance-empty {
+  background: white;
+  padding: 40px;
+  text-align: center;
+  border-radius: 12px;
+  color: #697386;
+}
+
+.leave-balance-error {
+  background: #fff1f2;
+  color: #c62828;
+  border: 1px solid #fecdd3;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .leave-balance-page {
+    padding: 20px;
+  }
+
+  .leave-balance-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .leave-balance-table th,
+  .leave-balance-table td {
+    padding: 12px;
+  }
+}
+
+/* =========================================
+   Leave Balance Page
+========================================= */
+
+.leave-balance-page {
+  padding: 32px;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+
+/* =========================================
+   Header
+========================================= */
+
+.leave-balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
+.leave-balance-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.leave-balance-header p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+
+/* =========================================
+   Refresh Button
+========================================= */
+
+.refresh-balance-btn {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.refresh-balance-btn:hover {
+  background: #1d4ed8;
+}
+
+
+/* =========================================
+   Filters
+========================================= */
+
+.leave-balance-filters {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.filter-group input,
+.filter-group select {
+  height: 38px;
+  min-width: 190px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 13px;
+  outline: none;
+}
+
+.filter-group input {
+  min-width: 220px;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
+}
+
+
+/* =========================================
+   Error
+========================================= */
+
+.leave-balance-error {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+
+/* =========================================
+   Loading / Empty
+========================================= */
+
+.leave-balance-loading,
+.leave-balance-empty {
+  padding: 40px;
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+}
+
+
+/* =========================================
+   Table Card
+========================================= */
+
+.leave-balance-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+/* =========================================
+   Table
+========================================= */
+
+.leave-balance-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.leave-balance-table thead {
+  background: #243f7d;
+}
+
+.leave-balance-table th {
+  padding: 13px 14px;
+  text-align: left;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.leave-balance-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.leave-balance-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.leave-balance-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+
+/* =========================================
+   Balance Badge
+========================================= */
+
+.balance-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #e8f7ef;
+  color: #087443;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   Responsive
+========================================= */
+
+@media (max-width: 768px) {
+  .leave-balance-page {
+    padding: 20px;
+  }
+
+  .leave-balance-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .leave-balance-filters {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .filter-group input,
+  .filter-group select {
+    min-width: 180px;
+  }
+}
+
+
+.leave-balance-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.previous-btn,
+.refresh-balance-btn {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.previous-btn {
+  background: white;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+}
+
+.refresh-balance-btn {
+  background: white;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+}
+
+
+/* Leave Balance Summary */
+.leave-balance-summary {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.balance-summary-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summary-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.balance-summary-card strong {
+  font-size: 26px;
+  font-weight: 700;
+  color: #172554;
+}
+
+.balance-summary-card small {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+
+/* Summary Card Colors */
+
+.balance-summary-card:nth-child(1) {
+  background: #e8f1ff;
+}
+
+.balance-summary-card:nth-child(2) {
+  background: #f0eaff;
+}
+
+.balance-summary-card:nth-child(3) {
+  background: #e8f7ef;
+}
+
+.balance-summary-card:nth-child(4) {
+  background: #fff0e6;
+}
+
+.balance-summary-card:nth-child(5) {
+  background: #e6f7f5;
+}

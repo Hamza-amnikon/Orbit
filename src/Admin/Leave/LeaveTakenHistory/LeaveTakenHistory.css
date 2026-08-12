@@ -1,0 +1,235 @@
+/* =========================================
+   LEAVE TAKEN HISTORY PAGE
+========================================= */
+
+.leave-history-page {
+    padding: 30px;
+}
+
+
+/* Header */
+
+.leave-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.leave-history-header h1 {
+    margin: 0;
+    font-size: 26px;
+    color: #1f2937;
+}
+
+.leave-history-header p {
+    margin-top: 6px;
+    margin-bottom: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   TABLE CARD
+========================================= */
+
+.leave-history-table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow-x: auto;
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.leave-history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leave-history-table th {
+    padding: 14px 16px;
+    text-align: left;
+
+    background: #f8fafc;
+
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.leave-history-table td {
+    padding: 16px;
+
+    color: #374151;
+    font-size: 14px;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.leave-history-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.leave-history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* Employee / Leave Type */
+
+.leave-history-table td strong {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+
+/* Empty Table */
+
+.no-leave-history {
+    text-align: center;
+    padding: 35px !important;
+    color: #94a3b8 !important;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .leave-history-page {
+        padding: 20px;
+    }
+
+    .leave-history-header h1 {
+        font-size: 22px;
+    }
+
+    .leave-history-table {
+        min-width: 850px;
+    }
+}
+
+/* =========================================
+   LEAVE HISTORY SEARCH
+========================================= */
+
+.leave-history-toolbar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.history-employee-search {
+    position: relative;
+    width: 280px;
+}
+
+.history-employee-search input {
+    width: 100%;
+    height: 40px;
+    padding: 0 38px 0 14px;
+
+    border: 1px solid #dbe2ea;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #1f2937;
+
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+
+    transition: 0.2s ease;
+}
+
+.history-employee-search input::placeholder {
+    color: #94a3b8;
+}
+
+.history-employee-search input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.history-employee-search button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    border: none;
+    background: transparent;
+
+    color: #94a3b8;
+    font-size: 20px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.history-employee-search button:hover {
+    color: #dc2626;
+}
+
+@media (max-width: 768px) {
+
+    .history-employee-search {
+        width: 100%;
+    }
+}
+
+/* =========================================
+   Leave History Header Actions
+========================================= */
+
+.leave-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.leave-history-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.leave-history-action-btn {
+    padding: 8px 13px;
+    background: #ffffff;
+    color: #2563eb;
+    border: 1px solid #2563eb;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.leave-history-action-btn:hover {
+    background: #eff6ff;
+    border-color: #1d4ed8;
+    color: #070808;
+}
+
+.leave-history-table thead {
+    background-color: #1e2f68;
+}
+
+.leave-history-table thead th {
+    color: #eff6ff;
+    text-transform: none;
+    font-weight: 600;
+    background: #2563eb;
+}

@@ -1,0 +1,187 @@
+/* =========================================
+   SETTINGS DASHBOARD
+========================================= */
+
+.settings-dashboard {
+    padding: 30px;
+    min-height: 100%;
+    background: #f8fafc;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.settings-header {
+    margin-bottom: 35px;
+}
+
+.settings-header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.settings-header p {
+    margin: 7px 0 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+
+/* =========================================
+   SETTINGS GRID
+========================================= */
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 20px;
+}
+
+
+/* =========================================
+   SETTINGS CARD
+========================================= */
+
+.settings-card {
+    min-height: 235px;
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.settings-card:hover {
+    transform: translateY(-3px);
+
+    border-color: #cbd5e1;
+
+    box-shadow:
+        0 10px 25px
+        rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================
+   ICON
+========================================= */
+
+.settings-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+
+    margin-bottom: 20px;
+}
+
+.settings-icon svg {
+    font-size: 27px;
+}
+
+
+/* =========================================
+   CARD CONTENT
+========================================= */
+
+.settings-card h3 {
+    margin: 0;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    color: #111827;
+}
+
+.settings-card > p {
+    margin: 10px 0 22px;
+
+    font-size: 13px;
+    line-height: 1.6;
+
+    color: #64748b;
+}
+
+
+/* =========================================
+   CARD FOOTER
+========================================= */
+
+.settings-card-footer {
+    margin-top: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    color: #2563eb;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.settings-card-footer svg {
+    font-size: 19px;
+
+    transition: transform 0.2s ease;
+}
+
+.settings-card:hover .settings-card-footer svg {
+    transform: translateX(4px);
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1200px) {
+
+    .settings-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+@media (max-width: 800px) {
+
+    .settings-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .settings-dashboard {
+        padding: 20px;
+    }
+
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

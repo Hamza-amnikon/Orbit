@@ -4,14 +4,13 @@ import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayou
 
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Attendance from "../pages/Attendance/Attendance";
-import Leave from "../pages/Leave/Leave";
 import Payroll from "../pages/Payroll/Payroll";
 import Reports from "../pages/Reports/Reports";
 import Tickets from "../pages/Tickets/Tickets";
-import Settings from "../pages/Settings/Settings";
+import SettingsDashboard from "../pages/Settings/SettingsDashboard";
+import HolidayEvents from "../pages/Settings/HolidayEvents/HolidayEvents";
 import Login from "../pages/Login/Login";
 import AuthCallback from "../pages/Auth/AuthCallback";
-
 import PrivateRoute from "./PrivateRoute";
 
 // ================= Admin =================
@@ -24,6 +23,13 @@ import Designations from "../Admin/Employees/Designations/Designations";
 import Locations from "../Admin/Employees/Locations/Locations";
 import EmployeeType from "../Admin/Employees/EmployeeType/EmployeeType";
 import Role from "../Admin/Roles/Role";
+import LeaveDashboard from "../Admin/Leave/LeaveManagement/LeaveDashboard";
+import LeaveTypes from "../Admin/Leave/LeaveTypes/LeaveTypes";
+import LeaveRequests from "../Admin/Leave/LeaveRequests/LeaveRequests";
+import LeaveTakenHistory from "../Admin/Leave/LeaveTakenHistory/LeaveTakenHistory";
+import LeaveOverview from "../Admin/Leave/LeaveOverview/LeaveOverview";
+import LeavePolicy from "../Admin/Leave/LeavePolicy/LeavePolicy";
+import LeaveBalance from "../Admin/Leave/LeaveManagement/LeaveBalance/LeaveBalance";
 
 // ================= Employee =================
 
@@ -82,11 +88,18 @@ function AppRoutes() {
                     <Route path="/employees/roles" element={<Role />} />
 
                     <Route path="/attendance" element={<Attendance />} />
-                    <Route path="/leave" element={<Leave />} />
+                    <Route path="/leave" element={<LeaveDashboard />} />
+                    <Route path="/leave/balance" element={<LeaveBalance />} />
+                    <Route path="/leave/types" element={<LeaveTypes />} />
+                    <Route path="/leave/policies" element={<LeavePolicy />} />
+                    <Route path="/leave/requests" element={<LeaveRequests />} />
+                    <Route path="/leave/history" element={<LeaveTakenHistory />} />
+                    <Route path="/leave/dashboard" element={<LeaveOverview />} />
                     <Route path="/payroll" element={<Payroll />} />
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/tickets" element={<Tickets />} />
-                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/settings" element={<SettingsDashboard />} />
+                    <Route path="/settings/holidays-events" element={<HolidayEvents />} />
 
                 </Route>
             </Route>
