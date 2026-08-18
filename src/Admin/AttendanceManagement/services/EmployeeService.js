@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "http://localhost:5151/api/Employee";
+const API_URL = "https://localhost:7002/api/Employee";
 
 
 const EmployeeService = {

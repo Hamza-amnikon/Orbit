@@ -58,6 +58,14 @@ const cards = [
   icon: <Badge fontSize="large" />,
   color: "#14b8a6",
   path: "/employees/types",
+},
+
+{
+  title: "EmployeeHierarchy",
+  description: "Manage Employee Hierarchy.",
+  icon: <Badge fontSize="large" />,
+  color: "#14b8a6",
+  path: "/employees/EmployeeHierarchy",
 }
 ];
 

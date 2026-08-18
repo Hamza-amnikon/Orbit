@@ -14,7 +14,7 @@ const EVENT_API =
     "https://localhost:7234/api/Event";
 
 const LOCATION_API =
-    "http://localhost:5140/api/location";
+    "https://localhost:7281/api/location";
 
 export default function HolidayEvents() {
 

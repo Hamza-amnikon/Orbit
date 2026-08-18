@@ -8,13 +8,13 @@ function AddEmployee() {
   // API URLs
   // ==========================================
 
-const EMPLOYEE_API = "http://localhost:5151/api/Employee";
-const PROVISION_API = "http://localhost:5151/api/provision";
-const EMPLOYEE_TYPE_API = "http://localhost:5085/api/EmployeeType";
-const LOCATION_API = "http://localhost:5140/api/Location/active";
-const DESIGNATION_API = "http://localhost:5041/api/Designation";
-const DEPARTMENT_API = "http://localhost:5199/api/Department";
-const ROLE_API = "https://localhost:5123/api/Role/active";
+const EMPLOYEE_API = "https://localhost:7002/api/Employee";
+const PROVISION_API = "https://localhost:7002/api/provision";
+const EMPLOYEE_TYPE_API = "https://localhost:7084/api/EmployeeType";
+const LOCATION_API = "https://localhost:7281/api/Location/active";
+const DESIGNATION_API = "https://localhost:7009/api/Designation";
+const DEPARTMENT_API = "https://localhost:7240/api/Department";
+const ROLE_API = "https://localhost:7294/api/Role/active";
 
   // ==========================================
   // Personal Information

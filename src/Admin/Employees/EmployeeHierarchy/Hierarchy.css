@@ -34,69 +34,109 @@
 }
 
 /* =========================================================
-   SEARCH CARD
+   TOOLBAR / EMPLOYEE SEARCH CARD
+   Same style as Employee List toolbar
    ========================================================= */
 
-.search-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 20px 22px;
+.toolbar-card {
+    background: #ffffff !important;
+    border-radius: 12px !important;
     margin-bottom: 16px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
 }
 
-.search-card label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #111827;
+/* MUI CardContent */
+
+.toolbar-card .MuiCardContent-root {
+    padding: 20px 22px !important;
 }
 
-.search-row {
+.toolbar-card .MuiCardContent-root:last-child {
+    padding-bottom: 20px !important;
+}
+
+/* Toolbar row */
+
+.toolbar {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
+    width: 100%;
 }
 
-.search-row select {
-    height: 38px;
-    min-width: 230px;
-    padding: 0 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 7px;
+/* Make employee selector take available space */
+
+.toolbar .MuiFormControl-root {
+    flex: 1;
+}
+
+/* =========================================================
+   EMPLOYEE SELECT
+   ========================================================= */
+
+.toolbar .MuiOutlinedInput-root {
     background: #ffffff;
-    color: #334155;
-    font-size: 13px;
-    font-weight: 600;
-    outline: none;
+    border-radius: 8px;
+    min-height: 56px;
 }
 
-.search-row select:focus {
+.toolbar .MuiOutlinedInput-notchedOutline {
+    border-color: #cbd5e1;
+}
+
+.toolbar .MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline {
+    border-color: #94a3b8;
+}
+
+.toolbar .MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline {
     border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+    border-width: 1px;
 }
 
-.search-row button {
-    height: 38px;
-    padding: 0 18px;
-    border: none;
-    border-radius: 7px;
-    background: #8ec5ff;
+.toolbar .MuiInputLabel-root {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.toolbar .MuiInputLabel-root.Mui-focused {
+    color: #2563eb;
+}
+
+.toolbar .MuiSelect-select {
+    font-size: 14px;
+    font-weight: 500;
+    color: #334155;
+}
+
+/* =========================================================
+   VIEW HIERARCHY BUTTON
+   ========================================================= */
+
+.toolbar .MuiButton-root {
+    min-width: 170px;
+    height: 56px;
+    padding: 0 22px;
+    border-radius: 8px;
+    background: #2563eb;
     color: #ffffff;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
-    cursor: pointer;
+    text-transform: none;
+    box-shadow: none;
 }
 
-.search-row button:hover {
-    background: #6db3f5;
+.toolbar .MuiButton-root:hover {
+    background: #1d4ed8;
+    box-shadow: none;
 }
 
-.search-row button:disabled {
-    background: #8ec5ff;
-    cursor: not-allowed;
+.toolbar .MuiButton-root:disabled {
+    background: #cbd5e1;
+    color: #64748b;
 }
 
 /* =========================================================
@@ -202,7 +242,10 @@
     table-layout: fixed;
 }
 
-/* DARK BLUE HEADER - SAME AS EMPLOYEE PAGE */
+/* =========================================================
+   TABLE HEADER
+   Same dark blue style as Employee page
+   ========================================================= */
 
 .all-hierarchy-card thead {
     background: #1f2f68;
@@ -218,7 +261,9 @@
     white-space: nowrap;
 }
 
-/* TABLE BODY */
+/* =========================================================
+   TABLE BODY
+   ========================================================= */
 
 .all-hierarchy-card td {
     padding: 12px 14px;
@@ -316,13 +361,17 @@
         padding: 20px;
     }
 
-    .search-row {
+    .toolbar {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+        gap: 12px;
     }
 
-    .search-row select,
-    .search-row button {
+    .toolbar .MuiFormControl-root {
+        width: 100%;
+    }
+
+    .toolbar .MuiButton-root {
         width: 100%;
     }
 
@@ -330,6 +379,10 @@
         justify-content: flex-start;
     }
 }
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media (max-width: 600px) {
 
@@ -341,7 +394,37 @@
         font-size: 22px;
     }
 
+    .hierarchy-header p {
+        font-size: 12px;
+    }
+
+    .toolbar-card .MuiCardContent-root {
+        padding: 16px !important;
+    }
+
     .all-hierarchy-card {
         padding: 15px;
+    }
+
+    .hierarchy-card {
+        padding: 16px;
+    }
+
+    .hierarchy-card h2,
+    .all-hierarchy-card h2 {
+        font-size: 16px;
+    }
+
+    .hierarchy-box {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .arrow {
+        transform: rotate(90deg);
+    }
+
+    .all-hierarchy-card table {
+        min-width: 750px;
     }
 }

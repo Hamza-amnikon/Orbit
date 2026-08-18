@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5116/api/Shift";
+const API_URL = "https://localhost:7292/api/Shift";
 
 const getAll = async () => {
   const response = await axios.get(API_URL);
