@@ -1,0 +1,515 @@
+/* ==========================================================
+   LEAVE TYPES PAGE
+========================================================== */
+
+.leave-types-page {
+    padding: 35px;
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.leave-types-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.leave-types-header h1 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.leave-types-header p {
+    margin-top: 8px;
+    margin-bottom: 0;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+
+/* ==========================================================
+   ADD BUTTON
+========================================================== */
+
+.add-leave-type-btn {
+    border: none;
+    background: #2563eb;
+    color: #ffffff;
+
+    padding: 13px 22px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.25s ease;
+
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.20);
+}
+
+.add-leave-type-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+
+/* ==========================================================
+   FORM CARD
+========================================================== */
+
+.leave-type-form-card {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 18px;
+
+    padding: 28px;
+
+    margin-bottom: 30px;
+
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+
+/* ==========================================================
+   FORM TITLE
+========================================================== */
+
+.form-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+}
+
+.form-title h2 {
+    margin: 0;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    color: #111827;
+}
+
+.close-btn {
+    width: 36px;
+    height: 36px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    font-size: 24px;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* ==========================================================
+   FORM GRID
+========================================================== */
+
+.leave-form-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 22px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    border: 1px solid #dbe1ea;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    font-size: 14px;
+
+    color: #111827;
+
+    outline: none;
+
+    transition: 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.form-group textarea {
+    min-height: 95px;
+    resize: vertical;
+}
+
+.description-field {
+    grid-column: 1 / -1;
+}
+
+
+/* ==========================================================
+   FORM ACTIONS
+========================================================== */
+
+.form-actions {
+    margin-top: 25px;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 12px;
+}
+
+.cancel-btn,
+.save-btn {
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.cancel-btn:hover {
+    background: #e2e8f0;
+}
+
+.save-btn {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.save-btn:hover {
+    background: #1d4ed8;
+}
+
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.leave-type-table-card {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.leave-type-table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.leave-type-table thead {
+    background: #1e2b5d;
+}
+
+.leave-type-table th {
+    padding: 17px 20px;
+
+    text-align: left;
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.3px;
+}
+
+.leave-type-table td {
+    padding: 18px 20px;
+
+    border-bottom: 1px solid #eef2f7;
+
+    color: #475569;
+
+    font-size: 14px;
+}
+
+.leave-type-table tbody tr {
+    transition: 0.2s ease;
+}
+
+.leave-type-table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.leave-type-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.leave-type-table td strong {
+    color: #111827;
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.leave-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 75px;
+
+    padding: 6px 13px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.leave-status.active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.leave-status.inactive {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.no-leave-types {
+    text-align: center;
+
+    padding: 50px !important;
+
+    color: #94a3b8 !important;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 900px) {
+
+    .leave-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .description-field {
+        grid-column: auto;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .leave-types-page {
+        padding: 20px;
+    }
+
+    .leave-types-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 18px;
+    }
+
+    .add-leave-type-btn {
+        width: 100%;
+    }
+
+    .leave-type-table-card {
+        overflow-x: auto;
+    }
+
+    .leave-type-table {
+        min-width: 750px;
+    }
+}
+
+/* ==========================================================
+   EDIT BUTTON
+========================================================== */
+
+.edit-leave-btn {
+    border: none;
+    outline: none;
+
+    background: #eef2ff;
+    color: #4f46e5;
+
+    padding: 8px 18px;
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.edit-leave-btn:hover {
+    background: #4f46e5;
+    color: #ffffff;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 5px 12px rgba(79, 70, 229, 0.25);
+}
+
+.edit-leave-btn:active {
+    transform: translateY(0);
+}
+
+/* ==========================================================
+   LEAVE TYPE ACTION BUTTONS
+========================================================== */
+
+.leave-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/* Delete */
+
+.delete-leave-btn {
+    border: none;
+    outline: none;
+
+    background: #fef2f2;
+    color: #dc2626;
+
+    padding: 8px 18px;
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.delete-leave-btn:hover {
+    background: #dc2626;
+    color: #ffffff;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 5px 12px rgba(220, 38, 38, 0.25);
+}
+
+.delete-leave-btn:active {
+    transform: translateY(0);
+}
+
+/* =========================================
+   Leave Types Header Actions
+========================================= */
+
+.leave-type-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.leave-type-action-btn {
+    padding: 8px 13px;
+    background: #ffffff;
+    color: #2563eb;
+
+    border: 1px solid #2563eb;
+    border-radius: 7px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.leave-type-action-btn:hover {
+    background: #eff6ff;
+    border-color: #1d4ed8;
+    color: #1d4ed8;
+}

@@ -1,0 +1,147 @@
+.policy-form-card {
+  margin-top: 24px;
+  margin-bottom: 24px;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.policy-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
+.policy-form-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.policy-form-header p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #667085;
+}
+
+.policy-close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: #f3f4f6;
+  font-size: 20px;
+  cursor: pointer;
+  color: #667085;
+}
+
+.policy-form-card h3 {
+  margin: 22px 0 14px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 15px;
+  color: #1f326b;
+}
+
+/* 3 fields per row */
+.policy-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.policy-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.policy-form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #344054;
+}
+
+.policy-form-group input,
+.policy-form-group select {
+  width: 100%;
+  box-sizing: border-box;
+  height: 40px;
+  padding: 0 11px;
+  border: 1px solid #d0d5dd;
+  border-radius: 7px;
+  background: #ffffff;
+  font-size: 13px;
+  outline: none;
+}
+
+.policy-form-group input:focus,
+.policy-form-group select:focus {
+  border-color: #2563eb;
+}
+
+/* Checkboxes */
+
+.policy-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.policy-checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+  font-size: 13px;
+  font-weight: 500;
+  color: #344054;
+  cursor: pointer;
+}
+
+.policy-checkbox-grid input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Bottom buttons */
+
+.policy-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.policy-cancel-btn {
+  padding: 9px 18px;
+  background: #ffffff;
+  border: 1px solid #d0d5dd;
+  border-radius: 7px;
+  color: #344054;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.policy-save-btn {
+  padding: 9px 18px;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 7px;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.policy-save-btn:hover {
+  background: #1d4ed8;
+}
