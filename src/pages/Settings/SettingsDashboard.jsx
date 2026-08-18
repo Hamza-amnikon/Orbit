@@ -6,6 +6,7 @@ import {
     LocationOnRounded,
     BadgeRounded,
     SecurityRounded,
+    AccountTreeRounded,
     ArrowForward,
 } from "@mui/icons-material";
 
@@ -46,6 +47,13 @@ const settingsCards = [
         icon: <SecurityRounded fontSize="large" />,
         color: "#0ea5e9",
         path: "/employees/roles",
+    },
+    {
+    title: "Employee Hierarchy",
+    description: "Manage employee reporting and approval hierarchy.",
+    icon: <AccountTreeRounded fontSize="large" />,
+    color: "#7c3aed",
+    path: "/settings/employee-hierarchy",
     },
 ];
 

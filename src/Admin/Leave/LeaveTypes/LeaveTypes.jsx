@@ -12,7 +12,6 @@ export default function LeaveTypes() {
 
     const [leaveTypeName, setLeaveTypeName] = useState("");
     const [leaveCode, setLeaveCode] = useState("");
-    const [defaultDays, setDefaultDays] = useState("");
     const [description, setDescription] = useState("");
     const [status, setStatus] = useState("Active");
     const [editingId, setEditingId] = useState(null);
@@ -64,18 +63,11 @@ export default function LeaveTypes() {
             return;
         }
 
-        if (!defaultDays || Number(defaultDays) < 0) {
-            alert("Please enter valid Default Days.");
-            return;
-        }
-
         const leaveType = {
 
             leaveTypeName: leaveTypeName.trim(),
 
             leaveCode: leaveCode.trim().toUpperCase(),
-
-            defaultDays: Number(defaultDays),
 
             description: description.trim(),
 
@@ -92,7 +84,6 @@ export default function LeaveTypes() {
             // Reset form
             setLeaveTypeName("");
             setLeaveCode("");
-            setDefaultDays("");
             setDescription("");
             setStatus("Active");
 
@@ -121,7 +112,6 @@ export default function LeaveTypes() {
 
         setLeaveTypeName(leaveType.leaveTypeName);
         setLeaveCode(leaveType.leaveCode);
-        setDefaultDays(leaveType.defaultDays);
         setDescription(leaveType.description || "");
         setStatus(leaveType.status);
 
@@ -140,7 +130,6 @@ export default function LeaveTypes() {
             leaveTypeId: editingId,
             leaveTypeName: leaveTypeName.trim(),
             leaveCode: leaveCode.trim().toUpperCase(),
-            defaultDays: Number(defaultDays),
             description: description.trim(),
             status
         };
@@ -156,7 +145,6 @@ export default function LeaveTypes() {
             setEditingId(null);
             setLeaveTypeName("");
             setLeaveCode("");
-            setDefaultDays("");
             setDescription("");
             setStatus("Active");
             setShowForm(false);
@@ -208,7 +196,6 @@ export default function LeaveTypes() {
 
         setLeaveTypeName("");
         setLeaveCode("");
-        setDefaultDays("");
         setDescription("");
         setStatus("Active");
     }
@@ -318,21 +305,6 @@ export default function LeaveTypes() {
 
                             <div className="form-group">
 
-                                <label>Default Days</label>
-
-                                <input
-                                    type="number"
-                                    min="0"
-                                    value={defaultDays}
-                                    onChange={(e) => setDefaultDays(e.target.value)}
-                                    placeholder="18"
-                                />
-
-                            </div>
-
-
-                            <div className="form-group">
-
                                 <label>Status</label>
 
                                 <select
@@ -398,7 +370,6 @@ export default function LeaveTypes() {
                         <tr>
                             <th>Leave Type</th>
                             <th>Code</th>
-                            <th>Default Days</th>
                             <th>Description</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -431,10 +402,6 @@ export default function LeaveTypes() {
 
                                     <td>
                                         {leaveType.leaveCode}
-                                    </td>
-
-                                    <td>
-                                        {leaveType.defaultDays}
                                     </td>
 
                                     <td>

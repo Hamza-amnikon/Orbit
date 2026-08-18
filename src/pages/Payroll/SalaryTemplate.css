@@ -1,0 +1,472 @@
+.salary-template-page {
+    padding: 24px;
+    background: #f5f7fb;
+    min-height: 100vh;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.salary-template-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.salary-template-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #172033;
+}
+
+.salary-template-header p {
+    margin: 6px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
+/* =========================
+   Add Template Button
+========================= */
+
+.add-template-btn {
+    border: none;
+    background: #1769ff;
+    color: #ffffff;
+    padding: 11px 18px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.add-template-btn:hover {
+    background: #1258d6;
+}
+
+
+/* =========================
+   Main Card
+========================= */
+
+.salary-template-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+
+/* =========================
+   Toolbar
+========================= */
+
+.salary-template-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 12px;
+}
+
+.template-search {
+    width: 300px;
+    padding: 10px 12px;
+    border: 1px solid #d8dee9;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+.template-search:focus {
+    border-color: #1769ff;
+}
+
+.template-status-filter {
+    padding: 10px 12px;
+    border: 1px solid #d8dee9;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+
+/* =========================
+   Table
+========================= */
+
+.salary-template-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.salary-template-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.salary-template-table th {
+    text-align: left;
+    padding: 13px 14px;
+    background: #f8f9fc;
+    color: #4b5563;
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.salary-template-table td {
+    padding: 15px 14px;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.salary-template-table tbody tr:hover {
+    background: #fafbff;
+}
+
+
+/* =========================
+   Status
+========================= */
+
+.status-active,
+.status-inactive {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-inactive {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* =========================
+   Actions
+========================= */
+
+.template-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+
+/* Edit */
+
+.edit-btn {
+    border: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+.edit-btn:hover {
+    background: #e0e7ff;
+}
+
+
+/* Delete */
+
+.delete-btn {
+    border: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #fff1f2;
+    color: #e11d48;
+}
+
+.delete-btn:hover {
+    background: #ffe4e6;
+}
+
+
+/* =========================
+   Empty State
+========================= */
+
+.no-template-data {
+    text-align: center !important;
+    padding: 40px 20px !important;
+    color: #9ca3af !important;
+    font-size: 14px !important;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 768px) {
+
+    .salary-template-page {
+        padding: 16px;
+    }
+
+    .salary-template-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .salary-template-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .template-search {
+        width: 100%;
+    }
+
+    .template-status-filter {
+        width: 100%;
+    }
+}
+
+
+/* =========================
+   Salary Template Form
+========================= */
+
+.salary-template-form-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 28px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.form-section {
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.form-section h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: #172033;
+}
+
+.form-section > p {
+    color: #6b7280;
+}
+
+
+/* =========================
+   Form Groups
+========================= */
+
+.form-group {
+    margin-top: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+
+/* Input / Textarea / Select */
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid #d8dee9;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: #ffffff;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #1769ff;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-group select {
+    cursor: pointer;
+}
+
+
+/* =========================
+   Component Header
+========================= */
+
+.component-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.component-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+
+/* =========================
+   Add Component Buttons
+========================= */
+
+.add-component-btn,
+.empty-add-component-btn {
+    border: none;
+    background: #1769ff;
+    color: #ffffff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.add-component-btn:hover,
+.empty-add-component-btn:hover {
+    background: #1258d6;
+}
+
+
+/* =========================
+   Empty Component
+========================= */
+
+.empty-component {
+    margin-top: 20px;
+    padding: 45px 20px;
+    text-align: center;
+    border: 1px dashed #d8dee9;
+    border-radius: 8px;
+    background: #fafbfc;
+}
+
+.empty-component-icon {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: #1769ff;
+    font-size: 24px;
+}
+
+.empty-component h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    color: #374151;
+}
+
+.empty-component p {
+    margin: 0 0 18px;
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+
+/* =========================
+   Form Actions
+========================= */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancel-btn,
+.save-template-btn {
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    border: 1px solid #d8dee9;
+    background: #ffffff;
+    color: #374151;
+}
+
+.cancel-btn:hover {
+    background: #f8f9fc;
+}
+
+.save-template-btn {
+    border: none;
+    background: #1769ff;
+    color: #ffffff;
+}
+
+.save-template-btn:hover {
+    background: #1258d6;
+}
+
+
+/* =========================
+   Mobile Form
+========================= */
+
+@media (max-width: 768px) {
+
+    .salary-template-form-card {
+        padding: 18px;
+    }
+
+    .component-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .add-component-btn {
+        width: 100%;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .cancel-btn,
+    .save-template-btn {
+        width: 100%;
+    }
+}
