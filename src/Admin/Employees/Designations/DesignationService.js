@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5041/api/Designation";
+const API_URL = "https://localhost:7009/api/Designation";
 // Replace 52XX with your Designation API port
 
 export const getDesignations = async () => {

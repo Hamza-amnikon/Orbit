@@ -1,6 +1,8 @@
 import "./Sidebar.css";
 
 import { NavLink, useNavigate } from "react-router-dom";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 // import logo from "../src/pages/Login/assets/logo.png";
 import logo from "../../../../assets/logo/test.png";
 
@@ -103,6 +105,24 @@ function Sidebar() {
                     <span>Notifications</span>
 
                 </NavLink>
+
+<a
+    href="https://172.31.3.4/osticket/scp/login.php"
+    target="_blank"
+    rel="noopener noreferrer"
+>
+    <ConfirmationNumberIcon />
+    <span>Astra</span>
+</a>
+
+<a
+    href="https://172.31.3.8/"
+    target="_blank"
+    rel="noopener noreferrer"
+>
+    <ScreenShareIcon />
+    <span>ScreenConnect</span>
+</a>
 
                 <NavLink to="/employee/settings">
 

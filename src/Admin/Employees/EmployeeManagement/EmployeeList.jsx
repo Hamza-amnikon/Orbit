@@ -34,8 +34,8 @@ function EmployeeList() {
   // API
   // ==========================================
 
-  const API = "http://localhost:5151/api/employee";
-  const SYNC_API = "http://localhost:5200/api/sync";
+  const API = "https://localhost:7002/api/employee";
+  const SYNC_API = "https://localhost:5200/api/sync";
 
   const navigate = useNavigate();
 

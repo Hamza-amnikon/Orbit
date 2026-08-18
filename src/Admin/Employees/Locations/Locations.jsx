@@ -29,7 +29,7 @@ import {
 function Locations() {
   const navigate = useNavigate();
 
-  const API = "http://localhost:5140/api/location";
+  const API = "https://localhost:7281/api/location";
 
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);

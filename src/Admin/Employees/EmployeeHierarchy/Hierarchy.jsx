@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Hierarchy.css";
-
+import {
+    Card,
+    CardContent,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Button
+} from "@mui/material";
 const API_URL = "https://localhost:7283/api/Hierarchy";
-const EMPLOYEE_API = "http://localhost:5151/api/Employee";
+const EMPLOYEE_API = "https://localhost:7002/api/Employee";
 
 function Hierarchy() {
     const [hierarchies, setHierarchies] = useState([]);
@@ -541,71 +549,66 @@ function Hierarchy() {
             {/* EMPLOYEE SEARCH */}
             {/* ================================================= */}
 
-            <div className="search-card">
+<Card className="toolbar-card">
+    <CardContent>
 
-                <label>
+        <div className="toolbar">
+
+            <FormControl
+                fullWidth
+                sx={{ flex: 1 }}
+            >
+                <InputLabel>
                     Employee
-                </label>
+                </InputLabel>
 
-                <div className="search-row">
+                <Select
+                    value={employeeId}
+                    label="Employee"
+                    onChange={(e) =>
+                        setEmployeeId(e.target.value)
+                    }
+                    disabled={loadingEmployees}
+                >
+                    <MenuItem value="">
+                        {loadingEmployees
+                            ? "Loading employees..."
+                            : "Select Employee"}
+                    </MenuItem>
 
-                    <select
-                        value={employeeId}
-                        onChange={(e) =>
-                            setEmployeeId(
-                                e.target.value
-                            )
-                        }
-                        disabled={loadingEmployees}
-                    >
+                    {employees.map((employee) => (
+                        <MenuItem
+                            key={employee.employeeId}
+                            value={employee.employeeId}
+                        >
+                            {employee.employeeName}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
 
-                        <option value="">
-                            {loadingEmployees
-                                ? "Loading employees..."
-                                : "Select Employee"}
-                        </option>
+            <Button
+                variant="contained"
+                onClick={getEmployeeHierarchy}
+                disabled={
+                    loading ||
+                    loadingEmployees ||
+                    !employeeId
+                }
+                sx={{
+                    minWidth: 170,
+                    height: 56
+                }}
+            >
+                {loading
+                    ? "Loading..."
+                    : "View Hierarchy"}
+            </Button>
 
-                        {employees.map(
-                            (employee) => (
+        </div>
 
-                                <option
-                                    key={
-                                        employee.employeeId
-                                    }
-                                    value={
-                                        employee.employeeId
-                                    }
-                                >
-                                    {
-                                        employee.employeeName
-                                    }
-                                </option>
-
-                            )
-                        )}
-
-                    </select>
-
-
-                    <button
-                        onClick={
-                            getEmployeeHierarchy
-                        }
-                        disabled={
-                            loading ||
-                            loadingEmployees ||
-                            !employeeId
-                        }
-                    >
-                        {loading
-                            ? "Loading..."
-                            : "View Hierarchy"}
-                    </button>
-
-                </div>
-
-            </div>
-
+    </CardContent>
+</Card>
 
             {/* ================================================= */}
             {/* REPORTING STRUCTURE */}
