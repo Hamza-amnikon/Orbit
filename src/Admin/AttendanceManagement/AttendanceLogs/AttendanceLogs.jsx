@@ -224,7 +224,7 @@ const filteredDashboard = {
         <DashboardCard
           title="Present"
           value={filteredDashboard.present}
-          subtitle="Employees Present"
+          subtitle="Employees Logs"
           color="#10B981"
           icon={<GroupsIcon />}
         />
@@ -299,7 +299,7 @@ const filteredDashboard = {
             >
               <MenuItem value="">All Shifts</MenuItem>
               <MenuItem value="Morning">Morning Shift</MenuItem>
-              <MenuItem value="General">General Shift</MenuItem>
+
               <MenuItem value="Evening">Evening Shift</MenuItem>
               <MenuItem value="Night">Night Shift</MenuItem>
             </TextField>

@@ -107,7 +107,7 @@ export default function AttendanceTable({
                 <div>
                   <strong>{row.employeeName || "-"}</strong>
 
-                  <span>{row.employeeCode || "-"}</span>
+                  <span>{row.azureEmployeeId || "-"}</span>
                 </div>
               </div>
             </td>

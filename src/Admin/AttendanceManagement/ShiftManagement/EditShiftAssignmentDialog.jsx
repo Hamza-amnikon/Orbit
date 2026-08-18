@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import {
   Dialog,
   DialogTitle,
@@ -10,6 +11,7 @@ import {
   Button,
   Typography,
   Divider,
+  Alert,
 } from "@mui/material";
 
 export default function EditShiftAssignmentDialog({
@@ -18,6 +20,46 @@ export default function EditShiftAssignmentDialog({
   onClose,
   onUpdate,
 }) {
+  // =========================================================
+  // SHIFT PRESETS
+  // =========================================================
+  //
+  // These are the default timings used when a shift is selected.
+  //
+  // Morning  : 05:00 -> 13:30
+  // General  : 09:00 -> 18:00
+  // Evening  : 13:00 -> 22:30
+  // Night    : 20:30 -> 06:00
+  //
+  // Night shift crosses midnight.
+  // =========================================================
+
+  const SHIFT_TIMINGS = {
+    Morning: {
+      startTime: "05:00",
+      endTime: "13:30",
+    },
+
+    General: {
+      startTime: "09:00",
+      endTime: "18:00",
+    },
+
+    Evening: {
+      startTime: "13:00",
+      endTime: "22:30",
+    },
+
+    Night: {
+      startTime: "20:30",
+      endTime: "06:00",
+    },
+  };
+
+  // =========================================================
+  // FORM
+  // =========================================================
+
   const [form, setForm] = useState({
     employeeCode: "",
     employeeName: "",
@@ -25,6 +67,9 @@ export default function EditShiftAssignmentDialog({
     designation: "",
 
     shiftName: "",
+
+    startTime: "",
+    endTime: "",
 
     fromDate: "",
     toDate: "",
@@ -37,248 +82,759 @@ export default function EditShiftAssignmentDialog({
     remarks: "",
   });
 
-  useEffect(() => {
-    if (employee) {
-      setForm({
-        employeeCode: employee.employeeCode || "",
-        employeeName: employee.employeeName || "",
-        department: employee.department || "",
-        designation: employee.designation || "",
+  // =========================================================
+  // NORMALIZE TIME
+  // =========================================================
+  //
+  // Converts:
+  //
+  // 20:30:00 -> 20:30
+  // 20:30    -> 20:30
+  // null     -> ""
+  //
+  // This is required because HTML input type="time"
+  // expects HH:mm.
+  // =========================================================
 
-        shiftName: employee.shiftName || "",
-
-        fromDate: employee.fromDate || "",
-        toDate: employee.toDate || "",
-
-        status: employee.status || "Active",
-
-        weeklyOff1: employee.weeklyOff1 || "Saturday",
-        weeklyOff2: employee.weeklyOff2 || "Sunday",
-
-        remarks: employee.remarks || "",
-      });
+  const normalizeTime = (value) => {
+    if (!value) {
+      return "";
     }
+
+    const stringValue = String(value);
+
+    if (stringValue.length >= 5) {
+      return stringValue.substring(0, 5);
+    }
+
+    return stringValue;
+  };
+
+  // =========================================================
+  // CHECK EMPTY / ZERO TIME
+  // =========================================================
+  //
+  // Existing records currently contain:
+  //
+  // 00:00:00
+  //
+  // We treat that as "not configured" so the correct
+  // shift preset can be displayed.
+  // =========================================================
+
+  const isEmptyTime = (value) => {
+    if (!value) {
+      return true;
+    }
+
+    const normalized = normalizeTime(value);
+
+    return (
+      normalized === "" ||
+      normalized === "00:00"
+    );
+  };
+
+  // =========================================================
+  // LOAD EMPLOYEE
+  // =========================================================
+
+  useEffect(() => {
+    if (!employee) {
+      return;
+    }
+
+    const shiftName =
+      employee.shiftName ||
+      employee.shift ||
+      "General";
+
+    const preset =
+      SHIFT_TIMINGS[shiftName];
+
+    const employeeStartTime =
+      isEmptyTime(employee.startTime)
+        ? preset?.startTime || ""
+        : normalizeTime(employee.startTime);
+
+    const employeeEndTime =
+      isEmptyTime(employee.endTime)
+        ? preset?.endTime || ""
+        : normalizeTime(employee.endTime);
+
+    setForm({
+      employeeCode:
+        employee.employeeCode || "",
+
+      employeeName:
+        employee.employeeName || "",
+
+      department:
+        employee.department || "",
+
+      designation:
+        employee.designation || "",
+
+      shiftName:
+        shiftName,
+
+      startTime:
+        employeeStartTime,
+
+      endTime:
+        employeeEndTime,
+
+      fromDate:
+        employee.fromDate || "",
+
+      toDate:
+        employee.toDate || "",
+
+      status:
+        employee.status || "Active",
+
+      weeklyOff1:
+        employee.weeklyOff1 ||
+        "Saturday",
+
+      weeklyOff2:
+        employee.weeklyOff2 ||
+        "Sunday",
+
+      remarks:
+        employee.remarks || "",
+    });
   }, [employee]);
 
+  // =========================================================
+  // HANDLE CHANGE
+  // =========================================================
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const {
+      name,
+      value,
+    } = e.target;
+
+    // =======================================================
+    // SHIFT CHANGE
+    // =======================================================
+
+    if (name === "shiftName") {
+      const timing =
+        SHIFT_TIMINGS[value];
+
+      setForm((prev) => ({
+        ...prev,
+
+        shiftName:
+          value,
+
+        startTime:
+          timing?.startTime ||
+          prev.startTime,
+
+        endTime:
+          timing?.endTime ||
+          prev.endTime,
+      }));
+
+      return;
+    }
+
+    // =======================================================
+    // NORMAL FIELD CHANGE
+    // =======================================================
 
     setForm((prev) => ({
       ...prev,
+
       [name]: value,
     }));
   };
 
+  // =========================================================
+  // CONVERT TIME TO API FORMAT
+  // =========================================================
+  //
+  // HTML:
+  // 20:30
+  //
+  // API:
+  // 20:30:00
+  // =========================================================
+
+  const toApiTime = (value) => {
+    if (!value) {
+      return null;
+    }
+
+    const normalized =
+      normalizeTime(value);
+
+    if (!normalized) {
+      return null;
+    }
+
+    if (normalized.length === 5) {
+      return `${normalized}:00`;
+    }
+
+    return normalized;
+  };
+
+  // =========================================================
+  // UPDATE
+  // =========================================================
+
   const handleUpdate = () => {
-    if (!onUpdate) return;
+    if (!onUpdate) {
+      return;
+    }
 
-    onUpdate({
-      shiftName: form.shiftName,
+    // =======================================================
+    // VALIDATION
+    // =======================================================
 
-      fromDate: form.fromDate,
-      toDate: form.toDate,
+    if (!form.shiftName) {
+      alert("Please select a shift.");
+      return;
+    }
 
-      status: form.status,
+    if (!form.startTime) {
+      alert("Please select a start time.");
+      return;
+    }
 
-      weeklyOff1: form.weeklyOff1,
-      weeklyOff2: form.weeklyOff2,
+    if (!form.endTime) {
+      alert("Please select an end time.");
+      return;
+    }
 
-      remarks: form.remarks,
-    });
+    if (!form.fromDate) {
+      alert("Please select From Date.");
+      return;
+    }
 
-    onClose();
-  };  return (
-<Dialog
-  open={open}
-  onClose={onClose}
-  fullWidth
-  maxWidth="lg"
-  PaperProps={{
-    sx: {
-      borderRadius: 4,
-    },
-  }}
->
-<DialogTitle className="assign-dialog-title">
-  Edit Shift Assignment
-</DialogTitle>
-    <DialogContent className="assign-dialog-content">
-<Typography
-  variant="h6"
-  sx={{
-    fontWeight: 600,
-    mb: 1,
-  }}
->
-  Employee Information
-</Typography>
+    if (!form.toDate) {
+      alert("Please select To Date.");
+      return;
+    }
 
-<Divider sx={{ mb: 3 }} />
+    // =======================================================
+    // DATE VALIDATION
+    // =======================================================
 
-        <Grid container spacing={3} sx={{ mt: 1 }}>
+    if (form.fromDate > form.toDate) {
+      alert(
+        "From Date cannot be greater than To Date."
+      );
 
-          <Grid size={{ xs: 6 }}>
+      return;
+    }
+
+    // =======================================================
+    // PAYLOAD
+    // =======================================================
+
+    const payload = {
+      shiftName:
+        form.shiftName,
+
+      startTime:
+        toApiTime(form.startTime),
+
+      endTime:
+        toApiTime(form.endTime),
+
+      fromDate:
+        form.fromDate,
+
+      toDate:
+        form.toDate,
+
+      status:
+        form.status,
+
+      weeklyOff1:
+        form.weeklyOff1,
+
+      weeklyOff2:
+        form.weeklyOff2,
+
+      remarks:
+        form.remarks,
+
+      updatedBy:
+        "Admin",
+    };
+
+    console.log(
+      "===================================="
+    );
+
+    console.log(
+      "UPDATE SHIFT PAYLOAD"
+    );
+
+    console.log(
+      payload
+    );
+
+    console.log(
+      "===================================="
+    );
+
+    onUpdate(payload);
+  };
+
+  // =========================================================
+  // NIGHT SHIFT
+  // =========================================================
+
+  const isNightShift =
+    form.shiftName === "Night";
+
+  // =========================================================
+  // RENDER
+  // =========================================================
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="lg"
+      PaperProps={{
+        sx: {
+          borderRadius: 4,
+        },
+      }}
+    >
+      {/* ================================================= */}
+      {/* TITLE */}
+      {/* ================================================= */}
+
+      <DialogTitle>
+        Edit Shift Assignment
+      </DialogTitle>
+
+      <DialogContent dividers>
+
+        {/* ================================================= */}
+        {/* EMPLOYEE INFORMATION */}
+        {/* ================================================= */}
+
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 600,
+            mb: 1,
+          }}
+        >
+          Employee Information
+        </Typography>
+
+        <Divider
+          sx={{
+            mb: 3,
+          }}
+        />
+
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            mt: 1,
+          }}
+        >
+
+          {/* Employee Code */}
+
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
               label="Employee Code"
-              value={form.employeeCode}
+              value={
+                form.employeeCode
+              }
               disabled
             />
           </Grid>
 
-          <Grid size={{ xs: 6 }}>
+          {/* Employee Name */}
+
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
               label="Employee Name"
-              value={form.employeeName}
+              value={
+                form.employeeName
+              }
               disabled
             />
           </Grid>
 
-          <Grid size={{ xs: 6 }}>
+          {/* Department */}
+
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
               label="Department"
-              value={form.department}
+              value={
+                form.department
+              }
               disabled
             />
           </Grid>
 
-          <Grid size={{ xs: 6 }}>
+          {/* Designation */}
+
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
               label="Designation"
-              value={form.designation}
+              value={
+                form.designation
+              }
               disabled
             />
           </Grid>
 
-          {/* Shift */}
+          {/* ================================================= */}
+          {/* SHIFT */}
+          {/* ================================================= */}
 
-          <Grid size={{ xs: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               select
               fullWidth
               label="Shift"
               name="shiftName"
-              value={form.shiftName}
-              onChange={handleChange}
+              value={
+                form.shiftName
+              }
+              onChange={
+                handleChange
+              }
             >
-              <MenuItem value="Morning">Morning Shift</MenuItem>
+              <MenuItem value="Morning">
+                Morning Shift
+              </MenuItem>
 
-              <MenuItem value="General">General Shift</MenuItem>
+              <MenuItem value="General">
+                General Shift
+              </MenuItem>
 
-              <MenuItem value="Evening">Evening Shift</MenuItem>
+              <MenuItem value="Evening">
+                Evening Shift
+              </MenuItem>
 
-              <MenuItem value="Night">Night Shift</MenuItem>
+              <MenuItem value="Night">
+                Night Shift
+              </MenuItem>
             </TextField>
           </Grid>
 
-          {/* Status */}
+          {/* ================================================= */}
+          {/* STATUS */}
+          {/* ================================================= */}
 
-          <Grid size={{ xs: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               select
               fullWidth
               label="Status"
               name="status"
-              value={form.status}
-              onChange={handleChange}
+              value={
+                form.status
+              }
+              onChange={
+                handleChange
+              }
             >
-              <MenuItem value="Active">Active</MenuItem>
+              <MenuItem value="Active">
+                Active
+              </MenuItem>
 
-              <MenuItem value="Inactive">Inactive</MenuItem>
+              <MenuItem value="Inactive">
+                Inactive
+              </MenuItem>
             </TextField>
           </Grid>
 
-          {/* From Date */}
-<Grid size={{ xs: 6 }}>
-  <Typography
-    sx={{
-      mb: 1,
-      fontWeight: 600,
-      color: "#64748b",
-      fontSize: 14,
-    }}
-  >
-    From Date
-  </Typography>
+          {/* ================================================= */}
+          {/* START TIME */}
+          {/* ================================================= */}
 
-  <TextField
-    fullWidth
-    type="date"
-    name="fromDate"
-    value={form.fromDate}
-    onChange={handleChange}
-  />
-</Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TextField
+              fullWidth
+              type="time"
+              label="Start Time"
+              name="startTime"
+              value={
+                form.startTime
+              }
+              onChange={
+                handleChange
+              }
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+            />
+          </Grid>
 
-          {/* To Date */}
+          {/* ================================================= */}
+          {/* END TIME */}
+          {/* ================================================= */}
 
-<Grid size={{ xs: 6 }}>
-  <Typography
-    sx={{
-      mb: 1,
-      fontWeight: 600,
-      color: "#64748b",
-      fontSize: 14,
-    }}
-  >
-    To Date
-  </Typography>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TextField
+              fullWidth
+              type="time"
+              label="End Time"
+              name="endTime"
+              value={
+                form.endTime
+              }
+              onChange={
+                handleChange
+              }
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+            />
+          </Grid>
 
-  <TextField
-    fullWidth
-    type="date"
-    name="toDate"
-    value={form.toDate}
-    onChange={handleChange}
-  />
-</Grid>
+          {/* ================================================= */}
+          {/* NIGHT SHIFT INFORMATION */}
+          {/* ================================================= */}
 
-          {/* Weekly Off 1 */}
+          {isNightShift && (
+            <Grid size={{ xs: 12 }}>
+              <Alert severity="info">
+                <strong>
+                  Night Shift crosses midnight.
+                </strong>
 
-          <Grid size={{ xs: 6 }}>
+                <br />
+
+                Attendance will use:
+
+                {" "}
+
+                {form.startTime}
+
+                {" → "}
+
+                {form.endTime}
+
+                <br />
+
+                Example:
+
+                {" "}
+
+                22:00 IN today
+
+                {" → "}
+
+                06:00 OUT tomorrow
+
+                will belong to the same night shift attendance.
+              </Alert>
+            </Grid>
+          )}
+
+          {/* ================================================= */}
+          {/* SHIFT PRESET INFORMATION */}
+          {/* ================================================= */}
+
+          {form.shiftName &&
+            SHIFT_TIMINGS[
+              form.shiftName
+            ] && (
+              <Grid size={{ xs: 12 }}>
+                <Alert severity="success">
+                  Default timing for{" "}
+                  <strong>
+                    {form.shiftName}
+                  </strong>
+                  :
+
+                  {" "}
+
+                  {
+                    SHIFT_TIMINGS[
+                      form.shiftName
+                    ].startTime
+                  }
+
+                  {" → "}
+
+                  {
+                    SHIFT_TIMINGS[
+                      form.shiftName
+                    ].endTime
+                  }
+
+                  <br />
+
+                  You can manually change the timing above if required.
+                </Alert>
+              </Grid>
+            )}
+
+          {/* ================================================= */}
+          {/* FROM DATE */}
+          {/* ================================================= */}
+
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TextField
+              fullWidth
+              type="date"
+              label="From Date"
+              name="fromDate"
+              value={
+                form.fromDate
+              }
+              onChange={
+                handleChange
+              }
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+            />
+          </Grid>
+
+          {/* ================================================= */}
+          {/* TO DATE */}
+          {/* ================================================= */}
+
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TextField
+              fullWidth
+              type="date"
+              label="To Date"
+              name="toDate"
+              value={
+                form.toDate
+              }
+              onChange={
+                handleChange
+              }
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+            />
+          </Grid>
+
+          {/* ================================================= */}
+          {/* WEEKLY OFF 1 */}
+          {/* ================================================= */}
+
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               select
               fullWidth
               label="Weekly Off 1"
               name="weeklyOff1"
-              value={form.weeklyOff1}
-              onChange={handleChange}
+              value={
+                form.weeklyOff1
+              }
+              onChange={
+                handleChange
+              }
             >
-              <MenuItem value="Sunday">Sunday</MenuItem>
-              <MenuItem value="Monday">Monday</MenuItem>
-              <MenuItem value="Tuesday">Tuesday</MenuItem>
-              <MenuItem value="Wednesday">Wednesday</MenuItem>
-              <MenuItem value="Thursday">Thursday</MenuItem>
-              <MenuItem value="Friday">Friday</MenuItem>
-              <MenuItem value="Saturday">Saturday</MenuItem>
+              <MenuItem value="Sunday">
+                Sunday
+              </MenuItem>
+
+              <MenuItem value="Monday">
+                Monday
+              </MenuItem>
+
+              <MenuItem value="Tuesday">
+                Tuesday
+              </MenuItem>
+
+              <MenuItem value="Wednesday">
+                Wednesday
+              </MenuItem>
+
+              <MenuItem value="Thursday">
+                Thursday
+              </MenuItem>
+
+              <MenuItem value="Friday">
+                Friday
+              </MenuItem>
+
+              <MenuItem value="Saturday">
+                Saturday
+              </MenuItem>
             </TextField>
           </Grid>
 
-          {/* Weekly Off 2 */}
+          {/* ================================================= */}
+          {/* WEEKLY OFF 2 */}
+          {/* ================================================= */}
 
-          <Grid size={{ xs: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               select
               fullWidth
               label="Weekly Off 2"
               name="weeklyOff2"
-              value={form.weeklyOff2}
-              onChange={handleChange}
+              value={
+                form.weeklyOff2
+              }
+              onChange={
+                handleChange
+              }
             >
-              <MenuItem value="Sunday">Sunday</MenuItem>
-              <MenuItem value="Monday">Monday</MenuItem>
-              <MenuItem value="Tuesday">Tuesday</MenuItem>
-              <MenuItem value="Wednesday">Wednesday</MenuItem>
-              <MenuItem value="Thursday">Thursday</MenuItem>
-              <MenuItem value="Friday">Friday</MenuItem>
-              <MenuItem value="Saturday">Saturday</MenuItem>
+              <MenuItem value="Sunday">
+                Sunday
+              </MenuItem>
+
+              <MenuItem value="Monday">
+                Monday
+              </MenuItem>
+
+              <MenuItem value="Tuesday">
+                Tuesday
+              </MenuItem>
+
+              <MenuItem value="Wednesday">
+                Wednesday
+              </MenuItem>
+
+              <MenuItem value="Thursday">
+                Thursday
+              </MenuItem>
+
+              <MenuItem value="Friday">
+                Friday
+              </MenuItem>
+
+              <MenuItem value="Saturday">
+                Saturday
+              </MenuItem>
             </TextField>
           </Grid>
 
-          {/* Remarks */}
+          {/* ================================================= */}
+          {/* REMARKS */}
+          {/* ================================================= */}
 
           <Grid size={{ xs: 12 }}>
             <TextField
@@ -287,15 +843,27 @@ export default function EditShiftAssignmentDialog({
               rows={4}
               label="Remarks"
               name="remarks"
-              value={form.remarks}
-              onChange={handleChange}
+              value={
+                form.remarks
+              }
+              onChange={
+                handleChange
+              }
             />
           </Grid>
 
         </Grid>
       </DialogContent>
 
-     <DialogActions>
+      {/* ================================================= */}
+      {/* ACTIONS */}
+      {/* ================================================= */}
+
+      <DialogActions
+        sx={{
+          p: 2,
+        }}
+      >
         <Button
           variant="outlined"
           onClick={onClose}
