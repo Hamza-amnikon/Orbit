@@ -1,0 +1,42 @@
+.holiday-list{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.holiday-card{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:15px;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    transition:.2s;
+}
+
+.holiday-card:hover{
+    background:#f8fafc;
+}
+
+.holiday-icon{
+    width:48px;
+    height:48px;
+    border-radius:10px;
+    background:#2563eb;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.holiday-details h4{
+    margin:0;
+    font-size:16px;
+    color:#1f2937;
+}
+
+.holiday-details p{
+    margin-top:4px;
+    color:#6b7280;
+    font-size:14px;
+}

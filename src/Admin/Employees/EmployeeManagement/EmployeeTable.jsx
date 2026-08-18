@@ -82,9 +82,8 @@ function EmployeeTable({
 
       {/* Table */}
 
-      <div className="table-responsive">
-
-        <table className="employee-table">
+<div className="table-responsive">
+    <table className="employee-table">
 
           <thead>
 
@@ -139,11 +138,6 @@ function EmployeeTable({
 
                     <div className="employee-info">
 
-                      <div className="employee-avatar">
-
-                        {emp.employeeName?.charAt(0).toUpperCase()}
-
-                      </div>
 
                       <div>
 

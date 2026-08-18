@@ -1,0 +1,210 @@
+/* ================= Dialog ================= */
+
+.attendance-dialog .MuiDialog-paper{
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(15,23,42,.18);
+}
+
+/* ================= Header ================= */
+
+.attendance-dialog-title{
+    padding:26px 32px 18px !important;
+    border-bottom:1px solid #E5E7EB;
+    background:#fff;
+    font-size:32px !important;
+    font-weight:700 !important;
+    color:#0F172A;
+}
+
+.attendance-dialog-title .MuiTypography-body2{
+    margin-top:8px;
+    font-size:15px;
+    color:#64748B;
+}
+
+/* ================= Content ================= */
+
+.attendance-dialog-content{
+    padding:30px 32px !important;
+    background:#fff;
+}
+
+/* ================= Footer ================= */
+
+.attendance-dialog .MuiDialogActions-root{
+    padding:20px 32px !important;
+    border-top:1px solid #E5E7EB;
+    background:#fff;
+    justify-content:flex-end;
+    gap:14px;
+}
+
+/* ================= TextField ================= */
+
+.attendance-dialog .MuiTextField-root{
+    width:100%;
+}
+
+.attendance-dialog .MuiOutlinedInput-root{
+    border-radius:12px;
+    background:#fff;
+    transition:.25s;
+}
+
+.attendance-dialog .MuiOutlinedInput-root:hover fieldset{
+    border-color:#2563EB;
+}
+
+.attendance-dialog .MuiOutlinedInput-root.Mui-focused fieldset{
+    border-color:#2563EB;
+    border-width:2px;
+}
+
+/* DON'T change MUI default padding */
+
+.attendance-dialog .MuiOutlinedInput-input{
+    font-size:15px;
+    color:#1E293B;
+}
+
+/* Floating Label */
+
+.attendance-dialog .MuiInputLabel-root{
+    font-size:14px;
+    color:#64748B;
+}
+
+.attendance-dialog .MuiInputLabel-root.Mui-focused{
+    color:#2563EB;
+}
+
+/* Date & Time */
+
+.attendance-dialog input[type="date"],
+.attendance-dialog input[type="time"]{
+    cursor:pointer;
+}
+
+/* Select */
+
+.attendance-dialog .MuiSelect-select{
+    font-size:15px;
+}
+
+/* TextArea */
+
+.attendance-dialog textarea{
+    resize:none;
+    line-height:1.6;
+}
+
+/* Buttons */
+
+.attendance-dialog .MuiDialogActions-root .MuiButton-root{
+    min-width:165px;
+    height:48px;
+    border-radius:10px;
+    text-transform:none;
+    font-size:15px;
+    font-weight:600;
+}
+
+.attendance-dialog .MuiButton-contained{
+    background:linear-gradient(135deg,#2563EB,#4F46E5);
+    box-shadow:none;
+}
+
+.attendance-dialog .MuiButton-contained:hover{
+    background:linear-gradient(135deg,#1D4ED8,#4338CA);
+    box-shadow:none;
+}
+
+.attendance-dialog .MuiButton-outlined{
+    border-color:#2563EB;
+    color:#2563EB;
+}
+
+.attendance-dialog .MuiButton-outlined:hover{
+    background:#EFF6FF;
+}
+
+/* Grid */
+
+.attendance-dialog .MuiGrid-container{
+    margin-top:4px;
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+    .attendance-dialog .MuiDialog-paper{
+        margin:20px;
+    }
+
+    .attendance-dialog-title{
+        font-size:24px !important;
+        padding:22px 24px 16px !important;
+    }
+
+    .attendance-dialog-content{
+        padding:24px !important;
+    }
+
+    .attendance-dialog .MuiDialogActions-root{
+        padding:20px 24px !important;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .attendance-dialog .MuiDialog-paper{
+        margin:12px;
+        border-radius:14px;
+    }
+
+    .attendance-dialog-title{
+        font-size:22px !important;
+        padding:20px !important;
+    }
+
+    .attendance-dialog-content{
+        padding:20px !important;
+    }
+
+    .attendance-dialog .MuiDialogActions-root{
+        flex-direction:column;
+        padding:20px !important;
+    }
+
+    .attendance-dialog .MuiDialogActions-root .MuiButton-root{
+        width:100%;
+    }
+
+}
+
+
+/* Disabled time fields */
+input[type="time"]:disabled {
+    -webkit-text-fill-color: #6b7280 !important;
+    color: #6b7280 !important;
+    opacity: 1 !important;
+    text-decoration: none !important;
+}
+
+/* Remove the clock icon */
+input[type="time"]:disabled::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+/* Keep disabled border normal */
+.MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline {
+    border-color: #d5d9e2 !important;
+}
+
+/* Keep label readable */
+.MuiInputLabel-root.Mui-disabled {
+    color: #6b7280 !important;
+}
