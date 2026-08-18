@@ -1,5 +1,11 @@
+import React from "react";
+
 function Payroll() {
-  return <h1>Payroll</h1>;
+    return (
+        <div>
+            <h1>Payroll</h1>
+        </div>
+    );
 }
 
 export default Payroll;

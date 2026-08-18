@@ -30,7 +30,8 @@ import LeaveTakenHistory from "../Admin/Leave/LeaveTakenHistory/LeaveTakenHistor
 import LeaveOverview from "../Admin/Leave/LeaveOverview/LeaveOverview";
 import LeavePolicy from "../Admin/Leave/LeavePolicy/LeavePolicy";
 import LeaveBalance from "../Admin/Leave/LeaveManagement/LeaveBalance/LeaveBalance";
-
+import SalaryTemplate from "../pages/Payroll/SalaryTemplate";
+import Hierarchy from "../pages/Settings/EmployeeHierarchy/Hierarchy";
 // ================= Employee =================
 
 import EmployeeLayout from "../Employee/Employee/Employee/Layout/EmployeeLayout";
@@ -96,10 +97,12 @@ function AppRoutes() {
                     <Route path="/leave/history" element={<LeaveTakenHistory />} />
                     <Route path="/leave/dashboard" element={<LeaveOverview />} />
                     <Route path="/payroll" element={<Payroll />} />
+                    <Route path="/payroll/salary-template" element={<SalaryTemplate />} />
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/tickets" element={<Tickets />} />
                     <Route path="/settings" element={<SettingsDashboard />} />
                     <Route path="/settings/holidays-events" element={<HolidayEvents />} />
+                    <Route path="/settings/employee-hierarchy" element={<Hierarchy />} />
 
                 </Route>
             </Route>

@@ -76,9 +76,6 @@
    TABLE CONTAINER
 ========================================= */
 
-/* =========================================
-   TABLE HEADER - SAME AS LEAVE TYPES
-========================================= */
 
 .holiday-events-card {
     background: #ffffff;
@@ -99,9 +96,10 @@
     display: grid;
 
     grid-template-columns:
-        1.6fr
-        1fr
+        1.5fr
+        1.5fr
         1.2fr
+        1.5fr
         0.8fr
         0.8fr;
 

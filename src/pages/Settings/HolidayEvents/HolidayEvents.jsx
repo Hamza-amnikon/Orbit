@@ -10,22 +10,27 @@ import {
 
 import "./HolidayEvents.css";
 
-const EVENT_API = "https://localhost:7234/api/Event";
+const EVENT_API =
+    "https://localhost:7234/api/Event";
+
+const LOCATION_API =
+    "http://localhost:5140/api/location";
 
 export default function HolidayEvents() {
 
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [locations, setLocations] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
 
     useEffect(() => {
         loadEvents();
+        loadLocations();
     }, []);
 
     async function loadEvents() {
         try {
-
             setLoading(true);
 
             const response = await axios.get(EVENT_API);
@@ -33,47 +38,66 @@ export default function HolidayEvents() {
             setEvents(response.data);
 
         } catch (error) {
-
             console.error(
                 "Error loading holidays and events:",
                 error
             );
-
         } finally {
-
             setLoading(false);
-
         }
+    }
+
+    async function loadLocations() {
+        try {
+            const response = await axios.get(LOCATION_API);
+
+            setLocations(response.data);
+
+        } catch (error) {
+            console.error(
+                "Error loading locations:",
+                error
+            );
+        }
+    }
+
+    function getLocationName(locationCode) {
+
+        const location = locations.find(
+            (location) =>
+                location.locationCode === locationCode
+        );
+
+        return location?.locationName || "-";
     }
 
     async function deleteEvent(eventId) {
 
-    const confirmed = window.confirm(
-        "Are you sure you want to delete this holiday/event?"
-    );
-
-    if (!confirmed) {
-        return;
-    }
-
-    try {
-
-        await axios.delete(
-            `${EVENT_API}/${eventId}`
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this holiday/event?"
         );
 
-        // Refresh table after delete
-        loadEvents();
+        if (!confirmed) {
+            return;
+        }
 
-    } catch (error) {
+        try {
 
-        console.error(
-            "Error deleting holiday/event:",
-            error
-        );
+            await axios.delete(
+                `${EVENT_API}/${eventId}`
+            );
 
+            // Refresh table after delete
+            loadEvents();
+
+        } catch (error) {
+
+            console.error(
+                "Error deleting holiday/event:",
+                error
+            );
+        }
     }
-}
 
     return (
         <div className="holiday-events-page">
@@ -83,11 +107,15 @@ export default function HolidayEvents() {
             <div className="holiday-events-header">
 
                 <div>
-                    <h1>Holidays & Events</h1>
+
+                    <h1>
+                        Holidays & Events
+                    </h1>
 
                     <p>
                         Manage company holidays, events and important dates.
                     </p>
+
                 </div>
 
                 <button
@@ -107,16 +135,38 @@ export default function HolidayEvents() {
 
             <div className="holiday-events-card">
 
+                {/* Table Header */}
+
                 <div className="holiday-events-table-header">
 
-                    <span>Event Name</span>
-                    <span>Date</span>
-                    <span>Type</span>
-                    <span>Status</span>
-                    <span>Actions</span>
+                    <span>
+                        Event Name
+                    </span>
+
+                    <span>
+                        Date
+                    </span>
+
+                    <span>
+                        Type
+                    </span>
+
+                    <span>
+                        Location
+                    </span>
+
+                    <span>
+                        Status
+                    </span>
+
+                    <span>
+                        Actions
+                    </span>
 
                 </div>
 
+
+                {/* Loading */}
 
                 {loading ? (
 
@@ -132,6 +182,8 @@ export default function HolidayEvents() {
 
                 ) : (
 
+                    /* Event Rows */
+
                     events.map((event) => (
 
                         <div
@@ -139,9 +191,14 @@ export default function HolidayEvents() {
                             key={event.eventId}
                         >
 
+                            {/* Event Name */}
+
                             <span className="event-name">
                                 {event.eventName}
                             </span>
+
+
+                            {/* Date */}
 
                             <span>
                                 {new Date(
@@ -149,40 +206,70 @@ export default function HolidayEvents() {
                                 ).toLocaleDateString("en-GB")}
                             </span>
 
+
+                            {/* Type */}
+
                             <span>
                                 {event.eventType}
                             </span>
 
+
+                            {/* Location */}
+
                             <span>
+                                {getLocationName(
+                                    event.locationCode
+                                )}
+                            </span>
+
+
+                            {/* Status */}
+
+                            <span>
+
                                 <span
-                                    className={`event-status ${event.status?.toLowerCase() === "active"
-                                        ? "active"
-                                        : "inactive"
-                                        }`}
+                                    className={`event-status ${
+                                        event.status?.toLowerCase() === "active"
+                                            ? "active"
+                                            : "inactive"
+                                    }`}
                                 >
                                     {event.status}
                                 </span>
+
                             </span>
+
+
+                            {/* Actions */}
 
                             <span className="event-actions">
 
+                                {/* Edit */}
+
                                 <button
-    type="button"
-    className="event-edit-btn"
-    title="Edit"
-    onClick={() => {
-    setSelectedEvent(event);
-    setShowForm(true);
-}}
->
-    <EditRounded />
-</button>
+                                    type="button"
+                                    className="event-edit-btn"
+                                    title="Edit"
+                                    onClick={() => {
+                                        setSelectedEvent(event);
+                                        setShowForm(true);
+                                    }}
+                                >
+                                    <EditRounded />
+                                </button>
+
+
+                                {/* Delete */}
 
                                 <button
                                     type="button"
                                     className="event-delete-btn"
                                     title="Delete"
-                                    onClick={() => deleteEvent(event.eventId)}
+                                    onClick={() =>
+                                        deleteEvent(
+                                            event.eventId
+                                        )
+                                    }
                                 >
                                     <DeleteOutlineRounded />
                                 </button>
@@ -197,16 +284,25 @@ export default function HolidayEvents() {
 
             </div>
 
+
+            {/* Add / Edit Form */}
+
             {showForm && (
-    <HolidayEventForm
-        onClose={() => {
-            setShowForm(false);
-            setSelectedEvent(null);
-        }}
-        onSaved={loadEvents}
-        selectedEvent={selectedEvent}
-    />
-)}
+
+                <HolidayEventForm
+
+                    onClose={() => {
+                        setShowForm(false);
+                        setSelectedEvent(null);
+                    }}
+
+                    onSaved={loadEvents}
+
+                    selectedEvent={selectedEvent}
+
+                />
+
+            )}
 
         </div>
     );

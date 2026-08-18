@@ -1,0 +1,347 @@
+/* =========================================================
+   EMPLOYEE HIERARCHY PAGE
+   ========================================================= */
+
+.hierarchy-page {
+    min-height: 100vh;
+    padding: 28px 34px 50px;
+    background: #f5f7fb;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111827;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.hierarchy-header {
+    margin-bottom: 20px;
+}
+
+.hierarchy-header h1 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.hierarchy-header p {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+/* =========================================================
+   SEARCH CARD
+   ========================================================= */
+
+.search-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.search-card label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.search-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-row select {
+    height: 38px;
+    min-width: 230px;
+    padding: 0 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+    outline: none;
+}
+
+.search-row select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.search-row button {
+    height: 38px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 7px;
+    background: #8ec5ff;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.search-row button:hover {
+    background: #6db3f5;
+}
+
+.search-row button:disabled {
+    background: #8ec5ff;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   REPORTING STRUCTURE
+   ========================================================= */
+
+.hierarchy-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 22px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.hierarchy-card h2 {
+    margin: 0 0 22px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* =========================================================
+   HIERARCHY FLOW
+   ========================================================= */
+
+.hierarchy-flow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 12px 0 8px;
+}
+
+.hierarchy-box {
+    min-width: 150px;
+    padding: 17px 20px;
+    background: #f8fafc;
+    border: 1px solid #bfdbfe;
+    border-radius: 9px;
+    text-align: center;
+}
+
+.hierarchy-box span {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.hierarchy-box strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.hierarchy-box.employee {
+    background: #ecfdf5;
+    border-color: #86efac;
+}
+
+.hierarchy-box.super-admin {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+}
+
+.arrow {
+    font-size: 22px;
+    font-weight: 700;
+    color: #2563eb;
+}
+
+/* =========================================================
+   CONFIGURED HIERARCHIES
+   ========================================================= */
+
+.all-hierarchy-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    overflow-x: auto;
+}
+
+.all-hierarchy-card h2 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.all-hierarchy-card table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* DARK BLUE HEADER - SAME AS EMPLOYEE PAGE */
+
+.all-hierarchy-card thead {
+    background: #1f2f68;
+}
+
+.all-hierarchy-card th {
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff;
+    border-bottom: none;
+    white-space: nowrap;
+}
+
+/* TABLE BODY */
+
+.all-hierarchy-card td {
+    padding: 12px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+}
+
+.all-hierarchy-card tbody tr {
+    background: #ffffff;
+    transition: background 0.15s ease;
+}
+
+.all-hierarchy-card tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* Employee name */
+
+.all-hierarchy-card tbody td:first-child {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* =========================================================
+   COLUMN WIDTHS
+   ========================================================= */
+
+.all-hierarchy-card th:nth-child(1),
+.all-hierarchy-card td:nth-child(1) {
+    width: 20%;
+}
+
+.all-hierarchy-card th:nth-child(2),
+.all-hierarchy-card td:nth-child(2) {
+    width: 17%;
+}
+
+.all-hierarchy-card th:nth-child(3),
+.all-hierarchy-card td:nth-child(3) {
+    width: 18%;
+}
+
+.all-hierarchy-card th:nth-child(4),
+.all-hierarchy-card td:nth-child(4) {
+    width: 18%;
+}
+
+.all-hierarchy-card th:nth-child(5),
+.all-hierarchy-card td:nth-child(5) {
+    width: 17%;
+}
+
+.all-hierarchy-card th:nth-child(6),
+.all-hierarchy-card td:nth-child(6) {
+    width: 10%;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   EMPTY VALUE
+   ========================================================= */
+
+.all-hierarchy-card td:empty::after {
+    content: "—";
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .hierarchy-page {
+        padding: 20px;
+    }
+
+    .search-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-row select,
+    .search-row button {
+        width: 100%;
+    }
+
+    .hierarchy-flow {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .hierarchy-page {
+        padding: 15px;
+    }
+
+    .hierarchy-header h1 {
+        font-size: 22px;
+    }
+
+    .all-hierarchy-card {
+        padding: 15px;
+    }
+}
