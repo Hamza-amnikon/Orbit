@@ -3,12 +3,12 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
 
 import Dashboard from "../pages/Dashboard/Dashboard";
-import Attendance from "../pages/Attendance/Attendance";
+import Attendance from "../Admin/AttendanceManagement/Attendance";
 import Payroll from "../pages/Payroll/Payroll";
 import Reports from "../pages/Reports/Reports";
 import Tickets from "../pages/Tickets/Tickets";
 import SettingsDashboard from "../pages/Settings/SettingsDashboard";
-import HolidayEvents from "../pages/Settings/HolidayEvents/HolidayEvents";
+import HolidayEvents from "../Admin/AttendanceManagement/Holiday/Holiday";
 import Login from "../pages/Login/Login";
 import AuthCallback from "../pages/Auth/AuthCallback";
 import PrivateRoute from "./PrivateRoute";
@@ -99,7 +99,7 @@ function AppRoutes() {
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/tickets" element={<Tickets />} />
                     <Route path="/settings" element={<SettingsDashboard />} />
-                    <Route path="/settings/holidays-events" element={<HolidayEvents />} />
+                    <Route path="/attendance/Holiday" element={<HolidayEvents />} />
 
                 </Route>
             </Route>

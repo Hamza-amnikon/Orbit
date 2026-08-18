@@ -38,7 +38,7 @@ const menuItems = [
     description: "Manage company holidays",
     icon: <EventIcon />,
     color: "#EF4444",
-    path: "/attendance/holidays",
+    path: "/attendance/Holiday",
   },
   {
     title: "Reports",
