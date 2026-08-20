@@ -178,6 +178,7 @@ export default function LeaveRequests() {
             statusFilter === "All" ||
             leave.status === statusFilter;
 
+<<<<<<< HEAD
         // -------------------------------
         // Employee Search
         // Search ID OR Name
@@ -201,6 +202,15 @@ export default function LeaveRequests() {
             searchValue === "" ||
             employeeId.includes(searchValue) ||
             employeeName.includes(searchValue);
+=======
+        // Employee ID Search
+const searchValue = employeeSearch.trim();
+
+const matchesEmployee =
+    searchValue === "" ||
+    leave.employeeId?.toString().includes(searchValue) ||
+    leave.azureEmployeeId?.toString().includes(searchValue);
+>>>>>>> main
 
         return (
             matchesStatus &&
@@ -329,6 +339,7 @@ export default function LeaveRequests() {
                     <thead>
 
                         <tr>
+<<<<<<< HEAD
 
                             {/* Employee ID */}
                             <th>
@@ -375,6 +386,16 @@ export default function LeaveRequests() {
                                 Actions
                             </th>
 
+=======
+  <th>Employee</th>
+                            <th>Leave Type</th>
+                            <th>From Date</th>
+                            <th>To Date</th>
+                            <th>Days</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+>>>>>>> main
                         </tr>
 
                     </thead>
@@ -400,6 +421,7 @@ export default function LeaveRequests() {
                             filteredLeaves.map(
                                 (leave) => (
 
+<<<<<<< HEAD
                                     <tr
                                         key={
                                             leave.leaveId
@@ -409,6 +431,18 @@ export default function LeaveRequests() {
                                         {/* ==================================
                                             EMPLOYEE ID
                                         ================================== */}
+=======
+                                <tr key={leave.leaveId}>
+<td>
+    <div className="employee-id-cell">
+      
+
+        <span>
+            {leave.azureEmployeeId}
+        </span>
+    </div>
+</td>
+>>>>>>> main
 
                                         <td>
 
@@ -636,6 +670,7 @@ export default function LeaveRequests() {
 
                             <div className="leave-review-info">
 
+<<<<<<< HEAD
                                 {/* Employee ID */}
                                 <p>
 
@@ -647,6 +682,17 @@ export default function LeaveRequests() {
                                         "-"}
 
                                 </p>
+=======
+<p>
+    <strong>Employee ID:</strong>{" "}
+    {selectedLeave.employeeId}
+</p>
+
+<p>
+    <strong>Azure Employee ID:</strong>{" "}
+    {selectedLeave.azureEmployeeId}
+</p>
+>>>>>>> main
 
 
                                 {/* Employee Name */}
@@ -829,7 +875,19 @@ export default function LeaveRequests() {
 
                             <div className="leave-details-grid">
 
+<<<<<<< HEAD
                                 {/* Employee ID */}
+=======
+<div className="leave-detail-item">
+    <span>Employee ID</span>
+    <strong>{viewLeave.employeeId}</strong>
+</div>
+
+<div className="leave-detail-item">
+    <span>Azure Employee ID</span>
+    <strong>{viewLeave.azureEmployeeId}</strong>
+</div>
+>>>>>>> main
 
                                 <div className="leave-detail-item">
 
