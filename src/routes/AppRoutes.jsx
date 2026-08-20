@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-
+ 
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
-
+ 
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Attendance from "../Admin/AttendanceManagement/Attendance";
 import Payroll from "../pages/Payroll/Payroll";
@@ -12,9 +12,9 @@ import HolidayEvents from "../Admin/AttendanceManagement/Holiday/Holiday";
 import Login from "../pages/Login/Login";
 import AuthCallback from "../pages/Auth/AuthCallback";
 import PrivateRoute from "./PrivateRoute";
-
+ 
 // ================= Admin =================
-
+ 
 import Employees from "../Admin/Employees/EmployeeManagement/Employees";
 import AddEmployee from "../Admin/Employees/EmployeeManagement/AddEmployee";
 import EmployeeList from "../Admin/Employees/EmployeeManagement/EmployeeList";
@@ -30,10 +30,10 @@ import LeaveTakenHistory from "../Admin/Leave/LeaveTakenHistory/LeaveTakenHistor
 import LeaveOverview from "../Admin/Leave/LeaveOverview/LeaveOverview";
 import LeavePolicy from "../Admin/Leave/LeavePolicy/LeavePolicy";
 import LeaveBalance from "../Admin/Leave/LeaveManagement/LeaveBalance/LeaveBalance";
-import SalaryTemplate from "../pages/Payroll/SalaryTemplate";
-import Hierarchy from "../pages/Settings/EmployeeHierarchy/Hierarchy";
+import Hierarchy from "../Admin/Employees/EmployeeHierarchy/Hierarchy";
+ 
 // ================= Employee =================
-
+ 
 import EmployeeLayout from "../Employee/Employee/Employee/Layout/EmployeeLayout";
 import EmployeeDashboard from "../Employee/Employee/Employee/Dashboard/Dashboard";
 import EmployeeProfile from "../Employee/Employee/Employee/Profile/Profile";
@@ -43,23 +43,27 @@ import EmployeeDocuments from "../Employee/Employee/Employee/Documents/Documents
 import EmployeeTeam from "../Employee/Employee/Employee/Team/Team";
 import EmployeeNotifications from "../Employee/Employee/Employee/Notifications/Notifications";
 import EmployeeSettings from "../Employee/Employee/Employee/Settings/Settings";
-
+import AttendanceLogs from "../Admin/AttendanceManagement/AttendanceLogs/AttendanceLogs";
+import AttendanceDashboard from "../Admin/AttendanceManagement/Dashboard/AttendanceDashboard";
+import ShiftManagement from "../Admin/AttendanceManagement/ShiftManagement/ShiftManagement";
+import Astra from "../Employee/Employee/Employee/Astra/Astra";
+ 
 function AppRoutes() {
     return (
         <Routes>
-
+ 
             {/* ================= Public ================= */}
-
+ 
             <Route path="/login" element={<Login />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
-
+ 
             {/* ================= Employee Portal ================= */}
-
+ 
             <Route element={<PrivateRoute />}>
                 <Route path="/employee" element={<EmployeeLayout />}>
-
+ 
                     <Route index element={<Navigate to="dashboard" replace />} />
-
+ 
                     <Route path="dashboard" element={<EmployeeDashboard />} />
                     <Route path="profile" element={<EmployeeProfile />} />
                     <Route path="attendance" element={<EmployeeAttendance />} />
@@ -68,46 +72,71 @@ function AppRoutes() {
                     <Route path="team" element={<EmployeeTeam />} />
                     <Route path="notifications" element={<EmployeeNotifications />} />
                     <Route path="settings" element={<EmployeeSettings />} />
-
+                    <Route path="Astra" element={<Astra />} />
+ 
+ 
                 </Route>
             </Route>
-
+ 
             {/* ================= Admin Portal ================= */}
-
-            <Route element={<PrivateRoute />}>
-                <Route element={<DashboardLayout />}>
-
-                    <Route path="/" element={<Dashboard />} />
-
-                    <Route path="/employees" element={<Employees />} />
-                    <Route path="/employees/add" element={<AddEmployee />} />
-                    <Route path="/employees/list" element={<EmployeeList />} />
-                    <Route path="/employees/departments" element={<Departments />} />
-                    <Route path="/employees/designations" element={<Designations />} />
-                    <Route path="/employees/locations" element={<Locations />} />
-                    <Route path="/employees/types" element={<EmployeeType />} />
-                    <Route path="/employees/roles" element={<Role />} />
-
-                    <Route path="/attendance" element={<Attendance />} />
-                    <Route path="/leave" element={<LeaveDashboard />} />
-                    <Route path="/leave/balance" element={<LeaveBalance />} />
-                    <Route path="/leave/types" element={<LeaveTypes />} />
-                    <Route path="/leave/policies" element={<LeavePolicy />} />
-                    <Route path="/leave/requests" element={<LeaveRequests />} />
-                    <Route path="/leave/history" element={<LeaveTakenHistory />} />
-                    <Route path="/leave/dashboard" element={<LeaveOverview />} />
-                    <Route path="/payroll" element={<Payroll />} />
-                    <Route path="/payroll/salary-template" element={<SalaryTemplate />} />
-                    <Route path="/reports" element={<Reports />} />
-                    <Route path="/tickets" element={<Tickets />} />
-                    <Route path="/settings" element={<SettingsDashboard />} />
-                    <Route path="/settings/holidays-events" element={<HolidayEvents />} />
-
-                </Route>
-            </Route>
-
+ 
+{/* ================= Admin Portal ================= */}
+ 
+<Route element={<PrivateRoute />}>
+    <Route element={<DashboardLayout />}>
+ 
+        <Route path="/" element={<Dashboard />} />
+ 
+        {/* Employees */}
+        <Route path="/employees" element={<Employees />} />
+        <Route path="/employees/add" element={<AddEmployee />} />
+        <Route path="/employees/list" element={<EmployeeList />} />
+        <Route path="/employees/departments" element={<Departments />} />
+        <Route path="/employees/designations" element={<Designations />} />
+        <Route path="/employees/locations" element={<Locations />} />
+        <Route path="/employees/types" element={<EmployeeType />} />
+        <Route path="/employees/roles" element={<Role />} />
+ 
+        {/* Employee Hierarchy */}
+        <Route
+            path="/employees/EmployeeHierarchy"
+            element={<Hierarchy />}
+        />
+ 
+        {/* Attendance */}
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/attendance/logs" element={<AttendanceLogs />} />
+        <Route path="/attendance/dashboard" element={<AttendanceDashboard />} />
+       <Route
+    path="/attendance/shifts"
+    element={<ShiftManagement />}
+/>
+ 
+        <Route
+            path="/attendance/Holiday"
+            element={<HolidayEvents />}
+        />
+ 
+        {/* Leave */} 
+        <Route path="/leave" element={<LeaveDashboard />} />
+        <Route path="/leave/balance" element={<LeaveBalance />} />
+        <Route path="/leave/types" element={<LeaveTypes />} />
+        <Route path="/leave/policies" element={<LeavePolicy />} />
+        <Route path="/leave/requests" element={<LeaveRequests />} />
+        <Route path="/leave/history" element={<LeaveTakenHistory />} />
+        <Route path="/leave/dashboard" element={<LeaveOverview />} />
+ 
+        {/* Other */}
+        <Route path="/payroll" element={<Payroll />} />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/tickets" element={<Tickets />} />
+        <Route path="/settings" element={<SettingsDashboard />} />
+ 
+    </Route>
+</Route>
+ 
         </Routes>
     );
 }
-
+ 
 export default AppRoutes;
