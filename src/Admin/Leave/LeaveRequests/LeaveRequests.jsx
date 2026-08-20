@@ -210,7 +210,11 @@ const matchesEmployee =
     searchValue === "" ||
     leave.employeeId?.toString().includes(searchValue) ||
     leave.azureEmployeeId?.toString().includes(searchValue);
+<<<<<<< HEAD
 >>>>>>> origin/main
+=======
+>>>>>>> main
+>>>>>>> origin/mahinoor
 
         return (
             matchesStatus &&
@@ -395,7 +399,11 @@ const matchesEmployee =
                             <th>Reason</th>
                             <th>Status</th>
                             <th>Actions</th>
+<<<<<<< HEAD
 >>>>>>> origin/main
+=======
+>>>>>>> main
+>>>>>>> origin/mahinoor
                         </tr>
 
                     </thead>
@@ -442,7 +450,11 @@ const matchesEmployee =
         </span>
     </div>
 </td>
+<<<<<<< HEAD
 >>>>>>> origin/main
+=======
+>>>>>>> main
+>>>>>>> origin/mahinoor
 
                                         <td>
 
@@ -692,7 +704,11 @@ const matchesEmployee =
     <strong>Azure Employee ID:</strong>{" "}
     {selectedLeave.azureEmployeeId}
 </p>
+<<<<<<< HEAD
 >>>>>>> origin/main
+=======
+>>>>>>> main
+>>>>>>> origin/mahinoor
 
 
                                 {/* Employee Name */}
@@ -887,7 +903,11 @@ const matchesEmployee =
     <span>Azure Employee ID</span>
     <strong>{viewLeave.azureEmployeeId}</strong>
 </div>
+<<<<<<< HEAD
 >>>>>>> origin/main
+=======
+>>>>>>> main
+>>>>>>> origin/mahinoor
 
                                 <div className="leave-detail-item">
 
