@@ -1,6 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import "./LeaveBalance.css";
+
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Divider,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
+
+import {
+  Search,
+  Refresh,
+  ArrowBack,
+  Clear,
+  People,
+  EventAvailable,
+  TrendingUp,
+  EventBusy,
+  AccountBalance,
+} from "@mui/icons-material";
 
 const BALANCE_API =
   "https://localhost:7206/api/EmployeeLeaveBalance";
@@ -15,8 +49,15 @@ export default function LeaveBalance() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const [selectedEmployee, setSelectedEmployee] = useState("");
-  const [searchEmployee, setSearchEmployee] = useState("");
+  const [selectedAzureEmployee, setSelectedAzureEmployee] =
+    useState("");
+
+  const [searchEmployee, setSearchEmployee] =
+    useState("");
+
+  // ==========================================================
+  // LOAD DATA
+  // ==========================================================
 
   useEffect(() => {
     loadLeaveBalance();
@@ -33,10 +74,22 @@ export default function LeaveBalance() {
           axios.get(LEAVE_TYPE_API),
         ]);
 
-      setBalances(balanceResponse.data);
-      setLeaveTypes(leaveTypeResponse.data);
-    } catch (error) {
-      console.error("Error loading leave balance:", error);
+      setBalances(
+        Array.isArray(balanceResponse.data)
+          ? balanceResponse.data
+          : []
+      );
+
+      setLeaveTypes(
+        Array.isArray(leaveTypeResponse.data)
+          ? leaveTypeResponse.data
+          : []
+      );
+    } catch (err) {
+      console.error(
+        "Error loading leave balance:",
+        err
+      );
 
       setError(
         "Unable to load leave balance. Please check the Leave Service API."
@@ -46,10 +99,15 @@ export default function LeaveBalance() {
     }
   };
 
-  // Get Leave Type Name
+  // ==========================================================
+  // LEAVE TYPE NAME
+  // ==========================================================
+
   const getLeaveTypeName = (leaveTypeId) => {
     const leaveType = leaveTypes.find(
-      (type) => type.leaveTypeId === leaveTypeId
+      (type) =>
+        Number(type.leaveTypeId) ===
+        Number(leaveTypeId)
     );
 
     return leaveType
@@ -57,296 +115,933 @@ export default function LeaveBalance() {
       : `Leave Type ${leaveTypeId}`;
   };
 
-  // Get unique employee IDs
-  const employeeIds = [
-    ...new Set(
-      balances.map((balance) => balance.employeeId)
-    ),
-  ].sort((a, b) => a - b);
+  // ==========================================================
+  // AZURE EMPLOYEE IDS
+  // ==========================================================
 
-  // Filter employees
-  const filteredBalances = balances.filter((balance) => {
-    const matchesEmployee =
-      selectedEmployee === "" ||
-      balance.employeeId.toString() === selectedEmployee;
+  const azureEmployeeIds = useMemo(() => {
+    const ids = balances
+      .map((balance) => balance.azureEmployeeId)
+      .filter(
+        (id) =>
+          id !== null &&
+          id !== undefined &&
+          id !== ""
+      );
 
-    const matchesSearch =
-      searchEmployee.trim() === "" ||
-      balance.employeeId
-        .toString()
-        .includes(searchEmployee.trim());
+    return [...new Set(ids.map(String))].sort(
+      (a, b) => Number(a) - Number(b)
+    );
+  }, [balances]);
 
-    return matchesEmployee && matchesSearch;
-  });
+  // ==========================================================
+  // FILTER DATA
+  // ==========================================================
 
+  const filteredBalances = useMemo(() => {
+    const search = searchEmployee
+      .trim()
+      .toLowerCase();
 
-  // ===============================
-// Leave Balance Summary
-// ===============================
+    return balances.filter((balance) => {
+      // Azure Employee dropdown
+      const matchesAzureEmployee =
+        selectedAzureEmployee === "" ||
+        String(balance.azureEmployeeId || "") ===
+          selectedAzureEmployee;
 
-const totalEmployees = new Set(
-  filteredBalances.map((balance) => balance.employeeId)
-).size;
+      // Search Employee ID / Azure ID / Name
+      const matchesSearch =
+        search === "" ||
+        String(balance.employeeId || "")
+          .toLowerCase()
+          .includes(search) ||
+        String(balance.azureEmployeeId || "")
+          .toLowerCase()
+          .includes(search) ||
+        String(balance.employeeName || "")
+          .toLowerCase()
+          .includes(search);
 
-const totalEntitled = filteredBalances.reduce(
-  (total, balance) => total + Number(balance.entitledDays || 0),
-  0
-);
+      return (
+        matchesAzureEmployee &&
+        matchesSearch
+      );
+    });
+  }, [
+    balances,
+    selectedAzureEmployee,
+    searchEmployee,
+  ]);
 
-const totalAccrued = filteredBalances.reduce(
-  (total, balance) => total + Number(balance.accruedDays || 0),
-  0
-);
+  // ==========================================================
+  // SUMMARY
+  // ==========================================================
 
-const totalUsed = filteredBalances.reduce(
-  (total, balance) => total + Number(balance.usedDays || 0),
-  0
-);
+  const totalEmployees = useMemo(() => {
+    return new Set(
+      filteredBalances.map(
+        (balance) => balance.employeeId
+      )
+    ).size;
+  }, [filteredBalances]);
 
-const totalBalance = filteredBalances.reduce(
-  (total, balance) => total + Number(balance.balanceDays || 0),
-  0
-);
+  const totalEntitled = useMemo(() => {
+    return filteredBalances.reduce(
+      (total, balance) =>
+        total +
+        Number(balance.entitledDays || 0),
+      0
+    );
+  }, [filteredBalances]);
+
+  const totalAccrued = useMemo(() => {
+    return filteredBalances.reduce(
+      (total, balance) =>
+        total +
+        Number(balance.accruedDays || 0),
+      0
+    );
+  }, [filteredBalances]);
+
+  const totalUsed = useMemo(() => {
+    return filteredBalances.reduce(
+      (total, balance) =>
+        total +
+        Number(balance.usedDays || 0),
+      0
+    );
+  }, [filteredBalances]);
+
+  const totalBalance = useMemo(() => {
+    return filteredBalances.reduce(
+      (total, balance) =>
+        total +
+        Number(balance.balanceDays || 0),
+      0
+    );
+  }, [filteredBalances]);
+
+  // ==========================================================
+  // CLEAR FILTERS
+  // ==========================================================
+
+  const clearFilters = () => {
+    setSearchEmployee("");
+    setSelectedAzureEmployee("");
+  };
+
+  // ==========================================================
+  // SUMMARY CARD
+  // ==========================================================
+
+  const SummaryCard = ({
+    title,
+    value,
+    subtitle,
+    icon,
+    background,
+    iconColor,
+  }) => {
+    return (
+      <Card
+        elevation={0}
+        sx={{
+          flex: 1,
+          minWidth: {
+            xs: "100%",
+            sm: "calc(50% - 8px)",
+            lg: 0,
+          },
+          border: "1px solid #e2e8f0",
+          borderRadius: 2.5,
+          backgroundColor: background,
+        }}
+      >
+        <CardContent sx={{ p: 2.25 }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="flex-start"
+          >
+            <Box>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "#64748b",
+                  fontWeight: 600,
+                  mb: 0.75,
+                }}
+              >
+                {title}
+              </Typography>
+
+              <Typography
+                variant="h5"
+                sx={{
+                  color: "#172554",
+                  fontWeight: 700,
+                  lineHeight: 1.2,
+                }}
+              >
+                {value}
+              </Typography>
+
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "#94a3b8",
+                  display: "block",
+                  mt: 0.75,
+                }}
+              >
+                {subtitle}
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                width: 42,
+                height: 42,
+                borderRadius: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "#ffffff",
+                color: iconColor,
+                border: "1px solid rgba(0,0,0,0.05)",
+              }}
+            >
+              {icon}
+            </Box>
+          </Stack>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  // ==========================================================
+  // UI
+  // ==========================================================
 
   return (
-    <div className="leave-balance-page">
-
-{/* Page Header */}
-<div className="leave-balance-header">
-
-  <div>
-    <h2>Leave Balance Management</h2>
-
-    <p>
-      View employee leave entitlements, accruals, usage and
-      remaining balances.
-    </p>
-  </div>
-
-  <div className="leave-balance-actions">
-
-    <button
-      type="button"
-      className="previous-btn"
-      onClick={() => window.history.back()}
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#f5f7fb",
+        p: {
+          xs: 2,
+          sm: 3,
+          md: 4,
+        },
+      }}
     >
-      ← Previous
-    </button>
+      {/* ======================================================
+          HEADER
+      ====================================================== */}
 
-    <button
-      type="button"
-      className="refresh-balance-btn"
-      onClick={loadLeaveBalance}
-    >
-      ↻ Refresh
-    </button>
-
-  </div>
-
-</div>
-
-
-
-{/* Leave Balance Summary */}
-<div className="leave-balance-summary">
-
-  <div className="balance-summary-card">
-    <span className="summary-title">Employees</span>
-    <strong>{totalEmployees}</strong>
-    <small>Employees with leave balance</small>
-  </div>
-
-  <div className="balance-summary-card">
-    <span className="summary-title">Total Entitled</span>
-    <strong>{totalEntitled.toFixed(2)}</strong>
-    <small>Total entitled leave days</small>
-  </div>
-
-  <div className="balance-summary-card">
-    <span className="summary-title">Total Accrued</span>
-    <strong>{totalAccrued.toFixed(2)}</strong>
-    <small>Total accrued leave days</small>
-  </div>
-
-  <div className="balance-summary-card">
-    <span className="summary-title">Total Used</span>
-    <strong>{totalUsed.toFixed(2)}</strong>
-    <small>Total used leave days</small>
-  </div>
-
-  <div className="balance-summary-card">
-    <span className="summary-title">Remaining Balance</span>
-    <strong>{totalBalance.toFixed(2)}</strong>
-    <small>Available leave days</small>
-  </div>
-
-</div>
-
-
-      {/* ================= FILTERS ================= */}
-
-      <div className="leave-balance-filters">
-
-        {/* Search Employee */}
-
-        <div className="filter-group">
-
-          <label>Search Employee</label>
-
-          <input
-            type="text"
-            placeholder="Search Employee ID"
-            value={searchEmployee}
-            onChange={(e) =>
-              setSearchEmployee(e.target.value)
-            }
-          />
-
-        </div>
-
-
-        {/* Employee Dropdown */}
-
-        <div className="filter-group">
-
-          <label>Employee ID</label>
-
-          <select
-            value={selectedEmployee}
-            onChange={(e) =>
-              setSelectedEmployee(e.target.value)
-            }
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: {
+            xs: "flex-start",
+            md: "center",
+          },
+          flexDirection: {
+            xs: "column",
+            md: "row",
+          },
+          gap: 2,
+          mb: 3,
+        }}
+      >
+        <Box>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              color: "#172033",
+              mb: 0.5,
+            }}
           >
+            Leave Balance Management
+          </Typography>
 
-            <option value="">
-              All Employees
-            </option>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#697386",
+            }}
+          >
+            View employee leave entitlements,
+            accruals, usage and remaining balances.
+          </Typography>
+        </Box>
 
-            {employeeIds.map((employeeId) => (
-              <option
-                key={employeeId}
-                value={employeeId}
+        <Stack
+          direction="row"
+          spacing={1}
+        >
+          <Button
+            variant="outlined"
+            startIcon={<ArrowBack />}
+            onClick={() =>
+              window.history.back()
+            }
+            sx={{
+              height: 40,
+              borderColor: "#2563eb",
+              color: "#2563eb",
+              textTransform: "none",
+              fontWeight: 600,
+              "&:hover": {
+                borderColor: "#1d4ed8",
+                backgroundColor: "#eff6ff",
+              },
+            }}
+          >
+            Previous
+          </Button>
+
+          <Button
+            variant="outlined"
+            startIcon={<Refresh />}
+            onClick={loadLeaveBalance}
+            disabled={loading}
+            sx={{
+              height: 40,
+              borderColor: "#2563eb",
+              color: "#2563eb",
+              textTransform: "none",
+              fontWeight: 600,
+              "&:hover": {
+                borderColor: "#1d4ed8",
+                backgroundColor: "#eff6ff",
+              },
+            }}
+          >
+            Refresh
+          </Button>
+        </Stack>
+      </Box>
+
+      {/* ======================================================
+          SUMMARY
+      ====================================================== */}
+
+      <Stack
+        direction="row"
+        spacing={2}
+        useFlexGap
+        flexWrap="wrap"
+        sx={{ mb: 3 }}
+      >
+        <SummaryCard
+          title="Employees"
+          value={totalEmployees}
+          subtitle="Employees with leave balance"
+          icon={<People />}
+          background="#e8f1ff"
+          iconColor="#2563eb"
+        />
+
+        <SummaryCard
+          title="Total Entitled"
+          value={totalEntitled.toFixed(2)}
+          subtitle="Total entitled leave days"
+          icon={<EventAvailable />}
+          background="#f0eaff"
+          iconColor="#7c3aed"
+        />
+
+        <SummaryCard
+          title="Total Accrued"
+          value={totalAccrued.toFixed(2)}
+          subtitle="Total accrued leave days"
+          icon={<TrendingUp />}
+          background="#e8f7ef"
+          iconColor="#16803c"
+        />
+
+        <SummaryCard
+          title="Total Used"
+          value={totalUsed.toFixed(2)}
+          subtitle="Total used leave days"
+          icon={<EventBusy />}
+          background="#fff0e6"
+          iconColor="#ea580c"
+        />
+
+        <SummaryCard
+          title="Remaining Balance"
+          value={totalBalance.toFixed(2)}
+          subtitle="Available leave days"
+          icon={<AccountBalance />}
+          background="#e6f7f5"
+          iconColor="#0f766e"
+        />
+      </Stack>
+
+      {/* ======================================================
+          FILTER CARD
+      ====================================================== */}
+
+      <Card
+        elevation={0}
+        sx={{
+          mb: 2.5,
+          border: "1px solid #e2e8f0",
+          borderRadius: 2.5,
+          backgroundColor: "#ffffff",
+        }}
+      >
+        <CardContent sx={{ p: { xs: 2, md: 2.5 } }}>
+          <Stack
+            direction={{
+              xs: "column",
+              md: "row",
+            }}
+            spacing={2}
+            alignItems={{
+              xs: "stretch",
+              md: "flex-end",
+            }}
+          >
+            {/* SEARCH */}
+
+            <TextField
+              fullWidth
+              label="Search Employee"
+              placeholder="Employee ID, Azure ID or Name"
+              value={searchEmployee}
+              onChange={(e) =>
+                setSearchEmployee(
+                  e.target.value
+                )
+              }
+              size="small"
+              sx={{
+                flex: 1,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 1.5,
+                  backgroundColor: "#ffffff",
+                },
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search
+                      sx={{
+                        color: "#94a3b8",
+                      }}
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            {/* AZURE EMPLOYEE DROPDOWN */}
+
+            <FormControl
+              size="small"
+              sx={{
+                minWidth: {
+                  xs: "100%",
+                  md: 260,
+                },
+              }}
+            >
+              <InputLabel>
+                Azure Employee ID
+              </InputLabel>
+
+              <Select
+                value={selectedAzureEmployee}
+                label="Azure Employee ID"
+                onChange={(e) =>
+                  setSelectedAzureEmployee(
+                    e.target.value
+                  )
+                }
+                sx={{
+                  borderRadius: 1.5,
+                }}
               >
-                Employee {employeeId}
-              </option>
-            ))}
+                <MenuItem value="">
+                  All Employees
+                </MenuItem>
 
-          </select>
+                {azureEmployeeIds.map(
+                  (azureId) => (
+                    <MenuItem
+                      key={azureId}
+                      value={azureId}
+                    >
+                      {azureId}
+                    </MenuItem>
+                  )
+                )}
+              </Select>
+            </FormControl>
 
-        </div>
+            {/* CLEAR */}
 
-      </div>
+            <Button
+              variant="outlined"
+              startIcon={<Clear />}
+              onClick={clearFilters}
+              sx={{
+                height: 40,
+                minWidth: 120,
+                textTransform: "none",
+                borderColor: "#cbd5e1",
+                color: "#475569",
+                borderRadius: 1.5,
+                fontWeight: 600,
+                "&:hover": {
+                  borderColor: "#94a3b8",
+                  backgroundColor: "#f8fafc",
+                },
+              }}
+            >
+              Clear
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
 
-
-      {/* ================= ERROR ================= */}
+      {/* ======================================================
+          ERROR
+      ====================================================== */}
 
       {error && (
-        <div className="leave-balance-error">
-          {error}
-        </div>
+        <Card
+          elevation={0}
+          sx={{
+            mb: 2,
+            backgroundColor: "#fef2f2",
+            border: "1px solid #fecaca",
+            borderRadius: 2,
+          }}
+        >
+          <CardContent sx={{ py: 1.5 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#b91c1c",
+              }}
+            >
+              {error}
+            </Typography>
+          </CardContent>
+        </Card>
       )}
 
-
-      {/* ================= LOADING ================= */}
+      {/* ======================================================
+          LOADING
+      ====================================================== */}
 
       {loading ? (
-
-        <div className="leave-balance-loading">
-          Loading leave balances...
-        </div>
-
+        <Card
+          elevation={0}
+          sx={{
+            border: "1px solid #e2e8f0",
+            borderRadius: 2.5,
+          }}
+        >
+          <CardContent
+            sx={{
+              py: 6,
+              textAlign: "center",
+            }}
+          >
+            <Typography
+              color="text.secondary"
+            >
+              Loading leave balances...
+            </Typography>
+          </CardContent>
+        </Card>
       ) : balances.length === 0 ? (
-
-        <div className="leave-balance-empty">
-          No leave balance records found.
-        </div>
-
+        <Card
+          elevation={0}
+          sx={{
+            border: "1px solid #e2e8f0",
+            borderRadius: 2.5,
+          }}
+        >
+          <CardContent
+            sx={{
+              py: 6,
+              textAlign: "center",
+            }}
+          >
+            <Typography
+              color="text.secondary"
+            >
+              No leave balance records found.
+            </Typography>
+          </CardContent>
+        </Card>
       ) : filteredBalances.length === 0 ? (
+        <Card
+          elevation={0}
+          sx={{
+            border: "1px solid #e2e8f0",
+            borderRadius: 2.5,
+          }}
+        >
+          <CardContent
+            sx={{
+              py: 6,
+              textAlign: "center",
+            }}
+          >
+            <Typography
+              color="text.secondary"
+              sx={{ mb: 1 }}
+            >
+              No leave balance found.
+            </Typography>
 
-        <div className="leave-balance-empty">
-          No leave balance found for the selected employee.
-        </div>
-
+            <Button
+              size="small"
+              onClick={clearFilters}
+              sx={{
+                textTransform: "none",
+              }}
+            >
+              Clear filters
+            </Button>
+          </CardContent>
+        </Card>
       ) : (
+        /* ====================================================
+           TABLE
+        ==================================================== */
 
-        /* ================= TABLE ================= */
+        <Card
+          elevation={0}
+          sx={{
+            border: "1px solid #e2e8f0",
+            borderRadius: 2.5,
+            overflow: "hidden",
+          }}
+        >
+          {/* TABLE HEADER */}
 
-        <div className="leave-balance-card">
+          <Box
+            sx={{
+              px: 2.5,
+              py: 1.75,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: "#ffffff",
+            }}
+          >
+            <Box>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 700,
+                  color: "#172033",
+                }}
+              >
+                Employee Leave Balances
+              </Typography>
 
-          <div className="table-wrapper">
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "#64748b",
+                }}
+              >
+                Showing {filteredBalances.length}{" "}
+                leave balance records
+              </Typography>
+            </Box>
+          </Box>
 
-            <table className="leave-balance-table">
+          <Divider />
 
-              <thead>
-
-                <tr>
-                  <th>Employee ID</th>
-                  <th>Leave Type</th>
-                  <th>Year</th>
-                  <th>Entitled</th>
-                  <th>Accrued</th>
-                  <th>Used</th>
-                  <th>Balance</th>
-                </tr>
-
-              </thead>
-
-              <tbody>
-
-                {filteredBalances.map((balance) => (
-
-                  <tr
-                    key={balance.employeeLeaveBalanceId}
+          <TableContainer
+            sx={{
+              maxHeight: 600,
+            }}
+          >
+            <Table
+              stickyHeader
+              sx={{
+                minWidth: 1100,
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    sx={headerCellStyle}
                   >
+                    Employee ID
+                  </TableCell>
 
-                    <td>
-                      {balance.employeeId}
-                    </td>
+                  <TableCell
+                    sx={headerCellStyle}
+                  >
+                    Azure Employee ID
+                  </TableCell>
 
-                    <td>
-                      {getLeaveTypeName(
-                        balance.leaveTypeId
-                      )}
-                    </td>
+                  <TableCell
+                    sx={headerCellStyle}
+                  >
+                    Employee Name
+                  </TableCell>
 
-                    <td>
-                      {balance.year}
-                    </td>
+                  <TableCell
+                    sx={headerCellStyle}
+                  >
+                    Leave Type
+                  </TableCell>
 
-                    <td>
-                      {balance.entitledDays}
-                    </td>
+                  <TableCell
+                    sx={headerCellStyle}
+                  >
+                    Year
+                  </TableCell>
 
-                    <td>
-                      {balance.accruedDays}
-                    </td>
+                  <TableCell
+                    align="right"
+                    sx={headerCellStyle}
+                  >
+                    Entitled
+                  </TableCell>
 
-                    <td>
-                      {balance.usedDays}
-                    </td>
+                  <TableCell
+                    align="right"
+                    sx={headerCellStyle}
+                  >
+                    Accrued
+                  </TableCell>
 
-                    <td>
+                  <TableCell
+                    align="right"
+                    sx={headerCellStyle}
+                  >
+                    Used
+                  </TableCell>
 
-                      <span className="balance-value">
-                        {balance.balanceDays}
-                      </span>
+                  <TableCell
+                    align="right"
+                    sx={headerCellStyle}
+                  >
+                    Balance
+                  </TableCell>
+                </TableRow>
+              </TableHead>
 
-                    </td>
+              <TableBody>
+                {filteredBalances.map(
+                  (balance) => {
+                    const balanceValue =
+                      Number(
+                        balance.balanceDays || 0
+                      );
 
-                  </tr>
+                    return (
+                      <TableRow
+                        key={
+                          balance.employeeLeaveBalanceId
+                        }
+                        hover
+                        sx={{
+                          "&:last-child td": {
+                            borderBottom: 0,
+                          },
+                        }}
+                      >
+                        {/* EMPLOYEE ID */}
 
-                ))}
+                        <TableCell
+                          sx={bodyCellStyle}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                              color: "#334155",
+                            }}
+                          >
+                            {balance.employeeId}
+                          </Typography>
+                        </TableCell>
 
-              </tbody>
+                        {/* AZURE ID */}
 
-            </table>
+                        <TableCell
+                          sx={bodyCellStyle}
+                        >
+                          {balance.azureEmployeeId ? (
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontWeight: 600,
+                                color: "#2563eb",
+                              }}
+                            >
+                              {
+                                balance.azureEmployeeId
+                              }
+                            </Typography>
+                          ) : (
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "#94a3b8",
+                              }}
+                            >
+                              —
+                            </Typography>
+                          )}
+                        </TableCell>
 
-          </div>
+                        {/* EMPLOYEE NAME */}
 
-        </div>
+                        <TableCell
+                          sx={bodyCellStyle}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                              color: "#334155",
+                            }}
+                          >
+                            {balance.employeeName ||
+                              "—"}
+                          </Typography>
+                        </TableCell>
 
+                        {/* LEAVE TYPE */}
+
+                        <TableCell
+                          sx={bodyCellStyle}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 500,
+                              color: "#334155",
+                            }}
+                          >
+                            {getLeaveTypeName(
+                              balance.leaveTypeId
+                            )}
+                          </Typography>
+                        </TableCell>
+
+                        {/* YEAR */}
+
+                        <TableCell
+                          sx={bodyCellStyle}
+                        >
+                          {balance.year}
+                        </TableCell>
+
+                        {/* ENTITLED */}
+
+                        <TableCell
+                          align="right"
+                          sx={bodyCellStyle}
+                        >
+                          {Number(
+                            balance.entitledDays || 0
+                          ).toFixed(2)}
+                        </TableCell>
+
+                        {/* ACCRUED */}
+
+                        <TableCell
+                          align="right"
+                          sx={bodyCellStyle}
+                        >
+                          {Number(
+                            balance.accruedDays || 0
+                          ).toFixed(2)}
+                        </TableCell>
+
+                        {/* USED */}
+
+                        <TableCell
+                          align="right"
+                          sx={bodyCellStyle}
+                        >
+                          {Number(
+                            balance.usedDays || 0
+                          ).toFixed(2)}
+                        </TableCell>
+
+                        {/* BALANCE */}
+
+                        <TableCell
+                          align="right"
+                          sx={bodyCellStyle}
+                        >
+                          <Chip
+                            label={balanceValue.toFixed(
+                              2
+                            )}
+                            size="small"
+                            sx={{
+                              minWidth: 58,
+                              fontWeight: 700,
+                              backgroundColor:
+                                balanceValue > 0
+                                  ? "#e8f7ef"
+                                  : "#fef2f2",
+                              color:
+                                balanceValue > 0
+                                  ? "#087443"
+                                  : "#b91c1c",
+                              border:
+                                balanceValue > 0
+                                  ? "1px solid #c7eed8"
+                                  : "1px solid #fecaca",
+                            }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card>
       )}
-
-    </div>
+    </Box>
   );
 }
+
+// ==========================================================
+// TABLE STYLES
+// ==========================================================
+
+const headerCellStyle = {
+  backgroundColor: "#243f7d",
+  color: "#ffffff",
+  fontWeight: 700,
+  fontSize: "12px",
+  whiteSpace: "nowrap",
+  py: 1.6,
+  px: 2,
+  borderBottom: "none",
+};
+
+const bodyCellStyle = {
+  py: 1.6,
+  px: 2,
+  fontSize: "13px",
+  color: "#334155",
+  borderBottom: "1px solid #edf0f5",
+  whiteSpace: "nowrap",
+};

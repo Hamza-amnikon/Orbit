@@ -5,7 +5,11 @@
 .leave-history-page {
     padding: 30px;
 }
-
+.azure-employee-id {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+}
 
 /* Header */
 
