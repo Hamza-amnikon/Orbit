@@ -1,157 +1,493 @@
+/* =========================================================
+   EMPLOYEE NAVBAR
+========================================================= */
+
 .employee-navbar {
-    height: 70px;
-    background: #ffffff;
+    height: 72px;
+    width: 100%;
+
+    background: rgba(255, 255, 255, 0.96);
 
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 
-    padding: 0 30px;
+    padding: 0 28px;
 
     border-bottom: 1px solid #e5e7eb;
 
     position: sticky;
     top: 0;
+    z-index: 1000;
 
-    z-index: 100;
+    box-sizing: border-box;
 
-    width: 100%;
+    backdrop-filter: blur(10px);
+
+    transition:
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+
+/* =========================================================
+   LEFT SIDE
+========================================================= */
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+
+    min-width: 180px;
 }
 
 .navbar-left h2 {
     margin: 0;
-    font-size: 28px;
+
+    font-size: 23px;
+    line-height: 1;
+
     font-weight: 700;
-    color: #1f2937;
+
+    color: #111827;
+
+    letter-spacing: -0.4px;
 }
+
+
+/* =========================================================
+   RIGHT SIDE
+========================================================= */
 
 .navbar-right {
     display: flex;
     align-items: center;
-    gap: 18px;
+
+    gap: 14px;
+
+    margin-left: auto;
 }
 
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
 .search-box {
+    width: 300px;
+    height: 42px;
+
     display: flex;
     align-items: center;
 
-    width: 320px;
-    height: 46px;
+    padding: 0 14px;
 
-    background: #f3f4f6;
+    background: #f8fafc;
 
-    padding: 0 15px;
+    border: 1px solid #e5e7eb;
 
-    border-radius: 12px;
+    border-radius: 11px;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.search-box svg {
+    font-size: 21px;
+
+    color: #6b7280;
+
+    flex-shrink: 0;
 }
 
 .search-box input {
     width: 100%;
+
+    height: 100%;
+
+    margin-left: 9px;
+
+    padding: 0;
 
     border: none;
     outline: none;
 
     background: transparent;
 
-    margin-left: 10px;
+    color: #1f2937;
 
-    font-size: 15px;
+    font-size: 14px;
+
+    font-family: inherit;
 }
 
+.search-box input::placeholder {
+    color: #9ca3af;
+}
+
+.search-box:focus-within {
+    background: #ffffff;
+
+    border-color: #93c5fd;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
 .notification-btn {
-    width: 46px;
-    height: 46px;
+    width: 42px;
+    height: 42px;
 
-    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    background: #f3f4f6;
+    position: relative;
+
+    border: 1px solid #e5e7eb;
+
+    background: #f8fafc;
+
+    color: #4b5563;
+
+    border-radius: 11px;
+
+    cursor: pointer;
+
+    padding: 0;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.notification-btn svg {
+    font-size: 21px;
+}
+
+.notification-btn:hover {
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    border-color: #bfdbfe;
+
+    transform: translateY(-1px);
+}
+
+.notification-btn:active {
+    transform: translateY(0);
+}
+
+
+/* Notification dot */
+
+.notification-btn::after {
+    content: "";
+
+    position: absolute;
+
+    top: 8px;
+    right: 8px;
+
+    width: 7px;
+    height: 7px;
+
+    background: #ef4444;
+
+    border: 2px solid #ffffff;
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.profile {
+    min-width: 190px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 5px 8px 5px 6px;
 
     border-radius: 12px;
 
     cursor: pointer;
 
-    transition: .25s;
+    transition:
+        background 0.2s ease;
 }
 
-.notification-btn:hover {
-    background: #e5e7eb;
+.profile:hover {
+    background: #f8fafc;
 }
 
-.profile {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-}
+
+/* =========================================================
+   AVATAR
+========================================================= */
 
 .avatar {
-    width: 46px;
-    height: 46px;
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
 
     border-radius: 50%;
 
-    background: #1976d2;
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
 
-    color: white;
+    color: #ffffff;
 
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 
-    font-size: 18px;
+    overflow: hidden;
+
+    flex-shrink: 0;
+
+    font-size: 16px;
     font-weight: 700;
+
+    border: 2px solid #ffffff;
+
+    box-shadow:
+        0 2px 7px rgba(37, 99, 235, 0.25);
+}
+
+
+/* =========================================================
+   PROFILE IMAGE
+========================================================= */
+
+.navbar-avatar-image {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   PROFILE INFORMATION
+========================================================= */
+
+.profile-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+
+    flex: 1;
 }
 
 .profile-info h4 {
     margin: 0;
-    font-size: 15px;
+
+    max-width: 145px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 14px;
+
+    line-height: 20px;
+
     font-weight: 600;
-    color: #1f2937;
+
+    color: #111827;
 }
 
 .profile-info span {
     display: block;
-    margin-top: 2px;
-    font-size: 13px;
+
+    max-width: 145px;
+
+    margin-top: 1px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 12px;
+
+    line-height: 17px;
+
     color: #6b7280;
 }
 
-.avatar{
 
-    width:42px;
+/* =========================================================
+   PROFILE ARROW
+========================================================= */
 
-    height:42px;
+.profile > svg {
+    color: #9ca3af;
 
-    border-radius:50%;
+    font-size: 21px;
 
-    background:#2563eb;
+    flex-shrink: 0;
 
-    color:#fff;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-weight:700;
-
-    font-size:18px;
-
-    overflow:hidden;
-
-    flex-shrink:0;
-
+    transition:
+        transform 0.2s ease,
+        color 0.2s ease;
 }
 
-.navbar-avatar-image{
+.profile:hover > svg {
+    color: #4b5563;
 
-    width:100%;
+    transform: translateY(2px);
+}
 
-    height:100%;
 
-    object-fit:cover;
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
 
-    border-radius:50%;
+@media (max-width: 1000px) {
 
+    .employee-navbar {
+        padding: 0 20px;
+    }
+
+    .search-box {
+        width: 230px;
+    }
+
+    .profile {
+        min-width: auto;
+    }
+
+    .profile-info {
+        display: none;
+    }
+
+    .profile > svg {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .employee-navbar {
+        height: 64px;
+
+        padding: 0 14px;
+    }
+
+    .navbar-left h2 {
+        font-size: 20px;
+    }
+
+    .navbar-right {
+        gap: 8px;
+    }
+
+    .search-box {
+        width: 42px;
+        height: 42px;
+
+        padding: 0;
+
+        justify-content: center;
+
+        border-radius: 10px;
+    }
+
+    .search-box input {
+        display: none;
+    }
+
+    .search-box svg {
+        font-size: 20px;
+    }
+
+    .notification-btn {
+        width: 42px;
+        height: 42px;
+    }
+
+    .profile {
+        padding: 0;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .employee-navbar {
+        padding: 0 10px;
+    }
+
+    .navbar-left h2 {
+        font-size: 18px;
+    }
+
+    .navbar-right {
+        gap: 6px;
+    }
+
+    .notification-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    .search-box {
+        width: 38px;
+        height: 38px;
+    }
+
+    .avatar {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+    }
 }
