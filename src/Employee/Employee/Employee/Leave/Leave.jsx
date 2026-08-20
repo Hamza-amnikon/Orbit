@@ -9,7 +9,9 @@ import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import PeopleIcon from "@mui/icons-material/People";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 import {
     Dialog,
@@ -23,10 +25,16 @@ import {
     Typography,
     Alert,
     CircularProgress,
+    Box,
+    Paper,
+    Tooltip,
+    Chip,
+    Divider,
 } from "@mui/material";
 
 import LeaveService from "./LeaveService";
 import api from "../../../../services/api";
+
 
 const Leave = () => {
 
@@ -45,6 +53,11 @@ const Leave = () => {
     const [error, setError] = useState("");
 
     const [period, setPeriod] = useState("This Month");
+
+    // Calendar month
+    const [calendarMonth, setCalendarMonth] =
+        useState(new Date());
+
 
     // =========================================================
     // APPLY LEAVE DIALOG
@@ -67,6 +80,7 @@ const Leave = () => {
         document: null,
     });
 
+
     // =========================================================
     // LOAD DATA
     // =========================================================
@@ -74,6 +88,7 @@ const Leave = () => {
     useEffect(() => {
         loadLeaveData();
     }, []);
+
 
     const loadLeaveData = async () => {
 
@@ -113,6 +128,7 @@ const Leave = () => {
 
             setProfile(employee);
 
+
             // =====================================================
             // 2. LOAD ALL DATA
             // =====================================================
@@ -133,7 +149,9 @@ const Leave = () => {
                 LeaveService.getLeaveTypes(),
 
                 LeaveService.getLeavePolicies(),
+
             ]);
+
 
             // =====================================================
             // 3. NORMALIZE DATA
@@ -159,6 +177,7 @@ const Leave = () => {
                     ? leavePolicyResponse
                     : [];
 
+
             // =====================================================
             // 4. FILTER EMPLOYEE LEAVES
             // =====================================================
@@ -170,6 +189,7 @@ const Leave = () => {
                         employeeId
                 );
 
+
             // =====================================================
             // 5. FILTER EMPLOYEE BALANCES
             // =====================================================
@@ -180,6 +200,7 @@ const Leave = () => {
                         Number(balance.employeeId) ===
                         employeeId
                 );
+
 
             console.log(
                 "All Leave Requests:",
@@ -201,6 +222,7 @@ const Leave = () => {
                 allLeaveTypes
             );
 
+
             // =====================================================
             // 6. UPDATE STATE
             // =====================================================
@@ -210,7 +232,8 @@ const Leave = () => {
             setLeaveTypes(allLeaveTypes);
             setLeavePolicies(allLeavePolicies);
 
-        } catch (err) {
+        }
+        catch (err) {
 
             console.error(
                 "Leave Dashboard Error:",
@@ -226,27 +249,35 @@ const Leave = () => {
                     typeof err.response.data ===
                     "string"
                 ) {
+
                     message =
                         err.response.data;
 
-                } else if (
+                }
+                else if (
                     err.response.data.message
                 ) {
+
                     message =
                         err.response.data.message;
                 }
+
             }
             else if (err?.message) {
-                message = err.message;
+
+                message =
+                    err.message;
             }
 
             setError(message);
 
-        } finally {
+        }
+        finally {
 
             setLoading(false);
         }
     };
+
 
     // =========================================================
     // LEAVE TYPE NAME
@@ -266,6 +297,7 @@ const Leave = () => {
             "Unknown Leave"
         );
     };
+
 
     // =========================================================
     // CALCULATE DAYS
@@ -304,6 +336,7 @@ const Leave = () => {
         );
     };
 
+
     // =========================================================
     // FORMAT NUMBER
     // =========================================================
@@ -322,6 +355,7 @@ const Leave = () => {
             .replace(/\.00$/, "")
             .replace(/(\.\d)0$/, "$1");
     };
+
 
     // =========================================================
     // FORMAT DATE
@@ -354,8 +388,9 @@ const Leave = () => {
         );
     };
 
+
     // =========================================================
-    // STATUS
+    // STATUS CLASS
     // =========================================================
 
     const getStatusClass = (status) => {
@@ -383,6 +418,7 @@ const Leave = () => {
         return "";
     };
 
+
     // =========================================================
     // PERIOD FILTER
     // =========================================================
@@ -395,6 +431,11 @@ const Leave = () => {
 
         const now =
             new Date();
+
+
+        // ---------------------------------------------------------
+        // THIS YEAR
+        // ---------------------------------------------------------
 
         if (period === "This Year") {
 
@@ -421,6 +462,11 @@ const Leave = () => {
                 }
             );
         }
+
+
+        // ---------------------------------------------------------
+        // LAST MONTH
+        // ---------------------------------------------------------
 
         if (period === "Last Month") {
 
@@ -462,6 +508,11 @@ const Leave = () => {
             );
         }
 
+
+        // ---------------------------------------------------------
+        // THIS MONTH
+        // ---------------------------------------------------------
+
         return leaves.filter(
             (leave) => {
 
@@ -488,6 +539,7 @@ const Leave = () => {
         );
 
     }, [leaves, period]);
+
 
     // =========================================================
     // STATISTICS
@@ -534,14 +586,9 @@ const Leave = () => {
 
     }, [filteredLeaves]);
 
+
     // =========================================================
     // ALL PENDING LEAVES
-    //
-    // IMPORTANT:
-    // Do NOT use period filter here.
-    //
-    // This makes the Pending section show pending
-    // requests even if they were submitted last month.
     // =========================================================
 
     const pendingLeaves = useMemo(() => {
@@ -556,43 +603,6 @@ const Leave = () => {
 
     }, [leaves]);
 
-    // =========================================================
-    // PENDING BY LEAVE TYPE
-    // =========================================================
-
-    const pendingByLeaveType = useMemo(() => {
-
-        const result = {};
-
-        pendingLeaves.forEach(
-            (leave) => {
-
-                const leaveTypeId =
-                    Number(
-                        leave.leaveTypeId
-                    );
-
-                const days =
-                    Number(
-                        leave.noOfDays
-                    ) ||
-                    calculateDays(
-                        leave.fromDate,
-                        leave.toDate
-                    );
-
-                if (!result[leaveTypeId]) {
-                    result[leaveTypeId] = 0;
-                }
-
-                result[leaveTypeId] +=
-                    days;
-            }
-        );
-
-        return result;
-
-    }, [pendingLeaves]);
 
     // =========================================================
     // TOTAL PENDING DAYS
@@ -617,11 +627,13 @@ const Leave = () => {
                         );
 
                     return total + days;
+
                 },
                 0
             );
 
         }, [pendingLeaves]);
+
 
     // =========================================================
     // LEAVE TAKEN
@@ -651,11 +663,13 @@ const Leave = () => {
                                 leave.toDate
                             )
                         );
+
                     },
                     0
                 );
 
         }, [filteredLeaves]);
+
 
     // =========================================================
     // EMPLOYEES CURRENTLY ON LEAVE
@@ -692,6 +706,7 @@ const Leave = () => {
             ).length;
 
         }, [filteredLeaves]);
+
 
     // =========================================================
     // LEAVE TYPE DISTRIBUTION
@@ -745,6 +760,7 @@ const Leave = () => {
             leaveTypes,
         ]);
 
+
     // =========================================================
     // BALANCE TABLE
     // =========================================================
@@ -760,6 +776,7 @@ const Leave = () => {
                 );
 
         }, [leaveBalances]);
+
 
     // =========================================================
     // SELECTED LEAVE POLICY
@@ -789,12 +806,14 @@ const Leave = () => {
             leaveForm.leaveTypeId,
         ]);
 
+
     const requiresDocument =
         selectedLeavePolicy?.requiresDocument === true ||
         selectedLeavePolicy?.requiresDocument === 1 ||
         String(
             selectedLeavePolicy?.requiresDocument
         ).toLowerCase() === "true";
+
 
     // =========================================================
     // TODAY
@@ -804,6 +823,351 @@ const Leave = () => {
         new Date()
             .toISOString()
             .split("T")[0];
+
+
+    // =========================================================
+    // CALENDAR HELPERS
+    // =========================================================
+
+    const getDateKey = (date) => {
+
+        const year =
+            date.getFullYear();
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    };
+
+
+    const getLeaveDateKey = (value) => {
+
+        if (!value) {
+            return "";
+        }
+
+        const stringValue =
+            String(value);
+
+        // Handles YYYY-MM-DD and
+        // YYYY-MM-DDTHH:mm:ss
+        if (
+            /^\d{4}-\d{2}-\d{2}/.test(
+                stringValue
+            )
+        ) {
+            return stringValue.substring(
+                0,
+                10
+            );
+        }
+
+        const parsed =
+            new Date(value);
+
+        if (
+            isNaN(
+                parsed.getTime()
+            )
+        ) {
+            return "";
+        }
+
+        return getDateKey(parsed);
+    };
+
+
+    // =========================================================
+    // CALENDAR LEAVE STATUS
+    // =========================================================
+
+    const getCalendarLeavesForDate =
+        (date) => {
+
+            const dateKey =
+                getDateKey(date);
+
+            return leaves.filter(
+                (leave) => {
+
+                    const fromKey =
+                        getLeaveDateKey(
+                            leave.fromDate
+                        );
+
+                    const toKey =
+                        getLeaveDateKey(
+                            leave.toDate
+                        );
+
+                    if (
+                        !fromKey ||
+                        !toKey
+                    ) {
+                        return false;
+                    }
+
+                    return (
+                        dateKey >= fromKey &&
+                        dateKey <= toKey
+                    );
+                }
+            );
+        };
+
+
+    // =========================================================
+    // CALENDAR STATUS
+    // =========================================================
+
+    const getCalendarStatus =
+        (date) => {
+
+            const dateLeaves =
+                getCalendarLeavesForDate(
+                    date
+                );
+
+            if (
+                dateLeaves.length === 0
+            ) {
+                return null;
+            }
+
+            const approved =
+                dateLeaves.find(
+                    (leave) =>
+                        String(
+                            leave.status
+                        ).toLowerCase() ===
+                        "approved"
+                );
+
+            if (approved) {
+                return {
+                    status: "approved",
+                    leaves: dateLeaves,
+                };
+            }
+
+            const pending =
+                dateLeaves.find(
+                    (leave) =>
+                        String(
+                            leave.status
+                        ).toLowerCase() ===
+                        "pending"
+                );
+
+            if (pending) {
+                return {
+                    status: "pending",
+                    leaves: dateLeaves,
+                };
+            }
+
+            const rejected =
+                dateLeaves.find(
+                    (leave) =>
+                        String(
+                            leave.status
+                        ).toLowerCase() ===
+                        "rejected"
+                );
+
+            if (rejected) {
+                return {
+                    status: "rejected",
+                    leaves: dateLeaves,
+                };
+            }
+
+            return {
+                status: "normal",
+                leaves: dateLeaves,
+            };
+        };
+
+
+    // =========================================================
+    // CALENDAR MONTH HELPERS
+    // =========================================================
+
+    const calendarYear =
+        calendarMonth.getFullYear();
+
+    const calendarMonthIndex =
+        calendarMonth.getMonth();
+
+    const firstDayOfMonth =
+        new Date(
+            calendarYear,
+            calendarMonthIndex,
+            1
+        );
+
+    const daysInMonth =
+        new Date(
+            calendarYear,
+            calendarMonthIndex + 1,
+            0
+        ).getDate();
+
+    const startingDay =
+        firstDayOfMonth.getDay();
+
+
+    const calendarDays =
+        useMemo(() => {
+
+            const days = [];
+
+            // Empty cells before month starts
+            for (
+                let index = 0;
+                index < startingDay;
+                index++
+            ) {
+                days.push(null);
+            }
+
+            for (
+                let day = 1;
+                day <= daysInMonth;
+                day++
+            ) {
+
+                days.push(
+                    new Date(
+                        calendarYear,
+                        calendarMonthIndex,
+                        day
+                    )
+                );
+            }
+
+            return days;
+
+        }, [
+            calendarYear,
+            calendarMonthIndex,
+            startingDay,
+            daysInMonth,
+        ]);
+
+
+    const goPreviousMonth = () => {
+
+        setCalendarMonth(
+            new Date(
+                calendarYear,
+                calendarMonthIndex - 1,
+                1
+            )
+        );
+    };
+
+
+    const goNextMonth = () => {
+
+        setCalendarMonth(
+            new Date(
+                calendarYear,
+                calendarMonthIndex + 1,
+                1
+            )
+        );
+    };
+
+
+    const goToday = () => {
+
+        setCalendarMonth(
+            new Date()
+        );
+    };
+
+
+    // =========================================================
+    // CALENDAR COLORS
+    // =========================================================
+
+    const getCalendarColors =
+        (status) => {
+
+            if (
+                status === "approved"
+            ) {
+
+                return {
+                    background: "#e8f7ee",
+                    border: "#8fd3a9",
+                    color: "#16803c",
+                };
+            }
+
+            if (
+                status === "pending"
+            ) {
+
+                return {
+                    background: "#fff8df",
+                    border: "#f3cf65",
+                    color: "#9a6700",
+                };
+            }
+
+            if (
+                status === "rejected"
+            ) {
+
+                return {
+                    background: "#fff0f0",
+                    border: "#f2a6a6",
+                    color: "#c62828",
+                };
+            }
+
+            return {
+                background: "#ffffff",
+                border: "#e5e7eb",
+                color: "#334155",
+            };
+        };
+
+
+    // =========================================================
+    // CALENDAR TOOLTIP
+    // =========================================================
+
+    const getCalendarTooltip =
+        (calendarData) => {
+
+            if (!calendarData) {
+                return "";
+            }
+
+            return calendarData.leaves
+                .map(
+                    (leave) =>
+                        `${getLeaveTypeName(
+                            leave.leaveTypeId
+                        )} - ${
+                            leave.status ||
+                            "Unknown"
+                        }`
+                )
+                .join("\n");
+        };
+
 
     // =========================================================
     // OPEN APPLY LEAVE
@@ -824,6 +1188,7 @@ const Leave = () => {
         setOpenLeaveDialog(true);
     };
 
+
     // =========================================================
     // CLOSE APPLY LEAVE
     // =========================================================
@@ -837,6 +1202,7 @@ const Leave = () => {
         setOpenLeaveDialog(false);
         setFormError("");
     };
+
 
     // =========================================================
     // FORM CHANGE
@@ -860,6 +1226,7 @@ const Leave = () => {
             setFormError("");
         };
 
+
     // =========================================================
     // DOCUMENT CHANGE
     // =========================================================
@@ -881,6 +1248,7 @@ const Leave = () => {
             setFormError("");
         };
 
+
     // =========================================================
     // SUBMIT LEAVE
     // =========================================================
@@ -889,6 +1257,7 @@ const Leave = () => {
         async () => {
 
             setFormError("");
+
 
             if (!profile?.employeeId) {
 
@@ -899,6 +1268,7 @@ const Leave = () => {
                 return;
             }
 
+
             if (!leaveForm.leaveTypeId) {
 
                 setFormError(
@@ -907,6 +1277,7 @@ const Leave = () => {
 
                 return;
             }
+
 
             if (!leaveForm.fromDate) {
 
@@ -917,6 +1288,7 @@ const Leave = () => {
                 return;
             }
 
+
             if (!leaveForm.toDate) {
 
                 setFormError(
@@ -925,6 +1297,7 @@ const Leave = () => {
 
                 return;
             }
+
 
             if (
                 leaveForm.toDate <
@@ -938,6 +1311,7 @@ const Leave = () => {
                 return;
             }
 
+
             if (
                 !leaveForm.reason.trim()
             ) {
@@ -948,6 +1322,7 @@ const Leave = () => {
 
                 return;
             }
+
 
             if (
                 requiresDocument &&
@@ -961,8 +1336,10 @@ const Leave = () => {
                 return;
             }
 
+
             const leaveData =
                 new FormData();
+
 
             leaveData.append(
                 "employeeId",
@@ -973,6 +1350,7 @@ const Leave = () => {
                 )
             );
 
+
             leaveData.append(
                 "leaveTypeId",
                 String(
@@ -982,20 +1360,24 @@ const Leave = () => {
                 )
             );
 
+
             leaveData.append(
                 "fromDate",
                 leaveForm.fromDate
             );
+
 
             leaveData.append(
                 "toDate",
                 leaveForm.toDate
             );
 
+
             leaveData.append(
                 "reason",
                 leaveForm.reason.trim()
             );
+
 
             if (leaveForm.document) {
 
@@ -1005,6 +1387,7 @@ const Leave = () => {
                 );
             }
 
+
             try {
 
                 setSubmittingLeave(true);
@@ -1013,7 +1396,9 @@ const Leave = () => {
                     leaveData
                 );
 
+
                 setOpenLeaveDialog(false);
+
 
                 setLeaveForm({
                     leaveTypeId: "",
@@ -1023,11 +1408,13 @@ const Leave = () => {
                     document: null,
                 });
 
+
                 setFormError("");
 
                 await loadLeaveData();
 
-            } catch (submitError) {
+            }
+            catch (submitError) {
 
                 console.error(
                     "Apply Leave Error:",
@@ -1046,11 +1433,13 @@ const Leave = () => {
                         : "Unable to submit leave request. Please try again."
                 );
 
-            } finally {
+            }
+            finally {
 
                 setSubmittingLeave(false);
             }
         };
+
 
     // =========================================================
     // LOADING
@@ -1059,31 +1448,41 @@ const Leave = () => {
     if (loading) {
 
         return (
+
             <div className="leave-dashboard">
 
                 <div className="leave-header">
 
                     <div>
-                        <h1>My Leave</h1>
+
+                        <h1>
+                            My Leave
+                        </h1>
 
                         <p>
                             Loading your leave
                             information...
                         </p>
+
                     </div>
 
                 </div>
 
+
                 <div className="leave-loading">
+
                     <CircularProgress />
+
                     <span>
                         Loading leave data...
                     </span>
+
                 </div>
 
             </div>
         );
     }
+
 
     // =========================================================
     // ERROR
@@ -1092,21 +1491,27 @@ const Leave = () => {
     if (error) {
 
         return (
+
             <div className="leave-dashboard">
 
                 <div className="leave-header">
 
                     <div>
-                        <h1>My Leave</h1>
+
+                        <h1>
+                            My Leave
+                        </h1>
 
                         <p>
                             View your leave
                             requests, approvals
                             and usage.
                         </p>
+
                     </div>
 
                 </div>
+
 
                 <div className="leave-error">
 
@@ -1134,6 +1539,7 @@ const Leave = () => {
         );
     }
 
+
     // =========================================================
     // UI
     // =========================================================
@@ -1142,6 +1548,7 @@ const Leave = () => {
 
         <div className="leave-dashboard">
 
+
             {/* =================================================
                 HEADER
             ================================================= */}
@@ -1149,13 +1556,18 @@ const Leave = () => {
             <div className="leave-header">
 
                 <div>
-                    <h1>My Leave</h1>
+
+                    <h1>
+                        My Leave
+                    </h1>
 
                     <p>
                         View your leave requests,
                         approvals and leave usage.
                     </p>
+
                 </div>
+
 
                 <div className="leave-header-actions">
 
@@ -1168,6 +1580,7 @@ const Leave = () => {
                             )
                         }
                     >
+
                         <option>
                             This Month
                         </option>
@@ -1179,7 +1592,9 @@ const Leave = () => {
                         <option>
                             This Year
                         </option>
+
                     </select>
+
 
                     <Button
                         variant="contained"
@@ -1198,19 +1613,24 @@ const Leave = () => {
 
             </div>
 
+
             {/* =================================================
                 STAT CARDS
             ================================================= */}
 
             <div className="leave-stat-grid">
 
+
                 <div className="leave-stat-card total">
 
                     <div className="leave-stat-icon">
+
                         <DashboardIcon />
+
                     </div>
 
                     <div>
+
                         <span>
                             My Requests
                         </span>
@@ -1218,6 +1638,7 @@ const Leave = () => {
                         <h2>
                             {statistics.total}
                         </h2>
+
                     </div>
 
                 </div>
@@ -1226,10 +1647,13 @@ const Leave = () => {
                 <div className="leave-stat-card pending">
 
                     <div className="leave-stat-icon">
+
                         <PendingActionsIcon />
+
                     </div>
 
                     <div>
+
                         <span>
                             Pending
                         </span>
@@ -1237,6 +1661,7 @@ const Leave = () => {
                         <h2>
                             {statistics.pending}
                         </h2>
+
                     </div>
 
                 </div>
@@ -1245,10 +1670,13 @@ const Leave = () => {
                 <div className="leave-stat-card approved">
 
                     <div className="leave-stat-icon">
+
                         <CheckCircleIcon />
+
                     </div>
 
                     <div>
+
                         <span>
                             Approved
                         </span>
@@ -1256,6 +1684,7 @@ const Leave = () => {
                         <h2>
                             {statistics.approved}
                         </h2>
+
                     </div>
 
                 </div>
@@ -1264,10 +1693,13 @@ const Leave = () => {
                 <div className="leave-stat-card rejected">
 
                     <div className="leave-stat-icon">
+
                         <CancelIcon />
+
                     </div>
 
                     <div>
+
                         <span>
                             Rejected
                         </span>
@@ -1275,11 +1707,13 @@ const Leave = () => {
                         <h2>
                             {statistics.rejected}
                         </h2>
+
                     </div>
 
                 </div>
 
             </div>
+
 
             {/* =================================================
                 SECONDARY STATS
@@ -1287,10 +1721,13 @@ const Leave = () => {
 
             <div className="leave-secondary-grid">
 
+
                 <div className="leave-info-card">
 
                     <div className="leave-info-icon blue">
+
                         <EventAvailableIcon />
+
                     </div>
 
                     <div>
@@ -1315,7 +1752,9 @@ const Leave = () => {
                 <div className="leave-info-card">
 
                     <div className="leave-info-icon purple">
+
                         <PeopleIcon />
+
                     </div>
 
                     <div>
@@ -1360,24 +1799,31 @@ const Leave = () => {
 
                     </div>
 
+
                     <div className="pending-summary">
 
                         <PendingActionsIcon />
 
                         <div>
+
                             <strong>
+
                                 {pendingLeaves.length}
                                 {" "}
                                 Pending Requests
+
                             </strong>
 
                             <span>
+
                                 {formatNumber(
                                     totalPendingDays
                                 )}
                                 {" "}
                                 pending day(s)
+
                             </span>
+
                         </div>
 
                     </div>
@@ -1531,183 +1977,15 @@ const Leave = () => {
 
 
             {/* =================================================
-                PENDING LEAVE REQUESTS
-            ================================================= */}
-
-            <div className="leave-panel pending-balance-panel">
-
-                <div className="leave-panel-header">
-
-                    <div>
-
-                        <h2>
-                            Pending Leave Requests
-                        </h2>
-
-                        <p>
-                            Leave requests waiting
-                            for approval
-                        </p>
-
-                    </div>
-
-                    <div className="pending-request-count">
-
-                        <PendingActionsIcon />
-
-                        <strong>
-                            {pendingLeaves.length}
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <div className="pending-table-wrapper">
-
-                    <table className="pending-leave-table">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Employee ID
-                                </th>
-
-                                <th>
-                                    Leave Type
-                                </th>
-
-                                <th>
-                                    From
-                                </th>
-
-                                <th>
-                                    To
-                                </th>
-
-                                <th>
-                                    Days
-                                </th>
-
-                                <th>
-                                    Status
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            {pendingLeaves.length === 0 ? (
-
-                                <tr>
-
-                                    <td
-                                        colSpan="6"
-                                        className="empty-table"
-                                    >
-                                        No pending leave
-                                        requests.
-                                    </td>
-
-                                </tr>
-
-                            ) : (
-
-                                pendingLeaves.map(
-                                    (leave) => (
-
-                                        <tr
-                                            key={
-                                                leave.leaveId
-                                            }
-                                        >
-
-                                            <td>
-                                                {
-                                                    leave.employeeId
-                                                }
-                                            </td>
-
-                                            <td className="leave-type-name">
-
-                                                {
-                                                    getLeaveTypeName(
-                                                        leave.leaveTypeId
-                                                    )
-                                                }
-
-                                            </td>
-
-                                            <td>
-                                                {
-                                                    formatDate(
-                                                        leave.fromDate
-                                                    )
-                                                }
-                                            </td>
-
-                                            <td>
-                                                {
-                                                    formatDate(
-                                                        leave.toDate
-                                                    )
-                                                }
-                                            </td>
-
-                                            <td>
-                                                {
-                                                    Number(
-                                                        leave.noOfDays
-                                                    ) ||
-                                                    calculateDays(
-                                                        leave.fromDate,
-                                                        leave.toDate
-                                                    )
-                                                }
-                                            </td>
-
-                                            <td>
-
-                                                <span
-                                                    className={`leave-status ${getStatusClass(
-                                                        leave.status
-                                                    )}`}
-                                                >
-                                                    {
-                                                        leave.status
-                                                    }
-                                                </span>
-
-                                            </td>
-
-                                        </tr>
-
-                                    )
-                                )
-
-                            )}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-
-            {/* =================================================
-                OVERVIEW + DISTRIBUTION
+                OVERVIEW + CALENDAR
             ================================================= */}
 
             <div className="leave-content-grid">
 
-                {/* LEAVE OVERVIEW */}
+
+                {/* =================================================
+                    LEAVE OVERVIEW
+                ================================================= */}
 
                 <div className="leave-panel">
 
@@ -1754,6 +2032,8 @@ const Leave = () => {
 
                             <>
 
+                                {/* PENDING */}
+
                                 <div className="overview-row">
 
                                     <div className="overview-label">
@@ -1789,6 +2069,8 @@ const Leave = () => {
                                 </div>
 
 
+                                {/* APPROVED */}
+
                                 <div className="overview-row">
 
                                     <div className="overview-label">
@@ -1823,6 +2105,8 @@ const Leave = () => {
 
                                 </div>
 
+
+                                {/* REJECTED */}
 
                                 <div className="overview-row">
 
@@ -1867,72 +2151,546 @@ const Leave = () => {
                 </div>
 
 
-                {/* LEAVE TYPE DISTRIBUTION */}
+                {/* =================================================
+                    MUI LEAVE CALENDAR
+                ================================================= */}
 
-                <div className="leave-panel">
+                <Paper
+                    elevation={0}
+                    sx={{
+                        borderRadius: "14px",
+                        border: "1px solid #e5e7eb",
+                        background: "#ffffff",
+                        overflow: "hidden",
+                    }}
+                >
 
-                    <div className="leave-panel-header">
+                    {/* CALENDAR HEADER */}
 
-                        <div>
+                    <Box
+                        sx={{
+                            px: 2.5,
+                            pt: 2.2,
+                            pb: 1.5,
+                        }}
+                    >
 
-                            <h2>
-                                My Leave Type
-                                Distribution
-                            </h2>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: 1,
+                            }}
+                        >
 
-                            <p>
-                                Your approved
-                                leave usage
-                                by type
-                            </p>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1.2,
+                                }}
+                            >
 
-                        </div>
+                                <Box
+                                    sx={{
+                                        width: 38,
+                                        height: 38,
+                                        borderRadius: "10px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        background: "#eef4ff",
+                                        color: "#2450a4",
+                                    }}
+                                >
 
-                    </div>
+                                    <CalendarMonthIcon />
+
+                                </Box>
 
 
-                    <div className="leave-type-list">
+                                <Box>
 
-                        {leaveTypeDistribution.length === 0 ? (
-
-                            <div className="chart-empty">
-
-                                <p>
-                                    No approved
-                                    leave data
-                                    available.
-                                </p>
-
-                            </div>
-
-                        ) : (
-
-                            leaveTypeDistribution.map(
-                                ([name, days]) => (
-
-                                    <div
-                                        className="leave-type-row"
-                                        key={name}
+                                    <Typography
+                                        sx={{
+                                            fontSize: "18px",
+                                            fontWeight: 700,
+                                            color: "#172033",
+                                            lineHeight: 1.2,
+                                        }}
                                     >
+                                        My Leave Calendar
+                                    </Typography>
 
-                                        <span>
-                                            {name}
-                                        </span>
+                                    <Typography
+                                        sx={{
+                                            mt: 0.4,
+                                            fontSize: "12px",
+                                            color: "#7a869a",
+                                        }}
+                                    >
+                                        View your leave
+                                        status by date
+                                    </Typography>
 
-                                        <strong>
-                                            {days} Days
-                                        </strong>
+                                </Box>
 
-                                    </div>
+                            </Box>
+
+
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                onClick={goToday}
+                                sx={{
+                                    textTransform: "none",
+                                    borderRadius: "8px",
+                                    minWidth: 58,
+                                    fontSize: "12px",
+                                }}
+                            >
+                                Today
+                            </Button>
+
+                        </Box>
+
+
+                        <Divider
+                            sx={{
+                                mt: 2,
+                            }}
+                        />
+
+
+                        {/* MONTH NAVIGATION */}
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                mt: 1.5,
+                            }}
+                        >
+
+                            <IconButton
+                                size="small"
+                                onClick={
+                                    goPreviousMonth
+                                }
+                                sx={{
+                                    border: "1px solid #e5e7eb",
+                                    borderRadius: "8px",
+                                }}
+                            >
+                                <ChevronLeftIcon
+                                    fontSize="small"
+                                />
+                            </IconButton>
+
+
+                            <Typography
+                                sx={{
+                                    fontSize: "16px",
+                                    fontWeight: 700,
+                                    color: "#243b70",
+                                }}
+                            >
+                                {calendarMonth.toLocaleDateString(
+                                    "en-IN",
+                                    {
+                                        month: "long",
+                                        year: "numeric",
+                                    }
+                                )}
+                            </Typography>
+
+
+                            <IconButton
+                                size="small"
+                                onClick={
+                                    goNextMonth
+                                }
+                                sx={{
+                                    border: "1px solid #e5e7eb",
+                                    borderRadius: "8px",
+                                }}
+                            >
+                                <ChevronRightIcon
+                                    fontSize="small"
+                                />
+                            </IconButton>
+
+                        </Box>
+
+                    </Box>
+
+
+                    {/* CALENDAR */}
+
+                    <Box
+                        sx={{
+                            px: 2,
+                            pb: 2,
+                        }}
+                    >
+
+                        {/* WEEK DAYS */}
+
+                        <Box
+                            sx={{
+                                display: "grid",
+                                gridTemplateColumns:
+                                    "repeat(7, 1fr)",
+                                mb: 0.5,
+                            }}
+                        >
+
+                            {[
+                                "Sun",
+                                "Mon",
+                                "Tue",
+                                "Wed",
+                                "Thu",
+                                "Fri",
+                                "Sat",
+                            ].map(
+                                (day) => (
+
+                                    <Box
+                                        key={day}
+                                        sx={{
+                                            textAlign:
+                                                "center",
+                                            py: 0.8,
+                                            fontSize:
+                                                "11px",
+                                            fontWeight: 700,
+                                            color:
+                                                "#94a3b8",
+                                        }}
+                                    >
+                                        {day}
+                                    </Box>
 
                                 )
-                            )
+                            )}
 
-                        )}
+                        </Box>
 
-                    </div>
 
-                </div>
+                        {/* DAYS */}
+
+                        <Box
+                            sx={{
+                                display: "grid",
+                                gridTemplateColumns:
+                                    "repeat(7, 1fr)",
+                                gap: "5px",
+                            }}
+                        >
+
+                            {calendarDays.map(
+                                (date, index) => {
+
+                                    if (!date) {
+
+                                        return (
+                                            <Box
+                                                key={`empty-${index}`}
+                                                sx={{
+                                                    minHeight:
+                                                        52,
+                                                }}
+                                            />
+                                        );
+                                    }
+
+
+                                    const calendarData =
+                                        getCalendarStatus(
+                                            date
+                                        );
+
+                                    const colors =
+                                        getCalendarColors(
+                                            calendarData?.status
+                                        );
+
+
+                                    const dateKey =
+                                        getDateKey(
+                                            date
+                                        );
+
+                                    const isToday =
+                                        dateKey ===
+                                        todayString;
+
+
+                                    return (
+
+                                        <Tooltip
+                                            key={dateKey}
+                                            arrow
+                                            placement="top"
+                                            title={
+                                                calendarData
+                                                    ? (
+                                                        <Box>
+                                                            {calendarData.leaves.map(
+                                                                (
+                                                                    leave,
+                                                                    leaveIndex
+                                                                ) => (
+
+                                                                    <Box
+                                                                        key={
+                                                                            leave.leaveId ||
+                                                                            leaveIndex
+                                                                        }
+                                                                        sx={{
+                                                                            mb:
+                                                                                leaveIndex <
+                                                                                calendarData.leaves.length -
+                                                                                    1
+                                                                                    ? 0.8
+                                                                                    : 0,
+                                                                        }}
+                                                                    >
+
+                                                                        <Typography
+                                                                            sx={{
+                                                                                fontSize:
+                                                                                    "11px",
+                                                                                fontWeight:
+                                                                                    700,
+                                                                            }}
+                                                                        >
+                                                                            {
+                                                                                getLeaveTypeName(
+                                                                                    leave.leaveTypeId
+                                                                                )
+                                                                            }
+                                                                        </Typography>
+
+                                                                        <Typography
+                                                                            sx={{
+                                                                                fontSize:
+                                                                                    "10px",
+                                                                            }}
+                                                                        >
+                                                                            {
+                                                                                leave.status
+                                                                            }
+                                                                            {" • "}
+                                                                            {
+                                                                                calculateDays(
+                                                                                    leave.fromDate,
+                                                                                    leave.toDate
+                                                                                )
+                                                                            }
+                                                                            {" day(s)"}
+                                                                        </Typography>
+
+                                                                    </Box>
+
+                                                                )
+                                                            )}
+                                                        </Box>
+                                                    )
+                                                    : "No leave"
+                                            }
+                                        >
+
+                                            <Box
+                                                sx={{
+                                                    minHeight: 52,
+                                                    borderRadius:
+                                                        "9px",
+                                                    border: `1px solid ${
+                                                        isToday
+                                                            ? "#2563eb"
+                                                            : colors.border
+                                                    }`,
+                                                    background:
+                                                        colors.background,
+                                                    color:
+                                                        colors.color,
+                                                    display:
+                                                        "flex",
+                                                    flexDirection:
+                                                        "column",
+                                                    alignItems:
+                                                        "center",
+                                                    justifyContent:
+                                                        "center",
+                                                    cursor:
+                                                        calendarData
+                                                            ? "pointer"
+                                                            : "default",
+                                                    position:
+                                                        "relative",
+                                                    transition:
+                                                        "all 0.15s ease",
+                                                    boxShadow:
+                                                        isToday
+                                                            ? "0 0 0 2px rgba(37,99,235,0.10)"
+                                                            : "none",
+                                                    "&:hover": {
+                                                        transform:
+                                                            calendarData
+                                                                ? "translateY(-1px)"
+                                                                : "none",
+                                                        boxShadow:
+                                                            calendarData
+                                                                ? "0 3px 8px rgba(15,23,42,0.08)"
+                                                                : "none",
+                                                    },
+                                                }}
+                                            >
+
+                                                <Typography
+                                                    sx={{
+                                                        fontSize:
+                                                            "13px",
+                                                        fontWeight:
+                                                            isToday ||
+                                                            calendarData
+                                                                ? 700
+                                                                : 500,
+                                                    }}
+                                                >
+                                                    {
+                                                        date.getDate()
+                                                    }
+                                                </Typography>
+
+
+                                                {calendarData && (
+
+                                                    <Box
+                                                        sx={{
+                                                            width: 6,
+                                                            height: 6,
+                                                            borderRadius:
+                                                                "50%",
+                                                            background:
+                                                                colors.color,
+                                                            mt:
+                                                                0.4,
+                                                        }}
+                                                    />
+
+                                                )}
+
+
+                                                {isToday && (
+
+                                                    <Typography
+                                                        sx={{
+                                                            position:
+                                                                "absolute",
+                                                            bottom:
+                                                                2,
+                                                            fontSize:
+                                                                "7px",
+                                                            fontWeight:
+                                                                800,
+                                                            textTransform:
+                                                                "uppercase",
+                                                        }}
+                                                    >
+                                                        Today
+                                                    </Typography>
+
+                                                )}
+
+                                            </Box>
+
+                                        </Tooltip>
+                                    );
+                                }
+                            )}
+
+                        </Box>
+
+
+                        {/* LEGEND */}
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: 1.5,
+                                mt: 2,
+                                pt: 1.5,
+                                borderTop:
+                                    "1px solid #edf0f5",
+                            }}
+                        >
+
+                            <Chip
+                                size="small"
+                                label="Approved"
+                                sx={{
+                                    background:
+                                        "#e8f7ee",
+                                    color:
+                                        "#16803c",
+                                    fontWeight: 600,
+                                    fontSize:
+                                        "11px",
+                                }}
+                            />
+
+                            <Chip
+                                size="small"
+                                label="Pending"
+                                sx={{
+                                    background:
+                                        "#fff8df",
+                                    color:
+                                        "#9a6700",
+                                    fontWeight: 600,
+                                    fontSize:
+                                        "11px",
+                                }}
+                            />
+
+                            <Chip
+                                size="small"
+                                label="Rejected"
+                                sx={{
+                                    background:
+                                        "#fff0f0",
+                                    color:
+                                        "#c62828",
+                                    fontWeight: 600,
+                                    fontSize:
+                                        "11px",
+                                }}
+                            />
+
+                            <Chip
+                                size="small"
+                                label="No Leave"
+                                variant="outlined"
+                                sx={{
+                                    color:
+                                        "#64748b",
+                                    fontWeight: 500,
+                                    fontSize:
+                                        "11px",
+                                }}
+                            />
+
+                        </Box>
+
+                    </Box>
+
+                </Paper>
 
             </div>
 
@@ -1958,6 +2716,7 @@ const Leave = () => {
                         </p>
 
                     </div>
+
 
                     <button
                         type="button"
@@ -2045,30 +2804,40 @@ const Leave = () => {
 
                                                 </td>
 
+
                                                 <td>
+
                                                     {
                                                         formatDate(
                                                             leave.fromDate
                                                         )
                                                     }
+
                                                 </td>
 
+
                                                 <td>
+
                                                     {
                                                         formatDate(
                                                             leave.toDate
                                                         )
                                                     }
+
                                                 </td>
 
+
                                                 <td>
+
                                                     {
                                                         calculateDays(
                                                             leave.fromDate,
                                                             leave.toDate
                                                         )
                                                     }
+
                                                 </td>
+
 
                                                 <td>
 
@@ -2077,9 +2846,11 @@ const Leave = () => {
                                                             leave.status
                                                         )}`}
                                                     >
+
                                                         {
                                                             leave.status
                                                         }
+
                                                     </span>
 
                                                 </td>
@@ -2105,28 +2876,48 @@ const Leave = () => {
             ================================================= */}
 
             <Dialog
-                open={openLeaveDialog}
+                open={
+                    openLeaveDialog
+                }
                 onClose={
                     closeApplyLeaveDialog
                 }
                 fullWidth
                 maxWidth="sm"
-                className="leave-dialog"
             >
 
-                <DialogTitle className="leave-dialog-title">
+                <DialogTitle
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent:
+                            "space-between",
+                    }}
+                >
 
-                    <div>
+                    <Box>
 
-                        <Typography className="dialog-title-text">
+                        <Typography
+                            sx={{
+                                fontWeight: 700,
+                                fontSize: 20,
+                            }}
+                        >
                             Apply for Leave
                         </Typography>
 
-                        <Typography className="dialog-subtitle">
+                        <Typography
+                            sx={{
+                                fontSize: 13,
+                                color: "#64748b",
+                                mt: 0.4,
+                            }}
+                        >
                             Submit a new leave request
                         </Typography>
 
-                    </div>
+                    </Box>
+
 
                     <IconButton
                         onClick={
@@ -2144,14 +2935,15 @@ const Leave = () => {
 
                 <DialogContent
                     dividers
-                    className="leave-dialog-content"
                 >
 
                     {formError && (
 
                         <Alert
                             severity="error"
-                            className="leave-form-alert"
+                            sx={{
+                                mb: 2,
+                            }}
                         >
                             {formError}
                         </Alert>
@@ -2159,7 +2951,16 @@ const Leave = () => {
                     )}
 
 
-                    <div className="leave-form">
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 2,
+                            pt: 1,
+                        }}
+                    >
+
+                        {/* LEAVE TYPE */}
 
                         <TextField
                             select
@@ -2211,7 +3012,19 @@ const Leave = () => {
                         </TextField>
 
 
-                        <div className="leave-date-grid">
+                        {/* DATES */}
+
+                        <Box
+                            sx={{
+                                display: "grid",
+                                gridTemplateColumns:
+                                    {
+                                        xs: "1fr",
+                                        sm: "1fr 1fr",
+                                    },
+                                gap: 2,
+                            }}
+                        >
 
                             <TextField
                                 fullWidth
@@ -2262,15 +3075,32 @@ const Leave = () => {
                                 required
                             />
 
-                        </div>
+                        </Box>
 
+
+                        {/* DURATION */}
 
                         {leaveForm.fromDate &&
                             leaveForm.toDate &&
                             leaveForm.toDate >=
                                 leaveForm.fromDate && (
 
-                                <div className="leave-duration">
+                                <Box
+                                    sx={{
+                                        px: 2,
+                                        py: 1.2,
+                                        borderRadius:
+                                            "8px",
+                                        background:
+                                            "#eef4ff",
+                                        color:
+                                            "#2450a4",
+                                        fontSize:
+                                            "13px",
+                                        fontWeight:
+                                            600,
+                                    }}
+                                >
 
                                     Leave Duration:
                                     {" "}
@@ -2288,10 +3118,12 @@ const Leave = () => {
                                             : "Days"
                                     }
 
-                                </div>
+                                </Box>
 
                             )}
 
+
+                        {/* REASON */}
 
                         <TextField
                             fullWidth
@@ -2317,18 +3149,35 @@ const Leave = () => {
                         />
 
 
+                        {/* DOCUMENT */}
+
                         {requiresDocument && (
 
-                            <div className="supporting-document">
+                            <Box>
 
-                                <Typography className="supporting-document-title">
+                                <Typography
+                                    sx={{
+                                        fontSize: 14,
+                                        fontWeight: 600,
+                                        mb: 0.5,
+                                    }}
+                                >
                                     Supporting Document *
                                 </Typography>
 
-                                <Typography className="supporting-document-description">
-                                    This leave type requires
-                                    a supporting document.
+
+                                <Typography
+                                    sx={{
+                                        fontSize: 12,
+                                        color: "#64748b",
+                                        mb: 1.5,
+                                    }}
+                                >
+                                    This leave type
+                                    requires a
+                                    supporting document.
                                 </Typography>
+
 
                                 <Button
                                     variant="outlined"
@@ -2337,6 +3186,7 @@ const Leave = () => {
                                         submittingLeave
                                     }
                                 >
+
                                     Choose Document
 
                                     <input
@@ -2350,15 +3200,24 @@ const Leave = () => {
 
                                 </Button>
 
+
                                 {leaveForm.document && (
 
-                                    <Typography className="selected-document">
+                                    <Typography
+                                        sx={{
+                                            mt: 1,
+                                            fontSize: 12,
+                                            color: "#475569",
+                                        }}
+                                    >
 
                                         Selected:
                                         {" "}
                                         <strong>
                                             {
-                                                leaveForm.document.name
+                                                leaveForm
+                                                    .document
+                                                    .name
                                             }
                                         </strong>
 
@@ -2366,16 +3225,21 @@ const Leave = () => {
 
                                 )}
 
-                            </div>
+                            </Box>
 
                         )}
 
-                    </div>
+                    </Box>
 
                 </DialogContent>
 
 
-                <DialogActions className="leave-dialog-actions">
+                <DialogActions
+                    sx={{
+                        px: 3,
+                        py: 2,
+                    }}
+                >
 
                     <Button
                         onClick={
@@ -2384,7 +3248,6 @@ const Leave = () => {
                         disabled={
                             submittingLeave
                         }
-                        className="cancel-dialog-btn"
                     >
                         Cancel
                     </Button>
@@ -2410,7 +3273,6 @@ const Leave = () => {
                                     <AddIcon />
                                 )
                         }
-                        className="submit-dialog-btn"
                     >
                         {
                             submittingLeave
@@ -2426,5 +3288,6 @@ const Leave = () => {
         </div>
     );
 };
+
 
 export default Leave;

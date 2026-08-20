@@ -146,11 +146,12 @@ const [searchParams] = useSearchParams();
             leave.status === statusFilter;
 
         // Employee ID Search
-        const matchesEmployee =
-            employeeSearch.trim() === "" ||
-            leave.employeeId
-                .toString()
-                .includes(employeeSearch.trim());
+const searchValue = employeeSearch.trim();
+
+const matchesEmployee =
+    searchValue === "" ||
+    leave.employeeId?.toString().includes(searchValue) ||
+    leave.azureEmployeeId?.toString().includes(searchValue);
 
         return matchesStatus && matchesEmployee;
     });
@@ -249,7 +250,7 @@ const [searchParams] = useSearchParams();
 
                     <thead>
                         <tr>
-                            <th>Employee ID</th>
+  <th>Employee</th>
                             <th>Leave Type</th>
                             <th>From Date</th>
                             <th>To Date</th>
@@ -275,10 +276,15 @@ const [searchParams] = useSearchParams();
                             filteredLeaves.map((leave) => (
 
                                 <tr key={leave.leaveId}>
+<td>
+    <div className="employee-id-cell">
+      
 
-                                    <td>
-                                        {leave.employeeId}
-                                    </td>
+        <span>
+            {leave.azureEmployeeId}
+        </span>
+    </div>
+</td>
 
                                     <td>
                                         <strong>
@@ -403,10 +409,15 @@ const [searchParams] = useSearchParams();
 
                             <div className="leave-review-info">
 
-                                <p>
-                                    <strong>Employee ID:</strong>{" "}
-                                    {selectedLeave.employeeId}
-                                </p>
+<p>
+    <strong>Employee ID:</strong>{" "}
+    {selectedLeave.employeeId}
+</p>
+
+<p>
+    <strong>Azure Employee ID:</strong>{" "}
+    {selectedLeave.azureEmployeeId}
+</p>
 
                                 <p>
                                     <strong>Leave Type:</strong>{" "}
@@ -514,10 +525,15 @@ const [searchParams] = useSearchParams();
 
                             <div className="leave-details-grid">
 
-                                <div className="leave-detail-item">
-                                    <span>Employee ID</span>
-                                    <strong>{viewLeave.employeeId}</strong>
-                                </div>
+<div className="leave-detail-item">
+    <span>Employee ID</span>
+    <strong>{viewLeave.employeeId}</strong>
+</div>
+
+<div className="leave-detail-item">
+    <span>Azure Employee ID</span>
+    <strong>{viewLeave.azureEmployeeId}</strong>
+</div>
 
                                 <div className="leave-detail-item">
                                     <span>Leave Type</span>

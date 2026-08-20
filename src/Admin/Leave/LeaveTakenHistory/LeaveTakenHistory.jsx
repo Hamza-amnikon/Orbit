@@ -10,6 +10,7 @@ export default function LeaveTakenHistory() {
 
     const [leaves, setLeaves] = useState([]);
     const [leaveTypes, setLeaveTypes] = useState([]);
+
     // Employee Search
     const [employeeSearch, setEmployeeSearch] = useState("");
 
@@ -28,7 +29,6 @@ export default function LeaveTakenHistory() {
     // ==========================================
 
     async function loadLeaves() {
-
 
         try {
 
@@ -50,6 +50,7 @@ export default function LeaveTakenHistory() {
     // ==========================================
 
     async function loadLeaveTypes() {
+
         try {
 
             const response = await axios.get(LEAVE_TYPE_API);
@@ -122,38 +123,81 @@ export default function LeaveTakenHistory() {
         const isApproved =
             leave.status === "Approved";
 
-        // Search by Employee ID
+        // Search by Employee ID OR Azure Employee ID
+        const searchValue =
+            employeeSearch.trim().toLowerCase();
+
         const matchesEmployee =
-            employeeSearch.trim() === "" ||
+            searchValue === "" ||
+
             leave.employeeId
-                .toString()
-                .includes(employeeSearch.trim());
+                ?.toString()
+                .toLowerCase()
+                .includes(searchValue) ||
+
+            leave.azureEmployeeId
+                ?.toString()
+                .toLowerCase()
+                .includes(searchValue);
 
         return isApproved && matchesEmployee;
     });
 
 
+    // ==========================================
+    // Export Excel
+    // ==========================================
+
     const handleExport = () => {
 
         const exportData = approvedLeaves.map((leave) => ({
-            "Employee ID": leave.employeeId,
-            "Leave Type": getLeaveTypeName(leave.leaveTypeId),
-            "From Date": leave.fromDate,
-            "To Date": leave.toDate,
-            "Days": leave.noOfDays,
-            "Approved Date": leave.approvedDate,
-            "Approved By": leave.approvedBy || "-"
+
+            "Employee ID":
+                leave.employeeId ?? "-",
+
+            "Azure Employee ID":
+                leave.azureEmployeeId ?? "-",
+
+            "Leave Type":
+                getLeaveTypeName(
+                    leave.leaveTypeId
+                ),
+
+            "From Date":
+                formatDate(leave.fromDate),
+
+            "To Date":
+                formatDate(leave.toDate),
+
+            "Days":
+                calculateDays(
+                    leave.fromDate,
+                    leave.toDate
+                ),
+
+            "Approved Date":
+                formatDate(leave.approvedDate),
+
+            "Approved By":
+                leave.approvedBy || "-"
+
         }));
 
-        const worksheet = XLSX.utils.json_to_sheet(exportData);
 
-        const workbook = XLSX.utils.book_new();
+        const worksheet =
+            XLSX.utils.json_to_sheet(exportData);
+
+
+        const workbook =
+            XLSX.utils.book_new();
+
 
         XLSX.utils.book_append_sheet(
             workbook,
             worksheet,
             "Leave History"
         );
+
 
         XLSX.writeFile(
             workbook,
@@ -171,12 +215,17 @@ export default function LeaveTakenHistory() {
             <div className="leave-history-header">
 
                 <div>
-                    <h1>Leave Taken History</h1>
+
+                    <h1>
+                        Leave Taken History
+                    </h1>
 
                     <p>
                         View approved employee leave history.
                     </p>
+
                 </div>
+
 
                 <div className="leave-history-actions">
 
@@ -187,6 +236,7 @@ export default function LeaveTakenHistory() {
                     >
                         ← Previous
                     </button>
+
 
                     <button
                         type="button"
@@ -199,6 +249,7 @@ export default function LeaveTakenHistory() {
                         ↻ Refresh
                     </button>
 
+
                     <button
                         type="button"
                         className="leave-history-action-btn"
@@ -206,10 +257,11 @@ export default function LeaveTakenHistory() {
                     >
                         ⇩ Export
                     </button>
+
                 </div>
 
-
             </div>
+
 
             {/* Employee Search */}
 
@@ -220,22 +272,30 @@ export default function LeaveTakenHistory() {
                     <input
                         type="text"
                         value={employeeSearch}
-                        onChange={(e) => setEmployeeSearch(e.target.value)}
-                        placeholder="Search by Employee ID"
+                        onChange={(e) =>
+                            setEmployeeSearch(e.target.value)
+                        }
+                        placeholder="Search by Employee ID or Azure ID"
                     />
 
+
                     {employeeSearch && (
+
                         <button
                             type="button"
-                            onClick={() => setEmployeeSearch("")}
+                            onClick={() =>
+                                setEmployeeSearch("")
+                            }
                         >
                             ×
                         </button>
+
                     )}
 
                 </div>
 
             </div>
+
 
             {/* Table */}
 
@@ -246,13 +306,23 @@ export default function LeaveTakenHistory() {
                     <thead>
 
                         <tr>
+
                             <th>Employee ID</th>
+
+                            <th>Azure Employee ID</th>
+
                             <th>Leave Type</th>
+
                             <th>From Date</th>
+
                             <th>To Date</th>
+
                             <th>Days</th>
+
                             <th>Approved Date</th>
+
                             <th>Approved By</th>
+
                         </tr>
 
                     </thead>
@@ -265,7 +335,7 @@ export default function LeaveTakenHistory() {
                             <tr>
 
                                 <td
-                                    colSpan="7"
+                                    colSpan="8"
                                     className="no-leave-history"
                                 >
                                     No approved leave history found.
@@ -279,25 +349,60 @@ export default function LeaveTakenHistory() {
 
                                 <tr key={leave.leaveId}>
 
-                                    <td>
-                                        {leave.employeeId}
-                                    </td>
+                                    {/* Employee ID */}
 
                                     <td>
+
+                                        <strong>
+                                            {leave.employeeId}
+                                        </strong>
+
+                                    </td>
+
+
+                                    {/* Azure Employee ID */}
+
+                                    <td>
+
+                                        <span className="azure-employee-id">
+                                            {leave.azureEmployeeId ?? "-"}
+                                        </span>
+
+                                    </td>
+
+
+                                    {/* Leave Type */}
+
+                                    <td>
+
                                         <strong>
                                             {getLeaveTypeName(
                                                 leave.leaveTypeId
                                             )}
                                         </strong>
+
                                     </td>
 
-                                    <td>
-                                        {formatDate(leave.fromDate)}
-                                    </td>
+
+                                    {/* From Date */}
 
                                     <td>
-                                        {formatDate(leave.toDate)}
+                                        {formatDate(
+                                            leave.fromDate
+                                        )}
                                     </td>
+
+
+                                    {/* To Date */}
+
+                                    <td>
+                                        {formatDate(
+                                            leave.toDate
+                                        )}
+                                    </td>
+
+
+                                    {/* Days */}
 
                                     <td>
                                         {calculateDays(
@@ -306,11 +411,17 @@ export default function LeaveTakenHistory() {
                                         )}
                                     </td>
 
+
+                                    {/* Approved Date */}
+
                                     <td>
                                         {formatDate(
                                             leave.approvedDate
                                         )}
                                     </td>
+
+
+                                    {/* Approved By */}
 
                                     <td>
                                         {leave.approvedBy || "-"}
