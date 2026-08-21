@@ -2,35 +2,28 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import "./LeaveRequests.css";
-
 const LEAVE_API = "https://localhost:7206/api/Leave";
 const LEAVE_TYPE_API = "https://localhost:7206/api/LeaveType";
 
 export default function LeaveRequests() {
-    const [searchParams] = useSearchParams();
+const [searchParams] = useSearchParams();
 
     const [leaves, setLeaves] = useState([]);
     const [leaveTypes, setLeaveTypes] = useState([]);
-
     const [selectedLeave, setSelectedLeave] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState("");
     const [managerComment, setManagerComment] = useState("");
 
     const [viewLeave, setViewLeave] = useState(null);
-
     const [statusFilter, setStatusFilter] = useState(
-        searchParams.get("status") || "All"
-    );
-
-    // ==========================================
+    searchParams.get("status") || "All"
+);
     // Employee Search
-    // Search by Employee ID OR Employee Name
-    // ==========================================
     const [employeeSearch, setEmployeeSearch] = useState("");
-
     // ==========================================
     // Load Leave Requests
     // ==========================================
+
     useEffect(() => {
         loadLeaves();
         loadLeaveTypes();
@@ -40,54 +33,43 @@ export default function LeaveRequests() {
         try {
             const response = await axios.get(LEAVE_API);
 
-            console.log("Leave API Response:", response.data);
-
             setLeaves(response.data);
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Leave Request Error:", error);
-            alert("Unable to load leave requests.");
         }
     }
 
-    // ==========================================
-    // Load Leave Types
-    // ==========================================
     async function loadLeaveTypes() {
         try {
             const response = await axios.get(LEAVE_TYPE_API);
-
             setLeaveTypes(response.data);
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Leave Type Error:", error);
         }
     }
 
-    // ==========================================
-    // Get Leave Type Name
-    // ==========================================
     function getLeaveTypeName(leaveTypeId) {
         const leaveType = leaveTypes.find(
             (type) => type.leaveTypeId === leaveTypeId
         );
 
-        return leaveType
-            ? leaveType.leaveTypeName
-            : "-";
+        return leaveType ? leaveType.leaveTypeName : "-";
     }
 
     // ==========================================
-    // Open Approve / Reject Popup
+    // Update Status - Approve / Reject
     // ==========================================
+
     function openStatusPopup(leave, status) {
         setSelectedLeave(leave);
         setSelectedStatus(status);
         setManagerComment("");
     }
 
-    // ==========================================
-    // Update Leave Status
-    // ==========================================
     async function updateStatus() {
+
         if (!selectedLeave) {
             return;
         }
@@ -98,13 +80,14 @@ export default function LeaveRequests() {
         }
 
         try {
+
             await axios.put(
                 `${LEAVE_API}/${selectedLeave.leaveId}/status`,
                 {
                     status: selectedStatus,
 
-                    // Temporary Admin ID for testing
-                    // Later use logged-in user's ID
+                    // Temporary Admin ID for testing.
+                    // Later this will come from the logged-in user.
                     approvedBy: 1,
 
                     managerComment: managerComment.trim()
@@ -117,16 +100,17 @@ export default function LeaveRequests() {
                     : "Leave Rejected Successfully"
             );
 
+            // Close popup
             setSelectedLeave(null);
             setSelectedStatus("");
             setManagerComment("");
 
+            // Refresh table
             await loadLeaves();
-        } catch (error) {
-            console.error(
-                "Update Leave Status Error:",
-                error
-            );
+        }
+        catch (error) {
+
+            console.error("Update Leave Status Error:", error);
 
             alert("Unable to update leave status.");
         }
@@ -135,74 +119,32 @@ export default function LeaveRequests() {
     // ==========================================
     // Calculate Leave Days
     // ==========================================
+
     function calculateDays(fromDate, toDate) {
         const from = new Date(fromDate);
         const to = new Date(toDate);
 
         const difference = to - from;
 
-        return (
-            Math.floor(
-                difference /
-                    (1000 * 60 * 60 * 24)
-            ) + 1
-        );
+        return Math.floor(difference / (1000 * 60 * 60 * 24)) + 1;
     }
 
     // ==========================================
     // Format Date
     // ==========================================
-    function formatDate(date) {
-        if (!date) {
-            return "-";
-        }
 
-        return new Date(date).toLocaleDateString(
-            "en-GB"
-        );
+    function formatDate(date) {
+        return new Date(date).toLocaleDateString("en-GB");
     }
 
-    // ==========================================
-    // FILTER LEAVE REQUESTS
-    //
-    // Search works with:
-    // Employee ID
-    // Employee Name
-    // ==========================================
+    // Filter Leave Requests
     const filteredLeaves = leaves.filter((leave) => {
 
-        // -------------------------------
         // Status Filter
-        // -------------------------------
         const matchesStatus =
             statusFilter === "All" ||
             leave.status === statusFilter;
 
-<<<<<<< HEAD
-        // -------------------------------
-        // Employee Search
-        // Search ID OR Name
-        // -------------------------------
-        const searchValue =
-            employeeSearch
-                .trim()
-                .toLowerCase();
-
-        const employeeId =
-            String(
-                leave.employeeId ?? ""
-            ).toLowerCase();
-
-        const employeeName =
-            String(
-                leave.employeeName ?? ""
-            ).toLowerCase();
-
-        const matchesEmployee =
-            searchValue === "" ||
-            employeeId.includes(searchValue) ||
-            employeeName.includes(searchValue);
-=======
         // Employee ID Search
 const searchValue = employeeSearch.trim();
 
@@ -210,64 +152,43 @@ const matchesEmployee =
     searchValue === "" ||
     leave.employeeId?.toString().includes(searchValue) ||
     leave.azureEmployeeId?.toString().includes(searchValue);
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> main
->>>>>>> origin/mahinoor
 
-        return (
-            matchesStatus &&
-            matchesEmployee
-        );
+        return matchesStatus && matchesEmployee;
     });
+
 
     return (
         <div className="leave-requests-page">
 
-            {/* ==========================================
-                HEADER
-            ========================================== */}
-
+            {/* Header */}
             <div className="leave-requests-header">
                 <div>
                     <h1>Leave Requests</h1>
-
-                    <p>
-                        Review and manage employee
-                        leave requests.
-                    </p>
+                    <p>Review and manage employee leave requests.</p>
                 </div>
             </div>
 
 
-            {/* ==========================================
-                SEARCH AND STATUS FILTERS
-            ========================================== */}
+            {/* Search and Status Filters */}
 
             <div className="leave-filter-toolbar">
 
-                {/* Employee Search */}
+                {/* Employee ID Search */}
+
                 <div className="employee-search-box">
 
                     <input
                         type="text"
                         value={employeeSearch}
-                        onChange={(e) =>
-                            setEmployeeSearch(
-                                e.target.value
-                            )
-                        }
-                        placeholder="Search by Employee ID or Name"
+                        onChange={(e) => setEmployeeSearch(e.target.value)}
+                        placeholder="Search by Employee ID"
                     />
 
                     {employeeSearch && (
                         <button
                             type="button"
                             className="clear-search-btn"
-                            onClick={() =>
-                                setEmployeeSearch("")
-                            }
+                            onClick={() => setEmployeeSearch("")}
                         >
                             ×
                         </button>
@@ -277,14 +198,10 @@ const matchesEmployee =
 
 
                 {/* Status Filters */}
+
                 <div className="leave-status-filters">
 
-                    {[
-                        "All",
-                        "Pending",
-                        "Approved",
-                        "Rejected"
-                    ].map((status) => (
+                    {["All", "Pending", "Approved", "Rejected"].map((status) => (
 
                         <button
                             key={status}
@@ -293,27 +210,21 @@ const matchesEmployee =
                                     ? "leave-filter-btn active"
                                     : "leave-filter-btn"
                             }
-                            onClick={() =>
-                                setStatusFilter(status)
-                            }
+                            onClick={() => setStatusFilter(status)}
                         >
                             {status}
                         </button>
 
                     ))}
 
-
                     {/* Previous */}
                     <button
                         type="button"
                         className="leave-request-action-btn"
-                        onClick={() =>
-                            window.history.back()
-                        }
+                        onClick={() => window.history.back()}
                     >
                         ← Previous
                     </button>
-
 
                     {/* Refresh */}
                     <button
@@ -331,66 +242,14 @@ const matchesEmployee =
 
             </div>
 
-
-            {/* ==========================================
-                TABLE
-            ========================================== */}
+            {/* Table */}
 
             <div className="leave-requests-table-card">
 
                 <table className="leave-requests-table">
 
                     <thead>
-
                         <tr>
-<<<<<<< HEAD
-
-                            {/* Employee ID */}
-                            <th>
-                                Employee ID
-                            </th>
-
-                            {/* Employee Name */}
-                            <th>
-                                Employee Name
-                            </th>
-
-                            {/* Leave Type */}
-                            <th>
-                                Leave Type
-                            </th>
-
-                            {/* From Date */}
-                            <th>
-                                From Date
-                            </th>
-
-                            {/* To Date */}
-                            <th>
-                                To Date
-                            </th>
-
-                            {/* Days */}
-                            <th>
-                                Days
-                            </th>
-
-                            {/* Reason */}
-                            <th>
-                                Reason
-                            </th>
-
-                            {/* Status */}
-                            <th>
-                                Status
-                            </th>
-
-                            {/* Actions */}
-                            <th>
-                                Actions
-                            </th>
-
-=======
   <th>Employee</th>
                             <th>Leave Type</th>
                             <th>From Date</th>
@@ -399,47 +258,23 @@ const matchesEmployee =
                             <th>Reason</th>
                             <th>Status</th>
                             <th>Actions</th>
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> main
->>>>>>> origin/mahinoor
                         </tr>
-
                     </thead>
-
 
                     <tbody>
 
                         {filteredLeaves.length === 0 ? (
 
                             <tr>
-
-                                <td
-                                    colSpan="9"
-                                    className="no-leave-requests"
-                                >
+                                <td colSpan="8" className="no-leave-requests">
                                     No leave requests found.
                                 </td>
-
                             </tr>
 
                         ) : (
 
-                            filteredLeaves.map(
-                                (leave) => (
+                            filteredLeaves.map((leave) => (
 
-<<<<<<< HEAD
-                                    <tr
-                                        key={
-                                            leave.leaveId
-                                        }
-                                    >
-
-                                        {/* ==================================
-                                            EMPLOYEE ID
-                                        ================================== */}
-=======
                                 <tr key={leave.leaveId}>
 <td>
     <div className="employee-id-cell">
@@ -450,179 +285,85 @@ const matchesEmployee =
         </span>
     </div>
 </td>
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> main
->>>>>>> origin/mahinoor
 
-                                        <td>
+                                    <td>
+                                        <strong>
+                                            {getLeaveTypeName(leave.leaveTypeId)}
+                                        </strong>
+                                    </td>
 
-                                            <strong>
-                                                {leave.employeeId ??
-                                                    "-"}
-                                            </strong>
+                                    <td>
+                                        {formatDate(leave.fromDate)}
+                                    </td>
 
-                                        </td>
+                                    <td>
+                                        {formatDate(leave.toDate)}
+                                    </td>
 
+                                    <td>
+                                        {calculateDays(
+                                            leave.fromDate,
+                                            leave.toDate
+                                        )}
+                                    </td>
 
-                                        {/* ==================================
-                                            EMPLOYEE NAME
-                                        ================================== */}
+                                    <td>
+                                        {leave.reason || "-"}
+                                    </td>
 
-                                        <td>
+                                    <td>
+                                        <span
+                                            className={`request-status ${leave.status?.toLowerCase()}`}
+                                        >
+                                            {leave.status}
+                                        </span>
+                                    </td>
 
-                                            <strong>
-                                                {leave.employeeName ||
-                                                    "Unknown Employee"}
-                                            </strong>
+                                    <td>
 
-                                        </td>
+                                        <div className="leave-action-buttons">
 
+                                            {/* View Details */}
 
-                                        {/* ==================================
-                                            LEAVE TYPE
-                                        ================================== */}
-
-                                        <td>
-
-                                            <strong>
-                                                {getLeaveTypeName(
-                                                    leave.leaveTypeId
-                                                )}
-                                            </strong>
-
-                                        </td>
-
-
-                                        {/* ==================================
-                                            FROM DATE
-                                        ================================== */}
-
-                                        <td>
-                                            {formatDate(
-                                                leave.fromDate
-                                            )}
-                                        </td>
-
-
-                                        {/* ==================================
-                                            TO DATE
-                                        ================================== */}
-
-                                        <td>
-                                            {formatDate(
-                                                leave.toDate
-                                            )}
-                                        </td>
-
-
-                                        {/* ==================================
-                                            DAYS
-                                        ================================== */}
-
-                                        <td>
-
-                                            {calculateDays(
-                                                leave.fromDate,
-                                                leave.toDate
-                                            )}
-
-                                        </td>
-
-
-                                        {/* ==================================
-                                            REASON
-                                        ================================== */}
-
-                                        <td>
-                                            {leave.reason ||
-                                                "-"}
-                                        </td>
-
-
-                                        {/* ==================================
-                                            STATUS
-                                        ================================== */}
-
-                                        <td>
-
-                                            <span
-                                                className={`request-status ${
-                                                    leave.status
-                                                        ?.toLowerCase()
-                                                }`}
+                                            <button
+                                                className="view-details-btn"
+                                                onClick={() => setViewLeave(leave)}
                                             >
-                                                {leave.status}
-                                            </span>
-
-                                        </td>
+                                                View
+                                            </button>
 
 
-                                        {/* ==================================
-                                            ACTIONS
-                                        ================================== */}
+                                            {/* Approve / Reject only for Pending */}
 
-                                        <td>
+                                            {leave.status === "Pending" && (
+                                                <>
+                                                    <button
+                                                        className="approve-btn"
+                                                        onClick={() =>
+                                                            openStatusPopup(leave, "Approved")
+                                                        }
+                                                    >
+                                                        Approve
+                                                    </button>
 
-                                            <div className="leave-action-buttons">
+                                                    <button
+                                                        className="reject-btn"
+                                                        onClick={() =>
+                                                            openStatusPopup(leave, "Rejected")
+                                                        }
+                                                    >
+                                                        Reject
+                                                    </button>
+                                                </>
+                                            )}
 
-                                                {/* View */}
-                                                <button
-                                                    className="view-details-btn"
-                                                    onClick={() =>
-                                                        setViewLeave(
-                                                            leave
-                                                        )
-                                                    }
-                                                >
-                                                    View
-                                                </button>
+                                        </div>
 
+                                    </td>
 
-                                                {/* Approve / Reject */}
-                                                {leave.status ===
-                                                    "Pending" && (
+                                </tr>
 
-                                                    <>
-
-                                                        <button
-                                                            className="approve-btn"
-                                                            onClick={() =>
-                                                                openStatusPopup(
-                                                                    leave,
-                                                                    "Approved"
-                                                                )
-                                                            }
-                                                        >
-                                                            Approve
-                                                        </button>
-
-
-                                                        <button
-                                                            className="reject-btn"
-                                                            onClick={() =>
-                                                                openStatusPopup(
-                                                                    leave,
-                                                                    "Rejected"
-                                                                )
-                                                            }
-                                                        >
-                                                            Reject
-                                                        </button>
-
-                                                    </>
-
-                                                )}
-
-                                            </div>
-
-                                        </td>
-
-                                    </tr>
-
-                                )
-                            )
+                            ))
 
                         )}
 
@@ -632,10 +373,9 @@ const matchesEmployee =
 
             </div>
 
-
             {/* ==========================================
-                APPROVE / REJECT POPUP
-            ========================================== */}
+    APPROVE / REJECT POPUP
+========================================== */}
 
             {selectedLeave && (
 
@@ -646,30 +386,18 @@ const matchesEmployee =
                         <div className="leave-modal-header">
 
                             <h2>
-
-                                {selectedStatus ===
-                                "Approved"
+                                {selectedStatus === "Approved"
                                     ? "Approve Leave"
                                     : "Reject Leave"}
-
                             </h2>
-
 
                             <button
                                 type="button"
                                 className="leave-modal-close"
                                 onClick={() => {
-                                    setSelectedLeave(
-                                        null
-                                    );
-
-                                    setSelectedStatus(
-                                        ""
-                                    );
-
-                                    setManagerComment(
-                                        ""
-                                    );
+                                    setSelectedLeave(null);
+                                    setSelectedStatus("");
+                                    setManagerComment("");
                                 }}
                             >
                                 ×
@@ -677,24 +405,10 @@ const matchesEmployee =
 
                         </div>
 
-
                         <div className="leave-modal-body">
 
                             <div className="leave-review-info">
 
-<<<<<<< HEAD
-                                {/* Employee ID */}
-                                <p>
-
-                                    <strong>
-                                        Employee ID:
-                                    </strong>{" "}
-
-                                    {selectedLeave.employeeId ??
-                                        "-"}
-
-                                </p>
-=======
 <p>
     <strong>Employee ID:</strong>{" "}
     {selectedLeave.employeeId}
@@ -704,89 +418,35 @@ const matchesEmployee =
     <strong>Azure Employee ID:</strong>{" "}
     {selectedLeave.azureEmployeeId}
 </p>
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> main
->>>>>>> origin/mahinoor
 
-
-                                {/* Employee Name */}
                                 <p>
-
-                                    <strong>
-                                        Employee Name:
-                                    </strong>{" "}
-
-                                    {selectedLeave.employeeName ||
-                                        "Unknown Employee"}
-
+                                    <strong>Leave Type:</strong>{" "}
+                                    {getLeaveTypeName(selectedLeave.leaveTypeId)}
                                 </p>
 
-
-                                {/* Leave Type */}
                                 <p>
-
-                                    <strong>
-                                        Leave Type:
-                                    </strong>{" "}
-
-                                    {getLeaveTypeName(
-                                        selectedLeave.leaveTypeId
-                                    )}
-
+                                    <strong>From:</strong>{" "}
+                                    {formatDate(selectedLeave.fromDate)}
                                 </p>
 
-
-                                {/* From */}
                                 <p>
-
-                                    <strong>
-                                        From:
-                                    </strong>{" "}
-
-                                    {formatDate(
-                                        selectedLeave.fromDate
-                                    )}
-
-                                </p>
-
-
-                                {/* To */}
-                                <p>
-
-                                    <strong>
-                                        To:
-                                    </strong>{" "}
-
-                                    {formatDate(
-                                        selectedLeave.toDate
-                                    )}
-
+                                    <strong>To:</strong>{" "}
+                                    {formatDate(selectedLeave.toDate)}
                                 </p>
 
                             </div>
 
-
-                            {/* Manager Comment */}
                             <div className="manager-comment-group">
 
-                                <label>
-                                    Manager Comment
-                                </label>
+                                <label>Manager Comment</label>
 
                                 <textarea
-                                    value={
-                                        managerComment
-                                    }
+                                    value={managerComment}
                                     onChange={(e) =>
-                                        setManagerComment(
-                                            e.target.value
-                                        )
+                                        setManagerComment(e.target.value)
                                     }
                                     placeholder={
-                                        selectedStatus ===
-                                        "Approved"
+                                        selectedStatus === "Approved"
                                             ? "Enter approval comment"
                                             : "Enter reason for rejection"
                                     }
@@ -796,50 +456,32 @@ const matchesEmployee =
 
                         </div>
 
-
                         <div className="leave-modal-actions">
 
                             <button
                                 type="button"
                                 className="modal-cancel-btn"
                                 onClick={() => {
-
-                                    setSelectedLeave(
-                                        null
-                                    );
-
-                                    setSelectedStatus(
-                                        ""
-                                    );
-
-                                    setManagerComment(
-                                        ""
-                                    );
-
+                                    setSelectedLeave(null);
+                                    setSelectedStatus("");
+                                    setManagerComment("");
                                 }}
                             >
                                 Cancel
                             </button>
 
-
                             <button
                                 type="button"
                                 className={
-                                    selectedStatus ===
-                                    "Approved"
+                                    selectedStatus === "Approved"
                                         ? "modal-approve-btn"
                                         : "modal-reject-btn"
                                 }
-                                onClick={
-                                    updateStatus
-                                }
+                                onClick={updateStatus}
                             >
-
-                                {selectedStatus ===
-                                "Approved"
+                                {selectedStatus === "Approved"
                                     ? "Confirm Approval"
                                     : "Confirm Rejection"}
-
                             </button>
 
                         </div>
@@ -850,10 +492,9 @@ const matchesEmployee =
 
             )}
 
-
             {/* ==========================================
-                VIEW LEAVE DETAILS POPUP
-            ========================================== */}
+    VIEW LEAVE DETAILS POPUP
+========================================== */}
 
             {viewLeave && (
 
@@ -865,19 +506,12 @@ const matchesEmployee =
 
                         <div className="leave-modal-header">
 
-                            <h2>
-                                Leave Request Details
-                            </h2>
-
+                            <h2>Leave Request Details</h2>
 
                             <button
                                 type="button"
                                 className="leave-modal-close"
-                                onClick={() =>
-                                    setViewLeave(
-                                        null
-                                    )
-                                }
+                                onClick={() => setViewLeave(null)}
                             >
                                 ×
                             </button>
@@ -891,9 +525,6 @@ const matchesEmployee =
 
                             <div className="leave-details-grid">
 
-<<<<<<< HEAD
-                                {/* Employee ID */}
-=======
 <div className="leave-detail-item">
     <span>Employee ID</span>
     <strong>{viewLeave.employeeId}</strong>
@@ -903,127 +534,46 @@ const matchesEmployee =
     <span>Azure Employee ID</span>
     <strong>{viewLeave.azureEmployeeId}</strong>
 </div>
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> main
->>>>>>> origin/mahinoor
 
                                 <div className="leave-detail-item">
-
-                                    <span>
-                                        Employee ID
-                                    </span>
-
+                                    <span>Leave Type</span>
                                     <strong>
-                                        {viewLeave.employeeId ??
-                                            "-"}
+                                        {getLeaveTypeName(viewLeave.leaveTypeId)}
                                     </strong>
-
                                 </div>
 
-
-                                {/* Employee Name */}
-
                                 <div className="leave-detail-item">
-
-                                    <span>
-                                        Employee Name
-                                    </span>
-
+                                    <span>From Date</span>
                                     <strong>
-                                        {viewLeave.employeeName ||
-                                            "Unknown Employee"}
+                                        {formatDate(viewLeave.fromDate)}
                                     </strong>
-
                                 </div>
 
-
-                                {/* Leave Type */}
-
                                 <div className="leave-detail-item">
-
-                                    <span>
-                                        Leave Type
-                                    </span>
-
+                                    <span>To Date</span>
                                     <strong>
-                                        {getLeaveTypeName(
-                                            viewLeave.leaveTypeId
-                                        )}
+                                        {formatDate(viewLeave.toDate)}
                                     </strong>
-
                                 </div>
 
-
-                                {/* From Date */}
-
                                 <div className="leave-detail-item">
-
-                                    <span>
-                                        From Date
-                                    </span>
-
-                                    <strong>
-                                        {formatDate(
-                                            viewLeave.fromDate
-                                        )}
-                                    </strong>
-
-                                </div>
-
-
-                                {/* To Date */}
-
-                                <div className="leave-detail-item">
-
-                                    <span>
-                                        To Date
-                                    </span>
-
-                                    <strong>
-                                        {formatDate(
-                                            viewLeave.toDate
-                                        )}
-                                    </strong>
-
-                                </div>
-
-
-                                {/* Number of Days */}
-
-                                <div className="leave-detail-item">
-
-                                    <span>
-                                        Number of Days
-                                    </span>
-
+                                    <span>Number of Days</span>
                                     <strong>
                                         {calculateDays(
                                             viewLeave.fromDate,
                                             viewLeave.toDate
                                         )}
                                     </strong>
-
                                 </div>
 
-
-                                {/* Status */}
-
                                 <div className="leave-detail-item">
-
-                                    <span>
-                                        Status
-                                    </span>
+                                    <span>Status</span>
 
                                     <span
-                                        className={`request-status ${
-                                            viewLeave.status?.toLowerCase()
-                                        }`}
+                                        className={`request-status ${viewLeave.status?.toLowerCase()}`}
                                     >
                                         {viewLeave.status}
                                     </span>
-
                                 </div>
 
                             </div>
@@ -1033,13 +583,10 @@ const matchesEmployee =
 
                             <div className="leave-detail-section">
 
-                                <span>
-                                    Reason
-                                </span>
+                                <span>Reason</span>
 
                                 <p>
-                                    {viewLeave.reason ||
-                                        "-"}
+                                    {viewLeave.reason || "-"}
                                 </p>
 
                             </div>
@@ -1049,13 +596,10 @@ const matchesEmployee =
 
                             <div className="leave-detail-section">
 
-                                <span>
-                                    Manager Comment
-                                </span>
+                                <span>Manager Comment</span>
 
                                 <p>
-                                    {viewLeave.managerComment ||
-                                        "-"}
+                                    {viewLeave.managerComment || "-"}
                                 </p>
 
                             </div>
@@ -1063,41 +607,26 @@ const matchesEmployee =
 
                             {/* Approval Information */}
 
-                            {viewLeave.status !==
-                                "Pending" && (
+                            {viewLeave.status !== "Pending" && (
 
                                 <div className="leave-details-grid approval-details">
 
                                     <div className="leave-detail-item">
-
-                                        <span>
-                                            Approved / Rejected By
-                                        </span>
+                                        <span>Approved / Rejected By</span>
 
                                         <strong>
-                                            {viewLeave.approvedBy ||
-                                                "-"}
+                                            {viewLeave.approvedBy || "-"}
                                         </strong>
-
                                     </div>
 
-
                                     <div className="leave-detail-item">
-
-                                        <span>
-                                            Decision Date
-                                        </span>
+                                        <span>Decision Date</span>
 
                                         <strong>
-
                                             {viewLeave.approvedDate
-                                                ? formatDate(
-                                                      viewLeave.approvedDate
-                                                  )
+                                                ? formatDate(viewLeave.approvedDate)
                                                 : "-"}
-
                                         </strong>
-
                                     </div>
 
                                 </div>
@@ -1114,11 +643,7 @@ const matchesEmployee =
                             <button
                                 type="button"
                                 className="modal-cancel-btn"
-                                onClick={() =>
-                                    setViewLeave(
-                                        null
-                                    )
-                                }
+                                onClick={() => setViewLeave(null)}
                             >
                                 Close
                             </button>
@@ -1130,7 +655,6 @@ const matchesEmployee =
                 </div>
 
             )}
-
         </div>
     );
 }
