@@ -12,6 +12,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import {
     Dialog,
@@ -46,6 +47,8 @@ const Leave = () => {
 
     const [leaves, setLeaves] = useState([]);
     const [leaveTypes, setLeaveTypes] = useState([]);
+    const [openViewLeaveDialog, setOpenViewLeaveDialog] = useState(false);
+    const [selectedLeave, setSelectedLeave] = useState(null);
     const [leavePolicies, setLeavePolicies] = useState([]);
     const [leaveBalances, setLeaveBalances] = useState([]);
 
@@ -1440,7 +1443,21 @@ const Leave = () => {
             }
         };
 
+// =========================================================
+// VIEW LEAVE DETAILS
+// =========================================================
+const handleViewLeave = (leave) => {
+    setSelectedLeave(leave);
+    setOpenViewLeaveDialog(true);
+};
 
+// =========================================================
+// CLOSE VIEW LEAVE
+// =========================================================
+const closeViewLeaveDialog = () => {
+    setOpenViewLeaveDialog(false);
+    setSelectedLeave(null);
+};
     // =========================================================
     // LOADING
     // =========================================================
@@ -2758,7 +2775,9 @@ const Leave = () => {
                                 <th>
                                     Status
                                 </th>
-
+<th>
+    Action
+</th>
                             </tr>
 
                         </thead>
@@ -2771,7 +2790,7 @@ const Leave = () => {
                                 <tr>
 
                                     <td
-                                        colSpan="5"
+                                        colSpan="6"
                                         className="empty-table"
                                     >
                                         No leave requests
@@ -2854,7 +2873,20 @@ const Leave = () => {
                                                     </span>
 
                                                 </td>
-
+<td>
+    <button
+        type="button"
+        className="view-leave-btn"
+        onClick={() => handleViewLeave(leave)}
+    >
+        <VisibilityIcon
+            style={{
+                fontSize: "16px",
+            }}
+        />
+        View
+    </button>
+</td>
                                             </tr>
 
                                         )
@@ -3284,7 +3316,236 @@ const Leave = () => {
                 </DialogActions>
 
             </Dialog>
+{/* =========================================================
+    VIEW LEAVE DETAILS DIALOG
+========================================================= */}
 
+<Dialog
+    open={openViewLeaveDialog}
+    onClose={closeViewLeaveDialog}
+    maxWidth="sm"
+    fullWidth
+>
+    <DialogTitle
+        sx={{
+            fontWeight: 700,
+            fontSize: "20px",
+        }}
+    >
+        Leave Request Details
+    </DialogTitle>
+
+    <DialogContent dividers>
+
+        {selectedLeave && (
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "18px",
+                    paddingTop: "5px",
+                }}
+            >
+
+                {/* Leave Type */}
+                <div>
+                    <div
+                        style={{
+                            fontSize: "12px",
+                            color: "#64748b",
+                            marginBottom: "5px",
+                        }}
+                    >
+                        Leave Type
+                    </div>
+
+                    <div
+                        style={{
+                            fontSize: "15px",
+                            fontWeight: 600,
+                            color: "#1e293b",
+                        }}
+                    >
+                        {getLeaveTypeName(
+                            selectedLeave.leaveTypeId
+                        )}
+                    </div>
+                </div>
+
+                {/* Date */}
+                <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                            "1fr 1fr",
+                        gap: "20px",
+                    }}
+                >
+
+                    <div>
+                        <div
+                            style={{
+                                fontSize: "12px",
+                                color: "#64748b",
+                                marginBottom: "5px",
+                            }}
+                        >
+                            From Date
+                        </div>
+
+                        <div
+                            style={{
+                                fontSize: "15px",
+                                fontWeight: 600,
+                                color: "#1e293b",
+                            }}
+                        >
+                            {formatDate(
+                                selectedLeave.fromDate
+                            )}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div
+                            style={{
+                                fontSize: "12px",
+                                color: "#64748b",
+                                marginBottom: "5px",
+                            }}
+                        >
+                            To Date
+                        </div>
+
+                        <div
+                            style={{
+                                fontSize: "15px",
+                                fontWeight: 600,
+                                color: "#1e293b",
+                            }}
+                        >
+                            {formatDate(
+                                selectedLeave.toDate
+                            )}
+                        </div>
+                    </div>
+
+                </div>
+
+                {/* Duration */}
+                <div>
+                    <div
+                        style={{
+                            fontSize: "12px",
+                            color: "#64748b",
+                            marginBottom: "5px",
+                        }}
+                    >
+                        Duration
+                    </div>
+
+                    <div
+                        style={{
+                            fontSize: "15px",
+                            fontWeight: 600,
+                            color: "#1e293b",
+                        }}
+                    >
+                        {calculateDays(
+                            selectedLeave.fromDate,
+                            selectedLeave.toDate
+                        )}{" "}
+                        Day(s)
+                    </div>
+                </div>
+
+                {/* Status */}
+                <div>
+                    <div
+                        style={{
+                            fontSize: "12px",
+                            color: "#64748b",
+                            marginBottom: "5px",
+                        }}
+                    >
+                        Status
+                    </div>
+
+                    <span
+                        className={`leave-status ${getStatusClass(
+                            selectedLeave.status
+                        )}`}
+                    >
+                        {selectedLeave.status}
+                    </span>
+                </div>
+
+                {/* Reason */}
+                <div>
+                    <div
+                        style={{
+                            fontSize: "12px",
+                            color: "#64748b",
+                            marginBottom: "5px",
+                        }}
+                    >
+                        Reason
+                    </div>
+
+                    <div
+                        style={{
+                            background: "#f8fafc",
+                            border: "1px solid #e2e8f0",
+                            borderRadius: "8px",
+                            padding: "12px",
+                            fontSize: "14px",
+                            color: "#334155",
+                            minHeight: "60px",
+                        }}
+                    >
+                        {selectedLeave.reason ||
+                            "No reason provided."}
+                    </div>
+                </div>
+
+                {/* Leave ID */}
+                <div>
+                    
+
+                    <div
+                        style={{
+                            fontSize: "14px",
+                            color: "#334155",
+                        }}
+                    >
+                        #{selectedLeave.leaveId}
+                    </div>
+                </div>
+
+            </div>
+        )}
+
+    </DialogContent>
+
+
+
+
+
+
+    <DialogActions
+        sx={{
+            padding: "12px 20px",
+        }}
+    >
+        <Button
+            onClick={closeViewLeaveDialog}
+            variant="contained"
+        >
+            Close
+        </Button>
+    </DialogActions>
+
+</Dialog>
         </div>
     );
 };

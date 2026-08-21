@@ -37,7 +37,7 @@ function AddLocation({ open, handleClose, handleSave }) {
   const loadCountries = async () => {
     try {
       const response = await axios.get(
-        "https://localhost:7281/api/location/countries",
+        "http://localhost:7281/api/location/countries",
       );
 
       setCountries(response.data);
@@ -53,7 +53,7 @@ function AddLocation({ open, handleClose, handleSave }) {
   const loadCities = async (country) => {
     try {
       const response = await axios.get(
-        `https://localhost:7281/api/location/cities/${country}`,
+        `http://localhost:7281/api/location/cities/${country}`,
       );
 
       console.log("Country:", country);

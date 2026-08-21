@@ -3,7 +3,7 @@ import axios from "axios";
 import { CloseRounded } from "@mui/icons-material";
 
 const EVENT_API = "https://localhost:7234/api/Event";
-const LOCATION_API = "https://localhost:7281/api/location";
+const LOCATION_API = "http://localhost:7281/api/location";
 
 export default function HolidayEventForm({
     onClose,

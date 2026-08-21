@@ -12,7 +12,7 @@ import {
     Grid
 } from "@mui/material";
 
-const API = "https://localhost:7281/api/location";
+const API = "http://localhost:7281/api/location";
 
 function EditLocation({
     open,
@@ -43,10 +43,13 @@ function EditLocation({
     const loadCountries = async () => {
         try {
             const response = await axios.get(`${API}/countries`);
+
+            console.log("Countries:", response.data);
+
             setCountries(response.data);
         }
         catch (error) {
-            console.log(error);
+            console.error("Error loading countries:", error);
         }
     };
 
@@ -54,15 +57,24 @@ function EditLocation({
     // Load Cities
     // =============================
     const loadCities = async (country) => {
+
+        if (!country) {
+            setCities([]);
+            return;
+        }
+
         try {
             const response = await axios.get(
                 `${API}/cities/${encodeURIComponent(country)}`
             );
 
+            console.log("Cities:", response.data);
+
             setCities(response.data);
         }
         catch (error) {
-            console.log(error);
+            console.error("Error loading cities:", error);
+            setCities([]);
         }
     };
 
@@ -143,9 +155,15 @@ function EditLocation({
 
             <DialogContent dividers>
 
-                <Grid container spacing={3} sx={{ mt: 0.5 }}>
+                <Grid
+                    container
+                    spacing={3}
+                    sx={{ mt: 0.5 }}
+                >
 
+                    {/* Location Name */}
                     <Grid size={{ xs: 12, md: 6 }}>
+
                         <TextField
                             fullWidth
                             required
@@ -154,9 +172,13 @@ function EditLocation({
                             value={formData.locationName}
                             onChange={handleChange}
                         />
+
                     </Grid>
 
+
+                    {/* Location Code */}
                     <Grid size={{ xs: 12, md: 6 }}>
+
                         <TextField
                             fullWidth
                             required
@@ -165,9 +187,13 @@ function EditLocation({
                             value={formData.locationCode}
                             onChange={handleChange}
                         />
+
                     </Grid>
 
+
+                    {/* Country */}
                     <Grid size={{ xs: 12, md: 6 }}>
+
                         <TextField
                             select
                             fullWidth
@@ -176,39 +202,55 @@ function EditLocation({
                             value={formData.country}
                             onChange={handleChange}
                         >
-                            {countries.map(country => (
+
+                            {countries.map((country) => (
+
                                 <MenuItem
                                     key={country}
                                     value={country}
                                 >
                                     {country}
                                 </MenuItem>
+
                             ))}
+
                         </TextField>
+
                     </Grid>
 
+
+                    {/* City */}
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <TextField
-                            select
-                            fullWidth
-                            label="City"
-                            name="city"
-                            value={formData.city}
-                            onChange={handleChange}
-                            disabled={!formData.country}
-                        >
-                            {cities.map(city => (
-                                <MenuItem
-                                    key={city}
-                                    value={city}
-                                >
-                                    {city}
-                                </MenuItem>
-                            ))}
-                        </TextField>
+
+<TextField
+    select
+    fullWidth
+    label="City"
+    name="city"
+    value={
+        cities.some((city) => city.city === formData.city)
+            ? formData.city
+            : ""
+    }
+    onChange={handleChange}
+    disabled={!formData.country}
+>
+    {cities.map((city) => (
+        <MenuItem
+            key={`${city.city}-${city.locationCode}`}
+            value={city.city}
+        >
+            {city.city}
+        </MenuItem>
+    ))}
+</TextField>
+
                     </Grid>
 
+
+                    {/* Status */}
                     <Grid size={{ xs: 12, md: 6 }}>
+
                         <TextField
                             select
                             fullWidth
@@ -217,6 +259,7 @@ function EditLocation({
                             value={formData.status}
                             onChange={handleChange}
                         >
+
                             <MenuItem value="Active">
                                 Active
                             </MenuItem>
@@ -224,12 +267,15 @@ function EditLocation({
                             <MenuItem value="Inactive">
                                 Inactive
                             </MenuItem>
+
                         </TextField>
+
                     </Grid>
 
                 </Grid>
 
             </DialogContent>
+
 
             <DialogActions sx={{ padding: 2 }}>
 
@@ -252,7 +298,6 @@ function EditLocation({
         </Dialog>
 
     );
-
 }
 
 export default EditLocation;

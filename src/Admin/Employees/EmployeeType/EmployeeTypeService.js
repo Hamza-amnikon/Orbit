@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7084/api/EmployeeType"; // Change to your API port
+const API_URL = "http://localhost:7084/api/EmployeeType"; // Change to your API port
 
 export const getEmployeeTypes = async () => {
     const response = await axios.get(API_URL);

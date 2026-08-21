@@ -45,19 +45,19 @@ function EmployeeEditDialog({
     "https://localhost:7002/api/Employee";
 
   const EMPLOYEE_TYPE_API =
-    "https://localhost:7084/api/EmployeeType";
+    "http://localhost:7084/api/EmployeeType";
 
   const LOCATION_API =
-    "https://localhost:7281/api/Location/active";
+    "http://localhost:7281/api/Location/active";
 
   const DESIGNATION_API =
     "https://localhost:7009/api/Designation";
 
   const DEPARTMENT_API =
-    "https://localhost:7240/api/Department";
+    "http://localhost:7240/api/Department";
 
   const ROLE_API =
-    "https://localhost:7294/api/Role/active";
+    "http://localhost:7294/api/Role/active";
 
   // =========================================================
   // PERSONAL INFORMATION

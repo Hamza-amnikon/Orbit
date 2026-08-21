@@ -29,7 +29,7 @@ import {
 function Locations() {
   const navigate = useNavigate();
 
-  const API = "https://localhost:7281/api/location";
+  const API = "http://localhost:7281/api/location";
 
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -100,23 +100,63 @@ function Locations() {
   // UPDATE LOCATION
   // ===============================
 
-  const handleUpdateLocation = async (updatedLocation) => {
-    try {
-      await axios.put(`${API}/${updatedLocation.locationId}`, updatedLocation);
+const handleUpdateLocation = async (updatedLocation) => {
+  try {
+    const payload = {
+      locationId: Number(updatedLocation.locationId),
+      locationName: updatedLocation.locationName,
+      locationCode: updatedLocation.locationCode,
+      country: updatedLocation.country,
+      city: updatedLocation.city,
+      status: updatedLocation.status
+    };
 
-      await fetchLocations();
+    console.log("UPDATE PAYLOAD:", payload);
 
-      alert("Location updated successfully.");
+    const response = await axios.put(
+      `${API}/${updatedLocation.locationId}`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
 
-      setOpenEditDialog(false);
-    } catch (error) {
-      console.log(error);
-      console.log(error.response?.data);
+    console.log("UPDATE RESPONSE:", response.data);
 
-      alert("Unable to update location.");
-    }
-  };
+    await fetchLocations();
 
+    alert("Location updated successfully.");
+
+    setOpenEditDialog(false);
+
+  } catch (error) {
+
+    console.error("UPDATE LOCATION ERROR:", error);
+
+    console.error(
+      "STATUS:",
+      error.response?.status
+    );
+
+    console.error(
+      "RESPONSE DATA:",
+      error.response?.data
+    );
+
+    console.error(
+      "VALIDATION ERRORS:",
+      error.response?.data?.errors
+    );
+
+    alert(
+      error.response?.data?.title ||
+      error.response?.data?.message ||
+      "Unable to update location."
+    );
+  }
+};
   // ===============================
   // DELETE LOCATION
   // ===============================
