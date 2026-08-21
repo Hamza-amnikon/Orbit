@@ -31,14 +31,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-
 function EmployeeEditDialog({
   open,
   employee,
   onClose,
   onUpdated,
 }) {
-
   // =========================================================
   // API URLs
   // =========================================================
@@ -61,36 +59,37 @@ function EmployeeEditDialog({
   const ROLE_API =
     "https://localhost:7294/api/Role/active";
 
-
   // =========================================================
-  // EMPLOYEE FIELDS
+  // PERSONAL INFORMATION
   // =========================================================
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [gender, setGender] = useState("");
 
+  // =========================================================
+  // MANAGER
+  // =========================================================
+
   const [managerId, setManagerId] = useState("");
 
-
   // =========================================================
-  // EMPLOYMENT FIELDS
+  // EMPLOYMENT INFORMATION
   // =========================================================
 
   const [department, setDepartment] = useState("");
-  const [role, setRole] = useState("");
+
+  // IMPORTANT:
+  // Store ROLE ID, not role name.
+  const [roleId, setRoleId] = useState("");
+
   const [designation, setDesignation] = useState("");
   const [employeeType, setEmployeeType] = useState("");
-
   const [location, setLocation] = useState("");
-
   const [joiningDate, setJoiningDate] = useState("");
-
   const [status, setStatus] = useState("Active");
-
 
   // =========================================================
   // DROPDOWN DATA
@@ -102,7 +101,6 @@ function EmployeeEditDialog({
   const [employeeTypes, setEmployeeTypes] = useState([]);
   const [locations, setLocations] = useState([]);
 
-
   // =========================================================
   // STATE
   // =========================================================
@@ -110,13 +108,11 @@ function EmployeeEditDialog({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-
   // =========================================================
-  // LOAD DROPDOWNS
+  // LOAD DROPDOWN DATA
   // =========================================================
 
   useEffect(() => {
-
     if (!open) {
       return;
     }
@@ -126,33 +122,26 @@ function EmployeeEditDialog({
     loadDesignations();
     loadEmployeeTypes();
     loadLocations();
-
   }, [open]);
-
 
   // =========================================================
   // LOAD SELECTED EMPLOYEE
   // =========================================================
 
   useEffect(() => {
-
-    if (!open || !employee) {
+    if (!open || !employee?.employeeId) {
       return;
     }
 
     loadEmployee(employee.employeeId);
-
   }, [open, employee]);
-
 
   // =========================================================
   // LOAD EMPLOYEE DETAILS
   // =========================================================
 
   async function loadEmployee(employeeId) {
-
     try {
-
       setLoading(true);
 
       console.log(
@@ -160,20 +149,16 @@ function EmployeeEditDialog({
         employeeId
       );
 
-
       const response = await axios.get(
         `${EMPLOYEE_API}/${employeeId}`
       );
 
-
       const data = response.data;
-
 
       console.log(
         "Employee Details:",
         data
       );
-
 
       // =====================================================
       // PERSONAL INFORMATION
@@ -183,13 +168,10 @@ function EmployeeEditDialog({
         data.firstName !== undefined &&
         data.firstName !== null
       ) {
-
         setFirstName(
           data.firstName || ""
         );
-
       } else {
-
         const fullName =
           data.employeeName?.trim() || "";
 
@@ -203,36 +185,28 @@ function EmployeeEditDialog({
         setLastName(
           nameParts.join(" ") || ""
         );
-
       }
-
 
       if (
         data.lastName !== undefined &&
         data.lastName !== null
       ) {
-
         setLastName(
           data.lastName || ""
         );
-
       }
-
 
       setEmail(
         data.email || ""
       );
 
-
       setMobile(
         data.mobile || ""
       );
 
-
       setGender(
         data.gender || ""
       );
-
 
       // =====================================================
       // MANAGER
@@ -245,7 +219,6 @@ function EmployeeEditDialog({
           : ""
       );
 
-
       // =====================================================
       // DEPARTMENT
       // =====================================================
@@ -254,15 +227,30 @@ function EmployeeEditDialog({
         data.department || ""
       );
 
-
       // =====================================================
       // ROLE
       // =====================================================
+      //
+      // IMPORTANT:
+      // Employee table contains RoleId.
+      //
+      // Example:
+      // roleId: 6
+      //
+      // We keep the ID in state because the Role dropdown
+      // uses RoleId as its value.
+      // =====================================================
 
-      setRole(
-        data.role || ""
-      );
-
+      if (
+        data.roleId !== undefined &&
+        data.roleId !== null
+      ) {
+        setRoleId(
+          String(data.roleId)
+        );
+      } else {
+        setRoleId("");
+      }
 
       // =====================================================
       // DESIGNATION
@@ -272,7 +260,6 @@ function EmployeeEditDialog({
         data.designation || ""
       );
 
-
       // =====================================================
       // EMPLOYEE TYPE
       // =====================================================
@@ -280,7 +267,6 @@ function EmployeeEditDialog({
       setEmployeeType(
         data.employeeType || ""
       );
-
 
       // =====================================================
       // LOCATION
@@ -290,38 +276,28 @@ function EmployeeEditDialog({
         data.locationId !== null &&
         data.locationId !== undefined
       ) {
-
         setLocation(
           String(data.locationId)
         );
-
       } else {
-
         setLocation(
           data.location || ""
         );
-
       }
-
 
       // =====================================================
       // JOINING DATE
       // =====================================================
 
       if (data.joiningDate) {
-
         setJoiningDate(
           dayjs(data.joiningDate).format(
             "YYYY-MM-DD"
           )
         );
-
       } else {
-
         setJoiningDate("");
-
       }
-
 
       // =====================================================
       // STATUS
@@ -331,44 +307,33 @@ function EmployeeEditDialog({
         data.status || "Active"
       );
 
-
     } catch (error) {
-
       console.error(
         "Error loading employee:",
         error
       );
 
       if (error.response) {
-
         console.error(
           "API Response:",
           error.response.data
         );
-
       }
 
       alert(
         "Unable to load employee details."
       );
-
     } finally {
-
       setLoading(false);
-
     }
-
   }
-
 
   // =========================================================
   // LOAD DEPARTMENTS
   // =========================================================
 
   async function loadDepartments() {
-
     try {
-
       const response =
         await axios.get(
           DEPARTMENT_API
@@ -382,27 +347,20 @@ function EmployeeEditDialog({
       setDepartments(
         response.data || []
       );
-
     } catch (error) {
-
       console.error(
         "Department Error:",
         error
       );
-
     }
-
   }
-
 
   // =========================================================
   // LOAD ROLES
   // =========================================================
 
   async function loadRoles() {
-
     try {
-
       const response =
         await axios.get(
           ROLE_API
@@ -416,27 +374,20 @@ function EmployeeEditDialog({
       setRoles(
         response.data || []
       );
-
     } catch (error) {
-
       console.error(
         "Role Error:",
         error
       );
-
     }
-
   }
-
 
   // =========================================================
   // LOAD DESIGNATIONS
   // =========================================================
 
   async function loadDesignations() {
-
     try {
-
       const response =
         await axios.get(
           DESIGNATION_API
@@ -450,27 +401,20 @@ function EmployeeEditDialog({
       setDesignations(
         response.data || []
       );
-
     } catch (error) {
-
       console.error(
         "Designation Error:",
         error
       );
-
     }
-
   }
-
 
   // =========================================================
   // LOAD EMPLOYEE TYPES
   // =========================================================
 
   async function loadEmployeeTypes() {
-
     try {
-
       const response =
         await axios.get(
           EMPLOYEE_TYPE_API
@@ -484,27 +428,20 @@ function EmployeeEditDialog({
       setEmployeeTypes(
         response.data || []
       );
-
     } catch (error) {
-
       console.error(
         "Employee Type Error:",
         error
       );
-
     }
-
   }
-
 
   // =========================================================
   // LOAD LOCATIONS
   // =========================================================
 
   async function loadLocations() {
-
     try {
-
       const response =
         await axios.get(
           LOCATION_API
@@ -518,49 +455,30 @@ function EmployeeEditDialog({
       setLocations(
         response.data || []
       );
-
     } catch (error) {
-
       console.error(
         "Location Error:",
         error
       );
-
     }
-
   }
-
 
   // =========================================================
   // VALIDATION
   // =========================================================
 
   const isFormValid =
-
     firstName.trim() !== "" &&
-
     lastName.trim() !== "" &&
-
     email.trim() !== "" &&
-
     mobile.trim() !== "" &&
-
     gender.trim() !== "" &&
-
-    managerId.trim() !== "" &&
-
     department.trim() !== "" &&
-
     designation.trim() !== "" &&
-
     employeeType.trim() !== "" &&
-
     String(location).trim() !== "" &&
-
     joiningDate.trim() !== "" &&
-
     status.trim() !== "";
-
 
   // =========================================================
   // UPDATE EMPLOYEE
@@ -573,25 +491,16 @@ function EmployeeEditDialog({
     // -------------------------------------------------------
 
     if (!employee?.employeeId) {
-
       alert(
         "Employee ID is missing."
       );
 
       return;
-
     }
 
-
     // -------------------------------------------------------
-    // Form validation
-    // -------------------------------------------------------
-
-
-
-    // =======================================================
     // FIND LOCATION
-    // =======================================================
+    // -------------------------------------------------------
 
     const selectedLocation =
       locations.find(
@@ -600,16 +509,28 @@ function EmployeeEditDialog({
           String(location)
       );
 
+    // -------------------------------------------------------
+    // ROLE ID
+    // -------------------------------------------------------
+    //
+    // Convert empty value to null.
+    // Otherwise convert it to integer.
+    // -------------------------------------------------------
+
+    const selectedRoleId =
+      roleId === "" ||
+      roleId === null ||
+      roleId === undefined
+        ? null
+        : Number(roleId);
 
     // =======================================================
     // EMPLOYEE PAYLOAD
     // =======================================================
 
     const employeeData = {
-
       employeeId:
         employee.employeeId,
-
 
       // -----------------------------------------------------
       // Personal
@@ -630,14 +551,12 @@ function EmployeeEditDialog({
       gender:
         gender,
 
-
       // -----------------------------------------------------
       // Manager
       // -----------------------------------------------------
 
       managerId:
         managerId.trim(),
-
 
       // -----------------------------------------------------
       // Employment
@@ -646,15 +565,14 @@ function EmployeeEditDialog({
       department:
         department,
 
-      role:
-        role,
+      roleId:
+        selectedRoleId,
 
       designation:
         designation,
 
       employeeType:
         employeeType,
-
 
       // -----------------------------------------------------
       // Location
@@ -664,7 +582,6 @@ function EmployeeEditDialog({
         selectedLocation?.locationName ||
         location,
 
-
       // -----------------------------------------------------
       // Joining
       // -----------------------------------------------------
@@ -672,31 +589,25 @@ function EmployeeEditDialog({
       joiningDate:
         joiningDate,
 
-
       // -----------------------------------------------------
       // Status
       // -----------------------------------------------------
 
       status:
         status
-
     };
-
 
     console.log(
       "Updating Employee:",
       employeeData
     );
 
-
     // =======================================================
     // API CALL
     // =======================================================
 
     try {
-
       setSaving(true);
-
 
       const response =
         await axios.put(
@@ -704,12 +615,10 @@ function EmployeeEditDialog({
           employeeData
         );
 
-
       console.log(
         "Employee Updated:",
         response.data
       );
-
 
       // =====================================================
       // SUCCESS
@@ -719,17 +628,13 @@ function EmployeeEditDialog({
         "Employee updated successfully."
       );
 
-
       // =====================================================
       // REFRESH EMPLOYEE LIST
       // =====================================================
 
       if (onUpdated) {
-
         await onUpdated();
-
       }
-
 
       // =====================================================
       // CLOSE DIALOG
@@ -737,14 +642,11 @@ function EmployeeEditDialog({
 
       onClose();
 
-
     } catch (error) {
-
       console.error(
         "Update Employee Error:",
         error
       );
-
 
       // =====================================================
       // API ERROR
@@ -757,18 +659,15 @@ function EmployeeEditDialog({
           error.response.status
         );
 
-
         console.error(
           "API Response:",
           error.response.data
         );
 
-
         const message =
           error.response.data?.message ||
           error.response.data?.title ||
           "Unable to update employee.";
-
 
         alert(message);
 
@@ -777,32 +676,24 @@ function EmployeeEditDialog({
         alert(
           "Unable to connect to the Employee API."
         );
-
       }
 
     } finally {
-
       setSaving(false);
-
     }
-
   }
-
 
   // =========================================================
   // CLOSE DIALOG
   // =========================================================
 
   function handleClose() {
-
     if (saving) {
       return;
     }
 
     onClose();
-
   }
-
 
   // =========================================================
   // DISPLAY EMPLOYEE ID
@@ -811,41 +702,31 @@ function EmployeeEditDialog({
   function getEmployeeDisplayId() {
 
     if (employee?.azureEmployeeId) {
-
       return employee.azureEmployeeId;
-
     }
 
     if (employee?.employeeCode) {
-
       return employee.employeeCode;
-
     }
 
     if (employee?.employeeId) {
-
       return employee.employeeId;
-
     }
 
     return "";
-
   }
-
 
   // =========================================================
   // RENDER
   // =========================================================
 
   return (
-
     <Dialog
       open={open}
       onClose={handleClose}
       fullWidth
       maxWidth="md"
     >
-
 
       {/* ===================================================
           TITLE
@@ -859,21 +740,15 @@ function EmployeeEditDialog({
           fontWeight: 700,
         }}
       >
-
         Edit Employee
-
 
         <IconButton
           onClick={handleClose}
           disabled={saving}
         >
-
           <Close />
-
         </IconButton>
-
       </DialogTitle>
-
 
       {/* ===================================================
           CONTENT
@@ -893,13 +768,11 @@ function EmployeeEditDialog({
               gap: 15,
             }}
           >
-
             <CircularProgress />
 
             <span>
               Loading employee details...
             </span>
-
           </div>
 
         ) : (
@@ -911,9 +784,10 @@ function EmployeeEditDialog({
             <Grid
               container
               spacing={2}
-              sx={{ pt: 1 }}
+              sx={{
+                pt: 1
+              }}
             >
-
 
               {/* =================================================
                   EMPLOYEE ID
@@ -924,12 +798,13 @@ function EmployeeEditDialog({
                 <TextField
                   fullWidth
                   label="Employee ID"
-                  value={getEmployeeDisplayId()}
+                  value={
+                    getEmployeeDisplayId()
+                  }
                   disabled
                 />
 
               </Grid>
-
 
               {/* =================================================
                   FIRST NAME
@@ -944,7 +819,6 @@ function EmployeeEditDialog({
 
                 <TextField
                   fullWidth
-         
                   label="First Name"
                   value={firstName}
                   onChange={(e) =>
@@ -967,7 +841,6 @@ function EmployeeEditDialog({
 
               </Grid>
 
-
               {/* =================================================
                   LAST NAME
               ================================================= */}
@@ -981,7 +854,6 @@ function EmployeeEditDialog({
 
                 <TextField
                   fullWidth
-   
                   label="Last Name"
                   value={lastName}
                   onChange={(e) =>
@@ -1004,7 +876,6 @@ function EmployeeEditDialog({
 
               </Grid>
 
-
               {/* =================================================
                   EMAIL
               ================================================= */}
@@ -1018,7 +889,6 @@ function EmployeeEditDialog({
 
                 <TextField
                   fullWidth
-            
                   type="email"
                   label="Email"
                   value={email}
@@ -1042,7 +912,6 @@ function EmployeeEditDialog({
 
               </Grid>
 
-
               {/* =================================================
                   MOBILE
               ================================================= */}
@@ -1056,7 +925,6 @@ function EmployeeEditDialog({
 
                 <TextField
                   fullWidth
-           
                   label="Mobile"
                   value={mobile}
                   onChange={(e) =>
@@ -1079,7 +947,6 @@ function EmployeeEditDialog({
 
               </Grid>
 
-
               {/* =================================================
                   GENDER
               ================================================= */}
@@ -1094,7 +961,6 @@ function EmployeeEditDialog({
                 <TextField
                   select
                   fullWidth
-          
                   label="Gender"
                   value={gender}
                   onChange={(e) =>
@@ -1124,7 +990,6 @@ function EmployeeEditDialog({
 
               </Grid>
 
-
               {/* =================================================
                   MANAGER ID
               ================================================= */}
@@ -1138,7 +1003,6 @@ function EmployeeEditDialog({
 
                 <TextField
                   fullWidth
-           
                   label="Manager ID"
                   value={managerId}
                   onChange={(e) =>
@@ -1161,7 +1025,6 @@ function EmployeeEditDialog({
 
               </Grid>
 
-
               {/* =================================================
                   DEPARTMENT
               ================================================= */}
@@ -1176,7 +1039,6 @@ function EmployeeEditDialog({
                 <TextField
                   select
                   fullWidth
-              
                   label="Department"
                   value={department}
                   onChange={(e) =>
@@ -1201,7 +1063,6 @@ function EmployeeEditDialog({
                     Select Department
                   </MenuItem>
 
-
                   {departments.map(
                     (item) => (
 
@@ -1213,11 +1074,9 @@ function EmployeeEditDialog({
                           item.departmentName
                         }
                       >
-
                         {
                           item.departmentName
                         }
-
                       </MenuItem>
 
                     )
@@ -1226,7 +1085,6 @@ function EmployeeEditDialog({
                 </TextField>
 
               </Grid>
-
 
               {/* =================================================
                   ROLE
@@ -1243,18 +1101,25 @@ function EmployeeEditDialog({
                   select
                   fullWidth
                   label="Role"
-                  value={role}
-                  onChange={(e) =>
-                    setRole(
-                      e.target.value
-                    )
-                  }
+
+                  /*
+                   * IMPORTANT:
+                   * Role dropdown value is roleId.
+                   */
+                  value={roleId}
+
+                  onChange={(e) => {
+                    setRoleId(
+                      String(
+                        e.target.value
+                      )
+                    );
+                  }}
                 >
 
                   <MenuItem value="">
                     Select Role
                   </MenuItem>
-
 
                   {roles.map(
                     (item) => (
@@ -1264,14 +1129,14 @@ function EmployeeEditDialog({
                           item.roleId
                         }
                         value={
-                          item.role
+                          String(
+                            item.roleId
+                          )
                         }
                       >
-
                         {
                           item.role
                         }
-
                       </MenuItem>
 
                     )
@@ -1280,7 +1145,6 @@ function EmployeeEditDialog({
                 </TextField>
 
               </Grid>
-
 
               {/* =================================================
                   DESIGNATION
@@ -1296,7 +1160,6 @@ function EmployeeEditDialog({
                 <TextField
                   select
                   fullWidth
-         
                   label="Designation"
                   value={designation}
                   onChange={(e) =>
@@ -1321,7 +1184,6 @@ function EmployeeEditDialog({
                     Select Designation
                   </MenuItem>
 
-
                   {designations.map(
                     (item) => (
 
@@ -1333,11 +1195,9 @@ function EmployeeEditDialog({
                           item.designationName
                         }
                       >
-
                         {
                           item.designationName
                         }
-
                       </MenuItem>
 
                     )
@@ -1346,7 +1206,6 @@ function EmployeeEditDialog({
                 </TextField>
 
               </Grid>
-
 
               {/* =================================================
                   EMPLOYEE TYPE
@@ -1362,7 +1221,6 @@ function EmployeeEditDialog({
                 <TextField
                   select
                   fullWidth
-            
                   label="Employee Type"
                   value={employeeType}
                   onChange={(e) =>
@@ -1376,7 +1234,6 @@ function EmployeeEditDialog({
                     Select Employee Type
                   </MenuItem>
 
-
                   {employeeTypes.map(
                     (item) => (
 
@@ -1388,11 +1245,9 @@ function EmployeeEditDialog({
                           item.employeeTypeName
                         }
                       >
-
                         {
                           item.employeeTypeName
                         }
-
                       </MenuItem>
 
                     )
@@ -1401,7 +1256,6 @@ function EmployeeEditDialog({
                 </TextField>
 
               </Grid>
-
 
               {/* =================================================
                   LOCATION
@@ -1417,7 +1271,6 @@ function EmployeeEditDialog({
                 <TextField
                   select
                   fullWidth
-       
                   label="Location"
                   value={location}
                   onChange={(e) =>
@@ -1442,7 +1295,6 @@ function EmployeeEditDialog({
                     Select Location
                   </MenuItem>
 
-
                   {locations.map(
                     (item) => (
 
@@ -1454,11 +1306,9 @@ function EmployeeEditDialog({
                           item.locationId
                         }
                       >
-
                         {
                           item.locationName
                         }
-
                       </MenuItem>
 
                     )
@@ -1467,7 +1317,6 @@ function EmployeeEditDialog({
                 </TextField>
 
               </Grid>
-
 
               {/* =================================================
                   JOINING DATE
@@ -1482,6 +1331,7 @@ function EmployeeEditDialog({
 
                 <DatePicker
                   label="Joining Date"
+
                   value={
                     joiningDate
                       ? dayjs(
@@ -1489,6 +1339,7 @@ function EmployeeEditDialog({
                         )
                       : null
                   }
+
                   onChange={(value) => {
 
                     setJoiningDate(
@@ -1500,16 +1351,15 @@ function EmployeeEditDialog({
                     );
 
                   }}
+
                   slotProps={{
                     textField: {
                       fullWidth: true,
-                
                     },
                   }}
                 />
 
               </Grid>
-
 
               {/* =================================================
                   STATUS
@@ -1525,7 +1375,6 @@ function EmployeeEditDialog({
                 <TextField
                   select
                   fullWidth
-            
                   label="Status"
                   value={status}
                   onChange={(e) =>
@@ -1550,11 +1399,9 @@ function EmployeeEditDialog({
             </Grid>
 
           </LocalizationProvider>
-
         )}
 
       </DialogContent>
-
 
       {/* =====================================================
           ACTIONS
@@ -1571,14 +1418,12 @@ function EmployeeEditDialog({
           onClick={handleClose}
           disabled={saving}
         >
-
           Cancel
-
         </Button>
-
 
         <Button
           variant="contained"
+
           startIcon={
             saving ? (
               <CircularProgress
@@ -1589,23 +1434,24 @@ function EmployeeEditDialog({
               <Save />
             )
           }
-          onClick={updateEmployee}
-        
-        >
 
+          onClick={updateEmployee}
+
+          disabled={
+            saving ||
+            loading ||
+            !employee?.employeeId
+          }
+        >
           {saving
             ? "Updating..."
             : "Update Employee"}
-
         </Button>
 
       </DialogActions>
 
     </Dialog>
-
   );
-
 }
-
 
 export default EmployeeEditDialog;

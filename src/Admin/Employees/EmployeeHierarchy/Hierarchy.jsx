@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import "./Hierarchy.css";
+
 import {
     Card,
     CardContent,
@@ -10,145 +11,163 @@ import {
     MenuItem,
     Button
 } from "@mui/material";
+
+// =========================================================
+// API
+// =========================================================
+
 const API_URL = "https://localhost:7283/api/Hierarchy";
 const EMPLOYEE_API = "https://localhost:7002/api/Employee";
 
+// =========================================================
+// COMPONENT
+// =========================================================
+
 function Hierarchy() {
+
+    // =========================================================
+    // STATE
+    // =========================================================
+
     const [hierarchies, setHierarchies] = useState([]);
     const [employees, setEmployees] = useState([]);
 
     const [employeeId, setEmployeeId] = useState("");
     const [employeeHierarchy, setEmployeeHierarchy] = useState(null);
-    const [approver, setApprover] = useState(null);
 
     const [loading, setLoading] = useState(false);
     const [loadingEmployees, setLoadingEmployees] = useState(false);
 
     // =========================================================
-    // LOAD DATA
-    // =========================================================
-
-    useEffect(() => {
-        loadEmployees();
-        loadHierarchies();
-    }, []);
-
-    // =========================================================
     // LOAD EMPLOYEES
     // =========================================================
 
-    const loadEmployees = async () => {
+    const loadEmployees = useCallback(async () => {
+
         setLoadingEmployees(true);
 
         try {
-            const response = await axios.get(EMPLOYEE_API);
 
-            console.log("Employees:", response.data);
-
-            setEmployees(response.data || []);
-        } catch (error) {
-            console.error("Error loading employees:", error);
-            setEmployees([]);
-        } finally {
-            setLoadingEmployees(false);
-        }
-    };
-
-    // =========================================================
-    // LOAD ALL ACTIVE HIERARCHIES
-    // =========================================================
-
-    const loadHierarchies = async () => {
-        try {
-            const response = await axios.get(API_URL);
-
-            console.log("Hierarchies:", response.data);
-
-            setHierarchies(response.data || []);
-        } catch (error) {
-            console.error("Error loading hierarchy:", error);
-            setHierarchies([]);
-        }
-    };
-
-    // =========================================================
-    // GET SELECTED EMPLOYEE HIERARCHY
-    // =========================================================
-
-    const getEmployeeHierarchy = async () => {
-        if (!employeeId) {
-            alert("Select an employee");
-            return;
-        }
-
-        setLoading(true);
-        setEmployeeHierarchy(null);
-        setApprover(null);
-
-        try {
-            // -------------------------------------------------
-            // Get hierarchy
-            // -------------------------------------------------
-
-            const hierarchyResponse = await axios.get(
-                `${API_URL}/employee/${employeeId}`
+            const response = await axios.get(
+                EMPLOYEE_API
             );
 
-            console.log(
-                "Employee Hierarchy:",
-                hierarchyResponse.data
-            );
+            const data = Array.isArray(response.data)
+                ? response.data
+                : [];
 
-            setEmployeeHierarchy(hierarchyResponse.data);
+            console.log("Employees:", data);
 
-            // -------------------------------------------------
-            // Get approver
-            // -------------------------------------------------
-
-            try {
-                const approverResponse = await axios.get(
-                    `${API_URL}/approver/${employeeId}`
-                );
-
-                console.log(
-                    "Approver:",
-                    approverResponse.data
-                );
-
-                setApprover(approverResponse.data);
-            } catch (error) {
-                console.log("No approver found");
-                setApprover(null);
-            }
+            setEmployees(data);
 
         } catch (error) {
+
             console.error(
-                "Hierarchy error:",
+                "Error loading employees:",
                 error
             );
 
-            setEmployeeHierarchy(null);
-            setApprover(null);
+            setEmployees([]);
 
-            if (error.response?.status === 404) {
-                alert(
-                    "Hierarchy not found for this employee."
-                );
-            } else {
-                alert(
-                    "Unable to load employee hierarchy."
-                );
-            }
         } finally {
-            setLoading(false);
+
+            setLoadingEmployees(false);
         }
-    };
+
+    }, []);
 
     // =========================================================
-    // FIND EMPLOYEE BY ID
+    // LOAD HIERARCHY
+    //
+    // Backend automatically builds/updates the hierarchy.
+    //
+    // We ONLY read the result here.
+    // =========================================================
+
+    const loadHierarchies = useCallback(async () => {
+
+        try {
+
+            const response = await axios.get(
+                API_URL
+            );
+
+            const data = Array.isArray(response.data)
+                ? response.data
+                : [];
+
+            console.log(
+                "Hierarchies:",
+                data
+            );
+
+            setHierarchies(data);
+
+            return data;
+
+        } catch (error) {
+
+            console.error(
+                "Error loading hierarchy:",
+                error
+            );
+
+            setHierarchies([]);
+
+            return [];
+
+        }
+
+    }, []);
+
+    // =========================================================
+    // INITIAL LOAD
+    // =========================================================
+
+    useEffect(() => {
+
+        loadEmployees();
+        loadHierarchies();
+
+    }, [
+        loadEmployees,
+        loadHierarchies
+    ]);
+
+    // =========================================================
+    // AUTOMATIC REFRESH
+    //
+    // Backend HierarchySyncService checks EmployeeService
+    // automatically.
+    //
+    // Refresh frontend every 5 seconds so changes appear
+    // automatically without clicking anything.
+    // =========================================================
+
+    useEffect(() => {
+
+        const interval = setInterval(() => {
+
+            loadEmployees();
+            loadHierarchies();
+
+        }, 5000);
+
+        return () => {
+            clearInterval(interval);
+        };
+
+    }, [
+        loadEmployees,
+        loadHierarchies
+    ]);
+
+    // =========================================================
+    // FIND EMPLOYEE
     // =========================================================
 
     const getEmployee = (id) => {
+
         if (
             id === null ||
             id === undefined ||
@@ -158,367 +177,325 @@ function Hierarchy() {
         }
 
         return employees.find(
-            (e) =>
-                Number(e.employeeId) === Number(id)
+            employee =>
+                Number(employee.employeeId) ===
+                Number(id)
         );
     };
 
     // =========================================================
-    // FIND EMPLOYEE NAME
+    // EMPLOYEE NAME
     // =========================================================
 
     const getEmployeeName = (id) => {
-        const employee = getEmployee(id);
 
-        return employee?.employeeName || "-";
-    };
-
-    // =========================================================
-    // NORMALIZE DESIGNATION
-    // =========================================================
-
-    const normalizeDesignation = (designation) => {
-        return String(designation || "")
-            .trim()
-            .toLowerCase();
-    };
-
-    // =========================================================
-    // FIND ADMINISTRATOR / SUPER ADMIN
-    //
-    // PRIMARY RULE:
-    // Department = Amnikon
-    // Designation = Administrator
-    //
-    // FALLBACK:
-    // Any Administrator
-    // =========================================================
-
-    const getAdministrator = () => {
-
-        // First try:
-        // Department = Amnikon
-        // Designation = Administrator
-
-        const amnikonAdmin = employees.find(
-            (e) =>
-                String(e.department || "")
-                    .trim()
-                    .toLowerCase() === "amnikon"
-                &&
-                normalizeDesignation(e.designation) ===
-                "administrator"
-        );
-
-        if (amnikonAdmin) {
-            return amnikonAdmin;
-        }
-
-        // -------------------------------------------------
-        // Fallback:
-        // Find any Administrator
-        // -------------------------------------------------
-
-        const administrator = employees.find(
-            (e) =>
-                normalizeDesignation(e.designation) ===
-                "administrator"
-        );
-
-        return administrator || null;
-    };
-
-    // =========================================================
-    // FIND EMPLOYEE BY NAME
-    // =========================================================
-
-    const getEmployeeByName = (name) => {
-        if (!name) {
-            return null;
-        }
-
-        return employees.find(
-            (e) =>
-                String(e.employeeName || "")
-                    .trim()
-                    .toLowerCase() ===
-                String(name)
-                    .trim()
-                    .toLowerCase()
-        );
-    };
-
-    // =========================================================
-    // BUILD TABLE HIERARCHY
-    //
-    // NORMAL EMPLOYEE
-    //
-    // Employee
-    //      ↓
-    // Team Lead
-    //      ↓
-    // Manager
-    //      ↓
-    // Administrator
-    //
-    //
-    // TEAM LEAD
-    //
-    // Team Lead
-    //      ↓
-    // Manager
-    //      ↓
-    // Administrator
-    //
-    //
-    // MANAGER
-    //
-    // Manager
-    //      ↓
-    // Administrator
-    // =========================================================
-
-    const getTableHierarchy = (item) => {
-
-        // -------------------------------------------------
-        // Selected employee
-        // -------------------------------------------------
-
-        const employee = getEmployee(
-            item.employeeId
-        );
-
-        // -------------------------------------------------
-        // Employee not found
-        // -------------------------------------------------
+        const employee =
+            getEmployee(id);
 
         if (!employee) {
-            return {
-                employeeName: "Unknown",
-                departmentName: "Unknown",
-                teamLeadName: "Unknown",
-                managerName: "Unknown",
-                superAdminName:
-                    getAdministrator()?.employeeName ||
-                    "Not Assigned"
-            };
-        }
-
-        // -------------------------------------------------
-        // Employee designation
-        // -------------------------------------------------
-
-        const designation =
-            normalizeDesignation(
-                employee.designation
-            );
-
-        // -------------------------------------------------
-        // ALWAYS FIND ADMINISTRATOR
-        // -------------------------------------------------
-
-        const administrator =
-            getAdministrator();
-
-        let teamLead = null;
-        let manager = null;
-
-        // =================================================
-        // CASE 1
-        // NORMAL EMPLOYEE
-        // =================================================
-
-        if (
-            designation !== "team lead" &&
-            designation !== "manager" &&
-            designation !== "administrator" &&
-            designation !== "general manager"
-        ) {
-
-            // -------------------------------------------------
-            // Employee -> Team Lead
-            // -------------------------------------------------
-
-            const teamLeadId =
-                item.teamLeadEmployeeId ??
-                item.reportsToEmployeeId;
-
-            if (teamLeadId) {
-                teamLead = getEmployee(teamLeadId);
-            }
-
-            // -------------------------------------------------
-            // If Team Lead exists
-            // Team Lead -> Manager
-            // -------------------------------------------------
-
-            if (teamLead) {
-
-                if (teamLead.managerId) {
-                    manager = getEmployeeByName(
-                        teamLead.managerId
-                    );
-                }
-            }
-
-            // -------------------------------------------------
-            // If NO Team Lead
-            // Employee -> Manager directly
-            // -------------------------------------------------
-
-            else {
-
-                // Try employee.managerId first
-                if (employee.managerId) {
-
-                    manager = getEmployeeByName(
-                        employee.managerId
-                    );
-                }
-
-                // Fallback to hierarchy manager ID
-                if (!manager && item.managerEmployeeId) {
-
-                    manager = getEmployee(
-                        item.managerEmployeeId
-                    );
-                }
-            }
-        }        // =================================================
-        // CASE 2
-        // TEAM LEAD
-        //
-        // Team Lead -> Manager -> Administrator
-        // =================================================
-
-        else if (
-            designation === "team lead"
-        ) {
-
-            // -------------------------------------------------
-            // IMPORTANT:
-            // Do NOT put the Team Lead again
-            // in Team Lead column.
-            //
-            // ReportsToEmployeeId = Manager
-            // -------------------------------------------------
-
-            const managerId =
-                item.managerEmployeeId ??
-                item.reportsToEmployeeId ??
-                item.teamLeadEmployeeId;
-
-            manager = getEmployee(
-                managerId
-            );
-
-            // -------------------------------------------------
-            // If ID didn't find manager,
-            // try ManagerId name
-            // -------------------------------------------------
-
-            if (!manager && employee.managerId) {
-
-                manager =
-                    getEmployeeByName(
-                        employee.managerId
-                    );
-            }
-        }
-
-        // =================================================
-        // CASE 3
-        // MANAGER
-        //
-        // Manager -> Administrator
-        // =================================================
-
-        else if (
-            designation === "manager"
-        ) {
-
-            // Manager column remains empty/Unknown.
-            // Super Admin is Administrator.
-
-            manager = null;
-        }
-
-        // =================================================
-        // CASE 4
-        // GENERAL MANAGER
-        // =================================================
-
-        else if (
-            designation === "general manager"
-        ) {
-
-            teamLead = null;
-            manager = null;
-        }
-
-        // =================================================
-        // CASE 5
-        // ADMINISTRATOR
-        // =================================================
-
-        else if (
-            designation === "administrator"
-        ) {
-
-            teamLead = null;
-            manager = null;
-        }
-
-        // =================================================
-        // RETURN TABLE DATA
-        // =================================================
-
-        return {
-            employeeName:
-                employee.employeeName ||
-                "Unknown",
-
-            departmentName:
-                employee.department ||
-                "Unknown",
-
-            teamLeadName:
-                teamLead?.employeeName ||
-                "Unknown",
-
-            managerName:
-                manager?.employeeName ||
-                "Unknown",
-
-            // IMPORTANT:
-            // Always show Administrator here
-            superAdminName:
-                item.superAdminName ||
-                "Not Assigned"
-        };
-    };
-
-    // =========================================================
-    // GET APPROVER NAME
-    // =========================================================
-
-    const getApproverName = () => {
-
-        if (!approver) {
             return "-";
         }
 
-        if (approver.approverEmployeeName) {
-            return approver.approverEmployeeName;
+        return (
+            employee.employeeName ||
+            `${employee.firstName || ""} ${employee.lastName || ""}`.trim() ||
+            "-"
+        );
+    };
+
+    // =========================================================
+    // BUILD REPORTING CHAIN
+    //
+    // IMPORTANT:
+    //
+    // We DO NOT calculate:
+    //
+    // Employee -> Team Lead
+    // Team Lead -> Manager
+    // Manager -> Super Admin
+    // Super Admin -> General Manager
+    //
+    // anymore.
+    //
+    // Backend already calculated ReportsToEmployeeId.
+    //
+    // Frontend simply follows:
+    //
+    // Employee
+    //    ↓
+    // ReportsToEmployeeId
+    //    ↓
+    // ReportsToEmployeeId
+    //    ↓
+    // ...
+    //
+    // =========================================================
+
+    const buildReportingChain = (
+        selectedEmployeeId,
+        hierarchyData
+    ) => {
+
+        if (
+            !selectedEmployeeId ||
+            !Array.isArray(hierarchyData) ||
+            hierarchyData.length === 0
+        ) {
+            return [];
         }
 
-        if (approver.approverEmployeeId) {
-            return getEmployeeName(
-                approver.approverEmployeeId
+        const hierarchyMap = new Map();
+
+        hierarchyData.forEach(item => {
+
+            hierarchyMap.set(
+                Number(item.employeeId),
+                item
             );
+
+        });
+
+        const chain = [];
+
+        const visited = new Set();
+
+        let currentId =
+            Number(selectedEmployeeId);
+
+        // Safety limit prevents circular hierarchy
+        // from creating an infinite loop.
+
+        let safetyCounter = 0;
+
+        while (
+            currentId &&
+            safetyCounter < 50
+        ) {
+
+            safetyCounter++;
+
+            // Prevent circular reporting structure
+
+            if (visited.has(currentId)) {
+
+                console.warn(
+                    "Circular hierarchy detected for EmployeeId:",
+                    currentId
+                );
+
+                break;
+            }
+
+            visited.add(currentId);
+
+            const current =
+                hierarchyMap.get(currentId);
+
+            if (!current) {
+                break;
+            }
+
+            chain.push(current);
+
+            // Backend calculated this value.
+
+            const nextId =
+                current.reportsToEmployeeId;
+
+            if (
+                nextId === null ||
+                nextId === undefined ||
+                nextId === ""
+            ) {
+                break;
+            }
+
+            currentId =
+                Number(nextId);
         }
 
-        return "-";
+        return chain;
+    };
+
+    // =========================================================
+    // GET SELECTED EMPLOYEE HIERARCHY
+    // =========================================================
+
+    const getEmployeeHierarchy = async () => {
+
+        if (!employeeId) {
+
+            alert(
+                "Select an employee"
+            );
+
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+
+            // First refresh the hierarchy from backend.
+
+            const latestHierarchy =
+                await loadHierarchies();
+
+            // Find selected employee.
+
+            const selectedHierarchy =
+                latestHierarchy.find(
+                    item =>
+                        Number(item.employeeId) ===
+                        Number(employeeId)
+                );
+
+            if (!selectedHierarchy) {
+
+                setEmployeeHierarchy(null);
+
+                alert(
+                    "Hierarchy not found for this employee."
+                );
+
+                return;
+            }
+
+            // Build chain using backend's
+            // ReportsToEmployeeId.
+
+            const chain =
+                buildReportingChain(
+                    employeeId,
+                    latestHierarchy
+                );
+
+            console.log(
+                "Selected Employee:",
+                selectedHierarchy
+            );
+
+            console.log(
+                "Reporting Chain:",
+                chain
+            );
+
+            setEmployeeHierarchy(
+                selectedHierarchy
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Hierarchy error:",
+                error
+            );
+
+            setEmployeeHierarchy(null);
+
+            alert(
+                "Unable to load employee hierarchy."
+            );
+
+        } finally {
+
+            setLoading(false);
+        }
+    };
+
+    // =========================================================
+    // GET SELECTED REPORTING CHAIN
+    // =========================================================
+
+    const reportingChain =
+        employeeHierarchy
+            ? buildReportingChain(
+                employeeHierarchy.employeeId,
+                hierarchies
+            )
+            : [];
+
+    // =========================================================
+    // RENDER HIERARCHY BOX
+    // =========================================================
+
+    const renderHierarchyBox = (
+        item,
+        index
+    ) => {
+
+        if (!item) {
+            return null;
+        }
+
+        const isFirst =
+            index === 0;
+
+        const roleName =
+            item.roleName ||
+            "Unknown Role";
+
+        const employeeName =
+            item.employeeName ||
+            getEmployeeName(
+                item.employeeId
+            ) ||
+            "Not Assigned";
+
+        return (
+            <div
+                key={`${item.employeeId}-${index}`}
+                className={
+                    isFirst
+                        ? "hierarchy-box employee"
+                        : "hierarchy-box"
+                }
+            >
+
+                <span>
+                    {roleName}
+                </span>
+
+                <strong>
+                    {employeeName}
+                </strong>
+
+                {item.department && (
+                    <small>
+                        {item.department}
+                    </small>
+                )}
+
+            </div>
+        );
+    };
+
+    // =========================================================
+    // TABLE
+    //
+    // Backend already contains the reporting employee.
+    // Therefore we don't calculate anything here.
+    // =========================================================
+
+    const getTableParent = (
+        item
+    ) => {
+
+        if (
+            !item ||
+            !item.reportsToEmployeeId
+        ) {
+            return null;
+        }
+
+        return hierarchies.find(
+            hierarchy =>
+                Number(
+                    hierarchy.employeeId
+                ) === Number(
+                    item.reportsToEmployeeId
+                )
+        );
     };
 
     // =========================================================
@@ -526,6 +503,7 @@ function Hierarchy() {
     // =========================================================
 
     return (
+
         <div className="hierarchy-page">
 
             {/* ================================================= */}
@@ -544,71 +522,97 @@ function Hierarchy() {
 
             </div>
 
-
             {/* ================================================= */}
-            {/* EMPLOYEE SEARCH */}
+            {/* EMPLOYEE SELECTOR */}
             {/* ================================================= */}
 
-<Card className="toolbar-card">
-    <CardContent>
+            <Card className="toolbar-card">
 
-        <div className="toolbar">
+                <CardContent>
 
-            <FormControl
-                fullWidth
-                sx={{ flex: 1 }}
-            >
-                <InputLabel>
-                    Employee
-                </InputLabel>
+                    <div className="toolbar">
 
-                <Select
-                    value={employeeId}
-                    label="Employee"
-                    onChange={(e) =>
-                        setEmployeeId(e.target.value)
-                    }
-                    disabled={loadingEmployees}
-                >
-                    <MenuItem value="">
-                        {loadingEmployees
-                            ? "Loading employees..."
-                            : "Select Employee"}
-                    </MenuItem>
-
-                    {employees.map((employee) => (
-                        <MenuItem
-                            key={employee.employeeId}
-                            value={employee.employeeId}
+                        <FormControl
+                            fullWidth
+                            sx={{ flex: 1 }}
                         >
-                            {employee.employeeName}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
 
-            <Button
-                variant="contained"
-                onClick={getEmployeeHierarchy}
-                disabled={
-                    loading ||
-                    loadingEmployees ||
-                    !employeeId
-                }
-                sx={{
-                    minWidth: 170,
-                    height: 56
-                }}
-            >
-                {loading
-                    ? "Loading..."
-                    : "View Hierarchy"}
-            </Button>
+                            <InputLabel>
+                                Employee
+                            </InputLabel>
 
-        </div>
+                            <Select
+                                value={employeeId}
+                                label="Employee"
+                                onChange={(e) =>
+                                    setEmployeeId(
+                                        e.target.value
+                                    )
+                                }
+                                disabled={
+                                    loadingEmployees
+                                }
+                            >
 
-    </CardContent>
-</Card>
+                                <MenuItem value="">
+
+                                    {loadingEmployees
+                                        ? "Loading employees..."
+                                        : "Select Employee"}
+
+                                </MenuItem>
+
+                                {employees.map(
+                                    employee => (
+
+                                        <MenuItem
+                                            key={
+                                                employee.employeeId
+                                            }
+                                            value={
+                                                employee.employeeId
+                                            }
+                                        >
+
+                                            {employee.employeeName ||
+                                                `${employee.firstName || ""} ${employee.lastName || ""}`.trim()}
+
+                                        </MenuItem>
+
+                                    )
+                                )}
+
+                            </Select>
+
+                        </FormControl>
+
+                        <Button
+                            variant="contained"
+                            onClick={
+                                getEmployeeHierarchy
+                            }
+                            disabled={
+                                loading ||
+                                loadingEmployees ||
+                                !employeeId
+                            }
+                            sx={{
+                                minWidth: 170,
+                                height: 56
+                            }}
+                        >
+
+                            {loading
+                                ? "Loading..."
+                                : "View Hierarchy"}
+
+                        </Button>
+
+                    </div>
+
+                </CardContent>
+
+            </Card>
 
             {/* ================================================= */}
             {/* REPORTING STRUCTURE */}
@@ -622,329 +626,55 @@ function Hierarchy() {
                         Reporting Structure
                     </h2>
 
-                    <div className="hierarchy-flow">
+                    {reportingChain.length === 0 ? (
 
-                        {/* ================================================= */}
-                        {/* NORMAL EMPLOYEE */}
-                        {/* ================================================= */}
+                        <p>
+                            No reporting hierarchy found.
+                        </p>
 
-                        {![
-                            "team lead",
-                            "manager",
-                            "administrator",
-                            "general manager"
-                        ].includes(
-                            normalizeDesignation(
-                                employeeHierarchy.designation
-                            )
-                        ) && (
+                    ) : (
 
-                                <>
+                        <div className="hierarchy-flow">
 
-                                    {/* EMPLOYEE */}
+                            {reportingChain.map(
+                                (item, index) => (
 
-                                    <div className="hierarchy-box employee">
-
-                                        <span>
-                                            Employee
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.employeeName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div className="arrow">
-                                        →
-                                    </div>
-
-
-                                    {/* TEAM LEAD */}
-
-                                    <div className="hierarchy-box">
-
-                                        <span>
-                                            Team Lead
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.teamLeadName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div className="arrow">
-                                        →
-                                    </div>
-
-
-                                    {/* MANAGER */}
-
-                                    <div className="hierarchy-box">
-
-                                        <span>
-                                            Manager
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.managerName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div className="arrow">
-                                        →
-                                    </div>
-
-
-                                    {/* SUPER ADMIN */}
-
-                                    <div className="hierarchy-box super-admin">
-
-                                        <span>
-                                            Super Admin
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.superAdminName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-                                </>
-                            )}
-
-
-                        {/* ================================================= */}
-                        {/* TEAM LEAD */}
-                        {/* Team Lead → Manager → Super Admin */}
-                        {/* ================================================= */}
-
-                        {normalizeDesignation(
-                            employeeHierarchy.designation
-                        ) === "team lead" && (
-
-                                <>
-
-                                    {/* TEAM LEAD */}
-
-                                    <div className="hierarchy-box employee">
-
-                                        <span>
-                                            Team Lead
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.employeeName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div className="arrow">
-                                        →
-                                    </div>
-
-
-                                    {/* MANAGER */}
-
-                                    <div className="hierarchy-box">
-
-                                        <span>
-                                            Manager
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.managerName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div className="arrow">
-                                        →
-                                    </div>
-
-
-                                    {/* SUPER ADMIN */}
-
-                                    <div className="hierarchy-box super-admin">
-
-                                        <span>
-                                            Super Admin
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.superAdminName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-                                </>
-                            )}
-
-
-                        {/* ================================================= */}
-                        {/* MANAGER */}
-                        {/* Manager → Super Admin */}
-                        {/* ================================================= */}
-
-                        {normalizeDesignation(
-                            employeeHierarchy.designation
-                        ) === "manager" && (
-
-                                <>
-
-                                    {/* MANAGER */}
-
-                                    <div className="hierarchy-box employee">
-
-                                        <span>
-                                            Manager
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.employeeName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div className="arrow">
-                                        →
-                                    </div>
-
-
-                                    {/* SUPER ADMIN */}
-
-                                    <div className="hierarchy-box super-admin">
-
-                                        <span>
-                                            Super Admin
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.superAdminName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-                                </>
-                            )}
-
-
-                        {/* ================================================= */}
-                        {/* GENERAL MANAGER */}
-                        {/* ================================================= */}
-
-                        {normalizeDesignation(
-                            employeeHierarchy.designation
-                        ) === "general manager" && (
-
-                                <>
-
-                                    <div className="hierarchy-box employee">
-
-                                        <span>
-                                            General Manager
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.employeeName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div className="arrow">
-                                        →
-                                    </div>
-
-
-                                    <div className="hierarchy-box super-admin">
-
-                                        <span>
-                                            Super Admin
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                employeeHierarchy.superAdminName ||
-                                                "Not Assigned"
-                                            }
-                                        </strong>
-
-                                    </div>
-
-                                </>
-                            )}
-
-
-                        {/* ================================================= */}
-                        {/* ADMINISTRATOR */}
-                        {/* ================================================= */}
-
-                        {normalizeDesignation(
-                            employeeHierarchy.designation
-                        ) === "administrator" && (
-
-                                <div className="hierarchy-box super-admin">
-
-                                    <span>
-                                        Super Admin
-                                    </span>
-
-                                    <strong>
-                                        {
-                                            employeeHierarchy.employeeName ||
-                                            "Not Assigned"
+                                    <div
+                                        key={
+                                            `${item.employeeId}-${index}`
                                         }
-                                    </strong>
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center"
+                                        }}
+                                    >
 
-                                </div>
+                                        {renderHierarchyBox(
+                                            item,
+                                            index
+                                        )}
 
+                                        {index <
+                                            reportingChain.length - 1 && (
+
+                                            <div className="arrow">
+                                                →
+                                            </div>
+
+                                        )}
+
+                                    </div>
+
+                                )
                             )}
 
-                    </div>
+                        </div>
+
+                    )}
 
                 </div>
 
             )}
-
 
             {/* ================================================= */}
             {/* ALL CONFIGURED HIERARCHIES */}
@@ -971,15 +701,19 @@ function Hierarchy() {
                             </th>
 
                             <th>
-                                Team Lead
+                                Role
                             </th>
 
                             <th>
-                                Manager
+                                Reports To
                             </th>
 
                             <th>
-                                Super Admin
+                                Parent Role
+                            </th>
+
+                            <th>
+                                Level
                             </th>
 
                             <th>
@@ -990,7 +724,6 @@ function Hierarchy() {
 
                     </thead>
 
-
                     <tbody>
 
                         {hierarchies.length === 0 ? (
@@ -998,9 +731,10 @@ function Hierarchy() {
                             <tr>
 
                                 <td
-                                    colSpan="6"
+                                    colSpan="7"
                                     style={{
-                                        textAlign: "center"
+                                        textAlign:
+                                            "center"
                                     }}
                                 >
                                     No hierarchies configured.
@@ -1010,81 +744,100 @@ function Hierarchy() {
 
                         ) : (
 
-                            hierarchies.map((item) => {
+                            hierarchies.map(
+                                item => {
 
-                                const tableHierarchy =
-                                    getTableHierarchy(item);
+                                    const parent =
+                                        getTableParent(
+                                            item
+                                        );
 
-                                return (
+                                    return (
 
-                                    <tr
-                                        key={
-                                            item.hierarchyId
-                                        }
-                                    >
-
-                                        {/* EMPLOYEE */}
-
-                                        <td>
-                                            {
-                                                tableHierarchy.employeeName
+                                        <tr
+                                            key={
+                                                item.hierarchyId
                                             }
-                                        </td>
+                                        >
 
+                                            {/* EMPLOYEE */}
 
-                                        {/* DEPARTMENT */}
+                                            <td>
 
-                                        <td>
-                                            {
-                                                tableHierarchy.departmentName
-                                            }
-                                        </td>
+                                                {item.employeeName ||
+                                                    getEmployeeName(
+                                                        item.employeeId
+                                                    ) ||
+                                                    "Unknown"}
 
+                                            </td>
 
-                                        {/* TEAM LEAD */}
+                                            {/* DEPARTMENT */}
 
-                                        <td>
-                                            {
-                                                tableHierarchy.teamLeadName
-                                            }
-                                        </td>
+                                            <td>
 
+                                                {item.department ||
+                                                    "Unknown"}
 
-                                        {/* MANAGER */}
+                                            </td>
 
-                                        <td>
-                                            {
-                                                tableHierarchy.managerName
-                                            }
-                                        </td>
+                                            {/* ROLE */}
 
+                                            <td>
 
-                                        {/* SUPER ADMIN */}
+                                                {item.roleName ||
+                                                    "Unknown"}
 
-                                        <td>
-                                            {
-                                                tableHierarchy.superAdminName
-                                            }
-                                        </td>
+                                            </td>
 
+                                            {/* REPORTS TO */}
 
-                                        {/* STATUS */}
+                                            <td>
 
-                                        <td>
+                                                {item.reportsToEmployeeName ||
+                                                    parent?.employeeName ||
+                                                    "Not Assigned"}
 
-                                            <span className="status">
-                                                {
-                                                    item.status
-                                                }
-                                            </span>
+                                            </td>
 
-                                        </td>
+                                            {/* PARENT ROLE */}
 
-                                    </tr>
+                                            <td>
 
-                                );
+                                                {item.parentRoleName ||
+                                                    parent?.roleName ||
+                                                    "Not Assigned"}
 
-                            })
+                                            </td>
+
+                                            {/* LEVEL */}
+
+                                            <td>
+
+                                                {item.hierarchyLevel ??
+                                                    "-"}
+
+                                            </td>
+
+                                            {/* STATUS */}
+
+                                            <td>
+
+                                                <span className="status">
+
+                                                    {item.status ||
+                                                        "Active"}
+
+                                                </span>
+
+                                            </td>
+
+                                        </tr>
+
+                                    );
+
+                                }
+                            )
 
                         )}
 
@@ -1095,6 +848,7 @@ function Hierarchy() {
             </div>
 
         </div>
+
     );
 }
 
