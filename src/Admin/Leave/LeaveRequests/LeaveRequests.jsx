@@ -22,71 +22,69 @@ export default function LeaveRequests() {
         searchParams.get("status") || "All"
     );
 
-    // ==========================================
-    // Employee Search
-    // Search by Employee ID OR Employee Name
-    // ==========================================
     const [employeeSearch, setEmployeeSearch] = useState("");
 
-    // ==========================================
-    // Load Leave Requests
-    // ==========================================
+    // ==========================================================
+    // LOAD DATA
+    // ==========================================================
+
     useEffect(() => {
         loadLeaves();
         loadLeaveTypes();
     }, []);
 
+    // ==========================================================
+    // LOAD LEAVE REQUESTS
+    // ==========================================================
+
     async function loadLeaves() {
         try {
             const response = await axios.get(LEAVE_API);
-
-            console.log("Leave API Response:", response.data);
-
             setLeaves(response.data);
         } catch (error) {
             console.error("Leave Request Error:", error);
-            alert("Unable to load leave requests.");
         }
     }
 
-    // ==========================================
-    // Load Leave Types
-    // ==========================================
+    // ==========================================================
+    // LOAD LEAVE TYPES
+    // ==========================================================
+
     async function loadLeaveTypes() {
         try {
             const response = await axios.get(LEAVE_TYPE_API);
-
             setLeaveTypes(response.data);
         } catch (error) {
             console.error("Leave Type Error:", error);
         }
     }
 
-    // ==========================================
-    // Get Leave Type Name
-    // ==========================================
+    // ==========================================================
+    // GET LEAVE TYPE NAME
+    // ==========================================================
+
     function getLeaveTypeName(leaveTypeId) {
         const leaveType = leaveTypes.find(
             (type) => type.leaveTypeId === leaveTypeId
         );
 
-        return leaveType
-            ? leaveType.leaveTypeName
-            : "-";
+        return leaveType ? leaveType.leaveTypeName : "-";
     }
 
-    // ==========================================
-    // Open Approve / Reject Popup
-    // ==========================================
+    // ==========================================================
+    // OPEN APPROVE / REJECT POPUP
+    // ==========================================================
+
     function openStatusPopup(leave, status) {
         setSelectedLeave(leave);
         setSelectedStatus(status);
         setManagerComment("");
     }
 
-    // ==========================================
-    // Update Leave Status
-    // ==========================================
+    // ==========================================================
+    // UPDATE STATUS
+    // ==========================================================
+
     async function updateStatus() {
         if (!selectedLeave) {
             return;
@@ -103,8 +101,8 @@ export default function LeaveRequests() {
                 {
                     status: selectedStatus,
 
-                    // Temporary Admin ID for testing
-                    // Later use logged-in user's ID
+                    // Temporary Admin ID for testing.
+                    // Later this will come from logged-in user.
                     approvedBy: 1,
 
                     managerComment: managerComment.trim()
@@ -117,24 +115,24 @@ export default function LeaveRequests() {
                     : "Leave Rejected Successfully"
             );
 
+            // Close popup
             setSelectedLeave(null);
             setSelectedStatus("");
             setManagerComment("");
 
+            // Refresh table
             await loadLeaves();
         } catch (error) {
-            console.error(
-                "Update Leave Status Error:",
-                error
-            );
+            console.error("Update Leave Status Error:", error);
 
             alert("Unable to update leave status.");
         }
     }
 
-    // ==========================================
-    // Calculate Leave Days
-    // ==========================================
+    // ==========================================================
+    // CALCULATE LEAVE DAYS
+    // ==========================================================
+
     function calculateDays(fromDate, toDate) {
         const from = new Date(fromDate);
         const to = new Date(toDate);
@@ -143,78 +141,65 @@ export default function LeaveRequests() {
 
         return (
             Math.floor(
-                difference /
-                    (1000 * 60 * 60 * 24)
+                difference / (1000 * 60 * 60 * 24)
             ) + 1
         );
     }
 
-    // ==========================================
-    // Format Date
-    // ==========================================
-    function formatDate(date) {
-        if (!date) {
-            return "-";
-        }
+    // ==========================================================
+    // FORMAT DATE
+    // ==========================================================
 
-        return new Date(date).toLocaleDateString(
-            "en-GB"
-        );
+    function formatDate(date) {
+        return new Date(date).toLocaleDateString("en-GB");
     }
 
-    // ==========================================
+    // ==========================================================
+    // DYNAMIC STATUS OPTIONS
+    // ==========================================================
+    // Statuses come from API data.
+    // Nothing is hardcoded here.
+
+    const statusOptions = [
+        "All",
+
+        ...new Set(
+            [
+                statusFilter,
+                ...leaves
+                    .map((leave) => leave.status)
+                    .filter(Boolean)
+            ].filter(
+                (status) =>
+                    status &&
+                    status !== "All"
+            )
+        )
+    ];
+
+    // ==========================================================
     // FILTER LEAVE REQUESTS
-    //
-    // Search works with:
-    // Employee ID
-    // Employee Name
-    // ==========================================
+    // ==========================================================
+
     const filteredLeaves = leaves.filter((leave) => {
 
-        // -------------------------------
-        // Status Filter
-        // -------------------------------
+        // Status filter
         const matchesStatus =
             statusFilter === "All" ||
             leave.status === statusFilter;
 
-<<<<<<< HEAD
-        // -------------------------------
-        // Employee Search
-        // Search ID OR Name
-        // -------------------------------
+        // Employee search
         const searchValue =
-            employeeSearch
-                .trim()
-                .toLowerCase();
-
-        const employeeId =
-            String(
-                leave.employeeId ?? ""
-            ).toLowerCase();
-
-        const employeeName =
-            String(
-                leave.employeeName ?? ""
-            ).toLowerCase();
+            employeeSearch.trim();
 
         const matchesEmployee =
             searchValue === "" ||
-            employeeId.includes(searchValue) ||
-            employeeName.includes(searchValue);
-=======
-        // Employee ID Search
-const searchValue = employeeSearch.trim();
-
-const matchesEmployee =
-    searchValue === "" ||
-    leave.employeeId?.toString().includes(searchValue) ||
-    leave.azureEmployeeId?.toString().includes(searchValue);
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> main
->>>>>>> origin/mahinoor
+            leave.employeeId
+                ?.toString()
+                .includes(searchValue) ||
+            leave.azureEmployeeId
+                ?.toString()
+                .includes(searchValue);
 
         return (
             matchesStatus &&
@@ -222,32 +207,71 @@ const matchesEmployee =
         );
     });
 
+    // ==========================================================
+    // JSX
+    // ==========================================================
+
     return (
         <div className="leave-requests-page">
 
-            {/* ==========================================
-                HEADER
-            ========================================== */}
+            {/* ==================================================
+                HEADER CARD
+            ================================================== */}
 
             <div className="leave-requests-header">
+
                 <div>
-                    <h1>Leave Requests</h1>
+                    <h1>
+                        Leave Requests
+                    </h1>
 
                     <p>
-                        Review and manage employee
-                        leave requests.
+                        Review and manage employee leave requests.
                     </p>
                 </div>
+
+                {/* Header Actions */}
+
+                <div className="leave-request-header-actions">
+
+                    {/* Previous */}
+
+                    <button
+                        type="button"
+                        className="leave-request-action-btn"
+                        onClick={() =>
+                            window.history.back()
+                        }
+                    >
+                        ← Previous
+                    </button>
+
+                    {/* Refresh */}
+
+                    <button
+                        type="button"
+                        className="leave-request-action-btn"
+                        onClick={() => {
+                            loadLeaves();
+                            loadLeaveTypes();
+                        }}
+                    >
+                        ↻ Refresh
+                    </button>
+
+                </div>
+
             </div>
 
 
-            {/* ==========================================
-                SEARCH AND STATUS FILTERS
-            ========================================== */}
+            {/* ==================================================
+                SEARCH + STATUS FILTER CARD
+            ================================================== */}
 
             <div className="leave-filter-toolbar">
 
-                {/* Employee Search */}
+                {/* Employee ID Search */}
+
                 <div className="employee-search-box">
 
                     <input
@@ -258,7 +282,7 @@ const matchesEmployee =
                                 e.target.value
                             )
                         }
-                        placeholder="Search by Employee ID or Name"
+                        placeholder="Search by Employee ID"
                     />
 
                     {employeeSearch && (
@@ -276,65 +300,43 @@ const matchesEmployee =
                 </div>
 
 
-                {/* Status Filters */}
-                <div className="leave-status-filters">
+                {/* ==================================================
+                    STATUS DROPDOWN
+                ================================================== */}
 
-                    {[
-                        "All",
-                        "Pending",
-                        "Approved",
-                        "Rejected"
-                    ].map((status) => (
+                <div className="leave-status-dropdown">
 
-                        <button
-                            key={status}
-                            className={
-                                statusFilter === status
-                                    ? "leave-filter-btn active"
-                                    : "leave-filter-btn"
-                            }
-                            onClick={() =>
-                                setStatusFilter(status)
-                            }
-                        >
-                            {status}
-                        </button>
-
-                    ))}
-
-
-                    {/* Previous */}
-                    <button
-                        type="button"
-                        className="leave-request-action-btn"
-                        onClick={() =>
-                            window.history.back()
+                    <select
+                        className="leave-status-select"
+                        value={statusFilter}
+                        onChange={(e) =>
+                            setStatusFilter(
+                                e.target.value
+                            )
                         }
                     >
-                        ← Previous
-                    </button>
 
+                        {statusOptions.map(
+                            (status) => (
+                                <option
+                                    key={status}
+                                    value={status}
+                                >
+                                    {status}
+                                </option>
+                            )
+                        )}
 
-                    {/* Refresh */}
-                    <button
-                        type="button"
-                        className="leave-request-action-btn"
-                        onClick={() => {
-                            loadLeaves();
-                            loadLeaveTypes();
-                        }}
-                    >
-                        ↻ Refresh
-                    </button>
+                    </select>
 
                 </div>
 
             </div>
 
 
-            {/* ==========================================
+            {/* ==================================================
                 TABLE
-            ========================================== */}
+            ================================================== */}
 
             <div className="leave-requests-table-card">
 
@@ -343,67 +345,39 @@ const matchesEmployee =
                     <thead>
 
                         <tr>
-<<<<<<< HEAD
 
-                            {/* Employee ID */}
                             <th>
-                                Employee ID
+                                Employee
                             </th>
 
-                            {/* Employee Name */}
-                            <th>
-                                Employee Name
-                            </th>
-
-                            {/* Leave Type */}
                             <th>
                                 Leave Type
                             </th>
 
-                            {/* From Date */}
                             <th>
                                 From Date
                             </th>
 
-                            {/* To Date */}
                             <th>
                                 To Date
                             </th>
 
-                            {/* Days */}
                             <th>
                                 Days
                             </th>
 
-                            {/* Reason */}
                             <th>
                                 Reason
                             </th>
 
-                            {/* Status */}
                             <th>
                                 Status
                             </th>
 
-                            {/* Actions */}
                             <th>
                                 Actions
                             </th>
 
-=======
-  <th>Employee</th>
-                            <th>Leave Type</th>
-                            <th>From Date</th>
-                            <th>To Date</th>
-                            <th>Days</th>
-                            <th>Reason</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> main
->>>>>>> origin/mahinoor
                         </tr>
 
                     </thead>
@@ -416,7 +390,7 @@ const matchesEmployee =
                             <tr>
 
                                 <td
-                                    colSpan="9"
+                                    colSpan="8"
                                     className="no-leave-requests"
                                 >
                                     No leave requests found.
@@ -429,146 +403,117 @@ const matchesEmployee =
                             filteredLeaves.map(
                                 (leave) => (
 
-<<<<<<< HEAD
                                     <tr
                                         key={
                                             leave.leaveId
                                         }
                                     >
 
-                                        {/* ==================================
-                                            EMPLOYEE ID
-                                        ================================== */}
-=======
-                                <tr key={leave.leaveId}>
-<td>
-    <div className="employee-id-cell">
-      
+                                        {/* Employee */}
 
-        <span>
-            {leave.azureEmployeeId}
-        </span>
-    </div>
-</td>
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> main
->>>>>>> origin/mahinoor
+                                        <td>
+
+                                            <div className="employee-id-cell">
+
+                                                <span>
+                                                    {
+                                                        leave.azureEmployeeId
+                                                    }
+                                                </span>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        {/* Leave Type */}
 
                                         <td>
 
                                             <strong>
-                                                {leave.employeeId ??
-                                                    "-"}
+                                                {
+                                                    getLeaveTypeName(
+                                                        leave.leaveTypeId
+                                                    )
+                                                }
                                             </strong>
 
                                         </td>
 
 
-                                        {/* ==================================
-                                            EMPLOYEE NAME
-                                        ================================== */}
+                                        {/* From Date */}
+
+                                        <td>
+                                            {
+                                                formatDate(
+                                                    leave.fromDate
+                                                )
+                                            }
+                                        </td>
+
+
+                                        {/* To Date */}
+
+                                        <td>
+                                            {
+                                                formatDate(
+                                                    leave.toDate
+                                                )
+                                            }
+                                        </td>
+
+
+                                        {/* Days */}
 
                                         <td>
 
-                                            <strong>
-                                                {leave.employeeName ||
-                                                    "Unknown Employee"}
-                                            </strong>
+                                            {
+                                                calculateDays(
+                                                    leave.fromDate,
+                                                    leave.toDate
+                                                )
+                                            }
 
                                         </td>
 
 
-                                        {/* ==================================
-                                            LEAVE TYPE
-                                        ================================== */}
+                                        {/* Reason */}
 
                                         <td>
 
-                                            <strong>
-                                                {getLeaveTypeName(
-                                                    leave.leaveTypeId
-                                                )}
-                                            </strong>
+                                            {
+                                                leave.reason ||
+                                                "-"
+                                            }
 
                                         </td>
 
 
-                                        {/* ==================================
-                                            FROM DATE
-                                        ================================== */}
-
-                                        <td>
-                                            {formatDate(
-                                                leave.fromDate
-                                            )}
-                                        </td>
-
-
-                                        {/* ==================================
-                                            TO DATE
-                                        ================================== */}
-
-                                        <td>
-                                            {formatDate(
-                                                leave.toDate
-                                            )}
-                                        </td>
-
-
-                                        {/* ==================================
-                                            DAYS
-                                        ================================== */}
-
-                                        <td>
-
-                                            {calculateDays(
-                                                leave.fromDate,
-                                                leave.toDate
-                                            )}
-
-                                        </td>
-
-
-                                        {/* ==================================
-                                            REASON
-                                        ================================== */}
-
-                                        <td>
-                                            {leave.reason ||
-                                                "-"}
-                                        </td>
-
-
-                                        {/* ==================================
-                                            STATUS
-                                        ================================== */}
+                                        {/* Status */}
 
                                         <td>
 
                                             <span
-                                                className={`request-status ${
-                                                    leave.status
-                                                        ?.toLowerCase()
-                                                }`}
+                                                className={`request-status ${leave.status?.toLowerCase()}`}
                                             >
-                                                {leave.status}
+                                                {
+                                                    leave.status
+                                                }
                                             </span>
 
                                         </td>
 
 
-                                        {/* ==================================
-                                            ACTIONS
-                                        ================================== */}
+                                        {/* Actions */}
 
                                         <td>
 
                                             <div className="leave-action-buttons">
 
                                                 {/* View */}
+
                                                 <button
+                                                    type="button"
                                                     className="view-details-btn"
                                                     onClick={() =>
                                                         setViewLeave(
@@ -581,12 +526,12 @@ const matchesEmployee =
 
 
                                                 {/* Approve / Reject */}
+
                                                 {leave.status ===
                                                     "Pending" && (
-
                                                     <>
-
                                                         <button
+                                                            type="button"
                                                             className="approve-btn"
                                                             onClick={() =>
                                                                 openStatusPopup(
@@ -600,6 +545,7 @@ const matchesEmployee =
 
 
                                                         <button
+                                                            type="button"
                                                             className="reject-btn"
                                                             onClick={() =>
                                                                 openStatusPopup(
@@ -610,9 +556,7 @@ const matchesEmployee =
                                                         >
                                                             Reject
                                                         </button>
-
                                                     </>
-
                                                 )}
 
                                             </div>
@@ -633,9 +577,9 @@ const matchesEmployee =
             </div>
 
 
-            {/* ==========================================
+            {/* ==================================================
                 APPROVE / REJECT POPUP
-            ========================================== */}
+            ================================================== */}
 
             {selectedLeave && (
 
@@ -643,14 +587,18 @@ const matchesEmployee =
 
                     <div className="leave-status-modal">
 
+                        {/* Modal Header */}
+
                         <div className="leave-modal-header">
 
                             <h2>
 
-                                {selectedStatus ===
-                                "Approved"
-                                    ? "Approve Leave"
-                                    : "Reject Leave"}
+                                {
+                                    selectedStatus ===
+                                    "Approved"
+                                        ? "Approve Leave"
+                                        : "Reject Leave"
+                                }
 
                             </h2>
 
@@ -659,6 +607,7 @@ const matchesEmployee =
                                 type="button"
                                 className="leave-modal-close"
                                 onClick={() => {
+
                                     setSelectedLeave(
                                         null
                                     );
@@ -670,6 +619,7 @@ const matchesEmployee =
                                     setManagerComment(
                                         ""
                                     );
+
                                 }}
                             >
                                 ×
@@ -678,90 +628,79 @@ const matchesEmployee =
                         </div>
 
 
+                        {/* Modal Body */}
+
                         <div className="leave-modal-body">
 
                             <div className="leave-review-info">
 
-<<<<<<< HEAD
-                                {/* Employee ID */}
                                 <p>
 
                                     <strong>
                                         Employee ID:
                                     </strong>{" "}
 
-                                    {selectedLeave.employeeId ??
-                                        "-"}
+                                    {
+                                        selectedLeave.employeeId
+                                    }
 
                                 </p>
-=======
-<p>
-    <strong>Employee ID:</strong>{" "}
-    {selectedLeave.employeeId}
-</p>
-
-<p>
-    <strong>Azure Employee ID:</strong>{" "}
-    {selectedLeave.azureEmployeeId}
-</p>
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> main
->>>>>>> origin/mahinoor
 
 
-                                {/* Employee Name */}
                                 <p>
 
                                     <strong>
-                                        Employee Name:
+                                        Azure Employee ID:
                                     </strong>{" "}
 
-                                    {selectedLeave.employeeName ||
-                                        "Unknown Employee"}
+                                    {
+                                        selectedLeave.azureEmployeeId
+                                    }
 
                                 </p>
 
 
-                                {/* Leave Type */}
                                 <p>
 
                                     <strong>
                                         Leave Type:
                                     </strong>{" "}
 
-                                    {getLeaveTypeName(
-                                        selectedLeave.leaveTypeId
-                                    )}
+                                    {
+                                        getLeaveTypeName(
+                                            selectedLeave.leaveTypeId
+                                        )
+                                    }
 
                                 </p>
 
 
-                                {/* From */}
                                 <p>
 
                                     <strong>
                                         From:
                                     </strong>{" "}
 
-                                    {formatDate(
-                                        selectedLeave.fromDate
-                                    )}
+                                    {
+                                        formatDate(
+                                            selectedLeave.fromDate
+                                        )
+                                    }
 
                                 </p>
 
 
-                                {/* To */}
                                 <p>
 
                                     <strong>
                                         To:
                                     </strong>{" "}
 
-                                    {formatDate(
-                                        selectedLeave.toDate
-                                    )}
+                                    {
+                                        formatDate(
+                                            selectedLeave.toDate
+                                        )
+                                    }
 
                                 </p>
 
@@ -769,6 +708,7 @@ const matchesEmployee =
 
 
                             {/* Manager Comment */}
+
                             <div className="manager-comment-group">
 
                                 <label>
@@ -796,6 +736,8 @@ const matchesEmployee =
 
                         </div>
 
+
+                        {/* Modal Actions */}
 
                         <div className="leave-modal-actions">
 
@@ -835,10 +777,12 @@ const matchesEmployee =
                                 }
                             >
 
-                                {selectedStatus ===
-                                "Approved"
-                                    ? "Confirm Approval"
-                                    : "Confirm Rejection"}
+                                {
+                                    selectedStatus ===
+                                    "Approved"
+                                        ? "Confirm Approval"
+                                        : "Confirm Rejection"
+                                }
 
                             </button>
 
@@ -851,9 +795,9 @@ const matchesEmployee =
             )}
 
 
-            {/* ==========================================
+            {/* ==================================================
                 VIEW LEAVE DETAILS POPUP
-            ========================================== */}
+            ================================================== */}
 
             {viewLeave && (
 
@@ -891,24 +835,6 @@ const matchesEmployee =
 
                             <div className="leave-details-grid">
 
-<<<<<<< HEAD
-                                {/* Employee ID */}
-=======
-<div className="leave-detail-item">
-    <span>Employee ID</span>
-    <strong>{viewLeave.employeeId}</strong>
-</div>
-
-<div className="leave-detail-item">
-    <span>Azure Employee ID</span>
-    <strong>{viewLeave.azureEmployeeId}</strong>
-</div>
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> main
->>>>>>> origin/mahinoor
-
                                 <div className="leave-detail-item">
 
                                     <span>
@@ -916,30 +842,28 @@ const matchesEmployee =
                                     </span>
 
                                     <strong>
-                                        {viewLeave.employeeId ??
-                                            "-"}
+                                        {
+                                            viewLeave.employeeId
+                                        }
                                     </strong>
 
                                 </div>
 
-
-                                {/* Employee Name */}
 
                                 <div className="leave-detail-item">
 
                                     <span>
-                                        Employee Name
+                                        Azure Employee ID
                                     </span>
 
                                     <strong>
-                                        {viewLeave.employeeName ||
-                                            "Unknown Employee"}
+                                        {
+                                            viewLeave.azureEmployeeId
+                                        }
                                     </strong>
 
                                 </div>
 
-
-                                {/* Leave Type */}
 
                                 <div className="leave-detail-item">
 
@@ -948,15 +872,17 @@ const matchesEmployee =
                                     </span>
 
                                     <strong>
-                                        {getLeaveTypeName(
-                                            viewLeave.leaveTypeId
-                                        )}
+
+                                        {
+                                            getLeaveTypeName(
+                                                viewLeave.leaveTypeId
+                                            )
+                                        }
+
                                     </strong>
 
                                 </div>
 
-
-                                {/* From Date */}
 
                                 <div className="leave-detail-item">
 
@@ -965,15 +891,17 @@ const matchesEmployee =
                                     </span>
 
                                     <strong>
-                                        {formatDate(
-                                            viewLeave.fromDate
-                                        )}
+
+                                        {
+                                            formatDate(
+                                                viewLeave.fromDate
+                                            )
+                                        }
+
                                     </strong>
 
                                 </div>
 
-
-                                {/* To Date */}
 
                                 <div className="leave-detail-item">
 
@@ -982,15 +910,17 @@ const matchesEmployee =
                                     </span>
 
                                     <strong>
-                                        {formatDate(
-                                            viewLeave.toDate
-                                        )}
+
+                                        {
+                                            formatDate(
+                                                viewLeave.toDate
+                                            )
+                                        }
+
                                     </strong>
 
                                 </div>
 
-
-                                {/* Number of Days */}
 
                                 <div className="leave-detail-item">
 
@@ -999,16 +929,18 @@ const matchesEmployee =
                                     </span>
 
                                     <strong>
-                                        {calculateDays(
-                                            viewLeave.fromDate,
-                                            viewLeave.toDate
-                                        )}
+
+                                        {
+                                            calculateDays(
+                                                viewLeave.fromDate,
+                                                viewLeave.toDate
+                                            )
+                                        }
+
                                     </strong>
 
                                 </div>
 
-
-                                {/* Status */}
 
                                 <div className="leave-detail-item">
 
@@ -1017,11 +949,11 @@ const matchesEmployee =
                                     </span>
 
                                     <span
-                                        className={`request-status ${
-                                            viewLeave.status?.toLowerCase()
-                                        }`}
+                                        className={`request-status ${viewLeave.status?.toLowerCase()}`}
                                     >
-                                        {viewLeave.status}
+                                        {
+                                            viewLeave.status
+                                        }
                                     </span>
 
                                 </div>
@@ -1038,8 +970,10 @@ const matchesEmployee =
                                 </span>
 
                                 <p>
-                                    {viewLeave.reason ||
-                                        "-"}
+                                    {
+                                        viewLeave.reason ||
+                                        "-"
+                                    }
                                 </p>
 
                             </div>
@@ -1054,8 +988,10 @@ const matchesEmployee =
                                 </span>
 
                                 <p>
-                                    {viewLeave.managerComment ||
-                                        "-"}
+                                    {
+                                        viewLeave.managerComment ||
+                                        "-"
+                                    }
                                 </p>
 
                             </div>
@@ -1075,8 +1011,10 @@ const matchesEmployee =
                                         </span>
 
                                         <strong>
-                                            {viewLeave.approvedBy ||
-                                                "-"}
+                                            {
+                                                viewLeave.approvedBy ||
+                                                "-"
+                                            }
                                         </strong>
 
                                     </div>
@@ -1090,11 +1028,13 @@ const matchesEmployee =
 
                                         <strong>
 
-                                            {viewLeave.approvedDate
-                                                ? formatDate(
-                                                      viewLeave.approvedDate
-                                                  )
-                                                : "-"}
+                                            {
+                                                viewLeave.approvedDate
+                                                    ? formatDate(
+                                                        viewLeave.approvedDate
+                                                    )
+                                                    : "-"
+                                            }
 
                                         </strong>
 

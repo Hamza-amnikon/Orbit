@@ -512,3 +512,525 @@
     }
 
 }
+
+
+/* ==========================================================
+   TESTING
+========================================================== */
+
+/* ==========================================================
+   LEAVE REQUEST PAGE
+========================================================== */
+
+.leave-request-page {
+    max-width: 1700px;
+    margin: auto;
+    padding: 32px;
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
+
+.leave-request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+
+    border-bottom: 1px solid #e9eef7;
+}
+
+.leave-request-header h1 {
+    margin: 0;
+
+    font-size: 38px;
+    font-weight: 700;
+
+    color: #0f172a;
+}
+
+.leave-request-header p {
+    margin-top: 8px;
+    margin-bottom: 0;
+
+    color: #64748b;
+    font-size: 15px;
+}
+
+
+/* ==========================================================
+   SEARCH + FILTER TOOLBAR
+========================================================== */
+
+.leave-request-toolbar {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 26px;
+    padding: 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #edf2f7;
+    border-radius: 18px;
+
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+
+
+/* ==========================================================
+   SEARCH BOX
+========================================================== */
+
+.leave-request-toolbar input {
+    flex: 1;
+
+    height: 48px;
+
+    padding: 0 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #dbe4ff;
+    border-radius: 12px;
+
+    color: #0f172a;
+
+    font-size: 13px;
+
+    outline: none;
+
+    box-sizing: border-box;
+
+    transition: 0.25s ease;
+}
+
+.leave-request-toolbar input::placeholder {
+    color: #94a3b8;
+}
+
+.leave-request-toolbar input:hover {
+    border-color: #2563eb;
+}
+
+.leave-request-toolbar input:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+
+/* ==========================================================
+   STATUS DROPDOWN
+========================================================== */
+
+.leave-request-toolbar select {
+    width: 150px;
+
+    height: 48px;
+
+    padding: 0 38px 0 14px;
+
+    background-color: #ffffff;
+
+    color: #0f172a;
+
+    border: 1px solid #dbe4ff;
+    border-radius: 12px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    outline: none;
+
+    cursor: pointer;
+
+    appearance: auto;
+
+    transition: 0.25s ease;
+}
+
+.leave-request-toolbar select:hover {
+    border-color: #2563eb;
+}
+
+.leave-request-toolbar select:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+
+/* ==========================================================
+   DROPDOWN OPTIONS
+========================================================== */
+
+.leave-request-toolbar select option {
+    background: #ffffff;
+
+    color: #0f172a;
+
+    padding: 10px;
+}
+
+
+/* Selected option colors */
+
+.leave-request-toolbar select option[value="Pending"] {
+    color: #d97706;
+}
+
+.leave-request-toolbar select option[value="Approved"] {
+    color: #059669;
+}
+
+.leave-request-toolbar select option[value="Rejected"] {
+    color: #dc2626;
+}
+
+
+/* ==========================================================
+   PREVIOUS + REFRESH BUTTONS
+========================================================== */
+
+.leave-request-toolbar button {
+    height: 48px;
+
+    padding: 0 18px;
+
+    background: #ffffff;
+
+    color: #2563eb;
+
+    border: 1px solid #2563eb;
+
+    border-radius: 12px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition: 0.25s ease;
+}
+
+.leave-request-toolbar button:hover {
+    background: #eff6ff;
+
+    border-color: #1d4ed8;
+
+    color: #1d4ed8;
+
+    transform: translateY(-1px);
+}
+
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.leave-request-table-card {
+    background: #ffffff;
+
+    border: 1px solid #edf2f7;
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 12px 35px rgba(15, 23, 42, 0.05);
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.leave-request-table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+.leave-request-table thead {
+    background: #1e2f68;
+}
+
+.leave-request-table th {
+    padding: 15px 16px;
+
+    text-align: left;
+
+    background: #1e2f68;
+
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    border: none;
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+.leave-request-table td {
+    padding: 16px;
+
+    color: #374151;
+
+    font-size: 14px;
+
+    border-bottom: 1px solid #edf2f7;
+}
+
+.leave-request-table tbody tr {
+    transition: 0.2s ease;
+}
+
+.leave-request-table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.leave-request-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* ==========================================================
+   EMPLOYEE / LEAVE TYPE
+========================================================== */
+
+.leave-request-table td strong {
+    color: #0f172a;
+
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.leave-request-table td.status-pending {
+    color: #d97706;
+
+    font-weight: 600;
+}
+
+.leave-request-table td.status-approved {
+    color: #059669;
+
+    font-weight: 600;
+}
+
+.leave-request-table td.status-rejected {
+    color: #dc2626;
+
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   ACTION BUTTONS
+========================================================== */
+
+.leave-request-table button {
+    padding: 7px 13px;
+
+    border-radius: 8px;
+
+    border: none;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+/* View */
+
+.leave-request-table button:first-child {
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+.leave-request-table button:first-child:hover {
+    background: #dbeafe;
+}
+
+
+/* Approve */
+
+.leave-request-table button:nth-child(2) {
+    background: #dcfce7;
+
+    color: #059669;
+}
+
+.leave-request-table button:nth-child(2):hover {
+    background: #bbf7d0;
+}
+
+
+/* Reject */
+
+.leave-request-table button:nth-child(3) {
+    background: #fee2e2;
+
+    color: #dc2626;
+}
+
+.leave-request-table button:nth-child(3):hover {
+    background: #fecaca;
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.no-leave-requests {
+    text-align: center;
+
+    padding: 70px 30px;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+}
+
+
+/* ==========================================================
+   LOADING
+========================================================== */
+
+.leave-request-loading {
+    text-align: center;
+
+    padding: 80px;
+
+    background: #ffffff;
+
+    border-radius: 22px;
+
+    color: #64748b;
+}
+
+
+/* ==========================================================
+   ANIMATION
+========================================================== */
+
+.leave-request-toolbar,
+.leave-request-table-card {
+    animation: fadeUp 0.45s ease;
+}
+
+@keyframes fadeUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 992px) {
+
+    .leave-request-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .leave-request-toolbar input {
+        width: 100%;
+        min-width: 100%;
+        flex: none;
+    }
+
+    .leave-request-toolbar select {
+        flex: 1;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .leave-request-page {
+        padding: 22px;
+    }
+
+    .leave-request-header h1 {
+        font-size: 32px;
+    }
+
+    .leave-request-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .leave-request-toolbar input,
+    .leave-request-toolbar select,
+    .leave-request-toolbar button {
+        width: 100%;
+    }
+
+    .leave-request-table-card {
+        overflow-x: auto;
+    }
+
+    .leave-request-table {
+        min-width: 900px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .leave-request-page {
+        padding: 16px;
+    }
+
+    .leave-request-header h1 {
+        font-size: 28px;
+    }
+
+}
