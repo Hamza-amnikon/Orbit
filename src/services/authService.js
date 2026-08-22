@@ -1,9 +1,10 @@
-import api from "./api";
-
 const authService = {
 
     login() {
-        window.location.href = "https://localhost:7278/api/auth/login";
+        const frontendUrl = window.location.origin;
+
+        window.location.href =
+            `https://localhost:7278/api/auth/login?frontend=${encodeURIComponent(frontendUrl)}`;
     },
 
     logout() {
