@@ -1,0 +1,990 @@
+/*
+ * EMPLOYEES PAYROLL MODULE — ISOLATED STYLES
+ * All project-specific classes use the `epr-` namespace.
+ * Do not add generic selectors here (e.g. .card, .title, .button).
+ * MUI classes are intentionally left untouched.
+ */
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.epr-employees-payroll-page {
+    min-height: 100vh;
+    background: #f5f7fb;
+    padding: 36px 48px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.epr-employees-payroll-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.epr-employees-payroll-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.epr-employees-payroll-back {
+    width: 42px;
+    height: 42px;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.epr-employees-payroll-title {
+    font-size: 30px !important;
+    font-weight: 700 !important;
+    color: #172033;
+}
+
+.epr-employees-payroll-subtitle {
+    margin-top: 5px !important;
+    font-size: 14px !important;
+    color: #718096;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.epr-employees-payroll-save-button,
+.epr-employees-payroll-assign-button {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+    border-radius: 9px !important;
+    box-shadow: none !important;
+}
+
+.epr-employees-payroll-save-button {
+    padding: 11px 20px !important;
+}
+
+.epr-employees-payroll-assign-button {
+    padding: 10px 18px !important;
+}
+
+.epr-employees-payroll-save-button:hover,
+.epr-employees-payroll-assign-button:hover {
+    background: #1d4ed8 !important;
+    box-shadow: none !important;
+}
+
+.epr-toolbar-button {
+    min-width: 150px;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   COMMON CARD
+========================================================= */
+
+.epr-employees-payroll-card {
+    border-radius: 16px !important;
+    border: 1px solid #e5eaf1 !important;
+
+    box-shadow:
+        0 2px 6px rgba(15, 23, 42, 0.025),
+        0 8px 25px rgba(15, 23, 42, 0.035) !important;
+
+    background: #ffffff !important;
+}
+
+
+/* =========================================================
+   LIST CARD
+========================================================= */
+
+.epr-employees-payroll-list-card {
+    overflow: hidden;
+}
+
+.epr-employees-payroll-list-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.epr-employees-payroll-list-toolbar .MuiTextField-root {
+    flex: 1;
+}
+
+.epr-table-search-icon {
+    color: #94a3b8;
+    margin-right: 8px;
+}
+
+
+/* =========================================================
+   ASSIGNED PAYROLL TABLE
+========================================================= */
+
+.epr-assigned-payroll-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.epr-assigned-payroll-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+.epr-assigned-payroll-table thead tr {
+    background: #f8fafc;
+}
+
+.epr-assigned-payroll-table th {
+    padding: 15px 16px;
+    text-align: left;
+
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+
+    border-bottom: 1px solid #e5eaf1;
+}
+
+.epr-assigned-payroll-table td {
+    padding: 17px 16px;
+    border-bottom: 1px solid #edf0f4;
+    vertical-align: middle;
+}
+
+.epr-assigned-payroll-table tbody tr {
+    transition:
+        background 0.15s ease;
+}
+
+.epr-assigned-payroll-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================================================
+   TABLE EMPLOYEE
+========================================================= */
+
+.epr-table-employee {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.epr-table-avatar {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+    color: #2563eb;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.epr-table-employee-name {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #172033;
+}
+
+.epr-table-employee-meta {
+    margin-top: 3px !important;
+    font-size: 12px !important;
+    color: #94a3b8;
+}
+
+.epr-table-id {
+    color: #475569;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.epr-table-ctc {
+    color: #172033;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   TEMPLATE BADGE
+========================================================= */
+
+.epr-template-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 6px 10px;
+
+    border-radius: 7px;
+
+    background: #eff6ff;
+    color: #2563eb;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLE ACTIONS
+========================================================= */
+
+.epr-table-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.epr-table-action-button {
+    min-width: auto !important;
+    padding: 6px 9px !important;
+
+    text-transform: none !important;
+
+    font-size: 13px !important;
+    font-weight: 600 !important;
+
+    border-radius: 7px !important;
+}
+
+.epr-view-button {
+    color: #2563eb !important;
+}
+
+.epr-view-button:hover {
+    background: #eff6ff !important;
+}
+
+.epr-edit-button {
+    color: #16a34a !important;
+}
+
+.epr-edit-button:hover {
+    background: #ecfdf3 !important;
+}
+
+.epr-delete-button {
+    color: #ef4444 !important;
+}
+
+.epr-delete-button:hover {
+    background: #fef2f2 !important;
+}
+
+
+/* =========================================================
+   EMPTY TABLE
+========================================================= */
+
+.epr-empty-table-state {
+    padding: 60px 20px !important;
+    text-align: center !important;
+}
+
+.epr-empty-table-state p:first-child {
+    color: #475569;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.epr-empty-table-helper {
+    margin-top: 6px !important;
+    color: #94a3b8 !important;
+    font-size: 13px !important;
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.epr-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.epr-section-heading-icon {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.epr-section-heading-icon.epr-green {
+    background: #ecfdf3;
+    color: #16a34a;
+}
+
+.epr-section-heading-icon.epr-deduction {
+    background: #fff7ed;
+    color: #ea580c;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.epr-section-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #172033;
+}
+
+.epr-section-description {
+    margin-top: 3px !important;
+    color: #718096;
+    font-size: 13px !important;
+}
+
+
+/* =========================================================
+   EMPLOYEE SELECTION
+========================================================= */
+
+.epr-employee-selection-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+.epr-employee-details {
+    margin-top: 24px;
+
+    padding: 18px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e8edf3;
+
+    border-radius: 12px;
+}
+
+.epr-employee-avatar {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+
+    border-radius: 50%;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.epr-employee-name {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #172033;
+}
+
+.epr-employee-meta {
+    margin-top: 3px !important;
+    font-size: 13px !important;
+    color: #718096;
+}
+
+
+/* =========================================================
+   PAYROLL CONTENT
+========================================================= */
+
+.epr-payroll-content-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 2fr)
+        minmax(320px, 1fr);
+
+    gap: 24px;
+
+    margin-top: 24px;
+}
+
+.epr-payroll-content-grid > div {
+    min-width: 0;
+}
+
+.epr-salary-structure-card,
+.epr-salary-summary-card {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   TEMPLATE INFO
+========================================================= */
+
+.epr-template-info-bar {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-top: 20px;
+}
+
+.epr-template-info-bar > div {
+    padding: 16px;
+
+    border-radius: 10px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e8edf3;
+}
+
+.epr-template-info-label {
+    color: #718096;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.epr-template-info-value {
+    margin-top: 5px !important;
+
+    color: #172033;
+
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   EARNINGS / DEDUCTIONS
+========================================================= */
+
+.epr-earnings-header {
+    display: grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        1fr
+        1fr;
+
+    gap: 12px;
+
+    padding: 0 12px 10px;
+
+    margin-top: 22px;
+
+    color: #718096;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+.epr-earnings-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.epr-earning-row {
+    display: grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        1fr
+        1fr;
+
+    gap: 12px;
+
+    align-items: center;
+
+    padding: 15px 12px;
+
+    border: 1px solid #e5eaf1;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+}
+
+.epr-earning-row:hover {
+    background: #f8fafc;
+}
+
+.epr-component-name {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #172033;
+}
+
+.epr-template-value {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #475569;
+}
+
+.epr-calculated-value {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #16a34a;
+}
+
+.epr-calculation-badge {
+    display: inline-flex;
+
+    width: fit-content;
+
+    padding: 5px 8px;
+
+    border-radius: 6px;
+
+    background: #eff6ff;
+    color: #2563eb;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.epr-deduction-badge {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.epr-deduction-value {
+    color: #ef4444 !important;
+}
+
+.epr-empty-deduction-state {
+    padding: 25px;
+
+    text-align: center;
+
+    border: 1px dashed #dbe2ea;
+
+    border-radius: 10px;
+
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.epr-summary-title {
+    font-size: 19px !important;
+    font-weight: 700 !important;
+    color: #172033;
+}
+
+.epr-summary-description {
+    margin-top: 4px !important;
+    color: #718096;
+    font-size: 13px !important;
+}
+
+.epr-summary-items {
+    margin-top: 28px;
+}
+
+.epr-summary-item {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 14px 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+.epr-summary-value {
+    font-weight: 700 !important;
+    color: #172033;
+
+    text-align: right;
+}
+
+.epr-summary-divider {
+    height: 1px;
+
+    background: #e8edf3;
+
+    margin: 8px 0;
+}
+
+.epr-summary-total-label {
+    color: #172033;
+    font-weight: 700 !important;
+}
+
+.epr-summary-total {
+    font-size: 21px !important;
+    font-weight: 700 !important;
+
+    color: #2563eb;
+}
+
+.epr-deduction-summary {
+    color: #ef4444 !important;
+}
+
+
+/* =========================================================
+   NOTE
+========================================================= */
+
+.epr-deduction-note {
+    margin-top: 28px;
+
+    padding: 16px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e8edf3;
+
+    border-radius: 10px;
+}
+
+.epr-deduction-note-title {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+
+    color: #172033;
+
+    margin-bottom: 5px !important;
+}
+
+.epr-deduction-note > p:last-child {
+    color: #718096;
+    font-size: 12px !important;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   SAVED MESSAGE
+========================================================= */
+
+.epr-saved-message {
+    margin-top: 20px;
+
+    padding: 12px 14px;
+
+    border-radius: 8px;
+
+    background: #ecfdf3;
+
+    border: 1px solid #bbf7d0;
+
+    color: #15803d;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   VIEW DIALOG
+========================================================= */
+
+.epr-view-dialog-title {
+    font-weight: 700 !important;
+    color: #172033 !important;
+}
+
+.epr-view-employee-header {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 16px;
+
+    margin-bottom: 22px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e8edf3;
+
+    border-radius: 12px;
+}
+
+.epr-view-avatar {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.epr-view-employee-name {
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    color: #172033;
+}
+
+.epr-view-employee-meta {
+    margin-top: 3px !important;
+    color: #718096;
+    font-size: 13px !important;
+}
+
+.epr-view-summary-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 28px;
+}
+
+.epr-view-summary-box {
+    padding: 14px;
+
+    border: 1px solid #e5eaf1;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+}
+
+.epr-view-summary-box p {
+    color: #718096;
+
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+.epr-view-summary-box strong {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #172033;
+
+    font-size: 14px;
+}
+
+.epr-view-section-title {
+    margin-top: 22px !important;
+    margin-bottom: 10px !important;
+
+    font-size: 15px !important;
+    font-weight: 700 !important;
+
+    color: #172033;
+}
+
+.epr-view-component-list {
+    border: 1px solid #e5eaf1;
+
+    border-radius: 9px;
+
+    overflow: hidden;
+}
+
+.epr-view-component-row {
+    display: grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        1fr;
+
+    gap: 12px;
+
+    align-items: center;
+
+    padding: 12px 14px;
+
+    border-bottom: 1px solid #edf0f4;
+}
+
+.epr-view-component-row:last-child {
+    border-bottom: none;
+}
+
+.epr-view-component-row p {
+    font-size: 13px !important;
+    color: #475569;
+}
+
+.epr-view-component-row strong {
+    color: #16a34a;
+
+    font-size: 13px;
+}
+
+.epr-deduction-view-row strong {
+    color: #ef4444;
+}
+
+.epr-view-empty {
+    padding: 16px;
+
+    color: #94a3b8 !important;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .epr-employees-payroll-page {
+        padding: 28px;
+    }
+
+    .epr-payroll-content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .epr-view-summary-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    .epr-employees-payroll-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .epr-employees-payroll-save-button,
+    .epr-employees-payroll-assign-button {
+        width: 100%;
+    }
+
+    .epr-employees-payroll-list-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .epr-toolbar-button {
+        width: 100%;
+    }
+
+    .epr-employee-selection-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .epr-earnings-header {
+        display: none;
+    }
+
+    .epr-earning-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .epr-summary-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .epr-summary-value {
+        text-align: left;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .epr-employees-payroll-page {
+        padding: 20px 16px;
+    }
+
+    .epr-employees-payroll-title {
+        font-size: 24px !important;
+    }
+
+    .epr-template-info-bar {
+        grid-template-columns: 1fr;
+    }
+
+    .epr-view-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .epr-view-component-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+}

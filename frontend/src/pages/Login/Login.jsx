@@ -1,180 +1,78 @@
-import "./Login.css";
+import "./styles/Login.css";
 
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import LoginLeftPanel from "./components/LoginLeftPanel";
+import LoginHeader from "./components/LoginHeader";
+import LoginForm from "./components/LoginForm";
+import AzureLoginButton from "./components/AzureLoginButton";
 
-import {
-  Paper,
-  TextField,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-
-import { loginSchema } from "../../features/auth/validation/loginSchema";
-import { useLogin } from "../../features/auth/hooks/useLogin";
 function Login() {
-  const [showPassword, setShowPassword] = useState(false);
 
-  const { login } = useLogin();
+    return (
 
-const {
-  control,
-  handleSubmit,
-  formState: { errors, isSubmitting },
-} = useForm({
-  resolver: zodResolver(loginSchema),
-  mode: "onTouched",
-  defaultValues: {
-    email: "",
-    password: "",
-  },
-});
+        <div className="login-page">
 
-const onSubmit = async (data) => {
-  try {
-    const response = await login(data);
+            <div className="login-container">
 
-    console.log(response);
-  } catch (error) {
-    console.error(error);
-  }
-};
+                {/* =================================================
+                    LEFT PANEL
+                ================================================= */}
 
-  return (
-    <div className="login-page">
-      {/* LEFT PANEL */}
+                <LoginLeftPanel />
 
-      <div className="login-left">
-        <h1>AMNIKON</h1>
 
-        <h2>Enterprise HRMS</h2>
+                {/* =================================================
+                    RIGHT PANEL
+                ================================================= */}
 
-        <p>
-          Secure Human Resource Management Platform for modern organizations.
-        </p>
+                <div className="login-right">
 
-        <ul>
-          <li>Employee Management</li>
-          <li>Attendance Tracking</li>
-          <li>Payroll Management</li>
-          <li>Reports & Analytics</li>
-        </ul>
-      </div>
+                    <LoginHeader />
 
-      {/* RIGHT PANEL */}
 
-      <div className="login-right">
-        <Paper elevation={0} className="login-card">
-          <h2>Welcome Back</h2>
+                    {/* =================================================
+                        EMAIL / PASSWORD FORM
 
-          <p>Sign in to continue</p>
+                        This UI is kept for now.
+                        The real authentication is Microsoft login.
+                    ================================================= */}
 
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            {/* EMAIL */}
+                    <LoginForm
+                        onLogin={() => {
+                            console.log(
+                                "Email/password authentication is not enabled yet."
+                            );
+                        }}
+                        loading={false}
+                    />
 
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="Email Address"
-                  margin="normal"
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <EmailOutlinedIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-            />
 
-            {/* PASSWORD */}
+                    {/* =================================================
+                        DIVIDER
+                    ================================================= */}
 
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="Password"
-                  margin="normal"
-                  type={showPassword ? "text" : "password"}
-                  error={!!errors.password}
-                  helperText={errors.password?.message}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockOutlinedIcon />
-                      </InputAdornment>
-                    ),
+                    <div className="divider">
 
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          edge="end"
-                          onClick={() =>
-                            setShowPassword((prev) => !prev)
-                          }
-                        >
-                          {showPassword ? (
-                            <VisibilityOffOutlinedIcon />
-                          ) : (
-                            <VisibilityOutlinedIcon />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-            />
+                        <span>
+                            OR
+                        </span>
 
-            {/* OPTIONS */}
+                    </div>
 
-            <div className="login-options">
-              <FormControlLabel
-                control={<Checkbox />}
-                label="Remember Me"
-              />
-              <Link to="/forgot-password" className="forgot-link">
-                Forgot Password?
-              </Link>
+
+                    {/* =================================================
+                        MICROSOFT LOGIN
+                    ================================================= */}
+
+                    <AzureLoginButton />
+
+                </div>
+
             </div>
 
-            {/* BUTTON */}
+        </div>
 
-            <Button
-              fullWidth
-              type="submit"
-              variant="contained"
-              size="large"
-              className="login-btn"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Signing In..." : "Access Dashboard"}
-            </Button>
-          </form>
-        </Paper>
-      </div>
-    </div>
-  );
+    );
+
 }
 
 export default Login;

@@ -1,0 +1,336 @@
+/* ==========================================================
+   LEAVE POLICY PAGE
+========================================================== */
+
+.leave-policy-page {
+    padding: 32px 40px;
+    background: #f5f7fb;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+
+/* ==========================================================
+   HEADER CARD
+========================================================== */
+
+.leave-policy-page .leave-policy-header-card {
+    margin: 0 0 18px 0 !important;
+    padding: 22px 24px !important;
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 16px !important;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06) !important;
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.leave-policy-page .leave-policy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+
+/* ==========================================================
+   TITLE
+========================================================== */
+
+.leave-policy-page .leave-policy-title {
+    margin: 0 !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+.leave-policy-page .leave-policy-description {
+    margin-top: 8px !important;
+    margin-bottom: 0 !important;
+    color: #667085 !important;
+    font-size: 14px !important;
+}
+
+
+/* ==========================================================
+   ACTION BUTTONS CONTAINER
+========================================================== */
+
+.leave-policy-page .leave-policy-actions {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+
+/* ==========================================================
+   PREVIOUS + REFRESH BUTTONS
+========================================================== */
+
+.leave-policy-page .policy-previous-btn,
+.leave-policy-page .policy-refresh-btn {
+    padding: 11px 18px !important;
+    min-height: 40px !important;
+    border-radius: 8px !important;
+
+    background: #ffffff !important;
+    border: 1px solid #2563eb !important;
+    color: #2563eb !important;
+
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+
+    cursor: pointer;
+    box-shadow: none !important;
+
+    transition: all 0.2s ease;
+}
+
+.leave-policy-page .policy-previous-btn:hover,
+.leave-policy-page .policy-refresh-btn:hover {
+    background: #eff6ff !important;
+    border-color: #1d4ed8 !important;
+    color: #1d4ed8 !important;
+}
+
+
+/* ==========================================================
+   ADD LEAVE POLICY BUTTON
+========================================================== */
+
+.leave-policy-page .policy-add-btn {
+    padding: 11px 20px !important;
+    min-height: 40px !important;
+    border-radius: 8px !important;
+
+    background: #2563eb !important;
+    border: none !important;
+    color: #ffffff !important;
+
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+
+    cursor: pointer;
+
+    box-shadow: 0 5px 14px rgba(37, 99, 235, 0.20) !important;
+
+    transition: all 0.2s ease;
+}
+
+.leave-policy-page .policy-add-btn:hover {
+    background: #1d4ed8 !important;
+    transform: translateY(-1px);
+}
+
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.leave-policy-page .leave-policy-table-container {
+    margin-top: 0 !important;
+
+    background: #ffffff !important;
+
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+
+    overflow: hidden !important;
+
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06) !important;
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.leave-policy-page .leave-policy-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+.leave-policy-page .leave-policy-table thead tr {
+    background: #1f326b;
+}
+
+.leave-policy-page .leave-policy-table th {
+    background: #1f326b !important;
+    color: #ffffff !important;
+
+    padding: 14px 16px !important;
+
+    text-align: left !important;
+
+    font-size: 13px !important;
+    font-weight: 600 !important;
+
+    border-bottom: none !important;
+
+    white-space: nowrap;
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+.leave-policy-page .leave-policy-table td {
+    padding: 15px 16px !important;
+
+    border-bottom: 1px solid #e5e7eb !important;
+
+    font-size: 13px !important;
+    color: #475467 !important;
+
+    vertical-align: middle;
+}
+
+.leave-policy-page .leave-policy-table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+.leave-policy-page .leave-policy-table tbody tr:hover {
+    background: #f8fbff;
+}
+
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.leave-policy-page .policy-status {
+    display: inline-flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 58px;
+    height: 24px !important;
+
+    padding: 5px 14px !important;
+
+    border-radius: 20px !important;
+
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.leave-policy-page .policy-status.active {
+    background: #dcfce7 !important;
+    color: #15803d !important;
+}
+
+.leave-policy-page .policy-status.inactive {
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+}
+
+
+/* ==========================================================
+   EDIT BUTTON
+========================================================== */
+
+.leave-policy-page .policy-edit-btn {
+    border: none !important;
+
+    background: #eef2ff !important;
+    color: #2563eb !important;
+
+    padding: 6px 14px !important;
+
+    min-width: auto !important;
+
+    border-radius: 6px !important;
+
+    cursor: pointer;
+
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+
+    box-shadow: none !important;
+
+    transition: all 0.2s ease;
+}
+
+.leave-policy-page .policy-edit-btn:hover {
+    background: #2563eb !important;
+    color: #ffffff !important;
+}
+
+
+/* ==========================================================
+   NO DATA
+========================================================== */
+
+.leave-policy-page .no-policy-data {
+    text-align: center !important;
+
+    color: #667085 !important;
+
+    padding: 30px !important;
+
+    font-size: 13px !important;
+}
+
+
+/* ==========================================================
+   LOADING
+========================================================== */
+
+.leave-policy-page .leave-policy-loading {
+    text-align: center;
+    padding: 40px;
+}
+
+.leave-policy-page .leave-policy-loading p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .leave-policy-page {
+        padding: 20px;
+    }
+
+    .leave-policy-page .leave-policy-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .leave-policy-page .leave-policy-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .leave-policy-page .leave-policy-table-container {
+        overflow-x: auto !important;
+    }
+
+    .leave-policy-page .leave-policy-table {
+        min-width: 900px;
+    }
+}

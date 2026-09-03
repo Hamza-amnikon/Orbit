@@ -1,0 +1,439 @@
+/* =========================================================
+   LEAVE POLICY DIALOG
+========================================================= */
+
+.leave-policy-dialog .MuiDialog-paper {
+    width: 100%;
+    max-width: 1050px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.leave-policy-dialog .policy-dialog-title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 20px 28px 16px !important;
+}
+
+.leave-policy-dialog .policy-dialog-heading {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #172033;
+    line-height: 1.3;
+}
+
+.leave-policy-dialog .policy-dialog-description {
+    margin-top: 4px !important;
+    font-size: 13px !important;
+    color: #6b7280;
+}
+
+.leave-policy-dialog .policy-dialog-close {
+    color: #6b7280 !important;
+    margin-top: -4px !important;
+}
+
+.leave-policy-dialog .policy-dialog-close:hover {
+    background-color: #f3f4f6 !important;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.leave-policy-dialog .policy-dialog-content {
+    padding: 20px 28px 10px !important;
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.leave-policy-dialog .policy-form-section {
+    margin-bottom: 24px;
+}
+
+.leave-policy-dialog .policy-section-title {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #172033;
+    margin-bottom: 8px !important;
+}
+
+.leave-policy-dialog .policy-section-divider {
+    margin-bottom: 16px !important;
+    border-color: #e5e7eb !important;
+}
+
+
+/* =========================================================
+   BASIC FORM GRID
+========================================================= */
+
+.leave-policy-dialog .policy-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px 14px;
+    width: 100%;
+}
+
+
+/* =========================================================
+   FORM FIELDS
+========================================================= */
+
+.leave-policy-dialog .policy-form-control {
+    width: 100%;
+}
+
+
+/* =========================================================
+   MUI OUTLINED FIELD
+========================================================= */
+
+.leave-policy-dialog .policy-form-control .MuiOutlinedInput-root {
+    min-height: 46px;
+    border-radius: 8px;
+    background: #ffffff;
+    font-size: 13px;
+}
+
+.leave-policy-dialog .policy-form-control .MuiOutlinedInput-notchedOutline {
+    border-color: #cfd8e3;
+}
+
+.leave-policy-dialog .policy-form-control:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #9aa8ba;
+}
+
+.leave-policy-dialog .policy-form-control .MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline {
+    border-color: #2563eb;
+    border-width: 1px;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.leave-policy-dialog .policy-form-control .MuiInputLabel-root {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.leave-policy-dialog .policy-form-control .MuiInputLabel-root.Mui-focused {
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   INPUT TEXT
+========================================================= */
+
+.leave-policy-dialog .policy-form-control .MuiInputBase-input {
+    font-size: 13px;
+    color: #172033;
+    padding: 13px 14px;
+}
+
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+.leave-policy-dialog .policy-form-control .MuiSelect-select {
+    min-height: 46px !important;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: 12px 38px 12px 14px !important;
+    font-size: 13px;
+}
+
+.leave-policy-dialog .policy-form-control .MuiSelect-icon {
+    color: #64748b;
+    right: 10px;
+}
+
+
+/* =========================================================
+   DATE FIELDS
+========================================================= */
+
+/*
+   Your JSX uses:
+
+   type="date"
+   label="Effective From"
+   label="Effective To"
+   InputLabelProps={{ shrink: true }}
+*/
+
+.leave-policy-dialog .policy-form-control input[type="date"] {
+    min-height: 46px;
+    box-sizing: border-box;
+    font-size: 13px;
+    color: #172033;
+    padding: 12px 42px 12px 14px !important;
+}
+
+
+/* Prevent the date text from looking faded */
+
+.leave-policy-dialog .policy-form-control input[type="date"]::-webkit-datetime-edit {
+    color: #172033;
+}
+
+.leave-policy-dialog .policy-form-control input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+    color: #172033;
+}
+
+.leave-policy-dialog .policy-form-control input[type="date"]::-webkit-datetime-edit-text {
+    color: #64748b;
+}
+
+.leave-policy-dialog .policy-form-control input[type="date"]::-webkit-datetime-edit-month-field,
+.leave-policy-dialog .policy-form-control input[type="date"]::-webkit-datetime-edit-day-field,
+.leave-policy-dialog .policy-form-control input[type="date"]::-webkit-datetime-edit-year-field {
+    color: #172033;
+}
+
+
+/* Calendar icon */
+
+.leave-policy-dialog .policy-form-control input[type="date"]::-webkit-calendar-picker-indicator {
+    width: 18px;
+    height: 18px;
+    margin-right: 2px;
+    cursor: pointer;
+    opacity: 0.75;
+}
+
+
+/* Hover calendar icon */
+
+.leave-policy-dialog .policy-form-control input[type="date"]:hover::-webkit-calendar-picker-indicator {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   CHECKBOX AREA
+========================================================= */
+
+.leave-policy-dialog .policy-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 14px;
+}
+
+.leave-policy-dialog .policy-checkbox-item {
+    margin: 0 !important;
+    min-height: 46px;
+    padding: 0 10px;
+    border: 1px solid #e1e6ed;
+    border-radius: 8px;
+    background: #f8fafc;
+    transition: all 0.2s ease;
+}
+
+.leave-policy-dialog .policy-checkbox-item:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+}
+
+.leave-policy-dialog .policy-checkbox-item .MuiCheckbox-root {
+    padding: 7px;
+}
+
+.leave-policy-dialog .policy-checkbox-item .MuiFormControlLabel-label {
+    font-size: 12px;
+    color: #374151;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CHECKBOX COLOR
+========================================================= */
+
+.leave-policy-dialog .policy-checkbox-item .MuiCheckbox-root.Mui-checked {
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   DIALOG ACTIONS
+========================================================= */
+
+.leave-policy-dialog .policy-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 28px 20px !important;
+    border-top: 1px solid #e5e7eb;
+}
+
+
+/* =========================================================
+   CANCEL
+========================================================= */
+
+.leave-policy-dialog .policy-cancel-btn {
+    min-width: 90px !important;
+    height: 40px !important;
+    border: 1px solid #cfd8e3 !important;
+    border-radius: 8px !important;
+    color: #374151 !important;
+    background: #ffffff !important;
+    text-transform: none !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+.leave-policy-dialog .policy-cancel-btn:hover {
+    background: #f8fafc !important;
+}
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+.leave-policy-dialog .policy-save-btn {
+    min-width: 120px !important;
+    height: 40px !important;
+    border-radius: 8px !important;
+    background: #2563eb !important;
+    text-transform: none !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+}
+
+.leave-policy-dialog .policy-save-btn:hover {
+    background: #1d4ed8 !important;
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.leave-policy-dialog .policy-dialog-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.leave-policy-dialog .policy-dialog-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.leave-policy-dialog .policy-dialog-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .leave-policy-dialog .policy-form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .leave-policy-dialog .policy-checkbox-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .leave-policy-dialog .MuiDialog-paper {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+
+    .leave-policy-dialog .policy-dialog-title {
+        padding: 16px 18px 14px !important;
+    }
+
+    .leave-policy-dialog .policy-dialog-content {
+        padding: 18px !important;
+    }
+
+    .leave-policy-dialog .policy-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .leave-policy-dialog .policy-checkbox-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .leave-policy-dialog .policy-dialog-actions {
+        padding: 12px 18px 18px !important;
+    }
+}
+
+
+/* =========================================================
+   DATE FIELDS - KEEP LABEL FLOATING
+========================================================= */
+
+.leave-policy-dialog .policy-form-control input[type="date"] {
+    padding-top: 14px !important;
+}
+
+
+/* Keep date label above the field initially */
+
+.leave-policy-dialog .policy-form-control
+.MuiInputLabel-root.MuiInputLabel-shrink {
+    transform: translate(14px, -9px) scale(0.75) !important;
+    background: #fff !important;
+    padding: 0 5px !important;
+    z-index: 2 !important;
+}
+
+
+/* Normal date field */
+
+.leave-policy-dialog .policy-form-control
+.MuiOutlinedInput-root {
+    min-height: 46px;
+}
+
+
+/* Date placeholder/text */
+
+.leave-policy-dialog .policy-form-control
+input[type="date"]::-webkit-datetime-edit {
+    color: #475569;
+}
+
+
+/* Calendar icon */
+
+.leave-policy-dialog .policy-form-control
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.8;
+    cursor: pointer;
+}

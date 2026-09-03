@@ -1,0 +1,830 @@
+/* =========================================================
+   SETTINGS DASHBOARD
+========================================================= */
+
+.settings-dashboard {
+
+    width: 100%;
+
+    min-height: 100%;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    background: #f8fafc;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.settings-header {
+
+    margin-bottom: 30px;
+
+}
+
+.settings-header h1 {
+
+    margin: 0;
+
+    font-size: 28px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    color: #1f2937;
+
+}
+
+.settings-header p {
+
+    margin: 8px 0 0;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    color: #64748b;
+
+}
+
+
+/* =========================================================
+   PROFILE HEADER
+========================================================= */
+
+.settings-profile-section {
+
+    width: 100%;
+
+    margin-bottom: 30px;
+
+}
+
+
+/* =========================================================
+   PROFILE STATISTICS
+========================================================= */
+
+.profile-stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 24px;
+
+    margin: 0 0 30px;
+
+}
+
+.stat-card {
+
+    background: #ffffff;
+
+    border-radius: 20px;
+
+    padding: 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15, 23, 42, 0.06);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+
+}
+
+.stat-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 14px 35px
+        rgba(15, 23, 42, 0.09);
+
+}
+
+
+/* =========================================================
+   STAT ICON
+========================================================= */
+
+.stat-icon {
+
+    width: 68px;
+
+    height: 68px;
+
+    min-width: 68px;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #ffffff;
+
+}
+
+.stat-icon svg {
+
+    font-size: 34px;
+
+}
+
+
+/* =========================================================
+   STAT CONTENT
+========================================================= */
+
+.stat-content {
+
+    min-width: 0;
+
+}
+
+.stat-content span {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+}
+
+.stat-content h2 {
+
+    margin: 0;
+
+    font-size: 34px;
+
+    line-height: 1;
+
+    color: #111827;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================================
+   PROFILE TABS
+========================================================= */
+
+.profile-tabs {
+
+    width: 100%;
+
+    background: #ffffff;
+
+    border-radius: 20px;
+
+    padding: 16px;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 14px;
+
+    margin-bottom: 30px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15, 23, 42, 0.06);
+
+}
+
+.profile-tab {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    border: none;
+
+    outline: none;
+
+    background: #f8fafc;
+
+    color: #475569;
+
+    padding: 14px 24px;
+
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.2s ease;
+
+}
+
+.profile-tab:hover {
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+}
+
+.profile-tab svg {
+
+    font-size: 20px;
+
+}
+
+.profile-tab.active {
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, 0.35);
+
+}
+
+
+/* =========================================================
+   INFORMATION GRID
+========================================================= */
+
+.profile-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 32px;
+
+    margin: 0 0 30px;
+
+}
+
+
+/* =========================================================
+   INFORMATION CARD
+========================================================= */
+
+.info-card {
+
+    background: #ffffff;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15, 23, 42, 0.08);
+
+    overflow: hidden;
+
+}
+
+
+/* =========================================================
+   INFORMATION CARD HEADER
+========================================================= */
+
+.info-card-header {
+
+    padding: 22px 28px;
+
+    border-bottom:
+        1px solid #eef2f7;
+
+    background: #fafbfc;
+
+}
+
+.info-card-header h3 {
+
+    margin: 0;
+
+    font-size: 22px;
+
+    color: #1f2937;
+
+}
+
+
+/* =========================================================
+   INFORMATION CARD BODY
+========================================================= */
+
+.info-card-body {
+
+    padding: 12px 28px;
+
+}
+
+.info-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 18px 0;
+
+    border-bottom:
+        1px solid #eef2f7;
+
+}
+
+.info-row:last-child {
+
+    border-bottom: none;
+
+}
+
+.info-label {
+
+    color: #6b7280;
+
+    font-weight: 500;
+
+    font-size: 15px;
+
+}
+
+.info-value {
+
+    color: #111827;
+
+    font-weight: 600;
+
+    font-size: 15px;
+
+    text-align: right;
+
+}
+
+
+/* =========================================================
+   PROFILE SECTIONS
+========================================================= */
+
+.profile-section {
+
+    background: #ffffff;
+
+    border-radius: 22px;
+
+    padding: 30px;
+
+    margin-top: 30px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15, 23, 42, 0.08);
+
+}
+
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+.section-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 30px;
+
+}
+
+.section-icon {
+
+    width: 60px;
+
+    height: 60px;
+
+    min-width: 60px;
+
+    border-radius: 18px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+.section-icon svg {
+
+    font-size: 30px;
+
+}
+
+.section-header h3 {
+
+    margin: 0;
+
+    font-size: 24px;
+
+    color: #111827;
+
+}
+
+.section-header p {
+
+    margin: 6px 0 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================================================
+   SECTION BODY
+========================================================= */
+
+.section-body {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 25px;
+
+}
+
+
+/* =========================================================
+   PROFILE ITEM
+========================================================= */
+
+.profile-item {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 16px;
+
+    padding: 20px;
+
+    border-radius: 16px;
+
+    background: #fafafa;
+
+}
+
+.item-icon {
+
+    color: #2563eb;
+
+    font-size: 28px !important;
+
+}
+
+.profile-item label {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+}
+
+.profile-item span {
+
+    color: #111827;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   EMERGENCY
+========================================================= */
+
+.emergency-icon {
+
+    background: #fef2f2;
+
+    color: #ef4444;
+
+}
+
+
+/* =========================================================
+   COMING SOON
+========================================================= */
+
+.coming-soon-card {
+
+    background: #ffffff;
+
+    border-radius: 22px;
+
+    padding: 45px 30px;
+
+    text-align: center;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15, 23, 42, 0.06);
+
+}
+
+.coming-soon-card h2 {
+
+    margin: 0 0 8px;
+
+    font-size: 22px;
+
+    color: #111827;
+
+}
+
+.coming-soon-card p {
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.settings-loading {
+
+    min-height: 300px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 15px;
+
+    background: #ffffff;
+
+    border-radius: 20px;
+
+    color: #64748b;
+
+    font-size: 14px;
+
+}
+
+.settings-loading-spinner {
+
+    width: 32px;
+
+    height: 32px;
+
+    border: 3px solid #e5e7eb;
+
+    border-top-color: #2563eb;
+
+    border-radius: 50%;
+
+    animation:
+        settingsSpinner 0.8s linear infinite;
+
+}
+
+@keyframes settingsSpinner {
+
+    to {
+
+        transform: rotate(360deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.settings-error {
+
+    padding: 20px;
+
+    background: #fef2f2;
+
+    border: 1px solid #fecaca;
+
+    border-radius: 14px;
+
+    color: #dc2626;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .profile-stats {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL DESKTOP / TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .profile-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .section-body {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .settings-dashboard {
+
+        padding: 20px;
+
+    }
+
+    .settings-header {
+
+        margin-bottom: 22px;
+
+    }
+
+    .settings-header h1 {
+
+        font-size: 24px;
+
+    }
+
+    .profile-stats {
+
+        grid-template-columns: 1fr;
+
+        gap: 16px;
+
+    }
+
+    .profile-tabs {
+
+        flex-direction: column;
+
+        padding: 12px;
+
+        gap: 8px;
+
+    }
+
+    .profile-tab {
+
+        width: 100%;
+
+        justify-content: flex-start;
+
+    }
+
+    .profile-section {
+
+        padding: 20px;
+
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .settings-dashboard {
+
+        padding: 14px;
+
+    }
+
+    .settings-header h1 {
+
+        font-size: 22px;
+
+    }
+
+    .stat-card {
+
+        padding: 18px;
+
+    }
+
+    .stat-icon {
+
+        width: 55px;
+
+        height: 55px;
+
+        min-width: 55px;
+
+    }
+
+    .stat-icon svg {
+
+        font-size: 28px;
+
+    }
+
+    .stat-content h2 {
+
+        font-size: 28px;
+
+    }
+
+}

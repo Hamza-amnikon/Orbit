@@ -1,0 +1,1049 @@
+/* ==========================================================
+   LEAVE REQUESTS PAGE - ISOLATED CSS
+   All styles are scoped under .leave-requests-page
+========================================================== */
+
+.leave-requests-page {
+    width: 100%;
+    min-height: 100vh;
+
+    margin: 0;
+    padding: 32px 35px;
+
+    box-sizing: border-box;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            #eef4ff 0%,
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at bottom left,
+            #f4f0ff 0%,
+            transparent 30%
+        ),
+        #f8fafc;
+}
+
+
+/* ==========================================================
+   HEADER CARD
+========================================================== */
+
+.leave-requests-page .leave-requests-header {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 32px;
+    margin-bottom: 30px;
+
+    box-sizing: border-box;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    border: 1px solid rgba(226, 232, 240, 0.7);
+    border-radius: 24px;
+
+    box-shadow:
+        0 18px 40px rgba(37, 99, 235, 0.12);
+}
+
+
+/* ==========================================================
+   HEADER TITLE
+========================================================== */
+
+.leave-requests-page .leave-requests-header h1 {
+    margin: 0;
+
+    color: #132a5c;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+.leave-requests-page .leave-requests-header p {
+    margin: 8px 0 0;
+
+    color: #64748b;
+
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+
+/* ==========================================================
+   HEADER ACTIONS
+========================================================== */
+
+.leave-requests-page .leave-request-header-actions {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    margin-left: auto;
+}
+
+
+/* ==========================================================
+   PREVIOUS + REFRESH BUTTONS
+========================================================== */
+
+.leave-requests-page .leave-request-action-btn {
+    height: 42px;
+
+    padding: 0 13px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ffffff;
+    color: #2563eb;
+
+    border: 1px solid #2563eb;
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    white-space: nowrap;
+
+    transition: all 0.2s ease;
+}
+
+.leave-requests-page .leave-request-action-btn:hover {
+    background: #eff6ff;
+
+    border-color: #1d4ed8;
+    color: #1d4ed8;
+
+    transform: translateY(-1px);
+}
+
+.leave-requests-page .leave-request-action-btn:active {
+    transform: translateY(0);
+}
+
+
+/* ==========================================================
+   SEARCH + STATUS FILTER CARD
+========================================================== */
+
+.leave-requests-page .leave-filter-toolbar {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 10px;
+    margin-bottom: 18px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    box-shadow:
+        0 6px 20px rgba(15, 23, 42, 0.05);
+}
+
+
+/* ==========================================================
+   EMPLOYEE SEARCH
+========================================================== */
+
+.leave-requests-page .employee-search-box {
+    position: relative;
+
+    flex: 1;
+    min-width: 0;
+}
+
+.leave-requests-page .employee-search-box input {
+    width: 100%;
+    height: 40px;
+
+    padding: 0 40px 0 13px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+    color: #1f2937;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 12px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.leave-requests-page .employee-search-box input::placeholder {
+    color: #94a3b8;
+}
+
+.leave-requests-page .employee-search-box input:hover {
+    border-color: #94a3b8;
+}
+
+.leave-requests-page .employee-search-box input:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+
+/* ==========================================================
+   CLEAR SEARCH BUTTON
+========================================================== */
+
+.leave-requests-page .clear-search-btn {
+    position: absolute;
+
+    right: 10px;
+    top: 50%;
+
+    width: 22px;
+    height: 22px;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #94a3b8;
+
+    font-size: 18px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.leave-requests-page .clear-search-btn:hover {
+    color: #dc2626;
+}
+
+
+/* ==========================================================
+   STATUS DROPDOWN
+========================================================== */
+
+.leave-requests-page .leave-status-dropdown {
+    width: 90px;
+
+    flex: 0 0 90px;
+}
+
+.leave-requests-page .leave-status-select {
+    width: 100px;
+    height: 40px;
+
+    padding: 0 8px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+    color: #334155;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.leave-requests-page .leave-status-select:hover {
+    border-color: #94a3b8;
+}
+
+.leave-requests-page .leave-status-select:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.leave-requests-page .leave-requests-table-card {
+    width: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    box-shadow:
+        0 8px 25px rgba(15, 23, 42, 0.05);
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.leave-requests-page .leave-requests-table {
+    width: 100%;
+
+    min-width: 1050px;
+
+    border-collapse: collapse;
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+.leave-requests-page .leave-requests-table th {
+    height: 48px;
+
+    padding: 0 18px;
+
+    background: #1e2b5d;
+    color: #ffffff;
+
+    text-align: left;
+    vertical-align: middle;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+.leave-requests-page .leave-requests-table td {
+    height: 48px;
+
+    padding: 0 18px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #eef2f7;
+
+    color: #334155;
+
+    font-size: 13px;
+
+    vertical-align: middle;
+
+    white-space: nowrap;
+}
+
+.leave-requests-page .leave-requests-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.leave-requests-page .leave-requests-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.leave-requests-page .leave-requests-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* ==========================================================
+   EMPLOYEE ID
+========================================================== */
+
+.leave-requests-page .employee-id-cell {
+    color: #2f3135;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* ==========================================================
+   LEAVE TYPE
+========================================================== */
+
+.leave-requests-page .leave-requests-table td strong {
+    color: #172033;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.leave-requests-page .request-status {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 70px;
+
+    padding: 5px 12px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* Pending */
+
+.leave-requests-page .request-status.pending {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+
+/* Approved */
+
+.leave-requests-page .request-status.approved {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+
+/* Rejected */
+
+.leave-requests-page .request-status.rejected {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* ==========================================================
+   ACTION BUTTONS
+========================================================== */
+
+.leave-requests-page .leave-action-buttons {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+/* ==========================================================
+   VIEW BUTTON
+========================================================== */
+
+.leave-requests-page .view-details-btn {
+    padding: 6px 14px;
+
+    background: #eef2ff;
+    color: #2563eb;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.leave-requests-page .view-details-btn:hover {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+
+/* ==========================================================
+   APPROVE / REJECT BUTTONS
+========================================================== */
+
+.leave-requests-page .approve-btn,
+.leave-requests-page .reject-btn {
+    border: none;
+
+    padding: 8px 14px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+/* Approve */
+
+.leave-requests-page .approve-btn {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.leave-requests-page .approve-btn:hover {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+
+/* Reject */
+
+.leave-requests-page .reject-btn {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.leave-requests-page .reject-btn:hover {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+
+/* ==========================================================
+   COMPLETED ACTION
+========================================================== */
+
+.leave-requests-page .action-completed {
+    color: #94a3b8;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.leave-requests-page .no-leave-requests {
+    height: 120px !important;
+
+    padding: 25px !important;
+
+    text-align: center !important;
+
+    color: #64748b !important;
+
+    font-size: 13px !important;
+}
+
+
+/* ==========================================================
+   TABLE SCROLLBAR
+========================================================== */
+
+.leave-requests-page .leave-requests-table-card::-webkit-scrollbar {
+    height: 7px;
+}
+
+.leave-requests-page .leave-requests-table-card::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.leave-requests-page .leave-requests-table-card::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+.leave-requests-page .leave-requests-table-card::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+
+/* ==========================================================
+   APPROVE / REJECT MODAL
+========================================================== */
+
+.leave-requests-page .leave-modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(15, 23, 42, 0.45);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 1000;
+}
+
+.leave-requests-page .leave-status-modal {
+    width: 480px;
+    max-width: 90%;
+
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.18);
+
+    overflow: hidden;
+}
+
+
+/* ==========================================================
+   MODAL HEADER
+========================================================== */
+
+.leave-requests-page .leave-modal-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px 24px;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.leave-requests-page .leave-modal-header h2 {
+    margin: 0;
+
+    font-size: 20px;
+
+    color: #1f2937;
+}
+
+.leave-requests-page .leave-modal-close {
+    border: none;
+
+    background: transparent;
+
+    font-size: 26px;
+
+    cursor: pointer;
+
+    color: #6b7280;
+}
+
+.leave-requests-page .leave-modal-close:hover {
+    color: #1f2937;
+}
+
+
+/* ==========================================================
+   MODAL BODY
+========================================================== */
+
+.leave-requests-page .leave-modal-body {
+    padding: 24px;
+}
+
+
+/* ==========================================================
+   LEAVE REVIEW INFORMATION
+========================================================== */
+
+.leave-requests-page .leave-review-info {
+    background: #f8fafc;
+
+    padding: 16px;
+
+    border-radius: 10px;
+
+    margin-bottom: 20px;
+}
+
+.leave-requests-page .leave-review-info p {
+    margin: 7px 0;
+
+    font-size: 14px;
+
+    color: #374151;
+}
+
+
+/* ==========================================================
+   MANAGER COMMENT
+========================================================== */
+
+.leave-requests-page .manager-comment-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #374151;
+}
+
+.leave-requests-page .manager-comment-group textarea {
+    width: 100%;
+
+    min-height: 100px;
+
+    padding: 12px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    resize: vertical;
+
+    font-family: inherit;
+
+    outline: none;
+}
+
+.leave-requests-page .manager-comment-group textarea:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+
+/* ==========================================================
+   MODAL ACTIONS
+========================================================== */
+
+.leave-requests-page .leave-modal-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 16px 24px 22px;
+}
+
+.leave-requests-page .modal-cancel-btn,
+.leave-requests-page .modal-approve-btn,
+.leave-requests-page .modal-reject-btn {
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 10px 18px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+/* Cancel */
+
+.leave-requests-page .modal-cancel-btn {
+    background: #e5e7eb;
+
+    color: #374151;
+}
+
+.leave-requests-page .modal-cancel-btn:hover {
+    background: #d1d5db;
+}
+
+
+/* Approve */
+
+.leave-requests-page .modal-approve-btn {
+    background: #16a34a;
+
+    color: #ffffff;
+}
+
+.leave-requests-page .modal-approve-btn:hover {
+    background: #15803d;
+}
+
+
+/* Reject */
+
+.leave-requests-page .modal-reject-btn {
+    background: #dc2626;
+
+    color: #ffffff;
+}
+
+.leave-requests-page .modal-reject-btn:hover {
+    background: #b91c1c;
+}
+
+
+/* ==========================================================
+   VIEW LEAVE DETAILS
+========================================================== */
+
+.leave-requests-page .leave-details-grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 16px;
+
+    margin-bottom: 20px;
+}
+
+.leave-requests-page .leave-detail-item {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.leave-requests-page .leave-detail-item > span:first-child {
+    font-size: 12px;
+
+    color: #6b7280;
+}
+
+.leave-requests-page .leave-detail-item strong {
+    font-size: 14px;
+
+    color: #1f2937;
+}
+
+
+/* ==========================================================
+   LEAVE DETAIL SECTION
+========================================================== */
+
+.leave-requests-page .leave-detail-section {
+    margin-top: 16px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid #e5e7eb;
+}
+
+.leave-requests-page .leave-detail-section > span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 12px;
+
+    color: #6b7280;
+}
+
+.leave-requests-page .leave-detail-section p {
+    margin: 0;
+
+    font-size: 14px;
+
+    color: #1f2937;
+
+    line-height: 1.5;
+}
+
+
+/* ==========================================================
+   APPROVAL DETAILS
+========================================================== */
+
+.leave-requests-page .approval-details {
+    margin-top: 20px;
+
+    padding: 16px;
+
+    background: #f8fafc;
+
+    border-radius: 10px;
+}
+
+
+/* ==========================================================
+   RESPONSIVE - TABLET
+========================================================== */
+
+@media (max-width: 992px) {
+
+    .leave-requests-page {
+        padding: 25px;
+    }
+
+    .leave-requests-page .leave-requests-header {
+        padding: 28px;
+    }
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE - MOBILE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .leave-requests-page {
+        padding: 20px;
+    }
+
+
+    /* Header */
+
+    .leave-requests-page .leave-requests-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        padding: 24px;
+
+        border-radius: 20px;
+    }
+
+    .leave-requests-page .leave-requests-header h1 {
+        font-size: 26px;
+    }
+
+    .leave-requests-page .leave-requests-header p {
+        font-size: 14px;
+    }
+
+
+    /* Header buttons */
+
+    .leave-requests-page .leave-request-header-actions {
+        width: 100%;
+
+        margin-left: 0;
+
+        justify-content: flex-start;
+    }
+
+
+    /* Search card */
+
+    .leave-requests-page .leave-filter-toolbar {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        padding: 10px;
+    }
+
+    .leave-requests-page .employee-search-box {
+        width: 100%;
+
+        flex: none;
+    }
+
+    .leave-requests-page .employee-search-box input {
+        width: 100%;
+    }
+
+    .leave-requests-page .leave-status-dropdown {
+        width: 100%;
+
+        flex: none;
+    }
+
+    .leave-requests-page .leave-status-select {
+        width: 100%;
+    }
+
+
+    /* Table */
+
+    .leave-requests-page .leave-requests-table {
+        min-width: 1050px;
+    }
+
+
+    /* Modal */
+
+    .leave-requests-page .leave-status-modal {
+        width: 92%;
+    }
+
+    .leave-requests-page .leave-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE - SMALL MOBILE
+========================================================== */
+
+@media (max-width: 480px) {
+
+    .leave-requests-page {
+        padding: 15px;
+    }
+
+    .leave-requests-page .leave-requests-header {
+        padding: 20px;
+    }
+
+    .leave-requests-page .leave-requests-header h1 {
+        font-size: 24px;
+    }
+
+    .leave-requests-page .leave-requests-header p {
+        font-size: 13px;
+    }
+
+    .leave-requests-page .leave-request-header-actions {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .leave-requests-page .leave-request-action-btn {
+        width: 100%;
+    }
+
+    .leave-requests-page .leave-modal-body {
+        padding: 18px;
+    }
+
+    .leave-requests-page .leave-modal-actions {
+        padding: 14px 18px 18px;
+    }
+
+}

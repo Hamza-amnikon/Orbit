@@ -1,0 +1,831 @@
+/*
+ * PAYSLIP TEMPLATES — ISOLATED MODULE STYLES
+ * Namespace: pt-
+ *
+ * Only CSS class selectors are namespaced.
+ * JavaScript identifiers, object keys, data values, functions and MUI
+ * selectors are intentionally not globally renamed.
+ */
+
+/* =========================================================
+   PAYSLIP TEMPLATES
+   MUI / REACT VERSION
+   ========================================================= */
+
+.pt-payslip-templates-page {
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 34px 42px 60px;
+    background: #f5f8fc;
+    color: #102b4c;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.pt-payslip-templates-header {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 26px;
+}
+
+.pt-payslip-templates-header > .MuiBox-root:first-child {
+    min-width: 0;
+}
+
+.pt-payslip-templates-title {
+    margin: 0 !important;
+    color: #102b4c !important;
+    font-size: 30px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px !important;
+}
+
+.pt-payslip-templates-subtitle {
+    margin-top: 7px !important;
+    color: #7185a0 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+/* =========================================================
+   CREATE BUTTON
+   ========================================================= */
+
+.pt-create-template-button {
+    flex-shrink: 0 !important;
+    min-height: 42px !important;
+    padding: 0 20px !important;
+    border-radius: 8px !important;
+    background: #2869e8 !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    box-shadow: 0 5px 14px rgba(40, 105, 232, 0.18) !important;
+}
+
+.pt-create-template-button:hover {
+    background: #1f5dd3 !important;
+    box-shadow: 0 7px 18px rgba(40, 105, 232, 0.25) !important;
+}
+
+.pt-create-template-button .MuiButton-startIcon {
+    margin-right: 7px;
+}
+
+.pt-create-template-button svg {
+    font-size: 19px;
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.pt-payroll-error-alert {
+    margin-bottom: 16px !important;
+    border-radius: 9px !important;
+    font-size: 13px !important;
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.pt-payslip-templates-toolbar {
+    width: 100%;
+    min-height: 72px;
+    box-sizing: border-box;
+
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+
+    padding: 10px !important;
+    margin: 0 0 14px !important;
+
+    background: #ffffff !important;
+    border: 1px solid #e2e9f2 !important;
+    border-radius: 11px !important;
+
+    box-shadow:
+        0 3px 12px rgba(25, 55, 90, 0.035),
+        0 1px 2px rgba(25, 55, 90, 0.02) !important;
+}
+
+/* Search */
+
+.pt-templates-search-section {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.pt-templates-search-section .MuiTextField-root {
+    width: 100%;
+}
+
+.pt-templates-search-section .MuiOutlinedInput-root {
+    height: 42px !important;
+    border-radius: 8px !important;
+    background: #ffffff !important;
+}
+
+.pt-templates-search-section
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #d8e1ec !important;
+}
+
+.pt-templates-search-section
+    .MuiOutlinedInput-root:hover
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #b9c9dd !important;
+}
+
+.pt-templates-search-section
+    .MuiOutlinedInput-root.Mui-focused
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #2869e8 !important;
+    border-width: 1px !important;
+}
+
+.pt-templates-search-section
+    .MuiInputBase-input {
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    color: #263d59 !important;
+}
+
+.pt-templates-search-section
+    .MuiInputBase-input::placeholder {
+    color: #8a9ab0 !important;
+    opacity: 1 !important;
+}
+
+.pt-templates-search-section
+    .MuiInputAdornment-root {
+    color: #7d8fa7 !important;
+}
+
+.pt-templates-search-section
+    .MuiInputAdornment-root svg {
+    font-size: 19px !important;
+}
+
+/* Status */
+
+.pt-templates-status-filter {
+    width: 145px !important;
+    min-width: 145px !important;
+}
+
+.pt-templates-status-filter .MuiOutlinedInput-root {
+    height: 42px !important;
+    border-radius: 8px !important;
+    background: #ffffff !important;
+}
+
+.pt-templates-status-filter
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #d8e1ec !important;
+}
+
+.pt-templates-status-filter
+    .MuiOutlinedInput-root:hover
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #b9c9dd !important;
+}
+
+.pt-templates-status-filter
+    .MuiOutlinedInput-root.Mui-focused
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #2869e8 !important;
+}
+
+.pt-templates-status-filter .MuiInputLabel-root {
+    font-size: 13px !important;
+    color: #7185a0 !important;
+}
+
+.pt-templates-status-filter .MuiInputLabel-root.Mui-focused {
+    color: #2869e8 !important;
+}
+
+.pt-templates-status-filter .MuiSelect-select {
+    min-height: auto !important;
+    padding: 10px 34px 10px 12px !important;
+    font-size: 13px !important;
+    color: #304763 !important;
+}
+
+/* Refresh */
+
+.pt-payslip-templates-toolbar
+    > .MuiTooltip-root
+    .MuiIconButton-root,
+.pt-payslip-templates-toolbar
+    > span
+    .MuiIconButton-root {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 8px !important;
+    color: #6f8198 !important;
+}
+
+.pt-payslip-templates-toolbar
+    .MuiIconButton-root:hover {
+    background: #f1f5fa !important;
+    color: #2869e8 !important;
+}
+
+.pt-payslip-templates-toolbar
+    .MuiIconButton-root
+    svg {
+    font-size: 21px !important;
+}
+
+/* =========================================================
+   COUNT
+   ========================================================= */
+
+.pt-templates-count-row {
+    margin: 0 0 12px !important;
+}
+
+.pt-templates-count-row .MuiTypography-root {
+    color: #6d819b !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.pt-payslip-template-grid {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(300px, 1fr)
+    );
+
+    gap: 18px;
+    align-items: stretch;
+}
+
+/* =========================================================
+   TEMPLATE CARD
+   ========================================================= */
+
+.pt-payslip-template-card {
+    position: relative;
+
+    min-width: 0;
+    min-height: 285px;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    box-sizing: border-box;
+
+    background: #ffffff !important;
+    border: 1px solid #e3eaf3 !important;
+    border-radius: 13px !important;
+
+    box-shadow:
+        0 4px 14px rgba(24, 52, 82, 0.045),
+        0 1px 2px rgba(24, 52, 82, 0.025) !important;
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease !important;
+
+    overflow: hidden;
+}
+
+.pt-payslip-template-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #d2deed !important;
+
+    box-shadow:
+        0 10px 25px rgba(24, 52, 82, 0.08),
+        0 2px 5px rgba(24, 52, 82, 0.03) !important;
+}
+
+.pt-payslip-template-card .MuiCardContent-root {
+    height: 100%;
+    min-height: 285px;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 18px !important;
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.pt-template-card-header {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 12px;
+}
+
+.pt-template-icon-wrapper {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 8px;
+    background: #f0e9ff;
+
+    color: #a42ee8;
+}
+
+.pt-template-icon-wrapper svg {
+    font-size: 21px;
+}
+
+.pt-template-card-header
+    .MuiIconButton-root {
+    width: 32px !important;
+    height: 32px !important;
+
+    padding: 5px !important;
+
+    border-radius: 7px !important;
+
+    color: #7f8fa3 !important;
+}
+
+.pt-template-card-header
+    .MuiIconButton-root:hover {
+    background: #f3f6fa !important;
+    color: #4f647e !important;
+}
+
+.pt-template-card-header
+    .MuiIconButton-root
+    svg {
+    font-size: 20px !important;
+}
+
+/* =========================================================
+   CARD TEXT
+   ========================================================= */
+
+.pt-template-card-name {
+    margin: 19px 0 6px !important;
+
+    color: #102b4c !important;
+
+    font-size: 17px !important;
+    line-height: 1.35 !important;
+    font-weight: 700 !important;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pt-template-card-description {
+    min-height: 20px;
+
+    margin: 0 !important;
+
+    color: #8191a7 !important;
+
+    font-size: 12.5px !important;
+    line-height: 1.5 !important;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.pt-template-card-divider {
+    width: 100% !important;
+    margin: 18px 0 12px !important;
+
+    border-color: #e6ebf2 !important;
+}
+
+/* =========================================================
+   CARD INFORMATION
+   ========================================================= */
+
+.pt-template-card-info {
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+    column-gap: 20px;
+    row-gap: 13px;
+
+    margin-bottom: 12px;
+}
+
+.pt-template-card-info > .MuiBox-root {
+    min-width: 0;
+}
+
+.pt-template-info-label {
+    margin-bottom: 4px !important;
+
+    color: #71839a !important;
+
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+
+    letter-spacing: 0.45px !important;
+    text-transform: uppercase;
+}
+
+.pt-template-info-value {
+    color: #173452 !important;
+
+    font-size: 14px !important;
+    line-height: 1.35 !important;
+    font-weight: 600 !important;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   CARD FOOTER
+   ========================================================= */
+
+.pt-template-card-footer {
+    margin-top: auto !important;
+
+    padding-top: 12px;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    gap: 12px;
+
+    border-top: 1px solid #edf1f5;
+}
+
+.pt-template-card-footer
+    .MuiStack-root {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.pt-template-status-active,
+.pt-template-status-inactive {
+    height: 23px !important;
+
+    border-radius: 12px !important;
+
+    font-size: 10px !important;
+    font-weight: 600 !important;
+
+    padding: 0 9px !important;
+}
+
+.pt-template-status-active {
+    background: #dcf8e9 !important;
+    color: #23975a !important;
+}
+
+.pt-template-status-inactive {
+    background: #edf0f3 !important;
+    color: #68788b !important;
+}
+
+/* =========================================================
+   CARD ACTIONS
+   ========================================================= */
+
+.pt-template-card-footer
+    .MuiIconButton-root {
+    width: 32px !important;
+    height: 32px !important;
+
+    padding: 5px !important;
+
+    border-radius: 7px !important;
+
+    color: #7b8999 !important;
+}
+
+.pt-template-card-footer
+    .MuiIconButton-root:hover {
+    background: #f1f5f9 !important;
+    color: #2869e8 !important;
+}
+
+.pt-template-card-footer
+    .MuiIconButton-colorError {
+    color: #e53935 !important;
+}
+
+.pt-template-card-footer
+    .MuiIconButton-colorError:hover {
+    background: #fff0f0 !important;
+    color: #d32f2f !important;
+}
+
+.pt-template-card-footer
+    .MuiIconButton-root
+    svg {
+    font-size: 18px !important;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.pt-templates-empty-card {
+    width: 100% !important;
+    min-height: 300px;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 40px !important;
+
+    box-sizing: border-box;
+
+    background: #ffffff !important;
+
+    border: 1px dashed #d7e1ed !important;
+    border-radius: 13px !important;
+
+    box-shadow: none !important;
+
+    text-align: center;
+}
+
+.pt-empty-template-icon {
+    width: 48px !important;
+    height: 48px !important;
+
+    padding: 11px;
+
+    margin-bottom: 13px;
+
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+    background: #eef4ff;
+    color: #2869e8;
+}
+
+.pt-empty-template-title {
+    margin-bottom: 5px !important;
+
+    color: #233c59 !important;
+
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+
+.pt-empty-template-text {
+    margin-bottom: 18px !important;
+
+    color: #8494a8 !important;
+
+    font-size: 13px !important;
+}
+
+/* Empty create button */
+
+.pt-templates-empty-card
+    .MuiButton-root {
+    min-height: 40px !important;
+
+    padding: 0 18px !important;
+
+    border-radius: 8px !important;
+
+    background: #2869e8 !important;
+    color: #ffffff !important;
+
+    text-transform: none !important;
+
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.pt-templates-loading {
+    min-height: 300px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    color: #2869e8;
+}
+
+.pt-templates-loading
+    .MuiTypography-root {
+    color: #7185a0 !important;
+    font-size: 13px !important;
+}
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+.pt-payslip-templates-page
+    .MuiMenu-paper {
+    min-width: 160px !important;
+
+    margin-top: 5px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 9px !important;
+
+    box-shadow:
+        0 8px 25px rgba(20, 45, 75, 0.12),
+        0 2px 6px rgba(20, 45, 75, 0.05) !important;
+}
+
+.pt-payslip-templates-page
+    .MuiMenuItem-root {
+    min-height: 40px !important;
+
+    padding: 7px 13px !important;
+
+    color: #304763 !important;
+
+    font-size: 13px !important;
+
+    border-radius: 6px;
+
+    margin: 2px 4px;
+}
+
+.pt-payslip-templates-page
+    .MuiMenuItem-root:hover {
+    background: #f1f5fb !important;
+}
+
+.pt-payslip-templates-page
+    .MuiMenuItem-root
+    svg {
+    color: inherit;
+}
+
+/* =========================================================
+   TOOLTIP
+   ========================================================= */
+
+.pt-payslip-templates-page
+    .MuiTooltip-tooltip {
+    font-size: 11px !important;
+    border-radius: 5px !important;
+}
+
+/* =========================================================
+   GENERAL MUI RESET
+   ========================================================= */
+
+.pt-payslip-templates-page
+    .MuiButton-root {
+    box-sizing: border-box;
+}
+
+.pt-payslip-templates-page
+    .MuiIconButton-root {
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+    .pt-payslip-templates-page {
+        padding: 28px 28px 50px;
+    }
+
+    .pt-payslip-template-grid {
+        grid-template-columns:
+            repeat(
+                auto-fill,
+                minmax(280px, 1fr)
+            );
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .pt-payslip-templates-page {
+        padding: 22px 18px 40px;
+    }
+
+    .pt-payslip-templates-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .pt-payslip-templates-title {
+        font-size: 25px !important;
+    }
+
+    .pt-create-template-button {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .pt-payslip-templates-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .pt-templates-search-section,
+    .pt-templates-status-filter {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .pt-payslip-template-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .pt-payslip-templates-page {
+        padding: 18px 12px 30px;
+    }
+
+    .pt-payslip-template-card {
+        min-height: 275px;
+    }
+
+    .pt-payslip-template-card
+        .MuiCardContent-root {
+        padding: 15px !important;
+    }
+
+    .pt-template-card-info {
+        column-gap: 12px;
+    }
+
+    .pt-template-card-name {
+        font-size: 15px !important;
+    }
+
+    .pt-template-info-value {
+        font-size: 13px !important;
+    }
+}

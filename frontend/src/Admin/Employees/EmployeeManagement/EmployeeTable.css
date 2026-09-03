@@ -1,0 +1,802 @@
+/* ==========================================================
+   TOKENS
+========================================================== */
+
+:root {
+    --navy-900: #0b1330;
+    --navy-800: #202c5a;
+    --navy-700: #1e2b5d;
+
+    --accent: #5b6fee;
+    --accent-soft: #eef1ff;
+
+    --teal: #0d9488;
+    --amber: #d97706;
+    --rose: #dc2626;
+
+    --ink: #0f172a;
+    --ink-muted: #64748b;
+    --ink-soft: #94a3b8;
+
+    --border: #eef1f7;
+
+    --surface: #ffffff;
+    --surface-alt: #f8faff;
+}
+
+
+/* ==========================================================
+   EMPLOYEE TABLE WRAPPER
+========================================================== */
+
+.employee-table-wrapper {
+    width: 100%;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 45px -12px rgba(15, 23, 42, 0.10),
+        0 2px 6px rgba(15, 23, 42, 0.04);
+
+    font-family:
+        "Inter",
+        "Segoe UI",
+        system-ui,
+        -apple-system,
+        sans-serif;
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+.employee-table-header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 28px 30px 24px;
+
+    border-bottom: 1px solid var(--border);
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fbfcff 100%
+        );
+}
+
+
+/* ==========================================================
+   TAG
+========================================================== */
+
+.employee-table-tag {
+    display: inline-block;
+
+    font-size: 11.5px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.6px;
+
+    text-transform: uppercase;
+
+    color: var(--accent);
+
+    background: var(--accent-soft);
+
+    padding: 5px 12px;
+
+    border-radius: 999px;
+
+    margin-bottom: 10px;
+}
+
+
+/* ==========================================================
+   TITLE
+========================================================== */
+
+.employee-table-title h2 {
+    margin: 0 0 6px;
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+    color: var(--ink);
+
+    letter-spacing: -0.3px;
+}
+
+.employee-table-title p {
+    margin: 0;
+
+    font-size: 13.5px;
+
+    color: var(--ink-muted);
+}
+
+
+/* ==========================================================
+   EMPLOYEE COUNT
+========================================================== */
+
+.employee-table-count {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 2px;
+
+    padding: 10px 18px;
+
+    background: var(--navy-900);
+
+    border-radius: 16px;
+
+    color: #ffffff;
+
+    min-width: 110px;
+}
+
+.employee-table-count span {
+    font-size: 22px;
+
+    font-weight: 800;
+
+    line-height: 1.1;
+}
+
+.employee-table-count {
+    font-size: 11px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.4px;
+
+    text-transform: uppercase;
+
+    color: rgba(255, 255, 255, 0.65);
+}
+
+
+/* ==========================================================
+   TABLE RESPONSIVE
+========================================================== */
+
+.table-responsive {
+    width: 100%;
+
+    overflow-x: auto;
+
+    position: relative;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: var(--surface-alt);
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 50px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: var(--ink-soft);
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.employee-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+.employee-table thead {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 5;
+}
+
+.employee-table th {
+    background:
+        linear-gradient(
+            120deg,
+            var(--navy-900) 0%,
+            var(--navy-700) 100%
+        );
+
+    color: #ffffff;
+
+    padding: 18px;
+
+    text-align: left;
+
+    font-size: 12.5px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.6px;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+
+    border-bottom: 2px solid var(--accent);
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+.employee-table td {
+    height: 82px;
+
+    padding: 16px 18px;
+
+    border-bottom: 1px solid var(--border);
+
+    vertical-align: middle;
+
+    font-size: 14px;
+
+    color: #334155;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.employee-table tbody tr {
+    position: relative;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.employee-table tbody tr:nth-child(even) {
+    background: var(--surface-alt);
+}
+
+.employee-table tbody tr:hover {
+    background: #f1f5ff;
+
+    box-shadow:
+        inset 3px 0 0 var(--accent);
+}
+
+.employee-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* ==========================================================
+   COLUMN WIDTHS
+========================================================== */
+
+/*
+   Employee column increased because avatar
+   is no longer being used.
+*/
+
+.employee-table th:nth-child(1),
+.employee-table td:nth-child(1) {
+    width: 8%;
+}
+
+.employee-table th:nth-child(2),
+.employee-table td:nth-child(2) {
+    width: 27%;
+}
+
+.employee-table th:nth-child(3),
+.employee-table td:nth-child(3) {
+    width: 11%;
+}
+
+.employee-table th:nth-child(4),
+.employee-table td:nth-child(4) {
+    width: 7%;
+}
+
+.employee-table th:nth-child(5),
+.employee-table td:nth-child(5) {
+    width: 12%;
+}
+
+.employee-table th:nth-child(6),
+.employee-table td:nth-child(6) {
+    width: 13%;
+}
+
+.employee-table th:nth-child(7),
+.employee-table td:nth-child(7) {
+    width: 10%;
+}
+
+.employee-table th:nth-child(8),
+.employee-table td:nth-child(8) {
+    width: 8%;
+}
+
+.employee-table th:nth-child(9),
+.employee-table td:nth-child(9) {
+    width: 7%;
+
+    text-align: left;
+}
+
+
+/* ==========================================================
+   CELL ALIGNMENT
+========================================================== */
+
+.employee-table td:nth-child(1) {
+    font-weight: 700;
+
+    color: var(--ink-muted);
+
+    font-variant-numeric: tabular-nums;
+}
+
+.employee-table td:nth-child(3),
+.employee-table td:nth-child(4),
+.employee-table td:nth-child(5),
+.employee-table td:nth-child(6),
+.employee-table td:nth-child(7),
+.employee-table td:nth-child(8),
+.employee-table td:nth-child(9) {
+    text-align: left;
+
+    vertical-align: middle;
+}
+
+.employee-table td:nth-child(7) {
+    font-variant-numeric: tabular-nums;
+
+    color: var(--ink-muted);
+}
+
+
+/* ==========================================================
+   EMPLOYEE NAME / EMAIL COLUMN
+========================================================== */
+
+.employee-table td:nth-child(2) {
+    white-space: normal;
+
+    text-align: left;
+
+    vertical-align: middle;
+}
+
+
+/* ==========================================================
+   EMPLOYEE INFO
+========================================================== */
+
+/*
+   No avatar.
+   Employee information starts at the exact
+   same position in every row.
+*/
+
+.employee-info {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: flex-start;
+
+    gap: 3px;
+
+    width: 100%;
+
+    min-width: 0;
+
+    margin: 0;
+
+    padding: 0;
+
+    text-align: left;
+}
+
+
+/* ==========================================================
+   REMOVE AVATAR COMPLETELY
+========================================================== */
+
+.employee-avatar {
+    display: none !important;
+}
+
+
+/* ==========================================================
+   EMPLOYEE DETAILS
+========================================================== */
+
+.employee-details {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: flex-start;
+
+    gap: 3px;
+
+    width: 100%;
+
+    min-width: 0;
+
+    margin: 0;
+
+    padding: 0;
+}
+
+
+/* ==========================================================
+   EMPLOYEE NAME
+========================================================== */
+
+.admin-employee-name {
+    display: block;
+
+    width: 100%;
+
+    margin: 0;
+
+    padding: 0;
+
+    font-size: 15.5px;
+
+    font-weight: 700;
+
+    color: var(--ink);
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    transition: color 0.2s ease;
+}
+
+
+/* ==========================================================
+   EMPLOYEE EMAIL
+========================================================== */
+
+.employee-email {
+    display: block;
+
+    width: 100%;
+
+    margin: 0;
+
+    padding: 0;
+
+    font-size: 12.5px;
+
+    color: var(--ink-muted);
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* ==========================================================
+   HOVER
+========================================================== */
+
+.employee-table tbody tr:hover .admin-employee-name {
+    color: var(--accent);
+}
+
+
+/* ==========================================================
+   STATUS BADGE
+========================================================== */
+
+.status-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    min-width: 95px;
+
+    padding: 7px 16px;
+
+    border-radius: 999px;
+
+    font-size: 12.5px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.2px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.status-badge::before {
+    content: "";
+
+    width: 6px;
+
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+.status-badge.active {
+    background: #dcfce7;
+
+    color: #15803d;
+}
+
+.status-badge.inactive {
+    background: #fee2e2;
+
+    color: #dc2626;
+}
+
+.employee-table tbody tr:hover .status-badge {
+    transform: scale(1.05);
+
+    box-shadow:
+        0 4px 10px rgba(15, 23, 42, 0.08);
+}
+
+
+/* ==========================================================
+   ACTION BUTTONS
+========================================================== */
+
+.action-buttons {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+.action-buttons button {
+    width: 36px;
+
+    height: 36px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 15px;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.action-buttons button:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 20px rgba(15, 23, 42, 0.14);
+}
+
+.action-buttons button:active {
+    transform: translateY(-1px) scale(0.96);
+}
+
+.view-btn {
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+.view-btn:hover {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+.edit-btn {
+    background: #fef3c7;
+
+    color: var(--amber);
+}
+
+.edit-btn:hover {
+    background: var(--amber);
+
+    color: #ffffff;
+}
+
+.delete-btn {
+    background: #fee2e2;
+
+    color: var(--rose);
+}
+
+.delete-btn:hover {
+    background: var(--rose);
+
+    color: #ffffff;
+}
+
+
+/* ==========================================================
+   SEARCH / TOOLBAR
+========================================================== */
+
+.employee-table-search
+.MuiOutlinedInput-root {
+    border-radius: 12px;
+
+    background: var(--surface-alt);
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.no-records {
+    padding: 90px 20px;
+
+    text-align: left;
+
+    font-size: 15.5px;
+
+    font-weight: 600;
+
+    color: var(--ink-soft);
+}
+
+
+/* ==========================================================
+   FOCUS ACCESSIBILITY
+========================================================== */
+
+.action-buttons button:focus-visible,
+.admin-employee-name:focus-visible {
+    outline: 2px solid var(--accent);
+
+    outline-offset: 2px;
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .employee-table tbody tr,
+    .status-badge,
+    .action-buttons button,
+    .admin-employee-name {
+        transition: none !important;
+    }
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 1200px) {
+
+    .employee-table th:nth-child(2),
+    .employee-table td:nth-child(2) {
+        width: 25%;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .employee-table-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .employee-table-count {
+        align-self: stretch;
+
+        flex-direction: row;
+
+        justify-content: space-between;
+
+        align-items: center;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .employee-table {
+        min-width: 1000px;
+    }
+
+    .employee-table th,
+    .employee-table td {
+        padding: 14px 16px;
+    }
+
+}

@@ -27,7 +27,8 @@ function ModulesGrid(){
             title:"Leave Management",
             description:"Approve and manage employee leave requests.",
             icon:<EventBusyRoundedIcon/>,
-            color:"#16a34a"
+            color:"#16a34a",
+            route: "/leave"
         },
 
         {
@@ -56,10 +57,11 @@ function ModulesGrid(){
         },
 
         {
-            title:"Salary",
+            title:"Salary Management",
             description:"Process employee salaries and payroll.",
             icon:<PaidRoundedIcon/>,
-            color:"#dc2626"
+            color:"#dc2626",
+            route: "/payroll"
         },
 
         {
@@ -73,7 +75,16 @@ function ModulesGrid(){
             title:"Reports",
             description:"Generate HR and payroll reports.",
             icon:<AssessmentRoundedIcon/>,
-            color:"#2563eb"
+            color:"#2563eb",
+            route: "reports"
+        },
+
+         {
+            title:"My Dashboard",
+            description:"View your personal dashboard and analytics.",
+            icon:<AssessmentRoundedIcon/>,
+            color:"#2563eb",
+            route: "/employees/my-dashboard"
         }
 
     ];

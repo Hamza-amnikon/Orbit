@@ -1,0 +1,245 @@
+/* ==========================================================
+   Assign Shift Dialog
+========================================================== */
+
+.assign-dialog-title {
+  font-size: 1.7rem !important;
+  font-weight: 700 !important;
+  color: #1f2937;
+  padding: 24px 28px 12px !important;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.assign-dialog-content {
+  padding: 28px !important;
+  background: #f8fafc;
+}
+
+/* ==========================================================
+   Section Headings
+========================================================== */
+
+.assign-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.assign-section-divider {
+  margin-bottom: 20px !important;
+}
+
+/* ==========================================================
+   Employee Card
+========================================================== */
+
+.employee-info-card {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+  padding: 22px;
+  transition: all .3s ease;
+}
+
+.employee-info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .08);
+}
+
+.employee-info-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 18px;
+}
+
+/* ==========================================================
+   Employee Details
+========================================================== */
+
+.employee-info-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.employee-info-avatar {
+  width: 52px !important;
+  height: 52px !important;
+  background: #1976d2 !important;
+  color: white !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+}
+
+.employee-info-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.employee-info-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* ==========================================================
+   Form Fields
+========================================================== */
+
+.assign-dialog-content .MuiGrid-root {
+  margin-bottom: 2px;
+}
+
+.assign-dialog-content .MuiTextField-root {
+  width: 100%;
+}
+
+.assign-dialog-content .MuiOutlinedInput-root {
+  border-radius: 12px;
+  background: #fff;
+  transition: .25s;
+}
+
+.assign-dialog-content
+.MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline {
+  border-color: #1976d2;
+}
+
+.assign-dialog-content
+.MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline {
+  border-width: 2px;
+  border-color: #1976d2;
+}
+
+.assign-dialog-content .MuiInputLabel-root {
+  font-weight: 600;
+}
+
+.assign-dialog-content .MuiInputBase-input {
+  font-size: 14px;
+}
+
+/* ==========================================================
+   Read Only Fields
+========================================================== */
+
+.assign-dialog-content .Mui-disabled {
+  background: #f1f5f9 !important;
+}
+
+.assign-dialog-content
+.MuiInputBase-input.Mui-disabled {
+  -webkit-text-fill-color: #334155;
+}
+
+/* ==========================================================
+   Buttons
+========================================================== */
+
+.assign-dialog-actions {
+  padding: 20px 24px !important;
+  border-top: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.assign-dialog-actions .MuiButton-root {
+  min-width: 150px;
+  height: 44px;
+  border-radius: 10px;
+  text-transform: none;
+  font-weight: 700;
+}
+
+.assign-dialog-actions .MuiButton-contained {
+  box-shadow: none;
+}
+
+.assign-dialog-actions .MuiButton-contained:hover {
+  box-shadow: 0 8px 22px rgba(25,118,210,.25);
+}
+
+.assign-dialog-actions .MuiButton-outlined:hover {
+  background: #f8fafc;
+}
+
+/* ==========================================================
+   Validation
+========================================================== */
+
+.assign-dialog-content .MuiFormHelperText-root {
+  margin-left: 4px;
+  font-size: 12px;
+}
+
+/* ==========================================================
+   Scrollbar
+========================================================== */
+
+.assign-dialog-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.assign-dialog-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 50px;
+}
+
+.assign-dialog-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ==========================================================
+   Responsive
+========================================================== */
+
+@media (max-width: 992px) {
+
+  .assign-dialog-content {
+    padding: 20px !important;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .assign-dialog-title {
+    font-size: 1.35rem !important;
+    padding: 20px !important;
+  }
+
+  .employee-info-item {
+    gap: 12px;
+  }
+
+  .employee-info-avatar {
+    width: 46px !important;
+    height: 46px !important;
+  }
+
+  .assign-dialog-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .assign-dialog-actions .MuiButton-root {
+    width: 100%;
+  }
+
+}
+
+@media (max-width: 576px) {
+
+  .assign-dialog-content {
+    padding: 16px !important;
+  }
+
+}

@@ -1,0 +1,181 @@
+/*
+ * PAYROLL MANAGEMENT — ISOLATED MODULE
+ * Namespace: pm-
+ *
+ * This stylesheet is isolated to Payroll Management.
+ * JavaScript identifiers, routes, data values and MUI classes are untouched.
+ */
+
+/* =========================================================
+   PAYROLL MANAGEMENT
+========================================================= */
+
+.pm-payroll-page {
+    min-height: 100vh;
+    padding: 42px 58px;
+    box-sizing: border-box;
+    background: #f5f7fb;
+}
+
+.pm-payroll-page-header {
+    margin-bottom: 34px;
+}
+
+.pm-payroll-page-header h1 {
+    margin: 0;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #172033;
+    letter-spacing: -0.5px;
+}
+
+.pm-payroll-page-header p {
+    margin: 10px 0 0;
+    color: #718096;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.pm-payroll-module-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px;
+}
+
+.pm-payroll-module-card {
+    min-height: 340px;
+    padding: 28px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #e7ebf2;
+    border-radius: 18px;
+    box-shadow:
+        0 2px 5px rgba(15, 23, 42, 0.025),
+        0 8px 24px rgba(15, 23, 42, 0.035);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.pm-payroll-module-card:hover {
+    transform: translateY(-4px);
+    border-color: #dce3ef;
+    box-shadow:
+        0 6px 15px rgba(15, 23, 42, 0.06),
+        0 15px 35px rgba(15, 23, 42, 0.07);
+}
+
+.pm-payroll-module-icon {
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 25px;
+    box-sizing: border-box;
+}
+
+.pm-payroll-module-icon.pm-blue { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+.pm-payroll-module-icon.pm-green { background: linear-gradient(135deg, #16a34a, #22c55e); }
+.pm-payroll-module-icon.pm-purple { background: linear-gradient(135deg, #9333ea, #a855f7); }
+.pm-payroll-module-icon.pm-orange { background: linear-gradient(135deg, #ea580c, #f97316); }
+.pm-payroll-module-icon.pm-pink { background: linear-gradient(135deg, #d946ef, #ec4899); }
+.pm-payroll-module-icon.pm-cyan { background: linear-gradient(135deg, #0891b2, #06b6d4); }
+.pm-payroll-module-icon.pm-teal { background: linear-gradient(135deg, #0d9488, #14b8a6); }
+.pm-payroll-module-icon.pm-yellow { background: linear-gradient(135deg, #eab308, #f59e0b); }
+
+.pm-payroll-module-content {
+    flex: 1;
+}
+
+.pm-payroll-module-content h2 {
+    margin: 0;
+    color: #172033;
+    font-size: 20px;
+    line-height: 1.35;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+}
+
+.pm-payroll-module-content p {
+    margin: 16px 0 0;
+    color: #718096;
+    font-size: 14px;
+    line-height: 1.8;
+    max-width: 270px;
+}
+
+.pm-payroll-open-module {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 26px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+}
+
+.pm-payroll-open-module:hover {
+    color: #174fc4;
+}
+
+.pm-payroll-arrow {
+    font-size: 25px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.pm-payroll-open-module:hover .pm-payroll-arrow {
+    transform: translateX(5px);
+}
+
+@media (max-width: 1200px) {
+    .pm-payroll-page { padding: 36px 35px; }
+    .pm-payroll-module-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .pm-payroll-page { padding: 30px 24px; }
+    .pm-payroll-module-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+    .pm-payroll-module-card { min-height: 320px; }
+}
+
+@media (max-width: 600px) {
+    .pm-payroll-page { padding: 24px 16px; }
+    .pm-payroll-page-header { margin-bottom: 25px; }
+    .pm-payroll-page-header h1 { font-size: 26px; }
+    .pm-payroll-page-header p { font-size: 14px; }
+    .pm-payroll-module-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+    .pm-payroll-module-card {
+        min-height: 290px;
+        padding: 24px;
+    }
+    .pm-payroll-module-icon {
+        width: 64px;
+        height: 64px;
+        font-size: 28px;
+        border-radius: 16px;
+    }
+}

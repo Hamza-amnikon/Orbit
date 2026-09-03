@@ -1,0 +1,786 @@
+/* ==========================================================
+   LEAVE TAKEN HISTORY PAGE
+   ========================================================== */
+
+.leave-history-page {
+    width: 100%;
+    max-width: 1700px;
+    min-height: 100vh;
+
+    margin: 0 auto;
+    padding: 32px;
+
+    box-sizing: border-box;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            #eef4ff 0%,
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at bottom left,
+            #f4f0ff 0%,
+            transparent 30%
+        ),
+        #f8fafc;
+}
+
+
+/* ==========================================================
+   HEADER
+   ========================================================== */
+
+.leave-history-page .leave-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 32px;
+
+    margin-bottom: 30px;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    border-radius: 24px;
+
+    border: 1px solid rgba(226, 232, 240, 0.7);
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 18px 40px rgba(37, 99, 235, 0.12);
+}
+
+
+.leave-history-page .leave-history-header h1 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 2.2rem;
+
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+
+.leave-history-page .leave-history-header p {
+    margin: 10px 0 0;
+
+    color: #64748b;
+
+    font-size: 1rem;
+
+    line-height: 1.5;
+}
+
+
+/* ==========================================================
+   HEADER ACTIONS
+   ========================================================== */
+
+.leave-history-page .leave-history-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+
+.leave-history-page .leave-history-action-btn {
+    height: 46px;
+
+    padding: 0 20px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #ffffff;
+
+    color: #2563eb;
+
+    border: 1px solid #dbe4f0;
+
+    border-radius: 12px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+
+    box-shadow:
+        0 2px 6px rgba(15, 23, 42, 0.03);
+}
+
+
+.leave-history-page .leave-history-action-btn:hover {
+    background: #f8fbff;
+
+    border-color: #2563eb;
+
+    color: #1d4ed8;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(37, 99, 235, 0.10);
+}
+
+
+.leave-history-page .leave-history-action-btn:active {
+    transform: translateY(0);
+}
+
+
+/* ==========================================================
+   STATISTICS CARDS
+   SAME STYLE AS ROLE MANAGEMENT
+   ========================================================== */
+
+.leave-history-page .leave-history-stats-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+
+    margin-bottom: 30px;
+
+    width: 100%;
+}
+
+
+/* ==========================================================
+   INDIVIDUAL STAT CARD
+   ========================================================== */
+
+.leave-history-page .leave-history-stats-card {
+    min-height: 190px;
+
+    padding: 28px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border-radius: 22px;
+
+    border: none;
+
+    overflow: hidden;
+
+    transition: 0.35s;
+
+    box-shadow:
+        0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+
+.leave-history-page .leave-history-stats-card:hover {
+    transform: translateY(-8px);
+
+    box-shadow:
+        0 20px 40px rgba(15, 23, 42, 0.12);
+}
+
+
+/* ==========================================================
+   STAT ICON
+   ========================================================== */
+
+.leave-history-page .leave-history-stats-icon {
+    width: 62px;
+
+    height: 62px;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #ffffff;
+
+    font-size: 30px;
+
+    font-weight: 600;
+
+    margin-bottom: 14px;
+}
+
+
+.leave-history-page .leave-history-stats-icon span {
+    color: #ffffff;
+
+    font-size: 30px;
+
+    line-height: 1;
+}
+
+
+/* ==========================================================
+   CARD 1 - BLUE
+   ========================================================== */
+
+.leave-history-page .leave-history-stats-icon.blue {
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+}
+
+
+/* ==========================================================
+   CARD 2 - GREEN
+   ========================================================== */
+
+.leave-history-page .leave-history-stats-icon.green {
+    background:
+        linear-gradient(
+            135deg,
+            #10b981,
+            #34d399
+        );
+}
+
+
+/* ==========================================================
+   CARD 3 - RED
+   ========================================================== */
+
+.leave-history-page .leave-history-stats-icon.red {
+    background:
+        linear-gradient(
+            135deg,
+            #ef4444,
+            #f87171
+        );
+}
+
+
+/* ==========================================================
+   STAT LABEL
+   ========================================================== */
+
+.leave-history-page .leave-history-stat-label {
+    display: block;
+
+    color: #64748b;
+
+    font-size: 0.95rem;
+
+    margin-bottom: 8px;
+}
+
+
+/* ==========================================================
+   STAT NUMBER
+   ========================================================== */
+
+.leave-history-page .leave-history-stats-card h2 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 2rem;
+
+    font-weight: 600;
+
+    line-height: 1.2;
+}
+
+
+/* ==========================================================
+   SEARCH CARD
+   ========================================================== */
+
+.leave-history-page .leave-history-toolbar {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    margin-bottom: 16px;
+
+    padding: 14px 16px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 8px 25px rgba(15, 23, 42, 0.05);
+}
+
+
+.leave-history-page .history-employee-search {
+    position: relative;
+
+    width: 100%;
+}
+
+
+.leave-history-page .history-employee-search input {
+    width: 100%;
+
+    height: 42px;
+
+    padding: 0 42px 0 14px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    color: #1f2937;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    font-size: 13px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.leave-history-page .history-employee-search input::placeholder {
+    color: #94a3b8;
+}
+
+
+.leave-history-page .history-employee-search input:hover {
+    border-color: #94a3b8;
+}
+
+
+.leave-history-page .history-employee-search input:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+
+.leave-history-page .history-employee-search button {
+    position: absolute;
+
+    right: 12px;
+
+    top: 50%;
+
+    width: 22px;
+
+    height: 22px;
+
+    transform: translateY(-50%);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+
+    color: #94a3b8;
+
+    font-size: 19px;
+
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+
+.leave-history-page .history-employee-search button:hover {
+    color: #ef4444;
+}
+
+
+/* ==========================================================
+   TABLE CARD
+   ========================================================== */
+
+.leave-history-page .leave-history-table-card {
+    width: 100%;
+
+    background: #ffffff;
+
+    border: none;
+
+    border-radius: 24px;
+
+    overflow-x: auto;
+
+    overflow-y: hidden;
+
+    box-shadow:
+        0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+
+/* ==========================================================
+   TABLE
+   ========================================================== */
+
+.leave-history-page .leave-history-table {
+    width: 100%;
+
+    min-width: 950px;
+
+    border-collapse: separate;
+
+    border-spacing: 0;
+
+    table-layout: auto;
+}
+
+
+/* ==========================================================
+   HEADER
+   ========================================================== */
+
+.leave-history-page .leave-history-table thead th {
+    height: 48px;
+
+    padding: 0 14px;
+
+    background: #05257e;
+
+    color: #ffffff;
+
+    text-align: left;
+
+    vertical-align: middle;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    border: none;
+}
+
+
+/* ==========================================================
+   TABLE BODY
+   ========================================================== */
+
+.leave-history-page .leave-history-table tbody td {
+    height: 48px;
+
+    padding: 0 14px;
+
+    background: #ffffff;
+
+    color: #334155;
+
+    font-size: 13px;
+
+    font-weight: 400;
+
+    vertical-align: middle;
+
+    white-space: nowrap;
+
+    border-bottom: 1px solid #edf0f4;
+}
+
+
+.leave-history-page .leave-history-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+
+.leave-history-page .leave-history-table tbody tr:hover td {
+    background: #f8faff;
+}
+
+
+.leave-history-page .leave-history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* ==========================================================
+   EMPLOYEE ID
+   ========================================================== */
+
+.leave-history-page .leave-history-table td strong {
+    color: #172033;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+.leave-history-page .azure-employee-id {
+    color: #64748b;
+
+    font-size: 13px;
+
+    font-weight: 500;
+}
+
+
+/* ==========================================================
+   LEAVE TYPE
+   ========================================================== */
+
+.leave-history-page .leave-history-table td:nth-child(3) strong {
+    color: #172033;
+
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   DAYS
+   ========================================================== */
+
+.leave-history-page .leave-history-table td:nth-child(6) {
+    color: #172033;
+
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   APPROVED BY
+   ========================================================== */
+
+.leave-history-page .leave-history-table td:nth-child(8) {
+    color: #475569;
+
+    font-weight: 500;
+}
+
+
+/* ==========================================================
+   EMPTY TABLE
+   ========================================================== */
+
+.leave-history-page .no-leave-history {
+    height: 120px !important;
+
+    padding: 25px !important;
+
+    text-align: center !important;
+
+    background: #ffffff !important;
+
+    color: #94a3b8 !important;
+
+    font-size: 13px !important;
+}
+
+
+/* ==========================================================
+   TABLE SCROLLBAR
+   ========================================================== */
+
+.leave-history-page .leave-history-table-card::-webkit-scrollbar {
+    height: 7px;
+}
+
+
+.leave-history-page .leave-history-table-card::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+
+.leave-history-page .leave-history-table-card::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+
+.leave-history-page .leave-history-table-card::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+
+/* ==========================================================
+   RESPONSIVE - TABLET
+   ========================================================== */
+
+@media (max-width: 1100px) {
+
+    .leave-history-page .leave-history-stats-grid {
+        gap: 18px;
+    }
+
+
+    .leave-history-page .leave-history-stats-card {
+        padding: 24px;
+    }
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 992px) {
+
+    .leave-history-page .leave-history-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
+    .leave-history-page .leave-history-actions {
+        width: 100%;
+    }
+
+
+    .leave-history-page .leave-history-action-btn {
+        flex: 1;
+    }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 768px) {
+
+    .leave-history-page {
+        padding: 20px;
+    }
+
+
+    .leave-history-page .leave-history-header {
+        padding: 24px;
+
+        border-radius: 20px;
+    }
+
+
+    .leave-history-page .leave-history-header h1 {
+        font-size: 1.8rem;
+    }
+
+
+    .leave-history-page .leave-history-header p {
+        font-size: 0.9rem;
+    }
+
+
+    .leave-history-page .leave-history-actions {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+
+    .leave-history-page .leave-history-action-btn {
+        width: 100%;
+    }
+
+
+    /* Three cards become one column */
+
+    .leave-history-page .leave-history-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .leave-history-page .leave-history-stats-card {
+        min-height: 180px;
+    }
+
+
+    .leave-history-page .leave-history-toolbar {
+        padding: 12px;
+    }
+
+
+    .leave-history-page .leave-history-table {
+        min-width: 950px;
+    }
+
+}
+
+
+/* ==========================================================
+   SMALL MOBILE
+   ========================================================== */
+
+@media (max-width: 480px) {
+
+    .leave-history-page {
+        padding: 15px;
+    }
+
+
+    .leave-history-page .leave-history-header {
+        padding: 20px;
+    }
+
+
+    .leave-history-page .leave-history-header h1 {
+        font-size: 1.5rem;
+    }
+
+
+    .leave-history-page .leave-history-header p {
+        font-size: 0.85rem;
+    }
+
+
+    .leave-history-page .leave-history-stats-card {
+        padding: 22px;
+    }
+
+
+    .leave-history-page .leave-history-stats-icon {
+        width: 56px;
+
+        height: 56px;
+    }
+
+
+    .leave-history-page .leave-history-stats-icon span {
+        font-size: 27px;
+    }
+
+}

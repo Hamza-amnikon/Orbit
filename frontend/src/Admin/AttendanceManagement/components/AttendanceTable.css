@@ -1,0 +1,209 @@
+/* ============================
+   Attendance Table
+============================ */
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+/* ============================
+   Header
+============================ */
+
+.attendance-table thead {
+    background: #1E2B63;
+}
+
+.attendance-table thead th {
+    padding: 18px 20px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.attendance-table thead th:first-child {
+    width: 55px;
+}
+
+.attendance-table thead th:last-child {
+    text-align: center;
+    width: 120px;
+}
+
+/* ============================
+   Body
+============================ */
+
+.attendance-table tbody td {
+    padding: 18px 20px;
+    font-size: 14px;
+    color: #334155;
+    border-bottom: 1px solid #EEF2F7;
+    vertical-align: middle;
+}
+
+.attendance-table tbody tr {
+    transition: .25s ease;
+}
+
+.attendance-table tbody tr:hover {
+    background: #F8FAFC;
+}
+
+/* ============================
+   Employee Cell
+============================ */
+
+.employee-cell {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 240px;
+}
+
+.employee-avatar {
+    width: 48px !important;
+    height: 48px !important;
+    background: #2563EB !important;
+    color: #fff !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.employee-cell strong {
+    display: block;
+    color: #0F172A;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.employee-cell span {
+    display: block;
+    color: #64748B;
+    font-size: 13px;
+}
+
+/* ============================
+   Status
+============================ */
+
+.status-chip {
+    min-width: 95px;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    border-radius: 20px !important;
+}
+
+.status-chip.present {
+    background: #DCFCE7 !important;
+    color: #15803D !important;
+}
+
+.status-chip.late {
+    background: #FEF3C7 !important;
+    color: #B45309 !important;
+}
+
+.status-chip.leave {
+    background: #EDE9FE !important;
+    color: #6D28D9 !important;
+}
+
+.status-chip.absent {
+    background: #FEE2E2 !important;
+    color: #DC2626 !important;
+}
+
+/* ============================
+   Action Buttons
+============================ */
+
+.attendance-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.attendance-actions .MuiIconButton-root {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    transition: .25s;
+}
+
+/* View */
+
+.view-btn {
+    background: #DBEAFE !important;
+    color: #2563EB !important;
+}
+
+.view-btn:hover {
+    background: #BFDBFE !important;
+}
+
+/* Edit */
+
+.edit-btn {
+    background: #FEF3C7 !important;
+    color: #D97706 !important;
+}
+
+.edit-btn:hover {
+    background: #FDE68A !important;
+}
+
+/* Delete */
+
+.delete-btn {
+    background: #FEE2E2 !important;
+    color: #DC2626 !important;
+}
+
+.delete-btn:hover {
+    background: #FECACA !important;
+}
+
+/* ============================
+   Checkbox
+============================ */
+
+.attendance-table .MuiCheckbox-root {
+    padding: 4px;
+}
+
+/* ============================
+   Responsive
+============================ */
+
+@media (max-width:1200px) {
+
+    .attendance-table {
+        min-width: 1200px;
+    }
+
+}
+
+@media (max-width:768px) {
+
+    .attendance-table th,
+    .attendance-table td {
+        padding: 14px;
+    }
+
+    .employee-cell {
+        min-width: 200px;
+    }
+
+    .employee-avatar {
+        width: 42px !important;
+        height: 42px !important;
+    }
+
+}

@@ -1,0 +1,628 @@
+/* ==========================================================
+   LEAVE TYPES PAGE
+========================================================== */
+
+.leave-types-page {
+    padding: 35px;
+    background: #f5f7fb;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+
+/* ==========================================================
+   OUTER CARD
+========================================================== */
+
+.leave-types-page .leave-types-outer-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* ==========================================================
+   HEADER CARD
+========================================================== */
+
+.leave-types-page .leave-types-header-card {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-sizing: border-box;
+    margin-bottom: 18px;
+    box-shadow:
+        0 6px 20px rgba(15, 23, 42, 0.06);
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.leave-types-page .leave-types-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.leave-types-page .leave-types-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.leave-types-page .leave-types-header p {
+    margin: 7px 0 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+
+/* ==========================================================
+   HEADER ACTIONS
+========================================================== */
+
+.leave-types-page .leave-type-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+
+/* ==========================================================
+   PREVIOUS / REFRESH BUTTON
+========================================================== */
+
+.leave-types-page .leave-type-action-btn {
+    padding: 11px 18px;
+    background: #ffffff;
+    color: #2563eb;
+    border: 1px solid #2563eb;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 40px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.leave-types-page .leave-type-action-btn:hover {
+    background: #eff6ff;
+    border-color: #1d4ed8;
+    color: #1d4ed8;
+}
+
+
+/* ==========================================================
+   ADD LEAVE TYPE BUTTON
+========================================================== */
+
+.leave-types-page .add-leave-type-btn {
+    border: none;
+    background: #2563eb;
+    color: #ffffff;
+    padding: 11px 20px;
+    min-height: 40px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow:
+        0 5px 14px rgba(37, 99, 235, 0.20);
+}
+
+.leave-types-page .add-leave-type-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+
+/* ==========================================================
+   MAIN CARD
+========================================================== */
+
+.leave-types-page .leave-types-main-card {
+    width: 100%;
+}
+
+
+/* ==========================================================
+   DIALOG BACKDROP
+========================================================== */
+
+.leave-types-page:has(.leave-type-form-card)::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+}
+
+
+/* ==========================================================
+   FORM CARD / DIALOG
+========================================================== */
+
+.leave-types-page .leave-type-form-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(760px, calc(100vw - 40px));
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 0;
+    margin: 0;
+    box-shadow:
+        0 25px 60px rgba(15, 23, 42, 0.25),
+        0 8px 25px rgba(15, 23, 42, 0.12);
+    z-index: 1000;
+    animation: leaveDialogOpen 0.2s ease-out;
+}
+
+
+/* ==========================================================
+   DIALOG ANIMATION
+========================================================== */
+
+@keyframes leaveDialogOpen {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -47%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+
+/* ==========================================================
+   FORM TITLE
+========================================================== */
+
+.leave-types-page .form-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 22px;
+    margin: 0;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.leave-types-page .form-title h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+}
+
+
+/* ==========================================================
+   CLOSE BUTTON
+========================================================== */
+
+.leave-types-page .close-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 9px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.leave-types-page .close-btn:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* ==========================================================
+   FORM GRID
+========================================================== */
+
+.leave-types-page .leave-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    padding: 22px;
+}
+
+.leave-types-page .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.leave-types-page .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+
+/* ==========================================================
+   INPUT / SELECT / TEXTAREA
+========================================================== */
+
+.leave-types-page .form-group input,
+.leave-types-page .form-group select,
+.leave-types-page .form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 13px;
+    border: 1px solid #dbe1ea;
+    border-radius: 9px;
+    background: #ffffff;
+    font-size: 13px;
+    color: #111827;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.leave-types-page .form-group input::placeholder,
+.leave-types-page .form-group textarea::placeholder {
+    color: #94a3b8;
+}
+
+.leave-types-page .form-group input:hover,
+.leave-types-page .form-group select:hover,
+.leave-types-page .form-group textarea:hover {
+    border-color: #cbd5e1;
+}
+
+.leave-types-page .form-group input:focus,
+.leave-types-page .form-group select:focus,
+.leave-types-page .form-group textarea:focus {
+    border-color: #2563eb;
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.leave-types-page .form-group textarea {
+    min-height: 95px;
+    resize: vertical;
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+.leave-types-page .description-field {
+    grid-column: 1 / -1;
+}
+
+
+/* ==========================================================
+   FORM ACTIONS
+========================================================== */
+
+.leave-types-page .form-actions {
+    margin: 0;
+    padding: 16px 22px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+
+/* ==========================================================
+   CANCEL BUTTON
+========================================================== */
+
+.leave-types-page .cancel-btn {
+    border: 1px solid #dbe1ea;
+    background: #f8fafc;
+    color: #475569;
+    padding: 10px 20px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.leave-types-page .cancel-btn:hover {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+}
+
+
+/* ==========================================================
+   SAVE BUTTON
+========================================================== */
+
+.leave-types-page .save-btn {
+    border: none;
+    background: #2563eb;
+    color: #ffffff;
+    padding: 10px 22px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow:
+        0 5px 12px rgba(37, 99, 235, 0.20);
+    transition: all 0.2s ease;
+}
+
+.leave-types-page .save-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow:
+        0 7px 16px rgba(37, 99, 235, 0.25);
+}
+
+.leave-types-page .save-btn:active {
+    transform: translateY(0);
+}
+
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.leave-types-page .leave-type-table-card {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+        0 6px 20px rgba(15, 23, 42, 0.06);
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.leave-types-page .leave-type-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+
+/* ==========================================================
+   TABLE HEADER
+========================================================== */
+
+.leave-types-page .leave-type-table thead {
+    background: #1e2b5d;
+}
+
+.leave-types-page .leave-type-table th {
+    padding: 14px 16px;
+    text-align: left;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
+
+.leave-types-page .leave-type-table td {
+    padding: 15px 16px;
+    border-bottom: 1px solid #eef2f7;
+    color: #475569;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.leave-types-page .leave-type-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.leave-types-page .leave-type-table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.leave-types-page .leave-type-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.leave-types-page .leave-type-table td strong {
+    color: #111827;
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.leave-types-page .leave-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 58px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.leave-types-page .leave-status.active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.leave-types-page .leave-status.inactive {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.leave-types-page .no-leave-types {
+    text-align: center;
+    padding: 50px !important;
+    color: #94a3b8 !important;
+}
+
+
+/* ==========================================================
+   ACTION BUTTONS
+========================================================== */
+
+.leave-types-page .leave-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* ==========================================================
+   EDIT BUTTON
+========================================================== */
+
+.leave-types-page .edit-leave-btn {
+    border: none;
+    outline: none;
+    background: #eef2ff;
+    color: #4f46e5;
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.leave-types-page .edit-leave-btn:hover {
+    background: #4f46e5;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow:
+        0 5px 12px rgba(79, 70, 229, 0.20);
+}
+
+
+/* ==========================================================
+   DELETE BUTTON
+========================================================== */
+
+.leave-types-page .delete-leave-btn {
+    border: none;
+    outline: none;
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.leave-types-page .delete-leave-btn:hover {
+    background: #dc2626;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow:
+        0 5px 12px rgba(220, 38, 38, 0.20);
+}
+
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media (max-width: 900px) {
+
+    .leave-types-page .leave-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .leave-types-page .description-field {
+        grid-column: auto;
+    }
+
+    .leave-types-page .leave-type-form-card {
+        width: min(650px, calc(100vw - 30px));
+    }
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .leave-types-page {
+        padding: 20px;
+    }
+
+    .leave-types-page .leave-types-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .leave-types-page .leave-type-header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .leave-types-page .add-leave-type-btn {
+        width: auto;
+    }
+
+    .leave-types-page .leave-type-table-card {
+        overflow-x: auto;
+    }
+
+    .leave-types-page .leave-type-table {
+        min-width: 750px;
+    }
+
+    .leave-types-page .leave-type-form-card {
+        width: calc(100vw - 24px);
+        max-height: calc(100vh - 30px);
+        border-radius: 14px;
+    }
+
+    .leave-types-page .form-title {
+        padding: 18px;
+    }
+
+    .leave-types-page .leave-form-grid {
+        padding: 18px;
+        gap: 16px;
+    }
+
+    .leave-types-page .form-actions {
+        padding: 14px 18px;
+    }
+}

@@ -1,0 +1,804 @@
+/*
+ * SALARY COMPONENTS — ISOLATED MODULE STYLES
+ * Namespace: sc-
+ *
+ * Only Salary Components CSS class selectors are namespaced.
+ * JavaScript identifiers, object keys, values, functions and MUI classes
+ * are intentionally left unchanged.
+ */
+
+/* =========================================================
+   SALARY COMPONENTS PAGE
+   IMPORTANT:
+   All styles are scoped to .sc-salary-components-page so they
+   cannot affect PayslipTemplates / Earnings / Deductions.
+   ========================================================= */
+
+.sc-salary-components-page {
+    width: 100%;
+    min-height: 100%;
+    box-sizing: border-box;
+    padding: 30px 34px 50px;
+    background: #f6f8fc;
+    color: #09234d;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.sc-salary-components-page .sc-salary-components-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.sc-salary-components-page .sc-salary-components-title {
+    margin: 0 !important;
+    color: #09234d !important;
+    font-size: 28px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.3px;
+}
+
+.sc-salary-components-page .sc-salary-components-subtitle {
+    margin-top: 7px !important;
+    color: #7184a2 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+/* =========================================================
+   ADD COMPONENT
+   ========================================================= */
+
+.sc-salary-components-page .sc-salary-components-add-button {
+    min-width: 158px !important;
+    height: 44px !important;
+    padding: 0 20px !important;
+
+    border-radius: 9px !important;
+
+    background: #2563eb !important;
+    color: #fff !important;
+
+    text-transform: none !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.20) !important;
+}
+
+.sc-salary-components-page .sc-salary-components-add-button:hover {
+    background: #1d4ed8 !important;
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.sc-salary-components-page .sc-salary-components-toolbar {
+    width: 100%;
+    min-height: 66px;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 14px;
+
+    background: #fff;
+
+    border: 1px solid #dfe6f0;
+    border-radius: 12px;
+
+    box-shadow: 0 4px 16px rgba(25, 55, 90, 0.045);
+}
+
+/* Search */
+
+.sc-salary-components-page .sc-salary-components-search {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.sc-salary-components-page
+.sc-salary-components-search
+.MuiOutlinedInput-root {
+    min-height: 40px;
+    border-radius: 9px !important;
+    background: #fff;
+}
+
+.sc-salary-components-page
+.sc-salary-components-search
+.MuiOutlinedInput-notchedOutline {
+    border-color: #cfd7e3;
+}
+
+.sc-salary-components-page
+.sc-salary-components-search
+.MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline {
+    border-color: #9db0ca;
+}
+
+.sc-salary-components-page
+.sc-salary-components-search
+.MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline {
+    border-color: #2563eb;
+    border-width: 1px;
+}
+
+.sc-salary-components-page .sc-salary-components-search input {
+    color: #17355f;
+    font-size: 14px;
+}
+
+.sc-salary-components-page
+.sc-salary-components-search
+input::placeholder {
+    color: #98a5b8;
+    opacity: 1;
+}
+
+.sc-salary-components-page .sc-salary-components-search-icon {
+    color: #8192ab !important;
+    font-size: 22px !important;
+}
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
+.sc-salary-components-page .sc-salary-components-status {
+    flex: 0 0 auto;
+    width: 150px;
+}
+
+.sc-salary-components-page .sc-salary-components-type-filter {
+    flex: 0 0 auto;
+    width: 145px;
+}
+
+.sc-salary-components-page
+.sc-salary-components-status
+.MuiOutlinedInput-root,
+.sc-salary-components-page
+.sc-salary-components-type-filter
+.MuiOutlinedInput-root {
+    min-height: 40px;
+    border-radius: 9px !important;
+    background: #fff;
+}
+
+.sc-salary-components-page
+.sc-salary-components-status
+.MuiOutlinedInput-notchedOutline,
+.sc-salary-components-page
+.sc-salary-components-type-filter
+.MuiOutlinedInput-notchedOutline {
+    border-color: #cfd7e3;
+}
+
+.sc-salary-components-page
+.sc-salary-components-status
+.MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline,
+.sc-salary-components-page
+.sc-salary-components-type-filter
+.MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline {
+    border-color: #9db0ca;
+}
+
+.sc-salary-components-page
+.sc-salary-components-status
+.MuiSelect-select,
+.sc-salary-components-page
+.sc-salary-components-type-filter
+.MuiSelect-select {
+    color: #17355f !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+}
+
+/* =========================================================
+   COUNT
+   ========================================================= */
+
+.sc-salary-components-page .sc-salary-components-count {
+    margin: 24px 0 12px 2px;
+
+    color: #5f7595;
+
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+/* =========================================================
+   COMPONENT LIST
+   ========================================================= */
+
+.sc-salary-components-page .sc-salary-components-grid {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: #fff;
+
+    border: 1px solid #dfe6f0;
+    border-radius: 14px;
+
+    box-shadow: 0 5px 20px rgba(22, 48, 82, 0.045);
+}
+
+/* =========================================================
+   COMPONENT ROW
+   ========================================================= */
+
+.sc-salary-components-page .sc-salary-component-card {
+    position: relative;
+
+    width: 100%;
+    min-height: 116px;
+
+    box-sizing: border-box;
+
+    display: grid;
+
+    grid-template-columns:
+        175px
+        minmax(180px, 1.25fr)
+        minmax(150px, 1fr)
+        130px
+        150px
+        80px;
+
+    align-items: center;
+
+    padding: 20px;
+
+    background: #fff !important;
+
+    border: 0 !important;
+    border-bottom: 1px solid #e5eaf1 !important;
+
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+
+    transition: background 0.15s ease;
+}
+
+.sc-salary-components-page
+.sc-salary-component-card:last-child {
+    border-bottom: none !important;
+}
+
+.sc-salary-components-page
+.sc-salary-component-card:hover {
+    background: #fbfcff !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* =========================================================
+   ICON + STATUS
+   ========================================================= */
+
+.sc-salary-components-page
+.sc-salary-component-card-top {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 14px;
+
+    margin: 0;
+}
+
+.sc-salary-components-page
+.sc-salary-component-icon {
+    flex: 0 0 46px;
+
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: #9333ea;
+    color: #fff;
+}
+
+.sc-salary-components-page
+.sc-salary-component-icon.sc-deduction {
+    background: #f97316;
+}
+
+.sc-salary-components-page
+.sc-salary-component-icon svg {
+    font-size: 24px !important;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.sc-salary-components-page
+.sc-salary-component-status-active,
+.sc-salary-components-page
+.sc-salary-component-status-inactive {
+    height: 28px !important;
+
+    padding: 0 12px !important;
+
+    border-radius: 999px !important;
+
+    font-size: 12px !important;
+    font-weight: 600 !important;
+
+    white-space: nowrap;
+}
+
+.sc-salary-components-page
+.sc-salary-component-status-active {
+    background: #d9f8e9 !important;
+    color: #06955a !important;
+}
+
+.sc-salary-components-page
+.sc-salary-component-status-inactive {
+    background: #eef1f5 !important;
+    color: #6d7c91 !important;
+}
+
+/* =========================================================
+   NAME
+   ========================================================= */
+
+.sc-salary-components-page
+.sc-salary-component-name {
+    min-width: 0;
+
+    margin: 0 !important;
+
+    color: #0b2349 !important;
+
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+    font-weight: 700 !important;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* =========================================================
+   CODE
+   ========================================================= */
+
+.sc-salary-components-page
+.sc-salary-component-code {
+    min-width: 0;
+
+    margin: 0 !important;
+
+    color: #7184a2 !important;
+
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    font-weight: 500 !important;
+
+    letter-spacing: 0.25px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* =========================================================
+   DETAILS
+   ========================================================= */
+
+.sc-salary-components-page
+.sc-salary-component-details {
+    display: contents !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+}
+
+.sc-salary-components-page
+.sc-salary-component-details > div {
+    min-width: 0;
+}
+
+/* Labels */
+
+.sc-salary-components-page
+.sc-salary-component-detail-label {
+    margin: 0 !important;
+
+    color: #8797ad !important;
+
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing: 0.8px;
+
+    text-transform: uppercase;
+}
+
+/* Values */
+
+.sc-salary-components-page
+.sc-salary-component-detail-value {
+    margin-top: 5px !important;
+
+    color: #17355f !important;
+
+    font-size: 14px !important;
+    line-height: 1.3 !important;
+
+    font-weight: 600 !important;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.sc-salary-components-page
+.sc-salary-component-actions {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 3px;
+
+    margin: 0;
+}
+
+.sc-salary-components-page
+.sc-salary-component-actions
+.MuiIconButton-root {
+    width: 34px;
+    height: 34px;
+
+    padding: 7px;
+
+    color: #7185a2 !important;
+
+    border-radius: 8px !important;
+}
+
+.sc-salary-components-page
+.sc-salary-component-actions
+.MuiIconButton-root:hover {
+    background: #f0f5ff !important;
+    color: #2563eb !important;
+}
+
+.sc-salary-components-page
+.sc-salary-component-actions
+.MuiIconButton-root.MuiIconButton-colorError:hover {
+    background: #fff1f1 !important;
+    color: #dc2626 !important;
+}
+
+.sc-salary-components-page
+.sc-salary-component-actions svg {
+    font-size: 20px !important;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.sc-salary-components-page
+.sc-salary-components-empty {
+    width: 100%;
+    min-height: 300px;
+
+    box-sizing: border-box;
+
+    padding: 48px 24px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background: #fff;
+
+    border: 1px dashed #cfd9e8;
+    border-radius: 14px;
+}
+
+.sc-salary-components-page
+.sc-salary-components-empty-icon {
+    width: 64px;
+    height: 64px;
+
+    margin-bottom: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    background: #f1e4ff;
+    color: #9333ea;
+}
+
+.sc-salary-components-page
+.sc-salary-components-empty-icon svg {
+    font-size: 32px;
+}
+
+.sc-salary-components-page
+.sc-salary-components-empty-title {
+    margin: 0 !important;
+
+    color: #142c50 !important;
+
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.sc-salary-components-page
+.sc-salary-components-empty-text {
+    max-width: 460px;
+
+    margin: 7px 0 20px !important;
+
+    color: #7a8da9 !important;
+
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+/* =========================================================
+   TYPE NOTE
+   ========================================================= */
+
+.sc-salary-components-page
+.sc-salary-component-type-note {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 14px;
+
+    border: 1px solid #ddd4ff;
+    border-radius: 10px;
+
+    background: #faf8ff;
+
+    color: #7134b7;
+}
+
+.sc-salary-components-page
+.sc-salary-component-type-note svg {
+    font-size: 22px;
+}
+
+.sc-salary-components-page
+.sc-salary-component-type-note > div p:first-child {
+    margin: 0 0 2px !important;
+
+    color: #71809a !important;
+
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+.sc-salary-components-page
+.sc-salary-component-type-note > div p:last-child {
+    margin: 0 !important;
+
+    color: #3e2267 !important;
+
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+    .sc-salary-components-page {
+        padding-left: 26px;
+        padding-right: 26px;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-component-card {
+        grid-template-columns:
+            165px
+            minmax(150px, 1.2fr)
+            minmax(130px, 1fr)
+            110px
+            130px
+            75px;
+
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .sc-salary-components-page
+    .sc-salary-component-card {
+        grid-template-columns:
+            160px
+            minmax(150px, 1fr)
+            minmax(120px, 1fr)
+            100px
+            115px
+            70px;
+
+        min-height: 105px;
+    }
+}
+
+@media (max-width: 800px) {
+    .sc-salary-components-page {
+        padding: 22px 18px 40px;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-components-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-components-add-button {
+        width: 100%;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-components-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-components-search {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-components-status,
+    .sc-salary-components-page
+    .sc-salary-components-type-filter {
+        flex: 1 1 0;
+        width: auto;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-component-card {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        grid-template-areas:
+            "identity actions"
+            "name code"
+            "details details";
+
+        gap: 12px 18px;
+
+        min-height: auto;
+
+        padding: 18px;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-component-card-top {
+        grid-area: identity;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-component-name {
+        grid-area: name;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-component-code {
+        grid-area: code;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-component-details {
+        grid-area: details;
+
+        display: grid !important;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 16px;
+
+        padding-top: 14px !important;
+
+        border-top: 1px solid #e7ebf2 !important;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-component-actions {
+        grid-area: actions;
+    }
+}
+
+@media (max-width: 520px) {
+    .sc-salary-components-page {
+        padding: 18px 12px 30px;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-components-title {
+        font-size: 23px !important;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-components-toolbar {
+        padding: 10px;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-components-status,
+    .sc-salary-components-page
+    .sc-salary-components-type-filter {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .sc-salary-components-page
+    .sc-salary-component-card {
+        grid-template-columns: 1fr;
+
+        grid-template-areas:
+            "identity"
+            "name"
+            "code"
+            "details"
+            "actions";
+    }
+
+    .sc-salary-components-page
+    .sc-salary-component-actions {
+        justify-content: flex-start;
+    }
+}

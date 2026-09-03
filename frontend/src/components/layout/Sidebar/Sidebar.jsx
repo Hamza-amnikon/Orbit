@@ -1,7 +1,7 @@
 import "./Sidebar.css";
 
-import { NavLink } from "react-router-dom";
-import logo from "../../../assets/logo/amnikon-logo.png";
+import { NavLink, useNavigate } from "react-router-dom";
+import logo from "../../../assets/logo/test.png";
 
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
@@ -10,8 +10,10 @@ import EventBusyRoundedIcon from "@mui/icons-material/EventBusyRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 import ConfirmationNumberRoundedIcon from "@mui/icons-material/ConfirmationNumberRounded";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+
 
 const menu = [
   {
@@ -50,55 +52,125 @@ const menu = [
     path: "/tickets",
   },
   {
+    title: "Documents",
+    icon: <DescriptionRoundedIcon />,
+    path: "/documents",
+  },
+  {
     title: "Settings",
     icon: <SettingsRoundedIcon />,
     path: "/settings",
   },
 ];
 
-function Sidebar() {
-  return (
-    <aside className="sidebar">
-<div className="logo">
-  <img src={logo} alt="AMNIKON Logo" className="logo-image" />
 
-  <div className="logo-text">
-    <h2>AMNIKON</h2>
-    <span>Enterprise HRMS</span>
-  </div>
-</div>
+function Sidebar() {
+
+  const navigate = useNavigate();
+
+
+  // =========================================================
+  // LOGOUT
+  // =========================================================
+
+  const handleLogout = () => {
+
+    // Remove authentication data
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("profile");
+
+    // Clear session data
+
+    sessionStorage.clear();
+
+    // Redirect to login
+
+    navigate("/login", {
+      replace: true,
+    });
+
+  };
+
+
+  return (
+
+    <aside className="sidebar">
+
+      {/* =====================================================
+          LOGO
+      ===================================================== */}
+
+      <div className="logo">
+
+        <img
+          src={logo}
+          alt="AMNIKON Logo"
+          className="logo-image"
+        />
+
+        <div className="logo-text"></div>
+
+      </div>
+
+
+      {/* =====================================================
+          MENU
+      ===================================================== */}
 
       <nav className="sidebar-menu">
+
         {menu.map((item) => (
+
           <NavLink
             key={item.title}
             to={item.path}
             className={({ isActive }) =>
-              isActive ? "menu-item active" : "menu-item"
+              isActive
+                ? "menu-item active"
+                : "menu-item"
             }
           >
+
             {item.icon}
-            <span>{item.title}</span>
+
+            <span>
+              {item.title}
+            </span>
+
           </NavLink>
+
         ))}
+
       </nav>
 
+
+      {/* =====================================================
+          FOOTER
+      ===================================================== */}
+
       <div className="sidebar-footer">
-        <div className="profile">
-          <div className="avatar">H</div>
 
-          <div>
-            <h4>Hamza</h4>
-            <p>Administrator</p>
-          </div>
-        </div>
+        <button
+          type="button"
+          className="logout-btn"
+          onClick={handleLogout}
+        >
 
-        <button className="logout-btn">
           <LogoutRoundedIcon />
-          Logout
+
+          <span>
+            Logout
+          </span>
+
         </button>
+
       </div>
+
     </aside>
+
   );
 }
 

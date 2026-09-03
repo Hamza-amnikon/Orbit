@@ -1,0 +1,784 @@
+/* ==========================================================
+   EMPLOYEE TYPE MANAGEMENT PAGE
+========================================================== */
+
+.employee-type-page{
+    padding:32px;
+    min-height:100vh;
+    background:
+        radial-gradient(circle at top right,#eef4ff 0%,transparent 30%),
+        radial-gradient(circle at bottom left,#f4f0ff 0%,transparent 30%),
+        #f8fafc;
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.employee-type-page .employee-page-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+
+    padding:32px;
+
+    border-radius:24px;
+
+    color:#fff;
+
+    margin-bottom:30px;
+
+    box-shadow:
+        0 18px 40px rgba(37,99,235,.18);
+}
+
+.employee-type-page .employee-page-header h1{
+
+    margin:0;
+
+    font-size:2.2rem;
+
+    font-weight:700;
+}
+
+.employee-type-page .employee-page-header p{
+
+    margin-top:10px;
+
+    opacity:.9;
+
+    font-size:1rem;
+}
+
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+.employee-type-page .header-buttons{
+
+    display:flex;
+
+    gap:14px;
+
+    flex-wrap:wrap;
+}
+
+.employee-type-page .header-buttons .MuiButton-root{
+
+    height:46px;
+
+    border-radius:12px;
+
+    text-transform:none;
+
+    font-weight:600;
+
+    padding-inline:22px;
+
+    transition:.3s;
+}
+
+.employee-type-page .header-buttons .MuiButton-root:hover{
+
+    transform:translateY(-3px);
+}
+
+
+/* ==========================================================
+   STATISTICS
+========================================================== */
+
+.employee-type-page .stats-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+
+    gap:24px;
+
+    margin-bottom:30px;
+}
+
+.employee-type-page .stats-card{
+
+    border-radius:22px !important;
+
+    border:none !important;
+
+    overflow:hidden;
+
+    background:#fff !important;
+
+    transition:.35s;
+
+    box-shadow:
+        0 10px 25px rgba(15,23,42,.06);
+}
+
+.employee-type-page .stats-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:
+        0 20px 40px rgba(15,23,42,.12);
+}
+
+.employee-type-page .stats-card .MuiCardContent-root{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+    padding:28px !important;
+}
+
+.employee-type-page .stats-icon{
+
+    width:62px;
+
+    height:62px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#fff;
+
+    font-size:30px;
+}
+
+.employee-type-page .stats-icon svg{
+
+    font-size:32px;
+}
+
+.employee-type-page .stats-icon.blue{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+}
+
+.employee-type-page .stats-icon.green{
+    background:linear-gradient(135deg,#10b981,#34d399);
+}
+
+.employee-type-page .stats-icon.red{
+    background:linear-gradient(135deg,#ef4444,#f87171);
+}
+
+.employee-type-page .stats-icon.purple{
+    background:linear-gradient(135deg,#7c3aed,#a855f7);
+}
+
+.employee-type-page .stats-card span{
+
+    color:#64748b;
+
+    font-size:.95rem;
+}
+
+.employee-type-page .stats-card h2{
+
+    margin:0;
+
+    font-size:2rem;
+
+    color:#0f172a;
+}
+
+
+/* ==========================================================
+   SEARCH TOOLBAR
+========================================================== */
+
+.employee-type-page .toolbar-card{
+
+    border-radius:22px !important;
+
+    margin-bottom:30px;
+
+    box-shadow:
+        0 8px 25px rgba(15,23,42,.05);
+
+    border:none !important;
+}
+
+.employee-type-page .toolbar-card .MuiCardContent-root{
+
+    padding:22px !important;
+}
+
+.employee-type-page .toolbar-card .MuiOutlinedInput-root{
+
+    border-radius:14px;
+
+    background:#f8fafc;
+}
+
+.employee-type-page .toolbar-card .MuiOutlinedInput-root:hover{
+
+    background:#fff;
+}
+
+.employee-type-page .toolbar-card .Mui-focused{
+
+    background:#fff;
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.employee-type-page .table-card{
+
+    border-radius:24px !important;
+
+    border:none !important;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,.06);
+}
+
+.employee-type-page .table-card .MuiCardContent-root{
+
+    padding:0 !important;
+}
+
+
+/* ==========================================================
+   EMPLOYEE TYPE DIALOG
+   Kept independently scoped because MUI Dialog
+   is rendered outside the page DOM through a portal.
+========================================================== */
+
+.employee-type-dialog .MuiPaper-root{
+
+    border-radius:24px !important;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 24px 60px rgba(15,23,42,.18);
+}
+
+
+/* ==========================================================
+   DIALOG HEADER
+========================================================== */
+
+.employee-type-dialog .employee-type-dialog-title{
+
+    padding:26px 34px !important;
+
+    font-size:2rem !important;
+
+    font-weight:700 !important;
+
+    color:#0f172a;
+
+    border-bottom:1px solid #e5e7eb;
+
+    background:#fff;
+}
+
+
+/* ==========================================================
+   DIALOG CONTENT
+========================================================== */
+
+.employee-type-dialog .employee-type-dialog-content{
+
+    padding:32px 34px !important;
+
+    background:#fff;
+}
+
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+.employee-type-dialog .form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    width:100%;
+}
+
+.employee-type-dialog .dialog-label{
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#374151;
+
+    margin-bottom:10px;
+}
+
+.employee-type-dialog .dialog-label span{
+
+    color:#ef4444;
+}
+
+
+/* ==========================================================
+   INPUTS
+========================================================== */
+
+.employee-type-dialog .dialog-input{
+
+    margin:0 !important;
+}
+
+.employee-type-dialog .dialog-input .MuiOutlinedInput-root{
+
+    min-height:54px;
+
+    border-radius:14px;
+
+    background:#fff;
+
+    transition:.25s;
+}
+
+.employee-type-dialog .dialog-input .MuiOutlinedInput-root:hover{
+
+    background:#fafcff;
+}
+
+.employee-type-dialog .dialog-input .MuiOutlinedInput-root.Mui-focused{
+
+    background:#fff;
+}
+
+.employee-type-dialog .dialog-input input{
+
+    padding:15px 16px;
+}
+
+.employee-type-dialog .dialog-input textarea{
+
+    padding:15px 16px !important;
+}
+
+.employee-type-dialog .dialog-input.multiline .MuiOutlinedInput-root{
+
+    min-height:90px;
+
+    align-items:flex-start;
+}
+
+.employee-type-dialog .dialog-input .MuiOutlinedInput-notchedOutline{
+
+    border-color:#d1d5db;
+}
+
+.employee-type-dialog
+.dialog-input
+.Mui-focused
+.MuiOutlinedInput-notchedOutline{
+
+    border-width:2px;
+
+    border-color:#4f46e5 !important;
+}
+
+
+/* ==========================================================
+   DIALOG FOOTER
+========================================================== */
+
+.employee-type-dialog .employee-type-dialog-actions{
+
+    padding:22px 34px !important;
+
+    border-top:1px solid #e5e7eb;
+
+    background:#fafbff;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:14px;
+}
+
+
+/* ==========================================================
+   DIALOG BUTTONS
+========================================================== */
+
+.employee-type-dialog .cancel-btn{
+
+    width:150px;
+
+    height:48px;
+
+    border-radius:14px !important;
+
+    text-transform:none !important;
+
+    font-size:15px !important;
+
+    font-weight:600 !important;
+}
+
+.employee-type-dialog .cancel-btn:hover{
+
+    background:#f3f4f6 !important;
+}
+
+.employee-type-dialog .save-btn{
+
+    min-width:220px;
+
+    height:48px;
+
+    border-radius:14px !important;
+
+    text-transform:none !important;
+
+    font-size:15px !important;
+
+    font-weight:600 !important;
+
+    background:linear-gradient(
+        90deg,
+        #2F5FE3,
+        #4F46E5
+    ) !important;
+
+    box-shadow:
+        0 10px 25px rgba(79,70,229,.25);
+}
+
+.employee-type-dialog .save-btn:hover{
+
+    background:linear-gradient(
+        90deg,
+        #2854cf,
+        #4338ca
+    ) !important;
+
+    transform:translateY(-1px);
+}
+
+
+/* ==========================================================
+   RESPONSIVE DIALOG
+========================================================== */
+
+@media(max-width:768px){
+
+    .employee-type-dialog .employee-type-dialog-title{
+
+        font-size:1.6rem !important;
+
+        padding:22px !important;
+    }
+
+    .employee-type-dialog .employee-type-dialog-content{
+
+        padding:22px !important;
+    }
+
+    .employee-type-dialog .employee-type-dialog-actions{
+
+        padding:18px 22px !important;
+
+        flex-direction:column;
+    }
+
+    .employee-type-dialog .cancel-btn,
+    .employee-type-dialog .save-btn{
+
+        width:100%;
+    }
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:992px){
+
+    .employee-type-page .employee-page-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+    }
+
+    .employee-type-page .header-buttons{
+
+        width:100%;
+    }
+
+    .employee-type-page .header-buttons .MuiButton-root{
+
+        flex:1;
+    }
+}
+
+
+@media(max-width:768px){
+
+    .employee-type-page{
+
+        padding:20px;
+    }
+
+    .employee-type-page .employee-page-header{
+
+        padding:24px;
+    }
+
+    .employee-type-page .employee-page-header h1{
+
+        font-size:1.8rem;
+    }
+
+    .employee-type-page .stats-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .employee-type-page .header-buttons{
+
+        flex-direction:column;
+    }
+
+    .employee-type-page .header-buttons .MuiButton-root{
+
+        width:100%;
+    }
+}
+
+/* ==========================================================
+   DEPARTMENT SEARCH + STATUS FILTER
+========================================================== */
+
+.department-filter-row{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    width:100%;
+}
+
+
+/* ==========================================================
+   SEARCH
+========================================================== */
+
+.department-filter-row .department-search{
+    flex:1 1 auto;
+    width:auto;
+    min-width:0;
+}
+
+
+/* ==========================================================
+   STATUS FILTER
+========================================================== */
+
+.department-filter-row .department-status-filter{
+    flex:0 0 200px;
+    width:200px;
+}
+
+
+/* ==========================================================
+   SEARCH INPUT
+========================================================== */
+
+.department-search .MuiOutlinedInput-root{
+    min-height:46px;
+    height:46px;
+    border-radius:12px;
+    background:#fff;
+    transition:.2s ease;
+}
+
+.department-search .MuiOutlinedInput-input{
+    padding:0 14px;
+    font-size:14px;
+    color:#334155;
+}
+
+.department-search .MuiOutlinedInput-input::placeholder{
+    color:#94a3b8;
+    opacity:1;
+}
+
+
+/* ==========================================================
+   SEARCH BORDER
+========================================================== */
+
+.department-search .MuiOutlinedInput-notchedOutline{
+    border-color:#cbd5e1;
+}
+
+.department-search .MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline{
+    border-color:#94a3b8;
+}
+
+.department-search .MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline{
+    border-color:#2563eb;
+    border-width:1px;
+}
+
+
+/* ==========================================================
+   STATUS DROPDOWN
+========================================================== */
+
+.department-status-filter .MuiOutlinedInput-root{
+    width:200px;
+    min-height:46px;
+    height:46px;
+    border-radius:12px;
+    background:#fff;
+    transition:.2s ease;
+}
+
+
+/* ==========================================================
+   STATUS TEXT
+========================================================== */
+
+.department-status-filter .MuiSelect-select{
+    min-height:46px !important;
+    height:46px;
+
+    box-sizing:border-box;
+
+    display:flex;
+    align-items:center;
+
+    padding:0 42px 0 14px !important;
+
+    font-size:14px;
+    font-weight:500;
+
+    color:#334155;
+}
+
+
+/* ==========================================================
+   DROPDOWN ARROW
+========================================================== */
+
+.department-status-filter .MuiSelect-icon{
+    right:10px;
+    color:#64748b;
+}
+
+
+/* ==========================================================
+   STATUS BORDER
+========================================================== */
+
+.department-status-filter
+.MuiOutlinedInput-notchedOutline{
+    border-color:#cbd5e1;
+}
+
+.department-status-filter
+.MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline{
+    border-color:#94a3b8;
+}
+
+.department-status-filter
+.MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline{
+    border-color:#2563eb;
+    border-width:1px;
+}
+
+
+/* ==========================================================
+   DROPDOWN MENU
+========================================================== */
+
+.department-status-filter
+.MuiMenu-paper{
+    border-radius:10px;
+    margin-top:5px;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,.12),
+        0 2px 8px rgba(15,23,42,.06);
+}
+
+.department-status-filter
+.MuiMenuItem-root{
+    min-height:42px;
+    padding:8px 14px;
+
+    font-size:14px;
+    color:#334155;
+}
+
+.department-status-filter
+.MuiMenuItem-root:hover{
+    background:#f1f5f9;
+}
+
+.department-status-filter
+.MuiMenuItem-root.Mui-selected{
+    background:#eff6ff;
+    color:#2563eb;
+}
+
+.department-status-filter
+.MuiMenuItem-root.Mui-selected:hover{
+    background:#dbeafe;
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media(max-width:768px){
+
+    .department-filter-row{
+        flex-direction:column;
+        align-items:stretch;
+        gap:12px;
+    }
+
+    .department-filter-row .department-search{
+        width:100%;
+        flex:none;
+    }
+
+    .department-filter-row .department-status-filter{
+        width:100%;
+        flex:none;
+    }
+
+    .department-status-filter .MuiOutlinedInput-root{
+        width:100%;
+    }
+
+}

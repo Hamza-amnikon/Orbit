@@ -1,0 +1,22 @@
+.employee-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.dashboard-header {
+    margin-bottom: 5px;
+}
+
+.dashboard-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+
+.dashboard-header p {
+    margin-top: 8px;
+    color: #6b7280;
+    font-size: 16px;
+}

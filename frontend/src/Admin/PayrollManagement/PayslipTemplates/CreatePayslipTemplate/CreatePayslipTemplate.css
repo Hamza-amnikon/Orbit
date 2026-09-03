@@ -1,0 +1,998 @@
+/*
+ * CREATE PAYSLIP TEMPLATE — ISOLATED MODULE STYLES
+ * Namespace: cpt-
+ *
+ * All module-specific classes use the cpt- namespace.
+ * JavaScript identifiers, object properties, data values and MUI class
+ * names are intentionally not globally renamed.
+ */
+
+/* ============================================================
+   CREATE PAYSLIP TEMPLATE
+   ALL STYLES ARE SCOPED TO THIS PAGE
+   ============================================================ */
+
+.cpt-create-payslip-page {
+    min-height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 30px 36px 60px;
+    background: #f5f8fc;
+    color: #172033;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-create-payslip-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+}
+
+.cpt-create-payslip-page .cpt-back-to-templates-button {
+    min-width: auto;
+    padding: 0;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: none;
+}
+
+.cpt-create-payslip-page .cpt-back-to-templates-button:hover {
+    background: transparent;
+    color: #1d4ed8;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-title {
+    margin: 0;
+    color: #0f274d;
+    font-size: 27px;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-subtitle {
+    margin-top: 6px;
+    color: #7184a2;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* ============================================================
+   SAVE BUTTON
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-header-save-button,
+.cpt-create-payslip-page .cpt-footer-save-button {
+    min-width: 140px;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 8px;
+    background: #2563eb;
+    box-shadow: 0 5px 14px rgba(37, 99, 235, 0.18);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: none;
+}
+
+.cpt-create-payslip-page .cpt-header-save-button:hover,
+.cpt-create-payslip-page .cpt-footer-save-button:hover {
+    background: #1d4ed8;
+}
+
+/* ============================================================
+   MESSAGES
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-loading-template {
+    margin-bottom: 16px;
+    color: #7184a2;
+    font-size: 13px;
+}
+
+.cpt-create-payslip-page .cpt-template-message {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.cpt-create-payslip-page .cpt-template-message-error {
+    border: 1px solid #fecdd3;
+    background: #fff1f2;
+    color: #b91c1c;
+}
+
+.cpt-create-payslip-page .cpt-template-message-success {
+    border: 1px solid #bbf7d0;
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-create-payslip-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 22px;
+    align-items: start;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-sidebar {
+    min-width: 0;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-create-payslip-card,
+.cpt-create-payslip-page .cpt-payslip-preview-card {
+    overflow: visible;
+    border: 1px solid #dfe7f1;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(29, 55, 88, 0.045);
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-card {
+    padding: 22px;
+}
+
+.cpt-create-payslip-page .cpt-payslip-preview-card {
+    position: sticky;
+    top: 20px;
+    padding: 20px;
+}
+
+/* ============================================================
+   CARD HEADERS
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-create-payslip-card-header,
+.cpt-create-payslip-page .cpt-component-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-card-header {
+    padding-bottom: 17px;
+}
+
+.cpt-create-payslip-page .cpt-component-card-header {
+    padding-bottom: 16px;
+}
+
+.cpt-create-payslip-page .cpt-create-card-title {
+    margin: 0;
+    color: #102b50;
+    font-size: 16px;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.cpt-create-payslip-page .cpt-create-card-description {
+    margin-top: 6px;
+    color: #7b8da8;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+/* ============================================================
+   ADD BUTTON
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-add-component-button {
+    min-width: auto;
+    min-height: 36px;
+    padding: 5px 13px;
+    border: 1px solid #2563eb;
+    border-radius: 8px;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: none;
+    white-space: nowrap;
+}
+
+.cpt-create-payslip-page .cpt-add-component-button:hover {
+    border-color: #1d4ed8;
+    background: #eff6ff;
+}
+
+/* ============================================================
+   TEMPLATE INFORMATION
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-template-form-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    padding-top: 20px;
+}
+
+.cpt-create-payslip-page .cpt-template-form-grid .cpt-description-field {
+    grid-column: 1 / -1;
+}
+
+/* ============================================================
+   MUI FORM CONTROLS
+   SCOPED ONLY TO THIS PAGE
+   ============================================================ */
+
+.cpt-create-payslip-page .MuiFormControl-root,
+.cpt-create-payslip-page .MuiTextField-root {
+    min-width: 0;
+}
+
+.cpt-create-payslip-page .MuiInputLabel-root {
+    color: #7184a2;
+    font-size: 12px;
+}
+
+.cpt-create-payslip-page .MuiInputLabel-root.Mui-focused {
+    color: #2563eb;
+}
+
+.cpt-create-payslip-page .MuiOutlinedInput-root {
+    min-height: 42px;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #243b5c;
+    font-size: 13px;
+}
+
+.cpt-create-payslip-page .MuiOutlinedInput-notchedOutline {
+    border-color: #d5dfeb;
+}
+
+.cpt-create-payslip-page
+    .MuiOutlinedInput-root:hover
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #bdcadb;
+}
+
+.cpt-create-payslip-page
+    .MuiOutlinedInput-root.Mui-focused
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #2563eb;
+    border-width: 1px;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.06);
+}
+
+.cpt-create-payslip-page
+    .MuiOutlinedInput-root.Mui-disabled {
+    background: #f8fafc;
+}
+
+.cpt-create-payslip-page
+    .MuiOutlinedInput-root.Mui-disabled
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #e1e7ef;
+}
+
+.cpt-create-payslip-page .MuiOutlinedInput-input {
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 10px 13px;
+}
+
+.cpt-create-payslip-page .MuiInputBase-inputMultiline {
+    min-height: 82px;
+    padding: 10px 13px;
+}
+
+/* ============================================================
+   SALARY COMPONENT LIST
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-salary-components-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 16px;
+}
+
+/* ============================================================
+   SALARY COMPONENT CARD
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-salary-component-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    column-gap: 10px;
+    padding: 10px 12px 12px;
+    border: 1px solid #dfe6ef;
+    border-radius: 10px;
+    background: #fbfcfe;
+    transition:
+        border-color 0.15s ease,
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card:hover {
+    border-color: #cbd7e5;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(29, 55, 88, 0.045);
+}
+
+/* ============================================================
+   DRAG HANDLE
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-component-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    min-width: 28px;
+    min-height: 42px;
+    color: #8b9bb1;
+    cursor: grab;
+}
+
+.cpt-create-payslip-page .cpt-component-drag-handle:active {
+    cursor: grabbing;
+}
+
+.cpt-create-payslip-page .cpt-component-drag-handle svg {
+    font-size: 18px;
+}
+
+/* ============================================================
+   COMPONENT FIELDS
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-component-fields {
+    display: grid;
+    grid-template-columns:
+        minmax(260px, 1.65fr)
+        minmax(180px, 1fr)
+        minmax(145px, 0.75fr)
+        38px;
+    grid-template-rows: auto auto;
+    column-gap: 10px;
+    row-gap: 8px;
+    align-items: start;
+    min-width: 0;
+}
+
+/* ============================================================
+   COMPONENT CONTROLS
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-component-control,
+.cpt-create-payslip-page .cpt-based-on-control {
+    width: 100%;
+    min-width: 0;
+}
+
+.cpt-create-payslip-page .cpt-component-control .MuiFormControl-root,
+.cpt-create-payslip-page .cpt-component-control .MuiTextField-root,
+.cpt-create-payslip-page .cpt-based-on-control .MuiFormControl-root,
+.cpt-create-payslip-page .cpt-based-on-control .MuiTextField-root {
+    width: 100%;
+    min-width: 0;
+}
+
+/* ============================================================
+   COMPONENT SELECT
+   ============================================================ */
+
+.cpt-create-payslip-page
+    .cpt-salary-component-card
+    .MuiSelect-select {
+    min-height: 42px !important;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 8px 38px 8px 12px !important;
+}
+
+.cpt-create-payslip-page
+    .cpt-salary-component-card
+    .MuiInputLabel-root {
+    font-size: 11px;
+}
+
+.cpt-create-payslip-page
+    .cpt-component-name-control
+    .MuiOutlinedInput-root {
+    min-height: 58px;
+}
+
+.cpt-create-payslip-page
+    .cpt-component-name-control
+    .MuiSelect-select {
+    min-height: 58px !important;
+}
+
+/* ============================================================
+   COMPONENT SELECT VALUE
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-component-select-value {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    width: 100%;
+    line-height: 1.2;
+}
+
+.cpt-create-payslip-page .cpt-component-select-name {
+    overflow: hidden;
+    color: #172f55;
+    font-size: 14px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cpt-create-payslip-page .cpt-component-select-code {
+    margin-top: 3px;
+    overflow: hidden;
+    color: #8394ad;
+    font-size: 10px;
+    letter-spacing: 0.4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cpt-create-payslip-page .cpt-component-select-placeholder {
+    color: #9aa8ba;
+    font-size: 13px;
+}
+
+/* ============================================================
+   DROPDOWN ITEMS
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-component-menu-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 2px 0;
+}
+
+.cpt-create-payslip-page .cpt-component-menu-name {
+    color: #203858;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.cpt-create-payslip-page .cpt-component-menu-code {
+    margin-top: 2px;
+    color: #8a99ad;
+    font-size: 10px;
+}
+
+/* ============================================================
+   BASED ON
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-based-on-control {
+    grid-column: 1 / 4;
+    grid-row: 2;
+}
+
+/* ============================================================
+   DELETE
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-delete-component-button {
+    grid-column: 4;
+    grid-row: 1;
+    align-self: center;
+    min-width: 38px;
+    width: 38px;
+    height: 42px;
+    padding: 0;
+    border-radius: 7px;
+    color: #8a9bb0;
+}
+
+.cpt-create-payslip-page .cpt-delete-component-button:hover {
+    background: #fff1f2;
+    color: #dc2626;
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-component-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    padding: 20px;
+    border: 1px dashed #d4deea;
+    border-radius: 9px;
+    background: #fafbfd;
+    text-align: center;
+}
+
+.cpt-create-payslip-page
+    .cpt-component-empty-state
+    .MuiTypography-root:first-child {
+    color: #53647b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.cpt-create-payslip-page
+    .cpt-component-empty-state
+    .MuiTypography-root:last-child {
+    margin-top: 5px;
+    color: #98a5b5;
+    font-size: 11px;
+}
+
+/* ============================================================
+   PREVIEW
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-payslip-preview-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    padding-bottom: 17px;
+}
+
+.cpt-create-payslip-page .cpt-payslip-preview-header > svg {
+    color: #2563eb;
+    font-size: 22px;
+}
+
+.cpt-create-payslip-page .cpt-preview-title {
+    color: #1c2c45;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.cpt-create-payslip-page .cpt-preview-subtitle {
+    margin-top: 5px;
+    color: #8b9ab0;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.cpt-create-payslip-page .cpt-payslip-preview-document {
+    margin-top: 18px;
+    padding: 19px;
+    border: 1px solid #dce3eb;
+    border-radius: 9px;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(30, 50, 80, 0.035);
+}
+
+/* ============================================================
+   PREVIEW COMPANY
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-preview-company {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+}
+
+.cpt-create-payslip-page .cpt-preview-company-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.cpt-create-payslip-page .cpt-preview-company-name {
+    color: #2563eb;
+    font-size: 19px;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.cpt-create-payslip-page .cpt-preview-company-text {
+    margin-top: 3px;
+    color: #9aa7b8;
+    font-size: 7px;
+    letter-spacing: 1.5px;
+}
+
+/* ============================================================
+   PREVIEW DOCUMENT
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-preview-document-line {
+    height: 1px;
+    margin: 16px 0;
+    background: #edf0f4;
+}
+
+.cpt-create-payslip-page .cpt-preview-document-title {
+    margin-bottom: 17px;
+    color: #263247;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.cpt-create-payslip-page .cpt-preview-period-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.cpt-create-payslip-page .cpt-preview-period-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.cpt-create-payslip-page .cpt-preview-period-grid span {
+    color: #9ba8b8;
+    font-size: 8px;
+    font-weight: 600;
+}
+
+.cpt-create-payslip-page .cpt-preview-period-grid strong {
+    color: #344054;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* ============================================================
+   PREVIEW SALARY
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-preview-salary-section {
+    margin-top: 15px;
+}
+
+.cpt-create-payslip-page .cpt-preview-section-title {
+    margin-bottom: 8px;
+    color: #3d4b60;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.cpt-create-payslip-page .cpt-preview-salary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 0;
+    border-bottom: 1px solid #f1f3f6;
+}
+
+.cpt-create-payslip-page .cpt-preview-salary-row span {
+    min-width: 0;
+    overflow: hidden;
+    color: #7f8da0;
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cpt-create-payslip-page .cpt-preview-salary-row strong {
+    flex-shrink: 0;
+    color: #46546a;
+    font-size: 9px;
+}
+
+.cpt-create-payslip-page .cpt-preview-empty {
+    padding: 8px 0;
+    color: #9ba8b8;
+    font-size: 9px;
+}
+
+/* ============================================================
+   PREVIEW NET
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-preview-net-salary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 17px;
+    padding-top: 12px;
+    border-top: 1px solid #dfe5ed;
+}
+
+.cpt-create-payslip-page .cpt-preview-net-salary span {
+    color: #263247;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.cpt-create-payslip-page .cpt-preview-net-salary strong {
+    color: #2563eb;
+    font-size: 11px;
+}
+
+.cpt-create-payslip-page .cpt-preview-net-final {
+    margin-top: 8px;
+    border-top: 0;
+}
+
+.cpt-create-payslip-page .cpt-preview-net-final span,
+.cpt-create-payslip-page .cpt-preview-net-final strong {
+    font-size: 12px;
+}
+
+.cpt-create-payslip-page .cpt-preview-calculation-note {
+    margin-top: 7px;
+    color: #9ba8b8;
+    text-align: right;
+    font-size: 8px;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.cpt-create-payslip-page .cpt-create-payslip-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #e3e8ef;
+}
+
+.cpt-create-payslip-page .cpt-cancel-payslip-button {
+    min-height: 40px;
+    padding: 0 17px;
+    border-radius: 7px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: none;
+}
+
+.cpt-create-payslip-page .cpt-cancel-payslip-button:hover {
+    background: #eef2f7;
+}
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 1250px) {
+    .cpt-create-payslip-page {
+        padding: 28px 25px 50px;
+    }
+
+    .cpt-create-payslip-page .cpt-create-payslip-layout {
+        grid-template-columns: minmax(0, 1fr) 300px;
+    }
+
+    .cpt-create-payslip-page .cpt-component-fields {
+        grid-template-columns:
+            minmax(210px, 1.4fr)
+            minmax(145px, 1fr)
+            minmax(115px, 0.75fr)
+            38px;
+    }
+}
+
+/* ============================================================
+   SMALL DESKTOP / TABLET
+   ============================================================ */
+
+@media (max-width: 1050px) {
+    .cpt-create-payslip-page .cpt-create-payslip-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .cpt-create-payslip-page .cpt-payslip-preview-card {
+        position: static;
+    }
+
+    .cpt-create-payslip-page .cpt-payslip-preview-document {
+        max-width: 520px;
+    }
+}
+
+/* ============================================================
+   SMALL TABLET
+   ============================================================ */
+
+@media (max-width: 850px) {
+    .cpt-create-payslip-page .cpt-component-fields {
+        grid-template-columns:
+            minmax(180px, 1.3fr)
+            minmax(130px, 0.9fr)
+            minmax(105px, 0.7fr)
+            38px;
+    }
+
+    .cpt-create-payslip-page .cpt-salary-component-card {
+        padding: 10px;
+    }
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 760px) {
+    .cpt-create-payslip-page {
+        padding: 20px 15px 40px;
+    }
+
+    .cpt-create-payslip-page .cpt-create-payslip-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .cpt-create-payslip-page .cpt-header-save-button {
+        width: 100%;
+    }
+
+    .cpt-create-payslip-page .cpt-template-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cpt-create-payslip-page
+        .cpt-template-form-grid
+        .cpt-description-field {
+        grid-column: auto;
+    }
+
+    .cpt-create-payslip-page .cpt-component-card-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .cpt-create-payslip-page .cpt-add-component-button {
+        width: 100%;
+    }
+
+    .cpt-create-payslip-page .cpt-salary-component-card {
+        grid-template-columns: 24px minmax(0, 1fr);
+        column-gap: 8px;
+        padding: 10px;
+    }
+
+    .cpt-create-payslip-page .cpt-component-drag-handle {
+        width: 24px;
+        min-width: 24px;
+    }
+
+    .cpt-create-payslip-page .cpt-component-fields {
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+        grid-template-rows: auto auto auto;
+        gap: 9px;
+    }
+
+    .cpt-create-payslip-page .cpt-component-name-control {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+
+    .cpt-create-payslip-page .cpt-component-control:nth-child(2) {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .cpt-create-payslip-page .cpt-component-control:nth-child(3) {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .cpt-create-payslip-page .cpt-based-on-control {
+        grid-column: 1 / -1;
+        grid-row: 3;
+    }
+
+    .cpt-create-payslip-page .cpt-delete-component-button {
+        position: absolute;
+        top: 8px;
+        right: 7px;
+        width: 34px;
+        min-width: 34px;
+        height: 36px;
+    }
+
+    .cpt-create-payslip-page
+        .cpt-component-name-control
+        .MuiSelect-select {
+        padding-right: 45px !important;
+    }
+
+    .cpt-create-payslip-page .cpt-create-payslip-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .cpt-create-payslip-page .cpt-cancel-payslip-button,
+    .cpt-create-payslip-page .cpt-footer-save-button {
+        width: 100%;
+    }
+}
+
+/* ============================================================
+   VERY SMALL MOBILE
+   ============================================================ */
+
+@media (max-width: 480px) {
+    .cpt-create-payslip-page {
+        padding: 16px 10px 32px;
+    }
+
+    .cpt-create-payslip-page .cpt-create-payslip-card {
+        padding: 15px;
+    }
+
+    .cpt-create-payslip-page .cpt-salary-component-card {
+        padding: 9px;
+    }
+
+    .cpt-create-payslip-page .cpt-component-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .cpt-create-payslip-page .cpt-component-name-control,
+    .cpt-create-payslip-page .cpt-component-control:nth-child(2),
+    .cpt-create-payslip-page .cpt-component-control:nth-child(3),
+    .cpt-create-payslip-page .cpt-based-on-control {
+        grid-column: 1;
+    }
+
+    .cpt-create-payslip-page .cpt-component-name-control {
+        grid-row: 1;
+    }
+
+    .cpt-create-payslip-page .cpt-component-control:nth-child(2) {
+        grid-row: 2;
+    }
+
+    .cpt-create-payslip-page .cpt-component-control:nth-child(3) {
+        grid-row: 3;
+    }
+
+    .cpt-create-payslip-page .cpt-based-on-control {
+        grid-row: 4;
+    }
+}

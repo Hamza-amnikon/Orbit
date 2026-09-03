@@ -1,0 +1,135 @@
+.attendance-dashboard {
+    padding: 30px;
+}
+
+/* ================= Header ================= */
+
+.attendance-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.attendance-dashboard-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.attendance-dashboard-header p {
+    color: #6b7280;
+    font-size: 15px;
+}
+
+/* ================= Date ================= */
+
+.dashboard-date {
+    text-align: right;
+}
+
+.dashboard-date span {
+    display: block;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.dashboard-date h4 {
+    margin-top: 4px;
+    font-size: 20px;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+/* ================= Cards ================= */
+
+.dashboard-card-grid {
+  display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+    gap:24px;
+    margin-bottom:32px;
+}
+
+/* ================= Responsive ================= */
+
+@media (max-width: 768px) {
+    .attendance-dashboard {
+        padding: 20px;
+    }
+
+    .attendance-dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .dashboard-date {
+        text-align: left;
+    }
+
+    .dashboard-card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+
+
+/* ================= Dashboard Row ================= */
+
+.dashboard-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.dashboard-panel {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.dashboard-panel h3 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #1f2937;
+}
+
+.summary-box {
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.summary-box h2 {
+    font-size: 48px;
+    color: #2563EB;
+    margin-bottom: 10px;
+}
+
+.summary-box p {
+    color: #6B7280;
+}
+
+@media (max-width: 992px) {
+    .dashboard-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+
+/* Today's Attendance */
+
+.attendance-table-panel {
+    margin-top: 30px;
+}

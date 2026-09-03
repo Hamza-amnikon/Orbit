@@ -1,0 +1,476 @@
+/* =========================================================
+   DOCUMENT MANAGEMENT
+========================================================= */
+
+.document-management {
+  width: 100%;
+  padding: 18px 20px;
+  box-sizing: border-box;
+  background: #f5f7fb;
+  color: #172033;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.document-header {
+  margin-bottom: 16px;
+}
+
+.document-header h1 {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #172033;
+}
+
+.document-header p {
+  margin: 5px 0 0;
+  font-size: 15px;
+  color: #64748b;
+}
+
+/* =========================================================
+   STAT CARDS
+========================================================= */
+
+.document-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.document-stat-card {
+  min-height: 68px;
+  padding: 13px 16px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #edf0f5;
+  border-radius: 9px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.stat-icon svg {
+  font-size: 21px;
+}
+
+/* Stat colors */
+
+.stat-icon.blue {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.stat-icon.orange {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.stat-icon.green {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.stat-icon.red {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.document-stat-card span {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 10px;
+  color: #64748b;
+}
+
+.document-stat-card strong {
+  display: block;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 700;
+  color: #172033;
+}
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+.document-filter {
+  width: 100%;
+  padding: 15px 18px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1.45fr 1.1fr 1.1fr 1.1fr auto;
+  gap: 12px;
+  align-items: end;
+  background: #ffffff;
+  border: 1px solid #edf0f5;
+  border-radius: 9px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.filter-field {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-field label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.filter-field input,
+.filter-field select {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border: 1px solid #d9e0ea;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 11px;
+  outline: none;
+}
+
+.filter-field input::placeholder {
+  color: #94a3b8;
+}
+
+.filter-field input:focus,
+.filter-field select:focus {
+  border-color: #2563eb;
+}
+
+/* =========================================================
+   EMPLOYEE SEARCH
+========================================================= */
+
+.search-input {
+  position: relative;
+  width: 100%;
+}
+
+.search-input input {
+  padding-right: 32px;
+}
+
+.search-input svg {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 17px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+/* =========================================================
+   FILTER BUTTONS
+========================================================= */
+
+.filter-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-button,
+.reset-button {
+  height: 34px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.search-button svg,
+.reset-button svg {
+  font-size: 15px;
+}
+
+.search-button {
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.search-button:hover {
+  background: #1d4ed8;
+}
+
+.reset-button {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+}
+
+.reset-button:hover {
+  background: #f8fafc;
+}
+
+/* =========================================================
+   TABLE CONTAINER
+========================================================= */
+
+.document-table-container {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid #edf0f5;
+  border-radius: 9px;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.document-table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.document-table thead {
+  background: #f8fafc;
+}
+
+.document-table th {
+  height: 38px;
+  padding: 0 10px;
+  text-align: left;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.document-table td {
+  height: 39px;
+  padding: 0 10px;
+  border-top: 1px solid #eef2f7;
+  font-size: 10px;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.document-table tbody tr:hover {
+  background: #fafcff;
+}
+
+/* =========================================================
+   TABLE MESSAGE
+========================================================= */
+
+.table-message {
+  height: 100px !important;
+  text-align: center !important;
+  color: #64748b !important;
+  font-size: 11px !important;
+}
+
+/* =========================================================
+   DOCUMENT NAME
+========================================================= */
+
+.document-name {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.document-name svg {
+  flex-shrink: 0;
+  font-size: 17px;
+  color: #dc2626;
+}
+
+.document-name span {
+  color: #334155;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.document-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  min-height: 18px;
+  padding: 2px 9px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.document-status.pending {
+  color: #d97706;
+  background: #fff1df;
+}
+
+.document-status.approved {
+  color: #15803d;
+  background: #dcfce7;
+}
+
+.document-status.rejected {
+  color: #dc2626;
+  background: #fee2e2;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.document-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.approve-btn,
+.reject-btn,
+.view-btn {
+  width: 28px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.approve-btn svg,
+.reject-btn svg,
+.view-btn svg {
+  font-size: 15px;
+}
+
+/* Approve */
+
+.approve-btn {
+  border: 1px solid #22c55e;
+  background: #22c55e;
+  color: #ffffff;
+}
+
+.approve-btn:hover {
+  background: #16a34a;
+}
+
+/* Reject */
+
+.reject-btn {
+  border: 1px solid #ef4444;
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.reject-btn:hover {
+  background: #dc2626;
+}
+
+/* View */
+
+.view-btn {
+  border: 1px solid #93c5fd;
+  background: #ffffff;
+  color: #2563eb;
+}
+
+.view-btn:hover {
+  background: #eff6ff;
+}
+
+/* =========================================================
+   TABLE FOOTER
+========================================================= */
+
+.document-table-footer {
+  min-height: 34px;
+  padding: 10px 8px 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.document-table-footer span {
+  font-size: 10px;
+  color: #475569;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1200px) {
+  .document-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .document-filter {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filter-buttons {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 700px) {
+  .document-management {
+    padding: 12px;
+  }
+
+  .document-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .document-filter {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-buttons {
+    grid-column: auto;
+  }
+
+  .search-button,
+  .reset-button {
+    flex: 1;
+  }
+}

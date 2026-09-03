@@ -1,0 +1,1550 @@
+/* =========================================================
+   EMPLOYEE PAYROLL / MUI PAYSLIP
+   ========================================================= */
+
+.employee-payroll-page {
+    min-height: 100%;
+    box-sizing: border-box;
+    padding: 30px 34px 56px;
+    background: #f5f8fc;
+    color: #10233f;
+    font-family: "Inter", "Roboto", Arial, sans-serif;
+}
+
+.payroll-page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.payroll-eyebrow {
+    display: block;
+    margin-bottom: 5px;
+    color: #1769e0;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.payroll-page-title {
+    font-size: 28px !important;
+    line-height: 1.15 !important;
+    font-weight: 750 !important;
+    color: #10233f;
+}
+
+.payroll-page-subtitle {
+    margin-top: 6px !important;
+    color: #6b7a90;
+    font-size: 13px !important;
+}
+
+.payroll-header-actions {
+    flex: 0 0 auto;
+    align-items: center !important;
+}
+
+.print-button,
+.download-button {
+    height: 38px !important;
+    border-radius: 9px !important;
+    padding: 0 16px !important;
+    text-transform: none !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+}
+
+.print-button {
+    border-color: #1769e0 !important;
+    color: #1769e0 !important;
+    background: #fff !important;
+}
+
+.download-button {
+    background: #1769e0 !important;
+    box-shadow: 0 5px 12px rgba(23, 105, 224, .18) !important;
+}
+
+.payslip-controls-card {
+    width: 100%;
+    margin-bottom: 20px;
+    border: 1px solid #e1e8f0 !important;
+    border-radius: 15px !important;
+    background: rgba(255, 255, 255, .98) !important;
+    box-shadow: 0 4px 18px rgba(16, 35, 63, .06) !important;
+}
+
+.payslip-controls-content {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 24px !important;
+    min-height: 82px;
+    padding: 15px 18px !important;
+    box-sizing: border-box;
+}
+
+.selected-period-section {
+    flex: 1 1 auto;
+    min-width: 180px;
+    padding: 2px 4px;
+}
+
+.selected-period-label {
+    display: block;
+    color: #7b8798 !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+.selected-period-value {
+    margin-top: 4px !important;
+    color: #1769e0 !important;
+    font-size: 16px !important;
+    line-height: 1.25 !important;
+    font-weight: 750 !important;
+}
+
+.payroll-filter-controls {
+    display: flex !important;
+    flex: 0 0 auto;
+    align-items: center !important;
+    gap: 10px !important;
+    margin-left: auto;
+}
+
+.payroll-select {
+    width: 142px;
+    min-width: 142px;
+}
+
+.refresh-button {
+    min-width: 96px !important;
+    height: 40px !important;
+    border-radius: 9px !important;
+    padding: 0 15px !important;
+    text-transform: none !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    border-color: #1769e0 !important;
+    color: #1769e0 !important;
+    background: #fff !important;
+}
+
+.payslip-controls-card .MuiOutlinedInput-root {
+    height: 40px !important;
+    border-radius: 9px !important;
+    background: #fff;
+}
+
+.payslip-controls-card .MuiOutlinedInput-notchedOutline {
+    border-color: #d5deea !important;
+}
+
+.payslip-controls-card .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #9fb4cf !important;
+}
+
+.payslip-controls-card .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #1769e0 !important;
+    border-width: 1px !important;
+}
+
+.payslip-controls-card .MuiInputLabel-root {
+    font-size: 12px !important;
+    color: #66758a !important;
+}
+
+.payslip-controls-card .MuiInputLabel-root.Mui-focused {
+    color: #1769e0 !important;
+}
+
+.payslip-controls-card .MuiSelect-select {
+    display: flex !important;
+    align-items: center !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+.payslip-alert {
+    margin-bottom: 18px;
+}
+
+/* =========================================================
+   PAYSLIP PAPER
+   ========================================================= */
+
+.payslip-paper {
+    width: min(100%, 820px);
+    margin: 0 auto;
+    padding: 28px 30px 26px;
+    box-sizing: border-box;
+    background: #fff !important;
+    border: 1px solid #aeb8c4 !important;
+    box-shadow: 0 8px 28px rgba(30, 45, 65, .10) !important;
+    box-sizing: border-box;
+}
+
+.payslip-company-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 28px;
+    align-items: flex-start;
+    padding-bottom: 18px;
+}
+
+.company-information {
+    min-width: 0;
+}
+
+.company-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+}
+
+.logo-symbol {
+    width: 25px;
+    height: 25px;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    background: #1769e0;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.logo-name {
+    font-size: 13px !important;
+    line-height: 1 !important;
+    font-weight: 800 !important;
+}
+
+.logo-subtitle {
+    margin-top: 2px !important;
+    color: #64748b;
+    font-size: 6px !important;
+    letter-spacing: .05em;
+}
+
+.company-name {
+    margin-bottom: 7px !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    color: #101828;
+}
+
+.company-line {
+    color: #344054;
+    font-size: 9px !important;
+    line-height: 1.55 !important;
+}
+
+.payslip-title-block {
+    text-align: right;
+    min-width: 190px;
+}
+
+.payslip-title {
+    color: #0b1729;
+    font-size: 30px !important;
+    line-height: 1 !important;
+    font-weight: 800 !important;
+}
+
+.payslip-month {
+    margin-top: 8px !important;
+    color: #344054;
+    font-size: 10px !important;
+}
+
+.payslip-number {
+    display: inline-block;
+    margin-top: 8px !important;
+    color: #617084;
+    font-size: 8px !important;
+}
+
+.employee-information-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 34px;
+    padding: 15px 0 12px;
+}
+
+.employee-info-column {
+    min-width: 0;
+}
+
+.payslip-info-row {
+    display: grid;
+    grid-template-columns: 108px 12px minmax(0, 1fr);
+    align-items: center;
+    min-height: 38px;
+    border-bottom: 1px solid #e8edf3;
+}
+
+.payslip-info-row:last-child {
+    border-bottom: 0;
+}
+
+.payslip-info-label,
+.payslip-info-value,
+.payslip-info-colon {
+    font-size: 9px !important;
+}
+
+.payslip-info-label {
+    color: #172b4d;
+    font-weight: 700 !important;
+}
+
+.payslip-info-colon {
+    color: #7b8797;
+    text-align: center;
+}
+
+.payslip-info-value {
+    color: #172b4d;
+    text-align: right;
+    font-weight: 500 !important;
+}
+
+/* =========================================================
+   SALARY TABLES
+   ========================================================= */
+
+.salary-tables {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px 0;
+    align-items: stretch;
+}
+
+.salary-table-column {
+    min-width: 0;
+    display: flex;
+}
+
+.salary-table-column .salary-box {
+    width: 100%;
+}
+
+.salary-box {
+    overflow: hidden;
+    border: 1px solid #aeb8c4 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+}
+
+.salary-box-title {
+    padding: 8px 10px !important;
+    text-align: center;
+    border-bottom: 1px solid #aeb8c4;
+    color: #172b4d;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+}
+
+.salary-table {
+    table-layout: fixed;
+}
+
+.salary-table .MuiTableCell-root {
+    padding: 6px 9px !important;
+    border-color: #d9e0e8 !important;
+    color: #172b4d !important;
+    font-size: 8.5px !important;
+}
+
+.salary-table thead .MuiTableCell-root {
+    background: #fafbfd;
+    font-weight: 700 !important;
+}
+
+.salary-table thead .MuiTableCell-root:last-child,
+.salary-table tbody .MuiTableCell-root:last-child {
+    width: 34%;
+}
+
+.salary-total-row .MuiTableCell-root {
+    border-top: 1px solid #9da8b6 !important;
+    font-weight: 800 !important;
+}
+
+.empty-table-cell {
+    height: 26px;
+    text-align: center !important;
+    color: #8a96a6 !important;
+}
+
+.empty-table-row .MuiTableCell-root {
+    height: 22px;
+}
+
+/* =========================================================
+   NET PAY
+   ========================================================= */
+
+.net-pay-box {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 28px 1fr 28px 1fr;
+    align-items: center;
+    gap: 6px;
+    padding: 20px 18px 46px;
+    border: 1px solid #aeb8c4;
+    margin-bottom: 16px;
+}
+
+.net-pay-item {
+    text-align: center;
+}
+
+.net-pay-item p,
+.net-pay-item .MuiTypography-root {
+    margin: 0 !important;
+    color: #344054;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+}
+
+.net-pay-item strong {
+    display: block;
+    margin-top: 6px;
+    color: #101828;
+    font-size: 13px;
+}
+
+.net-pay-highlight strong {
+    font-size: 14px;
+}
+
+.net-pay-symbol {
+    text-align: center;
+    color: #101828;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.amount-in-words {
+    position: absolute;
+    right: 18px;
+    bottom: 12px;
+    color: #344054;
+    font-size: 8px !important;
+    font-style: italic;
+    font-weight: 600 !important;
+}
+
+/* =========================================================
+   SALARY DETAILS
+   ========================================================= */
+
+.salary-details-box {
+    margin-bottom: 18px;
+    overflow: hidden;
+    border: 1px solid #aeb8c4 !important;
+    border-radius: 0 !important;
+}
+
+.salary-details-header {
+    padding: 8px 10px !important;
+    border-bottom: 1px solid #aeb8c4;
+    color: #172b4d;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+}
+
+.salary-details-grid {
+    padding: 12px 4px;
+}
+
+.salary-details-grid > .MuiGrid-item {
+    padding: 7px 12px !important;
+}
+
+.salary-details-grid .MuiTypography-root {
+    color: #68778d;
+    font-size: 8px !important;
+}
+
+.salary-details-grid strong {
+    display: block;
+    margin-top: 3px;
+    color: #172b4d;
+    font-size: 9px;
+}
+
+.status-chip {
+    margin-top: 4px !important;
+    height: 22px !important;
+    background: #e8f5e9 !important;
+    color: #1b7a38 !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.payslip-footer {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: px;
+    padding: 12px 20px;
+    border-top: 1px solid #d9d9d9;
+    background: #fafafa;
+}
+
+.footer-note-section {
+    width: 100%;
+    white-space: nowrap;
+}
+
+.footer-note {
+    margin: 0 !important;
+    font-size: 10px !important;
+    line-height: 0.4 !important;
+    white-space: nowrap !important;
+}
+
+.footer-note strong {
+    font-weight: 700 !important;
+}
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.payroll-state {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    background: #f4f7fb;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .employee-payroll-page {
+        padding: 22px 18px 42px;
+    }
+
+    .payroll-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .payroll-header-actions {
+        width: 100%;
+    }
+
+    .print-button,
+    .download-button {
+        flex: 1 1 0;
+    }
+
+    .payslip-controls-content {
+        align-items: flex-start !important;
+    }
+
+    .selected-period-section {
+        min-width: 150px;
+    }
+
+    .payroll-select {
+        width: 130px;
+        min-width: 130px;
+    }
+
+    .payslip-company-header {
+        gap: 18px;
+    }
+
+    .payslip-title-block {
+        min-width: 150px;
+    }
+
+    .payslip-paper {
+        padding: 22px 18px;
+    }
+}
+
+@media (max-width: 700px) {
+    .payslip-controls-content {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 14px !important;
+    }
+
+    .selected-period-section {
+        min-width: 0;
+        padding: 0 2px;
+    }
+
+    .payroll-filter-controls {
+        width: 100%;
+        margin-left: 0;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr auto;
+        align-items: center !important;
+    }
+
+    .payroll-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .refresh-button {
+        min-width: 94px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .employee-payroll-page {
+        padding: 16px 10px 32px;
+    }
+
+    .payroll-page-title {
+        font-size: 23px !important;
+    }
+
+    .payroll-page-subtitle {
+        font-size: 12px !important;
+    }
+
+    .payroll-header-actions {
+        gap: 8px !important;
+    }
+
+    .print-button,
+    .download-button {
+        min-width: 0 !important;
+        padding: 0 10px !important;
+    }
+
+    .payslip-controls-card {
+        border-radius: 12px !important;
+    }
+
+    .payslip-controls-content {
+        min-height: auto;
+        padding: 14px !important;
+    }
+
+    .payroll-filter-controls {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .refresh-button {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .payslip-paper {
+        padding: 16px 12px;
+    }
+
+    .payslip-company-header {
+        flex-direction: column;
+    }
+
+    .payslip-title-block {
+        width: 100%;
+        text-align: left;
+    }
+
+    .employee-information-grid {
+        grid-template-columns: 1fr;
+        row-gap: 0;
+    }
+
+    .salary-tables {
+        grid-template-columns: 1fr;
+    }
+
+    .payslip-info-row {
+        grid-template-columns: 95px 10px minmax(0, 1fr);
+    }
+
+    .net-pay-box {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .net-pay-symbol {
+        display: none;
+    }
+
+    .amount-in-words {
+        position: static;
+        text-align: center;
+        margin-top: 5px !important;
+    }
+
+    .payslip-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .signature-section {
+        align-self: flex-end;
+    }
+}
+
+/* =========================================================
+   PRINT / A4 PDF
+   ========================================================= */
+
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+    html,
+    body,
+    #root {
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+    }
+
+    body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        overflow: visible !important;
+    }
+
+    /* Hide the application shell. */
+    body * {
+        visibility: hidden !important;
+    }
+
+    /* Show only the A4 payslip. */
+    #payslip-print-area,
+    #payslip-print-area * {
+        visibility: visible !important;
+    }
+
+    #payslip-print-area {
+        position: absolute !important;
+        inset: 0 auto auto 0 !important;
+        width: 210mm !important;
+        min-width: 210mm !important;
+        max-width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+        margin: 0 !important;
+        padding: 8mm !important;
+        box-sizing: border-box !important;
+        background: #fff !important;
+        overflow: hidden !important;
+    }
+
+    #payslip-print-area .payslip-paper {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 8mm 8mm 6mm !important;
+        box-sizing: border-box !important;
+        border: 1px solid #7d8794 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        overflow: hidden !important;
+        background: #fff !important;
+    }
+
+    #payslip-print-area .payslip-company-header {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+        gap: 20px !important;
+        padding-bottom: 8mm !important;
+    }
+
+    #payslip-print-area .company-information {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+
+    #payslip-print-area .company-logo {
+        margin-bottom: 5px !important;
+    }
+
+    #payslip-print-area .logo-symbol {
+        width: 25px !important;
+        height: 25px !important;
+        border-radius: 6px !important;
+        font-size: 14px !important;
+    }
+
+    #payslip-print-area .logo-name {
+        font-size: 11px !important;
+    }
+
+    #payslip-print-area .logo-subtitle {
+        font-size: 5px !important;
+    }
+
+    #payslip-print-area .company-name {
+        margin-bottom: 4px !important;
+        font-size: 15px !important;
+        line-height: 1.2 !important;
+    }
+
+    #payslip-print-area .company-line {
+        font-size: 7.5px !important;
+        line-height: 1.4 !important;
+    }
+
+    #payslip-print-area .payslip-title-block {
+        flex: 0 0 38% !important;
+        min-width: 0 !important;
+        text-align: right !important;
+    }
+
+    #payslip-print-area .payslip-title {
+        font-size: 28px !important;
+        line-height: 1 !important;
+    }
+
+    #payslip-print-area .payslip-month {
+        margin-top: 5px !important;
+        font-size: 8.5px !important;
+    }
+
+    #payslip-print-area .payslip-number {
+        margin-top: 4px !important;
+        font-size: 7px !important;
+    }
+
+    #payslip-print-area > .payslip-paper > .MuiDivider-root {
+        margin: 0 !important;
+    }
+
+    #payslip-print-area .employee-information-grid {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        column-gap: 24px !important;
+        padding: 5mm 0 4mm !important;
+    }
+
+    #payslip-print-area .payslip-info-row {
+        grid-template-columns: 30mm 4mm minmax(0, 1fr) !important;
+        min-height: 9mm !important;
+    }
+
+    #payslip-print-area .payslip-info-label,
+    #payslip-print-area .payslip-info-value,
+    #payslip-print-area .payslip-info-colon {
+        font-size: 8px !important;
+        line-height: 1.2 !important;
+    }
+
+    #payslip-print-area .salary-tables {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        gap: 4mm !important;
+        padding: 4mm 0 !important;
+        align-items: stretch !important;
+    }
+
+    #payslip-print-area .salary-table-column {
+        display: flex !important;
+        min-width: 0 !important;
+    }
+
+    #payslip-print-area .salary-box {
+        width: 100% !important;
+        height: auto !important;
+        min-width: 0 !important;
+        border: 1px solid #9da8b6 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    #payslip-print-area .salary-box-title {
+        padding: 2.5mm 2mm !important;
+        font-size: 9px !important;
+    }
+
+    #payslip-print-area .salary-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+    }
+
+    #payslip-print-area .salary-table .MuiTableCell-root {
+        padding: 1.65mm 2mm !important;
+        font-size: 7.7px !important;
+        line-height: 1.15 !important;
+        border-color: #cbd5e1 !important;
+    }
+
+    #payslip-print-area .salary-table thead .MuiTableCell-root {
+        font-size: 7.8px !important;
+        background: #fafbfd !important;
+    }
+
+    #payslip-print-area .salary-table thead .MuiTableCell-root:last-child,
+    #payslip-print-area .salary-table tbody .MuiTableCell-root:last-child {
+        width: 34% !important;
+    }
+
+    #payslip-print-area .empty-table-row .MuiTableCell-root {
+        height: 5.3mm !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    #payslip-print-area .empty-table-cell {
+        height: 7mm !important;
+    }
+
+    #payslip-print-area .salary-total-row .MuiTableCell-root {
+        padding-top: 2mm !important;
+        padding-bottom: 2mm !important;
+        font-size: 8px !important;
+    }
+
+    #payslip-print-area .net-pay-box {
+        display: grid !important;
+        grid-template-columns: 1fr 10mm 1fr 10mm 1fr !important;
+        gap: 2mm !important;
+        margin: 0 0 4mm !important;
+        padding: 5mm 4mm 10mm !important;
+        border: 1px solid #9da8b6 !important;
+        box-sizing: border-box !important;
+        break-inside: avoid !important;
+    }
+
+    #payslip-print-area .net-pay-item p,
+    #payslip-print-area .net-pay-item .MuiTypography-root {
+        font-size: 7.5px !important;
+    }
+
+    #payslip-print-area .net-pay-item strong {
+        margin-top: 2mm !important;
+        font-size: 12px !important;
+    }
+
+    #payslip-print-area .net-pay-highlight strong {
+        font-size: 13px !important;
+    }
+
+    #payslip-print-area .net-pay-symbol {
+        font-size: 15px !important;
+    }
+
+    #payslip-print-area .amount-in-words {
+        right: 4mm !important;
+        bottom: 3mm !important;
+        font-size: 7px !important;
+    }
+
+    #payslip-print-area .salary-details-box {
+        margin-bottom: 4mm !important;
+        border: 1px solid #9da8b6 !important;
+        break-inside: avoid !important;
+    }
+
+    #payslip-print-area .salary-details-header {
+        padding: 2.5mm 2mm !important;
+        font-size: 8px !important;
+    }
+
+    #payslip-print-area .salary-details-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        padding: 2mm 0 !important;
+    }
+
+    #payslip-print-area .salary-details-grid > .salary-detail-item {
+        padding: 1.5mm 3mm !important;
+        border-right: 1px solid #d9e0e8 !important;
+    }
+
+    #payslip-print-area .salary-details-grid > .salary-detail-item:last-child {
+        border-right: 0 !important;
+    }
+
+    #payslip-print-area .salary-details-grid .MuiTypography-root,
+    #payslip-print-area .salary-details-grid strong {
+        font-size: 7px !important;
+    }
+
+    #payslip-print-area .status-chip {
+        height: 18px !important;
+        margin-top: 1mm !important;
+        font-size: 7px !important;
+    }
+
+#payslip-print-area .payslip-footer {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+
+    margin-top: 20mm !important;
+    padding: 4mm 6mm !important;
+
+    border-top: 1px solid #d5d5d5 !important;
+    background: #fafafa !important;
+
+    line-height: normal !important;
+}
+
+/* Note stays on one line */
+#payslip-print-area .footer-note-section {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#payslip-print-area .footer-note {
+    display: block !important;
+    width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: 9px !important;
+    line-height: 1.4 !important;
+
+    white-space: nowrap !important;
+}
+
+#payslip-print-area .footer-note strong {
+    font-weight: 700 !important;
+}
+
+/* Remove signature completely */
+#payslip-print-area .signature-section,
+#payslip-print-area .signature-line {
+    display: none !important;
+}
+
+    .no-print,
+    nav,
+    header,
+    aside,
+    button,
+    .MuiButton-root {
+        display: none !important;
+    }
+
+    .employee-payroll-page {
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #fff !important;
+    }
+}
+
+.company-logo {
+    display: flex;
+    align-items: center;
+}
+
+.company-logo-image {
+    width: 200px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+
+/* =========================================================
+   PAYROLLS.JSX MATCHING FIX
+   Matches the current Payrolls.jsx exactly.
+   ========================================================= */
+
+/* -------------------------
+   Employee information
+   ------------------------- */
+
+.employee-information-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    column-gap: 34px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.employee-info-column {
+    min-width: 0 !important;
+    width: 100% !important;
+}
+
+.payslip-info-row {
+    display: grid !important;
+    grid-template-columns: 108px minmax(0, 1fr) !important;
+    align-items: center !important;
+    min-width: 0 !important;
+    min-height: 38px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-bottom: 1px solid #e8edf3 !important;
+}
+
+.payslip-info-row:last-child {
+    border-bottom: 0 !important;
+}
+
+.payslip-info-label {
+    min-width: 0 !important;
+    white-space: nowrap !important;
+    color: #172b4d !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+}
+
+.payslip-info-value {
+    min-width: 0 !important;
+    width: 100% !important;
+    color: #172b4d !important;
+    text-align: right !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+
+/* -------------------------
+   SalaryTable used by JSX
+   ------------------------- */
+
+.salary-tables {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 16px !important;
+    width: 100% !important;
+    padding: 16px 0 !important;
+    box-sizing: border-box !important;
+    align-items: stretch !important;
+}
+
+.salary-table-column {
+    min-width: 0 !important;
+    width: 100% !important;
+    display: block !important;
+}
+
+/*
+ * Current JSX renders:
+ *
+ * .payslip-salary-section
+ *   .payslip-section-title
+ *   .payslip-salary-table
+ *     .payslip-salary-header
+ *     .payslip-salary-row
+ *     .payslip-salary-total
+ */
+
+.payslip-salary-section {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid #aeb8c4 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-sizing: border-box !important;
+}
+
+.payslip-section-title {
+    margin: 0 !important;
+    padding: 8px 10px !important;
+    text-align: center !important;
+    border-bottom: 1px solid #aeb8c4 !important;
+    color: #172b4d !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+}
+
+.payslip-salary-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.payslip-salary-header,
+.payslip-salary-row,
+.payslip-salary-total {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 34% !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.payslip-salary-header {
+    min-height: 34px !important;
+    padding: 0 9px !important;
+    background: #fafbfd !important;
+    border-bottom: 1px solid #d9e0e8 !important;
+}
+
+.payslip-salary-row {
+    min-height: 27px !important;
+    padding: 0 9px !important;
+    border-bottom: 1px solid #d9e0e8 !important;
+}
+
+.payslip-salary-total {
+    min-height: 30px !important;
+    padding: 0 9px !important;
+    border-top: 1px solid #9da8b6 !important;
+}
+
+.payslip-salary-header .MuiTypography-root,
+.payslip-salary-row .MuiTypography-root,
+.payslip-salary-total .MuiTypography-root {
+    min-width: 0 !important;
+    margin: 0 !important;
+    color: #172b4d !important;
+    font-size: 8.5px !important;
+    line-height: 1.2 !important;
+}
+
+.payslip-salary-header .MuiTypography-root {
+    font-weight: 700 !important;
+}
+
+.payslip-salary-total .MuiTypography-root {
+    font-weight: 800 !important;
+}
+
+.payslip-salary-header .MuiTypography-root:last-child,
+.payslip-salary-row .MuiTypography-root:last-child,
+.payslip-salary-total .MuiTypography-root:last-child {
+    text-align: right !important;
+    white-space: nowrap !important;
+}
+
+.payslip-salary-header .MuiTypography-root:first-child,
+.payslip-salary-row .MuiTypography-root:first-child,
+.payslip-salary-total .MuiTypography-root:first-child {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* -------------------------
+   Net pay
+   ------------------------- */
+
+.net-pay-box {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 20px 18px 46px !important;
+    margin-bottom: 16px !important;
+    border: 1px solid #aeb8c4 !important;
+    box-sizing: border-box !important;
+}
+
+.net-pay-item {
+    min-width: 0 !important;
+    text-align: center !important;
+}
+
+.net-pay-item .MuiTypography-root {
+    margin: 0 !important;
+    color: #344054 !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+}
+
+.net-pay-item strong {
+    display: block !important;
+    margin-top: 6px !important;
+    color: #101828 !important;
+    font-size: 13px !important;
+}
+
+.net-pay-highlight strong {
+    font-size: 14px !important;
+}
+
+.net-pay-symbol {
+    margin: 0 !important;
+    text-align: center !important;
+    color: #101828 !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.amount-in-words {
+    position: absolute !important;
+    right: 18px !important;
+    bottom: 12px !important;
+    margin: 0 !important;
+    color: #344054 !important;
+    font-size: 8px !important;
+    font-style: italic !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+}
+
+/* -------------------------
+   Salary details
+   ------------------------- */
+
+.salary-details-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    padding: 12px 0 !important;
+    box-sizing: border-box !important;
+}
+
+.salary-details-grid > .salary-detail-item {
+    min-width: 0 !important;
+    padding: 7px 12px !important;
+    border-right: 1px solid #d9e0e8 !important;
+    box-sizing: border-box !important;
+}
+
+.salary-details-grid > .salary-detail-item:last-child {
+    border-right: 0 !important;
+}
+
+/* -------------------------
+   Current logo used by JSX
+   ------------------------- */
+
+.company-logo-image {
+    display: block !important;
+    width: 200px !important;
+    height: auto !important;
+    object-fit: contain !important;
+}
+
+/* =========================================================
+   PRINT / A4
+   ========================================================= */
+
+@media print {
+
+    #payslip-print-area .employee-information-grid {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        column-gap: 24px !important;
+        padding: 5mm 0 4mm !important;
+    }
+
+    #payslip-print-area .payslip-info-row {
+        display: grid !important;
+        grid-template-columns: 30mm minmax(0, 1fr) !important;
+        min-height: 9mm !important;
+    }
+
+    #payslip-print-area .payslip-info-label,
+    #payslip-print-area .payslip-info-value {
+        font-size: 8px !important;
+        line-height: 1.2 !important;
+    }
+
+    #payslip-print-area .payslip-info-value {
+        text-align: right !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+    }
+
+    #payslip-print-area .salary-tables {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        gap: 4mm !important;
+        padding: 4mm 0 !important;
+    }
+
+    #payslip-print-area .salary-table-column {
+        display: block !important;
+        min-width: 0 !important;
+    }
+
+    #payslip-print-area .payslip-salary-section {
+        width: 100% !important;
+        border: 1px solid #9da8b6 !important;
+        border-radius: 0 !important;
+    }
+
+    #payslip-print-area .payslip-section-title {
+        padding: 2.5mm 2mm !important;
+        font-size: 9px !important;
+    }
+
+    #payslip-print-area .payslip-salary-header,
+    #payslip-print-area .payslip-salary-row,
+    #payslip-print-area .payslip-salary-total {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 34% !important;
+    }
+
+    #payslip-print-area .payslip-salary-header {
+        min-height: 9mm !important;
+        padding: 0 2mm !important;
+    }
+
+    #payslip-print-area .payslip-salary-row {
+        min-height: 7mm !important;
+        padding: 0 2mm !important;
+    }
+
+    #payslip-print-area .payslip-salary-total {
+        min-height: 8mm !important;
+        padding: 0 2mm !important;
+    }
+
+    #payslip-print-area .payslip-salary-header .MuiTypography-root,
+    #payslip-print-area .payslip-salary-row .MuiTypography-root,
+    #payslip-print-area .payslip-salary-total .MuiTypography-root {
+        font-size: 7.7px !important;
+        line-height: 1.15 !important;
+    }
+
+    #payslip-print-area .net-pay-box {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 10mm minmax(0, 1fr) 10mm minmax(0, 1fr) !important;
+        gap: 2mm !important;
+        padding: 5mm 4mm 10mm !important;
+    }
+
+    #payslip-print-area .salary-details-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+
+    #payslip-print-area .company-logo-image {
+        width: 200px !important;
+        height: auto !important;
+    }
+}
+
+/* -------------------------
+   Responsive
+   ------------------------- */
+
+@media (max-width: 600px) {
+
+    .employee-information-grid {
+        grid-template-columns: 1fr !important;
+        row-gap: 0 !important;
+    }
+
+    .payslip-info-row {
+        grid-template-columns: 95px minmax(0, 1fr) !important;
+    }
+
+    .salary-tables {
+        grid-template-columns: 1fr !important;
+    }
+
+    .salary-details-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .salary-details-grid > .salary-detail-item:nth-child(2) {
+        border-right: 0 !important;
+    }
+
+    .salary-details-grid > .salary-detail-item:nth-child(-n + 2) {
+        border-bottom: 1px solid #d9e0e8 !important;
+    }
+
+    .net-pay-box {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .net-pay-symbol {
+        display: none !important;
+    }
+
+    .amount-in-words {
+        position: static !important;
+        text-align: center !important;
+        margin-top: 5px !important;
+    }
+}
+
+
+/* =========================================================
+   PRINT ONLY - SLIGHTLY LARGER FONTS
+   Screen/browser layout remains unchanged.
+   ========================================================= */
+@media print {
+
+    #payslip-print-area {
+        font-size: 10px !important;
+    }
+
+    #payslip-print-area .payslip-info-label,
+    #payslip-print-area .payslip-info-value {
+        font-size: 9.5px !important;
+    }
+
+    #payslip-print-area .payslip-section-title {
+        font-size: 10px !important;
+    }
+
+    #payslip-print-area .payslip-salary-header .MuiTypography-root,
+    #payslip-print-area .payslip-salary-row .MuiTypography-root,
+    #payslip-print-area .payslip-salary-total .MuiTypography-root {
+        font-size: 8.5px !important;
+    }
+
+    #payslip-print-area .net-pay-item .MuiTypography-root {
+        font-size: 8.5px !important;
+    }
+
+    #payslip-print-area .net-pay-item strong {
+        font-size: 14px !important;
+    }
+
+    #payslip-print-area .net-pay-highlight strong {
+        font-size: 15px !important;
+    }
+
+    #payslip-print-area .amount-in-words {
+        font-size: 8.5px !important;
+    }
+
+    #payslip-print-area .salary-detail-item,
+    #payslip-print-area .salary-detail-item .MuiTypography-root {
+        font-size: 9px !important;
+    }
+
+    #payslip-print-area .payslip-footer,
+    #payslip-print-area .payslip-footer * {
+        font-size: 9px !important;
+    }
+}

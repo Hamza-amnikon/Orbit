@@ -1,0 +1,38 @@
+.quick-actions{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:20px;
+}
+
+.quick-action-card{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:20px;
+    text-align:center;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.quick-action-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 20px rgba(0,0,0,.08);
+}
+
+.quick-action-icon{
+    width:55px;
+    height:55px;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#fff;
+    margin:auto;
+    margin-bottom:15px;
+}
+
+.quick-action-card h4{
+    margin:0;
+    font-size:15px;
+    color:#1f2937;
+}

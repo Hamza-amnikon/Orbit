@@ -1,0 +1,903 @@
+/*
+ * EDIT PAYSLIP TEMPLATE — ISOLATED MODULE STYLES
+ * Namespace: ept-
+ *
+ * Only CSS class selectors are namespaced.
+ * JavaScript identifiers, object keys, values, functions and MUI classes
+ * are intentionally left unchanged.
+ */
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.ept-payroll-process-page {
+    min-height: 100vh;
+    padding: 32px;
+    box-sizing: border-box;
+    background: #f5f7fb;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.ept-payroll-process-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 26px;
+}
+
+.ept-payroll-title-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.ept-payroll-back-button {
+    width: 42px !important;
+    height: 42px !important;
+    border: 1px solid #dfe5ee !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    color: #64748b !important;
+}
+
+.ept-payroll-back-button:hover {
+    background: #f8fafc !important;
+}
+
+.ept-payroll-process-title {
+    color: #172033;
+    font-size: 30px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+}
+
+.ept-payroll-process-subtitle {
+    margin-top: 6px !important;
+    color: #7a8aa3;
+    font-size: 14px !important;
+}
+
+.ept-payroll-header-actions {
+    align-items: center;
+}
+
+.ept-payroll-month-select {
+    min-width: 145px;
+}
+
+.ept-payroll-month-select .MuiOutlinedInput-root {
+    border-radius: 9px;
+    background: #ffffff;
+}
+
+.ept-run-payroll-button {
+    min-height: 42px !important;
+    padding: 0 18px !important;
+    border-radius: 9px !important;
+    background: #2563eb !important;
+    box-shadow: none !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+.ept-run-payroll-button:hover {
+    background: #1d4ed8 !important;
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   SUMMARY CARDS
+========================================================= */
+
+.ept-payroll-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.ept-payroll-summary-card {
+    min-width: 0;
+    border: 1px solid #e4e9f1 !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.035) !important;
+}
+
+.ept-payroll-summary-card .MuiCardContent-root {
+    padding: 18px !important;
+}
+
+.ept-summary-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.ept-summary-label {
+    color: #8493a8;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.ept-summary-value {
+    margin-top: 6px !important;
+    color: #172033;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+}
+
+.ept-summary-helper {
+    margin-top: 5px !important;
+    color: #a0adbd;
+    font-size: 11px !important;
+}
+
+.ept-deduction-value {
+    color: #ef4444 !important;
+}
+
+.ept-net-value {
+    color: #2563eb !important;
+}
+
+.ept-summary-icon {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    color: #ffffff;
+}
+
+.ept-summary-icon svg {
+    font-size: 23px;
+}
+
+.ept-summary-icon-blue {
+    background: #2563eb;
+}
+
+.ept-summary-icon-green {
+    background: #16a34a;
+}
+
+.ept-summary-icon-orange {
+    background: #ea580c;
+}
+
+.ept-summary-icon-purple {
+    background: #9333ea;
+}
+
+
+/* =========================================================
+   COMMON CARD
+========================================================= */
+
+.ept-process-card {
+    margin-bottom: 22px;
+    border: 1px solid #e3e8f0 !important;
+    border-radius: 15px !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.035) !important;
+}
+
+.ept-process-card .MuiCardContent-root {
+    padding: 22px !important;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+.ept-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.ept-section-title {
+    color: #172033;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+}
+
+.ept-section-subtitle {
+    margin-top: 5px !important;
+    color: #91a0b4;
+    font-size: 12px !important;
+}
+
+.ept-employee-count {
+    color: #8493a8 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.ept-status-chip {
+    height: 26px !important;
+    border-radius: 8px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+.ept-status-ready {
+    background: #eff6ff !important;
+    color: #2563eb !important;
+}
+
+.ept-status-completed {
+    background: #ecfdf3 !important;
+    color: #16a34a !important;
+}
+
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+.ept-configuration-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 12px;
+}
+
+.ept-configuration-box {
+    min-height: 58px;
+    padding: 11px 14px;
+    box-sizing: border-box;
+    border: 1px solid #e3e9f1;
+    border-radius: 9px;
+    background: #f8fafc;
+}
+
+.ept-configuration-box-wide {
+    min-width: 0;
+}
+
+.ept-configuration-label {
+    color: #94a3b8;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.ept-configuration-value {
+    margin-top: 4px !important;
+    color: #334155;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.ept-payroll-table-container {
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.ept-payroll-table-container .MuiTable-root {
+    min-width: 950px;
+}
+
+.ept-payroll-table-container .MuiTableCell-head {
+    padding: 13px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+
+.ept-payroll-table-container .MuiTableCell-body {
+    padding: 15px 12px;
+    border-bottom: 1px solid #edf1f5;
+    color: #475569;
+    font-size: 12px;
+}
+
+.ept-payroll-table-container .MuiTableRow-root {
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.ept-payroll-table-container .MuiTableRow-root:hover {
+    background: #f8fbff;
+}
+
+.ept-payroll-table-container .MuiTableRow-root:last-child .MuiTableCell-body {
+    border-bottom: none;
+}
+
+.ept-selected-payroll-row {
+    background: #f5f9ff !important;
+}
+
+
+/* =========================================================
+   EMPLOYEE CELL
+========================================================= */
+
+.ept-employee-name {
+    color: #172033;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+}
+
+.ept-employee-meta {
+    margin-top: 3px !important;
+    color: #94a3b8;
+    font-size: 11px !important;
+}
+
+
+/* =========================================================
+   TEMPLATE CELL
+========================================================= */
+
+.ept-template-cell {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.ept-template-icon {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.ept-template-icon svg {
+    font-size: 16px;
+}
+
+.ept-template-name {
+    color: #334155;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.ept-template-helper {
+    margin-top: 2px !important;
+    color: #a0adbd;
+    font-size: 10px !important;
+}
+
+
+/* =========================================================
+   MONEY
+========================================================= */
+
+.ept-money-primary {
+    color: #334155;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.ept-money-secondary {
+    margin-top: 3px !important;
+    color: #a0adbd;
+    font-size: 10px !important;
+}
+
+.ept-deduction-table-value {
+    color: #ef4444 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+.ept-net-table-value {
+    color: #172033 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   EMPLOYEE STATUS
+========================================================= */
+
+.ept-employee-status-chip {
+    height: 23px !important;
+    background: #eff6ff !important;
+    color: #2563eb !important;
+    border-radius: 7px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+}
+
+.ept-employee-status-chip.ept-completed {
+    background: #ecfdf3 !important;
+    color: #16a34a !important;
+}
+
+.ept-employee-status-chip .MuiChip-icon {
+    color: inherit !important;
+    font-size: 14px !important;
+}
+
+
+/* =========================================================
+   SALARY CALCULATION
+========================================================= */
+
+.ept-salary-calculation-card {
+    margin-bottom: 40px;
+}
+
+.ept-template-chip {
+    height: 28px !important;
+    border-radius: 7px !important;
+    background: #eff6ff !important;
+    color: #2563eb !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+}
+
+.ept-template-chip .MuiChip-icon {
+    color: #2563eb !important;
+    font-size: 15px !important;
+}
+
+
+/* =========================================================
+   SELECTED EMPLOYEE
+========================================================= */
+
+.ept-selected-employee-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    border: 1px solid #e3e9f1;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.ept-selected-employee-avatar {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.ept-selected-employee-name {
+    color: #172033;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+.ept-selected-employee-meta {
+    margin-top: 3px !important;
+    color: #94a3b8;
+    font-size: 11px !important;
+}
+
+.ept-selected-employee-ctc {
+    margin-left: auto;
+    text-align: right;
+}
+
+.ept-ctc-label {
+    color: #94a3b8;
+    font-size: 10px !important;
+}
+
+.ept-ctc-value {
+    margin-top: 3px !important;
+    color: #172033;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   CALCULATION GRID
+========================================================= */
+
+.ept-calculation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.ept-calculation-section {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid #e3e9f1;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.ept-calculation-section-title {
+    color: #172033;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+.ept-calculation-section-helper {
+    margin-top: 4px !important;
+    color: #94a3b8;
+    font-size: 11px !important;
+}
+
+.ept-calculation-list {
+    margin-top: 15px;
+}
+
+.ept-calculation-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 11px 0;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.ept-calculation-row:last-child {
+    border-bottom: none;
+}
+
+.ept-calculation-component {
+    color: #475569;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.ept-calculation-rule {
+    margin-top: 3px !important;
+    color: #a0adbd;
+    font-size: 10px !important;
+}
+
+.ept-calculation-amount {
+    color: #172033;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    white-space: nowrap;
+}
+
+.ept-deduction-text {
+    color: #ef4444 !important;
+}
+
+.ept-calculation-divider {
+    margin: 8px 0 !important;
+}
+
+.ept-calculation-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding-top: 10px;
+    color: #172033;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   NET SALARY
+========================================================= */
+
+.ept-net-salary-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 18px;
+    padding: 18px 20px;
+    border: 1px solid #dbe7fb;
+    border-radius: 11px;
+    background: #f5f9ff;
+}
+
+.ept-net-salary-label {
+    color: #172033;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+.ept-net-salary-helper {
+    margin-top: 4px !important;
+    color: #8a9ab2;
+    font-size: 11px !important;
+}
+
+.ept-net-salary-amount {
+    color: #2563eb;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   INFORMATION
+========================================================= */
+
+.ept-calculation-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-top: 15px;
+    padding: 12px 14px;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #64748b;
+}
+
+.ept-calculation-info svg {
+    margin-top: 1px;
+    color: #64748b;
+    font-size: 18px;
+}
+
+.ept-calculation-info p {
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   DIALOG
+========================================================= */
+
+.ept-dialog-content {
+    padding-top: 8px;
+}
+
+.ept-dialog-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.ept-dialog-icon svg {
+    font-size: 22px;
+}
+
+.ept-dialog-title {
+    color: #172033;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.ept-dialog-description {
+    margin-top: 7px !important;
+    color: #64748b;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+}
+
+.ept-dialog-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-top: 18px;
+    padding: 15px;
+    border: 1px solid #e3e9f1;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.ept-dialog-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.ept-dialog-summary-row p {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.ept-dialog-summary-row p:last-child {
+    color: #334155;
+    font-weight: 600;
+}
+
+.ept-dialog-summary .MuiDivider-root {
+    margin: 2px 0;
+}
+
+.ept-dialog-total p {
+    color: #172033 !important;
+    font-weight: 700 !important;
+}
+
+.ept-dialog-actions {
+    padding: 16px 24px 20px !important;
+}
+
+.ept-dialog-actions .MuiButton-root {
+    min-height: 38px;
+    padding: 0 17px;
+    border-radius: 8px;
+    text-transform: none;
+    font-weight: 600;
+}
+
+.ept-dialog-actions .MuiButton-outlined {
+    border-color: #d5deea;
+    color: #475569;
+}
+
+.ept-dialog-actions .MuiButton-contained {
+    background: #2563eb;
+    box-shadow: none;
+}
+
+.ept-dialog-actions .MuiButton-contained:hover {
+    background: #1d4ed8;
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .ept-payroll-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ept-configuration-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .ept-configuration-box-wide {
+        grid-column: span 2;
+    }
+}
+
+
+@media (max-width: 900px) {
+
+    .ept-payroll-process-page {
+        padding: 24px;
+    }
+
+    .ept-payroll-process-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ept-payroll-header-actions {
+        width: 100%;
+    }
+
+    .ept-payroll-month-select {
+        flex: 1;
+    }
+
+    .ept-run-payroll-button {
+        white-space: nowrap;
+    }
+
+    .ept-calculation-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .ept-payroll-process-page {
+        padding: 16px;
+    }
+
+    .ept-payroll-process-title {
+        font-size: 25px !important;
+    }
+
+    .ept-payroll-process-subtitle {
+        font-size: 12px !important;
+    }
+
+    .ept-payroll-header-actions {
+        width: 100%;
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .ept-payroll-month-select {
+        width: 100%;
+    }
+
+    .ept-run-payroll-button {
+        width: 100%;
+    }
+
+    .ept-payroll-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ept-configuration-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ept-configuration-box-wide {
+        grid-column: auto;
+    }
+
+    .ept-process-card .MuiCardContent-root {
+        padding: 16px !important;
+    }
+
+    .ept-section-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ept-selected-employee-card {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .ept-selected-employee-ctc {
+        width: 100%;
+        margin-left: 0;
+        text-align: left;
+    }
+
+    .ept-net-salary-panel {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ept-net-salary-amount {
+        font-size: 20px !important;
+    }
+}

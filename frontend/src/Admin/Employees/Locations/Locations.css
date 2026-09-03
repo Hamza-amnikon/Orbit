@@ -1,0 +1,420 @@
+/* ==========================================================
+   LOCATION MANAGEMENT PAGE
+   FULLY ISOLATED
+   NOTHING HERE CAN AFFECT OTHER PAGES
+========================================================== */
+
+.location-page{
+    padding:32px;
+    min-height:100vh;
+    background:
+        radial-gradient(
+            circle at top right,
+            #eef4ff 0%,
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at bottom left,
+            #f4f0ff 0%,
+            transparent 30%
+        ),
+        #f8fafc;
+}
+
+
+/* ==========================================================
+   LOCATION PAGE HEADER
+========================================================== */
+
+.location-page .employee-page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+
+    padding:32px;
+
+    border-radius:24px;
+
+    color:#fff;
+
+    margin-bottom:30px;
+
+    box-shadow:
+        0 18px 40px rgba(37,99,235,.18);
+}
+
+.location-page .employee-page-header h1{
+    margin:0;
+    font-size:2.2rem;
+    font-weight:700;
+}
+
+.location-page .employee-page-header p{
+    margin-top:10px;
+    opacity:.9;
+    font-size:1rem;
+}
+
+
+/* ==========================================================
+   LOCATION HEADER BUTTONS
+========================================================== */
+
+.location-page .header-buttons{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+.location-page .header-buttons .MuiButton-root{
+    height:46px;
+    border-radius:12px;
+    text-transform:none;
+    font-weight:600;
+    padding-inline:22px;
+    transition:.3s;
+}
+
+.location-page .header-buttons .MuiButton-root:hover{
+    transform:translateY(-3px);
+}
+
+
+/* ==========================================================
+   LOCATION STATISTICS
+========================================================== */
+
+.location-page .stats-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(240px,1fr));
+
+    gap:24px;
+    margin-bottom:30px;
+}
+
+.location-page .stats-card{
+    border-radius:22px !important;
+    border:none !important;
+    overflow:hidden;
+
+    background:#fff !important;
+
+    transition:.35s;
+
+    box-shadow:
+        0 10px 25px rgba(15,23,42,.06);
+}
+
+.location-page .stats-card:hover{
+    transform:translateY(-8px);
+
+    box-shadow:
+        0 20px 40px rgba(15,23,42,.12);
+}
+
+.location-page .stats-card .MuiCardContent-root{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding:28px !important;
+}
+
+
+/* ==========================================================
+   LOCATION STAT ICON
+========================================================== */
+
+.location-page .stats-icon{
+    width:62px;
+    height:62px;
+
+    border-radius:18px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:#fff;
+    font-size:30px;
+}
+
+.location-page .stats-icon svg{
+    font-size:32px;
+}
+
+
+/* ==========================================================
+   LOCATION STAT COLORS
+========================================================== */
+
+.location-page .stats-icon.blue{
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+}
+
+.location-page .stats-icon.green{
+    background:
+        linear-gradient(
+            135deg,
+            #10b981,
+            #34d399
+        );
+}
+
+.location-page .stats-icon.red{
+    background:
+        linear-gradient(
+            135deg,
+            #ef4444,
+            #f87171
+        );
+}
+
+.location-page .stats-icon.purple{
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #a855f7
+        );
+}
+
+
+/* ==========================================================
+   LOCATION STAT TEXT
+========================================================== */
+
+.location-page .stats-card span{
+    color:#64748b;
+    font-size:.95rem;
+}
+
+.location-page .stats-card h2{
+    margin:0;
+    font-size:2rem;
+    color:#0f172a;
+}
+
+
+/* ==========================================================
+   LOCATION SEARCH TOOLBAR
+========================================================== */
+
+.location-page .toolbar-card{
+    border-radius:22px !important;
+
+    margin-bottom:30px;
+
+    box-shadow:
+        0 8px 25px rgba(15,23,42,.05);
+
+    border:none !important;
+}
+
+.location-page .toolbar-card .MuiCardContent-root{
+    padding:22px !important;
+}
+
+.location-page .toolbar-card .MuiOutlinedInput-root{
+    border-radius:14px;
+    background:#f8fafc;
+}
+
+.location-page .toolbar-card .MuiOutlinedInput-root:hover{
+    background:#fff;
+}
+
+.location-page .toolbar-card .Mui-focused{
+    background:#fff;
+}
+
+
+/* ==========================================================
+   LOCATION TABLE
+========================================================== */
+
+.location-page .table-card{
+    border-radius:24px !important;
+
+    border:none !important;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,.06);
+}
+
+.location-page .table-card .MuiCardContent-root{
+    padding:0 !important;
+}
+
+
+/* ==========================================================
+   LOCATION RESPONSIVE
+========================================================== */
+
+@media(max-width:992px){
+
+    .location-page .employee-page-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .location-page .header-buttons{
+        width:100%;
+    }
+
+    .location-page .header-buttons .MuiButton-root{
+        flex:1;
+    }
+}
+
+
+@media(max-width:768px){
+
+    .location-page{
+        padding:20px;
+    }
+
+    .location-page .employee-page-header{
+        padding:24px;
+    }
+
+    .location-page .employee-page-header h1{
+        font-size:1.8rem;
+    }
+
+    .location-page .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .location-page .header-buttons{
+        flex-direction:column;
+    }
+
+    .location-page .header-buttons .MuiButton-root{
+        width:100%;
+    }
+}
+
+/* ==========================================================
+   LOCATION SEARCH + STATUS FILTER
+========================================================== */
+
+.location-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+}
+
+
+/* ==========================================================
+   SEARCH
+========================================================== */
+
+.location-filter-row .location-search {
+    flex: 1;
+    width: auto;
+}
+
+.location-search .MuiOutlinedInput-root {
+    min-height: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+.location-search .MuiOutlinedInput-root:hover {
+    background: #ffffff;
+}
+
+
+/* ==========================================================
+   STATUS DROPDOWN
+========================================================== */
+
+.location-filter-row .location-status-filter {
+    flex: 0 0 160px;
+    width: 160px;
+}
+
+.location-status-filter .MuiOutlinedInput-root {
+    min-height: 46px;
+    height: 46px;
+    width: 160px;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+.location-status-filter .MuiSelect-select {
+    min-height: 46px !important;
+    height: 46px;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 38px 0 14px !important;
+
+    font-size: 14px;
+    font-weight: 500;
+    color: #334155;
+}
+
+
+/* ==========================================================
+   BORDER
+========================================================== */
+
+.location-filter-row
+.MuiOutlinedInput-notchedOutline {
+    border-color: #cbd5e1;
+}
+
+.location-filter-row
+.MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline {
+    border-color: #94a3b8;
+}
+
+.location-filter-row
+.MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline {
+    border-color: #2563eb;
+    border-width: 1px;
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .location-filter-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .location-filter-row .location-search {
+        width: 100%;
+    }
+
+    .location-filter-row .location-status-filter {
+        width: 100%;
+        flex: none;
+    }
+
+    .location-status-filter .MuiOutlinedInput-root {
+        width: 100%;
+    }
+
+}

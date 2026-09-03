@@ -1,0 +1,1351 @@
+/* ===========================================================
+   PAGE
+=========================================================== */
+
+.role-page{
+
+    padding:40px;
+
+    background:#f4f7ff;
+
+    min-height:100vh;
+
+}
+
+
+/* ===========================================================
+   HEADER CARD
+=========================================================== */
+
+.role-header-card{
+
+    background:#fff;
+
+    border-radius:24px;
+
+    padding:38px 34px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+    box-shadow:
+    0 12px 35px rgba(15,23,42,.06);
+
+}
+
+.role-header-card h1{
+
+    margin:0;
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#16213E;
+
+}
+
+.role-header-card p{
+
+    margin-top:12px;
+
+    font-size:15px;
+
+    color:#64748b;
+
+}
+
+
+/* ===========================================================
+   HEADER BUTTONS
+=========================================================== */
+
+.role-header-buttons{
+
+    display:flex;
+
+    gap:14px;
+
+}
+
+.previous-btn,
+.refresh-btn,
+.export-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:13px 24px;
+
+    background:white;
+
+    color:#2563eb;
+
+    border:1px solid #dbe7ff;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.previous-btn:hover,
+.refresh-btn:hover,
+.export-btn:hover{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.add-role-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:13px 26px;
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #3b82f6,
+    #2563eb);
+
+    color:white;
+
+    border:none;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.3s;
+
+    box-shadow:
+    0 10px 25px rgba(37,99,235,.25);
+
+}
+
+.add-role-btn:hover{
+
+    transform:translateY(-3px);
+
+}
+/* ===========================================================
+   STATISTICS
+=========================================================== */
+
+.role-stats{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:24px;
+
+    margin-bottom:30px;
+
+}
+
+.role-stat-card{
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:34px;
+
+    box-shadow:
+    0 12px 35px rgba(15,23,42,.05);
+
+    transition:.35s;
+
+}
+
+.role-stat-card:hover{
+
+    transform:translateY(-6px);
+
+}
+
+.role-stat-icon{
+
+    width:62px;
+
+    height:62px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:white;
+
+    margin-bottom:30px;
+
+}
+
+.blue{
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #2563eb,
+    #3b82f6);
+
+}
+
+.green{
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #10b981,
+    #34d399);
+
+}
+
+.red{
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #ef4444,
+    #fb7185);
+
+}
+
+.purple{
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #7c3aed,
+    #9333ea);
+
+}
+
+.role-stat-card p{
+
+    margin:0;
+
+    font-size:18px;
+
+    color:#64748b;
+
+}
+
+.role-stat-card h3{
+
+    margin-top:18px;
+
+    font-size:44px;
+
+    color:#16213E;
+
+}
+/* ===========================================================
+   SEARCH CARD
+=========================================================== */
+
+.role-search-card{
+
+    background:#ffffff;
+
+    border-radius:24px;
+
+    padding:20px 24px;
+
+    margin-bottom:30px;
+
+    box-shadow:
+    0 12px 35px rgba(15,23,42,.05);
+
+}
+
+.role-search-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    height:56px;
+
+    border:1px solid #dbe3f4;
+
+    border-radius:16px;
+
+    padding:0 20px;
+
+    transition:.3s;
+
+}
+
+.role-search-box:hover{
+
+    border-color:#3b82f6;
+
+}
+
+.role-search-box:focus-within{
+
+    border-color:#2563eb;
+
+    box-shadow:
+    0 0 0 4px rgba(37,99,235,.08);
+
+}
+
+.search-icon{
+
+    color:#94a3b8;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.role-search{
+
+    width:100%;
+
+    height:100%;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    font-size:16px;
+
+    color:#1e293b;
+
+}
+
+.role-search::placeholder{
+
+    color:#94a3b8;
+
+}
+/* ===========================================================
+   TABLE CARD
+=========================================================== */
+
+.role-list-card{
+
+    background:white;
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 12px 35px rgba(15,23,42,.05);
+
+}
+
+
+/* ===========================================================
+   TABLE HEADER
+=========================================================== */
+/* ===========================================================
+   TABLE HEADER
+=========================================================== */
+
+.role-list-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:24px 28px;
+
+    background:linear-gradient(
+        135deg,
+        #2b3d8f 0%,
+        #4f46e5 100%
+    );
+
+    color:#ffffff;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+
+.role-list-header h2{
+
+    margin:0;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+
+    color:#ffffff;
+
+}
+
+.role-list-header p{
+
+    margin:6px 0 0;
+
+    font-size:14px;
+
+    font-weight:400;
+
+    color:rgba(255,255,255,.85);
+
+}/* ===========================================================
+   ROLE TABLE CARD
+=========================================================== */
+
+.role-list-card{
+
+    background:#ffffff;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 15px 40px rgba(15,23,42,.08);
+
+    border:1px solid #eef2ff;
+
+    transition:.35s;
+
+}
+
+.role-list-card:hover{
+
+    box-shadow:
+        0 22px 55px rgba(15,23,42,.10);
+
+}
+
+
+/* ===========================================================
+   TABLE HEADER
+=========================================================== */
+
+.role-list-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:24px 30px;
+
+    background:linear-gradient(
+        135deg,
+        #243B8F,
+        #4F46E5
+    );
+
+    color:#ffffff;
+
+}
+
+.role-list-header h2{
+
+    margin:0;
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+.role-list-header p{
+
+    margin:8px 0 0;
+
+    font-size:14px;
+
+    color:rgba(255,255,255,.85);
+
+}
+
+/* ===========================================================
+   TABLE
+=========================================================== */
+ 
+.role-table-wrap{
+    width:100%;
+    overflow-x:auto;
+}
+ 
+.role-table{
+    width:100%;
+    min-width:760px;
+    border-collapse:collapse;
+    table-layout:fixed;
+}
+ 
+.role-table thead{
+    background:var(--navy-dark);
+}
+ 
+.role-table th{
+    background:var(--navy-dark);
+    color:#000000;
+    font-size:14px;
+    font-weight:600;
+    padding:18px 20px;
+    text-align:left;
+    letter-spacing:.3px;
+    white-space:nowrap;
+    border:none;
+}
+ 
+.role-table td{
+    padding:20px;
+    font-size:15px;
+    color:#334155;
+    vertical-align:middle;
+    border-bottom:1px solid #eef2f7;
+}
+ 
+.role-table tbody tr{
+    transition:background .25s ease;
+}
+ 
+.role-table tbody tr:hover{
+    background:#f8fbff;
+}
+ 
+/* Column widths as percentages of the table so they always
+   sum to 100% — this is what fixes the drifting/uneven gaps. */
+.role-table th:nth-child(1),
+.role-table td:nth-child(1){
+    width:7%;
+}
+ 
+.role-table th:nth-child(2),
+.role-table td:nth-child(2){
+    width:28%;
+    font-weight:600;
+}
+ 
+.role-table th:nth-child(3),
+.role-table td:nth-child(3){
+    width:20%;
+}
+ 
+.role-table th:nth-child(4),
+.role-table td:nth-child(4){
+    width:15%;
+    text-align:center;
+}
+ 
+.role-table th:nth-child(5),
+.role-table td:nth-child(5){
+    width:30%;
+    text-align:center;
+}
+ 
+/* ===========================================================
+   STATUS
+=========================================================== */
+ 
+.status-active,
+.status-inactive{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:95px;
+    height:34px;
+    padding:0 18px;
+    border-radius:50px;
+    font-size:13px;
+    font-weight:600;
+}
+ 
+.status-active{
+    background:#DCFCE7;
+    color:#15803D;
+}
+ 
+.status-inactive{
+    background:#FEE2E2;
+    color:#DC2626;
+}
+ 
+/* ===========================================================
+   ACTION BUTTONS
+=========================================================== */
+ 
+.role-actions{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+}
+ 
+.view-btn,
+.edit-btn,
+.delete-btn{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background .25s ease, color .25s ease, transform .25s ease;
+}
+ 
+.view-btn:focus-visible,
+.edit-btn:focus-visible,
+.delete-btn:focus-visible{
+    outline:2px solid var(--indigo);
+    outline-offset:2px;
+}
+ 
+.view-btn{
+    background:#EEF4FF;
+    color:#2563EB;
+}
+ 
+.view-btn:hover{
+    background:#2563EB;
+    color:#fff;
+    transform:translateY(-2px);
+}
+ 
+.edit-btn{
+    background:#F3E8FF;
+    color:#7C3AED;
+}
+ 
+.edit-btn:hover{
+    background:#7C3AED;
+    color:#fff;
+    transform:translateY(-2px);
+}
+ 
+.delete-btn{
+    background:#FEF2F2;
+    color:#EF4444;
+}
+ 
+.delete-btn:hover{
+    background:#EF4444;
+    color:#fff;
+    transform:translateY(-2px);
+}
+ 
+/* ===========================================================
+   EMPTY STATE
+=========================================================== */
+ 
+.role-empty{
+    padding:70px;
+    text-align:center;
+    color:#94A3B8;
+}
+ 
+.role-empty h3{
+    margin:12px 0;
+    font-family:'Space Grotesk',sans-serif;
+    color:#1E293B;
+}
+ 
+/* ===========================================================
+   RESPONSIVE
+=========================================================== */
+ 
+@media (max-width:1200px){
+    .role-stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+ 
+@media (max-width:768px){
+    .role-page{
+        padding:22px;
+    }
+ 
+    .role-header-card{
+        padding:28px 24px;
+    }
+ 
+    .role-header-buttons{
+        width:100%;
+    }
+ 
+    .previous-btn,
+    .refresh-btn,
+    .export-btn,
+    .add-role-btn{
+        flex:1;
+        justify-content:center;
+    }
+ 
+    .role-stats{
+        grid-template-columns:1fr;
+    }
+}
+ 
+@media (prefers-reduced-motion: reduce){
+    .role-stat-card,
+    .role-stat-icon,
+    .role-list-card,
+    .previous-btn,
+    .refresh-btn,
+    .export-btn,
+    .add-role-btn,
+    .view-btn,
+    .edit-btn,
+    .delete-btn{
+        transition:none !important;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===========================================================
+   ADD ROLE BUTTON
+=========================================================== */
+
+.add-role-btn{
+
+    height:46px;
+
+    min-width:150px;
+
+    padding:0 24px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    border:none;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    background:linear-gradient(
+        135deg,
+        #3b82f6 0%,
+        #2563eb 100%
+    );
+
+    color:#ffffff;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:all .25s ease;
+
+    box-shadow:
+        0 10px 24px rgba(37,99,235,.25);
+
+}
+
+.add-role-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 15px 35px rgba(37,99,235,.35);
+
+}
+
+.add-role-btn:active{
+
+    transform:scale(.98);
+
+}
+
+.add-role-icon{
+
+    font-size:20px;
+
+    font-weight:700;
+
+    line-height:1;
+
+}
+
+
+
+
+
+
+/* ===========================================================
+   MODAL OVERLAY
+=========================================================== */
+
+.modal-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(15,23,42,.45);
+
+    backdrop-filter:blur(4px);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+
+}
+
+/* ===========================================================
+   MODAL
+=========================================================== */
+
+.role-modal{
+
+    width:700px;
+
+    background:#ffffff;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:0 25px 70px rgba(0,0,0,.25);
+
+    animation:popup .25s ease;
+
+}
+
+@keyframes popup{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px) scale(.95);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0) scale(1);
+
+    }
+
+}
+
+/* ===========================================================
+   ROLE MODAL
+=========================================================== */
+
+.role-modal{
+
+    width:720px;
+
+    max-width:95%;
+
+    background:#ffffff;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 30px 70px rgba(15,23,42,.18);
+
+    animation:modalFade .28s ease;
+
+}
+
+@keyframes modalFade{
+
+    from{
+
+        opacity:0;
+        transform:translateY(25px) scale(.96);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:translateY(0) scale(1);
+
+    }
+
+}
+
+/* ===========================================================
+   HEADER
+=========================================================== */
+
+.role-modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:28px 34px;
+
+    background:#ffffff;
+
+    border-bottom:1px solid #edf2f7;
+
+}
+
+.role-modal-header h2{
+
+    margin:0;
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#16213E;
+
+    letter-spacing:-.4px;
+
+}
+
+/* ===========================================================
+   FORM
+=========================================================== */
+
+.role-form-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:24px;
+
+    padding:32px;
+
+}
+
+.full-width{
+
+    grid-column:1 / -1;
+
+}
+
+/* ===========================================================
+   FORM GROUP
+=========================================================== */
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    position:relative;
+
+}
+
+.form-group label{
+
+    margin-bottom:10px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#334155;
+
+}
+
+.form-group label span{
+
+    color:#ef4444;
+
+}
+
+/* ===========================================================
+   INPUTS
+=========================================================== */
+
+.form-group input,
+
+.form-group select{
+
+    width:100%;
+
+    height:56px;
+
+    padding:0 18px;
+
+    border:1px solid #dbe3f4;
+
+    border-radius:16px;
+
+    background:#ffffff;
+
+    font-size:15px;
+
+    color:#1e293b;
+
+    transition:.25s;
+
+}
+
+.form-group input::placeholder{
+
+    color:#94a3b8;
+
+}
+
+.form-group input:hover,
+
+.form-group select:hover{
+
+    border-color:#93c5fd;
+
+}
+
+.form-group input:focus,
+
+.form-group select:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.10);
+
+}
+
+/* ===========================================================
+   DATE INPUT
+=========================================================== */
+
+.form-group input[type="date"]{
+
+    cursor:pointer;
+
+    color:#1e293b;
+
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator{
+
+    cursor:pointer;
+
+    padding:6px;
+
+    border-radius:8px;
+
+    transition:.25s;
+
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator:hover{
+
+    background:#eef4ff;
+
+}
+
+
+
+/* ===========================================================
+   FOOTER
+=========================================================== */
+
+.modal-footer{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:18px;
+
+    padding:24px 32px;
+
+    background:#fafbff;
+
+    border-top:1px solid #edf2f7;
+
+}
+
+/* ===========================================================
+   CANCEL BUTTON
+=========================================================== */
+
+.cancel-btn{
+
+    min-width:150px;
+
+    height:52px;
+
+    border:1px solid #d8e2f1;
+
+    border-radius:16px;
+
+    background:#ffffff;
+
+    color:#475569;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.cancel-btn:hover{
+
+    background:#f8fafc;
+
+    border-color:#94a3b8;
+
+    transform:translateY(-2px);
+
+}
+
+/* ===========================================================
+   SAVE BUTTON
+=========================================================== */
+
+.save-btn{
+
+    min-width:190px;
+
+    height:52px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
+
+    color:#ffffff;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.30s;
+
+    box-shadow:
+        0 12px 30px rgba(37,99,235,.25);
+
+}
+
+.save-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 18px 40px rgba(37,99,235,.35);
+
+}
+
+/* ===========================================================
+   RESPONSIVE
+=========================================================== */
+
+@media(max-width:768px){
+
+    .role-modal{
+
+        width:95%;
+
+    }
+
+    .role-form-grid{
+
+        grid-template-columns:1fr;
+
+        padding:24px;
+
+    }
+
+    .modal-footer{
+
+        flex-direction:column-reverse;
+
+    }
+
+    .cancel-btn,
+
+    .save-btn{
+
+        width:100%;
+
+    }
+
+}
+
+/* ==========================================================
+   ROLE SEARCH + STATUS FILTER
+========================================================== */
+
+.role-filter-row{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    width:100%;
+}
+
+
+/* ==========================================================
+   SEARCH
+========================================================== */
+
+.role-search-box{
+    flex:1;
+    width:auto;
+    min-width:0;
+}
+
+.role-search{
+    width:100%;
+    box-sizing:border-box;
+}
+
+
+/* ==========================================================
+   STATUS DROPDOWN
+========================================================== */
+
+.role-status-filter{
+    flex:0 0 180px !important;
+    width:180px !important;
+}
+
+.role-status-filter .MuiOutlinedInput-root{
+    width:100%;
+    height:46px;
+    border-radius:12px;
+    background:#fff;
+}
+
+.role-status-filter .MuiSelect-select{
+    height:46px !important;
+    min-height:46px !important;
+    box-sizing:border-box;
+    display:flex;
+    align-items:center;
+    padding:0 36px 0 14px !important;
+    font-size:14px;
+    color:#334155;
+}
+
+
+/* ==========================================================
+   BORDER
+========================================================== */
+
+.role-status-filter .MuiOutlinedInput-notchedOutline{
+    border-color:#cbd5e1;
+}
+
+.role-status-filter .MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline{
+    border-color:#94a3b8;
+}
+
+.role-status-filter .MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline{
+    border-color:#2563eb;
+    border-width:1px;
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media(max-width:768px){
+
+    .role-filter-row{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .role-search-box{
+        width:100%;
+    }
+
+    .role-status-filter{
+        width:100% !important;
+        flex:none !important;
+    }
+
+}
+

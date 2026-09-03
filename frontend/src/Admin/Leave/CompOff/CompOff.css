@@ -1,0 +1,240 @@
+/* =========================================================
+   COMPOFF MODAL
+   ========================================================= */
+
+.compoff-dialog .MuiDialog-paper {
+    border-radius: 16px;
+    overflow: hidden;
+    width: 100%;
+    margin: 16px;
+}
+
+
+/* =========================================================
+   BACKDROP
+   ========================================================= */
+
+.compoff-backdrop {
+    background-color: rgba(0, 0, 0, 0.45) !important;
+    backdrop-filter: blur(3px);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.compoff-header {
+    padding: 16px 24px !important;
+    display: flex !important;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.compoff-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #172b4d !important;
+}
+
+.compoff-subtitle {
+    font-size: 13px !important;
+    color: #6b7c93 !important;
+    margin-top: 4px !important;
+}
+
+.compoff-close {
+    color: #172b4d !important;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.compoff-content {
+    padding: 20px 24px !important;
+}
+
+.compoff-section-title {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #172b4d !important;
+    margin-bottom: 12px !important;
+}
+
+
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+
+.compoff-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.compoff-field {
+    width: 100%;
+}
+
+
+/* =========================================================
+   LABEL
+   ========================================================= */
+
+.compoff-label {
+    display: block;
+    font-size: 12px !important;
+    color: #6b7c93 !important;
+    margin-bottom: 4px !important;
+}
+
+
+/* =========================================================
+   SELECT
+   ========================================================= */
+
+.compoff-select {
+    width: 100%;
+}
+
+.compoff-select .MuiSelect-select {
+    color: #172b4d !important;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   TEXT FIELDS
+   ========================================================= */
+
+.compoff-textfield {
+    width: 100%;
+}
+
+.compoff-textfield .MuiInputBase-input {
+    color: #172b4d !important;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   EMPLOYEE NAME
+   Disabled MUI field normally makes text very light.
+   ========================================================= */
+
+.compoff-employee-name .MuiInputBase-input.Mui-disabled {
+    -webkit-text-fill-color: #172b4d !important;
+    color: #172b4d !important;
+    opacity: 1 !important;
+}
+
+.compoff-employee-name .MuiOutlinedInput-root.Mui-disabled {
+    background-color: #ffffff !important;
+}
+
+
+/* =========================================================
+   WORKED DATE
+   ========================================================= */
+
+.compoff-date .MuiInputBase-input {
+    color: #172b4d !important;
+}
+
+
+/* =========================================================
+   COMPOFF DAYS
+   ========================================================= */
+
+.compoff-days .MuiInputBase-input {
+    color: #172b4d !important;
+    font-weight: 500 !important;
+}
+
+.compoff-days .MuiInputBase-input::placeholder {
+    color: #8a94a6 !important;
+    opacity: 1 !important;
+}
+
+
+/* =========================================================
+   REASON
+   ========================================================= */
+
+.compoff-reason {
+    margin-top: 16px;
+}
+
+.compoff-reason .MuiInputBase-input {
+    color: #172b4d !important;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.compoff-footer {
+    padding: 16px 24px !important;
+    justify-content: flex-end !important;
+    gap: 8px;
+}
+
+
+/* =========================================================
+   CANCEL BUTTON
+   ========================================================= */
+
+.compoff-cancel-button {
+    text-transform: none !important;
+    border-radius: 8px !important;
+}
+
+
+/* =========================================================
+   ADD BUTTON
+   ========================================================= */
+
+.compoff-submit-button {
+    text-transform: none !important;
+    border-radius: 8px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .compoff-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .compoff-header {
+        padding: 16px !important;
+    }
+
+    .compoff-content {
+        padding: 18px 16px !important;
+    }
+
+    .compoff-footer {
+        padding: 14px 16px !important;
+    }
+}
+
+
+.compoff-days .MuiInputBase-input {
+    color: #172b4d !important;
+    font-weight: 500 !important;
+}
+
+.compoff-days .MuiInputBase-input::placeholder {
+    color: #8a94a6 !important;
+    opacity: 1 !important;
+}
