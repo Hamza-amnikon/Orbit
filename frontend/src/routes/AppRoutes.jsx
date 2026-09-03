@@ -48,6 +48,7 @@ import AttendanceLogs from "../Admin/AttendanceManagement/AttendanceLogs/Attenda
 import AttendanceDashboard from "../Admin/AttendanceManagement/Dashboard/AttendanceDashboard";
 import ShiftManagement from "../Admin/AttendanceManagement/ShiftManagement/ShiftManagement";
 import CompOff from "../Admin/Leave/CompOff/CompOff";
+import PermissionManagement from "../Admin/PermissionManagement/Permissions";
 
 // ================= Employee =================
 
@@ -101,6 +102,7 @@ function AppRoutes() {
                     <Route path="/attendance/shifts" element={<ShiftManagement />}
                     
                     />
+                    <Route path="/permission-management" element={<PermissionManagement />} />
 
                     <Route
                         path="/attendance/Holiday"

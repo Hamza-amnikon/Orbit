@@ -61,6 +61,11 @@ const menu = [
     icon: <SettingsRoundedIcon />,
     path: "/settings",
   },
+  
+  {title: "Permission ",
+    icon: <SettingsRoundedIcon />,
+    path: "/permission-management",
+  },
 ];
 
 
