@@ -4,6 +4,7 @@ import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayou
 
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Attendance from "../Admin/AttendanceManagement/Attendance";
+import Approval from "../Admin/Approvals/Approval";
 import Payroll from "../Admin/PayrollManagement/Payroll";
 import Reports from "../pages/Reports/Reports";
 import Tickets from "../pages/Tickets/Tickets";
@@ -119,15 +120,15 @@ function AppRoutes() {
                     <Route path="/leave/history" element={<LeaveTakenHistory />} />
                     <Route path="/leave/my-leave" element={<MyLeave />} />
                     <Route path="/leave/reports" element={<LeaveReports />} />
-                    <Route
-    path="/admin/leave/compoff"
-    element={<CompOff />}
-/>
+                    <Route path="/admin/leave/compoff" element={<CompOff />}/>
 
 
+
+                     {/* {Approvals } */}
+                    <Route path="/approvals" element={<Approval />}/>
 
                     {/* {PayRolls } */}
- <Route
+                    <Route
                         path="/employee/payroll"
                         element={<MyPayroll />} />
                     

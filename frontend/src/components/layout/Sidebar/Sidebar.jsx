@@ -7,12 +7,14 @@ import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import EventBusyRoundedIcon from "@mui/icons-material/EventBusyRounded";
+import ApprovalRoundedIcon from "@mui/icons-material/ApprovalRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 import ConfirmationNumberRoundedIcon from "@mui/icons-material/ConfirmationNumberRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+
 
 
 const menu = [
@@ -36,6 +38,13 @@ const menu = [
     icon: <EventBusyRoundedIcon />,
     path: "/leave",
   },
+{
+  title: "Approvals",
+  icon: <ApprovalRoundedIcon />,
+  path: "/approvals",
+},
+
+
   {
     title: "Payroll",
     icon: <PaymentsRoundedIcon />,

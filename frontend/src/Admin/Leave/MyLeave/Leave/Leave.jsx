@@ -43,8 +43,7 @@ const Leave = () => {
     // STATE
     // =========================================================
 
-    const [profile, setProfile] = useState(null);
-
+const [profile, setProfile] = useState(null);
     const [leaves, setLeaves] = useState([]);
     const [leaveTypes, setLeaveTypes] = useState([]);
     const [openViewLeaveDialog, setOpenViewLeaveDialog] = useState(false);
