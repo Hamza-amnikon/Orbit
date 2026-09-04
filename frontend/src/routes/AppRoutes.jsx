@@ -534,6 +534,16 @@ function AppRoutes() {
                         element={<SettingsDashboard />}
                     />
 
+                     <Route
+                        path="/permission-management"
+                        element={<PermissionManagement />}
+                    />
+
+                     <Route
+                        path="/approvals"
+                        element={<Approval />}
+                    />
+
                 </Route>
 
             </Route>
