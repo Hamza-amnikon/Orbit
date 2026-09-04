@@ -214,24 +214,85 @@ export async function getRolePermissions(roleId) {
 //
 // ============================================================
 
-export async function assignRolePermission(roleId, permissionId) {
-  const normalizedRoleId = normalizeId(roleId, "RoleId");
+export async function assignRolePermission(
+  roleIdOrPayload,
+  permissionId,
+  actions = {},
+) {
+  let payload;
 
-  const normalizedPermissionId = normalizeId(permissionId, "PermissionId");
+  // Supports:
+  // assignRolePermission(roleId, permissionId, actions)
+  // OR
+  // assignRolePermission({ roleId, permissionId, ...actions })
+
+  if (
+    roleIdOrPayload &&
+    typeof roleIdOrPayload === "object"
+  ) {
+    payload = roleIdOrPayload;
+  } else {
+    payload = {
+      roleId: roleIdOrPayload,
+      permissionId,
+      ...actions,
+    };
+  }
+
+  const normalizedRoleId = normalizeId(
+    payload.roleId ?? payload.RoleId,
+    "RoleId",
+  );
+
+  const normalizedPermissionId = normalizeId(
+    payload.permissionId ?? payload.PermissionId,
+    "PermissionId",
+  );
 
   const body = {
     roleId: normalizedRoleId,
-
     permissionId: normalizedPermissionId,
+
+    canView:
+      payload.canView ??
+      payload.CanView ??
+      false,
+
+    canCreate:
+      payload.canCreate ??
+      payload.CanCreate ??
+      false,
+
+    canEdit:
+      payload.canEdit ??
+      payload.CanEdit ??
+      false,
+
+    canDelete:
+      payload.canDelete ??
+      payload.CanDelete ??
+      false,
+
+    canApprove:
+      payload.canApprove ??
+      payload.CanApprove ??
+      false,
+
+    canExport:
+      payload.canExport ??
+      payload.CanExport ??
+      false,
   };
 
-  console.log("ASSIGN ROLE PERMISSION", body);
+  console.log("SAVE ROLE PERMISSION", body);
 
-  return await request(`${PERMISSION_API}/RolePermission`, {
-    method: "POST",
-
-    body: JSON.stringify(body),
-  });
+  return await request(
+    `${PERMISSION_API}/RolePermission`,
+    {
+      method: "POST",
+      body: JSON.stringify(body),
+    },
+  );
 }
 
 // ============================================================
@@ -409,16 +470,32 @@ export async function getRolePermissionData(roleId) {
 
   const [role, rolePermissions] = await Promise.all([
     getRole(normalizedRoleId),
-
     getRolePermissions(normalizedRoleId),
   ]);
 
   return {
     role,
-
-    rolePermissions: Array.isArray(rolePermissions) ? rolePermissions : [],
+    rolePermissions: Array.isArray(rolePermissions)
+      ? rolePermissions
+      : [],
   };
 }
+// ============================================================
+// SYNC PERMISSION PAGES
+// ============================================================
+
+export async function syncPermissions(pages) {
+  if (!Array.isArray(pages)) {
+    throw new Error("Permission pages must be an array.");
+  }
+
+  return await request(`${PERMISSION_API}/Permission/sync`, {
+    method: "POST",
+    body: JSON.stringify(pages),
+  });
+}
+  
+
 
 // ============================================================
 // DEFAULT EXPORT
@@ -450,6 +527,8 @@ const PermissionService = {
   getPermissionPageData,
 
   getRolePermissionData,
+
+  
 };
 
 export default PermissionService;

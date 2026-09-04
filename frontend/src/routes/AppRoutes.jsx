@@ -1,4 +1,7 @@
 import { Routes, Route } from "react-router-dom";
+import { syncPermissions } from "../Admin/Services/PermissionService";
+import { useEffect } from "react";
+
 
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
 
@@ -13,6 +16,7 @@ import HolidayEvents from "../Admin/AttendanceManagement/Holiday/Holiday";
 import Login from "../pages/Login/Login";
 import AuthCallback from "./AuthCallback";
 import PrivateRoute from "./PrivateRoute";
+
 
 // ================= Admin =================
 
@@ -326,6 +330,14 @@ export const PERMISSION_PAGES = [
         pageName: "Permissions",
         route: "/permission-management",
     },
+
+    {
+    module: "Approval",
+    pageName: "Approvals",
+    route: "/approvals",
+},
+
+
 ];
 
 
@@ -334,8 +346,29 @@ export const PERMISSION_PAGES = [
 ============================================================ */
 
 function AppRoutes() {
+
+    useEffect(() => {
+        const registerPermissions = async () => {
+            try {
+                await syncPermissions(PERMISSION_PAGES);
+
+                console.log(
+                    "Permission pages synchronized successfully."
+                );
+            } catch (error) {
+                console.error(
+                    "Permission page synchronization failed:",
+                    error
+                );
+            }
+        };
+
+        registerPermissions();
+    }, []);
+
     return (
         <Routes>
+
 
             {/* ================= Public ================= */}
 

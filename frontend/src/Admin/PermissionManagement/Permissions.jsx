@@ -391,9 +391,10 @@ export default function Permissions() {
   const [rolePermissions, setRolePermissions] = useState([]);
 
   const [selectedPermissions, setSelectedPermissions] = useState(
-    new Set(),
-  );
+    new Set(),);
 
+  const [permissionActions, setPermissionActions] = useState({});
+  
   const [expandedModules, setExpandedModules] = useState(new Set());
 
   const [roleSearch, setRoleSearch] = useState("");
@@ -524,6 +525,7 @@ export default function Permissions() {
         */
 
         const assignedIds = new Set();
+        const loadedActions = {};
 
         data.forEach((item) => {
           const permissionId = firstValue(
@@ -539,11 +541,55 @@ export default function Permissions() {
             null,
           );
 
-          if (permissionId !== null) {
-            assignedIds.add(normalizeId(permissionId));
+          if (
+            permissionId === null ||
+            permissionId === undefined
+          ) {
+            return;
+          }
+
+          const id = normalizeId(permissionId);
+
+          const actions = {
+            view:
+              item.canView ??
+              item.CanView ??
+              false,
+
+            create:
+              item.canCreate ??
+              item.CanCreate ??
+              false,
+
+            edit:
+              item.canEdit ??
+              item.CanEdit ??
+              false,
+
+            delete:
+              item.canDelete ??
+              item.CanDelete ??
+              false,
+
+            approve:
+              item.canApprove ??
+              item.CanApprove ??
+              false,
+
+            export:
+              item.canExport ??
+              item.CanExport ??
+              false,
+          };
+
+          loadedActions[id] = actions;
+
+          if (Object.values(actions).some(Boolean)) {
+            assignedIds.add(id);
           }
         });
 
+        setPermissionActions(loadedActions);
         setSelectedPermissions(assignedIds);
       } catch (err) {
         console.error(
@@ -752,21 +798,48 @@ export default function Permissions() {
      Toggle one permission
   ======================================================================== */
 
-  const togglePermission = async (permission) => {
+  const togglePermission = (
+    permission,
+    action = "view",
+  ) => {
     if (!permission?.id) return;
 
     const permissionId = normalizeId(permission.id);
 
-    setSelectedPermissions((previous) => {
-      const next = new Set(previous);
+    setPermissionActions((previous) => {
+      const current = previous[permissionId] || {
+        view: false,
+        create: false,
+        edit: false,
+        delete: false,
+        approve: false,
+        export: false,
+      };
 
-      if (next.has(permissionId)) {
-        next.delete(permissionId);
-      } else {
-        next.add(permissionId);
-      }
+      const updated = {
+        ...current,
+        [action]: !current[action],
+      };
 
-      return next;
+      const hasAnyAction =
+        Object.values(updated).some(Boolean);
+
+      setSelectedPermissions((selectedPrevious) => {
+        const next = new Set(selectedPrevious);
+
+        if (hasAnyAction) {
+          next.add(permissionId);
+        } else {
+          next.delete(permissionId);
+        }
+
+        return next;
+      });
+
+      return {
+        ...previous,
+        [permissionId]: updated,
+      };
     });
   };
 
@@ -775,25 +848,46 @@ export default function Permissions() {
   ======================================================================== */
 
   const toggleModule = (module) => {
-    const pageIds = [];
+    const pages = module.pages.filter(
+      (page) =>
+        page.id !== null &&
+        page.id !== undefined,
+    );
 
-    module.pages.forEach((page) => {
-      if (page.id !== null && page.id !== undefined) {
-        pageIds.push(normalizeId(page.id));
-      }
+    if (pages.length === 0) return;
+
+    const pageIds = pages.map((page) =>
+      normalizeId(page.id),
+    );
+
+    const moduleSelected = pageIds.every((id) =>
+      selectedPermissions.has(id),
+    );
+
+    setPermissionActions((previous) => {
+      const next = { ...previous };
+
+      pages.forEach((page) => {
+        const id = normalizeId(page.id);
+
+        next[id] = {
+          view: !moduleSelected,
+          create: !moduleSelected,
+          edit: !moduleSelected,
+          delete: !moduleSelected,
+          approve: !moduleSelected,
+          export: !moduleSelected,
+        };
+      });
+
+      return next;
     });
-
-    if (pageIds.length === 0) return;
 
     setSelectedPermissions((previous) => {
       const next = new Set(previous);
 
-      const allSelected = pageIds.every((id) =>
-        next.has(id),
-      );
-
       pageIds.forEach((id) => {
-        if (allSelected) {
+        if (moduleSelected) {
           next.delete(id);
         } else {
           next.add(id);
@@ -827,21 +921,30 @@ export default function Permissions() {
     );
 
   const toggleAll = () => {
-    setSelectedPermissions((previous) => {
-      const next = new Set(previous);
+    const shouldSelectAll = !allSelected;
 
-      if (allSelected) {
-        allPermissionIds.forEach((id) =>
-          next.delete(id),
-        );
-      } else {
-        allPermissionIds.forEach((id) =>
-          next.add(id),
-        );
-      }
+    setPermissionActions((previous) => {
+      const next = { ...previous };
+
+      allPermissionIds.forEach((id) => {
+        next[id] = {
+          view: shouldSelectAll,
+          create: shouldSelectAll,
+          edit: shouldSelectAll,
+          delete: shouldSelectAll,
+          approve: shouldSelectAll,
+          export: shouldSelectAll,
+        };
+      });
 
       return next;
     });
+
+    setSelectedPermissions(
+      shouldSelectAll
+        ? new Set(allPermissionIds)
+        : new Set(),
+    );
   };
 
   /* ========================================================================
@@ -894,101 +997,9 @@ export default function Permissions() {
       setError("");
       setSuccessMessage("");
 
-      const existingIds = new Set(
-        rolePermissions
-          .map((item) =>
-            firstValue(
-              item,
-              [
-                "permissionId",
-                "PermissionId",
-                "permissionID",
-                "PermissionID",
-                "id",
-                "Id",
-              ],
-              null,
-            ),
-          )
-          .filter(
-            (id) =>
-              id !== null &&
-              id !== undefined,
-          )
-          .map(normalizeId),
-      );
+      const existingMap = {};
 
-      const selectedIds = new Set(
-        Array.from(selectedPermissions).map(
-          normalizeId,
-        ),
-      );
-
-      /*
-      |--------------------------------------------------------------------------
-      | Permissions to add
-      |--------------------------------------------------------------------------
-      */
-
-      const permissionsToAdd =
-        Array.from(selectedIds).filter(
-          (id) => !existingIds.has(id),
-        );
-
-      /*
-      |--------------------------------------------------------------------------
-      | Permissions to remove
-      |--------------------------------------------------------------------------
-      */
-
-      const permissionsToRemove =
-        Array.from(existingIds).filter(
-          (id) => !selectedIds.has(id),
-        );
-
-      /*
-      |--------------------------------------------------------------------------
-      | Add new permissions
-      |--------------------------------------------------------------------------
-      */
-
-      for (const permissionId of permissionsToAdd) {
-        await assignRolePermission({
-          roleId: roleId,
-          permissionId: permissionId,
-        });
-      }
-
-      /*
-      |--------------------------------------------------------------------------
-      | Remove old permissions
-      |--------------------------------------------------------------------------
-      */
-
-      for (const permissionId of permissionsToRemove) {
-        await removeRolePermission(
-          roleId,
-          permissionId,
-        );
-      }
-
-      /*
-      |--------------------------------------------------------------------------
-      | Reload role permissions
-      |--------------------------------------------------------------------------
-      */
-
-      const updatedResponse =
-        await getRolePermissions(roleId);
-
-      const updatedData =
-        normalizeArray(updatedResponse);
-
-      setRolePermissions(updatedData);
-
-      const updatedIds = new Set();
-
-      updatedData.forEach((item) => {
+      rolePermissions.forEach((item) => {
         const permissionId = firstValue(
           item,
           [
@@ -1006,12 +1017,161 @@ export default function Permissions() {
           permissionId !== null &&
           permissionId !== undefined
         ) {
-          updatedIds.add(
-            normalizeId(permissionId),
-          );
+          existingMap[normalizeId(permissionId)] =
+            item;
         }
       });
 
+      /*
+      |--------------------------------------------------------------------------
+      | Save every page with its six action permissions
+      |--------------------------------------------------------------------------
+      */
+
+      for (const permission of permissionRows) {
+        if (
+          permission.id === null ||
+          permission.id === undefined ||
+          permission.id === ""
+        ) {
+          continue;
+        }
+
+        const permissionId = normalizeId(
+          permission.id,
+        );
+
+        const actions =
+          permissionActions[permissionId] || {
+            view: false,
+            create: false,
+            edit: false,
+            delete: false,
+            approve: false,
+            export: false,
+          };
+
+        const hasAnyAction =
+          Object.values(actions).some(Boolean);
+
+        const existing =
+          existingMap[permissionId];
+
+        /*
+        |--------------------------------------------------------------------------
+        | Remove permission when all actions are unchecked
+        |--------------------------------------------------------------------------
+        */
+
+        if (!hasAnyAction) {
+          if (existing) {
+            await removeRolePermission(
+              roleId,
+              permissionId,
+            );
+          }
+
+          continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Create or update permission
+        |--------------------------------------------------------------------------
+        */
+
+        await assignRolePermission({
+          roleId: roleId,
+          permissionId: permissionId,
+          canView: Boolean(actions.view),
+          canCreate: Boolean(actions.create),
+          canEdit: Boolean(actions.edit),
+          canDelete: Boolean(actions.delete),
+          canApprove: Boolean(actions.approve),
+          canExport: Boolean(actions.export),
+        });
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | Reload role permissions
+      |--------------------------------------------------------------------------
+      */
+
+      const updatedResponse =
+        await getRolePermissions(roleId);
+
+      const updatedData =
+        normalizeArray(updatedResponse);
+
+      setRolePermissions(updatedData);
+
+      const updatedActions = {};
+      const updatedIds = new Set();
+
+      updatedData.forEach((item) => {
+        const permissionId = firstValue(
+          item,
+          [
+            "permissionId",
+            "PermissionId",
+            "permissionID",
+            "PermissionID",
+            "id",
+            "Id",
+          ],
+          null,
+        );
+
+        if (
+          permissionId === null ||
+          permissionId === undefined
+        ) {
+          return;
+        }
+
+        const id = normalizeId(permissionId);
+
+        const actions = {
+          view:
+            item.canView ??
+            item.CanView ??
+            false,
+
+          create:
+            item.canCreate ??
+            item.CanCreate ??
+            false,
+
+          edit:
+            item.canEdit ??
+            item.CanEdit ??
+            false,
+
+          delete:
+            item.canDelete ??
+            item.CanDelete ??
+            false,
+
+          approve:
+            item.canApprove ??
+            item.CanApprove ??
+            false,
+
+          export:
+            item.canExport ??
+            item.CanExport ??
+            false,
+        };
+
+        updatedActions[id] = actions;
+
+        if (Object.values(actions).some(Boolean)) {
+          updatedIds.add(id);
+        }
+      });
+
+      setPermissionActions(updatedActions);
       setSelectedPermissions(updatedIds);
 
       setSuccessMessage(
@@ -1041,6 +1201,7 @@ export default function Permissions() {
 
   const cancelChanges = () => {
     const assignedIds = new Set();
+    const restoredActions = {};
 
     rolePermissions.forEach((item) => {
       const permissionId = firstValue(
@@ -1057,15 +1218,54 @@ export default function Permissions() {
       );
 
       if (
-        permissionId !== null &&
-        permissionId !== undefined
+        permissionId === null ||
+        permissionId === undefined
       ) {
-        assignedIds.add(
-          normalizeId(permissionId),
-        );
+        return;
+      }
+
+      const id = normalizeId(permissionId);
+
+      const actions = {
+        view:
+          item.canView ??
+          item.CanView ??
+          false,
+
+        create:
+          item.canCreate ??
+          item.CanCreate ??
+          false,
+
+        edit:
+          item.canEdit ??
+          item.CanEdit ??
+          false,
+
+        delete:
+          item.canDelete ??
+          item.CanDelete ??
+          false,
+
+        approve:
+          item.canApprove ??
+          item.CanApprove ??
+          false,
+
+        export:
+          item.canExport ??
+          item.CanExport ??
+          false,
+      };
+
+      restoredActions[id] = actions;
+
+      if (Object.values(actions).some(Boolean)) {
+        assignedIds.add(id);
       }
     });
 
+    setPermissionActions(restoredActions);
     setSelectedPermissions(assignedIds);
 
     setSuccessMessage("");
@@ -1090,33 +1290,7 @@ export default function Permissions() {
     permission,
     action,
   ) => {
-    const matchingPermission =
-      findPermissionForAction(
-        [permission],
-        action,
-      );
-
-    if (!matchingPermission) {
-      /*
-      |--------------------------------------------------------------------------
-      | If the API returns one permission per page without
-      | action information, View uses the page permission.
-      |--------------------------------------------------------------------------
-      */
-
-      if (action === "view") {
-        return (
-          <input
-            type="checkbox"
-            className="permission-checkbox"
-            checked={hasPermission(permission.id)}
-            onChange={() =>
-              togglePermission(permission)
-            }
-          />
-        );
-      }
-
+    if (!permission?.id) {
       return (
         <span className="permission-dash">
           —
@@ -1124,16 +1298,29 @@ export default function Permissions() {
       );
     }
 
+    const permissionId = normalizeId(
+      permission.id,
+    );
+
+    const actions =
+      permissionActions[permissionId] || {
+        view: false,
+        create: false,
+        edit: false,
+        delete: false,
+        approve: false,
+        export: false,
+      };
+
     return (
       <input
         type="checkbox"
         className="permission-checkbox"
-        checked={hasPermission(
-          matchingPermission.id,
-        )}
+        checked={Boolean(actions[action])}
         onChange={() =>
           togglePermission(
-            matchingPermission,
+            permission,
+            action,
           )
         }
       />
