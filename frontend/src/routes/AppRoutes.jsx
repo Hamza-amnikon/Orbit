@@ -4,6 +4,7 @@ import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayou
 
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Attendance from "../Admin/AttendanceManagement/Attendance";
+import Approval from "../Admin/Approvals/Approval";
 import Payroll from "../Admin/PayrollManagement/Payroll";
 import Reports from "../pages/Reports/Reports";
 import Tickets from "../pages/Tickets/Tickets";
@@ -448,68 +449,25 @@ function AppRoutes() {
                         element={<HolidayEvents />}
                     />
 
-                    {/* ================= Permissions ================= */}
-
+                    {/* Leave */}
+                    <Route path="/leave" element={<LeaveDashboard />} />
+                    <Route path="/leave/overview" element={<LeaveOverview />} />
+                    <Route path="/leave/balance" element={<LeaveBalance />} />
+                    <Route path="/leave/types" element={<LeaveTypes />} />
+                    <Route path="/leave/policies" element={<LeavePolicy />} />
+                    <Route path="/leave/requests" element={<LeaveRequests />} />
+                    <Route path="/leave/history" element={<LeaveTakenHistory />} />
+                    <Route path="/leave/my-leave" element={<MyLeave />} />
+                    <Route path="/leave/reports" element={<LeaveReports />} />
                     <Route
-                        path="/permission-management"
-                        element={<PermissionManagement />}
-                    />
+    path="/admin/leave/compoff"
+    element={<CompOff />}
+/>
 
-                    {/* ================= Leave ================= */}
 
-                    <Route
-                        path="/leave"
-                        element={<LeaveDashboard />}
-                    />
 
-                    <Route
-                        path="/leave/overview"
-                        element={<LeaveOverview />}
-                    />
-
-                    <Route
-                        path="/leave/balance"
-                        element={<LeaveBalance />}
-                    />
-
-                    <Route
-                        path="/leave/types"
-                        element={<LeaveTypes />}
-                    />
-
-                    <Route
-                        path="/leave/policies"
-                        element={<LeavePolicy />}
-                    />
-
-                    <Route
-                        path="/leave/requests"
-                        element={<LeaveRequests />}
-                    />
-
-                    <Route
-                        path="/leave/history"
-                        element={<LeaveTakenHistory />}
-                    />
-
-                    <Route
-                        path="/leave/my-leave"
-                        element={<MyLeave />}
-                    />
-
-                    <Route
-                        path="/leave/reports"
-                        element={<LeaveReports />}
-                    />
-
-                    <Route
-                        path="/admin/leave/compoff"
-                        element={<CompOff />}
-                    />
-
-                    {/* ================= Payroll ================= */}
-
-                    <Route
+                    {/* {PayRolls } */}
+ <Route
                         path="/employee/payroll"
                         element={<MyPayroll />}
                     />
