@@ -8,6 +8,7 @@ import {
 
 import authService from "../Admin/Services/authService";
 import { getProfile } from "../Admin/Services/ProfileService";
+import { getRolePermissions } from "../Admin/Services/PermissionService";
 
 const AuthContext = createContext(null);
 
@@ -17,6 +18,8 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
 
     const [profile, setProfile] = useState(null);
+
+    const [permissions, setPermissions] = useState([]);
 
     const [loading, setLoading] = useState(true);
 
@@ -315,6 +318,26 @@ export function AuthProvider({ children }) {
                 await getProfile();
 
 
+                setProfile(profileData);
+
+
+                const roleId = profileData?.roleId;
+
+if (roleId) {
+    const rolePermissions =
+        await getRolePermissions(roleId);
+
+    console.log(
+        "AuthContext Role Permissions:",
+        rolePermissions
+    );
+
+    setPermissions(rolePermissions);
+} else {
+    setPermissions([]);
+}
+
+
             console.log(
                 "AuthContext: Authenticated Employee:",
                 profileData
@@ -590,7 +613,7 @@ export function AuthProvider({ children }) {
 
     const role = "Admin";
 
-
+const roleId = profile?.roleId ?? user?.roleId ?? null;
     /*
     =========================================================
     PROVIDER
@@ -626,6 +649,9 @@ export function AuthProvider({ children }) {
 
                 profileLoading,
 
+                permissions,
+
+
                 refreshProfile:
                     loadProfile,
 
@@ -658,7 +684,8 @@ export function AuthProvider({ children }) {
                 */
 
                 role,
-
+                
+                roleId,
 
                 /*
                 ---------------------------------------------
