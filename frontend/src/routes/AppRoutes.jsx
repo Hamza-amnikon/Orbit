@@ -54,6 +54,7 @@ import SettingsDashboard from "../Admin/Settings/SettingsDashboard";
 import MyAttendance from "../Admin/AttendanceManagement/My Attendance/Attendance";
 import MyLeave from "../Admin/Leave/MyLeave/Leave/Leave";
 import MyPayroll from "../Admin/PayrollManagement/MyPayroll/Payrolls";
+import MyDashboard from "../Admin/MyDashboard/Dashboard";
 
 import AttendanceLogs from "../Admin/AttendanceManagement/AttendanceLogs/AttendanceLogs";
 import AttendanceDashboard from "../Admin/AttendanceManagement/Dashboard/AttendanceDashboard";
@@ -441,8 +442,8 @@ function AppRoutes() {
                     />
 
                     <Route
-                        path="/employees/my-dashboard"
-                        element={<Dashboard />}
+                        path="/MyDashboard"
+                        element={<MyDashboard />}
                     />
 
                     <Route
