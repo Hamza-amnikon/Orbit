@@ -7,6 +7,7 @@ import React, {
 
 import "./Payrolls.css";
 import useProfile from "../../Services/useProfile";
+import { useAuth } from "../../../context/AuthContext";
 
 import {
     Alert,
@@ -789,6 +790,12 @@ function Payslips() {
         error: profileError,
     } = useProfile();
 
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/employee/payroll";
+    const canView = hasPermission(permissionRoute, "view");
+    const canExport = hasPermission(permissionRoute, "export");
+
     const [payslip, setPayslip] =
         useState(null);
 
@@ -1268,18 +1275,37 @@ function Payslips() {
     ===================================================== */
 
     const handlePrint = () => {
+        if (!canExport) return;
         window.print();
     };
 
     // Download PDF uses the same A4 print stylesheet.
     // In Chrome/Edge the user can choose "Save as PDF" in the print dialog.
     const handleDownload = () => {
+        if (!canExport) return;
         window.print();
     };
 
     /* =====================================================
        LOADING
     ===================================================== */
+
+    if (!canView) {
+        return (
+            <Box
+                className="payroll-state"
+                sx={{ padding: "60px", textAlign: "center" }}
+            >
+                <Typography variant="h5">
+                    Access Denied
+                </Typography>
+
+                <Typography sx={{ mt: 1 }}>
+                    You do not have permission to access this page.
+                </Typography>
+            </Box>
+        );
+    }
 
     if (loading) {
         return (
@@ -1330,37 +1356,39 @@ function Payslips() {
                     </Typography>
                 </Box>
 
-                <Stack
-                    direction="row"
-                    spacing={1}
-                    className="payroll-header-actions"
-                >
-                    <Button
-                        variant="outlined"
-                        startIcon={
-                            <PrintOutlined />
-                        }
-                        onClick={
-                            handlePrint
-                        }
-                        className="print-button"
+                {canExport && (
+                    <Stack
+                        direction="row"
+                        spacing={1}
+                        className="payroll-header-actions"
                     >
-                        Print
-                    </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={
+                                <PrintOutlined />
+                            }
+                            onClick={
+                                handlePrint
+                            }
+                            className="print-button"
+                        >
+                            Print
+                        </Button>
 
-                    <Button
-                        variant="contained"
-                        startIcon={
-                            <DownloadOutlined />
-                        }
-                        onClick={
-                            handleDownload
-                        }
-                        className="download-button"
-                    >
-                        Download PDF
-                    </Button>
-                </Stack>
+                        <Button
+                            variant="contained"
+                            startIcon={
+                                <DownloadOutlined />
+                            }
+                            onClick={
+                                handleDownload
+                            }
+                            className="download-button"
+                        >
+                            Download PDF
+                        </Button>
+                    </Stack>
+                )}
             </Box>
 
             {/* =================================================

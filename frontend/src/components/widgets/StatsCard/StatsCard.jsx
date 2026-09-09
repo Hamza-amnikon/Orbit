@@ -1,24 +1,34 @@
 import "./StatsCard.css";
 
+import { useAuth } from "../../../context/AuthContext";
+
+
 function StatsCard({
 
     title,
-
     value,
-
     icon,
+    color,
+    route
 
-    color
+}) {
 
-}){
+    const { hasPermission } = useAuth();
 
-    return(
+
+    // Hide the card when View permission is disabled
+    if (route && !hasPermission(route, "view")) {
+        return null;
+    }
+
+
+    return (
 
         <div className="stats-card">
 
             <div
                 className="stats-icon"
-                style={{background:color}}
+                style={{ background: color }}
             >
 
                 {icon}
@@ -38,5 +48,6 @@ function StatsCard({
     );
 
 }
+
 
 export default StatsCard;

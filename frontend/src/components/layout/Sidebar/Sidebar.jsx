@@ -15,65 +15,75 @@ import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
+import { useAuth } from "../../../context/AuthContext";
 
 
-const menu = [
+export const menu = [
   {
     title: "Dashboard",
     icon: <DashboardRoundedIcon />,
     path: "/",
+    permissionPath: "/dashboard",
   },
   {
     title: "Employees",
     icon: <PeopleRoundedIcon />,
     path: "/employees",
+    permissionPath: "/employees",
   },
   {
     title: "Attendance",
     icon: <AccessTimeRoundedIcon />,
     path: "/attendance",
+    permissionPath: "/attendance",
   },
   {
     title: "Leave",
     icon: <EventBusyRoundedIcon />,
     path: "/leave",
+    permissionPath: "/leave",
   },
-{
-  title: "Approvals",
-  icon: <ApprovalRoundedIcon />,
-  path: "/approvals",
-},
-
-
+  {
+    title: "Approvals",
+    icon: <ApprovalRoundedIcon />,
+    path: "/approvals",
+    permissionPath: "/approvals",
+  },
   {
     title: "Payroll",
     icon: <PaymentsRoundedIcon />,
     path: "/payroll",
+    permissionPath: "/payroll",
   },
   {
     title: "Reports",
     icon: <AssessmentRoundedIcon />,
     path: "/reports",
+    permissionPath: "/reports",
   },
   {
     title: "Tickets",
     icon: <ConfirmationNumberRoundedIcon />,
     path: "/tickets",
+    permissionPath: "/tickets",
   },
   {
     title: "Documents",
     icon: <DescriptionRoundedIcon />,
     path: "/documents",
+    permissionPath: "/documents",
   },
   {
     title: "Settings",
     icon: <SettingsRoundedIcon />,
     path: "/settings",
+    permissionPath: "/settings",
   },
-  
-  {title: "Permission ",
+  {
+    title: "Permission",
     icon: <SettingsRoundedIcon />,
     path: "/permission-management",
+    permissionPath: "/permission-management",
   },
 ];
 
@@ -82,6 +92,9 @@ function Sidebar() {
 
   const navigate = useNavigate();
 
+  // Get permission checker from AuthContext
+  const { hasPermission } = useAuth();
+
 
   // =========================================================
   // LOGOUT
@@ -89,24 +102,27 @@ function Sidebar() {
 
   const handleLogout = () => {
 
-    // Remove authentication data
-
     localStorage.removeItem("token");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
     localStorage.removeItem("profile");
 
-    // Clear session data
-
     sessionStorage.clear();
-
-    // Redirect to login
 
     navigate("/login", {
       replace: true,
     });
 
   };
+
+
+  // =========================================================
+  // FILTER MENU BASED ON PERMISSIONS
+  // =========================================================
+
+  const allowedMenu = menu.filter((item) =>
+    hasPermission(item.permissionPath, "view")
+  );
 
 
   return (
@@ -136,7 +152,7 @@ function Sidebar() {
 
       <nav className="sidebar-menu">
 
-        {menu.map((item) => (
+        {allowedMenu.map((item) => (
 
           <NavLink
             key={item.title}

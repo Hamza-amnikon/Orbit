@@ -117,7 +117,6 @@ export default function AttendanceDetailsDialog({ open, onClose, attendance }) {
           Close
         </Button>
 
-        <Button variant="contained">Edit Attendance</Button>
       </DialogActions>
     </Dialog>
   );

@@ -11,85 +11,91 @@ import PaidRoundedIcon from "@mui/icons-material/PaidRounded";
 import PercentRoundedIcon from "@mui/icons-material/PercentRounded";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 
-function ModulesGrid(){
+import { useAuth } from "../../../context/AuthContext";
+
+
+function ModulesGrid() {
+
     const navigate = useNavigate();
 
-    const modules=[
+    const { hasPermission } = useAuth();
+
+
+    const modules = [
 
         {
-            title:"HRMS",
-            description:"Manage employees, attendance and organization.",
-            icon:<GroupsRoundedIcon/>,
-            color:"#2563eb",
+            title: "HRMS",
+            description: "Manage employees, attendance and organization.",
+            icon: <GroupsRoundedIcon />,
+            color: "#2563eb",
         },
 
         {
-            title:"Leave Management",
-            description:"Approve and manage employee leave requests.",
-            icon:<EventBusyRoundedIcon/>,
-            color:"#16a34a",
+            title: "Leave Management",
+            description: "Approve and manage employee leave requests.",
+            icon: <EventBusyRoundedIcon />,
+            color: "#16a34a",
             route: "/leave"
         },
 
         {
-            title:"Employee Management",
-            description:"Manage employee profiles and departments.",
-            icon:<PersonOutlineRoundedIcon/>,
-            color:"#9333ea",
+            title: "Employee Management",
+            description: "Manage employee profiles and departments.",
+            icon: <PersonOutlineRoundedIcon />,
+            color: "#9333ea",
             route: "/employees"
-
-        
         },
 
         {
-            title:"Ticketing",
-            description:"Raise and track support tickets.",
-            icon:<ConfirmationNumberRoundedIcon/>,
-            color:"#ea580c",
+            title: "Ticketing",
+            description: "Raise and track support tickets.",
+            icon: <ConfirmationNumberRoundedIcon />,
+            color: "#ea580c",
             route: "/tickets"
         },
 
         {
-            title:"Administration",
-            description:"Manage company settings and permissions.",
-            icon:<AdminPanelSettingsRoundedIcon/>,
-            color:"#0f766e"
+            title: "Administration",
+            description: "Manage company settings and permissions.",
+            icon: <AdminPanelSettingsRoundedIcon />,
+            color: "#0f766e"
         },
 
         {
-            title:"Salary Management",
-            description:"Process employee salaries and payroll.",
-            icon:<PaidRoundedIcon/>,
-            color:"#dc2626",
+            title: "Salary Management",
+            description: "Process employee salaries and payroll.",
+            icon: <PaidRoundedIcon />,
+            color: "#dc2626",
             route: "/payroll"
         },
 
         {
-            title:"Deductions",
-            description:"PF, ESI, Tax and other deductions.",
-            icon:<PercentRoundedIcon/>,
-            color:"#ca8a04"
+            title: "Deductions",
+            description: "PF, ESI, Tax and other deductions.",
+            icon: <PercentRoundedIcon />,
+            color: "#ca8a04"
         },
 
         {
-            title:"Reports",
-            description:"Generate HR and payroll reports.",
-            icon:<AssessmentRoundedIcon/>,
-            color:"#2563eb",
-            route: "reports"
+            title: "Reports",
+            description: "Generate HR and payroll reports.",
+            icon: <AssessmentRoundedIcon />,
+            color: "#2563eb",
+            route: "/reports"
         },
 
-         {
-            title:"My Dashboard",
-            description:"View your personal dashboard and analytics.",
-            icon:<AssessmentRoundedIcon/>,
-            color:"#2563eb",
+        {
+            title: "My Dashboard",
+            description: "View your personal dashboard and analytics.",
+            icon: <AssessmentRoundedIcon />,
+            color: "#2563eb",
             route: "/employees/my-dashboard"
         }
 
     ];
 
-    return(
+
+    return (
 
         <section className="modules">
 
@@ -99,22 +105,26 @@ function ModulesGrid(){
 
                 {
 
-                    modules.map((module)=>(
+                    modules
+                        .filter((module) =>
+                            !module.route ||
+                            hasPermission(module.route, "view")
+                        )
+                        .map((module) => (
 
-                        <ModuleCard
-                            key={module.title}
-                            {...module}
-                            onClick={() => {
-    console.log("Clicked:", module.title);
-    console.log("Route:", module.route);
+                            <ModuleCard
+                                key={module.title}
+                                {...module}
+                                onClick={() => {
 
-    if (module.route) {
-        navigate(module.route);
-    }
-                           }}
-                        />
+                                    if (module.route) {
+                                        navigate(module.route);
+                                    }
 
-                    ))
+                                }}
+                            />
+
+                        ))
 
                 }
 
@@ -125,5 +135,6 @@ function ModulesGrid(){
     );
 
 }
+
 
 export default ModulesGrid;

@@ -14,6 +14,9 @@ import {
   Delete,
 } from "@mui/icons-material";
 
+import { useLocation } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
+
 export default function AttendanceTable({
   rows = [],
   loading,
@@ -21,6 +24,15 @@ export default function AttendanceTable({
   onEdit,
   onDelete,
 }) {
+  const location = useLocation();
+  const { hasPermission } = useAuth();
+
+  const permissionRoute = location.pathname;
+
+  const canView = hasPermission(permissionRoute, "view");
+  const canEdit = hasPermission(permissionRoute, "edit");
+  const canDelete = hasPermission(permissionRoute, "delete");
+
   if (loading) {
     return (
       <div
@@ -144,32 +156,40 @@ export default function AttendanceTable({
 
             <td>
               <div className="attendance-actions">
-                <Tooltip title="View Attendance">
-                  <IconButton
-                    className="view-btn"
-                    onClick={() => onView(row)}
-                  >
-                    <Visibility fontSize="small" />
-                  </IconButton>
-                </Tooltip>
 
-                <Tooltip title="Edit Attendance">
-                  <IconButton
-                    className="edit-btn"
-                    onClick={() => onEdit(row)}
-                  >
-                    <Edit fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                {canView && (
+                  <Tooltip title="View Attendance">
+                    <IconButton
+                      className="view-btn"
+                      onClick={() => onView(row)}
+                    >
+                      <Visibility fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
 
-                <Tooltip title="Delete Attendance">
-                  <IconButton
-                    className="delete-btn"
-                    onClick={() => onDelete(row)}
-                  >
-                    <Delete fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                {canEdit && (
+                  <Tooltip title="Edit Attendance">
+                    <IconButton
+                      className="edit-btn"
+                      onClick={() => onEdit(row)}
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+
+                {canDelete && (
+                  <Tooltip title="Delete Attendance">
+                    <IconButton
+                      className="delete-btn"
+                      onClick={() => onDelete(row)}
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+
               </div>
             </td>
           </tr>

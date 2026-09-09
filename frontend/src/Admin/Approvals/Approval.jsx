@@ -18,11 +18,17 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import api from "../Services/api";
 
 const Approval = () => {
 
     const navigate = useNavigate();
+
+    const { hasPermission } = useAuth();
+
+    const canApprove = hasPermission("/approvals", "approve");
+    const canExport = hasPermission("/approvals", "export");
 
     const [searchParams] = useSearchParams();
 
@@ -590,6 +596,11 @@ const updateStatus = async () => {
         return;
     }
 
+    if (selectedStatus === "Approved" && !canApprove) {
+        alert("You do not have permission to approve this request.");
+        return;
+    }
+
     if (!selectedLeave.leaveId) {
         alert("Leave request ID not found.");
         return;
@@ -1151,17 +1162,19 @@ const handleExport = () => {
 
                     {/* EXPORT */}
 
-                    <button
-                        type="button"
-                        className="approval-export-btn"
-                        onClick={handleExport}
-                    >
+                    {canExport && (
+                        <button
+                            type="button"
+                            className="approval-export-btn"
+                            onClick={handleExport}
+                        >
 
-                        <FileDownloadRoundedIcon />
+                            <FileDownloadRoundedIcon />
 
-                        Export
+                            Export
 
-                    </button>
+                        </button>
+                    )}
 
 
                 </div>
@@ -1429,15 +1442,17 @@ const handleExport = () => {
 
         {String(request.status || "").toLowerCase() === "pending" && (
             <>
-                <button
-                    type="button"
-                    className="approval-approve-btn"
-                    onClick={() =>
-                        openStatusPopup(request, "Approved")
-                    }
-                >
-                    Approve
-                </button>
+                {canApprove && (
+                    <button
+                        type="button"
+                        className="approval-approve-btn"
+                        onClick={() =>
+                            openStatusPopup(request, "Approved")
+                        }
+                    >
+                        Approve
+                    </button>
+                )}
 
                 <button
                     type="button"
@@ -1779,19 +1794,21 @@ const handleExport = () => {
                     Cancel
                 </button>
 
-                <button
-                    type="button"
-                    className={
-                        selectedStatus === "Approved"
-                            ? "modal-approve-btn"
-                            : "modal-reject-btn"
-                    }
-                    onClick={updateStatus}
-                >
-                    {selectedStatus === "Approved"
-                        ? "Confirm Approval"
-                        : "Confirm Rejection"}
-                </button>
+                {selectedStatus === "Approved" && !canApprove ? null : (
+                    <button
+                        type="button"
+                        className={
+                            selectedStatus === "Approved"
+                                ? "modal-approve-btn"
+                                : "modal-reject-btn"
+                        }
+                        onClick={updateStatus}
+                    >
+                        {selectedStatus === "Approved"
+                            ? "Confirm Approval"
+                            : "Confirm Rejection"}
+                    </button>
+                )}
             </div>
 
         </div>

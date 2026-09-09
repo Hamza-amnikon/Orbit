@@ -11,6 +11,7 @@ import {
   InputAdornment,
   Button
 } from "@mui/material";
+
 import ShiftService from "../services/ShiftService";
 import SearchIcon from "@mui/icons-material/Search";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -32,14 +33,23 @@ import ScheduleIcon from "@mui/icons-material/Schedule";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
 import WeekendIcon from "@mui/icons-material/Weekend";
 
-
-
 import RefreshIcon from "@mui/icons-material/Refresh";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import AddIcon from "@mui/icons-material/Add";
 
+import { useAuth } from "../../../context/AuthContext";
 
 export default function ShiftManagement() {
+  const { hasPermission } = useAuth();
+
+  const permissionRoute = "/attendance/shifts";
+
+  const canView = hasPermission(permissionRoute, "view");
+  const canCreate = hasPermission(permissionRoute, "create");
+  const canEdit = hasPermission(permissionRoute, "edit");
+  const canDelete = hasPermission(permissionRoute, "delete");
+  const canExport = hasPermission(permissionRoute, "export");
+
   /* ===========================================================
      DUMMY DATA
   =========================================================== */
@@ -69,147 +79,157 @@ export default function ShiftManagement() {
   /* ===========================================================
      RESET FILTERS
   =========================================================== */
-/* ===========================================================
-   RESET FILTERS
-=========================================================== */
 
-const resetFilters = () => {
-  setSearch("");
-  setShift("");
-  setDepartment("");
-  setStatus("");
-};
+  const resetFilters = () => {
+    setSearch("");
+    setShift("");
+    setDepartment("");
+    setStatus("");
+  };
 
-/* ===========================================================
-   LOAD SHIFTS
-=========================================================== */
+  /* ===========================================================
+     LOAD SHIFTS
+  =========================================================== */
 
-const loadShifts = async () => {
-  try {
-    console.log("Loading shifts...");
+  const loadShifts = async () => {
+    try {
+      console.log("Loading shifts...");
 
-    const data = await ShiftService.getAll();
+      const data = await ShiftService.getAll();
 
-    console.log("Latest API Data:", data);
+      console.log("Latest API Data:", data);
 
-    setEmployees(data);
-  } catch (error) {
-    console.error(error);
-  }
-};
-/* ===========================================================
-   PAGE LOAD
-=========================================================== */
+      setEmployees(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-useEffect(() => {
-  loadShifts();
-}, []);
+  /* ===========================================================
+     PAGE LOAD
+  =========================================================== */
 
-/* ===========================================================
-   ASSIGN SHIFT
-=========================================================== */
+  useEffect(() => {
+    if (!canView) return;
 
-const handleAssignShift = async (newAssignment) => {
-  try {
-    await ShiftService.create(newAssignment);
+    loadShifts();
+  }, [canView]);
 
+  /* ===========================================================
+     ASSIGN SHIFT
+  =========================================================== */
+
+  const handleAssignShift = async (newAssignment) => {
+    if (!canCreate) return;
+
+    try {
+      await ShiftService.create(newAssignment);
+
+      await loadShifts();
+
+      setAssignOpen(false);
+
+      setSelectedEmployee(null);
+    } catch (error) {
+      console.error("Create Error:", error.response?.data || error);
+    }
+  };
+
+  /* ===========================================================
+     UPDATE SHIFT
+  =========================================================== */
+
+  const handleUpdateShift = async (updatedEmployee) => {
+    if (!canEdit) return;
+
+    try {
+      await ShiftService.update(
+        selectedEmployee.shiftId,
+        updatedEmployee
+      );
+
+      await loadShifts();
+
+      setEditOpen(false);
+
+      setSelectedEmployee(null);
+    } catch (error) {
+      console.error("Update Error:", error.response?.data || error);
+    }
+  };
+
+  /* ===========================================================
+     DELETE SHIFT
+  =========================================================== */
+
+  const handleDeleteShift = async () => {
+    if (!canDelete) return;
+
+    try {
+      await ShiftService.remove(selectedEmployee.shiftId);
+
+      await loadShifts();
+
+      setDeleteOpen(false);
+
+      setSelectedEmployee(null);
+    } catch (error) {
+      console.error("Delete Error:", error.response?.data || error);
+    }
+  };
+
+  /* ===========================================================
+     REFRESH BUTTON
+  =========================================================== */
+
+  const handleRefresh = async () => {
     await loadShifts();
+  };
 
-    setAssignOpen(false);
-
-    setSelectedEmployee(null);
-  } catch (error) {
-    console.error("Create Error:", error.response?.data || error);
-  }
-};
-/* ===========================================================
-   UPDATE SHIFT
-=========================================================== */
-
-const handleUpdateShift = async (updatedEmployee) => {
-  try {
-    await ShiftService.update(
-      selectedEmployee.shiftId,
-      updatedEmployee
-    );
-
-    await loadShifts();
-
-    setEditOpen(false);
-
-    setSelectedEmployee(null);
-  } catch (error) {
-    console.error("Update Error:", error.response?.data || error);
-  }
-};
-
-/* ===========================================================
-   DELETE SHIFT
-=========================================================== */
-
-const handleDeleteShift = async () => {
-  try {
-    await ShiftService.remove(selectedEmployee.shiftId);
-
-    await loadShifts();
-
-    setDeleteOpen(false);
-
-    setSelectedEmployee(null);
-  } catch (error) {
-    console.error("Delete Error:", error.response?.data || error);
-  }
-};
-
-/* ===========================================================
-   REFRESH BUTTON
-=========================================================== */
-
-const handleRefresh = async () => {
-  await loadShifts();
-};
   /* ===========================================================
      DASHBOARD COUNTS
   =========================================================== */
-const todayName = new Date().toLocaleDateString("en-US", {
-  weekday: "long",
-});
 
-const dashboard = {
-  morning: employees.filter(
-    (x) =>
-      (x.shiftName || x.shift) === "Morning" &&
-      x.weeklyOff1 !== todayName &&
-      x.weeklyOff2 !== todayName
-  ).length,
+  const todayName = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+  });
 
-  general: employees.filter(
-    (x) =>
-      (x.shiftName || x.shift) === "General" &&
-      x.weeklyOff1 !== todayName &&
-      x.weeklyOff2 !== todayName
-  ).length,
+  const dashboard = {
+    morning: employees.filter(
+      (x) =>
+        (x.shiftName || x.shift) === "Morning" &&
+        x.weeklyOff1 !== todayName &&
+        x.weeklyOff2 !== todayName
+    ).length,
 
-  evening: employees.filter(
-    (x) =>
-      (x.shiftName || x.shift) === "Evening" &&
-      x.weeklyOff1 !== todayName &&
-      x.weeklyOff2 !== todayName
-  ).length,
+    general: employees.filter(
+      (x) =>
+        (x.shiftName || x.shift) === "General" &&
+        x.weeklyOff1 !== todayName &&
+        x.weeklyOff2 !== todayName
+    ).length,
 
-  night: employees.filter(
-    (x) =>
-      (x.shiftName || x.shift) === "Night" &&
-      x.weeklyOff1 !== todayName &&
-      x.weeklyOff2 !== todayName
-  ).length,
+    evening: employees.filter(
+      (x) =>
+        (x.shiftName || x.shift) === "Evening" &&
+        x.weeklyOff1 !== todayName &&
+        x.weeklyOff2 !== todayName
+    ).length,
 
-  off: employees.filter(
-    (x) =>
-      x.weeklyOff1 === todayName ||
-      x.weeklyOff2 === todayName
-  ).length,
-};
+    night: employees.filter(
+      (x) =>
+        (x.shiftName || x.shift) === "Night" &&
+        x.weeklyOff1 !== todayName &&
+        x.weeklyOff2 !== todayName
+    ).length,
+
+    off: employees.filter(
+      (x) =>
+        x.weeklyOff1 === todayName ||
+        x.weeklyOff2 === todayName
+    ).length,
+  };
+
   /* ===========================================================
      FILTER DATA
   =========================================================== */
@@ -224,60 +244,94 @@ const dashboard = {
       item.department.toLowerCase().includes(keyword) ||
       item.designation.toLowerCase().includes(keyword);
 
-const shiftMatch =
-  shift === "" ||
-  (item.shiftName || item.shift) === shift;
+    const shiftMatch =
+      shift === "" ||
+      (item.shiftName || item.shift) === shift;
 
-    const departmentMatch = department === "" || item.department === department;
+    const departmentMatch =
+      department === "" ||
+      item.department === department;
 
-    const statusMatch = status === "" || item.status === status;
+    const statusMatch =
+      status === "" ||
+      item.status === status;
 
-    return searchMatch && shiftMatch && departmentMatch && statusMatch;
+    return (
+      searchMatch &&
+      shiftMatch &&
+      departmentMatch &&
+      statusMatch
+    );
   });
 
-const shifts = [
-  ...new Set(
-    employees
-      .map((x) => x.shiftName || x.shift)
-      .filter(Boolean)
-  ),
-];
+  const shifts = [
+    ...new Set(
+      employees
+        .map((x) => x.shiftName || x.shift)
+        .filter(Boolean)
+    ),
+  ];
 
-  const departments = [...new Set(employees.map((x) => x.department))];
+  const departments = [
+    ...new Set(employees.map((x) => x.department))
+  ];
 
-  const statuses = [...new Set(employees.map((x) => x.status))];
+  const statuses = [
+    ...new Set(employees.map((x) => x.status))
+  ];
+
+  if (!canView) {
+    return null;
+  }
+
   return (
     <div className="shift-management">
+
       {/* ================= HEADER ================= */}
 
       <div className="shift-header-card">
         <div>
           <h2>Shift Management</h2>
 
-          <p>Monitor employee shift assignments and today's workforce.</p>
+          <p>
+            Monitor employee shift assignments and today's workforce.
+          </p>
         </div>
 
         <div className="shift-header-actions">
-          <button className="outline-btn">
+
+          <button
+            className="outline-btn"
+            onClick={handleRefresh}
+          >
             <RefreshIcon />
             Refresh
           </button>
 
-          <button className="outline-btn">
-            <FileDownloadIcon />
-            Export
-          </button>
+          {canExport && (
+            <button className="outline-btn">
+              <FileDownloadIcon />
+              Export
+            </button>
+          )}
 
-          <button className="primary-btn" onClick={() => setAssignOpen(true)}>
-            <AddIcon />
-            Assign Shift
-          </button>
+          {canCreate && (
+            <button
+              className="primary-btn"
+              onClick={() => setAssignOpen(true)}
+            >
+              <AddIcon />
+              Assign Shift
+            </button>
+          )}
+
         </div>
       </div>
 
       {/* ================= DASHBOARD ================= */}
 
       <div className="shift-summary-grid">
+
         <DashboardCard
           title="Morning Shift"
           value={dashboard.morning}
@@ -317,196 +371,232 @@ const shifts = [
           color="#EF4444"
           icon={<WeekendIcon />}
         />
+
       </div>
 
       {/* ================= FILTERS ================= */}
-{/* ===========================================================
-    FILTER BAR
-=========================================================== */}
 
-<div className="shift-filter-card">
+      <div className="shift-filter-card">
 
-  {/* Search */}
+        {/* Search */}
 
-  <TextField
-    fullWidth
-    placeholder="Search by name, employee ID or department..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    variant="outlined"
-    size="medium"
-    InputProps={{
-      startAdornment: (
-        <InputAdornment position="start">
-          <SearchIcon />
-        </InputAdornment>
-      ),
-    }}
-  />
+        <TextField
+          fullWidth
+          placeholder="Search by name, employee ID or department..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          variant="outlined"
+          size="medium"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
 
-  {/* Shift */}
+        {/* Shift */}
 
-  <FormControl fullWidth>
+        <FormControl fullWidth>
 
-    <Select
-      value={shift}
-      onChange={(e) => setShift(e.target.value)}
-      displayEmpty
-      input={<OutlinedInput />}
-      startAdornment={
-        <InputAdornment position="start">
-          <AccessTimeIcon />
-        </InputAdornment>
-      }
-    >
+          <Select
+            value={shift}
+            onChange={(e) => setShift(e.target.value)}
+            displayEmpty
+            input={<OutlinedInput />}
+            startAdornment={
+              <InputAdornment position="start">
+                <AccessTimeIcon />
+              </InputAdornment>
+            }
+          >
 
-      <MenuItem value="">All Shifts</MenuItem>
+            <MenuItem value="">All Shifts</MenuItem>
 
-      {shifts.map((item) => (
+            {shifts.map((item) => (
 
-        <MenuItem
-          key={item}
-          value={item}
+              <MenuItem
+                key={item}
+                value={item}
+              >
+                {item}
+              </MenuItem>
+
+            ))}
+
+          </Select>
+
+        </FormControl>
+
+        {/* Department */}
+
+        <FormControl fullWidth>
+
+          <Select
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+            displayEmpty
+            input={<OutlinedInput />}
+            startAdornment={
+              <InputAdornment position="start">
+                <ApartmentIcon />
+              </InputAdornment>
+            }
+          >
+
+            <MenuItem value="">All Departments</MenuItem>
+
+            {departments.map((item) => (
+
+              <MenuItem
+                key={item}
+                value={item}
+              >
+                {item}
+              </MenuItem>
+
+            ))}
+
+          </Select>
+
+        </FormControl>
+
+        {/* Status */}
+
+        <FormControl fullWidth>
+
+          <Select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            displayEmpty
+            input={<OutlinedInput />}
+            startAdornment={
+              <InputAdornment position="start">
+                <TaskAltIcon />
+              </InputAdornment>
+            }
+          >
+
+            <MenuItem value="">All Status</MenuItem>
+
+            {statuses.map((item) => (
+
+              <MenuItem
+                key={item}
+                value={item}
+              >
+                {item}
+              </MenuItem>
+
+            ))}
+
+          </Select>
+
+        </FormControl>
+
+        {/* Reset */}
+
+        <Button
+          variant="contained"
+          startIcon={<AutorenewIcon />}
+          onClick={resetFilters}
+          className="reset-btn"
         >
-          {item}
-        </MenuItem>
+          Reset
+        </Button>
 
-      ))}
+      </div>
 
-    </Select>
-
-  </FormControl>
-
-  {/* Department */}
-
-  <FormControl fullWidth>
-
-    <Select
-      value={department}
-      onChange={(e) => setDepartment(e.target.value)}
-      displayEmpty
-      input={<OutlinedInput />}
-      startAdornment={
-        <InputAdornment position="start">
-          <ApartmentIcon />
-        </InputAdornment>
-      }
-    >
-
-      <MenuItem value="">All Departments</MenuItem>
-
-      {departments.map((item) => (
-
-        <MenuItem
-          key={item}
-          value={item}
-        >
-          {item}
-        </MenuItem>
-
-      ))}
-
-    </Select>
-
-  </FormControl>
-
-  {/* Status */}
-
-  <FormControl fullWidth>
-
-    <Select
-      value={status}
-      onChange={(e) => setStatus(e.target.value)}
-      displayEmpty
-      input={<OutlinedInput />}
-      startAdornment={
-        <InputAdornment position="start">
-          <TaskAltIcon />
-        </InputAdornment>
-      }
-    >
-
-      <MenuItem value="">All Status</MenuItem>
-
-      {statuses.map((item) => (
-
-        <MenuItem
-          key={item}
-          value={item}
-        >
-          {item}
-        </MenuItem>
-
-      ))}
-
-    </Select>
-
-  </FormControl>
-
-  {/* Reset */}
-
-  <Button
-    variant="contained"
-    startIcon={<AutorenewIcon />}
-    onClick={resetFilters}
-    className="reset-btn"
-  >
-    Reset
-  </Button>
-
-</div>
       {/* ================= TABLE ================= */}
 
       <div className="shift-table-card">
+
         <div className="table-header">
+
           <div className="table-header-left">
-            <span className="table-tag">SHIFT DIRECTORY</span>
+
+            <span className="table-tag">
+              SHIFT DIRECTORY
+            </span>
 
             <h3>Today's Shift Employees</h3>
 
-            <p>View and manage employee shift assignments.</p>
+            <p>
+              View and manage employee shift assignments.
+            </p>
+
           </div>
 
           <div className="table-header-right">
-            <div className="record-count">
-              <strong>{filteredEmployees.length}</strong>
 
-              <span>Employees</span>
+            <div className="record-count">
+
+              <strong>
+                {filteredEmployees.length}
+              </strong>
+
+              <span>
+                Employees
+              </span>
+
             </div>
 
-            <button className="table-btn">Print</button>
+            {canExport && (
+              <button className="table-btn">
+                Print
+              </button>
+            )}
 
-            <button className="table-btn">Export CSV</button>
+            {canExport && (
+              <button className="table-btn">
+                Export CSV
+              </button>
+            )}
+
           </div>
+
         </div>
 
         <ShiftTable
           rows={filteredEmployees}
+
           onView={(row) => {
+            if (!canView) return;
+
             setSelectedEmployee(row);
 
             setDetailsOpen(true);
           }}
+
           onEdit={(row) => {
+            if (!canEdit) return;
+
             setSelectedEmployee(row);
 
             setEditOpen(true);
           }}
+
           onDelete={(row) => {
+            if (!canDelete) return;
+
             setSelectedEmployee(row);
 
             setDeleteOpen(true);
           }}
         />
+
       </div>
 
       {/* ================= DIALOGS ================= */}
 
-      <AssignShiftDialog
-        open={assignOpen}
-        onClose={() => setAssignOpen(false)}
-        onSave={handleAssignShift}
-      />
+      {canCreate && (
+        <AssignShiftDialog
+          open={assignOpen}
+          onClose={() => setAssignOpen(false)}
+          onSave={handleAssignShift}
+        />
+      )}
 
       <ShiftDetailsDialog
         open={detailsOpen}
@@ -517,30 +607,33 @@ const shifts = [
           setSelectedEmployee(null);
         }}
       />
-      <EditShiftAssignmentDialog
-        open={editOpen}
-        employee={selectedEmployee}
-        onClose={() => {
-          setEditOpen(false);
 
-          setSelectedEmployee(null);
-        }}
-        onUpdate={handleUpdateShift}
-      />
+      {canEdit && (
+        <EditShiftAssignmentDialog
+          open={editOpen}
+          employee={selectedEmployee}
+          onClose={() => {
+            setEditOpen(false);
 
-      <DeleteShiftAssignmentDialog
-        open={deleteOpen}
-        employee={selectedEmployee}
-        onClose={() => {
-          setDeleteOpen(false);
+            setSelectedEmployee(null);
+          }}
+          onUpdate={handleUpdateShift}
+        />
+      )}
 
-          setSelectedEmployee(null);
-        }}
-        onDelete={handleDeleteShift}
-      />
+      {canDelete && (
+        <DeleteShiftAssignmentDialog
+          open={deleteOpen}
+          employee={selectedEmployee}
+          onClose={() => {
+            setDeleteOpen(false);
+
+            setSelectedEmployee(null);
+          }}
+          onDelete={handleDeleteShift}
+        />
+      )}
+
     </div>
   );
 }
-
-
-

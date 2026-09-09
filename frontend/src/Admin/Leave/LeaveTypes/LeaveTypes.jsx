@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./LeaveTypes.css";
+import { useAuth } from "../../../context/AuthContext";
 
 import {
     Dialog,
@@ -22,6 +23,14 @@ import CloseIcon from "@mui/icons-material/Close";
 const LEAVE_TYPE_API = "https://localhost:7206/api/LeaveType";
 
 export default function LeaveTypes() {
+
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/leave/types";
+    const canView = hasPermission(permissionRoute, "view");
+    const canCreate = hasPermission(permissionRoute, "create");
+    const canEdit = hasPermission(permissionRoute, "edit");
+    const canDelete = hasPermission(permissionRoute, "delete");
 
     const [leaveTypes, setLeaveTypes] = useState([]);
 
@@ -66,6 +75,8 @@ export default function LeaveTypes() {
     // ==========================================
 
     async function addLeaveType(e) {
+
+        if (!canCreate) return;
 
         e.preventDefault();
 
@@ -149,6 +160,8 @@ export default function LeaveTypes() {
 
     function editLeaveType(leaveType) {
 
+        if (!canEdit) return;
+
         setEditingId(
             leaveType.leaveTypeId
         );
@@ -186,6 +199,8 @@ export default function LeaveTypes() {
     // ==========================================
 
     async function updateLeaveType(e) {
+
+        if (!canEdit) return;
 
         e.preventDefault();
 
@@ -259,6 +274,8 @@ export default function LeaveTypes() {
 
     async function deleteLeaveType(leaveType) {
 
+        if (!canDelete) return;
+
         const confirmDelete =
             window.confirm(
 
@@ -325,6 +342,18 @@ export default function LeaveTypes() {
     }
 
 
+    if (!canView) {
+        return (
+            <div
+                className="leave-types-page"
+                style={{ padding: "60px", textAlign: "center" }}
+            >
+                <h2>Access Denied</h2>
+                <p>You do not have permission to access this page.</p>
+            </div>
+        );
+    }
+
     return (
 
         <div className="leave-types-page">
@@ -377,19 +406,21 @@ export default function LeaveTypes() {
                                 </button>
 
 
-                                <button
-                                    type="button"
-                                    className="add-leave-type-btn"
-                                    onClick={() => {
+                                {canCreate && (
+                                    <button
+                                        type="button"
+                                        className="add-leave-type-btn"
+                                        onClick={() => {
 
-                                        closeForm();
+                                            closeForm();
 
-                                        setShowForm(true);
+                                            setShowForm(true);
 
-                                    }}
-                                >
-                                    + Add Leave Type
-                                </button>
+                                        }}
+                                    >
+                                        + Add Leave Type
+                                    </button>
+                                )}
 
                             </div>
 
@@ -404,7 +435,10 @@ export default function LeaveTypes() {
 
                     <Dialog
 
-                        open={showForm}
+                        open={
+                            showForm &&
+                            (editingId ? canEdit : canCreate)
+                        }
 
                         onClose={closeForm}
 
@@ -732,11 +766,13 @@ export default function LeaveTypes() {
                             </Button>
 
 
-                            <Button
+                            {((editingId && canEdit) ||
+                                (!editingId && canCreate)) && (
+                                <Button
 
-                                type="submit"
+                                    type="submit"
 
-                                form="leave-type-form"
+                                    form="leave-type-form"
 
                                 variant="contained"
 
@@ -785,7 +821,8 @@ export default function LeaveTypes() {
                                     : "Save Leave Type"
                                 }
 
-                            </Button>
+                                </Button>
+                            )}
 
                         </DialogActions>
 
@@ -915,38 +952,42 @@ export default function LeaveTypes() {
 
                                                     <div className="leave-action-buttons">
 
-                                                        <button
+                                                        {canEdit && (
+                                                            <button
 
-                                                            type="button"
+                                                                type="button"
 
-                                                            className="edit-leave-btn"
+                                                                className="edit-leave-btn"
 
-                                                            onClick={() =>
-                                                                editLeaveType(
-                                                                    leaveType
-                                                                )
-                                                            }
+                                                                onClick={() =>
+                                                                    editLeaveType(
+                                                                        leaveType
+                                                                    )
+                                                                }
 
-                                                        >
-                                                            Edit
-                                                        </button>
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                        )}
 
 
-                                                        <button
+                                                        {canDelete && (
+                                                            <button
 
-                                                            type="button"
+                                                                type="button"
 
-                                                            className="delete-leave-btn"
+                                                                className="delete-leave-btn"
 
-                                                            onClick={() =>
-                                                                deleteLeaveType(
-                                                                    leaveType
-                                                                )
-                                                            }
+                                                                onClick={() =>
+                                                                    deleteLeaveType(
+                                                                        leaveType
+                                                                    )
+                                                                }
 
-                                                        >
-                                                            Delete
-                                                        </button>
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        )}
 
                                                     </div>
 

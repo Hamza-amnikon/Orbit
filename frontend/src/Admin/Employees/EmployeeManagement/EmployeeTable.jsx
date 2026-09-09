@@ -34,7 +34,19 @@ function EmployeeTable({
     employeeCode,
     employeeName,
     isAuthenticated,
+    hasPermission,
   } = useAuth();
+
+
+  // =====================================================
+  // PERMISSIONS
+  // =====================================================
+
+  const canEdit =
+    hasPermission("/employees/list", "edit");
+
+  const canDelete =
+    hasPermission("/employees/list", "delete");
 
 
   // =====================================================
@@ -510,7 +522,9 @@ function EmployeeTable({
                   colSpan="9"
                   className="no-records"
                 >
+
                   No Employees Found
+
                 </td>
 
               </tr>
@@ -657,62 +671,70 @@ function EmployeeTable({
 
                         {/* EDIT */}
 
-                        <Tooltip
-                          title="Edit"
-                        >
+                        {canEdit && (
 
-                          <span>
+                          <Tooltip
+                            title="Edit"
+                          >
 
-                            <IconButton
-                              className="edit-btn"
-                              onClick={() =>
-                                handleEdit(emp)
-                              }
-                              disabled={
-                                !isAuthenticated ||
-                                !currentEmployeeId
-                              }
-                            >
+                            <span>
 
-                              <Edit
-                                fontSize="small"
-                              />
+                              <IconButton
+                                className="edit-btn"
+                                onClick={() =>
+                                  handleEdit(emp)
+                                }
+                                disabled={
+                                  !isAuthenticated ||
+                                  !currentEmployeeId
+                                }
+                              >
 
-                            </IconButton>
+                                <Edit
+                                  fontSize="small"
+                                />
 
-                          </span>
+                              </IconButton>
 
-                        </Tooltip>
+                            </span>
+
+                          </Tooltip>
+
+                        )}
 
 
                         {/* DELETE */}
 
-                        <Tooltip
-                          title="Delete"
-                        >
+                        {canDelete && (
 
-                          <span>
+                          <Tooltip
+                            title="Delete"
+                          >
 
-                            <IconButton
-                              className="delete-btn"
-                              onClick={() =>
-                                handleDelete(emp)
-                              }
-                              disabled={
-                                !isAuthenticated ||
-                                !currentEmployeeId
-                              }
-                            >
+                            <span>
 
-                              <Delete
-                                fontSize="small"
-                              />
+                              <IconButton
+                                className="delete-btn"
+                                onClick={() =>
+                                  handleDelete(emp)
+                                }
+                                disabled={
+                                  !isAuthenticated ||
+                                  !currentEmployeeId
+                                }
+                              >
 
-                            </IconButton>
+                                <Delete
+                                  fontSize="small"
+                                />
 
-                          </span>
+                              </IconButton>
 
-                        </Tooltip>
+                            </span>
+
+                          </Tooltip>
+
+                        )}
 
 
                       </div>

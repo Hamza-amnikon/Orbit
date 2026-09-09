@@ -8,6 +8,18 @@ import { useAuth } from "../../../context/AuthContext";
 function AddEmployee() {
 
   // ==========================================
+  // PERMISSIONS
+  // ==========================================
+
+  const { hasPermission } = useAuth();
+
+  const permissionRoute = "/employees/add";
+
+  const canView = hasPermission(permissionRoute, "view");
+  const canCreate = hasPermission(permissionRoute, "create");
+  console.log("Add Employee Create Permission:", canCreate);
+
+  // ==========================================
   // AUTHENTICATED USER
   // ==========================================
 
@@ -48,13 +60,11 @@ function AddEmployee() {
   const ROLE_API =
     "http://localhost:7294/api/Role/active";
 
-
   // ==========================================
   // NAVIGATION
   // ==========================================
 
   const navigate = useNavigate();
-
 
   // ==========================================
   // PERSONAL INFORMATION
@@ -67,7 +77,6 @@ function AddEmployee() {
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [gender, setGender] = useState("");
-
 
   // ==========================================
   // EMPLOYMENT INFORMATION
@@ -83,7 +92,6 @@ function AddEmployee() {
   const [roles, setRoles] = useState([]);
   const [role, setRole] = useState("");
 
-
   // ==========================================
   // DROPDOWN DATA
   // ==========================================
@@ -92,7 +100,6 @@ function AddEmployee() {
   const [designations, setDesignations] = useState([]);
   const [employeeTypes, setEmployeeTypes] = useState([]);
   const [locations, setLocations] = useState([]);
-
 
   // ==========================================
   // AUTH HEADERS
@@ -111,7 +118,6 @@ function AddEmployee() {
       }
     };
   };
-
 
   // ==========================================
   // DEBUG AUTHENTICATED EMPLOYEE
@@ -182,12 +188,15 @@ function AddEmployee() {
     token
   ]);
 
-
   // ==========================================
   // LOAD DROPDOWNS
   // ==========================================
 
   useEffect(() => {
+
+    if (!canView || !canCreate) {
+      return;
+    }
 
     loadDepartments();
     loadDesignations();
@@ -195,8 +204,7 @@ function AddEmployee() {
     loadRoles();
     loadEmployeeTypes();
 
-  }, []);
-
+  }, [canView, canCreate]);
 
   // ==========================================
   // ROLES
@@ -225,7 +233,6 @@ function AddEmployee() {
 
   }
 
-
   // ==========================================
   // DESIGNATIONS
   // ==========================================
@@ -252,7 +259,6 @@ function AddEmployee() {
     }
 
   }
-
 
   // ==========================================
   // DEPARTMENTS
@@ -281,7 +287,6 @@ function AddEmployee() {
 
   }
 
-
   // ==========================================
   // LOCATIONS
   // ==========================================
@@ -308,7 +313,6 @@ function AddEmployee() {
     }
 
   }
-
 
   // ==========================================
   // EMPLOYEE TYPES
@@ -337,12 +341,15 @@ function AddEmployee() {
 
   }
 
-
   // ==========================================
   // SAVE EMPLOYEE
   // ==========================================
 
   async function addEmployee() {
+
+    if (!canCreate) {
+      return;
+    }
 
     // ------------------------------------------
     // AUTHENTICATION CHECK
@@ -357,7 +364,6 @@ function AddEmployee() {
       return;
 
     }
-
 
     // ------------------------------------------
     // TOKEN CHECK
@@ -375,7 +381,6 @@ function AddEmployee() {
       return;
 
     }
-
 
     // ------------------------------------------
     // EMPLOYEE ID CHECK
@@ -395,7 +400,6 @@ function AddEmployee() {
 
     }
 
-
     // ------------------------------------------
     // LOCATION NAME
     // ------------------------------------------
@@ -407,7 +411,6 @@ function AddEmployee() {
             x.locationId
           ) === String(location)
       );
-
 
     // ------------------------------------------
     // EMPLOYEE DATA
@@ -437,18 +440,9 @@ function AddEmployee() {
 
     };
 
-
     // ------------------------------------------
     // AUDIT INFORMATION
     // ------------------------------------------
-    //
-    // This tells the backend who initiated
-    // the operation.
-    //
-    // IMPORTANT:
-    // The backend should NOT trust this value.
-    // It should derive EmployeeId from the JWT.
-    //
 
     const requestData = {
 
@@ -464,7 +458,6 @@ function AddEmployee() {
         employeeName || null
 
     };
-
 
     console.log(
       "=========================================="
@@ -498,7 +491,6 @@ function AddEmployee() {
       "=========================================="
     );
 
-
     // ------------------------------------------
     // SAVE
     // ------------------------------------------
@@ -520,12 +512,10 @@ function AddEmployee() {
           }
         );
 
-
       console.log(
         "Employee Saved:",
         response.data
       );
-
 
       // ----------------------------------------
       // FETCH LATEST EMPLOYEE LIST
@@ -554,7 +544,6 @@ function AddEmployee() {
 
       }
 
-
       // ----------------------------------------
       // SUCCESS
       // ----------------------------------------
@@ -562,7 +551,6 @@ function AddEmployee() {
       alert(
         "Employee Added Successfully"
       );
-
 
       // ----------------------------------------
       // RESET FORM
@@ -593,7 +581,6 @@ function AddEmployee() {
         error
       );
 
-
       // ----------------------------------------
       // UNAUTHORIZED
       // ----------------------------------------
@@ -614,7 +601,6 @@ function AddEmployee() {
 
       }
 
-
       // ----------------------------------------
       // FORBIDDEN
       // ----------------------------------------
@@ -630,7 +616,6 @@ function AddEmployee() {
         return;
 
       }
-
 
       // ----------------------------------------
       // API ERROR
@@ -669,7 +654,6 @@ function AddEmployee() {
 
   }
 
-
   // ==========================================
   // CANCEL
   // ==========================================
@@ -680,6 +664,13 @@ function AddEmployee() {
 
   };
 
+  // ==========================================
+  // VIEW PERMISSION
+  // ==========================================
+
+  if (!canView) {
+    return null;
+  }
 
   // ==========================================
   // RENDER
@@ -707,39 +698,31 @@ function AddEmployee() {
       gender={gender}
       setGender={setGender}
 
-
       role={role}
       setRole={setRole}
       roles={roles}
-
 
       department={department}
       setDepartment={setDepartment}
       departments={departments}
 
-
       designation={designation}
       setDesignation={setDesignation}
       designations={designations}
-
 
       employeeType={employeeType}
       setEmployeeType={setEmployeeType}
       employeeTypes={employeeTypes}
 
-
       location={location}
       setLocation={setLocation}
       locations={locations}
 
-
       joiningDate={joiningDate}
       setJoiningDate={setJoiningDate}
 
-
       status={status}
       setStatus={setStatus}
-
 
       addEmployee={addEmployee}
       onCancel={handleCancel}

@@ -9,12 +9,10 @@ import {
 
 import EmployeeService from "../AttendanceManagement/services/EmployeeService";
 
-import {
-  getRoles,
-} from "../Roles/roleApi";
+import { getRoles } from "../Roles/roleApi";
 
 import "./Permissions.css";
-
+import { menu } from "../../components/layout/Sidebar/Sidebar";
 /*
 |--------------------------------------------------------------------------
 | Permissions Page
@@ -228,47 +226,6 @@ const isSameId = (a, b) => {
   return normalizeId(a) === normalizeId(b);
 };
 
-/*
-|--------------------------------------------------------------------------
-| Detect whether a role is a system/default role
-|--------------------------------------------------------------------------
-*/
-
-const isSystemRole = (role) => {
-  const value = firstValue(
-    role,
-    [
-      "isSystemRole",
-      "IsSystemRole",
-      "isSystem",
-      "IsSystem",
-      "systemRole",
-      "SystemRole",
-      "isDefault",
-      "IsDefault",
-    ],
-    null,
-  );
-
-  if (typeof value === "boolean") return value;
-
-  const roleName = getRoleName(role).toLowerCase();
-
-  const systemNames = [
-    "super admin",
-    "admin",
-    "hr manager",
-    "hr executive",
-    "department manager",
-    "team leader",
-    "employee",
-    "accountant",
-    "viewer",
-  ];
-
-  return systemNames.includes(roleName);
-};
-
 /* ==========================================================================
    Icons
 ========================================================================== */
@@ -391,10 +348,11 @@ export default function Permissions() {
   const [rolePermissions, setRolePermissions] = useState([]);
 
   const [selectedPermissions, setSelectedPermissions] = useState(
-    new Set(),);
+    new Set(),
+  );
 
   const [permissionActions, setPermissionActions] = useState({});
-  
+
   const [expandedModules, setExpandedModules] = useState(new Set());
 
   const [roleSearch, setRoleSearch] = useState("");
@@ -403,6 +361,7 @@ export default function Permissions() {
   const [activeTab, setActiveTab] = useState("roles");
 
   const [loading, setLoading] = useState(true);
+
   const [loadingRolePermissions, setLoadingRolePermissions] =
     useState(false);
 
@@ -421,12 +380,15 @@ export default function Permissions() {
       setLoading(true);
       setError("");
 
-      const [rolesResponse, employeeResponse, permissionResponse] =
-        await Promise.all([
-          getRoles(),
-          EmployeeService.getAllEmployees(),
-          getPermissions(),
-        ]);
+      const [
+        rolesResponse,
+        employeeResponse,
+        permissionResponse,
+      ] = await Promise.all([
+        getRoles(),
+        EmployeeService.getAllEmployees(),
+        getPermissions(),
+      ]);
 
       const rolesData = normalizeArray(rolesResponse);
       const employeeData = normalizeArray(employeeResponse);
@@ -449,7 +411,10 @@ export default function Permissions() {
           }
 
           const stillExists = rolesData.find((role) =>
-            isSameId(getId(role), getId(currentRole)),
+            isSameId(
+              getId(role),
+              getId(currentRole),
+            ),
           );
 
           return stillExists || rolesData[0];
@@ -472,7 +437,10 @@ export default function Permissions() {
 
       setExpandedModules(modules);
     } catch (err) {
-      console.error("Permission page load error:", err);
+      console.error(
+        "Permission page load error:",
+        err,
+      );
 
       setError(
         err?.response?.data?.message ||
@@ -497,6 +465,7 @@ export default function Permissions() {
       if (!selectedRole) {
         setRolePermissions([]);
         setSelectedPermissions(new Set());
+        setPermissionActions({});
         return;
       }
 
@@ -505,6 +474,7 @@ export default function Permissions() {
       if (!roleId) {
         setRolePermissions([]);
         setSelectedPermissions(new Set());
+        setPermissionActions({});
         return;
       }
 
@@ -599,6 +569,7 @@ export default function Permissions() {
 
         setRolePermissions([]);
         setSelectedPermissions(new Set());
+        setPermissionActions({});
 
         setError(
           err?.response?.data?.message ||
@@ -650,33 +621,68 @@ export default function Permissions() {
      Group pages by module
   ======================================================================== */
 
-  const modules = useMemo(() => {
-    const grouped = {};
+const modules = useMemo(() => {
+  const grouped = {};
 
-    permissionRows.forEach((permission) => {
-      const moduleName = permission.module || "HRMS";
+  permissionRows.forEach((permission) => {
+    const moduleName =
+      permission.module || "HRMS";
 
-      if (!grouped[moduleName]) {
-        grouped[moduleName] = [];
-      }
+    if (!grouped[moduleName]) {
+      grouped[moduleName] = [];
+    }
 
-      grouped[moduleName].push(permission);
-    });
+    grouped[moduleName].push(permission);
+  });
 
-    return Object.entries(grouped).map(
-      ([moduleName, pages]) => ({
-        moduleName,
-        pages,
-      }),
+  const getMenuIndex = (module) => {
+    const indexes = module.pages
+      .map((page) => page.path?.toLowerCase())
+      .filter(Boolean)
+      .map((pagePath) => {
+        const menuItem = menu.find((item) => {
+          const permissionPath =
+            item.permissionPath?.toLowerCase();
+
+          return (
+            permissionPath &&
+            (
+              pagePath === permissionPath ||
+              pagePath.startsWith(`${permissionPath}/`)
+            )
+          );
+        });
+
+        return menuItem
+          ? menu.indexOf(menuItem)
+          : 999;
+      });
+
+    return indexes.length > 0
+      ? Math.min(...indexes)
+      : 999;
+  };
+
+  return Object.entries(grouped)
+    .map(([moduleName, pages]) => ({
+      moduleName,
+      pages,
+    }))
+    .sort(
+      (a, b) =>
+        getMenuIndex(a) -
+        getMenuIndex(b)
     );
-  }, [permissionRows]);
+}, [permissionRows, menu]);
 
   /* ========================================================================
      Filter roles
   ======================================================================== */
 
   const filteredRoles = useMemo(() => {
-    const search = roleSearch.trim().toLowerCase();
+    const search = roleSearch
+      .trim()
+      .toLowerCase();
 
     if (!search) return roles;
 
@@ -692,22 +698,31 @@ export default function Permissions() {
   ======================================================================== */
 
   const filteredModules = useMemo(() => {
-    const search = pageSearch.trim().toLowerCase();
+    const search = pageSearch
+      .trim()
+      .toLowerCase();
 
     if (!search) return modules;
 
     return modules
       .map((module) => {
-        const moduleMatches = module.moduleName
-          .toLowerCase()
-          .includes(search);
+        const moduleMatches =
+          module.moduleName
+            .toLowerCase()
+            .includes(search);
 
-        const pages = module.pages.filter((page) => {
-          return (
-            page.page.toLowerCase().includes(search) ||
-            page.path.toLowerCase().includes(search)
-          );
-        });
+        const pages = module.pages.filter(
+          (page) => {
+            return (
+              page.page
+                .toLowerCase()
+                .includes(search) ||
+              page.path
+                .toLowerCase()
+                .includes(search)
+            );
+          },
+        );
 
         if (moduleMatches) {
           return module;
@@ -735,10 +750,6 @@ export default function Permissions() {
 
   const totalPermissions = permissions.length;
 
-  const customRoles = roles.filter(
-    (role) => !isSystemRole(role),
-  ).length;
-
   /* ========================================================================
      Permission matching
   ======================================================================== */
@@ -765,8 +776,12 @@ export default function Permissions() {
   |--------------------------------------------------------------------------
   */
 
-  const findPermissionForAction = (page, action) => {
-    const normalizedAction = action.toLowerCase();
+  const findPermissionForAction = (
+    page,
+    action,
+  ) => {
+    const normalizedAction =
+      action.toLowerCase();
 
     return page.find((permission) => {
       if (
@@ -776,11 +791,13 @@ export default function Permissions() {
         return true;
       }
 
-      const combined = `${permission.page}.${permission.action}`.toLowerCase();
+      const combined =
+        `${permission.page}.${permission.action}`.toLowerCase();
 
-      const permissionName = getPermissionName(
-        permission.raw,
-      ).toLowerCase();
+      const permissionName =
+        getPermissionName(
+          permission.raw,
+        ).toLowerCase();
 
       return (
         permissionName.includes(
@@ -789,7 +806,9 @@ export default function Permissions() {
         permissionName.includes(
           ` ${normalizedAction}`,
         ) ||
-        combined.endsWith(`.${normalizedAction}`)
+        combined.endsWith(
+          `.${normalizedAction}`,
+        )
       );
     });
   };
@@ -804,17 +823,19 @@ export default function Permissions() {
   ) => {
     if (!permission?.id) return;
 
-    const permissionId = normalizeId(permission.id);
+    const permissionId =
+      normalizeId(permission.id);
 
     setPermissionActions((previous) => {
-      const current = previous[permissionId] || {
-        view: false,
-        create: false,
-        edit: false,
-        delete: false,
-        approve: false,
-        export: false,
-      };
+      const current =
+        previous[permissionId] || {
+          view: false,
+          create: false,
+          edit: false,
+          delete: false,
+          approve: false,
+          export: false,
+        };
 
       const updated = {
         ...current,
@@ -824,17 +845,21 @@ export default function Permissions() {
       const hasAnyAction =
         Object.values(updated).some(Boolean);
 
-      setSelectedPermissions((selectedPrevious) => {
-        const next = new Set(selectedPrevious);
+      setSelectedPermissions(
+        (selectedPrevious) => {
+          const next = new Set(
+            selectedPrevious,
+          );
 
-        if (hasAnyAction) {
-          next.add(permissionId);
-        } else {
-          next.delete(permissionId);
-        }
+          if (hasAnyAction) {
+            next.add(permissionId);
+          } else {
+            next.delete(permissionId);
+          }
 
-        return next;
-      });
+          return next;
+        },
+      );
 
       return {
         ...previous,
@@ -860,12 +885,15 @@ export default function Permissions() {
       normalizeId(page.id),
     );
 
-    const moduleSelected = pageIds.every((id) =>
-      selectedPermissions.has(id),
-    );
+    const moduleSelected =
+      pageIds.every((id) =>
+        selectedPermissions.has(id),
+      );
 
     setPermissionActions((previous) => {
-      const next = { ...previous };
+      const next = {
+        ...previous,
+      };
 
       pages.forEach((page) => {
         const id = normalizeId(page.id);
@@ -921,10 +949,13 @@ export default function Permissions() {
     );
 
   const toggleAll = () => {
-    const shouldSelectAll = !allSelected;
+    const shouldSelectAll =
+      !allSelected;
 
     setPermissionActions((previous) => {
-      const next = { ...previous };
+      const next = {
+        ...previous,
+      };
 
       allPermissionIds.forEach((id) => {
         next[id] = {
@@ -951,7 +982,9 @@ export default function Permissions() {
      Expand / collapse module
   ======================================================================== */
 
-  const toggleModuleExpanded = (moduleName) => {
+  const toggleModuleExpanded = (
+    moduleName,
+  ) => {
     setExpandedModules((previous) => {
       const next = new Set(previous);
 
@@ -981,14 +1014,18 @@ export default function Permissions() {
 
   const savePermissions = async () => {
     if (!selectedRole) {
-      setError("Please select a role first.");
+      setError(
+        "Please select a role first.",
+      );
       return;
     }
 
     const roleId = getId(selectedRole);
 
     if (!roleId) {
-      setError("Selected role does not have a valid ID.");
+      setError(
+        "Selected role does not have a valid ID.",
+      );
       return;
     }
 
@@ -1017,8 +1054,9 @@ export default function Permissions() {
           permissionId !== null &&
           permissionId !== undefined
         ) {
-          existingMap[normalizeId(permissionId)] =
-            item;
+          existingMap[
+            normalizeId(permissionId)
+          ] = item;
         }
       });
 
@@ -1037,12 +1075,13 @@ export default function Permissions() {
           continue;
         }
 
-        const permissionId = normalizeId(
-          permission.id,
-        );
+        const permissionId =
+          normalizeId(permission.id);
 
         const actions =
-          permissionActions[permissionId] || {
+          permissionActions[
+            permissionId
+          ] || {
             view: false,
             create: false,
             edit: false,
@@ -1052,7 +1091,9 @@ export default function Permissions() {
           };
 
         const hasAnyAction =
-          Object.values(actions).some(Boolean);
+          Object.values(actions).some(
+            Boolean,
+          );
 
         const existing =
           existingMap[permissionId];
@@ -1083,12 +1124,24 @@ export default function Permissions() {
         await assignRolePermission({
           roleId: roleId,
           permissionId: permissionId,
-          canView: Boolean(actions.view),
-          canCreate: Boolean(actions.create),
-          canEdit: Boolean(actions.edit),
-          canDelete: Boolean(actions.delete),
-          canApprove: Boolean(actions.approve),
-          canExport: Boolean(actions.export),
+          canView: Boolean(
+            actions.view,
+          ),
+          canCreate: Boolean(
+            actions.create,
+          ),
+          canEdit: Boolean(
+            actions.edit,
+          ),
+          canDelete: Boolean(
+            actions.delete,
+          ),
+          canApprove: Boolean(
+            actions.approve,
+          ),
+          canExport: Boolean(
+            actions.export,
+          ),
         });
       }
 
@@ -1099,29 +1152,36 @@ export default function Permissions() {
       */
 
       const updatedResponse =
-        await getRolePermissions(roleId);
+        await getRolePermissions(
+          roleId,
+        );
 
       const updatedData =
-        normalizeArray(updatedResponse);
+        normalizeArray(
+          updatedResponse,
+        );
 
-      setRolePermissions(updatedData);
+      setRolePermissions(
+        updatedData,
+      );
 
       const updatedActions = {};
       const updatedIds = new Set();
 
       updatedData.forEach((item) => {
-        const permissionId = firstValue(
-          item,
-          [
-            "permissionId",
-            "PermissionId",
-            "permissionID",
-            "PermissionID",
-            "id",
-            "Id",
-          ],
-          null,
-        );
+        const permissionId =
+          firstValue(
+            item,
+            [
+              "permissionId",
+              "PermissionId",
+              "permissionID",
+              "PermissionID",
+              "id",
+              "Id",
+            ],
+            null,
+          );
 
         if (
           permissionId === null ||
@@ -1130,7 +1190,8 @@ export default function Permissions() {
           return;
         }
 
-        const id = normalizeId(permissionId);
+        const id =
+          normalizeId(permissionId);
 
         const actions = {
           view:
@@ -1164,15 +1225,25 @@ export default function Permissions() {
             false,
         };
 
-        updatedActions[id] = actions;
+        updatedActions[id] =
+          actions;
 
-        if (Object.values(actions).some(Boolean)) {
+        if (
+          Object.values(actions).some(
+            Boolean,
+          )
+        ) {
           updatedIds.add(id);
         }
       });
 
-      setPermissionActions(updatedActions);
-      setSelectedPermissions(updatedIds);
+      setPermissionActions(
+        updatedActions,
+      );
+
+      setSelectedPermissions(
+        updatedIds,
+      );
 
       setSuccessMessage(
         `Permissions saved for ${getRoleName(
@@ -1204,18 +1275,19 @@ export default function Permissions() {
     const restoredActions = {};
 
     rolePermissions.forEach((item) => {
-      const permissionId = firstValue(
-        item,
-        [
-          "permissionId",
-          "PermissionId",
-          "permissionID",
-          "PermissionID",
-          "id",
-          "Id",
-        ],
-        null,
-      );
+      const permissionId =
+        firstValue(
+          item,
+          [
+            "permissionId",
+            "PermissionId",
+            "permissionID",
+            "PermissionID",
+            "id",
+            "Id",
+          ],
+          null,
+        );
 
       if (
         permissionId === null ||
@@ -1224,7 +1296,8 @@ export default function Permissions() {
         return;
       }
 
-      const id = normalizeId(permissionId);
+      const id =
+        normalizeId(permissionId);
 
       const actions = {
         view:
@@ -1258,15 +1331,25 @@ export default function Permissions() {
           false,
       };
 
-      restoredActions[id] = actions;
+      restoredActions[id] =
+        actions;
 
-      if (Object.values(actions).some(Boolean)) {
+      if (
+        Object.values(actions).some(
+          Boolean,
+        )
+      ) {
         assignedIds.add(id);
       }
     });
 
-    setPermissionActions(restoredActions);
-    setSelectedPermissions(assignedIds);
+    setPermissionActions(
+      restoredActions,
+    );
+
+    setSelectedPermissions(
+      assignedIds,
+    );
 
     setSuccessMessage("");
     setError("");
@@ -1298,12 +1381,13 @@ export default function Permissions() {
       );
     }
 
-    const permissionId = normalizeId(
-      permission.id,
-    );
+    const permissionId =
+      normalizeId(permission.id);
 
     const actions =
-      permissionActions[permissionId] || {
+      permissionActions[
+        permissionId
+      ] || {
         view: false,
         create: false,
         edit: false,
@@ -1316,7 +1400,9 @@ export default function Permissions() {
       <input
         type="checkbox"
         className="permission-checkbox"
-        checked={Boolean(actions[action])}
+        checked={Boolean(
+          actions[action],
+        )}
         onChange={() =>
           togglePermission(
             permission,
@@ -1336,9 +1422,14 @@ export default function Permissions() {
       <div className="permissions-page">
         <div className="permissions-loading">
           <div className="permissions-spinner" />
-          <h3>Loading Permissions</h3>
+
+          <h3>
+            Loading Permissions
+          </h3>
+
           <p>
-            Loading roles, employees and permissions...
+            Loading roles, employees and
+            permissions...
           </p>
         </div>
       </div>
@@ -1351,35 +1442,60 @@ export default function Permissions() {
 
   return (
     <div className="permissions-page">
+
       {/* ================================================================
           PAGE HEADER
       ================================================================ */}
 
       <div className="permissions-header">
+
         <div className="permissions-title-section">
+
           <div className="permissions-title-icon">
             <ShieldIcon />
           </div>
 
           <div>
-            <h1>Permissions</h1>
+
+            <h1>
+              Permissions
+            </h1>
 
             <p>
-              Manage role-based access to pages and
-              actions.
+              Manage role-based access to
+              pages and actions.
             </p>
 
             <div className="permissions-breadcrumb">
-              <span>Dashboard</span>
-              <span>›</span>
-              <span>Access Control</span>
-              <span>›</span>
-              <strong>Permissions</strong>
+
+              <span>
+                Dashboard
+              </span>
+
+              <span>
+                ›
+              </span>
+
+              <span>
+                Access Control
+              </span>
+
+              <span>
+                ›
+              </span>
+
+              <strong>
+                Permissions
+              </strong>
+
             </div>
+
           </div>
+
         </div>
 
         <div className="permissions-header-actions">
+
           <button
             type="button"
             className="permission-refresh-button"
@@ -1394,15 +1510,22 @@ export default function Permissions() {
             type="button"
             className="permission-save-top"
             onClick={savePermissions}
-            disabled={!selectedRole || saving}
+            disabled={
+              !selectedRole ||
+              saving
+            }
           >
-            <span>▣</span>
+            <span>
+              ▣
+            </span>
 
             {saving
               ? "Saving..."
               : "Save Permissions"}
           </button>
+
         </div>
+
       </div>
 
       {/* ================================================================
@@ -1411,7 +1534,10 @@ export default function Permissions() {
 
       {error && (
         <div className="permission-alert permission-alert-error">
-          <strong>Error:</strong> {error}
+          <strong>
+            Error:
+          </strong>{" "}
+          {error}
         </div>
       )}
 
@@ -1426,53 +1552,79 @@ export default function Permissions() {
       ================================================================ */}
 
       <div className="permission-stat-grid">
+
         <div className="permission-stat-card">
+
           <div className="permission-stat-icon blue">
             <ShieldIcon />
           </div>
 
           <div className="permission-stat-content">
-            <span>Total Roles</span>
-            <strong>{totalRoles}</strong>
-            <small>Active roles in system</small>
+
+            <span>
+              Total Roles
+            </span>
+
+            <strong>
+              {totalRoles}
+            </strong>
+
+            <small>
+              Active roles in system
+            </small>
+
           </div>
+
         </div>
 
         <div className="permission-stat-card">
+
           <div className="permission-stat-icon green">
             <UsersIcon />
           </div>
 
           <div className="permission-stat-content">
-            <span>Total Users</span>
-            <strong>{totalUsers}</strong>
-            <small>Users with assigned roles</small>
+
+            <span>
+              Total Users
+            </span>
+
+            <strong>
+              {totalUsers}
+            </strong>
+
+            <small>
+              Users with assigned roles
+            </small>
+
           </div>
+
         </div>
 
         <div className="permission-stat-card">
+
           <div className="permission-stat-icon purple">
             <LockIcon />
           </div>
 
           <div className="permission-stat-content">
-            <span>Total Permissions</span>
-            <strong>{totalPermissions}</strong>
-            <small>System permissions</small>
+
+            <span>
+              Total Permissions
+            </span>
+
+            <strong>
+              {totalPermissions}
+            </strong>
+
+            <small>
+              System permissions
+            </small>
+
           </div>
+
         </div>
 
-        <div className="permission-stat-card">
-          <div className="permission-stat-icon orange">
-            <UserRoleIcon />
-          </div>
-
-          <div className="permission-stat-content">
-            <span>Custom Roles</span>
-            <strong>{customRoles}</strong>
-            <small>Custom created roles</small>
-          </div>
-        </div>
       </div>
 
       {/* ================================================================
@@ -1480,6 +1632,7 @@ export default function Permissions() {
       ================================================================ */}
 
       <div className="permission-tabs">
+
         <button
           type="button"
           className={
@@ -1492,6 +1645,7 @@ export default function Permissions() {
           }
         >
           <ShieldIcon />
+
           Role Permissions
         </button>
 
@@ -1507,8 +1661,10 @@ export default function Permissions() {
           }
         >
           <UsersIcon />
+
           User Permissions
         </button>
+
       </div>
 
       {/* ================================================================
@@ -1517,15 +1673,20 @@ export default function Permissions() {
 
       {activeTab === "users" && (
         <div className="permission-empty-panel">
+
           <UsersIcon />
 
-          <h3>User Permissions</h3>
+          <h3>
+            User Permissions
+          </h3>
 
           <p>
-            User-specific permission management can
-            be connected here once the user-permission
+            User-specific permission
+            management can be connected
+            here once the user-permission
             API is available.
           </p>
+
         </div>
       )}
 
@@ -1535,13 +1696,18 @@ export default function Permissions() {
 
       {activeTab === "roles" && (
         <div className="permission-management-layout">
+
           {/* ============================================================
               LEFT ROLE PANEL
           ============================================================ */}
 
           <aside className="permission-role-panel">
+
             <div className="permission-role-panel-header">
-              <h2>Roles</h2>
+
+              <h2>
+                Roles
+              </h2>
 
               <button
                 type="button"
@@ -1550,9 +1716,11 @@ export default function Permissions() {
               >
                 <PlusIcon />
               </button>
+
             </div>
 
             <div className="permission-role-search">
+
               <SearchIcon />
 
               <input
@@ -1565,88 +1733,102 @@ export default function Permissions() {
                   )
                 }
               />
+
             </div>
 
             <div className="permission-role-list">
+
               {filteredRoles.length === 0 && (
                 <div className="permission-no-data">
                   No roles found.
                 </div>
               )}
 
-              {filteredRoles.map((role, index) => {
-                const roleId = getId(role);
+              {filteredRoles.map(
+                (role, index) => {
 
-                const selected =
-                  selectedRole &&
-                  isSameId(
-                    getId(selectedRole),
-                    roleId,
-                  );
+                  const roleId =
+                    getId(role);
 
-                return (
-                  <button
-                    type="button"
-                    key={
-                      roleId ??
-                      `role-${index}`
-                    }
-                    className={
-                      selected
-                        ? "permission-role-item selected"
-                        : "permission-role-item"
-                    }
-                    onClick={() =>
-                      handleRoleSelect(role)
-                    }
-                  >
-                    <div className="permission-role-avatar">
-                      {isSystemRole(role) ? (
-                        <ShieldIcon />
-                      ) : (
-                        <UserRoleIcon />
-                      )}
-                    </div>
+                  const selected =
+                    selectedRole &&
+                    isSameId(
+                      getId(
+                        selectedRole,
+                      ),
+                      roleId,
+                    );
 
-                    <div className="permission-role-info">
-                      <strong>
-                        {getRoleName(role)}
-                      </strong>
-
-                      <span>
-                        {firstValue(
+                  return (
+                    <button
+                      type="button"
+                      key={
+                        roleId ??
+                        `role-${index}`
+                      }
+                      className={
+                        selected
+                          ? "permission-role-item selected"
+                          : "permission-role-item"
+                      }
+                      onClick={() =>
+                        handleRoleSelect(
                           role,
-                          [
-                            "userCount",
-                            "UserCount",
-                            "usersCount",
-                            "UsersCount",
-                            "employeeCount",
-                            "EmployeeCount",
-                          ],
-                          "",
                         )
-                          ? `${firstValue(
-                              role,
-                              [
-                                "userCount",
-                                "UserCount",
-                                "usersCount",
-                                "UsersCount",
-                                "employeeCount",
-                                "EmployeeCount",
-                              ],
-                              0,
-                            )} Users`
-                          : isSystemRole(role)
-                            ? "System Role"
-                            : "Custom Role"}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
+                      }
+                    >
+
+                      <div className="permission-role-avatar">
+                        <UserRoleIcon />
+                      </div>
+
+                      <div className="permission-role-info">
+
+                        <strong>
+                          {getRoleName(
+                            role,
+                          )}
+                        </strong>
+
+                        <span>
+
+                          {firstValue(
+                            role,
+                            [
+                              "userCount",
+                              "UserCount",
+                              "usersCount",
+                              "UsersCount",
+                              "employeeCount",
+                              "EmployeeCount",
+                            ],
+                            "",
+                          )
+                            ? `${firstValue(
+                                role,
+                                [
+                                  "userCount",
+                                  "UserCount",
+                                  "usersCount",
+                                  "UsersCount",
+                                  "employeeCount",
+                                  "EmployeeCount",
+                                ],
+                                0,
+                              )} Users`
+                            : "Role"}
+
+                        </span>
+
+                      </div>
+
+                    </button>
+                  );
+                },
+              )}
+
             </div>
+
           </aside>
 
           {/* ============================================================
@@ -1654,10 +1836,15 @@ export default function Permissions() {
           ============================================================ */}
 
           <section className="permission-content-panel">
+
             <div className="permission-content-header">
+
               <div>
+
                 <h2>
+
                   Permissions for{" "}
+
                   <span>
                     {selectedRole
                       ? getRoleName(
@@ -1665,16 +1852,21 @@ export default function Permissions() {
                         )
                       : "Select a Role"}
                   </span>
+
                 </h2>
 
                 <p>
-                  Manage what this role can access
-                  and modify.
+                  Manage what this role can
+                  access and modify.
                 </p>
+
               </div>
 
               <label className="permission-select-all">
-                <span>Select All</span>
+
+                <span>
+                  Select All
+                </span>
 
                 <input
                   type="checkbox"
@@ -1683,13 +1875,17 @@ export default function Permissions() {
                   onChange={toggleAll}
                   disabled={
                     !selectedRole ||
-                    allPermissionIds.length === 0
+                    allPermissionIds.length ===
+                      0
                   }
                 />
+
               </label>
+
             </div>
 
             <div className="permission-page-search">
+
               <SearchIcon />
 
               <input
@@ -1702,6 +1898,7 @@ export default function Permissions() {
                   )
                 }
               />
+
             </div>
 
             {loadingRolePermissions && (
@@ -1715,36 +1912,64 @@ export default function Permissions() {
             ======================================================== */}
 
             <div className="permission-table-wrapper">
+
               <table className="permission-table">
+
                 <thead>
+
                   <tr>
+
                     <th className="permission-page-column">
                       PAGE
                     </th>
 
-                    <th>VIEW</th>
-                    <th>CREATE</th>
-                    <th>EDIT</th>
-                    <th>DELETE</th>
-                    <th>APPROVE</th>
-                    <th>EXPORT</th>
+                    <th>
+                      VIEW
+                    </th>
+
+                    <th>
+                      CREATE
+                    </th>
+
+                    <th>
+                      EDIT
+                    </th>
+
+                    <th>
+                      DELETE
+                    </th>
+
+                    <th>
+                      APPROVE
+                    </th>
+
+                    <th>
+                      EXPORT
+                    </th>
+
                   </tr>
+
                 </thead>
 
                 <tbody>
+
                   {filteredModules.length === 0 && (
                     <tr>
+
                       <td
                         colSpan="7"
                         className="permission-no-pages"
                       >
-                        No permissions/pages found.
+                        No permissions/pages
+                        found.
                       </td>
+
                     </tr>
                   )}
 
                   {filteredModules.map(
                     (module) => {
+
                       const moduleOpen =
                         expandedModules.has(
                           module.moduleName,
@@ -1761,7 +1986,9 @@ export default function Permissions() {
                               id !== null &&
                               id !== undefined,
                           )
-                          .map(normalizeId);
+                          .map(
+                            normalizeId,
+                          );
 
                       const moduleSelected =
                         modulePermissionIds.length >
@@ -1779,10 +2006,15 @@ export default function Permissions() {
                             module.moduleName
                           }
                         >
+
                           {/* MODULE */}
+
                           <tr className="permission-module-row">
+
                             <td>
+
                               <div className="permission-module-name">
+
                                 <button
                                   type="button"
                                   className="permission-module-toggle"
@@ -1813,14 +2045,18 @@ export default function Permissions() {
                                       .length
                                   }
                                 </span>
+
                               </div>
+
                             </td>
 
                             <td
                               colSpan="6"
                               className="permission-module-action"
                             >
+
                               <label>
+
                                 <span>
                                   Select all
                                   permissions
@@ -1840,11 +2076,15 @@ export default function Permissions() {
                                     )
                                   }
                                 />
+
                               </label>
+
                             </td>
+
                           </tr>
 
                           {/* PAGES */}
+
                           {moduleOpen &&
                             module.pages.map(
                               (
@@ -1857,8 +2097,11 @@ export default function Permissions() {
                                     permission.id,
                                   )}-${index}`}
                                 >
+
                                   <td>
+
                                     <div className="permission-page-name">
+
                                       <strong>
                                         {
                                           permission.page
@@ -1872,7 +2115,9 @@ export default function Permissions() {
                                           }
                                         </span>
                                       )}
+
                                     </div>
+
                                   </td>
 
                                   <td>
@@ -1916,15 +2161,20 @@ export default function Permissions() {
                                       "export",
                                     )}
                                   </td>
+
                                 </tr>
                               ),
                             )}
+
                         </React.Fragment>
                       );
                     },
                   )}
+
                 </tbody>
+
               </table>
+
             </div>
 
             {/* ========================================================
@@ -1932,9 +2182,13 @@ export default function Permissions() {
             ======================================================== */}
 
             <div className="permission-footer">
+
               <div className="permission-footer-summary">
+
                 <strong>
-                  {selectedPermissions.size}
+                  {
+                    selectedPermissions.size
+                  }
                 </strong>
 
                 <span>
@@ -1960,13 +2214,17 @@ export default function Permissions() {
                 <span>
                   Pages
                 </span>
+
               </div>
 
               <div className="permission-footer-actions">
+
                 <button
                   type="button"
                   className="permission-cancel-button"
-                  onClick={cancelChanges}
+                  onClick={
+                    cancelChanges
+                  }
                   disabled={saving}
                 >
                   Cancel
@@ -1975,23 +2233,34 @@ export default function Permissions() {
                 <button
                   type="button"
                   className="permission-save-button"
-                  onClick={savePermissions}
+                  onClick={
+                    savePermissions
+                  }
                   disabled={
                     !selectedRole ||
                     saving
                   }
                 >
-                  <span>▣</span>
+
+                  <span>
+                    ▣
+                  </span>
 
                   {saving
                     ? "Saving..."
                     : "Save Changes"}
+
                 </button>
+
               </div>
+
             </div>
+
           </section>
+
         </div>
       )}
+
     </div>
   );
 }

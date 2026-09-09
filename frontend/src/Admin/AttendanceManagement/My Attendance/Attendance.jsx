@@ -30,9 +30,17 @@ import {
 
 import { getProfile } from "../../Services/ProfileService";
 import AttendanceService from "../../Services/AttendanceService";
+import { useAuth } from "../../../context/AuthContext";
 
 
 function Attendance() {
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/attendance/my-attendance";
+
+    const canView = hasPermission(permissionRoute, "view");
+    const canExport = hasPermission(permissionRoute, "export");
+
 
     const [profile, setProfile] = useState(null);
     const [attendance, setAttendance] = useState([]);
@@ -341,8 +349,10 @@ function Attendance() {
 
 
     useEffect(() => {
+        if (!canView) return;
+
         loadAttendance();
-    }, []);
+    }, [canView]);
 
 
     /* =========================================================
@@ -872,6 +882,10 @@ function Attendance() {
        LOADING
     ========================================================= */
 
+    if (!canView) {
+        return null;
+    }
+
     if (loading) {
 
         return (
@@ -946,15 +960,17 @@ function Attendance() {
                         Refresh
                     </Button>
 
-                    <Button
-                        variant="outlined"
-                        startIcon={
-                            <DownloadOutlined />
-                        }
-                        className="attendance-download-button"
-                    >
-                        Download
-                    </Button>
+                    {canExport && (
+                        <Button
+                            variant="outlined"
+                            startIcon={
+                                <DownloadOutlined />
+                            }
+                            className="attendance-download-button"
+                        >
+                            Download
+                        </Button>
+                    )}
 
                 </Box>
 

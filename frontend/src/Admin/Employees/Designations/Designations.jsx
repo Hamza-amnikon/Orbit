@@ -65,7 +65,20 @@ function Designations() {
     employeeName,
     isAuthenticated,
     profileLoading,
+    hasPermission,
   } = useAuth();
+
+  // =========================================================
+  // PERMISSIONS
+  // =========================================================
+
+  const permissionRoute = "/employees/designations";
+
+  const canView = hasPermission(permissionRoute, "view");
+  const canCreate = hasPermission(permissionRoute, "create");
+  const canEdit = hasPermission(permissionRoute, "edit");
+  const canDelete = hasPermission(permissionRoute, "delete");
+  const canExport = hasPermission(permissionRoute, "export");
 
 
   // =========================================================
@@ -345,11 +358,17 @@ function Designations() {
 
     }
 
+    if (!canView) {
+      setLoading(false);
+      return;
+    }
+
 
     loadDesignations();
 
   }, [
     isAuthenticated,
+    canView,
     loadDesignations,
   ]);
 
@@ -409,6 +428,10 @@ function Designations() {
   // =========================================================
 
   const refreshData = async () => {
+
+    if (!canView) {
+      return;
+    }
 
     setSearch("");
 
@@ -490,6 +513,10 @@ function Designations() {
     designation
   ) => {
 
+    if (!canEdit) {
+      return;
+    }
+
     if (
       !validateAuthenticatedEmployee()
     ) {
@@ -558,6 +585,10 @@ function Designations() {
 
   const removeDesignation =
     async (id) => {
+
+      if (!canDelete) {
+        return;
+      }
 
       if (
         !validateAuthenticatedEmployee()
@@ -673,6 +704,10 @@ function Designations() {
   const saveDesignation =
     async (data) => {
 
+      if (!canCreate) {
+        return;
+      }
+
       if (
         !validateAuthenticatedEmployee()
       ) {
@@ -786,6 +821,10 @@ function Designations() {
 
   const editDesignationSave =
     async (data) => {
+
+      if (!canEdit) {
+        return;
+      }
 
       if (
         !validateAuthenticatedEmployee()
@@ -918,6 +957,15 @@ function Designations() {
 
 
   // =========================================================
+  // VIEW PERMISSION
+  // =========================================================
+
+  if (!canView) {
+    return null;
+  }
+
+
+  // =========================================================
   // NOT AUTHENTICATED
   // =========================================================
 
@@ -1036,40 +1084,44 @@ function Designations() {
           </Button>
 
 
-          <Button
-            variant="outlined"
-            startIcon={
-              <Download />
-            }
-          >
-            Export
-          </Button>
-
-
-          <Button
-            variant="contained"
-            startIcon={
-              <Add />
-            }
-            onClick={() => {
-
-              if (
-                validateAuthenticatedEmployee()
-              ) {
-
-                setOpenAddDialog(true);
-
+          {canExport && (
+            <Button
+              variant="outlined"
+              startIcon={
+                <Download />
               }
+            >
+              Export
+            </Button>
+          )}
 
-            }}
-            disabled={
-              profileLoading ||
-              currentEmployeeId === null ||
-              currentEmployeeId === undefined
-            }
-          >
-            Add Designation
-          </Button>
+
+          {canCreate && (
+            <Button
+              variant="contained"
+              startIcon={
+                <Add />
+              }
+              onClick={() => {
+
+                if (
+                  validateAuthenticatedEmployee()
+                ) {
+
+                  setOpenAddDialog(true);
+
+                }
+
+              }}
+              disabled={
+                profileLoading ||
+                currentEmployeeId === null ||
+                currentEmployeeId === undefined
+              }
+            >
+              Add Designation
+            </Button>
+          )}
 
         </div>
 
@@ -1329,33 +1381,37 @@ function Designations() {
           ADD DESIGNATION
       ===================================================== */}
 
-      <AddDesignation
-        open={openAddDialog}
-        handleClose={() =>
-          setOpenAddDialog(false)
-        }
-        handleSave={
-          saveDesignation
-        }
-      />
+      {canCreate && (
+        <AddDesignation
+          open={openAddDialog}
+          handleClose={() =>
+            setOpenAddDialog(false)
+          }
+          handleSave={
+            saveDesignation
+          }
+        />
+      )}
 
 
       {/* =====================================================
           EDIT DESIGNATION
       ===================================================== */}
 
-      <EditDesignation
-        open={openEditDialog}
-        designation={
-          selectedDesignation
-        }
-        handleClose={
-          closeEditDialog
-        }
-        handleUpdate={
-          editDesignationSave
-        }
-      />
+      {canEdit && (
+        <EditDesignation
+          open={openEditDialog}
+          designation={
+            selectedDesignation
+          }
+          handleClose={
+            closeEditDialog
+          }
+          handleUpdate={
+            editDesignationSave
+          }
+        />
+      )}
 
     </div>
 

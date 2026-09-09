@@ -23,8 +23,15 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 
 import "./PayrollDashboard.css";
+import { useAuth } from "../../../context/AuthContext";
 
 function PayrollDashboard() {
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/payroll/dashboard";
+    const canView = hasPermission(permissionRoute, "view");
+    const canCreate = hasPermission(permissionRoute, "create");
+
     const [month, setMonth] = React.useState("May 2026");
 
     const summaryCards = [
@@ -116,12 +123,37 @@ function PayrollDashboard() {
     ];
 
     const handleRunPayroll = () => {
+        if (!canCreate) return;
         console.log("Run Payroll:", month);
     };
 
     const handleQuickAction = (action) => {
+        if (
+            (action === "Run Payroll" || action === "Generate Payslips") &&
+            !canCreate
+        ) {
+            return;
+        }
+
         console.log("Quick Action:", action);
     };
+
+    if (!canView) {
+        return (
+            <Box
+                className="pd-payroll-dashboard"
+                sx={{ padding: "60px", textAlign: "center" }}
+            >
+                <Typography variant="h5">
+                    Access Denied
+                </Typography>
+
+                <Typography sx={{ mt: 1 }}>
+                    You do not have permission to access this page.
+                </Typography>
+            </Box>
+        );
+    }
 
     return (
         <Box className="pd-payroll-dashboard">
@@ -167,14 +199,16 @@ function PayrollDashboard() {
                         </MenuItem>
                     </Select>
 
-                    <Button
-                        className="pd-run-payroll-button"
-                        variant="contained"
-                        startIcon={<PlayArrowIcon />}
-                        onClick={handleRunPayroll}
-                    >
-                        Run Payroll
-                    </Button>
+                    {canCreate && (
+                        <Button
+                            className="pd-run-payroll-button"
+                            variant="contained"
+                            startIcon={<PlayArrowIcon />}
+                            onClick={handleRunPayroll}
+                        >
+                            Run Payroll
+                        </Button>
+                    )}
 
                 </Box>
 
@@ -504,28 +538,31 @@ function PayrollDashboard() {
 
                             <Box className="pd-quick-actions">
 
-                                <Button
-                                    className="pd-quick-action-button"
-                                    onClick={() =>
-                                        handleQuickAction("Run Payroll")
-                                    }
-                                    startIcon={<PlayArrowIcon />}
-                                    endIcon={<ArrowForwardIcon />}
-                                >
-                                    Run Payroll
-                                </Button>
+                                {canCreate && (
+                                    <>
+                                        <Button
+                                            className="pd-quick-action-button"
+                                            onClick={() =>
+                                                handleQuickAction("Run Payroll")
+                                            }
+                                            startIcon={<PlayArrowIcon />}
+                                            endIcon={<ArrowForwardIcon />}
+                                        >
+                                            Run Payroll
+                                        </Button>
 
-
-                                <Button
-                                    className="pd-quick-action-button"
-                                    onClick={() =>
-                                        handleQuickAction("Generate Payslips")
-                                    }
-                                    startIcon={<DescriptionOutlinedIcon />}
-                                    endIcon={<ArrowForwardIcon />}
-                                >
-                                    Generate Payslips
-                                </Button>
+                                        <Button
+                                            className="pd-quick-action-button"
+                                            onClick={() =>
+                                                handleQuickAction("Generate Payslips")
+                                            }
+                                            startIcon={<DescriptionOutlinedIcon />}
+                                            endIcon={<ArrowForwardIcon />}
+                                        >
+                                            Generate Payslips
+                                        </Button>
+                                    </>
+                                )}
 
 
                                 <Button

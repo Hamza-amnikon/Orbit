@@ -8,8 +8,10 @@ import {
 
 import authService from "../Admin/Services/authService";
 import { getProfile } from "../Admin/Services/ProfileService";
-import { getRolePermissions } from "../Admin/Services/PermissionService";
-
+import {
+    getRolePermissions,
+    getPermissions
+} from "../Admin/Services/PermissionService";
 const AuthContext = createContext(null);
 
 
@@ -20,6 +22,8 @@ export function AuthProvider({ children }) {
     const [profile, setProfile] = useState(null);
 
     const [permissions, setPermissions] = useState([]);
+
+    const [permissionCatalog, setPermissionCatalog] = useState([]);
 
     const [loading, setLoading] = useState(true);
 
@@ -32,95 +36,157 @@ export function AuthProvider({ children }) {
     =========================================================
     */
 
-    const loadProfile = useCallback(async () => {
+const loadProfile = useCallback(async () => {
 
-        const token =
-            localStorage.getItem("token");
-
-
-        if (!token) {
-
-            setProfile(null);
-            setProfileLoading(false);
-
-            return null;
-
-        }
+    const token =
+        localStorage.getItem("token");
 
 
-        try {
+    if (!token) {
 
-            setProfileLoading(true);
+        setProfile(null);
+
+        setPermissions([]);
+
+        setPermissionCatalog([]);
+
+        setProfileLoading(false);
+
+        return null;
+
+    }
+
+
+    try {
+
+        setProfileLoading(true);
+
+
+        console.log(
+            "AuthContext: Loading authenticated employee profile..."
+        );
+
+
+        // -------------------------------------------------
+        // LOAD EMPLOYEE PROFILE
+        // -------------------------------------------------
+
+        const profileData =
+            await getProfile();
+
+
+        console.log(
+            "AuthContext Profile:",
+            profileData
+        );
+
+
+        setProfile(profileData);
+
+
+        // -------------------------------------------------
+        // LOAD ALL PERMISSION DEFINITIONS
+        // -------------------------------------------------
+
+        const allPermissions =
+            await getPermissions();
+
+
+        console.log(
+            "AuthContext Permission Catalog:",
+            allPermissions
+        );
+
+
+        setPermissionCatalog(
+            allPermissions || []
+        );
+
+
+        // -------------------------------------------------
+        // LOAD ROLE PERMISSIONS
+        // -------------------------------------------------
+
+        const roleId =
+            profileData?.roleId;
+
+
+        if (roleId) {
+
+            const rolePermissions =
+                await getRolePermissions(roleId);
+
 
             console.log(
-                "AuthContext: Loading authenticated employee profile..."
+                "AuthContext Role Permissions:",
+                rolePermissions
             );
 
 
-            const profileData =
-                await getProfile();
+            setPermissions(
+                rolePermissions || []
+            );
 
+        } else {
 
-            console.log(
-                "AuthContext Profile:",
-                profileData
+            console.warn(
+                "AuthContext: No roleId found in profile."
             );
 
 
-            setProfile(profileData);
-
-
-            /*
-            -------------------------------------------------
-            Keep token + employee profile together.
-            -------------------------------------------------
-            */
-
-            setUser({
-
-                token,
-
-                ...profileData
-
-            });
-
-
-            return profileData;
-
-        }
-        catch (error) {
-
-            console.error(
-                "AuthContext Profile Error:",
-                error
-            );
-
-
-            /*
-            -------------------------------------------------
-            Token exists but profile request failed.
-            -------------------------------------------------
-            */
-
-            setProfile(null);
-
-            setUser({
-
-                token
-
-            });
-
-
-            return null;
-
-        }
-        finally {
-
-            setProfileLoading(false);
+            setPermissions([]);
 
         }
 
-    }, []);
+
+        // -------------------------------------------------
+        // KEEP TOKEN + EMPLOYEE PROFILE TOGETHER
+        // -------------------------------------------------
+
+        setUser({
+
+            token,
+
+            ...profileData
+
+        });
+
+
+        return profileData;
+
+    }
+    catch (error) {
+
+        console.error(
+            "AuthContext Profile Error:",
+            error
+        );
+
+
+        setProfile(null);
+
+        setPermissions([]);
+
+        setPermissionCatalog([]);
+
+
+        setUser({
+
+            token
+
+        });
+
+
+        return null;
+
+    }
+    finally {
+
+        setProfileLoading(false);
+
+    }
+
+}, []);
 
 
     /*
@@ -318,13 +384,38 @@ export function AuthProvider({ children }) {
                 await getProfile();
 
 
-                setProfile(profileData);
+            setProfile(profileData);
 
 
-                const roleId = profileData?.roleId;
+const roleId = profileData?.roleId;
+
+
+// -------------------------------------------------
+// LOAD ALL PERMISSION DEFINITIONS
+// -------------------------------------------------
+
+const allPermissions =
+    await getPermissions();
+
+console.log(
+    "AuthContext Permission Catalog:",
+    allPermissions
+);
+
+setPermissionCatalog(
+    allPermissions || []
+);
+
+
+// -------------------------------------------------
+// LOAD ROLE PERMISSIONS
+// -------------------------------------------------
+
+let rolePermissions = [];
 
 if (roleId) {
-    const rolePermissions =
+
+    rolePermissions =
         await getRolePermissions(roleId);
 
     console.log(
@@ -332,10 +423,158 @@ if (roleId) {
         rolePermissions
     );
 
-    setPermissions(rolePermissions);
+    setPermissions(
+        rolePermissions || []
+    );
+
 } else {
+
     setPermissions([]);
+
 }
+
+
+/*
+-----------------------------------------------------
+GET INITIAL LOGIN ROUTE
+
+If exactly one permission has View enabled,
+open that page directly.
+
+If more than one page has View enabled,
+keep the existing Dashboard flow.
+
+Uses the existing permission catalog dynamically.
+No page/route is hardcoded here.
+-----------------------------------------------------
+*/
+
+const getPermissionId = (permission) => {
+
+    return (
+        permission?.permissionId ??
+        permission?.PermissionId ??
+        permission?.permissionID ??
+        permission?.PermissionID ??
+        permission?.id ??
+        permission?.Id ??
+        permission?.permission?.id ??
+        permission?.permission?.PermissionId ??
+        null
+    );
+
+};
+
+const getPermissionPath = (permission) => {
+
+    return (
+        permission?.path ??
+        permission?.Path ??
+        permission?.route ??
+        permission?.Route ??
+        permission?.url ??
+        permission?.Url ??
+        permission?.pageUrl ??
+        permission?.PageUrl ??
+        permission?.permissionPath ??
+        permission?.PermissionPath ??
+        permission?.pagePath ??
+        permission?.PagePath ??
+        permission?.permission?.path ??
+        permission?.permission?.Path ??
+        permission?.permission?.route ??
+        permission?.permission?.Route ??
+        null
+    );
+
+};
+
+const isEnabled = (value) =>
+    value === true ||
+    value === "true" ||
+    value === 1 ||
+    value === "1";
+
+const viewRoutes = (allPermissions || []).filter(
+    (permission) => {
+
+        const permissionId =
+            getPermissionId(permission);
+
+        const rolePermission =
+            (rolePermissions || []).find(
+                (item) =>
+                    String(
+                        getPermissionId(item)
+                    ) === String(permissionId)
+            );
+
+        return (
+            getPermissionPath(permission) &&
+            rolePermission &&
+            (
+                isEnabled(rolePermission.canView) ||
+                isEnabled(rolePermission.CanView)
+            )
+        );
+    }
+);
+
+/*
+-----------------------------------------------------
+CHOOSE LOGIN PAGE
+
+Only permissions selected in Permission Management
+are considered here.
+
+Sidebar/layout items are NOT considered separately.
+
+If a selected View page has selected child pages,
+the parent page is used as the landing page.
+
+Example:
+  /attendance
+  /attendance/my-attendance
+  /attendance/logs
+
+  -> /attendance
+
+If there is no selected parent page, keep the
+existing Dashboard behavior.
+-----------------------------------------------------
+*/
+
+const selectedViewRoutes = viewRoutes
+    .map((permission) => getPermissionPath(permission))
+    .filter(Boolean);
+
+const parentViewRoutes = selectedViewRoutes.filter(
+    (route) =>
+        selectedViewRoutes.some(
+            (childRoute) =>
+                childRoute !== route &&
+                childRoute.startsWith(
+                    `${route.replace(/\/$/, "")}/`
+                )
+        )
+);
+
+const initialRoute =
+    parentViewRoutes.length > 0
+        ? parentViewRoutes.sort(
+            (a, b) =>
+                a.split("/").filter(Boolean).length -
+                b.split("/").filter(Boolean).length
+        )[0]
+        : selectedViewRoutes.length === 1
+            ? selectedViewRoutes[0]
+            : "/dashboard";
+
+
+            console.log(
+                "AuthContext: Initial Login Route:",
+                initialRoute
+            );
 
 
             console.log(
@@ -370,7 +609,10 @@ if (roleId) {
             });
 
 
-            return profileData;
+            return {
+                ...profileData,
+                initialRoute
+            };
 
         }
         catch (error) {
@@ -613,7 +855,261 @@ if (roleId) {
 
     const role = "Admin";
 
-const roleId = profile?.roleId ?? user?.roleId ?? null;
+    const roleId = profile?.roleId ?? user?.roleId ?? null;
+
+// =========================================================
+// PERMISSION HELPERS
+// =========================================================
+
+const normalizePath = (path) => {
+
+    if (!path) {
+        return "";
+    }
+
+    let normalized = path
+        .trim()
+        .toLowerCase();
+
+    // "/" and "/dashboard" should be treated as the same page
+    if (normalized === "/") {
+        return "/dashboard";
+    }
+
+    // Remove trailing slash
+    if (
+        normalized.length > 1 &&
+        normalized.endsWith("/")
+    ) {
+        normalized = normalized.slice(0, -1);
+    }
+
+    return normalized;
+};
+
+
+// =========================================================
+// GET PERMISSION ID
+// =========================================================
+
+const getPermissionId = (permission) => {
+
+    return (
+        permission?.permissionId ??
+        permission?.PermissionId ??
+        permission?.permissionID ??
+        permission?.PermissionID ??
+        permission?.id ??
+        permission?.Id ??
+        permission?.permission?.id ??
+        permission?.permission?.PermissionId ??
+        null
+    );
+
+};
+
+
+// =========================================================
+// GET PERMISSION PATH
+// =========================================================
+
+const getPermissionPath = (permission) => {
+
+    return (
+        permission?.path ??
+        permission?.Path ??
+
+        permission?.route ??
+        permission?.Route ??
+
+        permission?.url ??
+        permission?.Url ??
+
+        permission?.pageUrl ??
+        permission?.PageUrl ??
+
+        permission?.permissionPath ??
+        permission?.PermissionPath ??
+
+        permission?.pagePath ??
+        permission?.PagePath ??
+
+        permission?.permission?.path ??
+        permission?.permission?.Path ??
+
+        permission?.permission?.route ??
+        permission?.permission?.Route ??
+
+        permission?.permission?.url ??
+        permission?.permission?.Url ??
+
+        permission?.permission?.pageUrl ??
+        permission?.permission?.PageUrl ??
+
+        permission?.permission?.pagePath ??
+        permission?.permission?.PagePath ??
+
+        null
+    );
+
+};
+
+
+// =========================================================
+// CHECK USER PERMISSION
+// =========================================================
+
+const hasPermission = (
+    path,
+    action = "view"
+) => {
+
+    const normalizedPath =
+        normalizePath(path);
+
+
+    if (!normalizedPath) {
+        return false;
+    }
+
+
+    // Find the permission definition
+    const permissionDefinition =
+        permissionCatalog.find(
+            (permission) =>
+                normalizePath(
+                    getPermissionPath(permission)
+                ) === normalizedPath
+        );
+
+
+  if (!permissionDefinition) {
+    return false;
+}
+
+
+    const permissionId =
+        getPermissionId(
+            permissionDefinition
+        );
+
+
+    if (!permissionId) {
+        return false;
+    }
+
+
+    // Find the permission assigned to this user's role
+    const rolePermission =
+        permissions.find(
+            (permission) =>
+                String(
+                    getPermissionId(permission)
+                ) === String(permissionId)
+        );
+
+
+    if (!rolePermission) {
+        return false;
+    }
+
+
+    // Supports true, "true", 1 and "1"
+    const isEnabled = (value) => {
+
+        return (
+            value === true ||
+            value === "true" ||
+            value === 1 ||
+            value === "1"
+        );
+
+    };
+
+
+    switch (action.toLowerCase()) {
+
+        case "view":
+
+            return (
+                isEnabled(
+                    rolePermission.canView
+                ) ||
+                isEnabled(
+                    rolePermission.CanView
+                )
+            );
+
+
+        case "create":
+
+            return (
+                isEnabled(
+                    rolePermission.canCreate
+                ) ||
+                isEnabled(
+                    rolePermission.CanCreate
+                )
+            );
+
+
+        case "edit":
+
+            return (
+                isEnabled(
+                    rolePermission.canEdit
+                ) ||
+                isEnabled(
+                    rolePermission.CanEdit
+                )
+            );
+
+
+        case "delete":
+
+            return (
+                isEnabled(
+                    rolePermission.canDelete
+                ) ||
+                isEnabled(
+                    rolePermission.CanDelete
+                )
+            );
+
+
+        case "approve":
+
+            return (
+                isEnabled(
+                    rolePermission.canApprove
+                ) ||
+                isEnabled(
+                    rolePermission.CanApprove
+                )
+            );
+
+
+        case "export":
+
+            return (
+                isEnabled(
+                    rolePermission.canExport
+                ) ||
+                isEnabled(
+                    rolePermission.CanExport
+                )
+            );
+
+
+        default:
+
+            return false;
+
+    }
+
+};
+
+
     /*
     =========================================================
     PROVIDER
@@ -649,7 +1145,12 @@ const roleId = profile?.roleId ?? user?.roleId ?? null;
 
                 profileLoading,
 
+                permissionCatalog,
+
+
                 permissions,
+
+                hasPermission,
 
 
                 refreshProfile:
@@ -684,7 +1185,7 @@ const roleId = profile?.roleId ?? user?.roleId ?? null;
                 */
 
                 role,
-                
+
                 roleId,
 
                 /*

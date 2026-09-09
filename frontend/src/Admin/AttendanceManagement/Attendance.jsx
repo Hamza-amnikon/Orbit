@@ -1,6 +1,7 @@
 import "./Attendance.css";
 
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -25,7 +26,6 @@ const menuItems = [
     color: "#10B981",
     path: "/attendance/logs",
   },
-
   {
     title: "Shift Management",
     description: "Manage employee shifts",
@@ -47,7 +47,7 @@ const menuItems = [
     color: "#06B6D4",
     path: "/attendance/reports",
   },
-    {
+  {
     title: "My Attendance",
     description: "View your attendance records",
     icon: <AssessmentIcon />,
@@ -58,6 +58,11 @@ const menuItems = [
 
 export default function Attendance() {
   const navigate = useNavigate();
+  const { hasPermission } = useAuth();
+
+  const allowedItems = menuItems.filter((item) =>
+    hasPermission(item.path, "view")
+  );
 
   return (
     <div className="attendance-home">
@@ -72,7 +77,7 @@ export default function Attendance() {
 
       <div className="attendance-grid">
 
-        {menuItems.map((item) => (
+        {allowedItems.map((item) => (
 
           <div
             key={item.title}

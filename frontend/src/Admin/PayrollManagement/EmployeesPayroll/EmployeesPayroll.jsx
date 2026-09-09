@@ -25,7 +25,8 @@ import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 import "./EmployeesPayroll.css";
 
@@ -745,6 +746,13 @@ const calculateTemplate = (
 
 function EmployeesPayroll() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { hasPermission } = useAuth();
+
+    const canView = hasPermission(location.pathname, "view");
+    const canCreate = hasPermission(location.pathname, "create");
+    const canEdit = hasPermission(location.pathname, "edit");
+    const canDelete = hasPermission(location.pathname, "delete");
 
     /* =====================================================
        PAGE
@@ -1244,6 +1252,8 @@ function EmployeesPayroll() {
     ========================================================= */
 
     const handleOpenAssign = () => {
+        if (!canCreate) return;
+
         setPageMode("form");
 
         setSelectedEmployeeId(
@@ -1271,6 +1281,8 @@ function EmployeesPayroll() {
     const handleEdit = (
         assignment
     ) => {
+        if (!canEdit) return;
+
         setEditingEmployeeSalaryId(
             assignment.employeeSalaryId
         );
@@ -1300,6 +1312,8 @@ function EmployeesPayroll() {
     const handleView = (
         assignment
     ) => {
+        if (!canView) return;
+
         const employee =
             employees.find(
                 (item) =>
@@ -1485,6 +1499,8 @@ function EmployeesPayroll() {
     };
 
 const handleDelete = async (assignment) => {
+    if (!canDelete) return;
+
     const employeeSalaryId =
         assignment.employeeSalaryId ??
         assignment.EmployeeSalaryId;
@@ -2473,15 +2489,29 @@ const handleDelete = async (assignment) => {
                 </Box>
 
 
-                <Button
+                {canCreate && (
+
+
+
+                    <Button
                     variant="contained"
                     className="epr-employees-payroll-assign-button"
                     onClick={
                         handleOpenAssign
                     }
                 >
-                    Assign Salary
-                </Button>
+
+
+
+                        Assign Salary
+
+
+
+                    </Button>
+
+
+
+                )}
 
             </Box>
 
@@ -2515,15 +2545,29 @@ const handleDelete = async (assignment) => {
                         />
 
 
-                        <Button
+                        {canCreate && (
+
+
+
+                            <Button
                             variant="contained"
                             className="epr-employees-payroll-assign-button epr-toolbar-button"
                             onClick={
                                 handleOpenAssign
                             }
                         >
-                            Assign Salary
-                        </Button>
+
+
+
+                                Assign Salary
+
+
+
+                            </Button>
+
+
+
+                        )}
 
                     </Box>
 
@@ -2739,34 +2783,55 @@ const handleDelete = async (assignment) => {
 
                                                         <Box className="epr-table-actions">
 
-                                                            <Button
-                                                                className="epr-table-action-button epr-view-button"
-                                                                onClick={() =>
-                                                                    handleView(
-                                                                        assignment
-                                                                    )
-                                                                }
-                                                            >
-                                                                View
-                                                            </Button>
+                                                            {canView && (
+
+                                                                <Button
+
+                                                                    className="epr-table-action-button epr-view-button"
+
+                                                                    onClick={() => handleView(assignment)}
+
+                                                                >
+
+                                                                    View
+
+                                                                </Button>
+
+                                                            )}
 
 
-                                                            <Button
-                                                                className="epr-table-action-button epr-edit-button"
-                                                                onClick={() =>
-                                                                    handleEdit(
-                                                                        assignment
-                                                                    )
-                                                                }
-                                                            >
-                                                                Edit
-                                                            </Button>
-<Button
-    className="epr-table-action-button epr-delete-button"
-    onClick={() => handleDelete(assignment)}
->
-    Delete
-</Button>
+                                                            {canEdit && (
+
+                                                                <Button
+
+                                                                    className="epr-table-action-button epr-edit-button"
+
+                                                                    onClick={() => handleEdit(assignment)}
+
+                                                                >
+
+                                                                    Edit
+
+                                                                </Button>
+
+                                                            )}
+
+
+                                                            {canDelete && (
+
+                                                                <Button
+
+                                                                    className="epr-table-action-button epr-delete-button"
+
+                                                                    onClick={() => handleDelete(assignment)}
+
+                                                                >
+
+                                                                    Delete
+
+                                                                </Button>
+
+                                                            )}
                                                         </Box>
 
                                                     </td>

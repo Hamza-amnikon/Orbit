@@ -94,11 +94,6 @@ export default function EmployeeDashboard() {
 
   const navigate = useNavigate();
 
-
-  // ===================================================
-  // AUTHENTICATED EMPLOYEE
-  // ===================================================
-
   const {
     user,
     profile,
@@ -109,6 +104,7 @@ export default function EmployeeDashboard() {
     department,
     designation,
     isAuthenticated,
+    hasPermission,
   } = useAuth();
 
 
@@ -245,6 +241,15 @@ export default function EmployeeDashboard() {
 
 
   // ===================================================
+  // VIEW PERMISSION FILTER
+  // ===================================================
+
+  const allowedCards = cards.filter((card) =>
+    hasPermission(card.path, "view")
+  );
+
+
+  // ===================================================
   // RENDER
   // ===================================================
 
@@ -290,7 +295,7 @@ export default function EmployeeDashboard() {
 
       <div className="employee-grid">
 
-        {cards.map((card, index) => (
+        {allowedCards.map((card, index) => (
 
           <div
             key={card.title}

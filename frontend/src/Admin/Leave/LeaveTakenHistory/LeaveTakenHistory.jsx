@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./LeaveTakenHistory.css";
+import { useAuth } from "../../../context/AuthContext";
 import * as XLSX from "xlsx";
 
 const LEAVE_API = "https://localhost:7206/api/Leave";
 const LEAVE_TYPE_API = "https://localhost:7206/api/LeaveType";
 
 export default function LeaveTakenHistory() {
+
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/leave/history";
+    const canView = hasPermission(permissionRoute, "view");
+    const canExport = hasPermission(permissionRoute, "export");
 
     const [leaves, setLeaves] = useState([]);
     const [leaveTypes, setLeaveTypes] = useState([]);
@@ -150,6 +157,8 @@ export default function LeaveTakenHistory() {
 
     const handleExport = () => {
 
+        if (!canExport) return;
+
         const exportData = approvedLeaves.map((leave) => ({
 
             "Employee ID":
@@ -206,6 +215,18 @@ export default function LeaveTakenHistory() {
     };
 
 
+    if (!canView) {
+        return (
+            <div
+                className="leave-history-page"
+                style={{ padding: "60px", textAlign: "center" }}
+            >
+                <h2>Access Denied</h2>
+                <p>You do not have permission to access this page.</p>
+            </div>
+        );
+    }
+
     return (
 
         <div className="leave-history-page">
@@ -250,13 +271,15 @@ export default function LeaveTakenHistory() {
                     </button>
 
 
-                    <button
-                        type="button"
-                        className="leave-history-action-btn"
-                        onClick={handleExport}
-                    >
-                        ⇩ Export
-                    </button>
+                    {canExport && (
+                        <button
+                            type="button"
+                            className="leave-history-action-btn"
+                            onClick={handleExport}
+                        >
+                            ⇩ Export
+                        </button>
+                    )}
 
                 </div>
 

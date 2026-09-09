@@ -35,6 +35,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 import "./LeaveReports.css";
+import { useAuth } from "../../../context/AuthContext";
 
 const LEAVE_API = "https://localhost:7206/api/Leave";
 const LEAVE_TYPE_API = "https://localhost:7206/api/LeaveType";
@@ -50,6 +51,12 @@ const EMPTY_FILTERS = {
 };
 
 export default function LeaveReports() {
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/leave/reports";
+    const canView = hasPermission(permissionRoute, "view");
+    const canExport = hasPermission(permissionRoute, "export");
+
     const [leaveData, setLeaveData] = useState([]);
     const [leaveTypes, setLeaveTypes] = useState([]);
     const [employees, setEmployees] = useState([]);
@@ -458,7 +465,7 @@ export default function LeaveReports() {
     };
 
     const handleExportExcel = () => {
-        if (!filteredData.length) return;
+        if (!canExport || !filteredData.length) return;
 
         const worksheet = XLSX.utils.json_to_sheet(
             getExportRows()
@@ -501,7 +508,7 @@ export default function LeaveReports() {
     };
 
     const handleExportPDF = () => {
-        if (!filteredData.length) return;
+        if (!canExport || !filteredData.length) return;
 
         const doc = new jsPDF("landscape");
 
@@ -621,6 +628,22 @@ export default function LeaveReports() {
         doc.save("Employee_Leave_Report.pdf");
     };
 
+    if (!canView) {
+        return (
+            <Box
+                className="leave-reports-page"
+                sx={{ padding: "60px", textAlign: "center" }}
+            >
+                <Typography variant="h5">
+                    Access Denied
+                </Typography>
+                <Typography sx={{ mt: 1 }}>
+                    You do not have permission to access this page.
+                </Typography>
+            </Box>
+        );
+    }
+
     return (
         <Box className="leave-reports-page">
             <Card className="leave-reports-header-card">
@@ -659,23 +682,27 @@ export default function LeaveReports() {
                             Refresh
                         </Button>
 
-                        <Button
-                            variant="contained"
-                            startIcon={<FileDownloadIcon />}
-                            onClick={handleExportExcel}
-                            disabled={!filteredData.length}
-                        >
-                            Export Excel
-                        </Button>
+                        {canExport && (
+                            <Button
+                                variant="contained"
+                                startIcon={<FileDownloadIcon />}
+                                onClick={handleExportExcel}
+                                disabled={!filteredData.length}
+                            >
+                                Export Excel
+                            </Button>
+                        )}
 
-                        <Button
-                            variant="contained"
-                            startIcon={<PictureAsPdfIcon />}
-                            onClick={handleExportPDF}
-                            disabled={!filteredData.length}
-                        >
-                            Export PDF
-                        </Button>
+                        {canExport && (
+                            <Button
+                                variant="contained"
+                                startIcon={<PictureAsPdfIcon />}
+                                onClick={handleExportPDF}
+                                disabled={!filteredData.length}
+                            >
+                                Export PDF
+                            </Button>
+                        )}
                     </Stack>
                 </Box>
             </Card>

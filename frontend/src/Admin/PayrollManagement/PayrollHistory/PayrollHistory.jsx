@@ -52,6 +52,7 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 
 import "./PayrollHistory.css";
+import { useAuth } from "../../../context/AuthContext";
 
 /* =========================================================
    API CONFIGURATION
@@ -1097,6 +1098,13 @@ const extractEmployeeRows = (
 const PayrollHistory = ({
     onBack,
 }) => {
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/payroll/history";
+
+    const canView = hasPermission(permissionRoute, "view");
+    const canExport = hasPermission(permissionRoute, "export");
+
     const [
         search,
         setSearch,
@@ -1427,6 +1435,10 @@ const PayrollHistory = ({
         async (
             payroll
         ) => {
+            if (!canView) {
+                return;
+            }
+
             setSelectedPayroll(
                 payroll
             );
@@ -1648,6 +1660,7 @@ const PayrollHistory = ({
     const handleDownloadReport =
         () => {
             if (
+                !canExport ||
                 !selectedPayroll
             ) {
                 return;
@@ -2161,6 +2174,7 @@ const PayrollHistory = ({
     const handleDownloadExcel =
         () => {
             if (
+                !canExport ||
                 !selectedPayroll
             ) {
                 return;
@@ -2747,6 +2761,27 @@ const PayrollHistory = ({
                 />
             );
         };
+
+    /* =====================================================
+       PERMISSION CHECK
+    ===================================================== */
+
+    if (!canView) {
+        return (
+            <Box
+                className="ph-payroll-history-page"
+                sx={{ padding: "60px", textAlign: "center" }}
+            >
+                <Typography variant="h5">
+                    Access Denied
+                </Typography>
+
+                <Typography sx={{ mt: 1 }}>
+                    You do not have permission to access this page.
+                </Typography>
+            </Box>
+        );
+    }
 
     /* =====================================================
        RENDER
@@ -3363,21 +3398,23 @@ const PayrollHistory = ({
 
                                                 <td>
 
-                                                    <Button
-                                                        size="small"
-                                                        variant="outlined"
-                                                        startIcon={
-                                                            <VisibilityIcon />
-                                                        }
-                                                        className="ph-history-view-button"
-                                                        onClick={() =>
-                                                            handleViewPayroll(
-                                                                payroll
-                                                            )
-                                                        }
-                                                    >
-                                                        View
-                                                    </Button>
+                                                    {canView && (
+                                                        <Button
+                                                            size="small"
+                                                            variant="outlined"
+                                                            startIcon={
+                                                                <VisibilityIcon />
+                                                            }
+                                                            className="ph-history-view-button"
+                                                            onClick={() =>
+                                                                handleViewPayroll(
+                                                                    payroll
+                                                                )
+                                                            }
+                                                        >
+                                                            View
+                                                        </Button>
+                                                    )}
 
                                                 </td>
 
@@ -3948,36 +3985,40 @@ const PayrollHistory = ({
                                 Close
                             </Button>
 
-                            <Button
-                                variant="outlined"
-                                startIcon={
-                                    <DescriptionIcon />
-                                }
-                                className="ph-history-download-button"
-                                onClick={
-                                    handleDownloadReport
-                                }
-                            >
-                                Download PDF
-                            </Button>
+                            {canExport && (
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={
+                                            <DescriptionIcon />
+                                        }
+                                        className="ph-history-download-button"
+                                        onClick={
+                                            handleDownloadReport
+                                        }
+                                    >
+                                        Download PDF
+                                    </Button>
 
-                            <Button
-                                variant="contained"
-                                startIcon={
-                                    <TableViewIcon />
-                                }
-                                className="ph-history-excel-button"
-                                onClick={
-                                    handleDownloadExcel
-                                }
-                                disabled={
-                                    detailsLoading ||
-                                    selectedEmployeeRows.length ===
-                                        0
-                                }
-                            >
-                                Download Excel
-                            </Button>
+                                    <Button
+                                        variant="contained"
+                                        startIcon={
+                                            <TableViewIcon />
+                                        }
+                                        className="ph-history-excel-button"
+                                        onClick={
+                                            handleDownloadExcel
+                                        }
+                                        disabled={
+                                            detailsLoading ||
+                                            selectedEmployeeRows.length ===
+                                                0
+                                        }
+                                    >
+                                        Download Excel
+                                    </Button>
+                                </>
+                            )}
 
                         </DialogActions>
 

@@ -8,14 +8,18 @@ import { deleteRole } from "./RoleService";
 
 function RoleTable({
   roles,
-
   fetchRoles,
-
   setEditRole,
-
   setShowForm,
+  canEdit,
+  canDelete,
 }) {
   const handleDelete = async (id) => {
+    // Permission check
+    if (!canDelete) {
+      return;
+    }
+
     const result = await Swal.fire({
       title: "Delete Role?",
 
@@ -107,26 +111,33 @@ function RoleTable({
 
               <td>
                 <div className="role-actions">
-                  
-                  <button
-                    className="edit-btn"
-                    title="Edit Role"
-                    onClick={() => {
-                      setEditRole(role);
 
-                      setShowForm(true);
-                    }}
-                  >
-                    <EditRoundedIcon fontSize="small" />
-                  </button>
+                  {/* EDIT */}
+                  {canEdit && (
+                    <button
+                      className="edit-btn"
+                      title="Edit Role"
+                      onClick={() => {
+                        setEditRole(role);
 
-                  <button
-                    className="delete-btn"
-                    title="Delete Role"
-                    onClick={() => handleDelete(role.roleId)}
-                  >
-                    <DeleteRoundedIcon fontSize="small" />
-                  </button>
+                        setShowForm(true);
+                      }}
+                    >
+                      <EditRoundedIcon fontSize="small" />
+                    </button>
+                  )}
+
+                  {/* DELETE */}
+                  {canDelete && (
+                    <button
+                      className="delete-btn"
+                      title="Delete Role"
+                      onClick={() => handleDelete(role.roleId)}
+                    >
+                      <DeleteRoundedIcon fontSize="small" />
+                    </button>
+                  )}
+
                 </div>
               </td>
             </tr>

@@ -50,7 +50,7 @@ function AuthCallback() {
                 =================================================
                 */
 
-                await completeLogin(token);
+                const loginResult = await completeLogin(token);
 
 
                 if (cancelled) {
@@ -69,16 +69,19 @@ function AuthCallback() {
 
                 Authentication is completely finished.
 
-                Use a full browser redirect instead of React
-                navigation so AuthContext starts again with the
-                saved JWT.
+                If exactly one page has View permission,
+                completeLogin returns that page as initialRoute.
 
-                Admin / Manager / TL / Employee currently all
-                enter the same dashboard.
+                If multiple pages have View permission,
+                initialRoute remains /dashboard.
+
+                No hardcoded permission/page mapping is used.
                 =================================================
                 */
 
-                window.location.replace("/dashboard");
+                window.location.replace(
+                    loginResult?.initialRoute || "/dashboard"
+                );
 
             }
             catch (error) {

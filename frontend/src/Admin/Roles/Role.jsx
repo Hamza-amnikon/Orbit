@@ -7,9 +7,24 @@ import RoleForm from "./RoleForm";
 import RoleTable from "./RoleTable";
 import { getRoles } from "./RoleService";
 import "./Role.css";
+import { useAuth } from "../../context/AuthContext";
 
 function Role() {
   const navigate = useNavigate();
+
+  // =========================================================
+  // PERMISSIONS
+  // =========================================================
+
+  const { hasPermission } = useAuth();
+
+  const permissionRoute = "/employees/roles";
+
+  const canView = hasPermission(permissionRoute, "view");
+  const canCreate = hasPermission(permissionRoute, "create");
+  const canEdit = hasPermission(permissionRoute, "edit");
+  const canDelete = hasPermission(permissionRoute, "delete");
+  const canExport = hasPermission(permissionRoute, "export");
 
   const [roles, setRoles] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -19,6 +34,11 @@ function Role() {
 
   // Fetch Roles
   const fetchRoles = async () => {
+    if (!canView) {
+      setRoles([]);
+      return;
+    }
+
     try {
       const response = await getRoles();
       setRoles(response.data);
@@ -28,11 +48,19 @@ function Role() {
   };
 
   useEffect(() => {
+    if (!canView) {
+      return;
+    }
+
     fetchRoles();
-  }, []);
+  }, [canView]);
 
   // Refresh
   const handleRefresh = async () => {
+    if (!canView) {
+      return;
+    }
+
     await fetchRoles();
     setSearch("");
     setEditRole(null);
@@ -40,19 +68,19 @@ function Role() {
   };
 
   // Search
-const filteredRoles = roles.filter((role) => {
-  const keyword = search.trim().toLowerCase();
+  const filteredRoles = roles.filter((role) => {
+    const keyword = search.trim().toLowerCase();
 
-  const matchesSearch =
-    !keyword ||
-    role.role?.toLowerCase().includes(keyword);
+    const matchesSearch =
+      !keyword ||
+      role.role?.toLowerCase().includes(keyword);
 
-  const matchesStatus =
-    !statusFilter ||
-    role.status === statusFilter;
+    const matchesStatus =
+      !statusFilter ||
+      role.status === statusFilter;
 
-  return matchesSearch && matchesStatus;
-});
+    return matchesSearch && matchesStatus;
+  });
 
   // Statistics
   const totalRoles = roles.length;
@@ -65,6 +93,10 @@ const filteredRoles = roles.filter((role) => {
 
   // Export
   const exportToExcel = () => {
+    if (!canExport) {
+      return;
+    }
+
     const data = filteredRoles.map((role, index) => ({
       "S.No": index + 1,
       Role: role.role,
@@ -80,6 +112,19 @@ const filteredRoles = roles.filter((role) => {
 
     XLSX.writeFile(workbook, "Roles.xlsx");
   };
+
+  // =========================================================
+  // VIEW PERMISSION
+  // =========================================================
+
+  if (!canView) {
+    return (
+      <div style={{ padding: "60px", textAlign: "center" }}>
+        <h2>Access Denied</h2>
+        <p>You do not have permission to access this page.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="role-page">
@@ -104,20 +149,24 @@ const filteredRoles = roles.filter((role) => {
             ↻ Refresh
           </button>
 
-          <button className="export-btn" onClick={exportToExcel}>
-            ⬇ Export
-          </button>
+          {canExport && (
+            <button className="export-btn" onClick={exportToExcel}>
+              ⬇ Export
+            </button>
+          )}
 
-<button
-    className="add-role-btn"
-    onClick={() => {
-        setEditRole(null);
-        setShowForm(true);
-    }}
->
-    <AddRoundedIcon fontSize="small" />
-    <span>Add Role</span>
-</button>
+          {canCreate && (
+            <button
+              className="add-role-btn"
+              onClick={() => {
+                setEditRole(null);
+                setShowForm(true);
+              }}
+            >
+              <AddRoundedIcon fontSize="small" />
+              <span>Add Role</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -157,7 +206,7 @@ const filteredRoles = roles.filter((role) => {
 
       {/* Form */}
 
-      {showForm && (
+      {showForm && (canCreate || canEdit) && (
         <RoleForm
           fetchRoles={fetchRoles}
           editRole={editRole}
@@ -168,53 +217,53 @@ const filteredRoles = roles.filter((role) => {
 
       {/* Search */}
 
-<div className="role-search-card">
+      <div className="role-search-card">
 
-  <div className="role-filter-row">
+        <div className="role-filter-row">
 
-    <div className="role-search-box">
+          <div className="role-search-box">
 
-      <span className="search-icon">🔍</span>
+            <span className="search-icon">🔍</span>
 
-      <input
-        type="text"
-        className="role-search"
-        placeholder="Search role..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+            <input
+              type="text"
+              className="role-search"
+              placeholder="Search role..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
 
-    </div>
+          </div>
 
-    <FormControl className="role-status-filter">
+          <FormControl className="role-status-filter">
 
-      <InputLabel>Status</InputLabel>
+            <InputLabel>Status</InputLabel>
 
-      <Select
-        value={statusFilter}
-        label="Status"
-        onChange={(e) => setStatusFilter(e.target.value)}
-      >
+            <Select
+              value={statusFilter}
+              label="Status"
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
 
-        <MenuItem value="">
-          All Status
-        </MenuItem>
+              <MenuItem value="">
+                All Status
+              </MenuItem>
 
-        <MenuItem value="Active">
-          Active
-        </MenuItem>
+              <MenuItem value="Active">
+                Active
+              </MenuItem>
 
-        <MenuItem value="Inactive">
-          Inactive
-        </MenuItem>
+              <MenuItem value="Inactive">
+                Inactive
+              </MenuItem>
 
-      </Select>
+            </Select>
 
-    </FormControl>
+          </FormControl>
 
-  </div>
+        </div>
 
-</div>
+      </div>
 
       {/* Table */}
 
@@ -234,6 +283,8 @@ const filteredRoles = roles.filter((role) => {
           fetchRoles={fetchRoles}
           setEditRole={setEditRole}
           setShowForm={setShowForm}
+          canEdit={canEdit}
+          canDelete={canDelete}
         />
       </div>
     </div>

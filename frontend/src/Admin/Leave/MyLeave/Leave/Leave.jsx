@@ -35,9 +35,15 @@ import {
 
 import LeaveService from "../../../Services/LeaveService";
 import api from "../../../Services/api";
+import { useAuth } from "../../../../context/AuthContext";
 
 
 const Leave = () => {
+
+    const { hasPermission } = useAuth();
+    const permissionRoute = "/leave/my-leave";
+    const canView = hasPermission(permissionRoute, "view");
+    const canCreate = hasPermission(permissionRoute, "create");
 
     // =========================================================
     // STATE
@@ -1177,6 +1183,10 @@ const [profile, setProfile] = useState(null);
 
     const openApplyLeaveDialog = () => {
 
+        if (!canCreate) {
+            return;
+        }
+
         setFormError("");
 
         setLeaveForm({
@@ -1257,6 +1267,10 @@ const [profile, setProfile] = useState(null);
 
     const handleSubmitLeave =
         async () => {
+
+            if (!canCreate) {
+                return;
+            }
 
             setFormError("");
 
@@ -1458,6 +1472,21 @@ const closeViewLeaveDialog = () => {
     setSelectedLeave(null);
 };
     // =========================================================
+    // VIEW PERMISSION
+    // =========================================================
+
+    if (!canView) {
+        return (
+            <div className="leave-dashboard">
+                <div className="leave-error">
+                    <h3>Access Denied</h3>
+                    <p>You do not have permission to access this page.</p>
+                </div>
+            </div>
+        );
+    }
+
+    // =========================================================
     // LOADING
     // =========================================================
 
@@ -1612,18 +1641,20 @@ const closeViewLeaveDialog = () => {
                     </select>
 
 
-                    <Button
-                        variant="contained"
-                        startIcon={
-                            <AddIcon />
-                        }
-                        onClick={
-                            openApplyLeaveDialog
-                        }
-                        className="apply-leave-btn"
-                    >
-                        Apply for Leave
-                    </Button>
+                    {canCreate && (
+                        <Button
+                            variant="contained"
+                            startIcon={
+                                <AddIcon />
+                            }
+                            onClick={
+                                openApplyLeaveDialog
+                            }
+                            className="apply-leave-btn"
+                        >
+                            Apply for Leave
+                        </Button>
+                    )}
 
                 </div>
 
@@ -3277,33 +3308,35 @@ const closeViewLeaveDialog = () => {
                     </Button>
 
 
-                    <Button
-                        variant="contained"
-                        onClick={
-                            handleSubmitLeave
-                        }
-                        disabled={
-                            submittingLeave
-                        }
-                        startIcon={
-                            submittingLeave
-                                ? (
-                                    <CircularProgress
-                                        size={18}
-                                        color="inherit"
-                                    />
-                                )
-                                : (
-                                    <AddIcon />
-                                )
-                        }
-                    >
-                        {
-                            submittingLeave
-                                ? "Submitting..."
-                                : "Submit Request"
-                        }
-                    </Button>
+                    {canCreate && (
+                        <Button
+                            variant="contained"
+                            onClick={
+                                handleSubmitLeave
+                            }
+                            disabled={
+                                submittingLeave
+                            }
+                            startIcon={
+                                submittingLeave
+                                    ? (
+                                        <CircularProgress
+                                            size={18}
+                                            color="inherit"
+                                        />
+                                    )
+                                    : (
+                                        <AddIcon />
+                                    )
+                            }
+                        >
+                            {
+                                submittingLeave
+                                    ? "Submitting..."
+                                    : "Submit Request"
+                            }
+                        </Button>
+                    )}
 
                 </DialogActions>
 

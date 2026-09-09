@@ -20,6 +20,7 @@ import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../context/AuthContext";
 
 import "./CreatePayslipTemplate.css";
 
@@ -134,6 +135,20 @@ function CreatePayslipTemplate({ onBack }) {
 
     const isViewMode = mode === "view";
     const isEditMode = mode === "edit";
+
+    const { hasPermission } = useAuth();
+
+    // This screen is the create/edit/view screen for the Payslip Templates permission.
+    const permissionRoute = "/payroll/payslip-templates";
+
+    const canView = hasPermission(permissionRoute, "view");
+    const canCreate = hasPermission(permissionRoute, "create");
+    const canEdit = hasPermission(permissionRoute, "edit");
+    const canDelete = hasPermission(permissionRoute, "delete");
+    const canApprove = hasPermission(permissionRoute, "approve");
+    const canExport = hasPermission(permissionRoute, "export");
+
+    const canModify = isEditMode ? canEdit : canCreate;
 
     const [templateName, setTemplateName] = useState("");
     const [description, setDescription] = useState("");
@@ -573,6 +588,10 @@ function CreatePayslipTemplate({ onBack }) {
        ======================================================== */
 
     const handleAddEarning = () => {
+        if (!canModify) {
+            return;
+        }
+
         setEarnings((current) => [
             ...current,
             {
@@ -589,6 +608,10 @@ function CreatePayslipTemplate({ onBack }) {
     };
 
     const handleAddDeduction = () => {
+        if (!canModify) {
+            return;
+        }
+
         setDeductions((current) => [
             ...current,
             {
@@ -705,7 +728,7 @@ function CreatePayslipTemplate({ onBack }) {
     const handleSave = async (event) => {
         event.preventDefault();
 
-        if (isViewMode) {
+        if (isViewMode || !canModify) {
             return;
         }
 
@@ -931,7 +954,7 @@ function CreatePayslipTemplate({ onBack }) {
                                 ""
                             }
                             label="Component Name"
-                            disabled={isViewMode}
+                            disabled={!canModify || isViewMode}
                             renderValue={() => (
                                 <ComponentValue
                                     component={
@@ -1016,7 +1039,7 @@ function CreatePayslipTemplate({ onBack }) {
                                 "Percentage"
                             }
                             label="Calculation"
-                            disabled={isViewMode}
+                            disabled={!canModify || isViewMode}
                             onChange={(event) =>
                                 onChange(
                                     item.id,
@@ -1051,7 +1074,7 @@ function CreatePayslipTemplate({ onBack }) {
                         value={
                             item.value ?? ""
                         }
-                        disabled={isViewMode}
+                        disabled={!canModify || isViewMode}
                         onChange={(event) =>
                             onChange(
                                 item.id,
@@ -1072,7 +1095,7 @@ function CreatePayslipTemplate({ onBack }) {
                     />
 
                     {/* DELETE */}
-                    {!isViewMode && (
+                    {canDelete && !isViewMode && (
                         <Button
                             className="cpt-delete-component-button"
                             type="button"
@@ -1105,7 +1128,7 @@ function CreatePayslipTemplate({ onBack }) {
                                     : "Basic Salary")
                             }
                             label="Based On"
-                            disabled={isViewMode}
+                            disabled={!canModify || isViewMode}
                             onChange={(event) =>
                                 onChange(
                                     item.id,
@@ -1132,6 +1155,40 @@ function CreatePayslipTemplate({ onBack }) {
             </Box>
         );
     };
+
+    /* ========================================================
+       PERMISSION CHECK
+       ======================================================== */
+
+    const hasRequiredPermission =
+        isViewMode
+            ? canView
+            : canModify;
+
+    if (!hasRequiredPermission) {
+        return (
+            <Box
+                className="cpt-create-payslip-page"
+                sx={{ padding: "60px", textAlign: "center" }}
+            >
+                <Typography variant="h5">
+                    Access Denied
+                </Typography>
+
+                <Typography sx={{ mt: 1 }}>
+                    You do not have permission to access this page.
+                </Typography>
+
+                <Button
+                    variant="contained"
+                    sx={{ mt: 3 }}
+                    onClick={handleBack}
+                >
+                    Back
+                </Button>
+            </Box>
+        );
+    }
 
     /* ========================================================
        RENDER
@@ -1170,7 +1227,7 @@ function CreatePayslipTemplate({ onBack }) {
                     </Box>
                 </Box>
 
-                {!isViewMode && (
+                {canModify && !isViewMode && (
                     <Button
                         className="cpt-header-save-button"
                         variant="contained"
@@ -1396,7 +1453,7 @@ function CreatePayslipTemplate({ onBack }) {
                                     </Typography>
                                 </Box>
 
-                                {!isViewMode && (
+                                {canModify && !isViewMode && (
                                     <Button
                                         className="cpt-add-component-button"
                                         variant="outlined"
@@ -1456,7 +1513,7 @@ function CreatePayslipTemplate({ onBack }) {
                                     </Typography>
                                 </Box>
 
-                                {!isViewMode && (
+                                {canModify && !isViewMode && (
                                     <Button
                                         className="cpt-add-component-button"
                                         variant="outlined"
@@ -1704,7 +1761,7 @@ function CreatePayslipTemplate({ onBack }) {
                         Cancel
                     </Button>
 
-                    {!isViewMode && (
+                    {canModify && !isViewMode && (
                         <Button
                             className="cpt-footer-save-button"
                             variant="contained"

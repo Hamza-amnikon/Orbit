@@ -20,7 +20,17 @@ import AttendanceDetailsDialog from "../AttendanceLogs/AttendanceDetailsDialog";
 import EditAttendanceDialog from "../AttendanceLogs/EditAttendanceDialog";
 import DeleteAttendanceDialog from "../AttendanceLogs/DeleteAttendanceDialog";
 
+import { useAuth } from "../../../context/AuthContext";
+
 export default function AttendanceDashboard() {
+  const { hasPermission } = useAuth();
+
+  const permissionRoute = "/attendance/dashboard";
+
+  const canView = hasPermission(permissionRoute, "view");
+  const canEdit = hasPermission(permissionRoute, "edit");
+  const canDelete = hasPermission(permissionRoute, "delete");
+
   const [dashboard, setDashboard] = useState({
     present: 0,
     absent: 0,
@@ -49,24 +59,23 @@ export default function AttendanceDashboard() {
     loadDashboard();
   };
 
-const loadDashboard = async () => {
-  try {
-    const data = await AttendanceService.getToday();
+  const loadDashboard = async () => {
+    try {
+      const data = await AttendanceService.getToday();
 
-    setTodayAttendance(data);
+      setTodayAttendance(data);
 
-    setDashboard({
-      present: data.filter(x => x.status === "Present").length,
-      absent: data.filter(x => x.status === "Absent").length,
-      late: data.filter(x => x.status === "Late").length,
-      leave: data.filter(x => x.status === "Leave").length,
-      wfh: data.filter(x => x.status === "WFH").length,
-    });
-
-  } catch (error) {
-    console.error(error);
-  }
-};
+      setDashboard({
+        present: data.filter(x => x.status === "Present").length,
+        absent: data.filter(x => x.status === "Absent").length,
+        late: data.filter(x => x.status === "Late").length,
+        leave: data.filter(x => x.status === "Leave").length,
+        wfh: data.filter(x => x.status === "WFH").length,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const loadTodayAttendance = async () => {
     try {
@@ -83,6 +92,8 @@ const loadDashboard = async () => {
   };
 
   const handleDelete = async () => {
+    if (!canDelete) return;
+
     try {
       await AttendanceService.delete(selectedAttendance.attendanceId);
 
@@ -95,6 +106,10 @@ const loadDashboard = async () => {
       console.error(error);
     }
   };
+
+  if (!canView) {
+    return null;
+  }
 
   return (
     <div className="attendance-dashboard">
@@ -173,10 +188,14 @@ const loadDashboard = async () => {
             setDetailsOpen(true);
           }}
           onEdit={(row) => {
+            if (!canEdit) return;
+
             setSelectedAttendance(row);
             setEditOpen(true);
           }}
           onDelete={(row) => {
+            if (!canDelete) return;
+
             setSelectedAttendance(row);
             setDeleteOpen(true);
           }}

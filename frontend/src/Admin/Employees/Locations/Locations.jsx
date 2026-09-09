@@ -29,10 +29,26 @@ import {
   MenuItem,
 } from "@mui/material";
 
+import { useAuth } from "../../../context/AuthContext";
+
 function Locations() {
   const navigate = useNavigate();
 
   const API = "http://localhost:7281/api/location";
+
+  // =========================================================
+  // PERMISSIONS
+  // =========================================================
+
+  const { hasPermission } = useAuth();
+
+  const permissionRoute = "/employees/locations";
+
+  const canView = hasPermission(permissionRoute, "view");
+  const canCreate = hasPermission(permissionRoute, "create");
+  const canEdit = hasPermission(permissionRoute, "edit");
+  const canDelete = hasPermission(permissionRoute, "delete");
+  const canExport = hasPermission(permissionRoute, "export");
 
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,14 +62,23 @@ function Locations() {
   const [selectedLocation, setSelectedLocation] = useState(null);
 
   useEffect(() => {
+    if (!canView) {
+      setLoading(false);
+      return;
+    }
+
     fetchLocations();
-  }, []);
+  }, [canView]);
 
   // ===============================
   // GET ALL LOCATIONS
   // ===============================
 
   const fetchLocations = async () => {
+    if (!canView) {
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -72,6 +97,10 @@ function Locations() {
   // ===============================
 
   const handleSaveLocation = async (location) => {
+    if (!canCreate) {
+      return;
+    }
+
     try {
       console.log("Sending:", location);
 
@@ -96,6 +125,10 @@ function Locations() {
   // ===============================
 
   const editLocation = (location) => {
+    if (!canEdit) {
+      return;
+    }
+
     setSelectedLocation(location);
     setOpenEditDialog(true);
   };
@@ -104,68 +137,77 @@ function Locations() {
   // UPDATE LOCATION
   // ===============================
 
-const handleUpdateLocation = async (updatedLocation) => {
-  try {
-    const payload = {
-      locationId: Number(updatedLocation.locationId),
-      locationName: updatedLocation.locationName,
-      locationCode: updatedLocation.locationCode,
-      country: updatedLocation.country,
-      city: updatedLocation.city,
-      status: updatedLocation.status
-    };
+  const handleUpdateLocation = async (updatedLocation) => {
+    if (!canEdit) {
+      return;
+    }
 
-    console.log("UPDATE PAYLOAD:", payload);
+    try {
+      const payload = {
+        locationId: Number(updatedLocation.locationId),
+        locationName: updatedLocation.locationName,
+        locationCode: updatedLocation.locationCode,
+        country: updatedLocation.country,
+        city: updatedLocation.city,
+        status: updatedLocation.status
+      };
 
-    const response = await axios.put(
-      `${API}/${updatedLocation.locationId}`,
-      payload,
-      {
-        headers: {
-          "Content-Type": "application/json"
+      console.log("UPDATE PAYLOAD:", payload);
+
+      const response = await axios.put(
+        `${API}/${updatedLocation.locationId}`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
         }
-      }
-    );
+      );
 
-    console.log("UPDATE RESPONSE:", response.data);
+      console.log("UPDATE RESPONSE:", response.data);
 
-    await fetchLocations();
+      await fetchLocations();
 
-    alert("Location updated successfully.");
+      alert("Location updated successfully.");
 
-    setOpenEditDialog(false);
+      setOpenEditDialog(false);
 
-  } catch (error) {
+    } catch (error) {
 
-    console.error("UPDATE LOCATION ERROR:", error);
+      console.error("UPDATE LOCATION ERROR:", error);
 
-    console.error(
-      "STATUS:",
-      error.response?.status
-    );
+      console.error(
+        "STATUS:",
+        error.response?.status
+      );
 
-    console.error(
-      "RESPONSE DATA:",
-      error.response?.data
-    );
+      console.error(
+        "RESPONSE DATA:",
+        error.response?.data
+      );
 
-    console.error(
-      "VALIDATION ERRORS:",
-      error.response?.data?.errors
-    );
+      console.error(
+        "VALIDATION ERRORS:",
+        error.response?.data?.errors
+      );
 
-    alert(
-      error.response?.data?.title ||
-      error.response?.data?.message ||
-      "Unable to update location."
-    );
-  }
-};
+      alert(
+        error.response?.data?.title ||
+        error.response?.data?.message ||
+        "Unable to update location."
+      );
+    }
+  };
+
   // ===============================
   // DELETE LOCATION
   // ===============================
 
   const handleDeleteLocation = async (id) => {
+    if (!canDelete) {
+      return;
+    }
+
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this location?",
     );
@@ -190,24 +232,37 @@ const handleUpdateLocation = async (updatedLocation) => {
   // SEARCH
   // ===============================
 
-const filteredLocations = locations
-  .filter((location) => {
-    const keyword = search.trim().toLowerCase();
+  const filteredLocations = locations
+    .filter((location) => {
+      const keyword = search.trim().toLowerCase();
 
-    const matchesSearch =
-      location.locationCode?.toLowerCase().includes(keyword) ||
-      location.locationName?.toLowerCase().includes(keyword) ||
-      location.city?.toLowerCase().includes(keyword) ||
-      location.country?.toLowerCase().includes(keyword) ||
-      location.currencyCode?.toLowerCase().includes(keyword) ||
-      location.timeZone?.toLowerCase().includes(keyword);
+      const matchesSearch =
+        location.locationCode?.toLowerCase().includes(keyword) ||
+        location.locationName?.toLowerCase().includes(keyword) ||
+        location.city?.toLowerCase().includes(keyword) ||
+        location.country?.toLowerCase().includes(keyword) ||
+        location.currencyCode?.toLowerCase().includes(keyword) ||
+        location.timeZone?.toLowerCase().includes(keyword);
 
-    const matchesStatus =
-      !statusFilter || location.status === statusFilter;
+      const matchesStatus =
+        !statusFilter || location.status === statusFilter;
 
-    return matchesSearch && matchesStatus;
-  })
-  .sort((a, b) => Number(a.locationCode) - Number(b.locationCode));
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => Number(a.locationCode) - Number(b.locationCode));
+
+  // =========================================================
+  // VIEW PERMISSION
+  // =========================================================
+
+  if (!canView) {
+    return (
+      <div style={{ padding: "60px", textAlign: "center" }}>
+        <h2>Access Denied</h2>
+        <p>You do not have permission to access this page.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="location-page">
@@ -232,17 +287,21 @@ const filteredLocations = locations
             Refresh
           </Button>
 
-          <Button variant="outlined" startIcon={<Download />}>
-            Export
-          </Button>
+          {canExport && (
+            <Button variant="outlined" startIcon={<Download />}>
+              Export
+            </Button>
+          )}
 
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={() => setOpenAddDialog(true)}
-          >
-            Add Location
-          </Button>
+          {canCreate && (
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() => setOpenAddDialog(true)}
+            >
+              Add Location
+            </Button>
+          )}
         </div>
       </div>
 
@@ -300,54 +359,54 @@ const filteredLocations = locations
 
       {/* Search */}
 
-<Card className="toolbar-card">
-  <CardContent>
+      <Card className="toolbar-card">
+        <CardContent>
 
-    <div className="location-filter-row">
+          <div className="location-filter-row">
 
-      {/* SEARCH */}
-      <TextField
-        className="location-search"
-        fullWidth
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search Location..."
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search />
-            </InputAdornment>
-          ),
-        }}
-      />
+            {/* SEARCH */}
+            <TextField
+              className="location-search"
+              fullWidth
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search Location..."
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-      {/* STATUS FILTER */}
-      <FormControl className="location-status-filter">
+            {/* STATUS FILTER */}
+            <FormControl className="location-status-filter">
 
-        <Select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          displayEmpty
-        >
-          <MenuItem value="">
-            All Status
-          </MenuItem>
+              <Select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                displayEmpty
+              >
+                <MenuItem value="">
+                  All Status
+                </MenuItem>
 
-          <MenuItem value="Active">
-            Active
-          </MenuItem>
+                <MenuItem value="Active">
+                  Active
+                </MenuItem>
 
-          <MenuItem value="Inactive">
-            Inactive
-          </MenuItem>
-        </Select>
+                <MenuItem value="Inactive">
+                  Inactive
+                </MenuItem>
+              </Select>
 
-      </FormControl>
+            </FormControl>
 
-    </div>
+          </div>
 
-  </CardContent>
-</Card>
+        </CardContent>
+      </Card>
 
       {/* Table */}
 
@@ -369,8 +428,8 @@ const filteredLocations = locations
           <CardContent>
             <LocationTable
               locations={filteredLocations}
-              editLocation={editLocation}
-              deleteLocation={handleDeleteLocation}
+              editLocation={canEdit ? editLocation : undefined}
+              deleteLocation={canDelete ? handleDeleteLocation : undefined}
             />
           </CardContent>
         </Card>
@@ -378,20 +437,24 @@ const filteredLocations = locations
 
       {/* Add Dialog */}
 
-      <AddLocation
-        open={openAddDialog}
-        handleClose={() => setOpenAddDialog(false)}
-        handleSave={handleSaveLocation}
-      />
+      {canCreate && (
+        <AddLocation
+          open={openAddDialog}
+          handleClose={() => setOpenAddDialog(false)}
+          handleSave={handleSaveLocation}
+        />
+      )}
 
       {/* Edit Dialog */}
 
-      <EditLocation
-        open={openEditDialog}
-        location={selectedLocation}
-        handleClose={() => setOpenEditDialog(false)}
-        handleUpdate={handleUpdateLocation}
-      />
+      {canEdit && (
+        <EditLocation
+          open={openEditDialog}
+          location={selectedLocation}
+          handleClose={() => setOpenEditDialog(false)}
+          handleUpdate={handleUpdateLocation}
+        />
+      )}
     </div>
   );
 }

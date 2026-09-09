@@ -19,9 +19,11 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function Payroll() {
     const navigate = useNavigate();
+    const { hasPermission } = useAuth();
 
     const payrollModules = [
         {
@@ -88,7 +90,7 @@ function Payroll() {
             color: "#eab308",
             route: "/payroll/reports",
         },
-               {
+        {
             title: "My Payslip",
             description:
                 "View and export payroll reports and analytics.",
@@ -97,6 +99,10 @@ function Payroll() {
             route: "/employee/payroll",
         },
     ];
+
+    const allowedModules = payrollModules.filter((module) =>
+        hasPermission(module.route, "view")
+    );
 
     const handleOpenModule = (module) => {
         navigate(module.route);
@@ -152,8 +158,12 @@ function Payroll() {
                 PAYROLL MODULES
             ================================= */}
 
-            <Grid container spacing={3} className="pm-payroll-module-grid">
-                {payrollModules.map((module) => (
+            <Grid
+                container
+                spacing={3}
+                className="pm-payroll-module-grid"
+            >
+                {allowedModules.map((module) => (
                     <Grid
                         key={module.title}
                         size={{
@@ -222,7 +232,10 @@ function Payroll() {
 
                                 {/* CONTENT */}
 
-                                <Box className="pm-payroll-module-content" sx={{ flex: 1 }}>
+                                <Box
+                                    className="pm-payroll-module-content"
+                                    sx={{ flex: 1 }}
+                                >
                                     <Typography
                                         variant="h6"
                                         sx={{
@@ -254,7 +267,11 @@ function Payroll() {
                                     onClick={() =>
                                         handleOpenModule(module)
                                     }
-                                    endIcon={<span className="pm-payroll-arrow"><ArrowForwardIcon /></span>}
+                                    endIcon={
+                                        <span className="pm-payroll-arrow">
+                                            <ArrowForwardIcon />
+                                        </span>
+                                    }
                                     sx={{
                                         alignSelf: "flex-start",
                                         mt: 3,

@@ -37,7 +37,19 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import AddIcon from "@mui/icons-material/Add";
 
+import { useAuth } from "../../../context/AuthContext";
+
 export default function AttendanceLogs() {
+  const { hasPermission } = useAuth();
+
+  const permissionRoute = "/attendance/logs";
+
+  const canView = hasPermission(permissionRoute, "view");
+  const canCreate = hasPermission(permissionRoute, "create");
+  const canEdit = hasPermission(permissionRoute, "edit");
+  const canDelete = hasPermission(permissionRoute, "delete");
+  const canExport = hasPermission(permissionRoute, "export");
+
   const [search, setSearch] = useState("");
 
   const [shift, setShift] = useState("");
@@ -69,10 +81,12 @@ export default function AttendanceLogs() {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   useEffect(() => {
+    if (!canView) return;
+
     loadAttendance();
 
     loadDashboard();
-  }, []);
+  }, [canView]);
 
   const loadAttendance = async () => {
     try {
@@ -105,6 +119,8 @@ export default function AttendanceLogs() {
   };
 
   const handleGenerateAttendance = async () => {
+    if (!canCreate) return;
+
     try {
       const result = await AttendanceService.generateAttendance();
 
@@ -130,6 +146,7 @@ Weekly Off : ${result.weeklyOff}`,
     setStatus("");
     setDate("");
   };
+
   const filteredAttendance = attendanceList.filter((item) => {
     const keyword = search.toLowerCase().trim();
 
@@ -143,31 +160,44 @@ Weekly Off : ${result.weeklyOff}`,
     const shiftMatch = shift === "" || item.shift === shift;
 
     const statusMatch = status === "" || item.status === status;
-    const dateMatch = !date || item.attendanceDate?.split("T")[0] === date;
+
+    const dateMatch =
+      !date || item.attendanceDate?.split("T")[0] === date;
+
     return searchMatch && shiftMatch && statusMatch && dateMatch;
   });
 
+  const filteredDashboard = {
+    present: filteredAttendance.filter(
+      x => x.status === "Present"
+    ).length,
 
-const filteredDashboard = {
-  present: filteredAttendance.filter(x => x.status === "Present").length,
+    absent: filteredAttendance.filter(
+      x => x.status === "Absent"
+    ).length,
 
-  absent: filteredAttendance.filter(x => x.status === "Absent").length,
+    late: filteredAttendance.filter(
+      x => x.status === "Late"
+    ).length,
 
-  late: filteredAttendance.filter(x => x.status === "Late").length,
+    leave: filteredAttendance.filter(
+      x =>
+        x.status === "Leave" ||
+        x.status === "On Leave"
+    ).length,
 
-  leave: filteredAttendance.filter(
-    x =>
-      x.status === "Leave" ||
-      x.status === "On Leave"
-  ).length,
-
-  wfh: filteredAttendance.filter(x => x.status === "WFH").length,
-};
-
+    wfh: filteredAttendance.filter(
+      x => x.status === "WFH"
+    ).length,
+  };
 
   const handleDelete = async () => {
+    if (!canDelete) return;
+
     try {
-      await AttendanceService.delete(selectedAttendance.attendanceId);
+      await AttendanceService.delete(
+        selectedAttendance.attendanceId
+      );
 
       setDeleteOpen(false);
 
@@ -178,11 +208,18 @@ const filteredDashboard = {
       console.error("Delete Error", error);
     }
   };
-  const shifts = [...new Set(attendanceList.map((x) => x.shift))].filter(
-    Boolean,
-  );
 
-  const statuses = [...new Set(attendanceList.map((x) => x.status))];
+  const shifts = [
+    ...new Set(attendanceList.map((x) => x.shift)),
+  ].filter(Boolean);
+
+  const statuses = [
+    ...new Set(attendanceList.map((x) => x.status)),
+  ];
+
+  if (!canView) {
+    return null;
+  }
 
   return (
     <div className="attendance-logs">
@@ -192,35 +229,55 @@ const filteredDashboard = {
         <div>
           <h2>Attendance Logs</h2>
 
-          <p>View, search and manage employee attendance records.</p>
+          <p>
+            View, search and manage employee attendance records.
+          </p>
         </div>
 
         <div className="attendance-header-actions">
-          <button className="outline-btn" onClick={refreshData}>
+
+          <button
+            className="outline-btn"
+            onClick={refreshData}
+          >
             <RefreshIcon />
             Refresh
           </button>
 
-          <button className="outline-btn" onClick={handleGenerateAttendance}>
-            <AutorenewIcon />
-            Generate Attendance
-          </button>
+          {canCreate && (
+            <button
+              className="outline-btn"
+              onClick={handleGenerateAttendance}
+            >
+              <AutorenewIcon />
+              Generate Attendance
+            </button>
+          )}
 
-          <button className="outline-btn">
-            <FileDownloadIcon />
-            Export
-          </button>
+          {canExport && (
+            <button className="outline-btn">
+              <FileDownloadIcon />
+              Export
+            </button>
+          )}
 
-          <button className="primary-btn" onClick={() => setAddOpen(true)}>
-            <AddIcon />
-            Add Attendance
-          </button>
+          {canCreate && (
+            <button
+              className="primary-btn"
+              onClick={() => setAddOpen(true)}
+            >
+              <AddIcon />
+              Add Attendance
+            </button>
+          )}
+
         </div>
       </div>
 
       {/* DASHBOARD */}
 
       <div className="attendance-summary-grid">
+
         <DashboardCard
           title="Present"
           value={filteredDashboard.present}
@@ -260,12 +317,14 @@ const filteredDashboard = {
           color="#06B6D4"
           icon={<HomeWorkIcon />}
         />
+
       </div>
 
       {/* FILTERS */}
 
       <div className="attendance-filter-card">
         <Grid container spacing={2} alignItems="center">
+
           <Grid size={{ xs: 12, md: 5 }}>
             <TextField
               fullWidth
@@ -298,10 +357,18 @@ const filteredDashboard = {
               }}
             >
               <MenuItem value="">All Shifts</MenuItem>
-              <MenuItem value="Morning">Morning Shift</MenuItem>
 
-              <MenuItem value="Evening">Evening Shift</MenuItem>
-              <MenuItem value="Night">Night Shift</MenuItem>
+              <MenuItem value="Morning">
+                Morning Shift
+              </MenuItem>
+
+              <MenuItem value="Evening">
+                Evening Shift
+              </MenuItem>
+
+              <MenuItem value="Night">
+                Night Shift
+              </MenuItem>
             </TextField>
           </Grid>
 
@@ -355,94 +422,132 @@ const filteredDashboard = {
               Reset
             </Button>
           </Grid>
+
         </Grid>
       </div>
 
       {/* TABLE */}
 
       <div className="attendance-table-card">
+
         <div className="table-header">
+
           <div className="table-header-left">
-            <span className="table-tag">ATTENDANCE DIRECTORY</span>
+
+            <span className="table-tag">
+              ATTENDANCE DIRECTORY
+            </span>
 
             <h3>Attendance Log List</h3>
 
-            <p>View and manage daily employee attendance records.</p>
+            <p>
+              View and manage daily employee attendance records.
+            </p>
+
           </div>
 
           <div className="table-header-right">
+
             <div className="record-count">
               <strong>{filteredAttendance.length}</strong>
 
               <span>Records</span>
             </div>
 
-            <button className="table-btn">Print</button>
+            {canExport && (
+              <button className="table-btn">
+                Print
+              </button>
+            )}
 
-            <button className="table-btn">Export CSV</button>
+            {canExport && (
+              <button className="table-btn">
+                Export CSV
+              </button>
+            )}
+
           </div>
+
         </div>
 
         <AttendanceTable
           rows={filteredAttendance}
           loading={loading}
+
           onView={(row) => {
+            if (!canView) return;
+
             setSelectedAttendance(row);
 
             setDetailsOpen(true);
           }}
+
           onEdit={(row) => {
+            if (!canEdit) return;
+
             setSelectedAttendance(row);
 
             setEditOpen(true);
           }}
+
           onDelete={(row) => {
+            if (!canDelete) return;
+
             setSelectedAttendance(row);
 
             setDeleteOpen(true);
           }}
         />
+
       </div>
 
       {/* DIALOGS */}
 
-      <AddAttendanceDialog
-        open={addOpen}
-        onClose={() => setAddOpen(false)}
-        onSaved={refreshData}
-      />
+      {canCreate && (
+        <AddAttendanceDialog
+          open={addOpen}
+          onClose={() => setAddOpen(false)}
+          onSaved={refreshData}
+        />
+      )}
 
       <AttendanceDetailsDialog
         open={detailsOpen}
         attendance={selectedAttendance}
         onClose={() => setDetailsOpen(false)}
       />
+
       {/* EDIT */}
 
-      <EditAttendanceDialog
-        open={editOpen}
-        attendance={selectedAttendance}
-        onClose={() => {
-          setEditOpen(false);
-          setSelectedAttendance(null);
-        }}
-        onUpdated={() => {
-          setEditOpen(false);
-          setSelectedAttendance(null);
-          refreshData();
-        }}
-      />
+      {canEdit && (
+        <EditAttendanceDialog
+          open={editOpen}
+          attendance={selectedAttendance}
+          onClose={() => {
+            setEditOpen(false);
+            setSelectedAttendance(null);
+          }}
+          onUpdated={() => {
+            setEditOpen(false);
+            setSelectedAttendance(null);
+            refreshData();
+          }}
+        />
+      )}
 
-      <DeleteAttendanceDialog
-        open={deleteOpen}
-        attendance={selectedAttendance}
-        onClose={() => {
-          setDeleteOpen(false);
+      {canDelete && (
+        <DeleteAttendanceDialog
+          open={deleteOpen}
+          attendance={selectedAttendance}
+          onClose={() => {
+            setDeleteOpen(false);
 
-          setSelectedAttendance(null);
-        }}
-        onDelete={handleDelete}
-      />
+            setSelectedAttendance(null);
+          }}
+          onDelete={handleDelete}
+        />
+      )}
+
     </div>
   );
 }

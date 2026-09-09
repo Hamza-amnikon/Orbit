@@ -1,5 +1,6 @@
 import "./LeaveDashboard.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 import {
     DashboardRounded,
@@ -74,6 +75,11 @@ const cards = [
 export default function LeaveDashboard() {
 
     const navigate = useNavigate();
+    const { hasPermission } = useAuth();
+
+    const allowedCards = cards.filter((card) =>
+        hasPermission(card.path, "view")
+    );
 
     const openPage = (path) => {
         navigate(path);
@@ -93,7 +99,7 @@ export default function LeaveDashboard() {
 
             <div className="employee-grid">
 
-                {cards.map((card, index) => (
+                {allowedCards.map((card, index) => (
 
                     <div
                         key={card.title}

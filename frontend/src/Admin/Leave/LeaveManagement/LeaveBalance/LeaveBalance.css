@@ -735,3 +735,34 @@
   }
 }
 
+/* =========================================================
+   ACCESS DENIED
+========================================================= */
+
+.leave-balance-page .leave-balance-access-denied {
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  color: #64748b;
+  text-align: center;
+}
+
+.leave-balance-page .leave-balance-access-denied h2 {
+  margin: 0 0 8px;
+  color: #172554;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.leave-balance-page .leave-balance-access-denied p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 13px;
+}

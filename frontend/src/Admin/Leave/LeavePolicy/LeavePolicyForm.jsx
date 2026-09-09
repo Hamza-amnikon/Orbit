@@ -20,6 +20,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 import "./LeavePolicyForm.css";
+import { useAuth } from "../../../context/AuthContext";
 
 
 export default function LeavePolicyForm({
@@ -30,6 +31,13 @@ export default function LeavePolicyForm({
     onSubmit,
     onCancel,
 }) {
+
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/leave/policies";
+    const canCreate = hasPermission(permissionRoute, "create");
+    const canEdit = hasPermission(permissionRoute, "edit");
+    const canModify = editingPolicy ? canEdit : canCreate;
 
     const handleChange = (e) => {
         const {
@@ -45,6 +53,10 @@ export default function LeavePolicyForm({
         }));
     };
 
+
+    if (!canModify) {
+        return null;
+    }
 
     return (
         <Dialog
@@ -542,15 +554,17 @@ export default function LeavePolicyForm({
                     </Button>
 
 
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        className="policy-save-btn"
-                    >
-                        {editingPolicy
-                            ? "Update Policy"
-                            : "Save Policy"}
-                    </Button>
+                    {canModify && (
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            className="policy-save-btn"
+                        >
+                            {editingPolicy
+                                ? "Update Policy"
+                                : "Save Policy"}
+                        </Button>
+                    )}
 
                 </DialogActions>
 

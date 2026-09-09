@@ -10,6 +10,8 @@ import {
 
 import "./HolidayEvents.css";
 
+import { useAuth } from "../../../context/AuthContext";
+
 const EVENT_API =
     "https://localhost:7234/api/Event";
 
@@ -18,6 +20,15 @@ const LOCATION_API =
 
 export default function HolidayEvents() {
 
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/attendance/Holiday";
+
+    const canView = hasPermission(permissionRoute, "view");
+    const canCreate = hasPermission(permissionRoute, "create");
+    const canEdit = hasPermission(permissionRoute, "edit");
+    const canDelete = hasPermission(permissionRoute, "delete");
+
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [locations, setLocations] = useState([]);
@@ -25,9 +36,15 @@ export default function HolidayEvents() {
     const [selectedEvent, setSelectedEvent] = useState(null);
 
     useEffect(() => {
+
+        if (!canView) {
+            return;
+        }
+
         loadEvents();
         loadLocations();
-    }, []);
+
+    }, [canView]);
 
     async function loadEvents() {
         try {
@@ -73,6 +90,10 @@ export default function HolidayEvents() {
 
     async function deleteEvent(eventId) {
 
+        if (!canDelete) {
+            return;
+        }
+
         const confirmed = window.confirm(
             "Are you sure you want to delete this holiday/event?"
         );
@@ -99,6 +120,10 @@ export default function HolidayEvents() {
         }
     }
 
+    if (!canView) {
+        return null;
+    }
+
     return (
         <div className="holiday-events-page">
 
@@ -118,15 +143,17 @@ export default function HolidayEvents() {
 
                 </div>
 
-                <button
-                    type="button"
-                    className="add-event-btn"
-                    onClick={() => setShowForm(true)}
-                >
-                    <AddRounded />
+                {canCreate && (
+                    <button
+                        type="button"
+                        className="add-event-btn"
+                        onClick={() => setShowForm(true)}
+                    >
+                        <AddRounded />
 
-                    Add Holiday / Event
-                </button>
+                        Add Holiday / Event
+                    </button>
+                )}
 
             </div>
 
@@ -246,33 +273,37 @@ export default function HolidayEvents() {
 
                                 {/* Edit */}
 
-                                <button
-                                    type="button"
-                                    className="event-edit-btn"
-                                    title="Edit"
-                                    onClick={() => {
-                                        setSelectedEvent(event);
-                                        setShowForm(true);
-                                    }}
-                                >
-                                    <EditRounded />
-                                </button>
+                                {canEdit && (
+                                    <button
+                                        type="button"
+                                        className="event-edit-btn"
+                                        title="Edit"
+                                        onClick={() => {
+                                            setSelectedEvent(event);
+                                            setShowForm(true);
+                                        }}
+                                    >
+                                        <EditRounded />
+                                    </button>
+                                )}
 
 
                                 {/* Delete */}
 
-                                <button
-                                    type="button"
-                                    className="event-delete-btn"
-                                    title="Delete"
-                                    onClick={() =>
-                                        deleteEvent(
-                                            event.eventId
-                                        )
-                                    }
-                                >
-                                    <DeleteOutlineRounded />
-                                </button>
+                                {canDelete && (
+                                    <button
+                                        type="button"
+                                        className="event-delete-btn"
+                                        title="Delete"
+                                        onClick={() =>
+                                            deleteEvent(
+                                                event.eventId
+                                            )
+                                        }
+                                    >
+                                        <DeleteOutlineRounded />
+                                    </button>
+                                )}
 
                             </span>
 
@@ -287,7 +318,7 @@ export default function HolidayEvents() {
 
             {/* Add / Edit Form */}
 
-            {showForm && (
+            {showForm && (canCreate || canEdit) && (
 
                 <HolidayEventForm
 

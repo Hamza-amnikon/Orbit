@@ -52,7 +52,20 @@ function Department() {
     employeeCode,
     employeeName,
     isAuthenticated,
+    hasPermission,
   } = useAuth();
+
+  // =====================================================
+  // PERMISSIONS
+  // =====================================================
+
+  const permissionRoute = "/employees/departments";
+
+  const canView = hasPermission(permissionRoute, "view");
+  const canCreate = hasPermission(permissionRoute, "create");
+  const canEdit = hasPermission(permissionRoute, "edit");
+  const canDelete = hasPermission(permissionRoute, "delete");
+  const canExport = hasPermission(permissionRoute, "export");
 
 
   // =====================================================
@@ -256,6 +269,7 @@ function Department() {
   }, [
     isAuthenticated,
     navigate,
+    canView,
   ]);
 
 
@@ -265,12 +279,13 @@ function Department() {
 
   useEffect(() => {
 
-    if (isAuthenticated) {
+    if (isAuthenticated && canView) {
       loadDepartments();
     }
 
   }, [
     isAuthenticated,
+    canView,
     loadDepartments,
   ]);
 
@@ -342,6 +357,10 @@ function Department() {
 
   const editDepartment = (department) => {
 
+    if (!canEdit) {
+      return;
+    }
+
     if (!isAuthenticated) {
 
       alert(
@@ -410,6 +429,10 @@ function Department() {
 
   const deleteDepartment =
     async (id) => {
+
+      if (!canDelete) {
+        return;
+      }
 
       if (!isAuthenticated) {
 
@@ -536,6 +559,12 @@ function Department() {
   const saveDepartment =
     async (data) => {
 
+      if (!canCreate) {
+        throw new Error(
+          "You are not authorized to create departments."
+        );
+      }
+
       if (!isAuthenticated) {
 
         throw new Error(
@@ -658,6 +687,12 @@ function Department() {
 
   const updateDepartment =
     async (data) => {
+
+      if (!canEdit) {
+        throw new Error(
+          "You are not authorized to edit departments."
+        );
+      }
 
       if (!isAuthenticated) {
 
@@ -786,6 +821,15 @@ function Department() {
 
 
   // =====================================================
+  // PERMISSION SCREEN
+  // =====================================================
+
+  if (!canView) {
+    return null;
+  }
+
+
+  // =====================================================
   // AUTHENTICATION SCREEN
   // =====================================================
 
@@ -877,30 +921,34 @@ function Department() {
           </Button>
 
 
-          <Button
-            variant="outlined"
-            startIcon={
-              <Download />
-            }
-          >
-            Export
-          </Button>
+          {canExport && (
+            <Button
+              variant="outlined"
+              startIcon={
+                <Download />
+              }
+            >
+              Export
+            </Button>
+          )}
 
 
-          <Button
-            variant="contained"
-            startIcon={
-              <Add />
-            }
-            onClick={() =>
-              setOpenAddDialog(true)
-            }
-            disabled={
-              !currentEmployeeId
-            }
-          >
-            Add Department
-          </Button>
+          {canCreate && (
+            <Button
+              variant="contained"
+              startIcon={
+                <Add />
+              }
+              onClick={() =>
+                setOpenAddDialog(true)
+              }
+              disabled={
+                !currentEmployeeId
+              }
+            >
+              Add Department
+            </Button>
+          )}
 
         </div>
 
@@ -1157,23 +1205,26 @@ function Department() {
           ADD
       ================================================== */}
 
-      <AddDepartment
-        open={openAddDialog}
+      {canCreate && (
+        <AddDepartment
+          open={openAddDialog}
         handleClose={() =>
           setOpenAddDialog(false)
         }
-        handleSave={
-          saveDepartment
-        }
-      />
+          handleSave={
+            saveDepartment
+          }
+        />
+      )}
 
 
       {/* ==================================================
           EDIT
       ================================================== */}
 
-      <EditDepartment
-        open={openEditDialog}
+      {canEdit && (
+        <EditDepartment
+          open={openEditDialog}
         department={
           selectedDepartment
         }
@@ -1186,10 +1237,11 @@ function Department() {
           );
 
         }}
-        handleUpdate={
-          updateDepartment
-        }
-      />
+          handleUpdate={
+            updateDepartment
+          }
+        />
+      )}
 
 
     </div>

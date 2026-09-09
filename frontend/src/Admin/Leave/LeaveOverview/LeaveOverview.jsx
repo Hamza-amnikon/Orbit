@@ -15,6 +15,7 @@ import {
 } from "recharts";
 
 import "./LeaveOverview.css";
+import { useAuth } from "../../../context/AuthContext";
 
 
 // ==========================================
@@ -29,6 +30,11 @@ const EVENT_API = "https://localhost:7234/api/Event";
 export default function LeaveOverview() {
 
         const navigate = useNavigate();
+        const { hasPermission } = useAuth();
+
+        const permissionRoute = "/leave/overview";
+        const canView = hasPermission(permissionRoute, "view");
+        const canExport = hasPermission(permissionRoute, "export");
 
 
     const [leaves, setLeaves] = useState([]);
@@ -119,6 +125,8 @@ export default function LeaveOverview() {
     // ==========================================
 
     const handleExport = () => {
+
+        if (!canExport) return;
 
         console.log("Export button clicked");
 
@@ -421,6 +429,18 @@ const rejectedLeaveCount =
     // UI
     // ==========================================
 
+    if (!canView) {
+        return (
+            <div
+                className="leave-overview"
+                style={{ padding: "60px", textAlign: "center" }}
+            >
+                <h2>Access Denied</h2>
+                <p>You do not have permission to access this page.</p>
+            </div>
+        );
+    }
+
     return (
 
         <div className="leave-overview">
@@ -460,13 +480,15 @@ const rejectedLeaveCount =
                         ↻ Refresh
                     </button>
 
-                    <button
-                        type="button"
-                        className="leave-action-btn"
-                        onClick={handleExport}
-                    >
-                        ⇩ Export
-                    </button>
+                    {canExport && (
+                        <button
+                            type="button"
+                            className="leave-action-btn"
+                            onClick={handleExport}
+                        >
+                            ⇩ Export
+                        </button>
+                    )}
 
                 </div>
 

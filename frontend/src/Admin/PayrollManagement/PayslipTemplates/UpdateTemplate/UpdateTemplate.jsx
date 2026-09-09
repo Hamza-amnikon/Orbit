@@ -23,6 +23,7 @@ import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../../../context/AuthContext";
 
 import PayrollService from ".../Service/PayrollService";
 import "./UpdateTemplate.css";
@@ -97,6 +98,15 @@ function UpdateTemplate() {
     const { id } = useParams();
 
     const templateId = Number(id);
+
+    const { hasPermission } = useAuth();
+
+    // Permission is controlled by the central Payslip Templates route.
+    const permissionRoute = "/payroll/payslip-templates";
+
+    const canView = hasPermission(permissionRoute, "view");
+    const canEdit = hasPermission(permissionRoute, "edit");
+    const canDelete = hasPermission(permissionRoute, "delete");
 
     const [templateName, setTemplateName] = useState("");
     const [description, setDescription] = useState("");
@@ -410,6 +420,10 @@ function UpdateTemplate() {
         field,
         value
     ) => {
+        if (!canEdit) {
+            return;
+        }
+
         setter((current) =>
             current.map((item) =>
                 item.id === componentId
@@ -429,6 +443,10 @@ function UpdateTemplate() {
         field,
         value
     ) => {
+        if (!canEdit) {
+            return;
+        }
+
         if (
             field ===
             "salaryComponentId"
@@ -479,6 +497,10 @@ function UpdateTemplate() {
     // =========================================================
 
     const handleAddEarning = () => {
+        if (!canEdit) {
+            return;
+        }
+
         setEarnings((current) => [
             ...current,
 
@@ -492,6 +514,10 @@ function UpdateTemplate() {
 
 
     const handleAddDeduction = () => {
+        if (!canEdit) {
+            return;
+        }
+
         setDeductions((current) => [
             ...current,
 
@@ -599,7 +625,7 @@ function UpdateTemplate() {
     const handleSave = async (event) => {
         event?.preventDefault();
 
-        if (saving) {
+        if (saving || !canEdit) {
             return;
         }
 
@@ -832,8 +858,6 @@ const renderComponentRow = (
     kind,
     onDelete
 ) => {
-    const isViewMode = false;
-
     return (
         <Box
             className="salary-component-card"
@@ -855,7 +879,7 @@ const renderComponentRow = (
                     <Select
                         value={item.salaryComponentId || ""}
                         label="Component Name"
-                        disabled={isViewMode || loadingComponents}
+                        disabled={!canEdit || loadingComponents}
                         displayEmpty
                         onChange={(event) =>
                             changeComponent(
@@ -913,7 +937,7 @@ const renderComponentRow = (
                     <Select
                         value={item.calculationType || "Percentage"}
                         label="Calculation"
-                        disabled={isViewMode}
+                        disabled={!canEdit}
                         onChange={(event) =>
                             updateComponent(
                                 setter,
@@ -940,7 +964,7 @@ const renderComponentRow = (
                     }
                     type="number"
                     value={item.value ?? ""}
-                    disabled={isViewMode}
+                    disabled={!canEdit}
                     inputProps={{
                         min: 0,
                         max:
@@ -963,7 +987,7 @@ const renderComponentRow = (
                 <Button
                     className="delete-component-button"
                     type="button"
-                    disabled={isViewMode}
+                    disabled={!canEdit}
                     onClick={() => onDelete(item.id)}
                     aria-label={`Delete ${
                         typeof kind === "string"
@@ -990,7 +1014,7 @@ const renderComponentRow = (
                                 : "Basic Salary")
                         }
                         label="Based On"
-                        disabled={isViewMode}
+                        disabled={!canEdit}
                         onChange={(event) =>
                             updateComponent(
                                 setter,
@@ -1037,18 +1061,20 @@ const renderComponentRow = (
                     </Typography>
                 </Box>
 
-                <Button
-                    className="add-component-button"
-                    variant="outlined"
-                    startIcon={<AddIcon />}
-                    onClick={onAdd}
-                    type="button"
-                >
-                    Add{" "}
-                    {title === "Earnings"
-                        ? "Earning"
-                        : "Deduction"}
-                </Button>
+                {canEdit && (
+                    <Button
+                        className="add-component-button"
+                        variant="outlined"
+                        startIcon={<AddIcon />}
+                        onClick={onAdd}
+                        type="button"
+                    >
+                        Add{" "}
+                        {title === "Earnings"
+                            ? "Earning"
+                            : "Deduction"}
+                    </Button>
+                )}
 
             </Box>
 
@@ -1094,6 +1120,35 @@ const renderComponentRow = (
         </Card>
     );
 
+
+    // =========================================================
+    // PERMISSION CHECK
+    // =========================================================
+
+    if (!canView) {
+        return (
+            <Box
+                className="create-payslip-page"
+                sx={{ padding: "60px", textAlign: "center" }}
+            >
+                <Typography variant="h5">
+                    Access Denied
+                </Typography>
+
+                <Typography sx={{ mt: 1 }}>
+                    You do not have permission to access this page.
+                </Typography>
+
+                <Button
+                    variant="contained"
+                    sx={{ mt: 3 }}
+                    onClick={handleBack}
+                >
+                    Back
+                </Button>
+            </Box>
+        );
+    }
 
     // =========================================================
     // LOADING
@@ -1155,26 +1210,28 @@ const renderComponentRow = (
                 </Box>
 
 
-                <Button
-                    className="header-save-button"
-                    variant="contained"
-                    startIcon={
-                        saving ? (
-                            <CircularProgress
-                                size={16}
-                                color="inherit"
-                            />
-                        ) : (
-                            <SaveOutlinedIcon />
-                        )
-                    }
-                    onClick={handleSave}
-                    disabled={saving}
-                >
-                    {saving
-                        ? "Saving..."
-                        : "Save Changes"}
-                </Button>
+                {canEdit && (
+                    <Button
+                        className="header-save-button"
+                        variant="contained"
+                        startIcon={
+                            saving ? (
+                                <CircularProgress
+                                    size={16}
+                                    color="inherit"
+                                />
+                            ) : (
+                                <SaveOutlinedIcon />
+                            )
+                        }
+                        onClick={handleSave}
+                        disabled={saving}
+                    >
+                        {saving
+                            ? "Saving..."
+                            : "Save Changes"}
+                    </Button>
+                )}
 
             </Box>
 
@@ -1664,26 +1721,28 @@ const renderComponentRow = (
                     </Button>
 
 
-                    <Button
-                        className="footer-save-button"
-                        variant="contained"
-                        startIcon={
-                            saving ? (
-                                <CircularProgress
-                                    size={16}
-                                    color="inherit"
-                                />
-                            ) : (
-                                <SaveOutlinedIcon />
-                            )
-                        }
-                        type="submit"
-                        disabled={saving}
-                    >
-                        {saving
-                            ? "Saving..."
-                            : "Save Changes"}
-                    </Button>
+                    {canEdit && (
+                        <Button
+                            className="footer-save-button"
+                            variant="contained"
+                            startIcon={
+                                saving ? (
+                                    <CircularProgress
+                                        size={16}
+                                        color="inherit"
+                                    />
+                                ) : (
+                                    <SaveOutlinedIcon />
+                                )
+                            }
+                            type="submit"
+                            disabled={saving}
+                        >
+                            {saving
+                                ? "Saving..."
+                                : "Save Changes"}
+                        </Button>
+                    )}
 
                 </Box>
 

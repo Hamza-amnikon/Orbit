@@ -334,3 +334,54 @@
         min-width: 900px;
     }
 }
+
+.policy-delete-btn {
+    background-color: #eef2ff !important;
+    color: #1746d2 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 7px 14px !important;
+    min-width: 30px !important;
+    text-transform: none !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+}
+
+.policy-delete-btn:hover {
+    background-color: #e4eaff !important;
+}
+
+
+
+/* ==========================================================
+   DELETE BUTTON
+========================================================== */
+
+.leave-policy-page .policy-delete-btn {
+    border: none !important;
+
+    background: #eef2ff !important;
+    color: #dd0b0b !important;
+
+    padding: 6px 14px !important;
+
+    min-width: auto !important;
+
+    border-radius: 6px !important;
+
+    cursor: pointer;
+
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+
+    box-shadow: none !important;
+
+    transition: all 0.2s ease;
+}
+
+.leave-policy-page .policy-delete-btn:hover {
+    background: #2563eb !important;
+    color: #ffffff !important;
+}

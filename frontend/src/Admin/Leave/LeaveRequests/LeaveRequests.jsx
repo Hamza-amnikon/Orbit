@@ -17,8 +17,13 @@ export default function LeaveRequests() {
         employeeCode,
         employeeName,
         isAuthenticated,
-        profileLoading
+        profileLoading,
+        hasPermission
     } = useAuth();
+
+    const permissionRoute = "/leave/requests";
+    const canView = hasPermission(permissionRoute, "view");
+    const canApprove = hasPermission(permissionRoute, "approve");
 
     // The person approving/rejecting the leave is ALWAYS the
     // currently authenticated employee.
@@ -160,6 +165,8 @@ export default function LeaveRequests() {
     // ==========================================================
 
     function openStatusPopup(leave, status) {
+        if (!canApprove) return;
+
         setSelectedLeave(leave);
         setSelectedStatus(status);
         setManagerComment("");
@@ -170,7 +177,7 @@ export default function LeaveRequests() {
     // ==========================================================
 
     async function updateStatus() {
-        if (!selectedLeave) {
+        if (!selectedLeave || !canApprove) {
             return;
         }
 
@@ -323,6 +330,18 @@ export default function LeaveRequests() {
     // ==========================================================
     // JSX
     // ==========================================================
+
+    if (!canView) {
+        return (
+            <div
+                className="leave-requests-page"
+                style={{ padding: "60px", textAlign: "center" }}
+            >
+                <h2>Access Denied</h2>
+                <p>You do not have permission to access this page.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="leave-requests-page">
@@ -645,37 +664,37 @@ export default function LeaveRequests() {
 
                                                 {/* Approve / Reject */}
 
-                                                {leave.status ===
-                                                    "Pending" && (
-                                                    <>
-                                                        <button
-                                                            type="button"
-                                                            className="approve-btn"
-                                                            onClick={() =>
-                                                                openStatusPopup(
-                                                                    leave,
-                                                                    "Approved"
-                                                                )
-                                                            }
-                                                        >
-                                                            Approve
-                                                        </button>
+                                                {canApprove &&
+                                                    leave.status ===
+                                                        "Pending" && (
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                className="approve-btn"
+                                                                onClick={() =>
+                                                                    openStatusPopup(
+                                                                        leave,
+                                                                        "Approved"
+                                                                    )
+                                                                }
+                                                            >
+                                                                Approve
+                                                            </button>
 
-
-                                                        <button
-                                                            type="button"
-                                                            className="reject-btn"
-                                                            onClick={() =>
-                                                                openStatusPopup(
-                                                                    leave,
-                                                                    "Rejected"
-                                                                )
-                                                            }
-                                                        >
-                                                            Reject
-                                                        </button>
-                                                    </>
-                                                )}
+                                                            <button
+                                                                type="button"
+                                                                className="reject-btn"
+                                                                onClick={() =>
+                                                                    openStatusPopup(
+                                                                        leave,
+                                                                        "Rejected"
+                                                                    )
+                                                                }
+                                                            >
+                                                                Reject
+                                                            </button>
+                                                        </>
+                                                    )}
 
                                             </div>
 
@@ -910,27 +929,29 @@ export default function LeaveRequests() {
                             </button>
 
 
-                            <button
-                                type="button"
-                                className={
-                                    selectedStatus ===
-                                    "Approved"
-                                        ? "modal-approve-btn"
-                                        : "modal-reject-btn"
-                                }
-                                onClick={
-                                    updateStatus
-                                }
-                            >
+                            {canApprove && (
+                                <button
+                                    type="button"
+                                    className={
+                                        selectedStatus ===
+                                        "Approved"
+                                            ? "modal-approve-btn"
+                                            : "modal-reject-btn"
+                                    }
+                                    onClick={
+                                        updateStatus
+                                    }
+                                >
 
-                                {
-                                    selectedStatus ===
-                                    "Approved"
-                                        ? "Confirm Approval"
-                                        : "Confirm Rejection"
-                                }
+                                    {
+                                        selectedStatus ===
+                                        "Approved"
+                                            ? "Confirm Approval"
+                                            : "Confirm Rejection"
+                                    }
 
-                            </button>
+                                </button>
+                            )}
 
                         </div>
 

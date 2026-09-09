@@ -45,7 +45,21 @@ function EmployeeList() {
     employeeCode,
     employeeName,
     isAuthenticated,
+    hasPermission,
   } = useAuth();
+
+
+  // ==========================================
+  // PERMISSIONS
+  // ==========================================
+
+  const permissionRoute = "/employees/list";
+
+  const canView = hasPermission(permissionRoute, "view");
+  const canCreate = hasPermission(permissionRoute, "create");
+  const canEdit = hasPermission(permissionRoute, "edit");
+  const canDelete = hasPermission(permissionRoute, "delete");
+  const canExport = hasPermission(permissionRoute, "export");
 
 
   // ==========================================
@@ -217,11 +231,11 @@ function EmployeeList() {
 
   useEffect(() => {
 
-    if (isAuthenticated) {
+    if (isAuthenticated && canView) {
       fetchEmployees();
     }
 
-  }, [isAuthenticated]);
+  }, [isAuthenticated, canView]);
 
 
   // ==========================================
@@ -336,6 +350,10 @@ function EmployeeList() {
 
   function editEmployee(employee) {
 
+    if (!canEdit) {
+      return;
+    }
+
     console.log(
       "=========================================="
     );
@@ -394,6 +412,10 @@ function EmployeeList() {
   // ==========================================
 
   async function deleteEmployee(id) {
+
+    if (!canDelete) {
+      return;
+    }
 
     const confirmDelete =
       window.confirm(
@@ -870,6 +892,10 @@ function EmployeeList() {
   // RENDER
   // ==========================================
 
+  if (!canView) {
+    return null;
+  }
+
   return (
 
     <div className="employee-list-page">
@@ -924,12 +950,14 @@ function EmployeeList() {
 
           {/* Export */}
 
-          <Button
-            variant="outlined"
-            startIcon={<Download />}
-          >
-            Export
-          </Button>
+          {canExport && (
+            <Button
+              variant="outlined"
+              startIcon={<Download />}
+            >
+              Export
+            </Button>
+          )}
 
 
           {/* Sync */}
@@ -947,15 +975,17 @@ function EmployeeList() {
 
           {/* Add Employee */}
 
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={() =>
-              navigate("/employees/add")
-            }
-          >
-            Add Employee
-          </Button>
+          {canCreate && (
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() =>
+                navigate("/employees/add")
+              }
+            >
+              Add Employee
+            </Button>
+          )}
 
         </div>
 

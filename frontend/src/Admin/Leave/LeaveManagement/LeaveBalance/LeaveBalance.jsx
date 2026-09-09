@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import CompOff from "../../CompOff/CompOff";
+import { useAuth } from "../../../../context/AuthContext";
 
 import {
   Box,
@@ -48,6 +49,12 @@ const LEAVE_TYPE_API =
 export default function LeaveBalance() {
 
   const navigate = useNavigate();
+
+  const { hasPermission } = useAuth();
+
+  const permissionRoute = "/leave/balance";
+  const canView = hasPermission(permissionRoute, "view");
+  const canCreate = hasPermission(permissionRoute, "create");
 
   const [balances, setBalances] = useState([]);
   const [leaveTypes, setLeaveTypes] = useState([]);
@@ -237,6 +244,11 @@ const [compOffOpen, setCompOffOpen] = useState(false);
     setSelectedAzureEmployee("");
   };
 
+  const handleAddCompOff = () => {
+    if (!canCreate) return;
+    setCompOffOpen(true);
+  };
+
   // ==========================================================
   // SUMMARY CARD
   // ==========================================================
@@ -331,6 +343,15 @@ const [compOffOpen, setCompOffOpen] = useState(false);
   // ==========================================================
   // UI
   // ==========================================================
+
+  if (!canView) {
+    return (
+      <div className="leave-balance-access-denied">
+        <h2>Access Denied</h2>
+        <p>You do not have permission to access this page.</p>
+      </div>
+    );
+  }
 
   return (
     <Box
@@ -432,12 +453,14 @@ const [compOffOpen, setCompOffOpen] = useState(false);
             Refresh
           </Button>
           
-          <Button
-    variant="contained"
-    onClick={() => setCompOffOpen(true)}
->
-    + Add Comp-Off
-</Button>
+          {canCreate && (
+            <Button
+              variant="contained"
+              onClick={handleAddCompOff}
+            >
+              + Add Comp-Off
+            </Button>
+          )}
         </Stack>
       </Box>
 

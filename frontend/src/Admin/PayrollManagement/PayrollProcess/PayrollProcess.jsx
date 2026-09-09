@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import {
     Box,
     Button,
@@ -266,6 +268,14 @@ const getMonthParts = (value) => {
 };
 
 const PayrollProcess = () => {
+    const location = useLocation();
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/payroll/process";
+
+    const canView = hasPermission(permissionRoute, "view");
+    const canCreate = hasPermission(permissionRoute, "create");
+
     const [selectedMonth, setSelectedMonth] = useState("August 2026");
     const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
     const [employees, setEmployees] = useState([]);
@@ -532,7 +542,7 @@ const PayrollProcess = () => {
     const payrollProcessed = payrollEmployees.length > 0 && processedCount === payrollEmployees.length;
 
     const handleRunPayroll = async () => {
-        if (payrollRunning) return;
+        if (!canCreate || payrollRunning) return;
         setPayrollRunning(true);
         setPayrollRunError("");
         setPayrollRunResult(null);
@@ -558,6 +568,15 @@ const PayrollProcess = () => {
             setPayrollRunning(false);
         }
     };
+
+    if (!canView) {
+        return (
+            <Box className="pr-payroll-process-page" sx={{ padding: "60px", textAlign: "center" }}>
+                <Typography variant="h5">Access Denied</Typography>
+                <Typography sx={{ mt: 1 }}>You do not have permission to access this page.</Typography>
+            </Box>
+        );
+    }
 
     if (loading) {
         return (
@@ -604,15 +623,17 @@ const PayrollProcess = () => {
                             ))}
                         </Select>
                     </FormControl>
-                    <Button
-                        className="pr-run-payroll-button"
-                        variant="contained"
-                        startIcon={<PlayArrowIcon />}
-                        onClick={() => setRunDialogOpen(true)}
-                        disabled={!payrollEmployees.length || payrollRunning}
-                    >
-                        Run Payroll
-                    </Button>
+                    {canCreate && (
+                        <Button
+                            className="pr-run-payroll-button"
+                            variant="contained"
+                            startIcon={<PlayArrowIcon />}
+                            onClick={() => setRunDialogOpen(true)}
+                            disabled={!payrollEmployees.length || payrollRunning}
+                        >
+                            Run Payroll
+                        </Button>
+                    )}
                 </Stack>
             </Box>
 
@@ -777,7 +798,7 @@ const PayrollProcess = () => {
 
             {payrollRunResult && <Box className="pr-payroll-run-result"><Box className="pr-payroll-run-result-icon"><CheckCircleIcon /></Box><Box><Typography className="pr-payroll-run-result-title">Payroll processed successfully</Typography><Typography className="pr-payroll-run-result-text">{selectedMonth} payroll was processed by the backend.</Typography></Box></Box>}
 
-            <Dialog open={runDialogOpen} onClose={() => !payrollRunning && setRunDialogOpen(false)} fullWidth maxWidth="sm">
+            <Dialog open={runDialogOpen && canCreate} onClose={() => !payrollRunning && setRunDialogOpen(false)} fullWidth maxWidth="sm">
                 <DialogTitle>Run Payroll</DialogTitle>
                 <DialogContent>
                     <Box className="pr-dialog-content">

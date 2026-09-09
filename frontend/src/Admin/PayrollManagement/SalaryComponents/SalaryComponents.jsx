@@ -32,6 +32,7 @@ import Search from "@mui/icons-material/Search";
 import AccountBalanceWalletOutlined from "@mui/icons-material/AccountBalanceWalletOutlined";
 
 import "./SalaryComponents.css";
+import { useAuth } from "../../../context/AuthContext";
 
 /*
 |--------------------------------------------------------------------------
@@ -131,6 +132,15 @@ const getResponseBody = async (response) => {
 */
 
 export default function SalaryComponents() {
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/payroll/salary-components";
+
+    const canView = hasPermission(permissionRoute, "view");
+    const canCreate = hasPermission(permissionRoute, "create");
+    const canEdit = hasPermission(permissionRoute, "edit");
+    const canDelete = hasPermission(permissionRoute, "delete");
+
     const [components, setComponents] = useState([]);
 
     const [search, setSearch] = useState("");
@@ -314,6 +324,10 @@ export default function SalaryComponents() {
     */
 
     const openCreate = () => {
+        if (!canCreate) {
+            return;
+        }
+
         setEditingId(null);
 
         setForm({
@@ -330,6 +344,10 @@ export default function SalaryComponents() {
     */
 
     const openEdit = (component) => {
+        if (!canEdit) {
+            return;
+        }
+
         setEditingId(
             component.salaryComponentId
         );
@@ -430,6 +448,12 @@ export default function SalaryComponents() {
     */
 
     const saveComponent = async () => {
+        const isEdit = editingId !== null;
+
+        if (isEdit ? !canEdit : !canCreate) {
+            return;
+        }
+
         const name =
             form.componentName.trim();
 
@@ -504,9 +528,6 @@ export default function SalaryComponents() {
         }
 
         setSaving(true);
-
-        const isEdit =
-            editingId !== null;
 
         const url = isEdit
             ? `${API_URL}/SalaryComponents/${editingId}`
@@ -686,6 +707,29 @@ const confirmDelete = async () => {
 
     /*
     |--------------------------------------------------------------------------
+    | PERMISSION CHECK
+    |--------------------------------------------------------------------------
+    */
+
+    if (!canView) {
+        return (
+            <Box
+                className="sc-salary-components-page"
+                sx={{ padding: "60px", textAlign: "center" }}
+            >
+                <Typography variant="h5">
+                    Access Denied
+                </Typography>
+
+                <Typography sx={{ mt: 1 }}>
+                    You do not have permission to access this page.
+                </Typography>
+            </Box>
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | RENDER
     |--------------------------------------------------------------------------
     */
@@ -716,14 +760,16 @@ const confirmDelete = async () => {
                     </Typography>
                 </Box>
 
-                <Button
-                    variant="contained"
-                    startIcon={<Add />}
-                    onClick={openCreate}
-                    className="sc-salary-components-add-button"
-                >
-                    Add Component
-                </Button>
+                {canCreate && (
+                    <Button
+                        variant="contained"
+                        startIcon={<Add />}
+                        onClick={openCreate}
+                        className="sc-salary-components-add-button"
+                    >
+                        Add Component
+                    </Button>
+                )}
 
             </Box>
 
@@ -877,13 +923,15 @@ const confirmDelete = async () => {
                         templates.
                     </Typography>
 
-                    <Button
-                        variant="contained"
-                        startIcon={<Add />}
-                        onClick={openCreate}
-                    >
-                        Add Component
-                    </Button>
+                    {canCreate && (
+                        <Button
+                            variant="contained"
+                            startIcon={<Add />}
+                            onClick={openCreate}
+                        >
+                            Add Component
+                        </Button>
+                    )}
                 </Paper>
 
             ) : (
@@ -1009,30 +1057,34 @@ const confirmDelete = async () => {
 
                                     <Box className="sc-salary-component-actions">
 
-                                        <Tooltip title="Edit">
-                                            <IconButton
-                                                onClick={() =>
-                                                    openEdit(
-                                                        component
-                                                    )
-                                                }
-                                            >
-                                                <EditOutlined />
-                                            </IconButton>
-                                        </Tooltip>
+                                        {canEdit && (
+                                            <Tooltip title="Edit">
+                                                <IconButton
+                                                    onClick={() =>
+                                                        openEdit(
+                                                            component
+                                                        )
+                                                    }
+                                                >
+                                                    <EditOutlined />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
 
-                                        <Tooltip title="Delete">
-                                            <IconButton
-                                                color="error"
-                                                onClick={() =>
-                                                    setDeleteId(
-                                                        component.salaryComponentId
-                                                    )
-                                                }
-                                            >
-                                                <Delete />
-                                            </IconButton>
-                                        </Tooltip>
+                                        {canDelete && (
+                                            <Tooltip title="Delete">
+                                                <IconButton
+                                                    color="error"
+                                                    onClick={() =>
+                                                        setDeleteId(
+                                                            component.salaryComponentId
+                                                        )
+                                                    }
+                                                >
+                                                    <Delete />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
 
                                     </Box>
 
@@ -1249,17 +1301,20 @@ const confirmDelete = async () => {
                         Cancel
                     </Button>
 
-                    <Button
-                        variant="contained"
-                        onClick={saveComponent}
-                        disabled={saving}
-                    >
-                        {saving
-                            ? "Saving..."
-                            : editingId !== null
-                            ? "Save Changes"
-                            : "Create Component"}
-                    </Button>
+                    {((editingId !== null && canEdit) ||
+                        (editingId === null && canCreate)) && (
+                        <Button
+                            variant="contained"
+                            onClick={saveComponent}
+                            disabled={saving}
+                        >
+                            {saving
+                                ? "Saving..."
+                                : editingId !== null
+                                ? "Save Changes"
+                                : "Create Component"}
+                        </Button>
+                    )}
 
                 </DialogActions>
 
@@ -1306,16 +1361,18 @@ const confirmDelete = async () => {
                         Cancel
                     </Button>
 
-                    <Button
-                        color="error"
-                        variant="contained"
-                        onClick={confirmDelete}
-                        disabled={deleting}
-                    >
-                        {deleting
-                            ? "Deleting..."
-                            : "Delete"}
-                    </Button>
+                    {canDelete && (
+                        <Button
+                            color="error"
+                            variant="contained"
+                            onClick={confirmDelete}
+                            disabled={deleting}
+                        >
+                            {deleting
+                                ? "Deleting..."
+                                : "Delete"}
+                        </Button>
+                    )}
 
                 </DialogActions>
 

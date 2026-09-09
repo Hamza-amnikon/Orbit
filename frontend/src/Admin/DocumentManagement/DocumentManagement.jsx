@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import "./DocumentManagement.css";
+import { useAuth } from "../../context/AuthContext";
 
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
@@ -16,6 +17,12 @@ const API_URL = "https://localhost:7256/api/Document";
 const EMPLOYEE_API_URL = "https://localhost:7002/api/Employee";
 
 function DocumentManagement() {
+  const { hasPermission } = useAuth();
+
+  const permissionRoute = "/documents";
+  const canView = hasPermission(permissionRoute, "view");
+  const canApprove = hasPermission(permissionRoute, "approve");
+
   const [documents, setDocuments] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,6 +35,12 @@ function DocumentManagement() {
   // ================= LOAD DOCUMENTS =================
 
   const loadDocuments = async () => {
+    if (!canView) {
+      setDocuments([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -45,6 +58,11 @@ function DocumentManagement() {
 
 
   const loadEmployees = async () => {
+    if (!canView) {
+      setEmployees([]);
+      return;
+    }
+
     try {
       const response = await axios.get(EMPLOYEE_API_URL);
 
@@ -56,10 +74,12 @@ function DocumentManagement() {
 
 
   useEffect(() => {
+    if (!canView) return;
+
     loadDocuments();
     loadEmployees();
 
-  }, []);
+  }, [canView]);
 
 
   // ================= FILTER =================
@@ -282,6 +302,8 @@ function DocumentManagement() {
   // ================= ACTIONS =================
 
   const handleApprove = async (document) => {
+    if (!canApprove) return;
+
     const id = getDocumentId(document);
 
     if (!id) {
@@ -299,6 +321,8 @@ function DocumentManagement() {
   };
 
   const handleReject = async (document) => {
+    if (!canApprove) return;
+
     const id = getDocumentId(document);
 
     if (!id) {
@@ -330,6 +354,8 @@ function DocumentManagement() {
   };
 
   const handleView = (document) => {
+    if (!canView) return;
+
     const id = getDocumentId(document);
 
     if (!id) {
@@ -341,6 +367,15 @@ function DocumentManagement() {
 
     window.open(documentUrl, "_blank");
   };
+
+  if (!canView) {
+    return (
+      <div style={{ padding: "60px", textAlign: "center" }}>
+        <h2>Access Denied</h2>
+        <p>You do not have permission to access this page.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="document-management">
@@ -558,9 +593,10 @@ function DocumentManagement() {
 
                   <td>
                     <div className="document-actions">
-                      {String(
-                        document.status || document.Status || ""
-                      ).toLowerCase() === "submitted" && (
+                      {canApprove &&
+                        String(
+                          document.status || document.Status || ""
+                        ).toLowerCase() === "submitted" && (
                           <>
                             <button
                               type="button"

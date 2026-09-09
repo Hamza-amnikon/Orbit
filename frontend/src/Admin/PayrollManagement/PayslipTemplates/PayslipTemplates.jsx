@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 import {
     Alert,
@@ -37,6 +38,19 @@ import "./PayslipTemplates.css";
 
 function PayslipTemplates() {
     const navigate = useNavigate();
+
+    const { hasPermission } = useAuth();
+
+    const canView = hasPermission("/payroll/payslip-templates", "view");
+    const canCreate = hasPermission("/payroll/payslip-templates", "create");
+    const canEdit = hasPermission("/payroll/payslip-templates", "edit");
+    const canDelete = hasPermission("/payroll/payslip-templates", "delete");
+    // Approve and Export permissions are available globally.
+    // This page currently has no Approve or Export action to render.
+
+    if (!canView) {
+        return null;
+    }
 
     const [templates, setTemplates] = useState([]);
     const [search, setSearch] = useState("");
@@ -172,6 +186,10 @@ function PayslipTemplates() {
     // ============================================================
 
     const handleCreate = () => {
+        if (!canCreate) {
+            return;
+        }
+
         navigate("/payroll/payslip-templates/create");
     };
 
@@ -180,6 +198,10 @@ function PayslipTemplates() {
     // ============================================================
 
     const handleView = async (template) => {
+        if (!canView) {
+            return;
+        }
+
         try {
             setError("");
 
@@ -217,6 +239,10 @@ function PayslipTemplates() {
     // ============================================================
 
     const handleEdit = async (template) => {
+        if (!canEdit) {
+            return;
+        }
+
         try {
             setError("");
 
@@ -254,6 +280,10 @@ function PayslipTemplates() {
     // ============================================================
 
     const handleDelete = async (template) => {
+        if (!canDelete) {
+            return;
+        }
+
         const confirmed = window.confirm(
             `Are you sure you want to deactivate "${template.name}"?`
         );
@@ -358,14 +388,16 @@ function PayslipTemplates() {
                     </Typography>
                 </Box>
 
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={handleCreate}
-                    className="pt-create-template-button"
-                >
-                    Create Template
-                </Button>
+                {canCreate && (
+                    <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={handleCreate}
+                        className="pt-create-template-button"
+                    >
+                        Create Template
+                    </Button>
+                )}
             </Box>
 
             {/* =====================================================
@@ -499,13 +531,15 @@ function PayslipTemplates() {
                         salary calculation rules.
                     </Typography>
 
-                    <Button
-                        variant="contained"
-                        startIcon={<AddIcon />}
-                        onClick={handleCreate}
-                    >
-                        Create Template
-                    </Button>
+                    {canCreate && (
+                        <Button
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            onClick={handleCreate}
+                        >
+                            Create Template
+                        </Button>
+                    )}
                 </Card>
             ) : (
                 /* =================================================
@@ -627,45 +661,51 @@ function PayslipTemplates() {
                                         direction="row"
                                         spacing={0.5}
                                     >
-                                        <Tooltip title="View">
-                                            <IconButton
-                                                size="small"
-                                                onClick={() =>
-                                                    handleView(
-                                                        template
-                                                    )
-                                                }
-                                            >
-                                                <VisibilityOutlinedIcon fontSize="small" />
-                                            </IconButton>
-                                        </Tooltip>
+                                        {canView && (
+                                            <Tooltip title="View">
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() =>
+                                                        handleView(
+                                                            template
+                                                        )
+                                                    }
+                                                >
+                                                    <VisibilityOutlinedIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
 
-                                        <Tooltip title="Edit">
-                                            <IconButton
-                                                size="small"
-                                                onClick={() =>
-                                                    handleEdit(
-                                                        template
-                                                    )
-                                                }
-                                            >
-                                                <EditOutlinedIcon fontSize="small" />
-                                            </IconButton>
-                                        </Tooltip>
+                                        {canEdit && (
+                                            <Tooltip title="Edit">
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() =>
+                                                        handleEdit(
+                                                            template
+                                                        )
+                                                    }
+                                                >
+                                                    <EditOutlinedIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
 
-                                        <Tooltip title="Deactivate">
-                                            <IconButton
-                                                size="small"
-                                                color="error"
-                                                onClick={() =>
-                                                    handleDelete(
-                                                        template
-                                                    )
-                                                }
-                                            >
-                                                <DeleteOutlineOutlinedIcon fontSize="small" />
-                                            </IconButton>
-                                        </Tooltip>
+                                        {canDelete && (
+                                            <Tooltip title="Deactivate">
+                                                <IconButton
+                                                    size="small"
+                                                    color="error"
+                                                    onClick={() =>
+                                                        handleDelete(
+                                                            template
+                                                        )
+                                                    }
+                                                >
+                                                    <DeleteOutlineOutlinedIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
                                     </Stack>
                                 </Box>
                             </CardContent>
@@ -691,23 +731,27 @@ function PayslipTemplates() {
                     horizontal: "right",
                 }}
             >
-                <MenuItem onClick={handleMenuView}>
-                    <VisibilityOutlinedIcon
-                        fontSize="small"
-                        sx={{ mr: 1.5 }}
-                    />
-                    View
-                </MenuItem>
+                {canView && (
+                    <MenuItem onClick={handleMenuView}>
+                        <VisibilityOutlinedIcon
+                            fontSize="small"
+                            sx={{ mr: 1.5 }}
+                        />
+                        View
+                    </MenuItem>
+                )}
 
-                <MenuItem onClick={handleMenuEdit}>
-                    <EditOutlinedIcon
-                        fontSize="small"
-                        sx={{ mr: 1.5 }}
-                    />
-                    Edit
-                </MenuItem>
+                {canEdit && (
+                    <MenuItem onClick={handleMenuEdit}>
+                        <EditOutlinedIcon
+                            fontSize="small"
+                            sx={{ mr: 1.5 }}
+                        />
+                        Edit
+                    </MenuItem>
+                )}
 
-                {selectedTemplate?.status === "Active" && (
+                {canDelete && selectedTemplate?.status === "Active" && (
                     <MenuItem
                         onClick={handleMenuDelete}
                         sx={{ color: "error.main" }}

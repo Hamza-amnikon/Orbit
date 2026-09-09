@@ -20,6 +20,7 @@ import {
 import LeavePolicyForm from "./LeavePolicyForm";
 import "./LeavePolicyForm.css";
 import "./LeavePolicy.css";
+import { useAuth } from "../../../context/AuthContext";
 
 
 const LEAVE_POLICY_API = "https://localhost:7206/api/LeavePolicy";
@@ -29,6 +30,13 @@ const LEAVE_TYPE_API = "https://localhost:7206/api/LeaveType";
 export default function LeavePolicy() {
 
     const navigate = useNavigate();
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/leave/policies";
+    const canView = hasPermission(permissionRoute, "view");
+    const canCreate = hasPermission(permissionRoute, "create");
+    const canEdit = hasPermission(permissionRoute, "edit");
+    const canDelete = hasPermission(permissionRoute, "delete");
 
     const [policies, setPolicies] = useState([]);
     const [leaveTypes, setLeaveTypes] = useState([]);
@@ -163,6 +171,10 @@ export default function LeavePolicy() {
 
         e.preventDefault();
 
+        if (editingPolicy ? !canEdit : !canCreate) {
+            return;
+        }
+
         try {
 
             const payload = {
@@ -290,6 +302,8 @@ export default function LeavePolicy() {
 
     const handleEdit = (policy) => {
 
+        if (!canEdit) return;
+
         setEditingPolicy(policy);
 
         setFormData({
@@ -348,9 +362,56 @@ export default function LeavePolicy() {
     };
 
 
+    const handleDelete = async (policy) => {
+
+        if (!canDelete) return;
+
+        const confirmed = window.confirm(
+            `Are you sure you want to delete the leave policy for ${getLeaveTypeName(policy.leaveTypeId)}?`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            await axios.delete(
+                `${LEAVE_POLICY_API}/${policy.leavePolicyId}`
+            );
+
+            await fetchData();
+        } catch (error) {
+            console.error(
+                "Error deleting leave policy:",
+                error
+            );
+
+            alert(
+                error.response?.data ||
+                "Unable to delete leave policy."
+            );
+        }
+    };
+
+
     /* ==========================================================
        PAGE
     ========================================================== */
+
+    if (!canView) {
+        return (
+            <Box
+                className="leave-policy-page"
+                sx={{ padding: "60px", textAlign: "center" }}
+            >
+                <Typography variant="h5">
+                    Access Denied
+                </Typography>
+
+                <Typography sx={{ mt: 1 }}>
+                    You do not have permission to access this page.
+                </Typography>
+            </Box>
+        );
+    }
 
     return (
 
@@ -417,18 +478,20 @@ export default function LeavePolicy() {
 
                         {/* ADD LEAVE POLICY */}
 
-                        <Button
-                            className="policy-add-btn"
-                            onClick={() => {
+                        {canCreate && (
+                            <Button
+                                className="policy-add-btn"
+                                onClick={() => {
 
-                                resetForm();
+                                    resetForm();
 
-                                setShowForm(true);
+                                    setShowForm(true);
 
-                            }}
-                        >
-                            + Add Leave Policy
-                        </Button>
+                                }}
+                            >
+                                + Add Leave Policy
+                            </Button>
+                        )}
 
                     </Stack>
 
@@ -641,16 +704,29 @@ export default function LeavePolicy() {
 
                                             <TableCell>
 
-                                                <Button
-                                                    className="policy-edit-btn"
-                                                    onClick={() =>
-                                                        handleEdit(
-                                                            policy
-                                                        )
-                                                    }
-                                                >
-                                                    Edit
-                                                </Button>
+                                                {canEdit && (
+                                                    <Button
+                                                        className="policy-edit-btn"
+                                                        onClick={() =>
+                                                            handleEdit(
+                                                                policy
+                                                            )
+                                                        }
+                                                    >
+                                                        Edit
+                                                    </Button>
+                                                )}
+
+                                                {canDelete && (
+                                                    <Button
+                                                        className="policy-delete-btn"
+                                                        onClick={() =>
+                                                            handleDelete(policy)
+                                                        }
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                )}
 
                                             </TableCell>
 

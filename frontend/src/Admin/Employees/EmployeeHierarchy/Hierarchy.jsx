@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import "./Hierarchy.css";
+import { useAuth } from "../../../context/AuthContext";
 
 import {
     Card,
@@ -25,6 +26,11 @@ const EMPLOYEE_API = "https://localhost:7002/api/Employee";
 
 function Hierarchy() {
 
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/employees/EmployeeHierarchy";
+    const canView = hasPermission(permissionRoute, "view");
+
     // =========================================================
     // STATE
     // =========================================================
@@ -43,6 +49,12 @@ function Hierarchy() {
     // =========================================================
 
     const loadEmployees = useCallback(async () => {
+
+        if (!canView) {
+            setEmployees([]);
+            setLoadingEmployees(false);
+            return;
+        }
 
         setLoadingEmployees(true);
 
@@ -74,7 +86,7 @@ function Hierarchy() {
             setLoadingEmployees(false);
         }
 
-    }, []);
+    }, [canView]);
 
     // =========================================================
     // LOAD HIERARCHY
@@ -85,6 +97,11 @@ function Hierarchy() {
     // =========================================================
 
     const loadHierarchies = useCallback(async () => {
+
+        if (!canView) {
+            setHierarchies([]);
+            return [];
+        }
 
         try {
 
@@ -118,7 +135,7 @@ function Hierarchy() {
 
         }
 
-    }, []);
+    }, [canView]);
 
     // =========================================================
     // INITIAL LOAD
@@ -323,6 +340,10 @@ function Hierarchy() {
 
     const getEmployeeHierarchy = async () => {
 
+        if (!canView) {
+            return;
+        }
+
         if (!employeeId) {
 
             alert(
@@ -501,6 +522,15 @@ function Hierarchy() {
     // =========================================================
     // RENDER
     // =========================================================
+
+    if (!canView) {
+        return (
+            <div style={{ padding: "60px", textAlign: "center" }}>
+                <h2>Access Denied</h2>
+                <p>You do not have permission to access this page.</p>
+            </div>
+        );
+    }
 
     return (
 

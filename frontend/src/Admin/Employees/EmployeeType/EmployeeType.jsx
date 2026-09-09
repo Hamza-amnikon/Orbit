@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import "./EmployeeType.css";
 
 import {
@@ -38,6 +39,14 @@ import {
 function EmployeeType() {
 
     const navigate = useNavigate();
+    const { hasPermission } = useAuth();
+
+    const permissionRoute = "/employees/types";
+    const canView = hasPermission(permissionRoute, "view");
+    const canCreate = hasPermission(permissionRoute, "create");
+    const canEdit = hasPermission(permissionRoute, "edit");
+    const canDelete = hasPermission(permissionRoute, "delete");
+    const canExport = hasPermission(permissionRoute, "export");
 
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
@@ -51,11 +60,19 @@ function EmployeeType() {
     const [selectedEmployeeType, setSelectedEmployeeType] = useState(null);
 
     useEffect(() => {
-        loadEmployeeTypes();
-    }, []);
+        if (canView) {
+            loadEmployeeTypes();
+        }
+    }, [canView]);
 
 
     const loadEmployeeTypes = async () => {
+        if (!canView) {
+            setEmployeeTypes([]);
+            setLoading(false);
+            return;
+        }
+
         try {
 
             setLoading(true);
@@ -76,6 +93,7 @@ function EmployeeType() {
     };
 
     const refreshData = () => {
+        if (!canView) return;
         loadEmployeeTypes();
     };
 
@@ -97,12 +115,15 @@ function EmployeeType() {
 
 
     const editEmployeeType = (employeeType) => {
+        if (!canEdit) return;
         setSelectedEmployeeType(employeeType);
         setOpenEditDialog(true);
     };
 
 
     const deleteEmployeeType = async (id) => {
+
+        if (!canDelete) return;
 
         if (!window.confirm("Delete this Employee Type?"))
             return;
@@ -129,6 +150,8 @@ function EmployeeType() {
 
     const saveEmployeeType = async (data) => {
 
+        if (!canCreate) return;
+
         try {
 
             await createEmployeeType(data);
@@ -152,6 +175,8 @@ function EmployeeType() {
 
 
     const updateEmployeeType = async (data) => {
+
+        if (!canEdit) return;
 
         try {
 
@@ -179,6 +204,15 @@ function EmployeeType() {
         }
     };
 
+
+    if (!canView) {
+        return (
+            <div style={{ padding: "60px", textAlign: "center" }}>
+                <h2>Access Denied</h2>
+                <p>You do not have permission to access this page.</p>
+            </div>
+        );
+    }
 
     return (
 
@@ -216,21 +250,25 @@ function EmployeeType() {
                     </Button>
 
 
-                    <Button
-                        variant="outlined"
-                        startIcon={<Download />}
-                    >
-                        Export
-                    </Button>
+                    {canExport && (
+                        <Button
+                            variant="outlined"
+                            startIcon={<Download />}
+                        >
+                            Export
+                        </Button>
+                    )}
 
 
-                    <Button
-                        variant="contained"
-                        startIcon={<Add />}
-                        onClick={() => setOpenAddDialog(true)}
-                    >
-                        Add Employee Type
-                    </Button>
+                    {canCreate && (
+                        <Button
+                            variant="contained"
+                            startIcon={<Add />}
+                            onClick={() => setOpenAddDialog(true)}
+                        >
+                            Add Employee Type
+                        </Button>
+                    )}
 
                 </div>
 
@@ -403,6 +441,8 @@ function EmployeeType() {
                                 employeeTypes={filteredEmployeeTypes}
                                 editEmployeeType={editEmployeeType}
                                 deleteEmployeeType={deleteEmployeeType}
+                                canEdit={canEdit}
+                                canDelete={canDelete}
                             />
 
                         </CardContent>
@@ -411,23 +451,27 @@ function EmployeeType() {
             }
 
 
-            <AddEmployeeType
+            {canCreate && (
+                <AddEmployeeType
                 open={openAddDialog}
                 handleClose={() =>
                     setOpenAddDialog(false)
                 }
                 handleSave={saveEmployeeType}
-            />
+                />
+            )}
 
 
-            <EditEmployeeType
+            {canEdit && (
+                <EditEmployeeType
                 open={openEditDialog}
                 employeeType={selectedEmployeeType}
                 handleClose={() =>
                     setOpenEditDialog(false)
                 }
                 handleUpdate={updateEmployeeType}
-            />
+                />
+            )}
 
         </div>
 

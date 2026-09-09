@@ -1,6 +1,7 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet, useLocation } from "react-router-dom";
 import { syncPermissions } from "../Admin/Services/PermissionService";
 import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
 
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
@@ -134,6 +135,11 @@ export const PERMISSION_PAGES = [
         module: "Employee Management",
         pageName: "Roles",
         route: "/employees/roles",
+    },
+    {
+        module: "Employee Management",
+        pageName: "My Dashboard",
+        route: "/employees/my-dashboard",
     },
     {
         module: "Employee Management",
@@ -332,10 +338,10 @@ export const PERMISSION_PAGES = [
     },
 
     {
-    module: "Approval",
-    pageName: "Approvals",
-    route: "/approvals",
-},
+        module: "Approval",
+        pageName: "Approvals",
+        route: "/approvals",
+    },
 
 
 ];
@@ -344,6 +350,35 @@ export const PERMISSION_PAGES = [
 /* ============================================================
    ROUTES
 ============================================================ */
+
+function PermissionGuard() {
+    const { hasPermission, loading, profileLoading } = useAuth();
+    const location = useLocation();
+
+    if (loading || profileLoading) {
+        return <div>Loading...</div>;
+    }
+
+    const allowed = hasPermission(location.pathname, "view");
+
+    if (!allowed) {
+        return (
+            <div
+                style={{
+                    padding: "60px",
+                    textAlign: "center"
+                }}
+            >
+                <h2>Access Denied</h2>
+                <p>
+                    You do not have permission to access this page.
+                </p>
+            </div>
+        );
+    }
+
+    return <Outlet />;
+}
 
 function AppRoutes() {
 
@@ -386,196 +421,200 @@ function AppRoutes() {
 
             <Route element={<PrivateRoute />}>
 
-                <Route element={<DashboardLayout />}>
+                <Route element={<PermissionGuard />}>
 
-                    <Route
-                        path="/"
-                        element={<Dashboard />}
-                    />
+                    <Route element={<DashboardLayout />}>
 
-                    <Route
-                        path="/dashboard"
-                        element={<Dashboard />}
-                    />
+                        <Route
+                            path="/"
+                            element={<Dashboard />}
+                        />
 
-                    {/* ================= Employees ================= */}
+                        <Route
+                            path="/dashboard"
+                            element={<Dashboard />}
+                        />
 
-                    <Route
-                        path="/employees"
-                        element={<Employees />}
-                    />
+                        {/* ================= Employees ================= */}
 
-                    <Route
-                        path="/employees/add"
-                        element={<AddEmployee />}
-                    />
+                        <Route
+                            path="/employees"
+                            element={<Employees />}
+                        />
 
-                    <Route
-                        path="/employees/list"
-                        element={<EmployeeList />}
-                    />
+                        <Route
+                            path="/employees/add"
+                            element={<AddEmployee />}
+                        />
 
-                    <Route
-                        path="/employees/departments"
-                        element={<Departments />}
-                    />
+                        <Route
+                            path="/employees/list"
+                            element={<EmployeeList />}
+                        />
 
-                    <Route
-                        path="/employees/designations"
-                        element={<Designations />}
-                    />
+                        <Route
+                            path="/employees/departments"
+                            element={<Departments />}
+                        />
 
-                    <Route
-                        path="/employees/locations"
-                        element={<Locations />}
-                    />
+                        <Route
+                            path="/employees/designations"
+                            element={<Designations />}
+                        />
 
-                    <Route
-                        path="/employees/types"
-                        element={<EmployeeType />}
-                    />
+                        <Route
+                            path="/employees/locations"
+                            element={<Locations />}
+                        />
 
-                    <Route
-                        path="/employees/roles"
-                        element={<Role />}
-                    />
+                        <Route
+                            path="/employees/types"
+                            element={<EmployeeType />}
+                        />
 
-                    <Route
-                        path="/employees/my-dashboard"
-                        element={<Dashboard />}
-                    />
+                        <Route
+                            path="/employees/roles"
+                            element={<Role />}
+                        />
 
-                    <Route
-                        path="/employees/EmployeeHierarchy"
-                        element={<Hierarchy />}
-                    />
+                        <Route
+                            path="/employees/my-dashboard"
+                            element={<Dashboard />}
+                        />
 
-                    {/* ================= Attendance ================= */}
+                        <Route
+                            path="/employees/EmployeeHierarchy"
+                            element={<Hierarchy />}
+                        />
 
-                    <Route
-                        path="/attendance"
-                        element={<Attendance />}
-                    />
+                        {/* ================= Attendance ================= */}
 
-                    <Route
-                        path="/attendance/my-attendance"
-                        element={<MyAttendance />}
-                    />
+                        <Route
+                            path="/attendance"
+                            element={<Attendance />}
+                        />
 
-                    <Route
-                        path="/attendance/logs"
-                        element={<AttendanceLogs />}
-                    />
+                        <Route
+                            path="/attendance/my-attendance"
+                            element={<MyAttendance />}
+                        />
 
-                    <Route
-                        path="/attendance/dashboard"
-                        element={<AttendanceDashboard />}
-                    />
+                        <Route
+                            path="/attendance/logs"
+                            element={<AttendanceLogs />}
+                        />
 
-                    <Route
-                        path="/attendance/shifts"
-                        element={<ShiftManagement />}
-                    />
+                        <Route
+                            path="/attendance/dashboard"
+                            element={<AttendanceDashboard />}
+                        />
 
-                    <Route
-                        path="/attendance/Holiday"
-                        element={<HolidayEvents />}
-                    />
+                        <Route
+                            path="/attendance/shifts"
+                            element={<ShiftManagement />}
+                        />
 
-                    {/* Leave */}
-                    <Route path="/leave" element={<LeaveDashboard />} />
-                    <Route path="/leave/overview" element={<LeaveOverview />} />
-                    <Route path="/leave/balance" element={<LeaveBalance />} />
-                    <Route path="/leave/types" element={<LeaveTypes />} />
-                    <Route path="/leave/policies" element={<LeavePolicy />} />
-                    <Route path="/leave/requests" element={<LeaveRequests />} />
-                    <Route path="/leave/history" element={<LeaveTakenHistory />} />
-                    <Route path="/leave/my-leave" element={<MyLeave />} />
-                    <Route path="/leave/reports" element={<LeaveReports />} />
-                    <Route
-    path="/admin/leave/compoff"
-    element={<CompOff />}
-/>
+                        <Route
+                            path="/attendance/Holiday"
+                            element={<HolidayEvents />}
+                        />
+
+                        {/* Leave */}
+                        <Route path="/leave" element={<LeaveDashboard />} />
+                        <Route path="/leave/overview" element={<LeaveOverview />} />
+                        <Route path="/leave/balance" element={<LeaveBalance />} />
+                        <Route path="/leave/types" element={<LeaveTypes />} />
+                        <Route path="/leave/policies" element={<LeavePolicy />} />
+                        <Route path="/leave/requests" element={<LeaveRequests />} />
+                        <Route path="/leave/history" element={<LeaveTakenHistory />} />
+                        <Route path="/leave/my-leave" element={<MyLeave />} />
+                        <Route path="/leave/reports" element={<LeaveReports />} />
+                        <Route
+                            path="/admin/leave/compoff"
+                            element={<CompOff />}
+                        />
 
 
 
-                    {/* {PayRolls } */}
- <Route
-                        path="/employee/payroll"
-                        element={<MyPayroll />}
-                    />
+                        {/* {PayRolls } */}
+                        <Route
+                            path="/employee/payroll"
+                            element={<MyPayroll />}
+                        />
 
-                    <Route
-                        path="/payroll"
-                        element={<Payroll />}
-                    />
+                        <Route
+                            path="/payroll"
+                            element={<Payroll />}
+                        />
 
-                    <Route
-                        path="/payroll/dashboard"
-                        element={<PayrollDashboard />}
-                    />
+                        <Route
+                            path="/payroll/dashboard"
+                            element={<PayrollDashboard />}
+                        />
 
-                    <Route
-                        path="/payroll/payslip-templates"
-                        element={<PayslipTemplates />}
-                    />
+                        <Route
+                            path="/payroll/payslip-templates"
+                            element={<PayslipTemplates />}
+                        />
 
-                    <Route
-                        path="/payroll/payslip-templates/create"
-                        element={<CreatePayslipTemplate />}
-                    />
+                        <Route
+                            path="/payroll/payslip-templates/create"
+                            element={<CreatePayslipTemplate />}
+                        />
 
-                    <Route
-                        path="/payroll/process"
-                        element={<PayrollProcess />}
-                    />
+                        <Route
+                            path="/payroll/process"
+                            element={<PayrollProcess />}
+                        />
 
-                    <Route
-                        path="/payroll/employees"
-                        element={<EmployeesPayroll />}
-                    />
+                        <Route
+                            path="/payroll/employees"
+                            element={<EmployeesPayroll />}
+                        />
 
-                    <Route
-                        path="/payroll/history"
-                        element={<EmployeesHistory />}
-                    />
+                        <Route
+                            path="/payroll/history"
+                            element={<EmployeesHistory />}
+                        />
 
-                    <Route
-                        path="/payroll/salary-components"
-                        element={<SalaryComponents />}
-                    />
+                        <Route
+                            path="/payroll/salary-components"
+                            element={<SalaryComponents />}
+                        />
 
-                    {/* ================= Other ================= */}
+                        {/* ================= Other ================= */}
 
-                    <Route
-                        path="/reports"
-                        element={<Reports />}
-                    />
+                        <Route
+                            path="/reports"
+                            element={<Reports />}
+                        />
 
-                    <Route
-                        path="/tickets"
-                        element={<Tickets />}
-                    />
+                        <Route
+                            path="/tickets"
+                            element={<Tickets />}
+                        />
 
-                    <Route
-                        path="/documents"
-                        element={<DocumentManagement />}
-                    />
+                        <Route
+                            path="/documents"
+                            element={<DocumentManagement />}
+                        />
 
-                    <Route
-                        path="/settings"
-                        element={<SettingsDashboard />}
-                    />
+                        <Route
+                            path="/settings"
+                            element={<SettingsDashboard />}
+                        />
 
-                     <Route
-                        path="/permission-management"
-                        element={<PermissionManagement />}
-                    />
+                        <Route
+                            path="/permission-management"
+                            element={<PermissionManagement />}
+                        />
 
-                     <Route
-                        path="/approvals"
-                        element={<Approval />}
-                    />
+                        <Route
+                            path="/approvals"
+                            element={<Approval />}
+                        />
+
+                    </Route>
 
                 </Route>
 
