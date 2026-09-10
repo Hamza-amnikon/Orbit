@@ -371,6 +371,12 @@ export default function Permissions() {
 
   const [activeTab, setActiveTab] = useState("roles");
 
+  // User Permissions (read-only, inherited from the employee's role)
+  const [userSearch, setUserSearch] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUserPermissions, setSelectedUserPermissions] = useState([]);
+  const [loadingUserPermissions, setLoadingUserPermissions] = useState(false);
+
   const [loading, setLoading] = useState(true);
 
   const [loadingRolePermissions, setLoadingRolePermissions] =
@@ -1520,6 +1526,175 @@ const modules = useMemo(() => {
   };
 
   /* ========================================================================
+     USER PERMISSIONS - READ ONLY
+     ======================================================================== */
+
+  const getEmployeeId = (employee) =>
+    firstValue(employee, ["employeeId", "EmployeeId", "id", "Id"], null);
+
+  const getEmployeeAzureId = (employee) =>
+    firstValue(employee, ["azureEmployeeId", "AzureEmployeeId"], "-");
+
+  const getEmployeeName = (employee) =>
+    String(
+      firstValue(
+        employee,
+        ["employeeName", "EmployeeName", "name", "Name"],
+        "Unnamed Employee",
+      ),
+    );
+
+  const getEmployeeCode = (employee) =>
+    String(firstValue(employee, ["employeeCode", "EmployeeCode"], "-"));
+
+  const getEmployeeEmail = (employee) =>
+    String(firstValue(employee, ["email", "Email"], "-"));
+
+  const getEmployeeRoleId = (employee) =>
+    firstValue(employee, ["roleId", "RoleId"], null);
+
+  const getRoleForEmployee = (employee) => {
+    const roleId = getEmployeeRoleId(employee);
+    return roles.find((role) => isSameId(getId(role), roleId)) || null;
+  };
+
+  const filteredUsers = useMemo(() => {
+    const search = userSearch.trim().toLowerCase();
+    if (!search) return employees;
+
+    return employees.filter((employee) => {
+      const role = getRoleForEmployee(employee);
+      return [
+        getEmployeeName(employee),
+        getEmployeeAzureId(employee),
+        getEmployeeCode(employee),
+        getEmployeeEmail(employee),
+        getRoleName(role),
+      ].some((value) =>
+        String(value || "").toLowerCase().includes(search),
+      );
+    });
+  }, [employees, roles, userSearch]);
+
+  const userPermissionRows = useMemo(() => {
+    const rolePermissionMap = new Map();
+
+    selectedUserPermissions.forEach((item) => {
+      const permissionId = firstValue(
+        item,
+        [
+          "permissionId",
+          "PermissionId",
+          "permissionID",
+          "PermissionID",
+          "id",
+          "Id",
+        ],
+        null,
+      );
+
+      if (permissionId !== null && permissionId !== undefined) {
+        rolePermissionMap.set(normalizeId(permissionId), item);
+      }
+    });
+
+    return permissionRows.map((permission) => {
+      const rolePermission = rolePermissionMap.get(
+        normalizeId(permission.id),
+      );
+
+      return {
+        ...permission,
+        view: toBoolean(
+          rolePermission?.canView ?? rolePermission?.CanView ?? false,
+        ),
+        create: toBoolean(
+          rolePermission?.canCreate ?? rolePermission?.CanCreate ?? false,
+        ),
+        edit: toBoolean(
+          rolePermission?.canEdit ?? rolePermission?.CanEdit ?? false,
+        ),
+        delete: toBoolean(
+          rolePermission?.canDelete ?? rolePermission?.CanDelete ?? false,
+        ),
+        approve: toBoolean(
+          rolePermission?.canApprove ?? rolePermission?.CanApprove ?? false,
+        ),
+        export: toBoolean(
+          rolePermission?.canExport ?? rolePermission?.CanExport ?? false,
+        ),
+      };
+    });
+  }, [permissionRows, selectedUserPermissions]);
+
+  const userPermissionModules = useMemo(() => {
+    const grouped = {};
+
+    userPermissionRows.forEach((permission) => {
+      const moduleName = permission.module || "HRMS";
+      if (!grouped[moduleName]) grouped[moduleName] = [];
+      grouped[moduleName].push(permission);
+    });
+
+    return Object.entries(grouped)
+      .map(([moduleName, pages]) => ({ moduleName, pages }))
+      .sort((a, b) => {
+        const aIndex = modules.findIndex(
+          (module) => module.moduleName === a.moduleName,
+        );
+        const bIndex = modules.findIndex(
+          (module) => module.moduleName === b.moduleName,
+        );
+        return (
+          (aIndex === -1 ? 999 : aIndex) -
+          (bIndex === -1 ? 999 : bIndex)
+        );
+      });
+  }, [userPermissionRows, modules]);
+
+  const userPermissionCount = useMemo(
+    () =>
+      userPermissionRows.reduce(
+        (count, permission) =>
+          count +
+          ACTIONS.filter((action) => permission[action]).length,
+        0,
+      ),
+    [userPermissionRows],
+  );
+
+  const selectUser = async (employee) => {
+    setSelectedUser(employee);
+    setSelectedUserPermissions([]);
+    setError("");
+    setSuccessMessage("");
+
+    const roleId = getEmployeeRoleId(employee);
+
+    if (roleId === null || roleId === undefined || roleId === "") {
+      return;
+    }
+
+    try {
+      setLoadingUserPermissions(true);
+
+      const response = await getRolePermissions(roleId);
+      setSelectedUserPermissions(normalizeArray(response));
+    } catch (err) {
+      console.error("Unable to load user role permissions:", err);
+      setSelectedUserPermissions([]);
+
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Unable to load permissions for this user's role.",
+      );
+    } finally {
+      setLoadingUserPermissions(false);
+    }
+  };
+
+  /* ========================================================================
      Refresh
   ======================================================================== */
 
@@ -1836,20 +2011,222 @@ const modules = useMemo(() => {
       ================================================================ */}
 
       {activeTab === "users" && (
-        <div className="permission-empty-panel">
+        <div className="permission-user-layout">
 
-          <UsersIcon />
+          <aside className="permission-user-panel">
+            <div className="permission-user-panel-header">
+              <div>
+                <h2>Users</h2>
+                <p>{employees.length} employees</p>
+              </div>
+              <span className="permission-user-count">
+                {filteredUsers.length}
+              </span>
+            </div>
 
-          <h3>
-            User Permissions
-          </h3>
+            <div className="permission-user-search">
+              <SearchIcon />
+              <input
+                type="text"
+                placeholder="Search users..."
+                value={userSearch}
+                onChange={(event) => setUserSearch(event.target.value)}
+              />
+            </div>
 
-          <p>
-            User-specific permission
-            management can be connected
-            here once the user-permission
-            API is available.
-          </p>
+            <div className="permission-user-list">
+              {filteredUsers.length === 0 ? (
+                <div className="permission-user-no-data">
+                  No employees found.
+                </div>
+              ) : (
+                filteredUsers.map((employee) => {
+                  const role = getRoleForEmployee(employee);
+                  const employeeId = getEmployeeId(employee);
+                  const isSelected =
+                    selectedUser &&
+                    isSameId(getEmployeeId(selectedUser), employeeId);
+
+                  return (
+                    <button
+                      key={employeeId ?? getEmployeeAzureId(employee)}
+                      type="button"
+                      className={
+                        isSelected
+                          ? "permission-user-item selected"
+                          : "permission-user-item"
+                      }
+                      onClick={() => selectUser(employee)}
+                    >
+                      <div className="permission-user-avatar">
+                        {getEmployeeName(employee).charAt(0).toUpperCase()}
+                      </div>
+
+                      <div className="permission-user-info">
+                        <strong>{getEmployeeName(employee)}</strong>
+                        <span>
+                          Azure ID: {getEmployeeAzureId(employee)}
+                        </span>
+                        <small>{getRoleName(role)}</small>
+                      </div>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </aside>
+
+          <section className="permission-user-content">
+            {!selectedUser ? (
+              <div className="permission-user-empty">
+                <div className="permission-user-empty-icon">
+                  <UsersIcon />
+                </div>
+                <h3>Select an employee</h3>
+                <p>
+                  Select an employee from the list to view the permissions
+                  inherited from their role.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="permission-user-detail-header">
+                  <div className="permission-user-detail-main">
+                    <div className="permission-user-detail-avatar">
+                      {getEmployeeName(selectedUser).charAt(0).toUpperCase()}
+                    </div>
+
+                    <div>
+                      <h2>{getEmployeeName(selectedUser)}</h2>
+
+                      <div className="permission-user-meta">
+                        <span>
+                          Azure Employee ID:{" "}
+                          <strong>{getEmployeeAzureId(selectedUser)}</strong>
+                        </span>
+                        <span>
+                          Employee Code:{" "}
+                          <strong>{getEmployeeCode(selectedUser)}</strong>
+                        </span>
+                        <span>
+                          Email:{" "}
+                          <strong>{getEmployeeEmail(selectedUser)}</strong>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="permission-user-role-card">
+                    <UserRoleIcon />
+                    <div>
+                      <span>Role</span>
+                      <strong>
+                        {getRoleName(getRoleForEmployee(selectedUser))}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="permission-user-summary">
+                  <div>
+                    <strong>{userPermissionCount}</strong>
+                    <span>Granted actions</span>
+                  </div>
+                  <div>
+                    <strong>
+                      {
+                        userPermissionRows.filter(
+                          (permission) => permission.view,
+                        ).length
+                      }
+                    </strong>
+                    <span>Viewable pages</span>
+                  </div>
+                  <div>
+                    <strong>{userPermissionModules.length}</strong>
+                    <span>Modules</span>
+                  </div>
+                </div>
+
+                {loadingUserPermissions ? (
+                  <div className="permission-user-loading">
+                    Loading permissions...
+                  </div>
+                ) : (
+                  <div className="permission-user-table-wrapper">
+                    <table className="permission-user-table">
+                      <thead>
+                        <tr>
+                          <th>PAGE</th>
+                          <th>VIEW</th>
+                          <th>CREATE</th>
+                          <th>EDIT</th>
+                          <th>DELETE</th>
+                          <th>APPROVE</th>
+                          <th>EXPORT</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {userPermissionModules.map((module) => (
+                          <React.Fragment key={module.moduleName}>
+                            <tr className="permission-user-module-row">
+                              <td colSpan="7">
+                                <strong>{module.moduleName}</strong>
+                                <span>{module.pages.length} pages</span>
+                              </td>
+                            </tr>
+
+                            {module.pages.map((permission) => (
+                              <tr
+                                key={normalizeId(permission.id)}
+                                className="permission-user-page-row"
+                              >
+                                <td>
+                                  <div>
+                                    <strong>{permission.page}</strong>
+                                    {permission.path && (
+                                      <span>{permission.path}</span>
+                                    )}
+                                  </div>
+                                </td>
+
+                                {ACTIONS.map((action) => (
+                                  <td key={action}>
+                                    
+{permission[action] ? (
+  <span className="permission-user-check">
+    ✓
+  </span>
+) : (
+  <span className="permission-user-cross">
+    ✕
+  </span>
+)}
+
+                                  </td>
+                                ))}
+
+                              </tr>
+                            ))}
+                          </React.Fragment>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                <div className="permission-user-readonly-note">
+                  <LockIcon />
+                  <span>
+                    Permissions are inherited from the employee's role and
+                    are read-only here. To change access, update the role in{" "}
+                    <strong>Role Permissions</strong>.
+                  </span>
+                </div>
+              </>
+            )}
+          </section>
 
         </div>
       )}
