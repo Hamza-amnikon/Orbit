@@ -852,11 +852,11 @@
 
     padding: 0 9px;
 
-    background: #f8fafc;
+    background: #ecf3ee;
 
     border-bottom: 1px solid #e1e8f0;
 
-    color: #526a85;
+    color: #050505;
 
     font-size: 9px;
     font-weight: 700;
@@ -918,7 +918,7 @@
 
     border-bottom: 1px solid #e2e9f1;
 
-    color: #173553;
+    color: #080808;
 }
 
 .permission-module-name {

@@ -222,6 +222,15 @@ const normalizeId = (id) => {
   return String(id);
 };
 
+const toBoolean = (value) => {
+  return (
+    value === true ||
+    value === "true" ||
+    value === 1 ||
+    value === "1"
+  );
+};
+
 const isSameId = (a, b) => {
   return normalizeId(a) === normalizeId(b);
 };
@@ -353,6 +362,8 @@ export default function Permissions() {
 
   const [permissionActions, setPermissionActions] = useState({});
 
+  const [loginPages, setLoginPages] = useState({});
+
   const [expandedModules, setExpandedModules] = useState(new Set());
 
   const [roleSearch, setRoleSearch] = useState("");
@@ -370,6 +381,20 @@ export default function Permissions() {
   const [error, setError] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
+
+  /* ========================================================================
+     Find module for a permission ID
+  ======================================================================== */
+
+  const getModuleForPermissionId = (permissionId) => {
+    const permission = permissions.find((item) =>
+      isSameId(getId(item), permissionId),
+    );
+
+    return permission
+      ? getModuleName(permission)
+      : "HRMS";
+  };
 
   /* ========================================================================
      Load initial data
@@ -466,6 +491,7 @@ export default function Permissions() {
         setRolePermissions([]);
         setSelectedPermissions(new Set());
         setPermissionActions({});
+        setLoginPages({});
         return;
       }
 
@@ -475,6 +501,7 @@ export default function Permissions() {
         setRolePermissions([]);
         setSelectedPermissions(new Set());
         setPermissionActions({});
+        setLoginPages({});
         return;
       }
 
@@ -496,6 +523,7 @@ export default function Permissions() {
 
         const assignedIds = new Set();
         const loadedActions = {};
+        const loadedLoginPages = {};
 
         data.forEach((item) => {
           const permissionId = firstValue(
@@ -519,6 +547,17 @@ export default function Permissions() {
           }
 
           const id = normalizeId(permissionId);
+
+          const isLoginPage = toBoolean(
+            item.isLoginPage ??
+            item.IsLoginPage ??
+            false,
+          );
+
+          if (isLoginPage) {
+            const moduleName = getModuleForPermissionId(id);
+            loadedLoginPages[moduleName] = id;
+          }
 
           const actions = {
             view:
@@ -561,6 +600,8 @@ export default function Permissions() {
 
         setPermissionActions(loadedActions);
         setSelectedPermissions(assignedIds);
+        setLoginPages(loadedLoginPages);
+
       } catch (err) {
         console.error(
           "Unable to load role permissions:",
@@ -842,6 +883,24 @@ const modules = useMemo(() => {
         [action]: !current[action],
       };
 
+      if (action === "view" && !updated.view) {
+        const moduleName =
+          permission.module || "HRMS";
+
+        if (
+          isSameId(
+            loginPages[moduleName],
+            permissionId,
+          )
+        ) {
+          setLoginPages((previous) => {
+            const next = { ...previous };
+            delete next[moduleName];
+            return next;
+          });
+        }
+      }
+
       const hasAnyAction =
         Object.values(updated).some(Boolean);
 
@@ -924,6 +983,18 @@ const modules = useMemo(() => {
 
       return next;
     });
+
+    if (moduleSelected) {
+      const moduleName = module.moduleName;
+
+      if (loginPages[moduleName]) {
+        setLoginPages((previous) => {
+          const next = { ...previous };
+          delete next[moduleName];
+          return next;
+        });
+      }
+    }
   };
 
   /* ========================================================================
@@ -976,6 +1047,10 @@ const modules = useMemo(() => {
         ? new Set(allPermissionIds)
         : new Set(),
     );
+
+    if (!shouldSelectAll) {
+      setLoginPages({});
+    }
   };
 
   /* ========================================================================
@@ -1008,6 +1083,33 @@ const modules = useMemo(() => {
     setError("");
   };
 
+
+  const selectLoginPage = (permission) => {
+    if (!permission?.id) return;
+
+    const permissionId = normalizeId(permission.id);
+
+    const actions =
+      permissionActions[permissionId] || {};
+
+    if (!toBoolean(actions.view)) {
+      setError(
+        "Login page must have View permission.",
+      );
+      return;
+    }
+
+    const moduleName =
+      permission.module || "HRMS";
+
+    setError("");
+
+    setLoginPages((previous) => ({
+      ...previous,
+      [moduleName]: permissionId,
+    }));
+  };
+
   /* ========================================================================
      Save permissions
   ======================================================================== */
@@ -1027,6 +1129,20 @@ const modules = useMemo(() => {
         "Selected role does not have a valid ID.",
       );
       return;
+    }
+
+    for (const [moduleName, permissionId] of Object.entries(
+      loginPages,
+    )) {
+      const loginActions =
+        permissionActions[permissionId] || {};
+
+      if (!toBoolean(loginActions.view)) {
+        setError(
+          `Login page for ${moduleName} must have View permission.`,
+        );
+        return;
+      }
     }
 
     try {
@@ -1121,6 +1237,21 @@ const modules = useMemo(() => {
         |--------------------------------------------------------------------------
         */
 
+        const moduleName =
+          permission.module || "HRMS";
+
+        const isLoginPage = isSameId(
+          loginPages[moduleName],
+          permissionId,
+        );
+
+        console.log("LOGIN DEBUG:", {
+          moduleName,
+          loginPages,
+          permissionId,
+          isLoginPage,
+        });
+
         await assignRolePermission({
           roleId: roleId,
           permissionId: permissionId,
@@ -1142,6 +1273,7 @@ const modules = useMemo(() => {
           canExport: Boolean(
             actions.export,
           ),
+          isLoginPage: isLoginPage,
         });
       }
 
@@ -1167,6 +1299,7 @@ const modules = useMemo(() => {
 
       const updatedActions = {};
       const updatedIds = new Set();
+      const updatedLoginPages = {};
 
       updatedData.forEach((item) => {
         const permissionId =
@@ -1192,6 +1325,17 @@ const modules = useMemo(() => {
 
         const id =
           normalizeId(permissionId);
+
+        const isLoginPage = toBoolean(
+          item.isLoginPage ??
+          item.IsLoginPage ??
+          false,
+        );
+
+        if (isLoginPage) {
+          const moduleName = getModuleForPermissionId(id);
+          updatedLoginPages[moduleName] = id;
+        }
 
         const actions = {
           view:
@@ -1245,6 +1389,10 @@ const modules = useMemo(() => {
         updatedIds,
       );
 
+      setLoginPages(
+        updatedLoginPages,
+      );
+
       setSuccessMessage(
         `Permissions saved for ${getRoleName(
           selectedRole,
@@ -1273,6 +1421,7 @@ const modules = useMemo(() => {
   const cancelChanges = () => {
     const assignedIds = new Set();
     const restoredActions = {};
+    const restoredLoginPages = {};
 
     rolePermissions.forEach((item) => {
       const permissionId =
@@ -1298,6 +1447,17 @@ const modules = useMemo(() => {
 
       const id =
         normalizeId(permissionId);
+
+      const isLoginPage = toBoolean(
+        item.isLoginPage ??
+        item.IsLoginPage ??
+        false,
+      );
+
+      if (isLoginPage) {
+        const moduleName = getModuleForPermissionId(id);
+        restoredLoginPages[moduleName] = id;
+      }
 
       const actions = {
         view:
@@ -1349,6 +1509,10 @@ const modules = useMemo(() => {
 
     setSelectedPermissions(
       assignedIds,
+    );
+
+    setLoginPages(
+      restoredLoginPages,
     );
 
     setSuccessMessage("");
@@ -1709,14 +1873,6 @@ const modules = useMemo(() => {
                 Roles
               </h2>
 
-              <button
-                type="button"
-                className="permission-add-role"
-                title="Add Role"
-              >
-                <PlusIcon />
-              </button>
-
             </div>
 
             <div className="permission-role-search">
@@ -1924,6 +2080,10 @@ const modules = useMemo(() => {
                     </th>
 
                     <th>
+                      LOGIN
+                    </th>
+
+                    <th>
                       VIEW
                     </th>
 
@@ -1957,7 +2117,7 @@ const modules = useMemo(() => {
                     <tr>
 
                       <td
-                        colSpan="7"
+                        colSpan="8"
                         className="permission-no-pages"
                       >
                         No permissions/pages
@@ -2051,7 +2211,7 @@ const modules = useMemo(() => {
                             </td>
 
                             <td
-                              colSpan="6"
+                              colSpan="7"
                               className="permission-module-action"
                             >
 
@@ -2118,6 +2278,47 @@ const modules = useMemo(() => {
 
                                     </div>
 
+                                  </td>
+
+                                  <td>
+                                    <input
+                                      type="radio"
+                                      name={`loginPage-${module.moduleName}`}
+                                      className="permission-checkbox"
+                                      checked={isSameId(
+                                        loginPages[
+                                          module.moduleName
+                                        ],
+                                        normalizeId(
+                                          permission.id,
+                                        ),
+                                      )}
+                                      onChange={() =>
+                                        selectLoginPage(
+                                          permission,
+                                        )
+                                      }
+                                      disabled={
+                                        !toBoolean(
+                                          permissionActions[
+                                            normalizeId(
+                                              permission.id,
+                                            )
+                                          ]?.view,
+                                        )
+                                      }
+                                      title={
+                                        toBoolean(
+                                          permissionActions[
+                                            normalizeId(
+                                              permission.id,
+                                            )
+                                          ]?.view,
+                                        )
+                                          ? "Set as login page"
+                                          : "View permission is required"
+                                      }
+                                    />
                                   </td>
 
                                   <td>

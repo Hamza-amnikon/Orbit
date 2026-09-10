@@ -227,13 +227,18 @@ export async function assignRolePermission(
   roleIdOrPayload,
   permissionId,
   actions = {},
+
+  
 ) {
+
   let payload;
 
   // Supports:
   // assignRolePermission(roleId, permissionId, actions)
   // OR
   // assignRolePermission({ roleId, permissionId, ...actions })
+
+  
 
   if (
     roleIdOrPayload &&
@@ -291,6 +296,12 @@ export async function assignRolePermission(
       payload.canExport ??
       payload.CanExport ??
       false,
+
+  isLoginPage:
+  payload.isLoginPage ??
+  payload.IsLoginPage ??
+  false,
+
   };
 
   console.log("SAVE ROLE PERMISSION", body);

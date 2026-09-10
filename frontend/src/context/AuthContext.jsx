@@ -3,7 +3,8 @@ import {
     useContext,
     useEffect,
     useState,
-    useCallback
+    useCallback,
+    useMemo
 } from "react";
 
 import authService from "../Admin/Services/authService";
@@ -411,11 +412,11 @@ setPermissionCatalog(
 // LOAD ROLE PERMISSIONS
 // -------------------------------------------------
 
-let rolePermissions = [];
+let loginRolePermissions = [];
 
 if (roleId) {
 
-    rolePermissions =
+    const rolePermissions =
         await getRolePermissions(roleId);
 
     console.log(
@@ -423,8 +424,11 @@ if (roleId) {
         rolePermissions
     );
 
+    loginRolePermissions =
+        rolePermissions || [];
+
     setPermissions(
-        rolePermissions || []
+        loginRolePermissions
     );
 
 } else {
@@ -432,149 +436,6 @@ if (roleId) {
     setPermissions([]);
 
 }
-
-
-/*
------------------------------------------------------
-GET INITIAL LOGIN ROUTE
-
-If exactly one permission has View enabled,
-open that page directly.
-
-If more than one page has View enabled,
-keep the existing Dashboard flow.
-
-Uses the existing permission catalog dynamically.
-No page/route is hardcoded here.
------------------------------------------------------
-*/
-
-const getPermissionId = (permission) => {
-
-    return (
-        permission?.permissionId ??
-        permission?.PermissionId ??
-        permission?.permissionID ??
-        permission?.PermissionID ??
-        permission?.id ??
-        permission?.Id ??
-        permission?.permission?.id ??
-        permission?.permission?.PermissionId ??
-        null
-    );
-
-};
-
-const getPermissionPath = (permission) => {
-
-    return (
-        permission?.path ??
-        permission?.Path ??
-        permission?.route ??
-        permission?.Route ??
-        permission?.url ??
-        permission?.Url ??
-        permission?.pageUrl ??
-        permission?.PageUrl ??
-        permission?.permissionPath ??
-        permission?.PermissionPath ??
-        permission?.pagePath ??
-        permission?.PagePath ??
-        permission?.permission?.path ??
-        permission?.permission?.Path ??
-        permission?.permission?.route ??
-        permission?.permission?.Route ??
-        null
-    );
-
-};
-
-const isEnabled = (value) =>
-    value === true ||
-    value === "true" ||
-    value === 1 ||
-    value === "1";
-
-const viewRoutes = (allPermissions || []).filter(
-    (permission) => {
-
-        const permissionId =
-            getPermissionId(permission);
-
-        const rolePermission =
-            (rolePermissions || []).find(
-                (item) =>
-                    String(
-                        getPermissionId(item)
-                    ) === String(permissionId)
-            );
-
-        return (
-            getPermissionPath(permission) &&
-            rolePermission &&
-            (
-                isEnabled(rolePermission.canView) ||
-                isEnabled(rolePermission.CanView)
-            )
-        );
-    }
-);
-
-/*
------------------------------------------------------
-CHOOSE LOGIN PAGE
-
-Only permissions selected in Permission Management
-are considered here.
-
-Sidebar/layout items are NOT considered separately.
-
-If a selected View page has selected child pages,
-the parent page is used as the landing page.
-
-Example:
-  /attendance
-  /attendance/my-attendance
-  /attendance/logs
-
-  -> /attendance
-
-If there is no selected parent page, keep the
-existing Dashboard behavior.
------------------------------------------------------
-*/
-
-const selectedViewRoutes = viewRoutes
-    .map((permission) => getPermissionPath(permission))
-    .filter(Boolean);
-
-const parentViewRoutes = selectedViewRoutes.filter(
-    (route) =>
-        selectedViewRoutes.some(
-            (childRoute) =>
-                childRoute !== route &&
-                childRoute.startsWith(
-                    `${route.replace(/\/$/, "")}/`
-                )
-        )
-);
-
-const initialRoute =
-    parentViewRoutes.length > 0
-        ? parentViewRoutes.sort(
-            (a, b) =>
-                a.split("/").filter(Boolean).length -
-                b.split("/").filter(Boolean).length
-        )[0]
-        : selectedViewRoutes.length === 1
-            ? selectedViewRoutes[0]
-            : "/dashboard";
-
-
-            console.log(
-                "AuthContext: Initial Login Route:",
-                initialRoute
-            );
 
 
             console.log(
@@ -610,8 +471,7 @@ const initialRoute =
 
 
             return {
-                ...profileData,
-                initialRoute
+                ...profileData
             };
 
         }
@@ -959,7 +819,169 @@ const getPermissionPath = (permission) => {
 // CHECK USER PERMISSION
 // =========================================================
 
-const hasPermission = (
+// =========================================================
+// GET MODULE LOGIN ROUTE
+// =========================================================
+
+const moduleLoginRoutes = useMemo(() => {
+
+    const routes = {};
+
+    if (
+        !Array.isArray(permissionCatalog) ||
+        !Array.isArray(permissions) ||
+        permissionCatalog.length === 0 ||
+        permissions.length === 0
+    ) {
+        return routes;
+    }
+
+    const isEnabled = (value) =>
+        value === true ||
+        value === "true" ||
+        value === 1 ||
+        value === "1";
+
+    // Build PermissionId -> permission definition once.
+    const permissionById = new Map();
+
+    permissionCatalog.forEach((permission) => {
+        const id = getPermissionId(permission);
+
+        if (id !== null && id !== undefined) {
+            permissionById.set(String(id), permission);
+        }
+    });
+
+    // Build Module -> selected LOGIN route once.
+    const loginRouteByModule = new Map();
+
+    permissions.forEach((rolePermission) => {
+
+        const isLoginPage =
+            rolePermission?.isLoginPage ??
+            rolePermission?.IsLoginPage ??
+            false;
+
+        const canView =
+            rolePermission?.canView ??
+            rolePermission?.CanView ??
+            false;
+
+        if (
+            !isEnabled(isLoginPage) ||
+            !isEnabled(canView)
+        ) {
+            return;
+        }
+
+        const permissionId =
+            getPermissionId(rolePermission);
+
+        if (
+            permissionId === null ||
+            permissionId === undefined
+        ) {
+            return;
+        }
+
+        const permissionDefinition =
+            permissionById.get(String(permissionId));
+
+        if (!permissionDefinition) {
+            return;
+        }
+
+        const moduleName =
+            permissionDefinition?.module ??
+            permissionDefinition?.Module ??
+            permissionDefinition?.moduleName ??
+            permissionDefinition?.ModuleName ??
+            "";
+
+        const loginRoute =
+            getPermissionPath(permissionDefinition);
+
+        if (
+            !String(moduleName).trim() ||
+            !loginRoute
+        ) {
+            return;
+        }
+
+        const moduleKey =
+            String(moduleName).trim().toLowerCase();
+
+        // One LOGIN page per module.
+        if (!loginRouteByModule.has(moduleKey)) {
+            loginRouteByModule.set(
+                moduleKey,
+                normalizePath(loginRoute)
+            );
+        }
+    });
+
+    // Connect every module entry route to its LOGIN route.
+    permissionCatalog.forEach((moduleDefinition) => {
+
+        const moduleRoute =
+            normalizePath(
+                getPermissionPath(moduleDefinition)
+            );
+
+        if (!moduleRoute) {
+            return;
+        }
+
+        const moduleName =
+            moduleDefinition?.module ??
+            moduleDefinition?.Module ??
+            moduleDefinition?.moduleName ??
+            moduleDefinition?.ModuleName ??
+            "";
+
+        const moduleKey =
+            String(moduleName).trim().toLowerCase();
+
+        if (!moduleKey) {
+            return;
+        }
+
+        const loginRoute =
+            loginRouteByModule.get(moduleKey);
+
+        if (loginRoute) {
+            routes[moduleRoute] = loginRoute;
+        }
+    });
+
+    return routes;
+
+}, [permissions, permissionCatalog]);
+
+
+// =========================================================
+// GET MODULE LOGIN ROUTE
+// =========================================================
+// Sidebar only does a direct lookup now.
+// No permission/catalog search happens on click.
+// =========================================================
+
+const getModuleLoginRoute = useCallback((moduleRoute) => {
+
+    const normalizedModuleRoute =
+        normalizePath(moduleRoute);
+
+    if (!normalizedModuleRoute) {
+        return null;
+    }
+
+    return moduleLoginRoutes[normalizedModuleRoute] || null;
+
+}, [moduleLoginRoutes]);
+
+
+    const hasPermission = (
     path,
     action = "view"
 ) => {
@@ -1151,6 +1173,8 @@ const hasPermission = (
                 permissions,
 
                 hasPermission,
+
+                getModuleLoginRoute,
 
 
                 refreshProfile:

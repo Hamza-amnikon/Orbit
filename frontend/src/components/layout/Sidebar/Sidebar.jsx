@@ -92,8 +92,11 @@ function Sidebar() {
 
   const navigate = useNavigate();
 
-  // Get permission checker from AuthContext
-  const { hasPermission } = useAuth();
+  // Get permission checker + module LOGIN resolver
+  const {
+    hasPermission,
+    getModuleLoginRoute,
+  } = useAuth();
 
 
   // =========================================================
@@ -117,11 +120,69 @@ function Sidebar() {
 
 
   // =========================================================
+  // GET MODULE NAVIGATION ROUTE
+  // =========================================================
+  //
+  // If a LOGIN page is configured for this module:
+  //
+  //     Attendance
+  //          ↓
+  //     Attendance Dashboard
+  //
+  // Otherwise:
+  //
+  //     Attendance
+  //          ↓
+  //     /attendance
+  //
+  // =========================================================
+
+  const getMenuRoute = (item) => {
+
+    try {
+
+      const loginRoute =
+        getModuleLoginRoute?.(
+          item.permissionPath
+        );
+
+      if (loginRoute) {
+
+        console.log(
+          `Sidebar: ${item.title} LOGIN route:`,
+          loginRoute
+        );
+
+        return loginRoute;
+
+      }
+
+    }
+    catch (error) {
+
+      console.error(
+        `Sidebar: Failed to resolve LOGIN route for ${item.title}`,
+        error
+      );
+
+    }
+
+    // No LOGIN configured for this module.
+    // Keep the existing module landing page.
+    return item.path;
+
+  };
+
+
+  // =========================================================
   // FILTER MENU BASED ON PERMISSIONS
   // =========================================================
 
   const allowedMenu = menu.filter((item) =>
-    hasPermission(item.permissionPath, "view")
+    hasPermission(
+      item.permissionPath,
+      "view"
+    )
   );
 
 
@@ -152,27 +213,34 @@ function Sidebar() {
 
       <nav className="sidebar-menu">
 
-        {allowedMenu.map((item) => (
+        {allowedMenu.map((item) => {
 
-          <NavLink
-            key={item.title}
-            to={item.path}
-            className={({ isActive }) =>
-              isActive
-                ? "menu-item active"
-                : "menu-item"
-            }
-          >
+          const menuRoute =
+            getMenuRoute(item);
 
-            {item.icon}
+          return (
 
-            <span>
-              {item.title}
-            </span>
+            <NavLink
+              key={item.title}
+              to={menuRoute}
+              className={({ isActive }) =>
+                isActive
+                  ? "menu-item active"
+                  : "menu-item"
+              }
+            >
 
-          </NavLink>
+              {item.icon}
 
-        ))}
+              <span>
+                {item.title}
+              </span>
+
+            </NavLink>
+
+          );
+
+        })}
 
       </nav>
 

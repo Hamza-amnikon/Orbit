@@ -50,7 +50,8 @@ function AuthCallback() {
                 =================================================
                 */
 
-                const loginResult = await completeLogin(token);
+                const loginResult =
+                    await completeLogin(token);
 
 
                 if (cancelled) {
@@ -65,22 +66,19 @@ function AuthCallback() {
 
                 /*
                 =================================================
-                IMPORTANT
+                LOGIN REDIRECT
 
-                Authentication is completely finished.
+                completeLogin() can return an initialRoute
+                based on the user's permissions.
 
-                If exactly one page has View permission,
-                completeLogin returns that page as initialRoute.
-
-                If multiple pages have View permission,
-                initialRoute remains /dashboard.
-
-                No hardcoded permission/page mapping is used.
+                If no initialRoute is returned, keep the
+                existing /dashboard behavior.
                 =================================================
                 */
 
                 window.location.replace(
-                    loginResult?.initialRoute || "/dashboard"
+                    loginResult?.initialRoute ||
+                    "/dashboard"
                 );
 
             }
