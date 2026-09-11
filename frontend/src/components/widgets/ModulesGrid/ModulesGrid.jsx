@@ -84,11 +84,11 @@ function ModulesGrid() {
             route: "/reports"
         },
 
-        {
-            title: "My Dashboard",
-            description: "View your personal dashboard and analytics.",
-            icon: <AssessmentRoundedIcon />,
-            color: "#2563eb",
+         {
+            title:"My Dashboard",
+            description:"View your personal dashboard and analytics.",
+            icon:<AssessmentRoundedIcon/>,
+            color:"#2563eb",
             route: "/employees/my-dashboard"
         }
 

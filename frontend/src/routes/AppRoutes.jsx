@@ -55,6 +55,7 @@ import SettingsDashboard from "../Admin/Settings/SettingsDashboard";
 import MyAttendance from "../Admin/AttendanceManagement/My Attendance/Attendance";
 import MyLeave from "../Admin/Leave/MyLeave/Leave/Leave";
 import MyPayroll from "../Admin/PayrollManagement/MyPayroll/Payrolls";
+import MyDashboard from "../Admin/MyDashboard/Dashboard";
 
 import AttendanceLogs from "../Admin/AttendanceManagement/AttendanceLogs/AttendanceLogs";
 import AttendanceDashboard from "../Admin/AttendanceManagement/Dashboard/AttendanceDashboard";
@@ -62,6 +63,7 @@ import ShiftManagement from "../Admin/AttendanceManagement/ShiftManagement/Shift
 import CompOff from "../Admin/Leave/CompOff/CompOff";
 
 import PermissionManagement from "../Admin/PermissionManagement/Permissions";
+import Reimbursement from "../Admin/Reimbursement/Reimbursement";
 
 /* ============================================================
    PERMISSION PAGE CATALOG
@@ -338,10 +340,10 @@ export const PERMISSION_PAGES = [
     },
 
     {
-        module: "Approval",
-        pageName: "Approvals",
-        route: "/approvals",
-    },
+    module: "Approval",
+    pageName: "Approvals",
+    route: "/approvals",
+},
 
 
 ];
@@ -477,10 +479,10 @@ function AppRoutes() {
                             element={<Role />}
                         />
 
-                        <Route
-                            path="/employees/my-dashboard"
-                            element={<Dashboard />}
-                        />
+                    <Route
+                        path="/employees/my-dashboard"
+                        element={<Dashboard />}
+                    />
 
                         <Route
                             path="/employees/EmployeeHierarchy"
@@ -613,8 +615,6 @@ function AppRoutes() {
                             path="/approvals"
                             element={<Approval />}
                         />
-
-                    </Route>
 
                 </Route>
 

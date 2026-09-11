@@ -14,76 +14,68 @@ import ConfirmationNumberRoundedIcon from "@mui/icons-material/ConfirmationNumbe
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 
 import { useAuth } from "../../../context/AuthContext";
 
 
-export const menu = [
+const menu = [
   {
     title: "Dashboard",
     icon: <DashboardRoundedIcon />,
     path: "/",
-    permissionPath: "/dashboard",
   },
   {
     title: "Employees",
     icon: <PeopleRoundedIcon />,
     path: "/employees",
-    permissionPath: "/employees",
   },
   {
     title: "Attendance",
     icon: <AccessTimeRoundedIcon />,
     path: "/attendance",
-    permissionPath: "/attendance",
   },
   {
     title: "Leave",
     icon: <EventBusyRoundedIcon />,
     path: "/leave",
-    permissionPath: "/leave",
   },
-  {
-    title: "Approvals",
-    icon: <ApprovalRoundedIcon />,
-    path: "/approvals",
-    permissionPath: "/approvals",
-  },
+{
+  title: "Approvals",
+  icon: <ApprovalRoundedIcon />,
+  path: "/approvals",
+},
+
+
   {
     title: "Payroll",
     icon: <PaymentsRoundedIcon />,
     path: "/payroll",
-    permissionPath: "/payroll",
   },
   {
     title: "Reports",
     icon: <AssessmentRoundedIcon />,
     path: "/reports",
-    permissionPath: "/reports",
   },
   {
     title: "Tickets",
     icon: <ConfirmationNumberRoundedIcon />,
     path: "/tickets",
-    permissionPath: "/tickets",
   },
   {
     title: "Documents",
     icon: <DescriptionRoundedIcon />,
     path: "/documents",
-    permissionPath: "/documents",
   },
   {
     title: "Settings",
     icon: <SettingsRoundedIcon />,
     path: "/settings",
-    permissionPath: "/settings",
   },
-  {
-    title: "Permission",
+  
+  {title: "Permission ",
     icon: <SettingsRoundedIcon />,
     path: "/permission-management",
-    permissionPath: "/permission-management",
   },
 ];
 
