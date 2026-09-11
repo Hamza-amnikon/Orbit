@@ -62,6 +62,7 @@ import ShiftManagement from "../Admin/AttendanceManagement/ShiftManagement/Shift
 import CompOff from "../Admin/Leave/CompOff/CompOff";
 
 import PermissionManagement from "../Admin/PermissionManagement/Permissions";
+import Reimbursement from "../Admin/Reimbursement/Reimbursement";
 
 /* ============================================================
    PERMISSION PAGE CATALOG
@@ -337,7 +338,11 @@ export const PERMISSION_PAGES = [
     pageName: "Approvals",
     route: "/approvals",
 },
-
+{
+    module: "Reimbursement",
+    pageName: "Reimbursement",
+    route: "/reimbursement",
+},
 
 ];
 
@@ -578,6 +583,10 @@ function AppRoutes() {
                         element={<Approval />}
                     />
 
+<Route
+    path="/reimbursement"
+    element={<Reimbursement />}
+/>
                 </Route>
 
             </Route>

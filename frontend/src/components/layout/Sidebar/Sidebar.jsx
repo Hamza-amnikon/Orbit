@@ -14,69 +14,15 @@ import ConfirmationNumberRoundedIcon from "@mui/icons-material/ConfirmationNumbe
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 
 
 
-const menu = [
-  {
-    title: "Dashboard",
-    icon: <DashboardRoundedIcon />,
-    path: "/",
-  },
-  {
-    title: "Employees",
-    icon: <PeopleRoundedIcon />,
-    path: "/employees",
-  },
-  {
-    title: "Attendance",
-    icon: <AccessTimeRoundedIcon />,
-    path: "/attendance",
-  },
-  {
-    title: "Leave",
-    icon: <EventBusyRoundedIcon />,
-    path: "/leave",
-  },
-{
-  title: "Approvals",
-  icon: <ApprovalRoundedIcon />,
-  path: "/approvals",
-},
-
-
-  {
-    title: "Payroll",
-    icon: <PaymentsRoundedIcon />,
-    path: "/payroll",
-  },
-  {
-    title: "Reports",
-    icon: <AssessmentRoundedIcon />,
-    path: "/reports",
-  },
-  {
-    title: "Tickets",
-    icon: <ConfirmationNumberRoundedIcon />,
-    path: "/tickets",
-  },
-  {
-    title: "Documents",
-    icon: <DescriptionRoundedIcon />,
-    path: "/documents",
-  },
-  {
-    title: "Settings",
-    icon: <SettingsRoundedIcon />,
-    path: "/settings",
-  },
-  
-  {title: "Permission ",
-    icon: <SettingsRoundedIcon />,
-    path: "/permission-management",
-  },
-];
-
+const menu = [ { title: "Dashboard", icon: <DashboardRoundedIcon />, path: "/", }, { title: "Employees", icon: <PeopleRoundedIcon />, path: "/employees", }, { title: "Attendance", icon: <AccessTimeRoundedIcon />, path: "/attendance", }, { title: "Leave", icon: <EventBusyRoundedIcon />, path: "/leave", }, { title: "Approvals", icon: <ApprovalRoundedIcon />, path: "/approvals", }, { title: "Payroll", icon: <PaymentsRoundedIcon />, path: "/payroll", }, { title: "Reports", icon: <AssessmentRoundedIcon />, path: "/reports", }, { title: "Tickets", icon: <ConfirmationNumberRoundedIcon />, path: "/tickets", }, { title: "Documents", icon: <DescriptionRoundedIcon />, path: "/documents", }, { title: "Settings", icon: <SettingsRoundedIcon />, path: "/settings", }, { title: "Permission", icon: <SettingsRoundedIcon />, path: "/permission-management", },{
+  title: "Reimbursement",
+  icon: <PaymentsRoundedIcon />,
+  path: "/reimbursement",
+}, ];
 
 function Sidebar() {
 
