@@ -617,18 +617,24 @@ const updateStatus = async () => {
     }
 
     try {
-        await axios.put(
-            `https://localhost:7206/api/Leave/${selectedLeave.leaveId}/status`,
-            {
-                status: selectedStatus,
+await axios.put(
+    `https://localhost:7206/api/Leave/${selectedLeave.leaveId}/status`,
+    {
+        status: selectedStatus,
 
-                // Same logged-in employee logic as Leave Request page.
-                // The employee who clicks Approve / Reject is recorded.
-                approvedBy: Number(profile?.employeeId),
+        approvedBy:
+            selectedStatus === "Approved"
+                ? Number(profile?.employeeId)
+                : null,
 
-                managerComment: managerComment.trim()
-            }
-        );
+        rejectedBy:
+            selectedStatus === "Rejected"
+                ? Number(profile?.employeeId)
+                : null,
+
+        managerComment: managerComment.trim()
+    }
+);
 
         alert(
             selectedStatus === "Approved"

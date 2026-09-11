@@ -308,6 +308,42 @@ const [profile, setProfile] = useState(null);
 
 
     // =========================================================
+    // ELIGIBLE LEAVE TYPES FOR LOGGED-IN EMPLOYEE
+    // =========================================================
+    // "All" = available to everyone.
+    // "Male" = available only to Male employees.
+    // "Female" = available only to Female employees.
+    const eligibleLeaveTypes = useMemo(() => {
+
+        const employeeGender =
+            String(profile?.gender || "")
+                .trim()
+                .toLowerCase();
+
+        return leaveTypes.filter((type) => {
+
+            const eligibleGender =
+                String(type?.eligibleGender || "")
+                    .trim()
+                    .toLowerCase();
+
+            if (
+                !eligibleGender ||
+                eligibleGender === "all"
+            ) {
+                return true;
+            }
+
+            return (
+                employeeGender &&
+                eligibleGender === employeeGender
+            );
+        });
+
+    }, [leaveTypes, profile]);
+
+
+    // =========================================================
     // CALCULATE DAYS
     // =========================================================
 
@@ -1289,6 +1325,30 @@ const [profile, setProfile] = useState(null);
 
                 setFormError(
                     "Please select a leave type."
+                );
+
+                return;
+            }
+
+            // Prevent submission if an already-selected leave type
+            // is not eligible for the logged-in employee.
+            const selectedLeaveType =
+                leaveTypes.find(
+                    (type) =>
+                        Number(type.leaveTypeId) ===
+                        Number(leaveForm.leaveTypeId)
+                );
+
+            if (
+                selectedLeaveType &&
+                !eligibleLeaveTypes.some(
+                    (type) =>
+                        Number(type.leaveTypeId) ===
+                        Number(selectedLeaveType.leaveTypeId)
+                )
+            ) {
+                setFormError(
+                    "You are not eligible for the selected leave type."
                 );
 
                 return;
@@ -3041,16 +3101,16 @@ const closeViewLeaveDialog = () => {
                             }
                         >
 
-                            {leaveTypes.length === 0 ? (
+                            {eligibleLeaveTypes.length === 0 ? (
 
                                 <MenuItem disabled>
-                                    No active leave
+                                    No eligible leave
                                     types available
                                 </MenuItem>
 
                             ) : (
 
-                                leaveTypes.map(
+                                eligibleLeaveTypes.map(
                                     (type) => (
 
                                         <MenuItem
@@ -3505,6 +3565,138 @@ const closeViewLeaveDialog = () => {
                     </span>
                 </div>
 
+                {/* APPROVAL / REJECTION DETAILS */}
+
+                {String(selectedLeave.status || "").toLowerCase() === "approved" && (
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr 1fr",
+                            gap: "20px",
+                        }}
+                    >
+                        <div>
+                            <div
+                                style={{
+                                    fontSize: "12px",
+                                    color: "#64748b",
+                                    marginBottom: "5px",
+                                }}
+                            >
+                                Approved By
+                            </div>
+
+                            <div
+                                style={{
+                                    fontSize: "15px",
+                                    fontWeight: 600,
+                                    color: "#1e293b",
+                                }}
+                            >
+                                {selectedLeave.approvedByName || "-"}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div
+                                style={{
+                                    fontSize: "12px",
+                                    color: "#64748b",
+                                    marginBottom: "5px",
+                                }}
+                            >
+                                Approved Date
+                            </div>
+
+                            <div
+                                style={{
+                                    fontSize: "15px",
+                                    fontWeight: 600,
+                                    color: "#1e293b",
+                                }}
+                            >
+                                {selectedLeave.approvedDate
+                                    ? new Date(
+                                          selectedLeave.approvedDate
+                                      ).toLocaleString("en-IN", {
+                                          day: "2-digit",
+                                          month: "short",
+                                          year: "numeric",
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                          hour12: true,
+                                      })
+                                    : "-"}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {String(selectedLeave.status || "").toLowerCase() === "rejected" && (
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr 1fr",
+                            gap: "20px",
+                        }}
+                    >
+                        <div>
+                            <div
+                                style={{
+                                    fontSize: "12px",
+                                    color: "#64748b",
+                                    marginBottom: "5px",
+                                }}
+                            >
+                                Rejected By
+                            </div>
+
+                            <div
+                                style={{
+                                    fontSize: "15px",
+                                    fontWeight: 600,
+                                    color: "#1e293b",
+                                }}
+                            >
+                                {selectedLeave.rejectedByName || "-"}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div
+                                style={{
+                                    fontSize: "12px",
+                                    color: "#64748b",
+                                    marginBottom: "5px",
+                                }}
+                            >
+                                Rejected Date
+                            </div>
+
+                            <div
+                                style={{
+                                    fontSize: "15px",
+                                    fontWeight: 600,
+                                    color: "#1e293b",
+                                }}
+                            >
+                                {selectedLeave.rejectedDate
+                                    ? new Date(
+                                          selectedLeave.rejectedDate
+                                      ).toLocaleString("en-IN", {
+                                          day: "2-digit",
+                                          month: "short",
+                                          year: "numeric",
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                          hour12: true,
+                                      })
+                                    : "-"}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Reason */}
                 <div>
                     <div
@@ -3533,19 +3725,7 @@ const closeViewLeaveDialog = () => {
                     </div>
                 </div>
 
-                {/* Leave ID */}
-                <div>
-                    
 
-                    <div
-                        style={{
-                            fontSize: "14px",
-                            color: "#334155",
-                        }}
-                    >
-                        #{selectedLeave.leaveId}
-                    </div>
-                </div>
 
             </div>
         )}
