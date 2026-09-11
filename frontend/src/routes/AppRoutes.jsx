@@ -616,11 +616,14 @@ function AppRoutes() {
                             element={<Approval />}
                         />
 
+                         </Route>
+
                 </Route>
 
             </Route>
 
         </Routes>
+        
     );
 }
 

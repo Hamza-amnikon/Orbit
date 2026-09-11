@@ -19,63 +19,72 @@ import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import { useAuth } from "../../../context/AuthContext";
 
 
-const menu = [
+export const menu = [
   {
     title: "Dashboard",
     icon: <DashboardRoundedIcon />,
     path: "/",
+    permissionPath: "/",
   },
   {
     title: "Employees",
     icon: <PeopleRoundedIcon />,
     path: "/employees",
+    permissionPath: "/employees",
   },
   {
     title: "Attendance",
     icon: <AccessTimeRoundedIcon />,
     path: "/attendance",
+    permissionPath: "/attendance",
   },
   {
     title: "Leave",
     icon: <EventBusyRoundedIcon />,
     path: "/leave",
+    permissionPath: "/leave",
   },
-{
-  title: "Approvals",
-  icon: <ApprovalRoundedIcon />,
-  path: "/approvals",
-},
-
-
+  {
+    title: "Approvals",
+    icon: <ApprovalRoundedIcon />,
+    path: "/approvals",
+    permissionPath: "/approvals",
+  },
   {
     title: "Payroll",
     icon: <PaymentsRoundedIcon />,
     path: "/payroll",
+    permissionPath: "/payroll",
   },
   {
     title: "Reports",
     icon: <AssessmentRoundedIcon />,
     path: "/reports",
+    permissionPath: "/reports",
   },
   {
     title: "Tickets",
     icon: <ConfirmationNumberRoundedIcon />,
     path: "/tickets",
+    permissionPath: "/tickets",
   },
   {
     title: "Documents",
     icon: <DescriptionRoundedIcon />,
     path: "/documents",
+    permissionPath: "/documents",
   },
   {
     title: "Settings",
     icon: <SettingsRoundedIcon />,
     path: "/settings",
+    permissionPath: "/settings",
   },
-  
-  {title: "Permission ",
+  {
+    title: "Permission ",
     icon: <SettingsRoundedIcon />,
     path: "/permission-management",
+    permissionPath: "/permission-management",
   },
 ];
 
