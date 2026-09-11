@@ -89,7 +89,7 @@ function ModulesGrid() {
             description:"View your personal dashboard and analytics.",
             icon:<AssessmentRoundedIcon/>,
             color:"#2563eb",
-            route: "/employees/my-dashboard"
+            route: "/MyDashboard"
         }
 
     ];

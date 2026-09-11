@@ -93,7 +93,11 @@ export const PERMISSION_PAGES = [
         pageName: "Dashboard",
         route: "/dashboard",
     },
-
+    {
+        module: "Employee Management",
+        pageName: "My Dashboard",
+        route: "/MyDashboard",
+    },
     // ========================================================
     // EMPLOYEE MANAGEMENT
     // ========================================================
@@ -137,11 +141,6 @@ export const PERMISSION_PAGES = [
         module: "Employee Management",
         pageName: "Roles",
         route: "/employees/roles",
-    },
-    {
-        module: "Employee Management",
-        pageName: "My Dashboard",
-        route: "/employees/my-dashboard",
     },
     {
         module: "Employee Management",
@@ -345,7 +344,11 @@ export const PERMISSION_PAGES = [
     route: "/approvals",
 },
 
-
+  {
+    module: "Reimbursement",
+    pageName: "Reimbursements",
+    route: "/reimbursements",
+},
 ];
 
 
@@ -614,6 +617,14 @@ function AppRoutes() {
                         <Route
                             path="/approvals"
                             element={<Approval />}
+                        /> 
+                        <Route
+                            path="/MyDashboard"
+                            element={<MyDashboard />}
+                        /> 
+                        <Route
+                            path="/reimbursements"
+                            element={<Reimbursement />}
                         />
 
                          </Route>

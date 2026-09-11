@@ -86,6 +86,12 @@ export const menu = [
     path: "/permission-management",
     permissionPath: "/permission-management",
   },
+    {
+    title: "Reimbursement",
+    icon: <ReceiptLongRoundedIcon />,
+    path: "/reimbursements",
+    permissionPath: "/reimbursements",
+  },
 ];
 
 
