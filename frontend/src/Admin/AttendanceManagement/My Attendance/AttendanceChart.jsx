@@ -38,7 +38,7 @@ import LeaveService from "../../Services/LeaveService";
 ========================================================= */
 
 const SHIFT_API_URL =
-    "https://localhost:7292/api/Shift";
+    "https://sparkapi.amnikontechnologies.com:7292/api/Shift";
 
 
 /* =========================================================
@@ -262,7 +262,7 @@ function AttendanceChart({
        LOAD ASSIGNED SHIFT
        
        Shift API:
-       https://localhost:7292/api/Shift
+       https://sparkapi.amnikontechnologies.com:7292/api/Shift
        
        The API response contains:
        

@@ -35,10 +35,10 @@ import "./EmployeesPayroll.css";
 ========================================================= */
 
 const EMPLOYEE_API =
-    "https://localhost:7002/api/Employee";
+    "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
 
 const PAYROLL_API =
-    "http://localhost:5111/api";
+    "https://sparkapi.amnikontechnologies.com:5111/api";
 
 const EMPLOYEE_SALARIES_API =
     `${PAYROLL_API}/EmployeeSalaries`;
@@ -1524,7 +1524,7 @@ const handleDelete = async (assignment) => {
 
     try {
         await axios.delete(
-            `http://localhost:5111/api/EmployeeSalaries/${employeeSalaryId}`
+            `https://sparkapi.amnikontechnologies.com:5111/api/EmployeeSalaries/${employeeSalaryId}`
         );
 
         // Remove the deleted assignment from the table

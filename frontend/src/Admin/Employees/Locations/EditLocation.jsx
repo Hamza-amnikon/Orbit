@@ -12,7 +12,7 @@ import {
     Grid
 } from "@mui/material";
 
-const API = "http://localhost:7281/api/location";
+const API = "https://sparkapi.amnikontechnologies.com:7281/api/location";
 
 function EditLocation({
     open,

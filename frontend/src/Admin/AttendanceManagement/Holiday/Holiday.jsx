@@ -13,10 +13,10 @@ import "./HolidayEvents.css";
 import { useAuth } from "../../../context/AuthContext";
 
 const EVENT_API =
-    "https://localhost:7234/api/Event";
+    "https://sparkapi.amnikontechnologies.com:7234/api/Event";
 
 const LOCATION_API =
-    "http://localhost:7281/api/location";
+    "https://sparkapi.amnikontechnologies.com:7281/api/location";
 
 export default function HolidayEvents() {
 

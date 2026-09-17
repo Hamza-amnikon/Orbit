@@ -16,15 +16,15 @@ function Tickets() {
     }
 
     return (
-        <div style={{ width: "100%", height: "100vh" }}>
+        <a style={{ width: "100%", height: "100vh" }}>
             <iframe
-                src="https://astrauat.amnikontechnologies.com/osticket/index.php"
+                src="https://astra.amnikontechnologies.com/osticket/scp/login.php"
                 title="Tickets"
                 width="100%"
                 height="100%"
                 style={{ border: "none" }}
             />
-        </div>
+        </a>
     );
 }
 

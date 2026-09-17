@@ -4,8 +4,8 @@ import axios from "axios";
 import "./LeaveRequests.css";
 import { useAuth } from "../../../context/AuthContext";
 
-const LEAVE_API = "https://localhost:7206/api/Leave";
-const LEAVE_TYPE_API = "https://localhost:7206/api/LeaveType";
+const LEAVE_API = "https://sparkapi.amnikontechnologies.com:7206/api/Leave";
+const LEAVE_TYPE_API = "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
 
 export default function LeaveRequests() {
     const [searchParams] = useSearchParams();

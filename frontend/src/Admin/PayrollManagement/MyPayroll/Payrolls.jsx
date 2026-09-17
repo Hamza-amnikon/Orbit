@@ -45,8 +45,8 @@ import sparkLogo from "../../../Images/amnikon-logo.png";
    API
    ========================================================= */
 
-const PAYROLL_API = "http://localhost:5111/api";
-const EMPLOYEE_API = "https://localhost:7002/api/Employee";
+const PAYROLL_API = "https://sparkapi.amnikontechnologies.com:5111/api";
+const EMPLOYEE_API = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
 
 /* =========================================================
    HELPERS

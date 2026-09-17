@@ -4,8 +4,8 @@ import "./LeaveTakenHistory.css";
 import { useAuth } from "../../../context/AuthContext";
 import * as XLSX from "xlsx";
 
-const LEAVE_API = "https://localhost:7206/api/Leave";
-const LEAVE_TYPE_API = "https://localhost:7206/api/LeaveType";
+const LEAVE_API = "https://sparkapi.amnikontechnologies.com:7206/api/Leave";
+const LEAVE_TYPE_API = "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
 
 export default function LeaveTakenHistory() {
 

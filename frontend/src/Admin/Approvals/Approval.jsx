@@ -109,7 +109,7 @@ const loadApprovalRequests = async () => {
         // =====================================================
 
         const approvalResponse = await axios.get(
-            "https://localhost:7128/api/Approval"
+            "https://sparkapi.amnikontechnologies.com:7128/api/Approval"
         );
 
         const approvalData = Array.isArray(approvalResponse.data)
@@ -122,7 +122,7 @@ const loadApprovalRequests = async () => {
         // =====================================================
 
         const leaveResponse = await axios.get(
-            "https://localhost:7206/api/Leave"
+            "https://sparkapi.amnikontechnologies.com:7206/api/Leave"
         );
 
         const leaveData = Array.isArray(leaveResponse.data)
@@ -135,7 +135,7 @@ const loadApprovalRequests = async () => {
 
         try {
             const leaveTypeResponse = await axios.get(
-                "https://localhost:7206/api/LeaveType"
+                "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType"
             );
 
             const leaveTypeData = Array.isArray(leaveTypeResponse.data)
@@ -155,7 +155,7 @@ const loadApprovalRequests = async () => {
 
         try {
             const employeeResponse = await axios.get(
-                "https://localhost:7002/api/Employee"
+                "https://sparkapi.amnikontechnologies.com:7002/api/Employee"
             );
 
             const employeeData = Array.isArray(employeeResponse.data)
@@ -618,7 +618,7 @@ const updateStatus = async () => {
 
     try {
 await axios.put(
-    `https://localhost:7206/api/Leave/${selectedLeave.leaveId}/status`,
+    `https://sparkapi.amnikontechnologies.com:7206/api/Leave/${selectedLeave.leaveId}/status`,
     {
         status: selectedStatus,
 

@@ -4,13 +4,13 @@ import axios from "axios";
 // LEAVE SERVICE API
 // =========================================================
 
-const API_URL = "https://localhost:7206/api";
+const API_URL = "https://sparkapi.amnikontechnologies.com:7206/api";
 
 // =========================================================
 // APPROVAL SERVICE API
 // =========================================================
 
-const APPROVAL_API_URL = "https://localhost:7128/api";
+const APPROVAL_API_URL = "https://sparkapi.amnikontechnologies.com:7128/api";
 
 const LeaveService = {
   // =========================================================
@@ -42,7 +42,7 @@ const LeaveService = {
   // Leave ID = 8
   //
   // GET:
-  // https://localhost:7128/api/Approval/request/8
+  // https://sparkapi.amnikontechnologies.com:7128/api/Approval/request/8
   //
   // Returns:
   // {
@@ -237,7 +237,7 @@ const LeaveService = {
   getApprovalByRequestId: async (requestId) => {
     try {
       const response = await axios.get(
-        `https://localhost:7128/api/Approval/request/${requestId}`,
+        `https://sparkapi.amnikontechnologies.com:7128/api/Approval/request/${requestId}`,
       );
 
       console.log("Approval Details:", response.data);

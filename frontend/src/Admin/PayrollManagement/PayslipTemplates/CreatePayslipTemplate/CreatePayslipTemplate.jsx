@@ -24,7 +24,7 @@ import { useAuth } from "../../../../context/AuthContext";
 
 import "./CreatePayslipTemplate.css";
 
-const API_BASE_URL = "http://localhost:5111/api";
+const API_BASE_URL = "https://sparkapi.amnikontechnologies.com:5111/api";
 
 /* ============================================================
    FALLBACK SALARY COMPONENTS

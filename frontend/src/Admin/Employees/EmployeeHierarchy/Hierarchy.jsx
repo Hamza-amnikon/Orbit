@@ -17,8 +17,8 @@ import {
 // API
 // =========================================================
 
-const API_URL = "https://localhost:7283/api/Hierarchy";
-const EMPLOYEE_API = "https://localhost:7002/api/Employee";
+const API_URL = "https://sparkapi.amnikontechnologies.com:7283/api/Hierarchy";
+const EMPLOYEE_API = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
 
 // =========================================================
 // COMPONENT

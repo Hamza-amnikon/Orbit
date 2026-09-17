@@ -40,25 +40,25 @@ function AddEmployee() {
   // ==========================================
 
   const EMPLOYEE_API =
-    "https://localhost:7002/api/Employee";
+    "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
 
   const PROVISION_API =
-    "https://localhost:7002/api/provision";
+    "https://sparkapi.amnikontechnologies.com:7002/api/provision";
 
   const EMPLOYEE_TYPE_API =
-    "http://localhost:7084/api/EmployeeType";
+    "https://sparkapi.amnikontechnologies.com:7084/api/EmployeeType";
 
   const LOCATION_API =
-    "http://localhost:7281/api/Location/active";
+    "https://sparkapi.amnikontechnologies.com:7281/api/Location/active";
 
   const DESIGNATION_API =
-    "http://localhost:7241/api/Designation";
+    "https://sparkapi.amnikontechnologies.com:7241/api/Designation";
 
   const DEPARTMENT_API =
-    "http://localhost:7240/api/Department";
+    "https://sparkapi.amnikontechnologies.com:7240/api/Department";
 
   const ROLE_API =
-    "http://localhost:7294/api/Role/active";
+    "https://sparkapi.amnikontechnologies.com:7249/api/Role/active";
 
   // ==========================================
   // NAVIGATION

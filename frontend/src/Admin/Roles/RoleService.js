@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "http://localhost:7294/api/Role",
+    baseURL: "https://sparkapi.amnikontechnologies.com:7249/api/Role",
     headers: {
         "Content-Type": "application/json",
     },

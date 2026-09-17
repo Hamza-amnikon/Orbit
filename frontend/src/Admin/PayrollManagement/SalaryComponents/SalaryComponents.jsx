@@ -41,12 +41,12 @@ import { useAuth } from "../../../context/AuthContext";
 |
 | Your PayrollService.API is running on:
 |
-| http://localhost:5111
+| https://sparkapi.amnikontechnologies.com:5111
 |
-| Do NOT use https://localhost:7206 here.
+| Do NOT use https://sparkapi.amnikontechnologies.com:7206 here.
 |
 */
-const API_URL = "http://localhost:5111/api";
+const API_URL = "https://sparkapi.amnikontechnologies.com:5111/api";
 
 /*
 |--------------------------------------------------------------------------

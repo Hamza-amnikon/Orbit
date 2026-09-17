@@ -4,7 +4,7 @@ import axios from "axios";
 // API
 // =========================================================
 
-const API_URL = "http://localhost:7241/api/Designation";
+const API_URL = "https://sparkapi.amnikontechnologies.com:7241/api/Designation";
 
 // =========================================================
 // AUTH CONFIG

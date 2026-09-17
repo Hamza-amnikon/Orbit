@@ -1,0 +1,315 @@
+/* ============================================================
+   REIMBURSEMENT DASHBOARD
+   ============================================================ */
+
+.reimbursement-dashboard {
+    width: 100%;
+    min-height: 100vh;
+
+    box-sizing: border-box;
+
+    padding: 34px 60px 60px;
+
+    background: #f6f8fc;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.reimbursement-header {
+    margin-bottom: 34px;
+}
+
+
+.reimbursement-title {
+    margin: 0 !important;
+
+    color: #0f172a !important;
+
+    font-size: 32px !important;
+
+    line-height: 1.25 !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing: -0.6px;
+}
+
+
+.reimbursement-subtitle {
+    margin-top: 10px !important;
+
+    color: #64748b !important;
+
+    font-size: 15px !important;
+
+    line-height: 1.6 !important;
+}
+
+
+/* ============================================================
+   MODULE GRID
+   ============================================================ */
+
+.reimbursement-module-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(320px, 1fr));
+
+    gap: 28px;
+
+    max-width: 680px;
+}
+
+
+/* ============================================================
+   MODULE CARD
+   ============================================================ */
+
+.reimbursement-module-card {
+    min-height: 310px;
+
+    border: 1px solid #e1e6ee !important;
+
+    border-radius: 18px !important;
+
+    background: #ffffff !important;
+
+    box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.025) !important;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+/* ============================================================
+   HOVER
+   ============================================================ */
+
+.reimbursement-module-card:hover {
+    transform: translateY(-3px);
+
+    border-color: #cbd5e1 !important;
+
+    box-shadow:
+        0 8px 24px rgba(15, 23, 42, 0.08) !important;
+}
+
+
+/* ============================================================
+   CARD CONTENT
+   ============================================================ */
+
+.reimbursement-card-content {
+    height: 100%;
+
+    min-height: 310px;
+
+    padding: 32px !important;
+
+    box-sizing: border-box;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+}
+
+
+/* ============================================================
+   ICON
+   ============================================================ */
+
+.reimbursement-module-icon {
+    width: 72px;
+    height: 72px;
+
+    border-radius: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 28px;
+}
+
+
+.reimbursement-module-icon svg {
+    width: 36px;
+    height: 36px;
+}
+
+
+/* ============================================================
+   REQUESTS ICON
+   Green - same style as Leave Requests
+   ============================================================ */
+
+.reimbursement-requests-icon {
+    background: #16a34a;
+
+    color: #ffffff;
+}
+
+
+/* ============================================================
+   MY REIMBURSEMENTS ICON
+   Blue - same style as Leave Dashboard
+   ============================================================ */
+
+.reimbursement-my-icon {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+
+/* ============================================================
+   CARD TITLE
+   ============================================================ */
+
+.reimbursement-card-title {
+    margin: 0 0 14px !important;
+
+    color: #111827 !important;
+
+    font-size: 21px !important;
+
+    line-height: 1.3 !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing: -0.3px;
+}
+
+
+/* ============================================================
+   CARD DESCRIPTION
+   ============================================================ */
+
+.reimbursement-card-description {
+    margin: 0 !important;
+
+    max-width: 270px;
+
+    color: #64748b !important;
+
+    font-size: 14px !important;
+
+    line-height: 1.65 !important;
+}
+
+
+/* ============================================================
+   OPEN MODULE
+   ============================================================ */
+
+.reimbursement-open-module {
+    width: 100%;
+
+    margin-top: auto;
+
+    padding-top: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+.reimbursement-open-module .MuiTypography-root {
+    color: #2563eb !important;
+
+    font-size: 14px !important;
+
+    font-weight: 600 !important;
+}
+
+
+.reimbursement-open-module svg {
+    width: 22px;
+    height: 22px;
+
+    color: #2563eb;
+
+    transition: transform 0.2s ease;
+}
+
+
+/* ============================================================
+   ARROW HOVER
+   ============================================================ */
+
+.reimbursement-module-card:hover
+.reimbursement-open-module svg {
+    transform: translateX(5px);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .reimbursement-dashboard {
+        padding: 30px 35px 50px;
+    }
+
+    .reimbursement-module-grid {
+        grid-template-columns: repeat(2, minmax(280px, 1fr));
+
+        max-width: 100%;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .reimbursement-dashboard {
+        padding: 25px 20px 40px;
+    }
+
+
+    .reimbursement-title {
+        font-size: 27px !important;
+    }
+
+
+    .reimbursement-module-grid {
+        grid-template-columns: 1fr;
+
+        max-width: 100%;
+
+        gap: 18px;
+    }
+
+
+    .reimbursement-module-card {
+        min-height: 280px;
+    }
+
+
+    .reimbursement-card-content {
+        min-height: 280px;
+
+        padding: 26px !important;
+    }
+
+}

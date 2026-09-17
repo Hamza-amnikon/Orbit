@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { CloseRounded } from "@mui/icons-material";
 
-const EVENT_API = "https://localhost:7234/api/Event";
-const LOCATION_API = "http://localhost:7281/api/location";
+const EVENT_API = "https://sparkapi.amnikontechnologies.com:7234/api/Event";
+const LOCATION_API = "https://sparkapi.amnikontechnologies.com:7281/api/location";
 
 export default function HolidayEventForm({
     onClose,

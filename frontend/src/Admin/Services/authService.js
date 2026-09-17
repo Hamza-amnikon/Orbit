@@ -2,7 +2,7 @@ const authService = {
   login() {
     const frontendUrl = window.location.origin;
 
-    window.location.href = `https://localhost:7278/api/auth/login?frontend=${encodeURIComponent(
+    window.location.href = `https://sparkapi.amnikontechnologies.com:7278/api/auth/login?frontend=${encodeURIComponent(
       frontendUrl,
     )}`;
   },

@@ -60,7 +60,7 @@ import { useAuth } from "../../../context/AuthContext";
 
 const API_BASE_URL = (
     import.meta.env.VITE_PAYROLL_API_URL ||
-    "http://localhost:5111"
+    "https://sparkapi.amnikontechnologies.com:5111"
 ).replace(/\/+$/, "");
 
 /* =========================================================

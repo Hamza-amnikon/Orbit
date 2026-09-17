@@ -37,7 +37,7 @@ function AddLocation({ open, handleClose, handleSave }) {
   const loadCountries = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:7281/api/location/countries",
+        "https://sparkapi.amnikontechnologies.com:7281/api/location/countries",
       );
 
       setCountries(response.data);
@@ -53,7 +53,7 @@ function AddLocation({ open, handleClose, handleSave }) {
   const loadCities = async (country) => {
     try {
       const response = await axios.get(
-        `http://localhost:7281/api/location/cities/${country}`,
+        `https://sparkapi.amnikontechnologies.com:7281/api/location/cities/${country}`,
       );
 
       console.log("Country:", country);

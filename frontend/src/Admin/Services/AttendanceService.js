@@ -1,6 +1,6 @@
 // AttendanceService.js
 
-const API_BASE_URL = "https://localhost:7136";
+const API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7136";
 
 
 // =====================================================

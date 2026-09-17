@@ -108,10 +108,10 @@ function EmployeeList() {
   // ==========================================
 
   const API =
-    "https://localhost:7002/api/employee";
+    "https://sparkapi.amnikontechnologies.com:7002/api/employee";
 
   const SYNC_API =
-    "https://localhost:7205/api/sync";
+    "https://sparkapi.amnikontechnologies.com:7205/api/sync";
 
 
   const navigate = useNavigate();

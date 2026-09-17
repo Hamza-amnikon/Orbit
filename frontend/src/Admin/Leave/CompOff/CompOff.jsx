@@ -18,8 +18,8 @@ import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRou
 
 import "./CompOff.css";
 
-const EMPLOYEE_API = "https://localhost:7002/api/Employee";
-const COMPOFF_API = "https://localhost:7206/api/CompOff";
+const EMPLOYEE_API = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+const COMPOFF_API = "https://sparkapi.amnikontechnologies.com:7206/api/CompOff";
 
 function CompOff({ open, onClose }) {
     const [employees, setEmployees] = useState([]);

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:7294/api/Role";
+const API_URL = "https://sparkapi.amnikontechnologies.com:7249/api/Role";
 
 export const getRoles = () => axios.get(API_URL);
 

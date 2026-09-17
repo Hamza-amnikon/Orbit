@@ -20,7 +20,7 @@ import {
 
 import CloseIcon from "@mui/icons-material/Close";
 
-const LEAVE_TYPE_API = "https://localhost:7206/api/LeaveType";
+const LEAVE_TYPE_API = "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
 
 export default function LeaveTypes() {
 

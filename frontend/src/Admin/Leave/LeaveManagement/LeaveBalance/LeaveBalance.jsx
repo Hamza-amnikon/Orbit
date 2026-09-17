@@ -41,10 +41,10 @@ import {
 } from "@mui/icons-material";
 
 const BALANCE_API =
-  "https://localhost:7206/api/EmployeeLeaveBalance";
+  "https://sparkapi.amnikontechnologies.com:7206/api/EmployeeLeaveBalance";
 
 const LEAVE_TYPE_API =
-  "https://localhost:7206/api/LeaveType";
+  "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
 
 export default function LeaveBalance() {
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7136/api/Attendance";
+const API_URL = "https://sparkapi.amnikontechnologies.com:7136/api/Attendance";
 
 const AttendanceService = {
 

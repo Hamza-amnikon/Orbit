@@ -1,0 +1,1181 @@
+/* ============================================================
+   MY REIMBURSEMENTS
+   ============================================================ */
+
+.my-reimbursements-page {
+    width: 100%;
+    min-height: 100vh;
+
+    padding: 32px 60px 50px;
+
+    box-sizing: border-box;
+
+    background: #f6f8fc;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.my-reimbursements-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 28px;
+}
+
+
+.my-reimbursements-title {
+    color: #0f172a !important;
+
+    font-size: 32px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.25 !important;
+}
+
+
+.my-reimbursements-subtitle {
+    margin-top: 8px !important;
+
+    color: #64748b !important;
+
+    font-size: 15px !important;
+}
+
+
+/* ============================================================
+   NEW BUTTON
+   ============================================================ */
+
+.new-reimbursement-button {
+    background: #2563eb !important;
+
+    border-radius: 9px !important;
+
+    padding: 10px 18px !important;
+
+    text-transform: none !important;
+
+    font-weight: 600 !important;
+
+    box-shadow: none !important;
+}
+
+
+.new-reimbursement-button:hover {
+    background: #1d4ed8 !important;
+
+    box-shadow: none !important;
+}
+
+
+/* ============================================================
+   ALERT
+   ============================================================ */
+
+.my-reimbursements-alert {
+    margin-bottom: 20px;
+
+    border-radius: 10px !important;
+}
+
+
+/* ============================================================
+   SUMMARY
+   ============================================================ */
+
+.my-reimbursement-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 22px;
+}
+
+
+.my-summary-card {
+    min-height: 110px;
+
+    border:
+        1px solid #e2e8f0 !important;
+
+    border-radius: 14px !important;
+
+    background: #ffffff !important;
+
+    box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.03) !important;
+}
+
+
+.my-summary-card .MuiCardContent-root {
+    height: 100%;
+
+    padding: 20px !important;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+.my-summary-icon {
+    width: 46px;
+    height: 46px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+
+.my-summary-icon svg {
+    width: 23px;
+    height: 23px;
+}
+
+
+.my-summary-title {
+    color: #64748b !important;
+
+    font-size: 12px !important;
+
+    margin-bottom: 4px !important;
+}
+
+
+.my-summary-value {
+    color: #0f172a !important;
+
+    font-size: 21px !important;
+
+    font-weight: 700 !important;
+}
+
+
+/* ============================================================
+   SUMMARY COLORS
+   ============================================================ */
+
+.my-summary-total .my-summary-icon {
+    background: #eaf0ff;
+
+    color: #2563eb;
+}
+
+
+.my-summary-pending .my-summary-icon {
+    background: #fff5dc;
+
+    color: #d99a00;
+}
+
+
+.my-summary-approved .my-summary-icon {
+    background: #e6f7ef;
+
+    color: #16a05d;
+}
+
+
+.my-summary-rejected .my-summary-icon {
+    background: #ffe9e9;
+
+    color: #ef4444;
+}
+
+
+.my-summary-amount .my-summary-icon {
+    background: #eaf0ff;
+
+    color: #2563eb;
+}
+
+
+/* ============================================================
+   TABLE CARD
+   ============================================================ */
+
+.my-reimbursements-table-card {
+    width: 100%;
+
+    border:
+        1px solid #e2e8f0 !important;
+
+    border-radius: 14px !important;
+
+    background: #ffffff !important;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.03) !important;
+}
+
+
+/* ============================================================
+   TOOLBAR
+   ============================================================ */
+
+.my-reimbursements-toolbar {
+    min-height: 68px;
+
+    padding: 14px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-bottom:
+        1px solid #edf0f4;
+}
+
+
+.my-reimbursements-search {
+    width: 370px;
+}
+
+
+.my-reimbursements-search .MuiOutlinedInput-root {
+    border-radius: 9px;
+
+    background: #ffffff;
+}
+
+
+.my-reimbursements-search svg {
+    color: #94a3b8;
+}
+
+
+.my-reimbursements-filter {
+    min-width: 140px;
+}
+
+
+.my-reimbursements-filter .MuiOutlinedInput-root {
+    border-radius: 9px;
+}
+
+
+/* ============================================================
+   TABLE HEADER
+   ============================================================ */
+
+.my-reimbursements-table-header {
+
+    display: grid;
+
+    grid-template-columns:
+        1.3fr
+        1.2fr
+        1fr
+        1.2fr
+        1.2fr
+        1.1fr
+        0.7fr;
+
+    padding: 15px 18px;
+
+    background: #ffffff;
+
+    border-bottom:
+        1px solid #e5e9ef;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.3px;
+}
+
+
+/* ============================================================
+   ROW
+   ============================================================ */
+
+.my-reimbursement-row {
+
+    display: grid;
+
+    grid-template-columns:
+        1.3fr
+        1.2fr
+        1fr
+        1.2fr
+        1.2fr
+        1.1fr
+        0.7fr;
+
+    align-items: center;
+
+    padding: 17px 18px;
+
+    min-height: 62px;
+
+    border-bottom:
+        1px solid #edf0f4;
+
+    color: #334155;
+
+    font-size: 13px;
+
+    transition:
+        background 0.15s ease;
+}
+
+
+.my-reimbursement-row:hover {
+    background: #f8fafc;
+}
+
+
+.claim-number {
+    color: #2563eb;
+
+    font-weight: 600;
+}
+
+
+.claim-amount {
+    color: #0f172a;
+
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   ACTION BUTTON
+   ============================================================ */
+
+.my-reimbursement-row .MuiIconButton-root {
+    width: 34px;
+
+    height: 34px;
+
+    color: #64748b;
+
+    border-radius: 8px;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+
+.my-reimbursement-row .MuiIconButton-root:hover {
+    color: #2563eb;
+
+    background: #eef3ff;
+}
+
+
+.my-reimbursement-row .MuiIconButton-root svg {
+    width: 19px;
+
+    height: 19px;
+}
+
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.my-reimbursement-status {
+    font-size: 11px !important;
+
+    font-weight: 600 !important;
+
+    border-radius: 20px !important;
+
+    padding:
+        2px 9px !important;
+}
+
+
+.my-reimbursement-status svg {
+    width: 15px;
+
+    height: 15px;
+}
+
+
+.my-reimbursement-status.pending {
+    color: #b77900 !important;
+
+    background: #fff4d6 !important;
+}
+
+
+.my-reimbursement-status.approved {
+    color: #16834d !important;
+
+    background: #e4f7ed !important;
+}
+
+
+.my-reimbursement-status.rejected {
+    color: #dc2626 !important;
+
+    background: #fee9e9 !important;
+}
+
+
+/* ============================================================
+   EMPTY
+   ============================================================ */
+
+.my-reimbursements-empty {
+
+    min-height: 280px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    color: #64748b;
+}
+
+
+.my-reimbursements-empty svg {
+
+    width: 42px;
+
+    height: 42px;
+
+    margin-bottom: 8px;
+
+    color: #cbd5e1;
+}
+
+
+.my-reimbursements-empty
+.MuiTypography-root:first-of-type {
+
+    color: #475569;
+
+    font-size: 14px;
+
+    font-weight: 500;
+}
+
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+
+.my-reimbursements-loading {
+
+    min-height: 280px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 15px;
+
+    color: #64748b;
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.my-reimbursements-footer {
+
+    padding: 14px 18px;
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    border-top:
+        1px solid #edf0f4;
+}
+
+
+/* ============================================================
+   FORM
+   ============================================================ */
+
+.my-reimbursement-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+    padding-top: 10px;
+}
+
+
+/* ============================================================
+   REIMBURSEMENT DETAILS DIALOG
+   ============================================================ */
+
+.my-reimbursement-details-dialog {
+    border-radius: 18px !important;
+
+    overflow: hidden !important;
+
+    background: #ffffff !important;
+
+    box-shadow:
+        0 24px 70px rgba(
+            15,
+            23,
+            42,
+            0.18
+        ) !important;
+}
+
+
+/* ============================================================
+   DETAILS HEADER
+   ============================================================ */
+
+.my-reimbursement-details-header {
+    padding:
+        24px 24px 20px;
+
+    border-bottom:
+        1px solid #e2e8f0;
+}
+
+
+.my-reimbursement-details-label {
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.6px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 6px;
+}
+
+
+.my-reimbursement-details-claim-number {
+    color: #0f172a;
+
+    font-size: 20px;
+
+    font-weight: 600;
+
+    line-height: 1.3;
+}
+
+
+/* ============================================================
+   CLAIM AMOUNT SECTION
+   ============================================================ */
+
+.my-reimbursement-details-summary {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding:
+        22px 0;
+
+    margin-bottom: 22px;
+
+    border-bottom:
+        1px solid #e2e8f0;
+}
+
+
+.my-reimbursement-details-amount-label {
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 5px;
+}
+
+
+.my-reimbursement-details-amount {
+
+    color: #0f172a;
+
+    font-size: 28px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   DETAILS GRID
+   ============================================================ */
+
+.my-reimbursement-details-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    column-gap: 28px;
+
+    row-gap: 22px;
+}
+
+
+.my-reimbursement-detail-item {
+    min-width: 0;
+}
+
+
+.my-reimbursement-detail-label {
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.35px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 6px;
+}
+
+
+.my-reimbursement-detail-value {
+
+    color: #334155;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    line-height: 1.5;
+
+    word-break: break-word;
+}
+
+
+/* ============================================================
+   DESCRIPTION
+   ============================================================ */
+
+.my-reimbursement-details-description {
+
+    margin-top: 24px;
+}
+
+
+.my-reimbursement-details-description-label {
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.35px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 7px;
+}
+
+
+.my-reimbursement-details-description-value {
+
+    color: #475569;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    word-break: break-word;
+}
+
+
+/* ============================================================
+   REMARKS
+   ============================================================ */
+
+.my-reimbursement-details-remarks {
+
+    margin-top: 22px;
+}
+
+
+.my-reimbursement-details-remarks-label {
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.35px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 7px;
+}
+
+
+.my-reimbursement-details-remarks-value {
+
+    color: #475569;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    word-break: break-word;
+}
+
+
+/* ============================================================
+   RECEIPT ATTACHMENT
+   ============================================================ */
+
+.my-reimbursement-receipt {
+
+    margin-top: 24px;
+
+    padding:
+        13px 14px;
+
+    border:
+        1px solid #dfe5ed;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: #fbfcfe;
+
+    min-width: 0;
+}
+
+
+.my-reimbursement-receipt-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 0;
+}
+
+
+.my-reimbursement-receipt-icon {
+
+    width: 34px;
+
+    height: 34px;
+
+    border-radius: 8px;
+
+    background: #eef3ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: #2563eb;
+}
+
+
+.my-reimbursement-receipt-icon svg {
+
+    width: 19px;
+
+    height: 19px;
+}
+
+
+.my-reimbursement-receipt-text {
+
+    min-width: 0;
+}
+
+
+.my-reimbursement-receipt-title {
+
+    color: #475569;
+
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+
+.my-reimbursement-receipt-name {
+
+    color: #94a3b8;
+
+    font-size: 11px;
+
+    margin-top: 2px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    max-width: 260px;
+}
+
+
+/* ============================================================
+   RECEIPT ACTIONS
+   ============================================================ */
+
+.my-reimbursement-receipt-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 3px;
+
+    flex-shrink: 0;
+}
+
+
+.my-reimbursement-receipt-actions
+.MuiIconButton-root {
+
+    width: 34px;
+
+    height: 34px;
+
+    color: #2563eb;
+
+    border-radius: 8px;
+}
+
+
+.my-reimbursement-receipt-actions
+.MuiIconButton-root:hover {
+
+    background: #eef3ff;
+
+    color: #1d4ed8;
+}
+
+
+.my-reimbursement-receipt-actions
+.MuiIconButton-root svg {
+
+    width: 19px;
+
+    height: 19px;
+}
+
+
+/* ============================================================
+   DETAILS FOOTER
+   ============================================================ */
+
+.my-reimbursement-details-footer {
+
+    padding:
+        16px 24px;
+
+    border-top:
+        1px solid #e2e8f0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+}
+
+
+.my-reimbursement-details-close-button {
+
+    color: #64748b !important;
+
+    text-transform: none !important;
+
+    font-weight: 600 !important;
+
+    border-radius: 8px !important;
+
+    padding:
+        7px 15px !important;
+}
+
+
+.my-reimbursement-details-close-button:hover {
+
+    background: #f1f5f9 !important;
+
+    color: #334155 !important;
+}
+
+
+/* ============================================================
+   RECEIPT VIEWER
+   ============================================================ */
+
+.my-reimbursement-receipt-dialog {
+
+    border-radius: 16px !important;
+
+    overflow: hidden !important;
+}
+
+
+.my-reimbursement-receipt-viewer {
+
+    width: 100%;
+
+    height: 70vh;
+
+    display: block;
+
+    border: none;
+
+    background: #f8fafc;
+}
+
+
+/* ============================================================
+   DIALOG SCROLLBAR
+   ============================================================ */
+
+.MuiDialogContent-root::-webkit-scrollbar {
+
+    width: 7px;
+}
+
+
+.MuiDialogContent-root::-webkit-scrollbar-track {
+
+    background: #f8fafc;
+}
+
+
+.MuiDialogContent-root::-webkit-scrollbar-thumb {
+
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+
+.MuiDialogContent-root::-webkit-scrollbar-thumb:hover {
+
+    background: #94a3b8;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1200px) {
+
+    .my-reimbursements-page {
+
+        padding-left: 35px;
+
+        padding-right: 35px;
+    }
+
+
+    .my-reimbursement-summary {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+}
+
+
+@media (max-width: 900px) {
+
+    .my-reimbursements-header {
+
+        align-items: flex-start;
+
+        gap: 20px;
+
+        flex-direction: column;
+    }
+
+
+    .new-reimbursement-button {
+
+        align-self: flex-start;
+    }
+
+
+    .my-reimbursements-table-card {
+
+        overflow-x: auto;
+    }
+
+
+    .my-reimbursements-table-header,
+    .my-reimbursement-row {
+
+        min-width: 950px;
+    }
+
+
+    .my-reimbursement-details-grid {
+
+        grid-template-columns:
+            1fr 1fr;
+
+        column-gap: 20px;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .my-reimbursements-page {
+
+        padding:
+            24px 20px 35px;
+    }
+
+
+    .my-reimbursements-title {
+
+        font-size: 27px !important;
+    }
+
+
+    .my-reimbursement-summary {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .my-reimbursements-toolbar {
+
+        align-items: stretch;
+
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+
+    .my-reimbursements-search {
+
+        width: 100%;
+    }
+
+
+    .my-reimbursements-filter {
+
+        width: 100%;
+    }
+
+
+    .my-reimbursement-details-grid {
+
+        grid-template-columns:
+            1fr;
+
+        row-gap: 18px;
+    }
+
+
+    .my-reimbursement-details-summary {
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+        flex-direction: column;
+    }
+
+
+    .my-reimbursement-receipt {
+
+        align-items: flex-start;
+
+        gap: 12px;
+
+        flex-direction: column;
+    }
+
+
+    .my-reimbursement-receipt-actions {
+
+        align-self: flex-end;
+    }
+
+
+    .my-reimbursement-receipt-name {
+
+        max-width: 200px;
+    }
+
+}

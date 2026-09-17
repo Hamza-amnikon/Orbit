@@ -34,7 +34,7 @@ import { useAuth } from "../../../context/AuthContext";
 function Locations() {
   const navigate = useNavigate();
 
-  const API = "http://localhost:7281/api/location";
+  const API = "https://sparkapi.amnikontechnologies.com:7281/api/location";
 
   // =========================================================
   // PERMISSIONS

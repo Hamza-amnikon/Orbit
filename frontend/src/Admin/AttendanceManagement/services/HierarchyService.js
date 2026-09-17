@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7283/api/Hierarchy";
+const API_URL = "https://sparkapi.amnikontechnologies.com:7283/api/Hierarchy";
 
 const HierarchyService = {
 

@@ -22,9 +22,9 @@ import { useAuth } from "../../../context/AuthContext";
 // API URLs
 // ==========================================
 
-const LEAVE_API = "https://localhost:7206/api/Leave";
-const LEAVE_TYPE_API = "https://localhost:7206/api/LeaveType";
-const EVENT_API = "https://localhost:7234/api/Event";
+const LEAVE_API = "https://sparkapi.amnikontechnologies.com:7206/api/Leave";
+const LEAVE_TYPE_API = "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
+const EVENT_API = "https://sparkapi.amnikontechnologies.com:7234/api/Event";
 
 
 export default function LeaveOverview() {

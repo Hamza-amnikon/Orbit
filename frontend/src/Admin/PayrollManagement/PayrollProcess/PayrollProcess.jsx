@@ -42,8 +42,8 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import "./PayrollProcess.css";
 
-const EMPLOYEE_API = "https://localhost:7002/api/Employee";
-const PAYROLL_API = "http://localhost:5111/api";
+const EMPLOYEE_API = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+const PAYROLL_API = "https://sparkapi.amnikontechnologies.com:5111/api";
 
 const MONTHS = [
     "August 2026",

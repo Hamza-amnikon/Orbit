@@ -9,7 +9,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import DescriptionIcon from "@mui/icons-material/Description";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
-const EVENT_API = "https://localhost:7234";
+const EVENT_API = "https://sparkapi.amnikontechnologies.com:7234";
 
 function DashboardBottom() {
     const navigate = useNavigate();
@@ -35,7 +35,7 @@ function DashboardBottom() {
                  * and controller is EventController,
                  * this becomes:
                  *
-                 *   https://localhost:7234/api/Event
+                 *   https://sparkapi.amnikontechnologies.com:7234/api/Event
                  */
 
                 const response = await fetch(
