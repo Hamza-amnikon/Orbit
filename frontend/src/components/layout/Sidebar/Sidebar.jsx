@@ -1,6 +1,10 @@
 import "./Sidebar.css";
 
-import { NavLink, useNavigate } from "react-router-dom";
+import {
+    NavLink,
+    useNavigate,
+} from "react-router-dom";
+
 import logo from "../../../assets/logo/test.png";
 
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
@@ -102,16 +106,13 @@ export const menu = [
         permissionPath: "/permission-management",
     },
 
-    /* ========================================================
-       REIMBURSEMENT
-       ======================================================== */
+    {
+        title: "Reimbursement",
+        icon: <ReceiptLongRoundedIcon />,
+        path: "/reimbursements",
+        permissionPath: "/reimbursements",
+    },
 
-  {
-    title: "Reimbursement",
-    icon: <ReceiptLongRoundedIcon />,
-    path: "/reimbursements",
-    permissionPath: "/reimbursements",
-},
 ];
 
 
@@ -122,7 +123,6 @@ export const menu = [
 function Sidebar() {
 
     const navigate = useNavigate();
-
 
     const {
         hasPermission,
@@ -143,10 +143,12 @@ function Sidebar() {
 
         sessionStorage.clear();
 
-        navigate("/login", {
-            replace: true,
-        });
-
+        navigate(
+            "/login",
+            {
+                replace: true,
+            }
+        );
     };
 
 
@@ -163,13 +165,7 @@ function Sidebar() {
                     item.permissionPath
                 );
 
-
             if (loginRoute) {
-
-                console.log(
-                    `Sidebar: ${item.title} LOGIN route:`,
-                    loginRoute
-                );
 
                 return loginRoute;
             }
@@ -178,12 +174,10 @@ function Sidebar() {
         catch (error) {
 
             console.error(
-                `Sidebar: Failed to resolve LOGIN route for ${item.title}`,
+                `Sidebar: Failed to resolve login route for ${item.title}`,
                 error
             );
-
         }
-
 
         return item.path;
     };
@@ -193,24 +187,29 @@ function Sidebar() {
        PERMISSION FILTER
        ======================================================== */
 
-    const allowedMenu = menu.filter((item) =>
-        hasPermission(
-            item.permissionPath,
-            "view"
-        )
-    );
+    const allowedMenu =
+        menu.filter(
+            (item) =>
+                hasPermission(
+                    item.permissionPath,
+                    "view"
+                )
+        );
 
+
+    /* ========================================================
+       RENDER
+       ======================================================== */
 
     return (
 
         <aside className="sidebar">
 
-
             {/* =================================================
                 LOGO
             ================================================= */}
 
-            <div className="logo">
+            <div className="sidebar-logo">
 
                 <img
                     src={logo}
@@ -218,46 +217,46 @@ function Sidebar() {
                     className="logo-image"
                 />
 
-                <div className="logo-text"></div>
-
             </div>
 
 
             {/* =================================================
-                MENU
+                SCROLLABLE MENU
             ================================================= */}
 
             <nav className="sidebar-menu">
 
-                {allowedMenu.map((item) => {
+                {allowedMenu.map(
+                    (item) => {
 
-                    const menuRoute =
-                        getMenuRoute(item);
+                        const menuRoute =
+                            getMenuRoute(item);
 
+                        return (
 
-                    return (
+                            <NavLink
+                                key={item.title}
+                                to={menuRoute}
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "menu-item active"
+                                        : "menu-item"
+                                }
+                            >
 
-                        <NavLink
-                            key={item.title}
-                            to={menuRoute}
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "menu-item active"
-                                    : "menu-item"
-                            }
-                        >
+                                <span className="menu-icon">
+                                    {item.icon}
+                                </span>
 
-                            {item.icon}
+                                <span className="menu-title">
+                                    {item.title}
+                                </span>
 
-                            <span>
-                                {item.title}
-                            </span>
+                            </NavLink>
 
-                        </NavLink>
-
-                    );
-
-                })}
+                        );
+                    }
+                )}
 
             </nav>
 

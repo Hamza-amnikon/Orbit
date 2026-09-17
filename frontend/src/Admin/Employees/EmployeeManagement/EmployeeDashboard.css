@@ -1,109 +1,364 @@
-/* ==========================================================
-   EMPLOYEE DASHBOARD
-========================================================== */
+/* ============================================================
+   EMPLOYEE MANAGEMENT DASHBOARD
+   FULLY RESPONSIVE
+   ============================================================ */
 
 .employee-dashboard {
+    position: relative;
 
-    padding: 35px;
+    width: 100%;
+    min-height: 100%;
 
+    box-sizing: border-box;
+
+    padding: 18px 0 45px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f7fbff 0%,
+            #f3f8ff 50%,
+            #f8fbff 100%
+        );
+
+    overflow: hidden;
 }
 
 
-/* ==========================================================
-   EMPLOYEE HEADER
-========================================================== */
+/* ============================================================
+   DECORATIVE BACKGROUND
+   ============================================================ */
 
-.employee-dashboard .employee-header {
+.employee-dashboard-decoration {
+    position: absolute;
 
-    margin-bottom: 35px;
+    top: -70px;
+    right: -35px;
 
+    width: 500px;
+    height: 300px;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+    opacity: 0.8;
 }
 
 
-.employee-dashboard .employee-header h1 {
+.employee-decoration-circle {
+    position: absolute;
+
+    border-radius: 50%;
+}
+
+
+/* ============================================================
+   DECORATIVE CIRCLES
+   ============================================================ */
+
+.circle-one {
+    width: 88px;
+    height: 88px;
+
+    top: 80px;
+    right: 80px;
+
+    background:
+        rgba(96, 165, 250, 0.16);
+}
+
+
+.circle-two {
+    width: 115px;
+    height: 115px;
+
+    top: 50px;
+    right: 5px;
+
+    background:
+        rgba(59, 130, 246, 0.10);
+}
+
+
+.circle-three {
+    width: 48px;
+    height: 48px;
+
+    top: 115px;
+    right: -18px;
+
+    background:
+        rgba(96, 165, 250, 0.14);
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.employee-header {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+
+    margin-bottom: 32px;
+
+    padding: 0 2px;
+
+    box-sizing: border-box;
+}
+
+
+/* ============================================================
+   BREADCRUMB
+   ============================================================ */
+
+.employee-breadcrumb {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-bottom: 15px;
+
+    color: #4d6f9f;
+
+    font-size: 13px;
+
+    font-weight: 500;
+}
+
+
+.employee-breadcrumb svg {
+    width: 17px;
+    height: 17px;
+
+    color: #416da4;
+
+    flex-shrink: 0;
+}
+
+
+.employee-breadcrumb span:first-of-type {
+    color: #a5b5c9;
+
+    font-weight: 400;
+}
+
+
+/* ============================================================
+   PAGE TITLE
+   ============================================================ */
+
+.employee-dashboard
+.employee-header
+h1 {
+    margin: 0;
+
+    color: #111b4b;
 
     font-size: 34px;
 
+    line-height: 1.2;
+
     font-weight: 700;
 
-    color: #111827;
+    letter-spacing: -0.8px;
 
+    overflow-wrap: anywhere;
 }
 
 
-.employee-dashboard .employee-header p {
+/* ============================================================
+   PAGE SUBTITLE
+   ============================================================ */
 
-    margin-top: 8px;
+.employee-dashboard
+.employee-header
+p {
+    margin: 10px 0 0;
 
-    color: #6b7280;
+    max-width: 850px;
+
+    color: #5b77a1;
 
     font-size: 16px;
 
+    line-height: 1.55;
+
+    font-weight: 400;
 }
 
 
-/* ==========================================================
-   EMPLOYEE GRID
-========================================================== */
+/* ============================================================
+   MODULE GRID
+   ============================================================ */
 
-.employee-dashboard .employee-grid {
+.employee-grid {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
 
     display: grid;
 
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns:
+        repeat(
+            5,
+            minmax(
+                0,
+                1fr
+            )
+        );
 
-    gap: 30px;
+    gap: 18px;
 
+    align-items: stretch;
 }
 
 
-/* ==========================================================
-   EMPLOYEE CARD
-========================================================== */
+/* ============================================================
+   CARD
+   ============================================================ */
 
-.employee-dashboard .employee-card {
+.employee-card {
+    position: relative;
 
-    background: #fff;
+    min-width: 0;
 
-    border-radius: 22px;
+    width: 100%;
 
-    border: 1px solid #e5e7eb;
+    height: 268px;
 
-    padding: 35px;
+    box-sizing: border-box;
 
-    transition: .35s;
-
-    cursor: pointer;
+    padding: 22px;
 
     display: flex;
 
     flex-direction: column;
 
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.97
+        );
+
+    border:
+        1px solid #e2e9f2;
+
+    border-radius: 17px;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 3px 12px
+        rgba(
+            30,
+            64,
+            175,
+            0.035
+        );
+
+    animation:
+        employeeCardFade
+        0.4s
+        ease both;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
 }
 
 
-.employee-dashboard .employee-card:hover {
+/* ============================================================
+   CARD HOVER
+   ============================================================ */
 
-    transform: translateY(-8px);
+.employee-card:hover {
+    transform:
+        translateY(-5px);
 
-    box-shadow: 0 20px 45px rgba(0, 0, 0, .08);
+    border-color:
+        #d3dfef;
 
-    border-color: #2563eb;
-
+    box-shadow:
+        0 15px 32px
+        rgba(
+            15,
+            23,
+            42,
+            0.08
+        );
 }
 
 
-/* ==========================================================
-   EMPLOYEE ICON
-========================================================== */
+/* ============================================================
+   CARD DECORATIVE CIRCLE
+   ============================================================ */
 
-.employee-dashboard .employee-icon {
+.employee-card::after {
+    content: "";
 
-    width: 78px;
+    position: absolute;
 
-    height: 78px;
+    right: -30px;
+    bottom: -42px;
 
-    border-radius: 22px;
+    width: 105px;
+    height: 105px;
+
+    border-radius: 50%;
+
+    background:
+        var(--card-color);
+
+    opacity: 0.07;
+
+    pointer-events: none;
+
+    transition:
+        transform 0.25s ease,
+        opacity 0.25s ease;
+}
+
+
+.employee-card:hover::after {
+    transform:
+        scale(1.2);
+
+    opacity:
+        0.10;
+}
+
+
+/* ============================================================
+   CARD ICON
+   ============================================================ */
+
+.employee-icon {
+    position: relative;
+
+    z-index: 2;
+
+    width: 76px;
+    height: 76px;
+
+    min-width: 76px;
+
+    border-radius: 20px;
 
     display: flex;
 
@@ -111,53 +366,90 @@
 
     justify-content: center;
 
-    color: #fff;
+    color: #ffffff;
 
-    margin-bottom: 25px;
+    margin-bottom: 17px;
 
+    box-shadow:
+        0 5px 12px
+        rgba(
+            15,
+            23,
+            42,
+            0.06
+        );
 }
 
 
-.employee-dashboard .employee-icon svg {
-
-    font-size: 38px;
-
+.employee-icon svg {
+    width: 38px;
+    height: 38px;
 }
 
 
-/* ==========================================================
-   EMPLOYEE CARD CONTENT
-========================================================== */
+/* ============================================================
+   CARD TITLE
+   ============================================================ */
 
-.employee-dashboard .employee-card h3 {
+.employee-card h3 {
+    position: relative;
 
-    font-size: 24px;
+    z-index: 2;
 
-    margin-bottom: 12px;
+    margin:
+        0 0 8px;
 
     color: #111827;
 
+    font-size: 19px;
+
+    line-height: 1.35;
+
+    font-weight: 700;
+
+    letter-spacing:
+        -0.25px;
+
+    overflow-wrap:
+        anywhere;
 }
 
 
-.employee-dashboard .employee-card p {
+/* ============================================================
+   CARD DESCRIPTION
+   ============================================================ */
 
-    color: #64748b;
+.employee-card p {
+    position: relative;
 
-    line-height: 1.7;
+    z-index: 2;
 
-    flex: 1;
+    margin: 0;
 
+    max-width: 210px;
+
+    color: #5c769d;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    font-weight: 400;
 }
 
 
-/* ==========================================================
+/* ============================================================
    CARD FOOTER
-========================================================== */
+   ============================================================ */
 
-.employee-dashboard .card-footer {
+.card-footer {
+    position: relative;
 
-    margin-top: 30px;
+    z-index: 3;
+
+    margin-top: auto;
+
+    padding-top: 15px;
 
     display: flex;
 
@@ -165,22 +457,951 @@
 
     justify-content: space-between;
 
-    color: #2563eb;
+    gap: 10px;
+
+    color: #1261ed;
+
+    font-size: 14px;
 
     font-weight: 600;
-
 }
 
 
-.employee-dashboard .card-footer svg {
-
-    transition: .3s;
-
+.card-footer span {
+    white-space: nowrap;
 }
 
 
-.employee-dashboard .employee-card:hover .card-footer svg {
+/* ============================================================
+   ARROW
+   ============================================================ */
 
-    transform: translateX(8px);
+.card-arrow {
+    width: 42px;
+    height: 42px;
 
+    min-width: 42px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        #eaf2ff;
+
+    color:
+        #1261ed;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+.card-arrow svg {
+    width: 21px;
+    height: 21px;
+}
+
+
+.employee-card:hover
+.card-arrow {
+    background:
+        #2563eb;
+
+    color:
+        #ffffff;
+
+    transform:
+        translateX(3px);
+}
+
+
+/* ============================================================
+   FOCUS
+   ============================================================ */
+
+.employee-card:focus-visible {
+    outline:
+        3px solid
+        rgba(
+            37,
+            99,
+            235,
+            0.22
+        );
+
+    outline-offset:
+        3px;
+}
+
+
+/* ============================================================
+   ANIMATION
+   ============================================================ */
+
+@keyframes employeeCardFade {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* ============================================================
+   LARGE DESKTOP
+   1600px+
+   ============================================================ */
+
+@media (min-width: 1600px) {
+
+    .employee-dashboard {
+        padding:
+            20px 0 50px;
+    }
+
+
+    .employee-grid {
+        gap:
+            20px;
+    }
+
+
+    .employee-card {
+        height:
+            280px;
+
+        padding:
+            24px;
+    }
+
+
+    .employee-icon {
+        width:
+            78px;
+
+        height:
+            78px;
+
+        min-width:
+            78px;
+    }
+}
+
+
+/* ============================================================
+   DESKTOP
+   1400px - 1599px
+   ============================================================ */
+
+@media (max-width: 1599px) and (min-width: 1301px) {
+
+    .employee-grid {
+        grid-template-columns:
+            repeat(
+                5,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+    }
+
+
+    .employee-card {
+        height:
+            265px;
+
+        padding:
+            21px;
+    }
+}
+
+
+/* ============================================================
+   SMALL DESKTOP
+   1101px - 1300px
+   ============================================================ */
+
+@media (max-width: 1300px) and (min-width: 1101px) {
+
+    .employee-grid {
+        grid-template-columns:
+            repeat(
+                4,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+
+        gap:
+            17px;
+    }
+
+
+    .employee-card {
+        height:
+            270px;
+
+        padding:
+            21px;
+    }
+
+
+    .employee-icon {
+        width:
+            72px;
+
+        height:
+            72px;
+
+        min-width:
+            72px;
+    }
+
+
+    .employee-icon svg {
+        width:
+            36px;
+
+        height:
+            36px;
+    }
+}
+
+
+/* ============================================================
+   TABLET LANDSCAPE / SMALL DESKTOP
+   901px - 1100px
+   ============================================================ */
+
+@media (max-width: 1100px) and (min-width: 901px) {
+
+    .employee-dashboard {
+        padding:
+            16px 0 40px;
+    }
+
+
+    .employee-header {
+        margin-bottom:
+            28px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    h1 {
+        font-size:
+            31px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    p {
+        font-size:
+            15px;
+    }
+
+
+    .employee-grid {
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+
+        gap:
+            17px;
+    }
+
+
+    .employee-card {
+        height:
+            265px;
+
+        padding:
+            21px;
+    }
+
+
+    .employee-icon {
+        width:
+            72px;
+
+        height:
+            72px;
+
+        min-width:
+            72px;
+
+        border-radius:
+            19px;
+    }
+
+
+    .employee-icon svg {
+        width:
+            35px;
+
+        height:
+            35px;
+    }
+
+
+    .employee-card h3 {
+        font-size:
+            18px;
+    }
+
+
+    .employee-card p {
+        font-size:
+            13px;
+    }
+}
+
+
+/* ============================================================
+   TABLET
+   701px - 900px
+   ============================================================ */
+
+@media (max-width: 900px) and (min-width: 701px) {
+
+    .employee-dashboard {
+        padding:
+            15px 0 35px;
+    }
+
+
+    .employee-header {
+        margin-bottom:
+            26px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    h1 {
+        font-size:
+            29px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    p {
+        font-size:
+            15px;
+
+        max-width:
+            700px;
+    }
+
+
+    .employee-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+
+        gap:
+            17px;
+    }
+
+
+    .employee-card {
+        height:
+            265px;
+
+        padding:
+            22px;
+    }
+
+
+    .employee-icon {
+        width:
+            74px;
+
+        height:
+            74px;
+
+        min-width:
+            74px;
+    }
+
+
+    .employee-card h3 {
+        font-size:
+            19px;
+    }
+
+
+    .employee-card p {
+        max-width:
+            260px;
+    }
+}
+
+
+/* ============================================================
+   LARGE MOBILE
+   481px - 700px
+   ============================================================ */
+
+@media (max-width: 700px) and (min-width: 481px) {
+
+    .employee-dashboard {
+        padding:
+            12px 0 30px;
+    }
+
+
+    .employee-header {
+        margin-bottom:
+            23px;
+    }
+
+
+    .employee-breadcrumb {
+        margin-bottom:
+            12px;
+
+        font-size:
+            13px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    h1 {
+        font-size:
+            27px;
+
+        line-height:
+            1.25;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    p {
+        margin-top:
+            8px;
+
+        font-size:
+            14px;
+
+        line-height:
+            1.55;
+    }
+
+
+    .employee-grid {
+        grid-template-columns:
+            1fr;
+
+        gap:
+            15px;
+    }
+
+
+    .employee-card {
+        width:
+            100%;
+
+        height:
+            235px;
+
+        min-height:
+            235px;
+
+        padding:
+            20px;
+    }
+
+
+    .employee-icon {
+        width:
+            68px;
+
+        height:
+            68px;
+
+        min-width:
+            68px;
+
+        margin-bottom:
+            15px;
+
+        border-radius:
+            18px;
+    }
+
+
+    .employee-icon svg {
+        width:
+            34px;
+
+        height:
+            34px;
+    }
+
+
+    .employee-card h3 {
+        font-size:
+            19px;
+    }
+
+
+    .employee-card p {
+        font-size:
+            14px;
+
+        max-width:
+            100%;
+    }
+
+
+    .card-footer {
+        padding-top:
+            12px;
+    }
+
+
+    .card-arrow {
+        width:
+            40px;
+
+        height:
+            40px;
+
+        min-width:
+            40px;
+    }
+
+
+    .employee-dashboard-decoration {
+        opacity:
+            0.45;
+
+        transform:
+            scale(0.75);
+
+        transform-origin:
+            top right;
+    }
+}
+
+
+/* ============================================================
+   MOBILE
+   376px - 480px
+   ============================================================ */
+
+@media (max-width: 480px) {
+
+    .employee-dashboard {
+        padding:
+            8px 0 28px;
+    }
+
+
+    .employee-header {
+        margin-bottom:
+            21px;
+
+        padding:
+            0;
+    }
+
+
+    .employee-breadcrumb {
+        gap:
+            8px;
+
+        margin-bottom:
+            11px;
+
+        font-size:
+            12px;
+    }
+
+
+    .employee-breadcrumb svg {
+        width:
+            16px;
+
+        height:
+            16px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    h1 {
+        font-size:
+            24px;
+
+        line-height:
+            1.25;
+
+        letter-spacing:
+            -0.4px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    p {
+        margin-top:
+            8px;
+
+        font-size:
+            13px;
+
+        line-height:
+            1.55;
+    }
+
+
+    .employee-grid {
+        grid-template-columns:
+            1fr;
+
+        gap:
+            13px;
+    }
+
+
+    .employee-card {
+        height:
+            230px;
+
+        min-height:
+            230px;
+
+        padding:
+            19px;
+    }
+
+
+    .employee-icon {
+        width:
+            64px;
+
+        height:
+            64px;
+
+        min-width:
+            64px;
+
+        margin-bottom:
+            14px;
+
+        border-radius:
+            17px;
+    }
+
+
+    .employee-icon svg {
+        width:
+            32px;
+
+        height:
+            32px;
+    }
+
+
+    .employee-card h3 {
+        font-size:
+            18px;
+
+        line-height:
+            1.3;
+    }
+
+
+    .employee-card p {
+        font-size:
+            13px;
+
+        line-height:
+            1.55;
+    }
+
+
+    .card-footer {
+        font-size:
+            13px;
+
+        padding-top:
+            10px;
+    }
+
+
+    .card-arrow {
+        width:
+            38px;
+
+        height:
+            38px;
+
+        min-width:
+            38px;
+    }
+
+
+    .card-arrow svg {
+        width:
+            19px;
+
+        height:
+            19px;
+    }
+
+
+    .employee-dashboard-decoration {
+        display:
+            none;
+    }
+}
+
+
+/* ============================================================
+   VERY SMALL MOBILE
+   320px - 375px
+   ============================================================ */
+
+@media (max-width: 375px) {
+
+    .employee-dashboard {
+        padding:
+            7px 0 24px;
+    }
+
+
+    .employee-header {
+        margin-bottom:
+            18px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    h1 {
+        font-size:
+            22px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    p {
+        font-size:
+            12.5px;
+    }
+
+
+    .employee-grid {
+        gap:
+            12px;
+    }
+
+
+    .employee-card {
+        height:
+            220px;
+
+        min-height:
+            220px;
+
+        padding:
+            17px;
+    }
+
+
+    .employee-icon {
+        width:
+            60px;
+
+        height:
+            60px;
+
+        min-width:
+            60px;
+
+        margin-bottom:
+            12px;
+
+        border-radius:
+            16px;
+    }
+
+
+    .employee-icon svg {
+        width:
+            30px;
+
+        height:
+            30px;
+    }
+
+
+    .employee-card h3 {
+        font-size:
+            17px;
+
+        margin-bottom:
+            6px;
+    }
+
+
+    .employee-card p {
+        font-size:
+            12px;
+
+        line-height:
+            1.5;
+    }
+
+
+    .card-footer {
+        font-size:
+            12px;
+    }
+
+
+    .card-arrow {
+        width:
+            36px;
+
+        height:
+            36px;
+
+        min-width:
+            36px;
+    }
+}
+
+
+/* ============================================================
+   ULTRA SMALL DEVICES
+   BELOW 320px
+   ============================================================ */
+
+@media (max-width: 319px) {
+
+    .employee-dashboard {
+        padding:
+            5px 0 20px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    h1 {
+        font-size:
+            20px;
+    }
+
+
+    .employee-dashboard
+    .employee-header
+    p {
+        font-size:
+            12px;
+    }
+
+
+    .employee-card {
+        height:
+            215px;
+
+        min-height:
+            215px;
+
+        padding:
+            15px;
+    }
+
+
+    .employee-icon {
+        width:
+            56px;
+
+        height:
+            56px;
+
+        min-width:
+            56px;
+    }
+
+
+    .employee-card h3 {
+        font-size:
+            16px;
+    }
+
+
+    .employee-card p {
+        font-size:
+            11.5px;
+    }
+}
+
+
+/* ============================================================
+   REDUCE MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .employee-card {
+
+        animation:
+            none;
+
+        transition:
+            none;
+    }
+
+
+    .employee-card:hover {
+
+        transform:
+            none;
+    }
+
+
+    .card-arrow {
+
+        transition:
+            none;
+    }
 }

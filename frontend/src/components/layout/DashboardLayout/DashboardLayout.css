@@ -1,21 +1,313 @@
-.dashboard-layout{
-    display:flex;
-    min-height:100vh;
-    background:#f5f7fb;
+/* ============================================================
+   DASHBOARD LAYOUT
+   FULLY RESPONSIVE
+   ============================================================ */
+
+.dashboard-layout {
+    display: flex;
+
+    width: 100%;
+    min-height: 100vh;
+
+    background: #f5f7fb;
+
+    box-sizing: border-box;
+
+    overflow-x: hidden;
 }
 
-.dashboard-main{
-    margin-left:280px;
-    width:calc(100% - 280px);
 
-    display:flex;
-    flex-direction:column;
+/* ============================================================
+   MAIN AREA
+   ============================================================ */
 
-    min-height:100vh;
+.dashboard-main {
+    margin-left: 228px;
+
+    width:
+        calc(100% - 228px);
+
+    min-width: 0;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    box-sizing: border-box;
+
+    transition:
+        margin-left 0.2s ease,
+        width 0.2s ease;
 }
 
-.dashboard-content{
-    flex:1;
-    padding:30px;
-    overflow-y:auto;
+
+/* ============================================================
+   CONTENT
+   ============================================================ */
+
+.dashboard-content {
+    flex: 1;
+
+    width: 100%;
+
+    min-width: 0;
+
+    min-height: 0;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* ============================================================
+   LARGE DESKTOP
+   1401px+
+   ============================================================ */
+
+@media (min-width: 1401px) {
+
+    .dashboard-main {
+        margin-left: 228px;
+
+        width:
+            calc(100% - 228px);
+    }
+
+    .dashboard-content {
+        padding: 30px;
+    }
+}
+
+
+/* ============================================================
+   DESKTOP
+   1201px - 1400px
+   ============================================================ */
+
+@media (max-width: 1400px) and (min-width: 1201px) {
+
+    .dashboard-main {
+        margin-left: 220px;
+
+        width:
+            calc(100% - 220px);
+    }
+
+    .dashboard-content {
+        padding: 28px;
+    }
+}
+
+
+/* ============================================================
+   SMALL DESKTOP / LAPTOP
+   1001px - 1200px
+   ============================================================ */
+
+@media (max-width: 1200px) and (min-width: 1001px) {
+
+    .dashboard-main {
+        margin-left: 210px;
+
+        width:
+            calc(100% - 210px);
+    }
+
+    .dashboard-content {
+        padding: 25px;
+    }
+}
+
+
+/* ============================================================
+   TABLET LANDSCAPE
+   851px - 1000px
+
+   Sidebar = 76px
+   ============================================================ */
+
+@media (max-width: 1000px) and (min-width: 851px) {
+
+    .dashboard-main {
+        margin-left: 76px;
+
+        width:
+            calc(100% - 76px);
+    }
+
+    .dashboard-content {
+        padding: 24px;
+    }
+}
+
+
+/* ============================================================
+   TABLET PORTRAIT
+   651px - 850px
+
+   Sidebar = 72px
+   ============================================================ */
+
+@media (max-width: 850px) and (min-width: 651px) {
+
+    .dashboard-main {
+        margin-left: 72px;
+
+        width:
+            calc(100% - 72px);
+    }
+
+    .dashboard-content {
+        padding: 22px;
+    }
+}
+
+
+/* ============================================================
+   LARGE MOBILE
+   481px - 650px
+
+   Sidebar = 66px
+   ============================================================ */
+
+@media (max-width: 650px) and (min-width: 481px) {
+
+    .dashboard-main {
+        margin-left: 66px;
+
+        width:
+            calc(100% - 66px);
+    }
+
+    .dashboard-content {
+        padding: 19px;
+    }
+}
+
+
+/* ============================================================
+   MOBILE
+   376px - 480px
+
+   Sidebar = 62px
+   ============================================================ */
+
+@media (max-width: 480px) and (min-width: 376px) {
+
+    .dashboard-main {
+        margin-left: 62px;
+
+        width:
+            calc(100% - 62px);
+    }
+
+    .dashboard-content {
+        padding: 16px;
+    }
+}
+
+
+/* ============================================================
+   SMALL MOBILE
+   320px - 375px
+
+   Sidebar = 56px
+   ============================================================ */
+
+@media (max-width: 375px) and (min-width: 320px) {
+
+    .dashboard-main {
+        margin-left: 56px;
+
+        width:
+            calc(100% - 56px);
+    }
+
+    .dashboard-content {
+        padding: 13px;
+    }
+}
+
+
+/* ============================================================
+   VERY SMALL MOBILE
+   BELOW 320px
+
+   Sidebar = 52px
+   ============================================================ */
+
+@media (max-width: 319px) {
+
+    .dashboard-main {
+        margin-left: 52px;
+
+        width:
+            calc(100% - 52px);
+    }
+
+    .dashboard-content {
+        padding: 10px;
+    }
+}
+
+
+/* ============================================================
+   LANDSCAPE MOBILE
+   ============================================================ */
+
+@media (max-width: 850px)
+       and (orientation: landscape) {
+
+    .dashboard-content {
+        padding-top: 16px;
+
+        padding-bottom: 20px;
+    }
+}
+
+
+/* ============================================================
+   VERY SHORT SCREENS
+   ============================================================ */
+
+@media (max-height: 600px) {
+
+    .dashboard-content {
+        padding-top: 15px;
+
+        padding-bottom: 20px;
+    }
+}
+
+
+/* ============================================================
+   TOUCH DEVICES
+   ============================================================ */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .dashboard-content {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .dashboard-main {
+        transition: none;
+    }
 }

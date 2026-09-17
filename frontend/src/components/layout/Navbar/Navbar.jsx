@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {
+    useLocation,
+    useNavigate,
+} from "react-router-dom";
 
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
@@ -14,18 +17,29 @@ import { getProfile } from "../../../Admin/Services/ProfileService";
 import "./Navbar.css";
 
 
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+
 function Navbar({ title }) {
 
     const navigate = useNavigate();
+
     const location = useLocation();
 
+
+    /* ========================================================
+       STATE
+       ======================================================== */
+
     const [profile, setProfile] = useState(null);
+
     const [menuOpen, setMenuOpen] = useState(false);
 
 
-    // =========================================================
-    // PAGE TITLE
-    // =========================================================
+    /* ========================================================
+       PAGE TITLE
+       ======================================================== */
 
     const getPageTitle = () => {
 
@@ -33,69 +47,112 @@ function Navbar({ title }) {
             return title;
         }
 
-        const path = location.pathname.toLowerCase();
+
+        const path =
+            location.pathname.toLowerCase();
+
+
+        if (
+            path === "/" ||
+            path === "/dashboard"
+        ) {
+            return "Dashboard";
+        }
+
 
         if (path.includes("attendance")) {
             return "Attendance";
         }
 
+
         if (path.includes("leave")) {
             return "Leave";
         }
+
 
         if (path.includes("payroll")) {
             return "Payroll";
         }
 
+
         if (path.includes("employee")) {
             return "Employees";
         }
+
 
         if (path.includes("report")) {
             return "Reports";
         }
 
+
         if (path.includes("ticket")) {
             return "Tickets";
         }
+
 
         if (path.includes("setting")) {
             return "Settings";
         }
 
+
+        if (
+            path.includes("permission")
+        ) {
+            return "Permission";
+        }
+
+
+        if (
+            path.includes("reimbursement")
+        ) {
+            return "Reimbursements";
+        }
+
+
         if (path.includes("profile")) {
             return "Profile";
         }
+
 
         if (path.includes("team")) {
             return "Team";
         }
 
+
         return "Dashboard";
     };
 
 
-    // =========================================================
-    // LOAD PROFILE
-    // =========================================================
+    /* ========================================================
+       LOAD PROFILE
+       ======================================================== */
 
     useEffect(() => {
 
         let mounted = true;
 
+
         const loadProfile = async () => {
 
             try {
 
-                const data = await getProfile();
+                const data =
+                    await getProfile();
 
-                console.log("Navbar Profile:", data);
+
+                console.log(
+                    "Navbar Profile:",
+                    data
+                );
+
 
                 if (mounted) {
+
                     setProfile(data);
                 }
 
-            } catch (error) {
+            }
+            catch (error) {
 
                 console.error(
                     "Navbar Profile Error:",
@@ -106,18 +163,21 @@ function Navbar({ title }) {
 
         };
 
+
         loadProfile();
 
+
         return () => {
+
             mounted = false;
         };
 
     }, []);
 
 
-    // =========================================================
-    // INITIAL
-    // =========================================================
+    /* ========================================================
+       INITIAL
+       ======================================================== */
 
     const getInitial = () => {
 
@@ -126,9 +186,11 @@ function Navbar({ title }) {
             profile?.name ||
             profile?.fullName;
 
+
         if (!name) {
             return "?";
         }
+
 
         return name
             .trim()
@@ -137,9 +199,9 @@ function Navbar({ title }) {
     };
 
 
-    // =========================================================
-    // DISPLAY NAME
-    // =========================================================
+    /* ========================================================
+       DISPLAY NAME
+       ======================================================== */
 
     const getDisplayName = () => {
 
@@ -149,13 +211,12 @@ function Navbar({ title }) {
             profile?.fullName ||
             "Employee"
         );
-
     };
 
 
-    // =========================================================
-    // JOB TITLE / ROLE
-    // =========================================================
+    /* ========================================================
+       JOB TITLE
+       ======================================================== */
 
     const getJobTitle = () => {
 
@@ -165,128 +226,141 @@ function Navbar({ title }) {
             profile?.role ||
             "Employee"
         );
-
     };
 
 
-    // =========================================================
-    // PROFILE MENU
-    // =========================================================
+    /* ========================================================
+       PROFILE MENU
+       ======================================================== */
 
     const handleProfileMenu = () => {
 
-        setMenuOpen((previous) => !previous);
-
+        setMenuOpen(
+            (previous) =>
+                !previous
+        );
     };
 
 
     const closeMenu = () => {
 
         setMenuOpen(false);
-
     };
 
 
-    // =========================================================
-    // PROFILE
-    // =========================================================
+    /* ========================================================
+       PROFILE
+       ======================================================== */
 
     const handleProfile = () => {
 
         closeMenu();
 
-        navigate("/employee/profile");
-
+        navigate(
+            "/employee/profile"
+        );
     };
 
 
-    // =========================================================
-    // SETTINGS
-    // =========================================================
+    /* ========================================================
+       SETTINGS
+       ======================================================== */
 
     const handleSettings = () => {
 
         closeMenu();
 
         navigate("/settings");
-
     };
 
 
-    // =========================================================
-    // LOGOUT
-    // =========================================================
+    /* ========================================================
+       LOGOUT
+       ======================================================== */
 
     const handleLogout = () => {
 
         closeMenu();
 
-        localStorage.removeItem("token");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
-        localStorage.removeItem("profile");
+
+        localStorage.removeItem(
+            "token"
+        );
+
+        localStorage.removeItem(
+            "accessToken"
+        );
+
+        localStorage.removeItem(
+            "user"
+        );
+
+        localStorage.removeItem(
+            "profile"
+        );
+
 
         sessionStorage.clear();
 
-        navigate("/login", {
-            replace: true
-        });
 
+        navigate(
+            "/login",
+            {
+                replace: true,
+            }
+        );
     };
 
 
-    // =========================================================
-    // MENU TOGGLE
-    // =========================================================
+    /* ========================================================
+       MENU TOGGLE
+       ======================================================== */
 
     const handleMenu = () => {
 
-        /*
-         * Keep this available for the Sidebar.
-         *
-         * If your DashboardLayout later provides a
-         * sidebar toggle function, replace this with:
-         *
-         * onMenuClick()
-         */
-
         window.dispatchEvent(
-            new CustomEvent("oya:toggle-sidebar")
+            new CustomEvent(
+                "oya:toggle-sidebar"
+            )
         );
-
     };
 
 
-    // =========================================================
-    // SEARCH
-    // =========================================================
+    /* ========================================================
+       SEARCH
+       ======================================================== */
 
-    const handleSearch = (event) => {
+    const handleSearch = (
+        event
+    ) => {
 
-        const value = event.target.value;
+        const value =
+            event.target.value;
 
-        /*
-         * Search functionality can be connected later.
-         *
-         * Keeping the input controlled is intentionally
-         * avoided for now so it does not interfere with
-         * your existing pages.
-         */
 
-        console.log("Search:", value);
-
+        console.log(
+            "Search:",
+            value
+        );
     };
 
+
+    /* ========================================================
+       RENDER
+       ======================================================== */
 
     return (
 
         <header className="navbar">
 
-            {/* =====================================================
-                LEFT
-            ===================================================== */}
+            {/* ==================================================
+                LEFT SIDE
+            ================================================== */}
 
             <div className="navbar-left">
+
+
+                {/* MENU BUTTON */}
 
                 <button
                     type="button"
@@ -294,9 +368,18 @@ function Navbar({ title }) {
                     aria-label="Toggle navigation"
                     onClick={handleMenu}
                 >
+
                     <MenuRoundedIcon />
+
                 </button>
 
+
+                {/* SEPARATOR */}
+
+                <div className="navbar-separator" />
+
+
+                {/* PAGE TITLE */}
 
                 <div className="navbar-page-title">
 
@@ -307,27 +390,16 @@ function Navbar({ title }) {
                 </div>
 
 
-                <div className="search-box">
-
-                    <SearchRoundedIcon />
-
-                    <input
-                        type="text"
-                        placeholder="Search employees, tickets..."
-                        onChange={handleSearch}
-                        aria-label="Search"
-                    />
-
-                </div>
 
             </div>
 
 
-            {/* =====================================================
-                RIGHT
-            ===================================================== */}
+            {/* ==================================================
+                RIGHT SIDE
+            ================================================== */}
 
             <div className="navbar-right">
+
 
                 {/* =================================================
                     NOTIFICATIONS
@@ -341,7 +413,9 @@ function Navbar({ title }) {
 
                     <NotificationsNoneRoundedIcon />
 
-                    <span className="notification-dot" />
+                    <span className="notification-count">
+                        3
+                    </span>
 
                 </button>
 
@@ -363,30 +437,49 @@ function Navbar({ title }) {
 
 
                 {/* =================================================
-                    USER PROFILE
+                    VERTICAL SEPARATOR
+                ================================================= */}
+
+                <div className="navbar-right-separator" />
+
+
+                {/* =================================================
+                    PROFILE
                 ================================================= */}
 
                 <div className="profile-wrapper">
 
+
                     <button
                         type="button"
                         className={`user-profile ${
-                            menuOpen ? "profile-active" : ""
+                            menuOpen
+                                ? "profile-active"
+                                : ""
                         }`}
-                        onClick={handleProfileMenu}
-                        aria-expanded={menuOpen}
+                        onClick={
+                            handleProfileMenu
+                        }
+                        aria-expanded={
+                            menuOpen
+                        }
                         aria-haspopup="menu"
                     >
 
-                        {/* Avatar */}
+
+                        {/* AVATAR */}
 
                         <div className="avatar">
 
                             {profile?.photoUrl ? (
 
                                 <img
-                                    src={profile.photoUrl}
-                                    alt={getDisplayName()}
+                                    src={
+                                        profile.photoUrl
+                                    }
+                                    alt={
+                                        getDisplayName()
+                                    }
                                     className="navbar-avatar-image"
                                 />
 
@@ -399,7 +492,7 @@ function Navbar({ title }) {
                         </div>
 
 
-                        {/* Information */}
+                        {/* USER INFORMATION */}
 
                         <div className="user-info">
 
@@ -414,7 +507,7 @@ function Navbar({ title }) {
                         </div>
 
 
-                        {/* Arrow */}
+                        {/* ARROW */}
 
                         <KeyboardArrowDownRoundedIcon
                             className="profile-arrow"
@@ -434,7 +527,8 @@ function Navbar({ title }) {
                             role="menu"
                         >
 
-                            {/* Profile Header */}
+
+                            {/* PROFILE HEADER */}
 
                             <div className="profile-menu-header">
 
@@ -443,8 +537,12 @@ function Navbar({ title }) {
                                     {profile?.photoUrl ? (
 
                                         <img
-                                            src={profile.photoUrl}
-                                            alt={getDisplayName()}
+                                            src={
+                                                profile.photoUrl
+                                            }
+                                            alt={
+                                                getDisplayName()
+                                            }
                                             className="navbar-avatar-image"
                                         />
 
@@ -475,12 +573,14 @@ function Navbar({ title }) {
                             <div className="profile-menu-divider" />
 
 
-                            {/* Profile */}
+                            {/* PROFILE */}
 
                             <button
                                 type="button"
                                 className="profile-menu-item"
-                                onClick={handleProfile}
+                                onClick={
+                                    handleProfile
+                                }
                             >
 
                                 <PersonOutlineRoundedIcon />
@@ -492,12 +592,14 @@ function Navbar({ title }) {
                             </button>
 
 
-                            {/* Settings */}
+                            {/* SETTINGS */}
 
                             <button
                                 type="button"
                                 className="profile-menu-item"
-                                onClick={handleSettings}
+                                onClick={
+                                    handleSettings
+                                }
                             >
 
                                 <SettingsOutlinedIcon />
@@ -512,12 +614,14 @@ function Navbar({ title }) {
                             <div className="profile-menu-divider" />
 
 
-                            {/* Logout */}
+                            {/* LOGOUT */}
 
                             <button
                                 type="button"
                                 className="profile-menu-item logout-item"
-                                onClick={handleLogout}
+                                onClick={
+                                    handleLogout
+                                }
                             >
 
                                 <LogoutOutlinedIcon />
@@ -539,7 +643,7 @@ function Navbar({ title }) {
         </header>
 
     );
-
 }
+
 
 export default Navbar;

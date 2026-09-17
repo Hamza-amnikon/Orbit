@@ -1,15 +1,15 @@
 import "./EmployeeDashboard.css";
-import "../../Employees/EmployeeManagement/EmployeeDashboard.css";
 
 import { useNavigate } from "react-router-dom";
 
 import {
-  PersonAddAlt1,
-  Groups,
-  Apartment,
-  Badge,
-  LocationOnRounded,
-  ArrowForward,
+    PersonAddAlt1,
+    Groups,
+    Apartment,
+    Badge,
+    LocationOnRounded,
+    ArrowForward,
+    HomeRounded,
 } from "@mui/icons-material";
 
 import { useAuth } from "../../../context/AuthContext";
@@ -20,69 +20,134 @@ import { useAuth } from "../../../context/AuthContext";
 // =====================================================
 
 const cards = [
-  {
-    title: "Add Employee",
-    description: "Create a new employee profile.",
-    icon: <PersonAddAlt1 fontSize="large" />,
-    color: "#2563eb",
-    path: "/employees/add",
-  },
 
-  {
-    title: "Employee List",
-    description: "View, edit and delete employees.",
-    icon: <Groups fontSize="large" />,
-    color: "#16a34a",
-    path: "/employees/list",
-  },
+    {
+        title: "Add Employee",
 
-  {
-    title: "Departments",
-    description: "Manage company departments.",
-    icon: <Apartment fontSize="large" />,
-    color: "#9333ea",
-    path: "/employees/departments",
-  },
+        description:
+            "Create a new employee profile.",
 
-  {
-    title: "Designations",
-    description: "Manage employee designations.",
-    icon: <Badge fontSize="large" />,
-    color: "#ea580c",
-    path: "/employees/designations",
-  },
+        icon:
+            <PersonAddAlt1 />,
 
-  {
-    title: "Locations",
-    description: "Manage employee locations.",
-    icon: <LocationOnRounded fontSize="large" />,
-    color: "#d00cea",
-    path: "/employees/locations",
-  },
+        color: "#2563eb",
 
-  {
-    title: "Roles",
-    description: "Manage employee roles.",
-    icon: <Badge fontSize="large" />,
-    color: "#0ea5e9",
-    path: "/employees/roles",
-  },
+        path:
+            "/employees/add",
+    },
 
-  {
-    title: "Employee Type",
-    description: "Manage employee types.",
-    icon: <Badge fontSize="large" />,
-    color: "#14b8a6",
-    path: "/employees/types",
-  },
 
-  {
-    title: "Employee Hierarchy",
-    description: "Manage employee hierarchy.",
-    icon: <Badge fontSize="large" />,
-    color: "#14b8a6",
-    path: "/employees/EmployeeHierarchy",
-  },
+    {
+        title: "Employee List",
+
+        description:
+            "View, edit and delete employees.",
+
+        icon:
+            <Groups />,
+
+        color: "#16a34a",
+
+        path:
+            "/employees/list",
+    },
+
+
+    {
+        title: "Departments",
+
+        description:
+            "Manage company departments.",
+
+        icon:
+            <Apartment />,
+
+        color: "#9333ea",
+
+        path:
+            "/employees/departments",
+    },
+
+
+    {
+        title: "Designations",
+
+        description:
+            "Manage employee designations.",
+
+        icon:
+            <Badge />,
+
+        color: "#ea580c",
+
+        path:
+            "/employees/designations",
+    },
+
+
+    {
+        title: "Locations",
+
+        description:
+            "Manage employee locations.",
+
+        icon:
+            <LocationOnRounded />,
+
+        color: "#d00cea",
+
+        path:
+            "/employees/locations",
+    },
+
+
+    {
+        title: "Roles",
+
+        description:
+            "Manage employee roles.",
+
+        icon:
+            <Badge />,
+
+        color: "#0ea5e9",
+
+        path:
+            "/employees/roles",
+    },
+
+
+    {
+        title: "Employee Type",
+
+        description:
+            "Manage employee types.",
+
+        icon:
+            <Badge />,
+
+        color: "#14b8a6",
+
+        path:
+            "/employees/types",
+    },
+
+
+    {
+        title: "Employee Hierarchy",
+
+        description:
+            "Manage employee hierarchy.",
+
+        icon:
+            <Badge />,
+
+        color: "#14b8a6",
+
+        path:
+            "/employees/EmployeeHierarchy",
+    },
+
 ];
 
 
@@ -92,297 +157,332 @@ const cards = [
 
 export default function EmployeeDashboard() {
 
-  const navigate = useNavigate();
-
-  const {
-    user,
-    profile,
-    employeeId,
-    employeeCode,
-    employeeName,
-    email,
-    department,
-    designation,
-    isAuthenticated,
-    hasPermission,
-  } = useAuth();
+    const navigate =
+        useNavigate();
 
 
-  // ===================================================
-  // LOGGED-IN EMPLOYEE INFORMATION
-  // ===================================================
-
-  const loggedInEmployee = {
-    employeeId:
-      employeeId ??
-      profile?.employeeId ??
-      profile?.EmployeeId ??
-      user?.employeeId ??
-      user?.EmployeeId ??
-      null,
-
-    employeeCode:
-      employeeCode ??
-      profile?.employeeCode ??
-      profile?.EmployeeCode ??
-      user?.employeeCode ??
-      user?.EmployeeCode ??
-      null,
-
-    employeeName:
-      employeeName ??
-      profile?.employeeName ??
-      profile?.EmployeeName ??
-      profile?.displayName ??
-      profile?.DisplayName ??
-      user?.employeeName ??
-      user?.EmployeeName ??
-      "Employee",
-
-    email:
-      email ??
-      profile?.email ??
-      profile?.Email ??
-      user?.email ??
-      user?.Email ??
-      null,
-
-    department:
-      department ??
-      profile?.department ??
-      profile?.Department ??
-      null,
-
-    designation:
-      designation ??
-      profile?.designation ??
-      profile?.Designation ??
-      null,
-  };
+    const {
+        user,
+        profile,
+        employeeId,
+        employeeCode,
+        employeeName,
+        email,
+        department,
+        designation,
+        isAuthenticated,
+        hasPermission,
+    } = useAuth();
 
 
-  // ===================================================
-  // DEBUG AUTHENTICATED EMPLOYEE
-  // ===================================================
+    // ===================================================
+    // LOGGED-IN EMPLOYEE
+    // ===================================================
 
-  console.log(
-    "EmployeeDashboard - Authenticated Employee:",
-    loggedInEmployee
-  );
+    const loggedInEmployee = {
 
-
-  // ===================================================
-  // OPEN MODULE
-  // ===================================================
-
-  const openPage = (path) => {
-
-    if (!isAuthenticated) {
-
-      console.error(
-        "EmployeeDashboard: User is not authenticated."
-      );
-
-      navigate("/login");
-
-      return;
-    }
+        employeeId:
+            employeeId ??
+            profile?.employeeId ??
+            profile?.EmployeeId ??
+            user?.employeeId ??
+            user?.EmployeeId ??
+            null,
 
 
-    if (!loggedInEmployee.employeeId) {
+        employeeCode:
+            employeeCode ??
+            profile?.employeeCode ??
+            profile?.EmployeeCode ??
+            user?.employeeCode ??
+            user?.EmployeeCode ??
+            null,
 
-      console.error(
-        "EmployeeDashboard: EmployeeId is missing."
-      );
 
-      alert(
-        "Your Employee ID could not be determined. Please login again."
-      );
+        employeeName:
+            employeeName ??
+            profile?.employeeName ??
+            profile?.EmployeeName ??
+            profile?.displayName ??
+            profile?.DisplayName ??
+            user?.employeeName ??
+            user?.EmployeeName ??
+            "Employee",
 
-      return;
-    }
 
+        email:
+            email ??
+            profile?.email ??
+            profile?.Email ??
+            user?.email ??
+            user?.Email ??
+            null,
+
+
+        department:
+            department ??
+            profile?.department ??
+            profile?.Department ??
+            null,
+
+
+        designation:
+            designation ??
+            profile?.designation ??
+            profile?.Designation ??
+            null,
+
+    };
+
+
+    // ===================================================
+    // DEBUG
+    // ===================================================
 
     console.log(
-      "=========================================="
-    );
-
-    console.log(
-      "Opening Employee Management Module"
-    );
-
-    console.log(
-      "Employee:",
-      loggedInEmployee.employeeName
-    );
-
-    console.log(
-      "EmployeeId:",
-      loggedInEmployee.employeeId
-    );
-
-    console.log(
-      "EmployeeCode:",
-      loggedInEmployee.employeeCode
-    );
-
-    console.log(
-      "Module Route:",
-      path
-    );
-
-    console.log(
-      "=========================================="
+        "EmployeeDashboard - Authenticated Employee:",
+        loggedInEmployee
     );
 
 
-    navigate(path);
-  };
+    // ===================================================
+    // OPEN MODULE
+    // ===================================================
+
+    const openPage = (path) => {
+
+        if (!isAuthenticated) {
+
+            console.error(
+                "EmployeeDashboard: User is not authenticated."
+            );
+
+            navigate("/login");
+
+            return;
+        }
 
 
-  // ===================================================
-  // VIEW PERMISSION FILTER
-  // ===================================================
+        if (!loggedInEmployee.employeeId) {
 
-  const allowedCards = cards.filter((card) =>
-    hasPermission(card.path, "view")
-  );
+            console.error(
+                "EmployeeDashboard: EmployeeId is missing."
+            );
 
+            alert(
+                "Your Employee ID could not be determined. Please login again."
+            );
 
-  // ===================================================
-  // RENDER
-  // ===================================================
-
-  return (
-
-    <div className="employee-dashboard">
+            return;
+        }
 
 
-      {/* ==============================================
-          HEADER
-      ============================================== */}
-
-      <div className="employee-header">
-
-        <h1>
-          Employee Management
-        </h1>
-
-        <p>
-          Manage employees, departments and organizational
-          structure from one place.
-        </p>
-
-      </div>
+        console.log(
+            "Opening Employee Management Module:",
+            path
+        );
 
 
-      {/* ==============================================
-          AUTHENTICATED EMPLOYEE INFORMATION
-      ============================================== */}
+        navigate(path);
 
-      <div
-        style={{
-          display: "none",
-        }}
-      >
-        EmployeeId: {loggedInEmployee.employeeId}
-      </div>
+    };
 
 
-      {/* ==============================================
-          MODULE GRID
-      ============================================== */}
+    // ===================================================
+    // PERMISSION FILTER
+    // ===================================================
 
-      <div className="employee-grid">
-
-        {allowedCards.map((card, index) => (
-
-          <div
-            key={card.title}
-
-            className="employee-card fade-up"
-
-            style={{
-              animationDelay: `${index * 0.1}s`,
-            }}
-
-            role="button"
-
-            tabIndex={0}
-
-            onClick={() =>
-              openPage(card.path)
-            }
-
-            onKeyDown={(e) => {
-
-              if (
-                e.key === "Enter" ||
-                e.key === " "
-              ) {
-
-                e.preventDefault();
-
-                openPage(card.path);
-              }
-
-            }}
-          >
+    const allowedCards =
+        cards.filter(
+            (card) =>
+                hasPermission(
+                    card.path,
+                    "view"
+                )
+        );
 
 
-            {/* ========================================
-                ICON
-            ======================================== */}
+    // ===================================================
+    // RENDER
+    // ===================================================
 
-            <div
-              className="employee-icon"
+    return (
 
-              style={{
-                background: card.color,
-              }}
-            >
-              {card.icon}
+        <div className="employee-dashboard">
+
+
+            {/* =================================================
+                DECORATIVE HEADER BACKGROUND
+            ================================================= */}
+
+            <div className="employee-dashboard-decoration">
+
+                <div className="employee-decoration-circle circle-one" />
+
+                <div className="employee-decoration-circle circle-two" />
+
+                <div className="employee-decoration-circle circle-three" />
+
             </div>
 
 
-            {/* ========================================
-                TITLE
-            ======================================== */}
+            {/* =================================================
+                HEADER
+            ================================================= */}
 
-            <h3>
-              {card.title}
-            </h3>
+            <div className="employee-header">
 
 
-            {/* ========================================
-                DESCRIPTION
-            ======================================== */}
+                {/* BREADCRUMB */}
 
-            <p>
-              {card.description}
-            </p>
+                <div className="employee-breadcrumb">
+
+                    <HomeRounded />
+
+                    <span>
+                        /
+                    </span>
+
+                    <span>
+                        Employees
+                    </span>
+
+                </div>
 
 
-            {/* ========================================
-                FOOTER
-            ======================================== */}
+                {/* TITLE */}
 
-            <div className="card-footer">
+                <h1>
+                    Employees Management
+                </h1>
 
-              <span>
-                Open Module
-              </span>
 
-              <ArrowForward />
+                {/* SUBTITLE */}
+
+                <p>
+                    Manage employees, departments and organizational
+                    structure from one place.
+                </p>
 
             </div>
 
-          </div>
 
-        ))}
+            {/* =================================================
+                MODULE GRID
+            ================================================= */}
 
-      </div>
+            <div className="employee-grid">
 
-    </div>
-  );
+                {allowedCards.map(
+                    (card, index) => (
+
+                        <div
+                            key={card.title}
+
+                            className="employee-card"
+
+                            style={{
+                                "--card-color":
+                                    card.color,
+
+                                animationDelay:
+                                    `${index * 0.06}s`,
+                            }}
+
+                            role="button"
+
+                            tabIndex={0}
+
+                            onClick={() =>
+                                openPage(
+                                    card.path
+                                )
+                            }
+
+                            onKeyDown={(event) => {
+
+                                if (
+                                    event.key ===
+                                        "Enter" ||
+                                    event.key ===
+                                        " "
+                                ) {
+
+                                    event.preventDefault();
+
+                                    openPage(
+                                        card.path
+                                    );
+                                }
+
+                            }}
+                        >
+
+
+                            {/* =================================
+                                ICON
+                            ================================= */}
+
+                            <div
+                                className="employee-icon"
+
+                                style={{
+                                    background:
+                                        card.color,
+                                }}
+                            >
+
+                                {card.icon}
+
+                            </div>
+
+
+                            {/* =================================
+                                TITLE
+                            ================================= */}
+
+                            <h3>
+                                {card.title}
+                            </h3>
+
+
+                            {/* =================================
+                                DESCRIPTION
+                            ================================= */}
+
+                            <p>
+                                {card.description}
+                            </p>
+
+
+                            {/* =================================
+                                FOOTER
+                            ================================= */}
+
+                            <div className="card-footer">
+
+                                <span>
+                                    Open Module
+                                </span>
+
+
+                                <div className="card-arrow">
+
+                                    <ArrowForward />
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    )
+                )}
+
+            </div>
+
+
+        </div>
+
+    );
 }

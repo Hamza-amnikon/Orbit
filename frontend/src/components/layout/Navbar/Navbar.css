@@ -1,141 +1,143 @@
-/* =========================================================
-   OYA COMMON NAVBAR
-   Used by Employee / TL / Manager / Admin
-========================================================= */
+/* ============================================================
+   SPARK COMMON NAVBAR
+   FULLY RESPONSIVE
+   ============================================================ */
+
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
 
 .navbar {
-
-    height: 72px;
-
     width: 100%;
+    height: 76px;
 
-    background: rgba(255, 255, 255, 0.96);
+    box-sizing: border-box;
 
-    border-bottom: 1px solid #e5e7eb;
+    background: rgba(255, 255, 255, 0.97);
+
+    border-bottom: 1px solid #edf1f7;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     padding: 0 28px;
 
-    box-sizing: border-box;
-
     position: sticky;
-
     top: 0;
 
     z-index: 1100;
 
-    backdrop-filter: blur(10px);
-
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 
     transition:
+        padding 0.2s ease,
+        height 0.2s ease,
         box-shadow 0.25s ease,
         background 0.25s ease;
-
 }
 
 
-/* =========================================================
-   LEFT
-========================================================= */
+/* ============================================================
+   LEFT SECTION
+   ============================================================ */
 
 .navbar-left {
-
-    display: flex;
-
-    align-items: center;
-
     min-width: 0;
 
-    gap: 16px;
+    display: flex;
+    align-items: center;
 
+    gap: 14px;
+
+    flex: 1;
 }
 
 
-/* =========================================================
+/* ============================================================
    MENU BUTTON
-========================================================= */
+   ============================================================ */
 
 .menu-btn {
-
     width: 42px;
-
     height: 42px;
 
     min-width: 42px;
 
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
     padding: 0;
 
-    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    border-radius: 11px;
+    border: 1px solid #e5ebf3;
 
-    background: #f8fafc;
+    border-radius: 10px;
 
-    color: #475569;
+    background: #ffffff;
+
+    color: #2563eb;
 
     cursor: pointer;
+
+    flex-shrink: 0;
 
     transition:
         background 0.2s ease,
         color 0.2s ease,
         border-color 0.2s ease,
         transform 0.2s ease;
-
 }
 
 .menu-btn svg {
-
     font-size: 22px;
-
 }
 
 .menu-btn:hover {
+    background: #f4f8ff;
 
-    background: #eff6ff;
+    color: #1d4ed8;
 
-    color: #2563eb;
-
-    border-color: #bfdbfe;
+    border-color: #cbdcf7;
 
     transform: translateY(-1px);
-
 }
 
 .menu-btn:active {
-
     transform: translateY(0);
-
 }
 
 
-/* =========================================================
+/* ============================================================
+   LEFT SEPARATOR
+   ============================================================ */
+
+.navbar-separator {
+    width: 1px;
+    height: 30px;
+
+    background: #e8edf4;
+
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
    PAGE TITLE
-========================================================= */
+   ============================================================ */
 
 .navbar-page-title {
+    min-width: 105px;
 
     display: flex;
-
     align-items: center;
 
-    min-width: 150px;
-
+    flex-shrink: 0;
 }
 
 .navbar-page-title h2 {
-
     margin: 0;
 
     font-size: 23px;
@@ -146,61 +148,64 @@
 
     color: #111827;
 
-    letter-spacing: -0.4px;
+    letter-spacing: -0.5px;
 
     white-space: nowrap;
-
 }
 
 
-/* =========================================================
+/* ============================================================
    SEARCH
-========================================================= */
+   ============================================================ */
 
 .search-box {
+    width: 430px;
+    max-width: 430px;
 
-    width: 320px;
+    height: 44px;
 
-    height: 42px;
+    min-width: 0;
 
     display: flex;
-
     align-items: center;
 
-    padding: 0 14px;
+    padding: 0 16px;
 
     box-sizing: border-box;
 
     background: #f8fafc;
 
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e2e8f0;
 
-    border-radius: 11px;
+    border-radius: 22px;
+
+    margin-left: 4px;
+
+    flex-shrink: 1;
 
     transition:
+        width 0.2s ease,
+        max-width 0.2s ease,
         border-color 0.2s ease,
         background 0.2s ease,
         box-shadow 0.2s ease;
-
 }
 
 .search-box svg {
-
     font-size: 21px;
 
     color: #64748b;
 
     flex-shrink: 0;
-
 }
 
 .search-box input {
-
     width: 100%;
+    min-width: 0;
 
     height: 100%;
 
-    margin-left: 9px;
+    margin-left: 10px;
 
     padding: 0;
 
@@ -212,159 +217,170 @@
 
     color: #1f2937;
 
-    font-size: 14px;
+    font-size: 13px;
 
     font-family: inherit;
-
 }
 
 .search-box input::placeholder {
-
     color: #94a3b8;
-
 }
 
 .search-box:focus-within {
-
     background: #ffffff;
 
     border-color: #93c5fd;
 
     box-shadow:
-        0 0 0 3px rgba(37, 99, 235, 0.08);
-
+        0 0 0 3px rgba(37, 99, 235, 0.07);
 }
 
 
-/* =========================================================
-   RIGHT
-========================================================= */
+/* ============================================================
+   RIGHT SECTION
+   ============================================================ */
 
 .navbar-right {
-
     display: flex;
 
     align-items: center;
 
-    gap: 12px;
+    gap: 10px;
 
     margin-left: 20px;
 
     flex-shrink: 0;
-
 }
 
 
-/* =========================================================
-   ICON BUTTONS
-========================================================= */
+/* ============================================================
+   ICON BUTTON
+   ============================================================ */
 
 .icon-btn {
-
     width: 42px;
-
     height: 42px;
 
     min-width: 42px;
 
+    padding: 0;
+
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     position: relative;
 
-    padding: 0;
+    border: 1px solid #e5ebf3;
 
-    border: 1px solid #e5e7eb;
+    border-radius: 10px;
 
-    border-radius: 11px;
+    background: #ffffff;
 
-    background: #f8fafc;
-
-    color: #475569;
+    color: #31557f;
 
     cursor: pointer;
+
+    flex-shrink: 0;
 
     transition:
         background 0.2s ease,
         color 0.2s ease,
         border-color 0.2s ease,
         transform 0.2s ease;
-
 }
 
 .icon-btn svg {
-
     font-size: 21px;
-
 }
 
 .icon-btn:hover {
-
-    background: #eff6ff;
+    background: #f4f8ff;
 
     color: #2563eb;
 
-    border-color: #bfdbfe;
+    border-color: #cbdcf7;
 
     transform: translateY(-1px);
-
 }
 
 .icon-btn:active {
-
     transform: translateY(0);
-
 }
 
 
-/* =========================================================
-   NOTIFICATION DOT
-========================================================= */
+/* ============================================================
+   NOTIFICATION COUNT
+   ============================================================ */
 
-.notification-dot {
-
+.notification-count {
     position: absolute;
 
-    top: 7px;
+    top: -4px;
+    right: -4px;
 
-    right: 7px;
+    min-width: 19px;
+    height: 19px;
 
-    width: 7px;
+    padding: 0 5px;
 
-    height: 7px;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     background: #ef4444;
 
+    color: #ffffff;
+
     border: 2px solid #ffffff;
 
-    border-radius: 50%;
+    border-radius: 20px;
 
-    box-sizing: content-box;
+    font-size: 10px;
 
+    font-weight: 700;
+
+    line-height: 1;
 }
 
 
-/* =========================================================
+/* ============================================================
+   RIGHT SEPARATOR
+   ============================================================ */
+
+.navbar-right-separator {
+    width: 1px;
+    height: 32px;
+
+    background: #e8edf4;
+
+    margin: 0 2px;
+
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
    PROFILE WRAPPER
-========================================================= */
+   ============================================================ */
 
 .profile-wrapper {
-
     position: relative;
 
+    flex-shrink: 0;
 }
 
 
-/* =========================================================
+/* ============================================================
    USER PROFILE
-========================================================= */
+   ============================================================ */
 
 .user-profile {
+    min-width: 205px;
 
-    min-width: 190px;
+    max-width: 260px;
 
     display: flex;
 
@@ -372,7 +388,7 @@
 
     gap: 10px;
 
-    padding: 5px 8px 5px 6px;
+    padding: 5px 6px 5px 5px;
 
     border: none;
 
@@ -384,32 +400,27 @@
 
     text-align: left;
 
+    flex-shrink: 0;
+
     transition:
         background 0.2s ease;
-
 }
 
 .user-profile:hover {
-
-    background: #f8fafc;
-
+    background: #f7f9fc;
 }
 
 .user-profile.profile-active {
-
-    background: #f8fafc;
-
+    background: #f7f9fc;
 }
 
 
-/* =========================================================
+/* ============================================================
    AVATAR
-========================================================= */
+   ============================================================ */
 
 .avatar {
-
     width: 42px;
-
     height: 42px;
 
     min-width: 42px;
@@ -419,42 +430,38 @@
     background:
         linear-gradient(
             135deg,
-            #2563eb,
-            #1d4ed8
+            #f0f3ff,
+            #e6eaff
         );
 
-    color: #ffffff;
+    color: #111827;
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     overflow: hidden;
 
     flex-shrink: 0;
 
-    font-size: 16px;
+    font-size: 17px;
 
-    font-weight: 700;
+    font-weight: 600;
 
     border: 2px solid #ffffff;
 
     box-shadow:
-        0 2px 7px rgba(37, 99, 235, 0.25);
-
+        0 2px 8px rgba(37, 99, 235, 0.10);
 }
 
 
-/* =========================================================
+/* ============================================================
    AVATAR IMAGE
-========================================================= */
+   ============================================================ */
 
 .navbar-avatar-image {
-
     width: 100%;
-
     height: 100%;
 
     display: block;
@@ -462,19 +469,17 @@
     object-fit: cover;
 
     border-radius: 50%;
-
 }
 
 
-/* =========================================================
+/* ============================================================
    USER INFORMATION
-========================================================= */
+   ============================================================ */
 
 .user-info {
-
     min-width: 0;
 
-    max-width: 150px;
+    max-width: 160px;
 
     display: flex;
 
@@ -482,13 +487,13 @@
 
     justify-content: center;
 
+    flex: 1;
 }
 
 .user-info h4 {
-
     margin: 0;
 
-    max-width: 150px;
+    max-width: 160px;
 
     overflow: hidden;
 
@@ -496,21 +501,19 @@
 
     white-space: nowrap;
 
-    font-size: 14px;
+    font-size: 13px;
 
-    line-height: 20px;
+    line-height: 19px;
 
     font-weight: 600;
 
     color: #111827;
-
 }
 
 .user-info p {
+    margin: 0;
 
-    margin: 1px 0 0;
-
-    max-width: 150px;
+    max-width: 160px;
 
     overflow: hidden;
 
@@ -518,22 +521,20 @@
 
     white-space: nowrap;
 
-    font-size: 12px;
+    font-size: 11px;
 
-    line-height: 17px;
+    line-height: 16px;
 
     color: #64748b;
-
 }
 
 
-/* =========================================================
+/* ============================================================
    PROFILE ARROW
-========================================================= */
+   ============================================================ */
 
 .profile-arrow {
-
-    color: #94a3b8;
+    color: #64748b;
 
     font-size: 21px !important;
 
@@ -542,47 +543,45 @@
     transition:
         transform 0.2s ease,
         color 0.2s ease;
-
 }
 
 .user-profile:hover .profile-arrow {
-
-    color: #475569;
-
+    color: #2563eb;
 }
 
 .user-profile.profile-active .profile-arrow {
-
-    color: #475569;
+    color: #2563eb;
 
     transform: rotate(180deg);
-
 }
 
 
-/* =========================================================
+/* ============================================================
    PROFILE DROPDOWN
-========================================================= */
+   ============================================================ */
 
 .profile-menu {
-
     position: absolute;
 
-    top: calc(100% + 8px);
+    top: calc(100% + 9px);
 
     right: 0;
 
-    width: 250px;
+    width: 255px;
+
+    max-width: calc(100vw - 20px);
+
+    box-sizing: border-box;
 
     background: #ffffff;
 
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e5eaf1;
 
     border-radius: 14px;
 
     box-shadow:
-        0 14px 35px rgba(15, 23, 42, 0.12),
-        0 4px 10px rgba(15, 23, 42, 0.06);
+        0 18px 40px rgba(15, 23, 42, 0.12),
+        0 5px 12px rgba(15, 23, 42, 0.05);
 
     overflow: hidden;
 
@@ -590,75 +589,61 @@
 
     animation:
         profileMenuIn 0.16s ease-out;
-
 }
 
 
-/* =========================================================
+/* ============================================================
    PROFILE MENU ANIMATION
-========================================================= */
+   ============================================================ */
 
 @keyframes profileMenuIn {
 
     from {
-
         opacity: 0;
 
         transform:
             translateY(-5px)
             scale(0.98);
-
     }
 
     to {
-
         opacity: 1;
 
         transform:
             translateY(0)
             scale(1);
-
     }
-
 }
 
 
-/* =========================================================
+/* ============================================================
    PROFILE MENU HEADER
-========================================================= */
+   ============================================================ */
 
 .profile-menu-header {
-
     display: flex;
 
     align-items: center;
 
     gap: 12px;
 
-    padding: 15px;
-
+    padding: 16px;
 }
 
 .profile-menu-avatar {
-
     width: 42px;
-
     height: 42px;
 
     min-width: 42px;
-
 }
 
 .profile-menu-info {
-
     min-width: 0;
 
     flex: 1;
-
 }
 
 .profile-menu-info h4 {
-
     margin: 0;
 
     overflow: hidden;
@@ -674,11 +659,9 @@
     font-weight: 600;
 
     color: #111827;
-
 }
 
 .profile-menu-info p {
-
     margin: 1px 0 0;
 
     overflow: hidden;
@@ -692,31 +675,26 @@
     line-height: 17px;
 
     color: #64748b;
-
 }
 
 
-/* =========================================================
+/* ============================================================
    DIVIDER
-========================================================= */
+   ============================================================ */
 
 .profile-menu-divider {
-
     width: 100%;
-
     height: 1px;
 
-    background: #e5e7eb;
-
+    background: #edf0f4;
 }
 
 
-/* =========================================================
+/* ============================================================
    PROFILE MENU ITEM
-========================================================= */
+   ============================================================ */
 
 .profile-menu-item {
-
     width: 100%;
 
     min-height: 46px;
@@ -727,7 +705,7 @@
 
     gap: 12px;
 
-    padding: 0 15px;
+    padding: 0 16px;
 
     border: none;
 
@@ -737,7 +715,7 @@
 
     font-family: inherit;
 
-    font-size: 14px;
+    font-size: 13px;
 
     font-weight: 500;
 
@@ -748,322 +726,671 @@
     transition:
         background 0.18s ease,
         color 0.18s ease;
-
 }
 
 .profile-menu-item svg {
-
-    width: 20px;
-
-    height: 20px;
+    width: 19px;
+    height: 19px;
 
     color: #64748b;
-
 }
 
 .profile-menu-item:hover {
-
-    background: #f8fafc;
+    background: #f6f9fd;
 
     color: #2563eb;
-
 }
 
 .profile-menu-item:hover svg {
-
     color: #2563eb;
-
 }
 
 
-/* =========================================================
-   LOGOUT
-========================================================= */
+/* ============================================================
+   LOGOUT ITEM
+   ============================================================ */
 
 .profile-menu-item.logout-item {
-
     color: #dc2626;
-
 }
 
 .profile-menu-item.logout-item svg {
-
     color: #dc2626;
-
 }
 
 .profile-menu-item.logout-item:hover {
-
     background: #fef2f2;
 
     color: #b91c1c;
-
 }
 
 .profile-menu-item.logout-item:hover svg {
-
     color: #b91c1c;
-
 }
 
 
-/* =========================================================
-   TABLET
-========================================================= */
+/* ============================================================
+   LARGE DESKTOP
+   ============================================================ */
 
-@media (max-width: 1100px) {
+@media (min-width: 1401px) {
 
     .navbar {
-
-        padding: 0 20px;
-
-    }
-
-    .navbar-page-title {
-
-        min-width: auto;
-
+        padding: 0 30px;
     }
 
     .search-box {
+        width: 430px;
+        max-width: 430px;
+    }
+}
 
-        width: 240px;
 
+/* ============================================================
+   DESKTOP
+   1201px - 1400px
+   ============================================================ */
+
+@media (max-width: 1400px) and (min-width: 1201px) {
+
+    .navbar {
+        padding: 0 24px;
+    }
+
+    .search-box {
+        width: 360px;
+        max-width: 360px;
     }
 
     .user-profile {
-
-        min-width: auto;
-
+        min-width: 190px;
     }
-
-    .user-info {
-
-        display: none;
-
-    }
-
-    .profile-arrow {
-
-        display: none;
-
-    }
-
 }
 
 
-/* =========================================================
-   SMALL TABLET
-========================================================= */
+/* ============================================================
+   LAPTOP / SMALL DESKTOP
+   1001px - 1200px
+   ============================================================ */
 
-@media (max-width: 850px) {
+@media (max-width: 1200px) and (min-width: 1001px) {
 
-    .navbar-left {
-
-        gap: 10px;
-
+    .navbar {
+        padding: 0 20px;
     }
 
-    .navbar-page-title h2 {
-
-        font-size: 21px;
-
+    .navbar-left {
+        gap: 10px;
     }
 
     .search-box {
-
-        width: 210px;
-
+        width: 300px;
+        max-width: 300px;
     }
 
+    .navbar-right {
+        gap: 8px;
+
+        margin-left: 12px;
+    }
+
+    .user-profile {
+        min-width: 175px;
+    }
+
+    .user-info {
+        max-width: 130px;
+    }
+
+    .user-info h4,
+    .user-info p {
+        max-width: 130px;
+    }
 }
 
 
-/* =========================================================
+/* ============================================================
+   TABLET
+   851px - 1000px
+   ============================================================ */
+
+@media (max-width: 1000px) and (min-width: 851px) {
+
+    .navbar {
+        height: 72px;
+
+        padding: 0 16px;
+    }
+
+    .navbar-left {
+        gap: 9px;
+    }
+
+    .navbar-page-title {
+        min-width: auto;
+    }
+
+    .navbar-page-title h2 {
+        font-size: 20px;
+    }
+
+    .search-box {
+        width: 230px;
+        max-width: 230px;
+
+        height: 42px;
+    }
+
+    .navbar-right {
+        gap: 7px;
+
+        margin-left: 10px;
+    }
+
+    .user-profile {
+        min-width: auto;
+
+        padding: 4px;
+    }
+
+    .user-info {
+        display: none;
+    }
+
+    .profile-arrow {
+        display: none;
+    }
+
+    .navbar-right-separator {
+        display: none;
+    }
+}
+
+
+/* ============================================================
+   SMALL TABLET
+   701px - 850px
+   ============================================================ */
+
+@media (max-width: 850px) and (min-width: 701px) {
+
+    .navbar {
+        height: 70px;
+
+        padding: 0 14px;
+    }
+
+    .navbar-left {
+        gap: 8px;
+    }
+
+    .navbar-page-title {
+        min-width: auto;
+    }
+
+    .navbar-page-title h2 {
+        font-size: 19px;
+    }
+
+    .search-box {
+        width: 200px;
+        max-width: 200px;
+
+        height: 40px;
+    }
+
+    .navbar-right {
+        gap: 6px;
+
+        margin-left: 8px;
+    }
+
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+
+        min-width: 40px;
+    }
+
+    .user-profile {
+        min-width: auto;
+
+        padding: 3px;
+    }
+
+    .user-info {
+        display: none;
+    }
+
+    .profile-arrow {
+        display: none;
+    }
+
+    .navbar-right-separator {
+        display: none;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+
+        min-width: 40px;
+    }
+}
+
+
+/* ============================================================
    MOBILE
-========================================================= */
+   481px - 700px
+   ============================================================ */
 
 @media (max-width: 700px) {
 
     .navbar {
+        height: 68px;
 
-        height: 64px;
-
-        padding: 0 14px;
-
+        padding: 0 12px;
     }
 
     .navbar-left {
-
-        gap: 8px;
-
-        flex: 1;
+        gap: 7px;
 
         min-width: 0;
-
     }
 
-    .menu-btn {
+    .navbar-separator {
+        display: none;
+    }
 
-        width: 40px;
+    .navbar-page-title {
+        min-width: 0;
 
-        height: 40px;
-
-        min-width: 40px;
-
+        max-width: 120px;
     }
 
     .navbar-page-title h2 {
+        max-width: 120px;
 
-        font-size: 19px;
+        overflow: hidden;
 
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+
+        font-size: 18px;
     }
 
-    .search-box {
+    /* Compact search button */
 
+    .search-box {
         width: 40px;
+        max-width: 40px;
+
+        min-width: 40px;
 
         height: 40px;
 
         padding: 0;
+
+        margin-left: 0;
 
         justify-content: center;
 
         border-radius: 10px;
 
+        flex-shrink: 0;
     }
 
     .search-box input {
-
         display: none;
-
     }
 
     .search-box svg {
-
         font-size: 20px;
-
     }
 
     .navbar-right {
+        gap: 5px;
 
-        gap: 7px;
-
-        margin-left: 8px;
-
+        margin-left: 7px;
     }
 
     .icon-btn {
-
         width: 40px;
-
         height: 40px;
 
         min-width: 40px;
+    }
 
+    .icon-btn svg {
+        font-size: 20px;
+    }
+
+    .navbar-right-separator {
+        display: none;
     }
 
     .user-profile {
+        min-width: auto;
 
-        padding: 0;
+        padding: 2px;
+    }
 
+    .user-info {
+        display: none;
+    }
+
+    .profile-arrow {
+        display: none;
     }
 
     .avatar {
-
         width: 40px;
-
         height: 40px;
 
         min-width: 40px;
 
+        font-size: 16px;
     }
 
     .profile-menu {
+        top: calc(100% + 7px);
 
-        right: -4px;
+        right: -2px;
 
-        width: 235px;
+        width: 245px;
 
+        max-width:
+            calc(100vw - 20px);
     }
-
 }
 
 
-/* =========================================================
-   VERY SMALL MOBILE
-========================================================= */
+/* ============================================================
+   SMALL MOBILE
+   376px - 480px
+   ============================================================ */
 
 @media (max-width: 480px) {
 
     .navbar {
+        height: 64px;
 
-        padding: 0 10px;
-
-    }
-
-    .navbar-page-title {
-
-        display: none;
-
+        padding: 0 9px;
     }
 
     .navbar-left {
-
-        flex: 0 1 auto;
-
+        gap: 5px;
     }
 
-    .navbar-right {
-
-        margin-left: auto;
-
-    }
-
-    .search-box {
-
-        width: 38px;
-
-        height: 38px;
-
+    .navbar-page-title {
+        display: none;
     }
 
     .menu-btn {
-
         width: 38px;
-
         height: 38px;
 
         min-width: 38px;
 
+        border-radius: 9px;
+    }
+
+    .menu-btn svg {
+        font-size: 20px;
+    }
+
+    .search-box {
+        width: 38px;
+        max-width: 38px;
+
+        min-width: 38px;
+
+        height: 38px;
+
+        border-radius: 9px;
+    }
+
+    .search-box svg {
+        font-size: 19px;
+    }
+
+    .navbar-right {
+        gap: 4px;
+
+        margin-left: auto;
     }
 
     .icon-btn {
-
         width: 38px;
-
         height: 38px;
 
         min-width: 38px;
 
+        border-radius: 9px;
+    }
+
+    .icon-btn svg {
+        font-size: 19px;
     }
 
     .avatar {
-
         width: 38px;
-
         height: 38px;
 
         min-width: 38px;
-
     }
 
     .profile-menu {
+        width: 230px;
 
-        right: -5px;
+        max-width:
+            calc(100vw - 16px);
 
-        width: 225px;
+        right: -3px;
+    }
+}
 
+
+/* ============================================================
+   VERY SMALL MOBILE
+   320px - 375px
+   ============================================================ */
+
+@media (max-width: 375px) {
+
+    .navbar {
+        height: 62px;
+
+        padding: 0 7px;
     }
 
+    .navbar-left {
+        gap: 4px;
+    }
+
+    .menu-btn {
+        width: 36px;
+        height: 36px;
+
+        min-width: 36px;
+    }
+
+    .search-box {
+        width: 36px;
+        max-width: 36px;
+
+        min-width: 36px;
+
+        height: 36px;
+    }
+
+    .navbar-right {
+        gap: 3px;
+    }
+
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+
+        min-width: 36px;
+    }
+
+    .avatar {
+        width: 36px;
+        height: 36px;
+
+        min-width: 36px;
+    }
+
+    .notification-count {
+        min-width: 17px;
+        height: 17px;
+
+        padding: 0 4px;
+
+        font-size: 9px;
+
+        top: -3px;
+        right: -3px;
+    }
+
+    .profile-menu {
+        width: 220px;
+
+        max-width:
+            calc(100vw - 12px);
+    }
+}
+
+
+/* ============================================================
+   EXTREMELY SMALL DEVICES
+   BELOW 320px
+   ============================================================ */
+
+@media (max-width: 319px) {
+
+    .navbar {
+        height: 58px;
+
+        padding: 0 5px;
+    }
+
+    .navbar-left {
+        gap: 3px;
+    }
+
+    .menu-btn {
+        width: 34px;
+        height: 34px;
+
+        min-width: 34px;
+    }
+
+    .search-box {
+        width: 34px;
+        max-width: 34px;
+
+        min-width: 34px;
+
+        height: 34px;
+    }
+
+    .navbar-right {
+        gap: 2px;
+    }
+
+    .icon-btn {
+        width: 34px;
+        height: 34px;
+
+        min-width: 34px;
+    }
+
+    .avatar {
+        width: 34px;
+        height: 34px;
+
+        min-width: 34px;
+    }
+
+    .profile-menu {
+        width: 210px;
+
+        max-width:
+            calc(100vw - 10px);
+
+        right: -2px;
+    }
+}
+
+
+/* ============================================================
+   LANDSCAPE MOBILE
+   ============================================================ */
+
+@media (max-width: 850px)
+       and (orientation: landscape) {
+
+    .navbar {
+        height: 62px;
+    }
+
+    .dashboard-content {
+        min-height: 0;
+    }
+}
+
+
+/* ============================================================
+   SHORT SCREENS
+   ============================================================ */
+
+@media (max-height: 600px) {
+
+    .navbar {
+        height: 60px;
+    }
+}
+
+
+/* ============================================================
+   TOUCH DEVICES
+   ============================================================ */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .menu-btn,
+    .icon-btn,
+    .user-profile,
+    .profile-menu-item {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .menu-btn:hover,
+    .icon-btn:hover {
+        transform: none;
+    }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .navbar,
+    .menu-btn,
+    .icon-btn,
+    .search-box,
+    .user-profile,
+    .profile-arrow {
+        transition: none;
+    }
+
+    .profile-menu {
+        animation: none;
+    }
 }

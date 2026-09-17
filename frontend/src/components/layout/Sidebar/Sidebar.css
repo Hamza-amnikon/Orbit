@@ -1,166 +1,1766 @@
-.sidebar{
-    position:fixed;
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
 
-    top:0;
-    left:0;
+.sidebar {
+    position: fixed;
 
-    width:280px;
-    height:100vh;
+    top: 0;
+    left: 0;
 
-    background:#fff;
+    width: 228px;
+    height: 100vh;
 
-    border-right:1px solid #e5e7eb;
+    box-sizing: border-box;
 
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+    background: #ffffff;
 
-    padding:24px;
+    border-right: 1px solid #edf1f7;
 
-    overflow:hidden;
-
-    z-index:1000;
-}
-
-.sidebar-top{
-    display:flex;
-    flex-direction:column;
-    gap:24px;
-}
-
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-bottom:18px;
-}
-
-.logo-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.logo-text {
     display: flex;
     flex-direction: column;
+
+    padding: 0 16px;
+
+    z-index: 1000;
+
+    overflow: hidden;
 }
 
-.logo-text h2 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 700;
-    color: #2563eb;
-    letter-spacing: 0.5px;
+
+/* ============================================================
+   LOGO
+   ============================================================ */
+
+.sidebar-logo {
+    width: 100%;
+    height: 125px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    padding-top: 8px;
+
+    box-sizing: border-box;
 }
 
-.logo-text span {
-    margin-top: 2px;
-    font-size: 12px;
-    color: #6b7280;
-    font-weight: 500;
+
+.logo-image {
+    width: 178px;
+    height: 105px;
+
+    object-fit: contain;
+
+    display: block;
+
+    max-width: 100%;
 }
-.sidebar-menu{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
+
+
+/* ============================================================
+   MENU
+   ============================================================ */
+
+.sidebar-menu {
+    flex: 1;
+
+    min-height: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 4px 0 12px;
+
+    scrollbar-width: none;
+
+    overscroll-behavior: contain;
 }
+
+
+/* ============================================================
+   HIDE SCROLLBAR
+   ============================================================ */
+
+.sidebar-menu::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* ============================================================
+   MENU ITEM
+   ============================================================ */
 
 .menu-item {
+    width: 100%;
+
+    min-height: 43px;
+
+    box-sizing: border-box;
+
     display: flex;
+
     align-items: center;
-    gap: 15px;
+
+    gap: 14px;
+
+    padding: 10px 14px;
+
+    border-radius: 9px;
 
     text-decoration: none;
 
-    color: #444;
+    color: #41638f;
 
-    padding: 14px 16px;
+    font-size: 14px;
 
-    border-radius: 12px;
+    font-weight: 500;
 
-    transition: .3s;
+    white-space: nowrap;
+
+    flex-shrink: 0;
+
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
 }
+
+
+/* ============================================================
+   MENU HOVER
+   ============================================================ */
 
 .menu-item:hover {
-    background: #f3f4f6;
+    background: #f3f7fd;
+
+    color: #2563eb;
 }
+
+
+/* ============================================================
+   ACTIVE MENU
+   ============================================================ */
 
 .menu-item.active {
-    background: #2563eb;
-    color: white;
+    background: #2167ee;
+
+    color: #ffffff;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 3px 8px
+        rgba(
+            37,
+            99,
+            235,
+            0.12
+        );
 }
 
-.menu-item svg {
-    font-size: 22px;
+
+.menu-item.active:hover {
+    background: #2167ee;
+
+    color: #ffffff;
 }
+
+
+/* ============================================================
+   MENU ICON
+   ============================================================ */
+
+.menu-icon {
+    width: 22px;
+    height: 22px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: inherit;
+}
+
+
+.menu-icon svg {
+    width: 19px;
+    height: 19px;
+
+    font-size: 19px;
+
+    color: inherit;
+}
+
+
+/* ============================================================
+   MENU TEXT
+   ============================================================ */
+
+.menu-title {
+    min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    line-height: 1;
+
+    transition:
+        opacity 0.18s ease;
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
 
 .sidebar-footer {
-    border-top: 1px solid #eee;
-    padding-top: 25px;
+    flex-shrink: 0;
+
+    border-top: 1px solid #edf1f5;
+
+    padding: 12px 0;
+
+    background: #ffffff;
 }
 
-.profile {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
 
-.avatar {
-    width: 45px;
-    height: 45px;
-
-    border-radius: 50%;
-
-    background: #2563eb;
-
-    color: white;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-weight: bold;
-}
-
-.profile h4 {
-    margin: 0;
-}
-
-.profile p {
-    margin: 0;
-    font-size: 13px;
-    color: #777;
-}
+/* ============================================================
+   LOGOUT BUTTON
+   ============================================================ */
 
 .logout-btn {
-    margin-top: 25px;
-
     width: 100%;
+
+    height: 48px;
 
     border: none;
 
-    background: #ef4444;
+    background: #fff0f0;
 
-    color: white;
+    color: #ef3333;
 
-    padding: 12px;
+    padding: 10px 16px;
 
     border-radius: 10px;
 
     display: flex;
-    justify-content: center;
+
     align-items: center;
-    gap: 10px;
+
+    justify-content: center;
+
+    gap: 9px;
 
     cursor: pointer;
 
-    font-size: 15px;
+    font-family: inherit;
 
-    transition: .3s;
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+}
+
+
+.logout-btn:hover {
+    background: #ffe2e2;
+
+    color: #dc2626;
+}
+
+
+.logout-btn:active {
+    transform:
+        scale(0.98);
+}
+
+
+.logout-btn svg {
+    width: 18px;
+    height: 18px;
+
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
+   MAIN CONTENT ALIGNMENT
+   ============================================================ */
+
+.main-content {
+    margin-left: 228px;
+
+    width:
+        calc(100% - 228px);
+
+    min-height: 100vh;
+
+    box-sizing: border-box;
+
+    overflow-x: hidden;
+}
+
+
+/* ============================================================
+   LARGE DESKTOP
+   1400px+
+   ============================================================ */
+
+@media (min-width: 1401px) {
+
+    .sidebar {
+        width: 228px;
+
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+
+    .main-content {
+        margin-left: 228px;
+
+        width:
+            calc(100% - 228px);
+    }
+
+
+    .logo-image {
+        width: 178px;
+
+        height: 105px;
+    }
+
+
+    .menu-item {
+        min-height: 43px;
+
+        font-size: 14px;
+
+        gap: 14px;
+
+        padding:
+            10px 14px;
+    }
+}
+
+
+/* ============================================================
+   LAPTOP
+   1201px - 1400px
+   ============================================================ */
+
+@media (max-width: 1400px) and (min-width: 1201px) {
+
+    .sidebar {
+        width: 220px;
+
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+
+    .main-content {
+        margin-left: 220px;
+
+        width:
+            calc(100% - 220px);
+    }
+
+
+    .sidebar-logo {
+        height:
+            120px;
+    }
+
+
+    .logo-image {
+        width:
+            170px;
+
+        height:
+            100px;
+    }
+
+
+    .menu-item {
+        min-height:
+            42px;
+
+        font-size:
+            13.5px;
+
+        gap:
+            12px;
+
+        padding:
+            9px 12px;
+    }
+
+
+    .menu-icon {
+        width:
+            21px;
+
+        height:
+            21px;
+    }
+
+
+    .menu-icon svg {
+        width:
+            18px;
+
+        height:
+            18px;
+    }
+}
+
+
+/* ============================================================
+   SMALL LAPTOP
+   1001px - 1200px
+   ============================================================ */
+
+@media (max-width: 1200px) and (min-width: 1001px) {
+
+    .sidebar {
+        width:
+            210px;
+
+        padding-left:
+            12px;
+
+        padding-right:
+            12px;
+    }
+
+
+    .main-content {
+        margin-left:
+            210px;
+
+        width:
+            calc(100% - 210px);
+    }
+
+
+    .sidebar-logo {
+        height:
+            112px;
+    }
+
+
+    .logo-image {
+        width:
+            160px;
+
+        height:
+            94px;
+    }
+
+
+    .sidebar-menu {
+        gap:
+            2px;
+    }
+
+
+    .menu-item {
+        min-height:
+            40px;
+
+        padding:
+            8px 10px;
+
+        gap:
+            10px;
+
+        font-size:
+            12.5px;
+    }
+
+
+    .menu-icon {
+        width:
+            21px;
+
+        height:
+            21px;
+    }
+
+
+    .menu-icon svg {
+        width:
+            18px;
+
+        height:
+            18px;
+    }
+
+
+    .logout-btn {
+        height:
+            44px;
+
+        font-size:
+            12px;
+    }
+}
+
+
+/* ============================================================
+   TABLET LANDSCAPE
+   851px - 1000px
+
+   Sidebar collapses
+   ============================================================ */
+
+@media (max-width: 1000px) and (min-width: 851px) {
+
+    .sidebar {
+        width:
+            76px;
+
+        padding:
+            0 9px;
+    }
+
+
+    .main-content {
+        margin-left:
+            76px;
+
+        width:
+            calc(100% - 76px);
+    }
+
+
+    .sidebar-logo {
+        height:
+            100px;
+
+        padding:
+            5px 0;
+    }
+
+
+    .logo-image {
+        width:
+            58px;
+
+        height:
+            70px;
+    }
+
+
+    .sidebar-menu {
+        padding:
+            5px 0 10px;
+
+        gap:
+            5px;
+    }
+
+
+    .menu-item {
+        width:
+            58px;
+
+        min-height:
+            48px;
+
+        padding:
+            10px 0;
+
+        margin:
+            0 auto;
+
+        justify-content:
+            center;
+
+        gap:
+            0;
+
+        border-radius:
+            10px;
+    }
+
+
+    .menu-icon {
+        width:
+            24px;
+
+        height:
+            24px;
+    }
+
+
+    .menu-icon svg {
+        width:
+            20px;
+
+        height:
+            20px;
+    }
+
+
+    .menu-title {
+        display:
+            none;
+    }
+
+
+    .sidebar-footer {
+        padding:
+            10px 0;
+    }
+
+
+    .logout-btn {
+        width:
+            58px;
+
+        height:
+            46px;
+
+        padding:
+            10px 0;
+
+        margin:
+            0 auto;
+
+        border-radius:
+            10px;
+
+        gap:
+            0;
+    }
+
+
+    .logout-btn span {
+        display:
+            none;
+    }
+
+
+    .logout-btn svg {
+        width:
+            20px;
+
+        height:
+            20px;
+    }
+}
+
+
+/* ============================================================
+   TABLET PORTRAIT
+   651px - 850px
+   ============================================================ */
+
+@media (max-width: 850px) and (min-width: 651px) {
+
+    .sidebar {
+        width:
+            72px;
+
+        padding:
+            0 8px;
+    }
+
+
+    .main-content {
+        margin-left:
+            72px;
+
+        width:
+            calc(100% - 72px);
+    }
+
+
+    .sidebar-logo {
+        height:
+            95px;
+
+        padding:
+            5px 0;
+    }
+
+
+    .logo-image {
+        width:
+            55px;
+
+        height:
+            66px;
+    }
+
+
+    .sidebar-menu {
+        gap:
+            5px;
+
+        padding:
+            5px 0 10px;
+    }
+
+
+    .menu-item {
+        width:
+            56px;
+
+        min-height:
+            47px;
+
+        padding:
+            10px 0;
+
+        margin:
+            0 auto;
+
+        justify-content:
+            center;
+
+        gap:
+            0;
+    }
+
+
+    .menu-title {
+        display:
+            none;
+    }
+
+
+    .menu-icon {
+        width:
+            23px;
+
+        height:
+            23px;
+    }
+
+
+    .menu-icon svg {
+        width:
+            20px;
+
+        height:
+            20px;
+    }
+
+
+    .sidebar-footer {
+        padding:
+            9px 0;
+    }
+
+
+    .logout-btn {
+        width:
+            56px;
+
+        height:
+            44px;
+
+        padding:
+            9px 0;
+
+        margin:
+            0 auto;
+
+        gap:
+            0;
+    }
+
+
+    .logout-btn span {
+        display:
+            none;
+    }
+
+
+    .logout-btn svg {
+        width:
+            19px;
+
+        height:
+            19px;
+    }
+}
+
+
+/* ============================================================
+   LARGE MOBILE
+   481px - 650px
+   ============================================================ */
+
+@media (max-width: 650px) and (min-width: 481px) {
+
+    .sidebar {
+        width:
+            66px;
+
+        padding:
+            0 6px;
+    }
+
+
+    .main-content {
+        margin-left:
+            66px;
+
+        width:
+            calc(100% - 66px);
+    }
+
+
+    .sidebar-logo {
+        height:
+            82px;
+
+        padding:
+            3px 0;
+    }
+
+
+    .logo-image {
+        width:
+            50px;
+
+        height:
+            58px;
+    }
+
+
+    .sidebar-menu {
+        gap:
+            4px;
+
+        padding:
+            4px 0 8px;
+    }
+
+
+    .menu-item {
+        width:
+            54px;
+
+        min-height:
+            45px;
+
+        padding:
+            9px 0;
+
+        margin:
+            0 auto;
+
+        justify-content:
+            center;
+
+        gap:
+            0;
+
+        border-radius:
+            9px;
+    }
+
+
+    .menu-title {
+        display:
+            none;
+    }
+
+
+    .menu-icon {
+        width:
+            22px;
+
+        height:
+            22px;
+    }
+
+
+    .menu-icon svg {
+        width:
+            19px;
+
+        height:
+            19px;
+    }
+
+
+    .sidebar-footer {
+        padding:
+            8px 0;
+    }
+
+
+    .logout-btn {
+        width:
+            54px;
+
+        height:
+            42px;
+
+        padding:
+            8px 0;
+
+        margin:
+            0 auto;
+
+        gap:
+            0;
+
+        border-radius:
+            9px;
+    }
+
+
+    .logout-btn span {
+        display:
+            none;
+    }
+
+
+    .logout-btn svg {
+        width:
+            19px;
+
+        height:
+            19px;
+    }
+}
+
+
+/* ============================================================
+   MOBILE
+   376px - 480px
+   ============================================================ */
+
+@media (max-width: 480px) and (min-width: 376px) {
+
+    .sidebar {
+        width:
+            62px;
+
+        padding:
+            0 5px;
+    }
+
+
+    .main-content {
+        margin-left:
+            62px;
+
+        width:
+            calc(100% - 62px);
+    }
+
+
+    .sidebar-logo {
+        height:
+            75px;
+
+        padding:
+            3px 0;
+    }
+
+
+    .logo-image {
+        width:
+            47px;
+
+        height:
+            54px;
+    }
+
+
+    .sidebar-menu {
+        gap:
+            3px;
+
+        padding:
+            3px 0 7px;
+    }
+
+
+    .menu-item {
+        width:
+            52px;
+
+        min-height:
+            44px;
+
+        padding:
+            8px 0;
+
+        margin:
+            0 auto;
+
+        justify-content:
+            center;
+
+        gap:
+            0;
+
+        border-radius:
+            9px;
+    }
+
+
+    .menu-title {
+        display:
+            none;
+    }
+
+
+    .menu-icon {
+        width:
+            21px;
+
+        height:
+            21px;
+    }
+
+
+    .menu-icon svg {
+        width:
+            18px;
+
+        height:
+            18px;
+    }
+
+
+    .sidebar-footer {
+        padding:
+            7px 0;
+    }
+
+
+    .logout-btn {
+        width:
+            52px;
+
+        height:
+            40px;
+
+        padding:
+            7px 0;
+
+        margin:
+            0 auto;
+
+        gap:
+            0;
+
+        border-radius:
+            9px;
+    }
+
+
+    .logout-btn span {
+        display:
+            none;
+    }
+
+
+    .logout-btn svg {
+        width:
+            18px;
+
+        height:
+            18px;
+    }
+}
+
+
+/* ============================================================
+   SMALL MOBILE
+   320px - 375px
+   ============================================================ */
+
+@media (max-width: 375px) {
+
+    .sidebar {
+        width:
+            56px;
+
+        padding:
+            0 4px;
+    }
+
+
+    .main-content {
+        margin-left:
+            56px;
+
+        width:
+            calc(100% - 56px);
+    }
+
+
+    .sidebar-logo {
+        height:
+            68px;
+
+        padding:
+            2px 0;
+    }
+
+
+    .logo-image {
+        width:
+            43px;
+
+        height:
+            49px;
+    }
+
+
+    .sidebar-menu {
+        gap:
+            3px;
+
+        padding:
+            3px 0 6px;
+    }
+
+
+    .menu-item {
+        width:
+            48px;
+
+        min-height:
+            42px;
+
+        padding:
+            8px 0;
+
+        margin:
+            0 auto;
+
+        justify-content:
+            center;
+
+        gap:
+            0;
+
+        border-radius:
+            8px;
+    }
+
+
+    .menu-title {
+        display:
+            none;
+    }
+
+
+    .menu-icon {
+        width:
+            20px;
+
+        height:
+            20px;
+    }
+
+
+    .menu-icon svg {
+        width:
+            17px;
+
+        height:
+            17px;
+    }
+
+
+    .sidebar-footer {
+        padding:
+            6px 0;
+    }
+
+
+    .logout-btn {
+        width:
+            48px;
+
+        height:
+            38px;
+
+        padding:
+            6px 0;
+
+        margin:
+            0 auto;
+
+        gap:
+            0;
+
+        border-radius:
+            8px;
+    }
+
+
+    .logout-btn span {
+        display:
+            none;
+    }
+
+
+    .logout-btn svg {
+        width:
+            17px;
+
+        height:
+            17px;
+    }
+}
+
+
+/* ============================================================
+   ULTRA SMALL
+   BELOW 320px
+   ============================================================ */
+
+@media (max-width: 319px) {
+
+    .sidebar {
+        width:
+            52px;
+
+        padding:
+            0 3px;
+    }
+
+
+    .main-content {
+        margin-left:
+            52px;
+
+        width:
+            calc(100% - 52px);
+    }
+
+
+    .sidebar-logo {
+        height:
+            62px;
+    }
+
+
+    .logo-image {
+        width:
+            40px;
+
+        height:
+            45px;
+    }
+
+
+    .menu-item {
+        width:
+            44px;
+
+        min-height:
+            40px;
+    }
+
+
+    .menu-icon {
+        width:
+            19px;
+
+        height:
+            19px;
+    }
+
+
+    .menu-icon svg {
+        width:
+            16px;
+
+        height:
+            16px;
+    }
+
+
+    .logout-btn {
+        width:
+            44px;
+
+        height:
+            36px;
+    }
+
+
+    .logout-btn svg {
+        width:
+            16px;
+
+        height:
+            16px;
+    }
+}
+
+
+/* ============================================================
+   TOUCH DEVICES
+   ============================================================ */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .menu-item:hover {
+        background:
+            transparent;
+
+        color:
+            #41638f;
+    }
+
+
+    .menu-item.active:hover {
+        background:
+            #2167ee;
+
+        color:
+            #ffffff;
+    }
+
+
+    .logout-btn:hover {
+        background:
+            #fff0f0;
+
+        color:
+            #ef3333;
+    }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .menu-item,
+    .logout-btn,
+    .menu-title {
+        transition:
+            none;
+    }
+}
+
+/* ============================================================
+   FINAL DESKTOP SIDEBAR FIX
+   ============================================================ */
+
+html,
+body,
+#root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.sidebar {
+    position: fixed !important;
+
+    top: 0 !important;
+    left: 0 !important;
+
+    width: 228px !important;
+    height: 100vh !important;
+
+    margin: 0 !important;
+    padding: 0 16px !important;
+
+    box-sizing: border-box !important;
+
+    background: #ffffff !important;
+
+    border-right: 1px solid #edf1f7 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    overflow: hidden !important;
+
+    transform: none !important;
+
+    z-index: 1000 !important;
+}
+
+
+/* ============================================================
+   LOGO
+   ============================================================ */
+
+.sidebar-logo {
+    width: 100% !important;
+    height: 125px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex-shrink: 0 !important;
+
+    padding: 8px 0 0 !important;
+
+    box-sizing: border-box !important;
+}
+
+.logo-image {
+    width: 178px !important;
+    height: 105px !important;
+
+    max-width: 100% !important;
+
+    object-fit: contain !important;
+
+    display: block !important;
+}
+
+
+/* ============================================================
+   SIDEBAR MENU
+   ============================================================ */
+
+.sidebar-menu {
+    flex: 1 !important;
+
+    min-height: 0 !important;
+
+    width: 100% !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    gap: 3px !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    padding: 4px 0 12px !important;
+
+    box-sizing: border-box !important;
+
+    scrollbar-width: none !important;
+}
+
+.sidebar-menu::-webkit-scrollbar {
+    display: none !important;
+}
+
+
+/* ============================================================
+   MENU ITEM
+   ============================================================ */
+
+.menu-item {
+    width: 100% !important;
+
+    min-height: 43px !important;
+
+    flex-shrink: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 14px !important;
+
+    padding: 10px 14px !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 9px !important;
+
+    color: #41638f !important;
+
+    font-size: 14px !important;
+    font-weight: 500 !important;
+
+    text-decoration: none !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    transform: none !important;
+}
+
+.menu-item:hover {
+    background: #f3f7fd !important;
+    color: #2563eb !important;
+}
+
+.menu-item.active {
+    background: #2167ee !important;
+    color: #ffffff !important;
+
+    font-weight: 600 !important;
+
+    box-shadow:
+        0 3px 8px rgba(37, 99, 235, 0.12) !important;
+}
+
+
+/* ============================================================
+   MENU ICON
+   ============================================================ */
+
+.menu-icon {
+    width: 22px !important;
+    min-width: 22px !important;
+
+    height: 22px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex-shrink: 0 !important;
+
+    color: inherit !important;
+}
+
+.menu-icon svg {
+    width: 19px !important;
+    height: 19px !important;
+
+    color: inherit !important;
+}
+
+
+/* ============================================================
+   MENU TEXT
+   ============================================================ */
+
+.menu-title {
+    display: block !important;
+
+    min-width: 0 !important;
+
+    flex: 1 !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+
+    white-space: nowrap !important;
+
+    opacity: 1 !important;
+
+    color: inherit !important;
+}
+
+
+/* ============================================================
+   SIDEBAR FOOTER
+   ============================================================ */
+
+.sidebar-footer {
+    width: 100% !important;
+
+    flex-shrink: 0 !important;
+
+    padding: 12px 0 !important;
+
+    box-sizing: border-box !important;
+
+    border-top: 1px solid #edf1f5 !important;
+
+    background: #ffffff !important;
+}
+
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+
+.logout-btn {
+    width: 100% !important;
+    height: 48px !important;
+
+    padding: 10px 16px !important;
+
+    box-sizing: border-box !important;
+
+    border: none !important;
+    border-radius: 10px !important;
+
+    background: #fff0f0 !important;
+
+    color: #ef3333 !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 9px !important;
+
+    cursor: pointer !important;
+
+    font-family: inherit !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+
+    transform: none !important;
 }
 
 .logout-btn:hover {
-    background: #dc2626;
+    background: #ffe2e2 !important;
+    color: #dc2626 !important;
+}
+
+.logout-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+
+    flex-shrink: 0 !important;
+}
+
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+
+.main-content {
+    margin-left: 228px !important;
+
+    width: calc(100% - 228px) !important;
+
+    min-height: 100vh !important;
+
+    box-sizing: border-box !important;
+
+    overflow-x: hidden !important;
+}
+
+
+/* ============================================================
+   DESKTOP
+   ============================================================ */
+
+@media (min-width: 1001px) {
+
+    .sidebar {
+        width: 228px !important;
+        left: 0 !important;
+        transform: none !important;
+    }
+
+    .main-content {
+        margin-left: 228px !important;
+        width: calc(100% - 228px) !important;
+    }
+
+    .menu-title {
+        display: block !important;
+        opacity: 1 !important;
+    }
+
+    .menu-item {
+        width: 100% !important;
+        justify-content: flex-start !important;
+    }
+
+    .logout-btn {
+        width: 100% !important;
+    }
+
+    .logout-btn span {
+        display: inline !important;
+    }
+}
+
+
+/* ============================================================
+   TABLET / MOBILE
+   ============================================================ */
+
+@media (max-width: 1000px) {
+
+    .sidebar {
+        width: 76px !important;
+        padding: 0 9px !important;
+    }
+
+    .main-content {
+        margin-left: 76px !important;
+        width: calc(100% - 76px) !important;
+    }
+
+    .sidebar-logo {
+        height: 100px !important;
+    }
+
+    .logo-image {
+        width: 58px !important;
+        height: 70px !important;
+    }
+
+    .menu-item {
+        width: 58px !important;
+
+        min-height: 48px !important;
+
+        padding: 10px 0 !important;
+
+        margin: 0 auto !important;
+
+        justify-content: center !important;
+
+        gap: 0 !important;
+    }
+
+    .menu-title {
+        display: none !important;
+    }
+
+    .logout-btn {
+        width: 58px !important;
+
+        height: 46px !important;
+
+        padding: 10px 0 !important;
+
+        margin: 0 auto !important;
+    }
+
+    .logout-btn span {
+        display: none !important;
+    }
 }

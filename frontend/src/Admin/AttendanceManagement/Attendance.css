@@ -1,195 +1,820 @@
+/* ============================================================
+   ATTENDANCE PAGE
+   ============================================================ */
+
 .attendance-home {
-    padding: 30px;
+    width: 100%;
     min-height: 100vh;
+
+    padding: 28px 28px 50px;
+
     background: #f4f7fc;
+
+    box-sizing: border-box;
+
+    overflow-x: hidden;
 }
 
-/* ================= Header ================= */
-
-.attendance-header {
-    margin-bottom: 35px;
+.attendance-home *,
+.attendance-home *::before,
+.attendance-home *::after {
+    box-sizing: border-box;
 }
 
-.attendance-header h2 {
-    font-size: 38px;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 8px;
-}
 
-.attendance-subtitle {
-    font-size: 16px;
-    color: #64748b;
-    max-width: 700px;
-    line-height: 1.6;
-}
+/* ============================================================
+   BREADCRUMB
+   ============================================================ */
 
-/* ================= Grid ================= */
-
-.attendance-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-}
-
-/* ================= Card ================= */
-
-.attendance-menu-card {
-
-    background: #fff;
-
-    border-radius: 18px;
-
-    padding: 28px;
-
-    border: 1px solid #edf2f7;
-
-    box-shadow: 0 10px 25px rgba(0,0,0,.06);
-
-    transition: .35s ease;
-
-    cursor: pointer;
-
+.attendance-breadcrumb {
     display: flex;
 
-    flex-direction: column;
+    align-items: center;
 
-    min-height: 230px;
+    gap: 9px;
 
-    position: relative;
+    margin-bottom: 18px;
 
-    overflow: hidden;
+    color: #5b79a6;
 
+    font-size: 14px;
+
+    font-weight: 500;
 }
 
-.attendance-menu-card::before {
+.attendance-breadcrumb svg {
+    width: 17px;
+    height: 17px;
 
-    content: "";
+    color: #5578ae;
+}
 
-    position: absolute;
+.attendance-breadcrumb span:nth-child(2) {
+    color: #9bb0cd;
+}
 
-    top: 0;
 
-    left: 0;
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
 
+.attendance-page-header {
     width: 100%;
 
-    height: 5px;
-
-    background: #2563eb;
-
-    transform: scaleX(0);
-
-    transition: .35s;
-
-}
-
-.attendance-menu-card:hover {
-
-    transform: translateY(-8px);
-
-    box-shadow: 0 18px 35px rgba(0,0,0,.12);
-
-}
-
-.attendance-menu-card:hover::before {
-
-    transform: scaleX(1);
-
-}
-
-/* ================= Icon ================= */
-
-.attendance-icon {
-
-    width: 72px;
-
-    height: 72px;
-
-    border-radius: 18px;
+    min-height: 105px;
 
     display: flex;
 
     align-items: center;
 
-    justify-content: center;
+    justify-content: space-between;
 
-    color: white;
+    gap: 30px;
+
+    margin-bottom: 28px;
+
+    position: relative;
+}
+
+
+/* ============================================================
+   HEADER CONTENT
+   ============================================================ */
+
+.attendance-header-content {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.attendance-header-content h1 {
+    margin: 0 0 10px;
+
+    color: #111d4a;
 
     font-size: 32px;
 
-    margin-bottom: 22px;
-
-}
-
-/* ================= Content ================= */
-
-.attendance-card-content {
-
-    flex: 1;
-
-}
-
-.attendance-card-content h4 {
-
-    font-size: 24px;
+    line-height: 1.2;
 
     font-weight: 700;
 
-    color: #1e293b;
-
-    margin-bottom: 10px;
-
+    letter-spacing: -0.7px;
 }
 
-.attendance-card-content p {
+.attendance-header-content p {
+    margin: 0;
+
+    color: #5a739b;
 
     font-size: 15px;
 
-    color: #64748b;
+    line-height: 1.55;
 
-    line-height: 1.7;
-
+    max-width: 850px;
 }
 
-/* ================= Arrow ================= */
 
-.attendance-arrow {
+/* ============================================================
+   RIGHT SIDE DECORATION
+   Similar to Employees page
+   ============================================================ */
+
+.attendance-header-decoration {
+    width: 150px;
+
+    height: 80px;
+
+    position: relative;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+}
+
+.header-decoration-circle {
+    position: absolute;
+
+    display: block;
+
+    border-radius: 50%;
+}
+
+.circle-one {
+    width: 75px;
+    height: 75px;
+
+    right: 35px;
+    top: 3px;
+
+    background: #dbeafe;
+
+    opacity: .85;
+}
+
+.circle-two {
+    width: 72px;
+    height: 72px;
+
+    right: -5px;
+    top: 0;
+
+    background: #e5efff;
+
+    opacity: .9;
+}
+
+
+/* ============================================================
+   MODULE GRID
+   ============================================================ */
+
+.attendance-grid {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+/* ============================================================
+   CARD
+   ============================================================ */
+
+.attendance-menu-card {
+    position: relative;
+
+    width: 100%;
+
+    height: 240px;
+
+    padding: 20px;
 
     display: flex;
 
-    justify-content: flex-end;
+    flex-direction: column;
 
-    margin-top: 20px;
+    align-items: flex-start;
 
-    color: #94a3b8;
+    background: #ffffff;
 
-    transition: .3s;
+    border: 1px solid #e5ebf3;
 
+    border-radius: 16px;
+
+    box-shadow:
+        0 8px 24px rgba(15, 23, 42, 0.045);
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
 }
 
-.attendance-menu-card:hover .attendance-arrow {
+
+/* ============================================================
+   CARD TOP LINE
+   ============================================================ */
+
+.attendance-menu-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 3px;
+
+    background: var(--item-color);
+
+    transform: scaleX(0);
+
+    transform-origin: left;
+
+    transition: transform .3s ease;
+}
+
+.attendance-menu-card:hover::before {
+    transform: scaleX(1);
+}
+
+
+/* ============================================================
+   CARD HOVER
+   ============================================================ */
+
+.attendance-menu-card:hover {
+    transform: translateY(-5px);
+
+    border-color: #d8e3f1;
+
+    box-shadow:
+        0 18px 35px rgba(15, 23, 42, .09);
+}
+
+
+/* ============================================================
+   ICON
+   ============================================================ */
+
+.attendance-icon {
+    width: 64px;
+    height: 64px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    color: #ffffff;
+
+    margin-bottom: 17px;
+
+    box-shadow:
+        0 6px 15px rgba(15, 23, 42, .07);
+}
+
+.attendance-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+
+/* ============================================================
+   CARD CONTENT
+   ============================================================ */
+
+.attendance-card-content {
+    width: 100%;
+
+    position: relative;
+
+    z-index: 5;
+
+    flex: 1;
+}
+
+.attendance-card-content h3 {
+    margin: 0 0 8px;
+
+    color: #111827;
+
+    font-size: 18px;
+
+    line-height: 1.3;
+
+    font-weight: 700;
+}
+
+.attendance-card-content p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.55;
+
+    max-width: 95%;
+}
+
+
+/* ============================================================
+   OPEN MODULE
+   ============================================================ */
+
+.attendance-open-module {
+    position: absolute;
+
+    left: 20px;
+    bottom: 22px;
+
+    z-index: 10;
+
+    color: #0561e9;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition: transform .25s ease;
+}
+
+.attendance-menu-card:hover .attendance-open-module {
+    transform: translateX(2px);
+}
+
+
+/* ============================================================
+   ARROW
+   ============================================================ */
+
+.attendance-arrow {
+    position: absolute;
+
+    right: 20px;
+    bottom: 17px;
+
+    z-index: 10;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #eaf2ff;
 
     color: #2563eb;
 
-    transform: translateX(8px);
-
+    transition:
+        transform .25s ease,
+        background .25s ease,
+        color .25s ease;
 }
 
-/* ================= Responsive ================= */
+.attendance-arrow svg {
+    width: 21px;
+    height: 21px;
+}
 
-@media (max-width:768px) {
+.attendance-menu-card:hover .attendance-arrow {
+    background: #2563eb;
+
+    color: #ffffff;
+
+    transform: translateX(4px);
+}
+
+
+/* ============================================================
+   CARD DECORATIONS
+   ============================================================ */
+
+.attendance-decoration {
+    position: absolute;
+
+    right: -6px;
+    bottom: -6px;
+
+    z-index: 1;
+
+    color: var(--item-color);
+
+    opacity: .10;
+
+    pointer-events: none;
+}
+
+
+/* ============================================================
+   BARS
+   ============================================================ */
+
+.decoration-bars {
+    width: 72px;
+    height: 70px;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: center;
+
+    gap: 5px;
+}
+
+.decoration-bars span {
+    width: 12px;
+
+    border-radius:
+        5px 5px 2px 2px;
+
+    background: currentColor;
+}
+
+.decoration-bars span:nth-child(1) {
+    height: 25px;
+}
+
+.decoration-bars span:nth-child(2) {
+    height: 43px;
+}
+
+.decoration-bars span:nth-child(3) {
+    height: 63px;
+}
+
+
+/* ============================================================
+   DOCUMENT
+   ============================================================ */
+
+.decoration-document {
+    width: 64px;
+    height: 74px;
+
+    padding: 15px 10px;
+
+    border-radius: 8px;
+
+    background: currentColor;
+}
+
+.decoration-document span {
+    display: block;
+
+    height: 5px;
+
+    margin-bottom: 8px;
+
+    border-radius: 4px;
+
+    background: #ffffff;
+}
+
+
+/* ============================================================
+   PEOPLE
+   ============================================================ */
+
+.decoration-people {
+    width: 95px;
+    height: 72px;
+}
+
+.decoration-people span {
+    position: absolute;
+
+    display: block;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+.decoration-people span:nth-child(1) {
+    width: 26px;
+    height: 26px;
+
+    left: 36px;
+    top: 0;
+}
+
+.decoration-people span:nth-child(2) {
+    width: 42px;
+    height: 28px;
+
+    left: 28px;
+    bottom: 0;
+
+    border-radius:
+        22px 22px 5px 5px;
+}
+
+.decoration-people span:nth-child(3) {
+    width: 19px;
+    height: 19px;
+
+    left: 3px;
+    top: 17px;
+}
+
+
+/* ============================================================
+   HOLIDAY
+   ============================================================ */
+
+.decoration-holiday {
+    font-size: 72px;
+
+    line-height: 1;
+}
+
+
+/* ============================================================
+   PERSON
+   ============================================================ */
+
+.decoration-person {
+    width: 68px;
+    height: 86px;
+}
+
+.person-head {
+    position: absolute;
+
+    left: 21px;
+    top: 0;
+
+    width: 26px;
+    height: 26px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+.person-body {
+    position: absolute;
+
+    left: 7px;
+    bottom: 0;
+
+    width: 55px;
+    height: 50px;
+
+    border-radius:
+        30px 30px 8px 8px;
+
+    background: currentColor;
+}
+
+
+/* ============================================================
+   FOCUS
+   ============================================================ */
+
+.attendance-menu-card:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, .25);
+
+    outline-offset: 3px;
+}
+
+
+/* ============================================================
+   1400px
+   ============================================================ */
+
+@media (max-width: 1400px) {
 
     .attendance-home {
-        padding: 20px;
+        padding-left: 24px;
+        padding-right: 24px;
     }
 
-    .attendance-header h2 {
-        font-size: 30px;
+    .attendance-grid {
+        gap: 16px;
+    }
+
+    .attendance-menu-card {
+        height: 238px;
+
+        padding: 20px;
+    }
+}
+
+
+/* ============================================================
+   1200px
+   ============================================================ */
+
+@media (max-width: 1200px) {
+
+    .attendance-grid {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+    }
+
+    .attendance-header-decoration {
+        width: 120px;
+    }
+}
+
+
+/* ============================================================
+   900px
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .attendance-home {
+        padding: 22px;
+    }
+
+    .attendance-header-decoration {
+        display: none;
+    }
+
+    .attendance-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 16px;
+    }
+
+    .attendance-header-content h1 {
+        font-size: 29px;
+    }
+}
+
+
+/* ============================================================
+   600px
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+    .attendance-home {
+        padding: 18px;
+    }
+
+    .attendance-breadcrumb {
+        margin-bottom: 15px;
+
+        font-size: 13px;
+    }
+
+    .attendance-page-header {
+        margin-bottom: 22px;
+    }
+
+    .attendance-header-content h1 {
+        font-size: 25px;
+    }
+
+    .attendance-header-content p {
+        font-size: 13px;
     }
 
     .attendance-grid {
         grid-template-columns: 1fr;
+
+        gap: 14px;
     }
 
+    .attendance-menu-card {
+        height: 205px;
+
+        padding: 18px;
+    }
+
+    .attendance-icon {
+        width: 58px;
+        height: 58px;
+
+        margin-bottom: 15px;
+    }
+
+    .attendance-icon svg {
+        width: 29px;
+        height: 29px;
+    }
+
+    .attendance-card-content h3 {
+        font-size: 18px;
+    }
+
+    .attendance-card-content p {
+        font-size: 13px;
+    }
+
+    .attendance-open-module {
+        left: 18px;
+        bottom: 20px;
+
+        font-size: 12px;
+    }
+
+    .attendance-arrow {
+        right: 18px;
+        bottom: 15px;
+
+        width: 38px;
+        height: 38px;
+    }
+}
+
+
+/* ============================================================
+   375px
+   ============================================================ */
+
+@media (max-width: 375px) {
+
+    .attendance-home {
+        padding: 15px;
+    }
+
+    .attendance-header-content h1 {
+        font-size: 22px;
+    }
+
+    .attendance-header-content p {
+        font-size: 12px;
+    }
+
+    .attendance-menu-card {
+        height: 190px;
+
+        padding: 16px;
+    }
+
+    .attendance-icon {
+        width: 54px;
+        height: 54px;
+    }
+
+    .attendance-card-content h3 {
+        font-size: 17px;
+    }
+}
+
+
+/* ============================================================
+   TOUCH
+   ============================================================ */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .attendance-menu-card:hover {
+        transform: none;
+
+        box-shadow:
+            0 8px 24px rgba(15, 23, 42, 0.045);
+    }
+
+    .attendance-menu-card:hover::before {
+        transform: scaleX(0);
+    }
+
+    .attendance-menu-card:hover .attendance-arrow {
+        transform: none;
+
+        background: #eaf2ff;
+
+        color: #2563eb;
+    }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .attendance-home *,
+    .attendance-home *::before,
+    .attendance-home *::after {
+        transition: none !important;
+        animation: none !important;
+    }
 }
