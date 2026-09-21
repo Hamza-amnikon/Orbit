@@ -533,6 +533,7 @@ const loadVendors = async () => {
   /* ==========================================================
      CREATE BILL
   ========================================================== */
+  
 
   const handleSaveBill = async (e) => {
 
@@ -633,6 +634,10 @@ const loadVendors = async () => {
       const token =
         localStorage.getItem("token") ||
         localStorage.getItem("accessToken");
+
+console.log("CURRENT LOGGED-IN EMPLOYEE ID:", currentEmployeeId);
+console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
+
 
 
       const response = await fetch(
