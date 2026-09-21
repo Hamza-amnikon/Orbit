@@ -161,7 +161,6 @@ const getPageName = (permission) => {
     ),
   );
 };
-
 const getPagePath = (permission) => {
   return String(
     firstValue(
@@ -178,6 +177,194 @@ const getPagePath = (permission) => {
       ],
       "",
     ),
+  );
+};
+
+// ----------------------------------------------------------
+// Detect personal / self-service pages dynamically
+// Checks BOTH page name and route, case-insensitively.
+// ----------------------------------------------------------
+
+const isPersonalPage = (permission) => {
+  const pageName = getPageName(permission)
+    .trim()
+    .toLowerCase();
+
+  const route = getPagePath(permission)
+    .trim()
+    .toLowerCase();
+
+  const personalPageName =
+    pageName === "mydashboard" ||
+    pageName.startsWith("my ") ||
+    pageName.startsWith("my-") ||
+    pageName.startsWith("my_");
+
+  const personalRoute = route
+    .split("/")
+    .filter(Boolean)
+    .some(
+      (segment) =>
+        segment === "my" ||
+        segment === "mydashboard" ||
+        segment.startsWith("my-") ||
+        segment.startsWith("my_"),
+    );
+
+  return personalPageName || personalRoute;
+};
+
+// ----------------------------------------------------------
+// Resolve the default landing page from the existing Sidebar menu.
+// The first menu item is the application's default landing page.
+// No role ID, page name, or route is hardcoded here.
+// ----------------------------------------------------------
+
+const getDefaultLandingPermission = (permissionList) => {
+  if (!Array.isArray(permissionList) || permissionList.length === 0) {
+    return null;
+  }
+
+  const defaultMenuItem = Array.isArray(menu) ? menu[0] : null;
+
+  if (!defaultMenuItem) {
+    return null;
+  }
+
+  const menuPermissionPath = String(
+    firstValue(
+      defaultMenuItem,
+      [
+        "permissionPath",
+        "PermissionPath",
+        "path",
+        "Path",
+        "route",
+        "Route",
+        "url",
+        "Url",
+      ],
+      "",
+    ),
+  )
+    .trim()
+    .toLowerCase();
+
+  const menuPageName = String(
+    firstValue(
+      defaultMenuItem,
+      [
+        "pageName",
+        "PageName",
+        "label",
+        "Label",
+        "name",
+        "Name",
+        "title",
+        "Title",
+      ],
+      "",
+    ),
+  )
+    .trim()
+    .toLowerCase();
+
+  return (
+    permissionList.find((permission) => {
+      const permissionPath = getPagePath(permission)
+        .trim()
+        .toLowerCase();
+
+      const permissionPageName = getPageName(permission)
+        .trim()
+        .toLowerCase();
+
+      // The default landing page must match the Sidebar item itself.
+      // Do not use startsWith() here. Dashboard uses "/" in the
+      // Sidebar while the permission route can be "/dashboard";
+      // the exact page-name match handles that case safely.
+      const pathMatches =
+        menuPermissionPath &&
+        permissionPath === menuPermissionPath;
+
+      const pageNameMatches =
+        menuPageName &&
+        permissionPageName === menuPageName;
+
+      return pathMatches || pageNameMatches;
+    }) || null
+  );
+};
+
+const isDefaultLandingPermission = (permission, permissionList) => {
+  if (!permission) return false;
+
+  const defaultPermission = getDefaultLandingPermission(permissionList);
+
+  return (
+    defaultPermission &&
+    isSameId(getId(defaultPermission), getId(permission))
+  );
+};
+
+const getDefaultMainPermissions = (permissionList) => {
+  if (!Array.isArray(permissionList) || !Array.isArray(menu)) return [];
+
+  const defaultMenuItems = menu.filter(
+    (item) => item.defaultPermission === true
+  );
+
+  return permissionList.filter((permission) => {
+    const permissionPath = getPagePath(permission).trim().toLowerCase();
+    const permissionPageName = getPageName(permission).trim().toLowerCase();
+
+    return defaultMenuItems.some((menuItem) => {
+      const menuPath = String(
+        firstValue(
+          menuItem,
+          ['permissionPath','PermissionPath','path','Path','route','Route','url','Url'],
+          ''
+        )
+      ).trim().toLowerCase();
+
+      const menuPageName = String(
+        firstValue(
+          menuItem,
+          ['pageName','PageName','label','Label','name','Name','title','Title'],
+          ''
+        )
+      ).trim().toLowerCase();
+
+      // IMPORTANT:
+      // A default permission must be the EXACT main Sidebar page.
+      //
+      // Example:
+      // /employees        -> Employees        (default)
+      // /employees/add    -> Add Employee     (not default)
+      // /employees/list   -> Employee List    (not default)
+      //
+      // Do not use startsWith() here because that would mark
+      // every child page under the module as a default page.
+      const pathMatches =
+        menuPath &&
+        permissionPath === menuPath;
+
+      const pageNameMatches =
+        menuPageName &&
+        permissionPageName === menuPageName;
+
+      return pathMatches || pageNameMatches;
+    });
+  });
+};
+
+const isDefaultMainPermission = (permission, permissionList) => {
+  if (!permission) return false;
+
+  const defaultPermissions = getDefaultMainPermissions(permissionList);
+
+  return defaultPermissions.some((defaultPermission) =>
+    isSameId(getId(defaultPermission), getId(permission))
   );
 };
 
@@ -604,7 +791,93 @@ export default function Permissions() {
           }
         });
 
-        setPermissionActions(loadedActions);
+// ----------------------------------------------------------
+// DEFAULT VIEW ACCESS FOR PERSONAL / "MY" PAGES
+// ----------------------------------------------------------
+
+permissions.forEach((permission) => {
+  const permissionId = getId(permission);
+
+  if (permissionId === null || permissionId === undefined) {
+    return;
+  }
+
+  const id = normalizeId(permissionId);
+
+  // Personal / self-service pages always get View access.
+  // Existing Create/Edit/Delete/Approve/Export values are preserved.
+  if (isPersonalPage(permission)) {
+    loadedActions[id] = {
+      ...(loadedActions[id] || {}),
+      view: true,
+      create: loadedActions[id]?.create ?? false,
+      edit: loadedActions[id]?.edit ?? false,
+      delete: loadedActions[id]?.delete ?? false,
+      approve: loadedActions[id]?.approve ?? false,
+      export: loadedActions[id]?.export ?? false,
+    };
+
+    assignedIds.add(id);
+  }
+});
+
+
+
+
+// ----------------------------------------------------------
+// DEFAULT MAIN SIDEBAR PAGES FOR EVERY ROLE
+// ----------------------------------------------------------
+
+const defaultMainPermissions =
+  getDefaultMainPermissions(permissions);
+
+defaultMainPermissions.forEach((permission) => {
+  const permissionId = normalizeId(getId(permission));
+
+  loadedActions[permissionId] = {
+    view: true,
+    create: true,
+    edit: true,
+    delete: true,
+    approve: true,
+    export: true,
+  };
+
+  assignedIds.add(permissionId);
+});
+
+
+// DEFAULT LANDING PAGE FOR EVERY ROLE
+// ----------------------------------------------------------
+// Resolve it from the existing Sidebar menu and give it all six
+// actions plus Login access. This is applied after DB values so
+// every role receives the same default landing-page selection.
+
+const defaultLandingPermission =
+  getDefaultLandingPermission(permissions);
+
+if (defaultLandingPermission) {
+  const defaultLandingId = normalizeId(
+    getId(defaultLandingPermission),
+  );
+
+  loadedActions[defaultLandingId] = {
+    view: true,
+    create: true,
+    edit: true,
+    delete: true,
+    approve: true,
+    export: true,
+  };
+
+  assignedIds.add(defaultLandingId);
+
+  loadedLoginPages[
+    getModuleName(defaultLandingPermission)
+  ] = defaultLandingId;
+}
+
+setPermissionActions(loadedActions);
         setSelectedPermissions(assignedIds);
         setLoginPages(loadedLoginPages);
 
@@ -629,8 +902,9 @@ export default function Permissions() {
     };
 
     loadRolePermissions();
-  }, [selectedRole]);
+}, [selectedRole, permissions]);
 
+  
   /* ========================================================================
      Normalize permission structure
   ======================================================================== */
@@ -875,14 +1149,24 @@ const modules = useMemo(() => {
 
     setPermissionActions((previous) => {
       const current =
-        previous[permissionId] || {
-          view: false,
-          create: false,
-          edit: false,
-          delete: false,
-          approve: false,
-          export: false,
-        };
+        previous[permissionId] ||
+        (isPersonalPage(permission.raw)
+          ? {
+              view: true,
+              create: false,
+              edit: false,
+              delete: false,
+              approve: false,
+              export: false,
+            }
+          : {
+              view: false,
+              create: false,
+              edit: false,
+              delete: false,
+              approve: false,
+              export: false,
+            });
 
       const updated = {
         ...current,
@@ -1200,17 +1484,29 @@ const modules = useMemo(() => {
         const permissionId =
           normalizeId(permission.id);
 
-        const actions =
-          permissionActions[
-            permissionId
-          ] || {
-            view: false,
-            create: false,
-            edit: false,
-            delete: false,
-            approve: false,
-            export: false,
-          };
+          const actions =
+          isDefaultMainPermission(
+            permission.raw,
+            permissions,
+          )
+            ? {
+                view: true,
+                create: true,
+                edit: true,
+                delete: true,
+                approve: true,
+                export: true,
+              }
+            : permissionActions[
+                permissionId
+              ] || {
+                view: false,
+                create: false,
+                edit: false,
+                delete: false,
+                approve: false,
+                export: false,
+              };
 
         const hasAnyAction =
           Object.values(actions).some(
@@ -1387,6 +1683,50 @@ const modules = useMemo(() => {
         }
       });
 
+      // Re-apply the dynamic default main sidebar pages after reload.
+      const reloadedDefaultMainPermissions =
+        getDefaultMainPermissions(permissions);
+
+      reloadedDefaultMainPermissions.forEach((permission) => {
+        const id = normalizeId(getId(permission));
+
+        updatedActions[id] = {
+          view: true,
+          create: true,
+          edit: true,
+          delete: true,
+          approve: true,
+          export: true,
+        };
+
+        updatedIds.add(id);
+      });
+
+      // Re-apply the dynamic default landing page after reload.
+      const reloadedDefaultLanding =
+        getDefaultLandingPermission(permissions);
+
+      if (reloadedDefaultLanding) {
+        const defaultLandingId = normalizeId(
+          getId(reloadedDefaultLanding),
+        );
+
+        updatedActions[defaultLandingId] = {
+          view: true,
+          create: true,
+          edit: true,
+          delete: true,
+          approve: true,
+          export: true,
+        };
+
+        updatedIds.add(defaultLandingId);
+
+        updatedLoginPages[
+          getModuleName(reloadedDefaultLanding)
+        ] = defaultLandingId;
+      }
+
       setPermissionActions(
         updatedActions,
       );
@@ -1508,6 +1848,50 @@ const modules = useMemo(() => {
         assignedIds.add(id);
       }
     });
+
+    // Re-apply the dynamic default main sidebar pages on Cancel as well.
+    const restoredDefaultMainPermissions =
+      getDefaultMainPermissions(permissions);
+
+    restoredDefaultMainPermissions.forEach((permission) => {
+      const id = normalizeId(getId(permission));
+
+      restoredActions[id] = {
+        view: true,
+        create: true,
+        edit: true,
+        delete: true,
+        approve: true,
+        export: true,
+      };
+
+      assignedIds.add(id);
+    });
+
+    // Re-apply the dynamic default landing page on Cancel as well.
+    const restoredDefaultLanding =
+      getDefaultLandingPermission(permissions);
+
+    if (restoredDefaultLanding) {
+      const defaultLandingId = normalizeId(
+        getId(restoredDefaultLanding),
+      );
+
+      restoredActions[defaultLandingId] = {
+        view: true,
+        create: true,
+        edit: true,
+        delete: true,
+        approve: true,
+        export: true,
+      };
+
+      assignedIds.add(defaultLandingId);
+
+      restoredLoginPages[
+        getModuleName(restoredDefaultLanding)
+      ] = defaultLandingId;
+    }
 
     setPermissionActions(
       restoredActions,
@@ -1723,17 +2107,34 @@ const modules = useMemo(() => {
     const permissionId =
       normalizeId(permission.id);
 
-    const actions =
-      permissionActions[
-        permissionId
-      ] || {
-        view: false,
-        create: false,
-        edit: false,
-        delete: false,
-        approve: false,
-        export: false,
-      };
+    const savedActions =
+      permissionActions[permissionId];
+
+    const isDefaultMain =
+      isDefaultMainPermission(
+        permission.raw,
+        permissions,
+      );
+
+    const actions = isDefaultMain
+      ? {
+          view: true,
+          create: true,
+          edit: true,
+          delete: true,
+          approve: true,
+          export: true,
+        }
+      : {
+          view: isPersonalPage(permission.raw)
+            ? true
+            : savedActions?.view ?? false,
+          create: savedActions?.create ?? false,
+          edit: savedActions?.edit ?? false,
+          delete: savedActions?.delete ?? false,
+          approve: savedActions?.approve ?? false,
+          export: savedActions?.export ?? false,
+        };
 
     return (
       <input

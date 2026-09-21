@@ -15,9 +15,10 @@ import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
+import RequestQuoteRoundedIcon from "@mui/icons-material/RequestQuoteRounded";
+
 
 import { useAuth } from "../../../context/AuthContext";
-
 
 export const menu = [
   {
@@ -25,24 +26,28 @@ export const menu = [
     icon: <DashboardRoundedIcon />,
     path: "/",
     permissionPath: "/",
+    defaultPermission: true,
   },
   {
     title: "Employees",
     icon: <PeopleRoundedIcon />,
     path: "/employees",
     permissionPath: "/employees",
+    defaultPermission: true,
   },
   {
     title: "Attendance",
     icon: <AccessTimeRoundedIcon />,
     path: "/attendance",
     permissionPath: "/attendance",
+    defaultPermission: true,
   },
   {
     title: "Leave",
     icon: <EventBusyRoundedIcon />,
     path: "/leave",
     permissionPath: "/leave",
+    defaultPermission: true,
   },
   {
     title: "Approvals",
@@ -55,6 +60,7 @@ export const menu = [
     icon: <PaymentsRoundedIcon />,
     path: "/payroll",
     permissionPath: "/payroll",
+    defaultPermission: true,
   },
   {
     title: "Reports",
@@ -67,6 +73,7 @@ export const menu = [
     icon: <ConfirmationNumberRoundedIcon />,
     path: "/tickets",
     permissionPath: "/tickets",
+    defaultPermission: true,
   },
   {
     title: "Documents",
@@ -79,9 +86,10 @@ export const menu = [
     icon: <SettingsRoundedIcon />,
     path: "/settings",
     permissionPath: "/settings",
+    defaultPermission: true,
   },
   {
-    title: "Permission ",
+    title: "Permission",
     icon: <SettingsRoundedIcon />,
     path: "/permission-management",
     permissionPath: "/permission-management",
@@ -91,6 +99,15 @@ export const menu = [
     icon: <ReceiptLongRoundedIcon />,
     path: "/reimbursements",
     permissionPath: "/reimbursements",
+    defaultPermission: true,
+  },
+
+  {
+    title: "Bill",
+    icon: <RequestQuoteRoundedIcon />,
+    path: "/bills",
+    permissionPath: "/bills",
+    defaultPermission: true,
   },
 ];
 
@@ -185,12 +202,10 @@ function Sidebar() {
   // FILTER MENU BASED ON PERMISSIONS
   // =========================================================
 
-  const allowedMenu = menu.filter((item) =>
-    hasPermission(
-      item.permissionPath,
-      "view"
-    )
-  );
+const allowedMenu = menu.filter((item) =>
+  item.defaultPermission === true ||
+  hasPermission(item.permissionPath, "view")
+);
 
 
   return (

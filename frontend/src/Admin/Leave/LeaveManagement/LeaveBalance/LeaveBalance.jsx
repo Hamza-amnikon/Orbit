@@ -31,6 +31,7 @@ import {
 import {
   Search,
   Refresh,
+  Sync,
   ArrowBack,
   Clear,
   People,
@@ -45,6 +46,9 @@ const BALANCE_API =
 
 const LEAVE_TYPE_API =
   "https://localhost:7206/api/LeaveType";
+
+const LEAVE_SYNC_API =
+  "https://localhost:7206/api/Leave/sync";
 
 export default function LeaveBalance() {
 
@@ -61,6 +65,7 @@ export default function LeaveBalance() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [syncing, setSyncing] = useState(false);
 
   const [selectedAzureEmployee, setSelectedAzureEmployee] =
     useState("");
@@ -247,6 +252,45 @@ const [compOffOpen, setCompOffOpen] = useState(false);
   const handleAddCompOff = () => {
     if (!canCreate) return;
     setCompOffOpen(true);
+  };
+
+  // ==========================================================
+  // SYNC LEAVE POLICIES
+  // ==========================================================
+
+  const handleSyncLeavePolicies = async () => {
+    if (syncing) return;
+
+    try {
+      setSyncing(true);
+      setError("");
+
+      const response = await axios.post(LEAVE_SYNC_API);
+
+      window.alert(
+        response.data?.message ||
+          "Leave Policies synchronized successfully."
+      );
+
+      // Reload balances so the latest synchronized values
+      // are immediately reflected in the table and summary cards.
+      await loadLeaveBalance();
+    } catch (err) {
+      console.error("Error synchronizing leave policies:", err);
+
+      const apiMessage =
+        err.response?.data?.message ||
+        err.response?.data ||
+        "Unable to synchronize leave policies.";
+
+      setError(
+        typeof apiMessage === "string"
+          ? apiMessage
+          : "Unable to synchronize leave policies."
+      );
+    } finally {
+      setSyncing(false);
+    }
   };
 
   // ==========================================================
@@ -454,12 +498,24 @@ const [compOffOpen, setCompOffOpen] = useState(false);
           </Button>
           
           {canCreate && (
-            <Button
-              variant="contained"
-              onClick={handleAddCompOff}
-            >
-              + Add Comp-Off
-            </Button>
+            <>
+              <Button
+                variant="outlined"
+                className="sync-leave-policy-btn"
+                startIcon={<Sync />}
+                onClick={handleSyncLeavePolicies}
+                disabled={syncing || loading}
+              >
+                {syncing ? "Syncing..." : "Sync Leave Policy"}
+              </Button>
+
+              <Button
+                variant="contained"
+                onClick={handleAddCompOff}
+              >
+                + Add Comp-Off
+              </Button>
+            </>
           )}
         </Stack>
       </Box>

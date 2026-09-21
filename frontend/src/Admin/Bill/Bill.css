@@ -1,0 +1,2413 @@
+/* ============================================================
+   BILL PAGE
+============================================================ */
+
+.bill-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 20px 24px 30px;
+  box-sizing: border-box;
+  background: #f7f9fc;
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.bill-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.bill-title-section h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #172033;
+}
+
+.bill-title-section p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: #7b8798;
+}
+
+
+/* ============================================================
+   BILL HEADER ACTIONS
+============================================================ */
+
+.bill-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.create-bill-btn,
+.add-vendor-btn,
+.recent-activity-btn {
+  height: 38px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 7px;
+  background: #2563eb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.create-bill-btn svg,
+.add-vendor-btn svg,
+.recent-activity-btn svg {
+  font-size: 18px;
+}
+
+/* ============================================================
+   ERROR
+============================================================ */
+
+.bill-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #be123c;
+  padding: 10px 12px;
+  border-radius: 7px;
+  margin-bottom: 15px;
+  font-size: 12px;
+}
+
+.bill-error button {
+  border: 0;
+  background: transparent;
+  color: #be123c;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+
+/* ============================================================
+   SUMMARY
+============================================================ */
+
+.bill-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.bill-summary-card {
+  min-width: 0;
+  min-height: 96px;
+  border: 1px solid #e1e7ef;
+  border-radius: 9px;
+  background: #ffffff;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bill-summary-card:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.bill-summary-icon {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bill-summary-icon svg {
+  font-size: 20px;
+}
+
+.bill-summary-icon.blue {
+  background: #e8f0ff;
+  color: #2563eb;
+}
+
+.bill-summary-icon.orange {
+  background: #fff4dc;
+  color: #d97706;
+}
+
+.bill-summary-icon.green {
+  background: #e6f8ef;
+  color: #059669;
+}
+
+.bill-summary-icon.red {
+  background: #ffe9ed;
+  color: #e11d48;
+}
+
+.bill-summary-icon.purple {
+  background: #f0eaff;
+  color: #7c3aed;
+}
+
+.bill-summary-icon.rupee {
+  background: #e7f8f0;
+  color: #059669;
+}
+
+.bill-summary-content {
+  min-width: 0;
+}
+
+.bill-summary-content span {
+  display: block;
+  font-size: 10px;
+  color: #718096;
+  margin-bottom: 4px;
+}
+
+.bill-summary-content h2 {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.2;
+  color: #1f2937;
+}
+
+.bill-summary-content small {
+  display: block;
+  margin-top: 4px;
+  color: #9aa5b5;
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   TABLE CARD
+============================================================ */
+
+.bill-table-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #dfe5ed;
+  border-radius: 9px;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   FILTER ROW
+============================================================ */
+
+.bill-filter-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(250px, 1fr) 125px 125px 75px 80px;
+  gap: 7px;
+  align-items: center;
+  margin-bottom: 9px;
+}
+
+
+/* ============================================================
+   SEARCH
+============================================================ */
+
+.bill-search-box {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px;
+  border: 1px solid #dbe2eb;
+  border-radius: 6px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.bill-search-box svg {
+  color: #8491a5;
+  font-size: 17px;
+}
+
+.bill-search-box input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 11px;
+  color: #334155;
+}
+
+.bill-search-box input::placeholder {
+  color: #9aa6b8;
+}
+
+
+/* ============================================================
+   DATE INPUT
+============================================================ */
+
+.bill-date-input {
+  position: relative;
+  height: 38px;
+  border: 1px solid #dbe2eb;
+  border-radius: 6px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 0 9px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.bill-date-input input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.bill-date-input .date-label {
+  font-size: 11px;
+  color: #8996a8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 20px;
+}
+
+.bill-date-input.has-date .date-label {
+  color: #475569;
+}
+
+.bill-date-input svg {
+  position: absolute;
+  right: 8px;
+  font-size: 15px;
+  color: #7f8ca0;
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   FILTER BUTTON
+============================================================ */
+.filter-btn {
+  width: 65px;
+  min-width: 65px;
+  height: 35px;
+
+  padding: 0 12px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: #1468ed;
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   RESET BUTTON
+========================================================= */
+
+.reset-btn {
+  flex: 0 0 95px;
+
+  width: 50px;
+  min-width: 75px;
+  height: 40px;
+
+  border: 1px solid #dfe5ed;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #667085;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+
+  font-size: 10px;
+  font-weight: 600;
+
+  box-sizing: border-box;
+}
+
+.reset-btn svg {
+  font-size: 15px;
+}
+
+
+/* ============================================================
+   ADVANCED FILTER
+============================================================ */
+
+.bill-status-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 0;
+  margin-bottom: 8px;
+  border-top: 1px solid #eef2f6;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.bill-status-filter select {
+  height: 34px;
+  min-width: 170px;
+  padding: 0 9px;
+  border: 1px solid #dbe2eb;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 11px;
+  outline: none;
+}
+
+
+/* ============================================================
+   TABLE WRAPPER
+
+   IMPORTANT:
+   NO fixed/min-height here.
+============================================================ */
+
+.bill-table-wrapper {
+  width: 100%;
+  overflow: visible;
+}
+
+
+/* ============================================================
+   TABLE
+============================================================ */
+
+.bill-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.bill-table thead {
+  background: #f8fafc;
+}
+
+.bill-table th {
+  height: 36px;
+  padding: 0 9px;
+  text-align: left;
+  border-bottom: 1px solid #e5eaf0;
+  color: #526174;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   BODY ROWS
+
+   8 records will therefore occupy approximately:
+   8 x 38px = 304px
+   which matches the reference.
+============================================================ */
+
+.bill-table tbody tr {
+  height: 38px;
+}
+
+.bill-table tbody tr:hover {
+  background: #fafcff;
+}
+
+.bill-table td {
+  height: 38px;
+  padding: 0 9px;
+  border-bottom: 1px solid #eef2f6;
+  color: #344054;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+
+/* ============================================================
+   COLUMN WIDTHS
+============================================================ */
+
+.bill-table th:nth-child(1),
+.bill-table td:nth-child(1) {
+  width: 10%;
+}
+
+.bill-table th:nth-child(2),
+.bill-table td:nth-child(2) {
+  width: 13%;
+}
+
+.bill-table th:nth-child(3),
+.bill-table td:nth-child(3) {
+  width: 12%;
+}
+
+.bill-table th:nth-child(4),
+.bill-table td:nth-child(4) {
+  width: 10%;
+}
+
+.bill-table th:nth-child(5),
+.bill-table td:nth-child(5) {
+  width: 10%;
+}
+
+.bill-table th:nth-child(6),
+.bill-table td:nth-child(6) {
+  width: 9%;
+}
+
+.bill-table th:nth-child(7),
+.bill-table td:nth-child(7) {
+  width: 11%;
+}
+
+.bill-table th:nth-child(8),
+.bill-table td:nth-child(8) {
+  width: 11%;
+}
+
+/* ACTION */
+.bill-table th:nth-child(9),
+.bill-table td:nth-child(9) {
+  width: 14%;
+}
+
+.bill-table th:last-child,
+.bill-table td:last-child {
+  overflow: visible;
+}
+
+/* ============================================================
+   BILL NUMBER
+============================================================ */
+
+.bill-number {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #2563eb;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+/* ============================================================
+   AMOUNT
+============================================================ */
+
+.bill-amount {
+  color: #111827 !important;
+  font-weight: 600;
+}
+
+
+/* ============================================================
+   STATUS
+============================================================ */
+
+.bill-status,
+.payment-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  max-width: 100%;
+  padding: 4px 7px;
+  border-radius: 5px;
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+
+/* Approved */
+
+.status-approved {
+  background: #dff7ea;
+  color: #059669;
+}
+
+
+/* Pending Approval */
+
+.status-pending {
+  background: #fff1c9;
+  color: #c77a00;
+}
+
+
+/* Rejected */
+
+.status-rejected {
+  background: #ffe1e6;
+  color: #e11d48;
+}
+
+
+/* Paid */
+
+.status-paid {
+  background: #dff7ea;
+  color: #059669;
+}
+
+
+/* Payment Pending */
+
+.status-payment-pending {
+  background: #fff1c9;
+  color: #c77a00;
+}
+
+
+/* Neutral */
+
+.status-neutral {
+  background: #eef2f6;
+  color: #64748b;
+}
+
+
+/* ============================================================
+   TABLE MESSAGE
+============================================================ */
+
+.table-message {
+  height: 100px !important;
+  text-align: center !important;
+  color: #94a3b8 !important;
+  font-size: 11px !important;
+}
+
+
+/* ============================================================
+   PAGINATION
+============================================================ */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pagination button {
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  border: 1px solid #dbe2eb;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.pagination button.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination .pagination-arrow {
+  font-size: 17px;
+}
+
+
+/* ============================================================
+   BOTTOM GRID
+============================================================ */
+
+.bill-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+}
+
+/* ============================================================
+   QUICK ACTIONS
+============================================================ */
+
+.quick-actions-card,
+.recent-activity-card {
+  background: #ffffff;
+  border: 1px solid #dfe5ed;
+  border-radius: 9px;
+  padding: 14px;
+}
+
+.quick-actions-card h3,
+.recent-activity-card h3 {
+  margin: 0 0 12px;
+  color: #1f2937;
+  font-size: 13px;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.quick-actions > button {
+  border: 1px solid #edf0f5;
+  border-radius: 7px;
+  background: #ffffff;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.quick-actions > button:hover {
+  background: #f8fafc;
+}
+
+.quick-icon {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quick-icon svg {
+  font-size: 17px;
+}
+
+.quick-icon.blue {
+  background: #e8f0ff;
+  color: #2563eb;
+}
+
+.quick-icon.orange {
+  background: #fff3d8;
+  color: #d97706;
+}
+
+.quick-icon.purple {
+  background: #f0eaff;
+  color: #7c3aed;
+}
+
+.quick-icon.green {
+  background: #e4f8ee;
+  color: #059669;
+}
+
+.quick-actions strong {
+  display: block;
+  color: #334155;
+  font-size: 10px;
+}
+
+.quick-actions span {
+  display: block;
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   ACTIVITY
+============================================================ */
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.activity-header h3 {
+  margin-bottom: 0;
+}
+
+.activity-header button {
+  border: 0;
+  background: transparent;
+  color: #2563eb;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.activity-list {
+  margin-top: 8px;
+}
+
+.activity-item {
+  width: 100%;
+  min-height: 34px;
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 1px solid #eef2f6;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.activity-clickable {
+  cursor: pointer;
+}
+
+.activity-clickable:hover {
+  background: #fafcff;
+}
+
+.activity-item > span {
+  flex: 1;
+  color: #536174;
+  font-size: 10px;
+}
+
+.activity-item small {
+  color: #9aa5b5;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.activity-dot {
+  width: 7px;
+  height: 7px;
+  min-width: 7px;
+  border-radius: 50%;
+}
+
+.green-dot {
+  background: #10b981;
+}
+
+.purple-dot {
+  background: #8b5cf6;
+}
+
+.red-dot {
+  background: #ef4444;
+}
+
+.blue-dot {
+  background: #3b82f6;
+}
+
+.empty-activity {
+  color: #94a3b8;
+}
+
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+.bill-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.bill-modal {
+  width: min(650px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+}
+
+.bill-modal-header {
+  padding: 16px 18px;
+  border-bottom: 1px solid #edf1f5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bill-modal-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 17px;
+}
+
+.bill-modal-header p {
+  margin: 4px 0 0;
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+.bill-modal-header > button {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ============================================================
+   FORM
+============================================================ */
+
+.bill-form-grid {
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+.bill-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bill-form-group label,
+.bill-details-grid label {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.bill-form-group input,
+.bill-form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #dbe2eb;
+  border-radius: 6px;
+  outline: none;
+  padding: 9px;
+  color: #334155;
+  font-size: 11px;
+  font-family: inherit;
+}
+
+.bill-form-group input {
+  height: 36px;
+}
+
+.bill-form-group textarea {
+  resize: vertical;
+}
+
+.bill-form-group input:focus,
+.bill-form-group textarea:focus {
+  border-color: #2563eb;
+}
+
+.bill-form-full {
+  grid-column: 1 / -1;
+}
+
+
+/* ============================================================
+   MODAL FOOTER
+============================================================ */
+
+.bill-modal-footer {
+  padding: 12px 18px;
+  border-top: 1px solid #edf1f5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.bill-cancel-btn,
+.bill-save-btn {
+  height: 35px;
+  padding: 0 15px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.bill-cancel-btn {
+  border: 1px solid #dbe2eb;
+  background: #ffffff;
+  color: #475569;
+}
+
+.bill-save-btn {
+  border: 0;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.bill-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   DETAILS
+============================================================ */
+
+.bill-details-grid {
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 17px;
+}
+
+.bill-details-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bill-details-grid strong {
+  color: #1f2937;
+  font-size: 11px;
+}
+
+.bill-details-full {
+  grid-column: 1 / -1;
+}
+
+.bill-details-full p {
+  margin: 0;
+  padding: 10px;
+  min-height: 50px;
+  border: 1px solid #edf1f5;
+  border-radius: 6px;
+  color: #536174;
+  font-size: 10px;
+}
+
+
+/* ============================================================
+   ACTIVITY MODAL
+============================================================ */
+
+.activity-modal-list {
+  padding: 10px 18px;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 1200px) {
+
+  .bill-summary-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .bill-filter-row {
+    grid-template-columns:
+      minmax(220px, 1fr)
+      120px
+      120px
+      75px
+      80px;
+  }
+
+}
+
+
+@media (max-width: 900px) {
+
+  .bill-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bill-filter-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bill-search-box {
+    grid-column: 1 / -1;
+  }
+
+  .bill-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .bill-page {
+    padding: 14px;
+  }
+
+  .bill-page-header {
+    align-items: flex-start;
+    gap: 12px;
+    flex-direction: column;
+  }
+
+  .bill-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bill-filter-row {
+    grid-template-columns: 1fr;
+  }
+
+  .bill-search-box {
+    grid-column: auto;
+  }
+
+  .bill-status-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bill-status-filter select {
+    width: 100%;
+  }
+
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .bill-form-grid,
+  .bill-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bill-form-full,
+  .bill-details-full {
+    grid-column: auto;
+  }
+
+}
+
+/* =========================================================
+   STATUS DROPDOWN
+========================================================= */
+
+.bill-status-filter select:first-child {
+  background: #eef6ff;
+  border: 1px solid #b9d5ff;
+  color: #1769d1;
+  font-weight: 600;
+}
+
+
+/* Status dropdown options */
+
+.bill-status-filter select:first-child option {
+  background: #ffffff;
+  color: #344054;
+  font-weight: 500;
+}
+
+/* All Status */
+.bill-status-filter select:first-child option[value=""] {
+  background: #e8f1ff;
+  color: #1769d1;
+  font-weight: 600;
+}
+
+/* Pending Approval */
+.bill-status-filter select:first-child option[value="Pending Approval"] {
+  background: #fff4d6;
+  color: #b77900;
+}
+
+/* Approved */
+.bill-status-filter select:first-child option[value="Approved"] {
+  background: #e4f8ed;
+  color: #07864b;
+}
+
+/* Rejected */
+.bill-status-filter select:first-child option[value="Rejected"] {
+  background: #ffe7eb;
+  color: #d92d45;
+}
+
+
+/* =========================================================
+   PAYMENT STATUS DROPDOWN
+========================================================= */
+
+.bill-status-filter select:nth-child(2) {
+  background: #f5efff;
+  border: 1px solid #d9c8fa;
+  color: #7138b8;
+  font-weight: 600;
+}
+
+
+/* Payment dropdown options */
+
+.bill-status-filter select:nth-child(2) option {
+  background: #ffffff;
+  color: #090cc7;
+  font-weight: 500;
+}
+
+/* All Payment Status */
+.bill-status-filter select:nth-child(2) option[value=""] {
+  background: #f1eaff;
+  color: #7138b8;
+  font-weight: 600;
+}
+
+/* Pending */
+.bill-status-filter select:nth-child(2) option[value="Pending"] {
+  background: #fff4d6;
+  color: #b77900;
+}
+
+/* Paid */
+.bill-status-filter select:nth-child(2) option[value="Paid"] {
+  background: #e4f8ed;
+  color: #07864b;
+}
+
+
+/* =========================================================
+   EXPORT BUTTON
+========================================================= */
+
+.export-btn {
+  flex: 0 0 78px;
+  width: 78px;
+  min-width: 78px;
+  height: 35px;
+
+  border: 1px solid #b8d3ff;
+  border-radius: 6px;
+
+  background: #eef6ff;
+  color: #1769d1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+  padding: 0 10px;
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  transition: all 0.2s ease;
+}
+
+.export-btn svg {
+  font-size: 15px;
+}
+
+.export-btn:hover {
+  background: #dcecff;
+  border-color: #8fbaff;
+  color: #0d5bc1;
+}
+
+
+/* =========================================================
+   TABLE FOOTER - TOTAL BILLS
+========================================================= */
+
+.bill-table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  min-height: 48px;
+  padding: 0 18px;
+
+  border-top: 1px solid #edf0f5;
+  background: #ffffff;
+
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.bill-table-footer span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bill-table-footer strong {
+  color: #1f2937;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   VENDOR TABLE
+============================================================ */
+
+.vendor-table-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px;
+  margin-top: 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.vendor-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.vendor-table-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.vendor-table-header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.vendor-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.vendor-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.vendor-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+}
+
+.vendor-table thead {
+  background: #f8fafc;
+}
+
+.vendor-table th {
+  padding: 11px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.vendor-table td {
+  padding: 12px 14px;
+  font-size: 12px;
+  color: #374151;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.vendor-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.vendor-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.vendor-table td:first-child {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.vendor-table-empty {
+  text-align: center !important;
+  padding: 24px !important;
+  color: #9ca3af !important;
+  font-size: 12px !important;
+}
+
+/* ============================================================
+   BILL / VENDOR TABS
+============================================================ */
+
+.bill-vendor-tabs {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 0;
+  padding: 0 4px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.bill-vendor-tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  border: none;
+  background: transparent;
+
+  padding: 12px 4px 13px;
+  margin: 0;
+
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.bill-vendor-tab svg {
+  width: 18px;
+  height: 18px;
+}
+
+.bill-vendor-tab:hover {
+  color: #2563eb;
+}
+
+.bill-vendor-tab.active {
+  color: #2563eb;
+}
+
+.bill-vendor-tab.active::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+
+  height: 2px;
+
+  background: #2563eb;
+
+  border-radius: 2px 2px 0 0;
+}
+
+
+/* ============================================================
+   BILL TABLE - ACTION COLUMN
+============================================================ */
+
+.bill-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  width: max-content;
+  min-width: 100%;
+  min-height: 32px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   ACTION BUTTONS
+============================================================ */
+
+.bill-actions > button {
+  height: 28px;
+  padding: 0 8px;
+  margin: 0;
+  border: 1px solid #dbe2eb;
+  border-radius: 5px;
+  background: #ffffff;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+/* View */
+.bill-actions .bill-view-action {
+  color: #2563eb;
+  border-color: #b9d5ff;
+  background: #eef6ff;
+}
+
+.bill-actions .bill-view-action:hover {
+  color: #1769d1;
+  border-color: #8fbaff;
+  background: #dcecff;
+}
+
+/* Approve */
+.bill-actions .bill-approve-action {
+  color: #059669;
+  border-color: #b7ead5;
+  background: #ecfdf5;
+}
+
+.bill-actions .bill-approve-action:hover {
+  color: #047857;
+  border-color: #6ee7b7;
+  background: #d1fae5;
+}
+
+/* Reject */
+.bill-actions .bill-reject-action {
+  color: #dc2626;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.bill-actions .bill-reject-action:hover {
+  color: #b91c1c;
+  border-color: #fca5a5;
+  background: #fee2e2;
+}
+
+/* ============================================================
+   ACTION CELL WIDTH
+============================================================ */
+
+.bill-table th:nth-child(9),
+.bill-table td:nth-child(9) {
+  width: 14%;
+  min-width: 140px;
+  overflow: visible !important;
+  white-space: nowrap;
+}
+
+.bill-table td:nth-child(9) {
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .bill-status-modal {
+    width: calc(100vw - 28px);
+    max-width: calc(100vw - 28px);
+  }
+
+  .bill-action-user-info {
+    flex-wrap: wrap;
+  }
+}
+
+/* =========================================================
+   APPROVE / REJECT BILL MODAL
+   ========================================================= */
+
+.bill-status-modal {
+  width: 520px;
+  max-width: calc(100vw - 40px);
+  max-height: 90vh;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+/* Modal Header */
+.bill-status-modal .bill-modal-header {
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.bill-status-modal .bill-modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.bill-status-modal .bill-modal-header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8ba4c7;
+}
+
+.bill-status-modal .bill-modal-header > button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.bill-status-modal .bill-modal-header > button:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.bill-status-modal .bill-modal-header > button svg {
+  font-size: 21px;
+}
+
+
+/* =========================================================
+   CONFIRMATION CONTENT
+   ========================================================= */
+
+.bill-status-confirmation {
+  padding: 14px 22px 18px;
+}
+
+.bill-status-confirmation > p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #374151;
+}
+
+
+/* =========================================================
+   ACTION BY
+   ========================================================= */
+
+.bill-action-user-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.bill-action-user-info span {
+  color: #4b5563;
+  font-weight: 400;
+}
+
+.bill-action-user-info strong {
+  color: #374151;
+  font-weight: 700;
+}
+
+.bill-action-user-info small {
+  color: #374151;
+  font-size: 13px;
+  margin-left: 2px;
+}
+
+
+/* =========================================================
+   COMMENT
+   ========================================================= */
+
+.bill-status-modal .bill-form-group {
+  margin: 0;
+}
+
+.bill-status-modal .bill-form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.bill-status-modal .bill-form-group textarea {
+  width: 100%;
+  min-height: 78px;
+  resize: vertical;
+  box-sizing: border-box;
+
+  padding: 10px 11px;
+
+  border: 1px solid #d7dee8;
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #374151;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bill-status-modal .bill-form-group textarea::placeholder {
+  color: #a8b1bf;
+}
+
+.bill-status-modal .bill-form-group textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
+}
+
+.bill-status-modal .bill-form-group textarea:disabled {
+  background: #f8fafc;
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.bill-status-modal .bill-modal-footer {
+  padding: 12px 22px 16px;
+  border-top: 1px solid #e5e7eb;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+
+/* Cancel */
+.bill-status-modal .bill-cancel-btn {
+  height: 30px;
+  padding: 0 14px;
+
+  border: 1px solid #d5dce6;
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #475569;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.bill-status-modal .bill-cancel-btn:hover {
+  background: #f8fafc;
+}
+
+
+/* =========================================================
+   APPROVE BUTTON
+   ========================================================= */
+
+.bill-status-modal .bill-approve-confirm-btn {
+  height: 30px;
+  padding: 0 14px;
+
+  border: 1px solid #86efac;
+  border-radius: 6px;
+
+  background: #ecfdf5;
+  color: #047857;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.bill-status-modal .bill-approve-confirm-btn:hover {
+  background: #d1fae5;
+}
+
+
+/* =========================================================
+   REJECT BUTTON
+   ========================================================= */
+
+.bill-status-modal .bill-reject-confirm-btn {
+  height: 30px;
+  padding: 0 14px;
+
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+
+  background: #fff1f2;
+  color: #dc2626;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.bill-status-modal .bill-reject-confirm-btn:hover {
+  background: #ffe4e6;
+}
+
+
+/* Disabled buttons */
+.bill-status-modal .bill-cancel-btn:disabled,
+.bill-status-modal .bill-approve-confirm-btn:disabled,
+.bill-status-modal .bill-reject-confirm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   CREATE BILL - MUI DIALOG
+   Compact layout matching the Create Bill screenshot
+============================================================ */
+
+/* ------------------------------------------------------------
+   MUI DIALOG / OVERLAY
+------------------------------------------------------------ */
+
+.bill-create-mui-dialog .MuiBackdrop-root {
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.bill-create-mui-dialog .MuiDialog-container {
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.bill-create-mui-dialog .MuiDialog-paper,
+.bill-create-modal {
+  width: 488px;
+  max-width: calc(100vw - 30px);
+  margin: 0;
+  border-radius: 9px;
+  background: #ffffff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.22);
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------
+   MUI DIALOG TITLE / HEADER
+------------------------------------------------------------ */
+
+.bill-create-mui-dialog .MuiDialogTitle-root,
+.bill-create-mui-header,
+.bill-create-modal-header {
+  min-height: 56px;
+  box-sizing: border-box;
+  padding: 13px 14px 10px !important;
+  border-bottom: 1px solid #e5eaf0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.bill-create-mui-dialog .MuiDialogTitle-root {
+  color: #172033;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.bill-create-mui-title,
+.bill-create-modal-title {
+  margin: 0;
+  color: #172033;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.bill-create-mui-subtitle,
+.bill-create-modal-subtitle {
+  margin-top: 3px;
+  color: #8a94a6;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+/* Close button */
+
+.bill-create-mui-close,
+.bill-create-modal-close {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  padding: 0 !important;
+  margin: -2px 0 0 8px !important;
+  border: 0 !important;
+  border-radius: 5px !important;
+  background: transparent !important;
+  color: #64748b !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.bill-create-mui-close:hover,
+.bill-create-modal-close:hover {
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+}
+
+.bill-create-mui-close .MuiSvgIcon-root {
+  font-size: 20px;
+}
+
+/* ------------------------------------------------------------
+   MUI DIALOG CONTENT
+------------------------------------------------------------ */
+
+.bill-create-mui-dialog .MuiDialogContent-root,
+.bill-create-mui-form,
+.bill-create-form {
+  padding: 14px !important;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------
+   FORM GRID
+------------------------------------------------------------ */
+
+.bill-create-mui-grid,
+.bill-create-form-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 10px;
+  row-gap: 10px;
+  box-sizing: border-box;
+}
+
+.bill-create-mui-full,
+.bill-create-form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* ------------------------------------------------------------
+   FIELD WRAPPER
+------------------------------------------------------------ */
+
+.bill-create-mui-field,
+.bill-create-form-group {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------
+   LABELS
+------------------------------------------------------------ */
+
+.bill-create-mui-label,
+.bill-create-form-label {
+  margin: 0;
+  color: #536174;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.bill-create-mui-required,
+.bill-create-form-label .required {
+  color: #ef4444;
+}
+
+/* MUI InputLabel */
+
+.bill-create-mui-dialog .MuiInputLabel-root {
+  color: #536174;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.bill-create-mui-dialog .MuiInputLabel-root.Mui-focused {
+  color: #2563eb;
+}
+
+/* ------------------------------------------------------------
+   MUI TEXTFIELD / OUTLINED INPUT
+------------------------------------------------------------ */
+
+.bill-create-mui-dialog .MuiTextField-root {
+  width: 100%;
+  margin: 0;
+}
+
+.bill-create-mui-dialog .MuiFormControl-root {
+  width: 100%;
+  margin: 0;
+}
+
+.bill-create-mui-dialog .MuiOutlinedInput-root,
+.bill-create-mui-field .MuiOutlinedInput-root {
+  width: 100%;
+  min-height: 28px;
+  height: 28px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 10px;
+}
+
+.bill-create-mui-dialog .MuiOutlinedInput-root fieldset,
+.bill-create-mui-field .MuiOutlinedInput-root fieldset {
+  border: 1px solid #d5dce6;
+}
+
+.bill-create-mui-dialog .MuiOutlinedInput-root:hover fieldset,
+.bill-create-mui-field .MuiOutlinedInput-root:hover fieldset {
+  border-color: #b8c2d1;
+}
+
+.bill-create-mui-dialog
+  .MuiOutlinedInput-root.Mui-focused
+  fieldset,
+.bill-create-mui-field
+  .MuiOutlinedInput-root.Mui-focused
+  fieldset {
+  border-color: #2563eb;
+  border-width: 1px;
+}
+
+.bill-create-mui-dialog .MuiOutlinedInput-root.Mui-focused,
+.bill-create-mui-field .MuiOutlinedInput-root.Mui-focused {
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.06);
+}
+
+/* Input text */
+
+.bill-create-mui-dialog .MuiOutlinedInput-input,
+.bill-create-mui-field .MuiOutlinedInput-input {
+  height: 28px;
+  min-height: 28px;
+  box-sizing: border-box;
+  padding: 0 9px;
+  color: #1e293b;
+  font-size: 10px;
+  font-family: inherit;
+}
+
+.bill-create-mui-dialog .MuiOutlinedInput-input::placeholder,
+.bill-create-mui-field .MuiOutlinedInput-input::placeholder {
+  color: #a2acba;
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------
+   MUI SELECT / VENDOR
+------------------------------------------------------------ */
+
+.bill-create-mui-dialog .MuiSelect-select,
+.bill-create-mui-field .MuiSelect-select {
+  min-height: 28px !important;
+  height: 28px !important;
+  box-sizing: border-box;
+  padding: 0 28px 0 9px !important;
+  display: flex;
+  align-items: center;
+  color: #1e293b;
+  font-size: 10px;
+}
+
+.bill-create-mui-dialog .MuiSelect-icon,
+.bill-create-mui-field .MuiSelect-icon {
+  right: 6px;
+  color: #475569;
+  font-size: 18px;
+}
+
+.bill-create-mui-dialog .MuiMenuItem-root {
+  min-height: 30px;
+  padding: 5px 10px;
+  color: #334155;
+  font-size: 10px;
+}
+
+.bill-create-mui-dialog .MuiMenuItem-root:hover {
+  background: #f1f5f9;
+}
+
+.bill-create-mui-dialog .MuiMenuItem-root.Mui-selected {
+  background: #eef6ff;
+  color: #1769d1;
+}
+
+/* ------------------------------------------------------------
+   DATE INPUT
+------------------------------------------------------------ */
+
+.bill-create-mui-dialog input[type="date"],
+.bill-create-mui-field input[type="date"] {
+  color: #1e293b;
+}
+
+.bill-create-mui-dialog input[type="date"]::-webkit-calendar-picker-indicator,
+.bill-create-mui-field input[type="date"]::-webkit-calendar-picker-indicator {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+/* ------------------------------------------------------------
+   DESCRIPTION / TEXTAREA
+------------------------------------------------------------ */
+
+.bill-create-mui-description .MuiOutlinedInput-root,
+.bill-create-mui-dialog .bill-create-mui-description .MuiOutlinedInput-root {
+  min-height: 55px;
+  height: auto;
+  align-items: flex-start;
+}
+
+.bill-create-mui-description textarea,
+.bill-create-mui-dialog textarea {
+  box-sizing: border-box;
+  min-height: 55px !important;
+  padding: 8px 9px !important;
+  resize: vertical;
+  color: #1e293b;
+  font-size: 10px;
+  font-family: inherit;
+  line-height: 1.4;
+}
+
+.bill-create-mui-dialog textarea::placeholder {
+  color: #a2acba;
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------
+   VALIDATION / HELPER TEXT
+------------------------------------------------------------ */
+
+.bill-create-mui-error,
+.bill-create-error {
+  margin-top: 3px;
+  color: #dc2626;
+  font-size: 8px;
+  line-height: 1.3;
+}
+
+.bill-create-mui-dialog .MuiFormHelperText-root {
+  margin: 3px 0 0;
+  color: #dc2626;
+  font-size: 8px;
+  line-height: 1.3;
+}
+
+/* ------------------------------------------------------------
+   DIALOG ACTIONS / FOOTER
+------------------------------------------------------------ */
+
+.bill-create-mui-dialog .MuiDialogActions-root,
+.bill-create-mui-footer,
+.bill-create-modal-footer {
+  min-height: 48px;
+  box-sizing: border-box;
+  padding: 10px 14px !important;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+/* ------------------------------------------------------------
+   CANCEL BUTTON
+------------------------------------------------------------ */
+
+.bill-create-mui-cancel,
+.bill-create-cancel-btn {
+  height: 27px !important;
+  min-width: 50px !important;
+  padding: 0 12px !important;
+
+  border: 1px solid #d5dce6 !important;
+  border-radius: 5px !important;
+
+  background: #ffffff !important;
+  color: #536174 !important;
+
+  font-size: 9px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  text-transform: none !important;
+
+  box-shadow: none !important;
+  cursor: pointer;
+}
+
+.bill-create-mui-cancel:hover,
+.bill-create-cancel-btn:hover {
+  background: #f8fafc !important;
+  border-color: #b8c2d1 !important;
+}
+
+/* ------------------------------------------------------------
+   CREATE BUTTON
+------------------------------------------------------------ */
+
+.bill-create-mui-submit,
+.bill-create-submit-btn {
+  height: 27px !important;
+  min-width: 61px !important;
+  padding: 0 12px !important;
+
+  border: none !important;
+  border-radius: 5px !important;
+
+  background: #2563eb !important;
+  color: #ffffff !important;
+
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  text-transform: none !important;
+
+  box-shadow: none !important;
+  cursor: pointer;
+}
+
+.bill-create-mui-submit:hover,
+.bill-create-submit-btn:hover {
+  background: #1d4ed8 !important;
+}
+
+.bill-create-mui-submit:active,
+.bill-create-submit-btn:active {
+  transform: translateY(1px);
+}
+
+/* Disabled */
+
+.bill-create-mui-submit:disabled,
+.bill-create-mui-cancel:disabled,
+.bill-create-submit-btn:disabled,
+.bill-create-cancel-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* ------------------------------------------------------------
+   MUI LOADING BUTTON / PROGRESS
+------------------------------------------------------------ */
+
+.bill-create-mui-dialog .MuiCircularProgress-root {
+  width: 14px !important;
+  height: 14px !important;
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------
+   MUI CHECKBOX / SWITCH IF USED IN FUTURE
+------------------------------------------------------------ */
+
+.bill-create-mui-dialog .MuiCheckbox-root,
+.bill-create-mui-dialog .MuiSwitch-root {
+  padding: 4px;
+}
+
+/* ------------------------------------------------------------
+   MOBILE
+------------------------------------------------------------ */
+
+@media (max-width: 600px) {
+
+  .bill-create-mui-dialog .MuiDialog-container {
+    padding: 12px;
+  }
+
+  .bill-create-mui-dialog .MuiDialog-paper,
+  .bill-create-modal {
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    border-radius: 8px;
+  }
+
+  .bill-create-mui-dialog .MuiDialogTitle-root,
+  .bill-create-mui-header,
+  .bill-create-modal-header {
+    padding: 12px !important;
+  }
+
+  .bill-create-mui-dialog .MuiDialogContent-root,
+  .bill-create-mui-form,
+  .bill-create-form {
+    padding: 12px !important;
+  }
+
+  .bill-create-mui-grid,
+  .bill-create-form-grid {
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+  }
+
+  .bill-create-mui-full,
+  .bill-create-form-group.full-width {
+    grid-column: auto;
+  }
+
+  .bill-create-mui-dialog .MuiDialogActions-root,
+  .bill-create-mui-footer,
+  .bill-create-modal-footer {
+    padding: 9px 12px !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   VERY SMALL SCREENS
+------------------------------------------------------------ */
+
+@media (max-width: 380px) {
+
+  .bill-create-mui-dialog .MuiDialog-paper,
+  .bill-create-modal {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+  }
+
+  .bill-create-mui-grid,
+  .bill-create-form-grid {
+    row-gap: 8px;
+  }
+
+  .bill-create-mui-dialog .MuiDialogActions-root,
+  .bill-create-mui-footer,
+  .bill-create-modal-footer {
+    gap: 5px;
+  }
+}
+
+/* ============================================================
+   CREATE BILL - MUI DIALOG
+   The Create Bill form is rendered with Material UI.
+   Existing .bill-modal styles remain for View/Edit/Activity.
+============================================================ */
+
+.bill-create-mui-dialog .MuiDialog-paper {
+  width: 100%;
+  max-width: 520px;
+}
+
+.bill-create-mui-dialog .MuiTextField-root {
+  min-width: 0;
+}
+
+.bill-create-mui-dialog .MuiInputBase-root {
+  background: #ffffff;
+}
+
+.bill-create-mui-dialog .MuiOutlinedInput-root {
+  border-radius: 6px;
+}
+
+.bill-create-mui-dialog .MuiInputBase-input,
+.bill-create-mui-dialog .MuiSelect-select {
+  font-size: 11px;
+}
+
+.bill-create-mui-dialog .MuiInputLabel-root {
+  font-size: 12px;
+}
+
+.bill-create-mui-dialog .MuiFormHelperText-root {
+  font-size: 9px;
+}
+
+@media (max-width: 600px) {
+  .bill-create-mui-dialog .MuiDialog-paper {
+    margin: 12px;
+    width: calc(100% - 24px);
+  }
+}

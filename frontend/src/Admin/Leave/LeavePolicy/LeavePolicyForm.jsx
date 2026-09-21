@@ -54,6 +54,32 @@ export default function LeavePolicyForm({
     };
 
 
+    const eligibleEmployeeTypes = Array.isArray(
+        formData.eligibleEmployeeTypes
+    )
+        ? formData.eligibleEmployeeTypes
+        : ["Full-Time"];
+
+    const handleEmployeeTypeChange = (employeeType) => {
+        setFormData((prev) => {
+            const currentTypes = Array.isArray(
+                prev.eligibleEmployeeTypes
+            )
+                ? prev.eligibleEmployeeTypes
+                : ["Full-Time"];
+
+            const updatedTypes = currentTypes.includes(employeeType)
+                ? currentTypes.filter((type) => type !== employeeType)
+                : [...currentTypes, employeeType];
+
+            return {
+                ...prev,
+                eligibleEmployeeTypes: updatedTypes,
+            };
+        });
+    };
+
+
     if (!canModify) {
         return null;
     }
@@ -533,6 +559,79 @@ export default function LeavePolicyForm({
                             </Box>
 
                         )}
+
+                    </Box>
+
+
+                    {/* =================================================
+                        EMPLOYEE TYPE ELIGIBILITY
+                    ================================================= */}
+
+                    <Box className="policy-form-section">
+
+                        <Typography
+                            component="h3"
+                            className="policy-section-title"
+                        >
+                            Employee Type Eligibility
+                        </Typography>
+
+                        <Divider className="policy-section-divider" />
+
+                        <Box className="policy-checkbox-grid">
+
+                            <FormControlLabel
+                                className="policy-checkbox-item"
+                                control={
+                                    <Checkbox
+                                        checked={eligibleEmployeeTypes.includes(
+                                            "Full-Time"
+                                        )}
+                                        onChange={() =>
+                                            handleEmployeeTypeChange(
+                                                "Full-Time"
+                                            )
+                                        }
+                                    />
+                                }
+                                label="Full-Time"
+                            />
+
+                            <FormControlLabel
+                                className="policy-checkbox-item"
+                                control={
+                                    <Checkbox
+                                        checked={eligibleEmployeeTypes.includes(
+                                            "Part-Time"
+                                        )}
+                                        onChange={() =>
+                                            handleEmployeeTypeChange(
+                                                "Part-Time"
+                                            )
+                                        }
+                                    />
+                                }
+                                label="Part-Time"
+                            />
+
+                            <FormControlLabel
+                                className="policy-checkbox-item"
+                                control={
+                                    <Checkbox
+                                        checked={eligibleEmployeeTypes.includes(
+                                            "Intern"
+                                        )}
+                                        onChange={() =>
+                                            handleEmployeeTypeChange(
+                                                "Intern"
+                                            )
+                                        }
+                                    />
+                                }
+                                label="Intern"
+                            />
+
+                        </Box>
 
                     </Box>
 

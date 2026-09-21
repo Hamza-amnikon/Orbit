@@ -15,7 +15,7 @@ import {
     MenuItem,
     Button,
     IconButton,
-    Box
+    Box,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close";
@@ -40,6 +40,7 @@ export default function LeaveTypes() {
     const [leaveCode, setLeaveCode] = useState("");
     const [description, setDescription] = useState("");
     const [status, setStatus] = useState("Active");
+    const [eligibleGender, setEligibleGender] = useState("All");
 
     const [editingId, setEditingId] = useState(null);
 
@@ -102,7 +103,9 @@ export default function LeaveTypes() {
 
             description: description.trim(),
 
-            status: status
+            status: status,
+
+            eligibleGender: eligibleGender
 
         };
 
@@ -123,6 +126,7 @@ export default function LeaveTypes() {
             setLeaveCode("");
             setDescription("");
             setStatus("Active");
+            setEligibleGender("All");
 
             setShowForm(false);
 
@@ -182,6 +186,10 @@ export default function LeaveTypes() {
             leaveType.status
         );
 
+        setEligibleGender(
+            leaveType.eligibleGender || "All"
+        );
+
         setShowForm(true);
 
         window.scrollTo({
@@ -217,7 +225,9 @@ export default function LeaveTypes() {
             description:
                 description.trim(),
 
-            status
+            status,
+
+            eligibleGender
 
         };
 
@@ -246,6 +256,8 @@ export default function LeaveTypes() {
             setDescription("");
 
             setStatus("Active");
+
+            setEligibleGender("All");
 
             setShowForm(false);
 
@@ -338,6 +350,8 @@ export default function LeaveTypes() {
         setDescription("");
 
         setStatus("Active");
+
+        setEligibleGender("All");
 
     }
 
@@ -656,6 +670,48 @@ export default function LeaveTypes() {
                                     </FormControl>
 
 
+                                    {/* Eligible Gender */}
+
+                                    <FormControl
+                                        fullWidth
+                                        size="small"
+                                    >
+
+                                        <InputLabel>
+                                            Eligible Gender
+                                        </InputLabel>
+
+                                        <Select
+
+                                            value={eligibleGender}
+
+                                            label="Eligible Gender"
+
+                                            onChange={(e) =>
+                                                setEligibleGender(
+                                                    e.target.value
+                                                )
+                                            }
+
+                                        >
+
+                                            <MenuItem value="All">
+                                                All
+                                            </MenuItem>
+
+                                            <MenuItem value="Male">
+                                                Male
+                                            </MenuItem>
+
+                                            <MenuItem value="Female">
+                                                Female
+                                            </MenuItem>
+
+                                        </Select>
+
+                                    </FormControl>
+
+
                                     {/* Description */}
 
                                     <TextField
@@ -858,6 +914,10 @@ export default function LeaveTypes() {
                                     </th>
 
                                     <th>
+                                        Eligible Gender
+                                    </th>
+
+                                    <th>
                                         Actions
                                     </th>
 
@@ -873,7 +933,7 @@ export default function LeaveTypes() {
                                     <tr>
 
                                         <td
-                                            colSpan="6"
+                                            colSpan="7"
                                             className="no-leave-types"
                                         >
                                             No leave types found.
@@ -945,6 +1005,14 @@ export default function LeaveTypes() {
 
                                                     </span>
 
+                                                </td>
+
+
+                                                <td>
+                                                    {
+                                                        leaveType.eligibleGender ||
+                                                        "All"
+                                                    }
                                                 </td>
 
 

@@ -64,6 +64,7 @@ import CompOff from "../Admin/Leave/CompOff/CompOff";
 
 import PermissionManagement from "../Admin/PermissionManagement/Permissions";
 import Reimbursement from "../Admin/Reimbursement/Reimbursement";
+import Bill from "../Admin/Bill/Bill";
 
 /* ============================================================
    PERMISSION PAGE CATALOG
@@ -94,7 +95,7 @@ export const PERMISSION_PAGES = [
         route: "/dashboard",
     },
     {
-        module: "Employee Management",
+        module: "Dashboard",
         pageName: "My Dashboard",
         route: "/MyDashboard",
     },
@@ -339,16 +340,23 @@ export const PERMISSION_PAGES = [
     },
 
     {
-    module: "Approval",
-    pageName: "Approvals",
-    route: "/approvals",
-},
+        module: "Approval",
+        pageName: "Approvals",
+        route: "/approvals",
+    },
 
-  {
-    module: "Reimbursement",
-    pageName: "Reimbursements",
-    route: "/reimbursements",
-},
+    {
+        module: "Reimbursement",
+        pageName: "Reimbursements",
+        route: "/reimbursements",
+    },
+
+    {
+        module: "Bill",
+        pageName: "Bill",
+        route: "/bills",
+    },
+
 ];
 
 
@@ -482,10 +490,10 @@ function AppRoutes() {
                             element={<Role />}
                         />
 
-                    <Route
+                        {/* <Route
                         path="/employees/my-dashboard"
                         element={<Dashboard />}
-                    />
+                    /> */}
 
                         <Route
                             path="/employees/EmployeeHierarchy"
@@ -617,24 +625,32 @@ function AppRoutes() {
                         <Route
                             path="/approvals"
                             element={<Approval />}
-                        /> 
+                        />
                         <Route
                             path="/MyDashboard"
                             element={<MyDashboard />}
-                        /> 
+                        />
                         <Route
                             path="/reimbursements"
                             element={<Reimbursement />}
                         />
-
-                         </Route>
+                        
+                        <Route
+                        path="/bills"
+                        element={<Bill />}
+                    />
 
                 </Route>
+            
+
+                    </Route>
+
+                    
 
             </Route>
 
         </Routes>
-        
+
     );
 }
 

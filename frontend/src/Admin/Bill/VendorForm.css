@@ -1,0 +1,288 @@
+/* ==========================================================
+   VENDOR FORM MODAL
+========================================================== */
+
+.vendor-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.vendor-modal {
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+}
+
+/* ==========================================================
+   VENDOR MODAL HEADER
+========================================================== */
+
+.vendor-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 22px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.vendor-modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.vendor-modal-header p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.vendor-modal-header > button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.vendor-modal-header > button:hover {
+  background: #f1f5f9;
+  color: #111827;
+}
+
+.vendor-modal-header > button svg {
+  font-size: 20px;
+}
+
+/* ==========================================================
+   VENDOR FORM
+========================================================== */
+
+.vendor-modal form {
+  padding: 22px;
+}
+
+.vendor-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.vendor-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vendor-form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.vendor-form-group input,
+.vendor-form-group select,
+.vendor-form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #dbe2ea;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 13px;
+  padding: 10px 11px;
+  outline: none;
+  transition: border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.vendor-form-group input,
+.vendor-form-group select {
+  height: 40px;
+}
+
+.vendor-form-group textarea {
+  resize: vertical;
+  min-height: 82px;
+}
+
+.vendor-form-group input:focus,
+.vendor-form-group select:focus,
+.vendor-form-group textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
+}
+
+.vendor-form-group input::placeholder,
+.vendor-form-group textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* FULL WIDTH FIELD */
+
+.vendor-form-full {
+  grid-column: 1 / -1;
+}
+
+/* ==========================================================
+   ERROR
+========================================================== */
+
+.vendor-form-error {
+  margin: 16px 22px 0;
+  padding: 10px 12px;
+  border-radius: 7px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+/* ==========================================================
+   VENDOR MODAL FOOTER
+========================================================== */
+
+.vendor-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.vendor-cancel-btn,
+.vendor-save-btn {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.vendor-cancel-btn {
+  border: 1px solid #dbe2ea;
+  background: #ffffff;
+  color: #475569;
+}
+
+.vendor-cancel-btn:hover {
+  background: #f8fafc;
+}
+
+.vendor-save-btn {
+  border: 0;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.vendor-save-btn:hover {
+  background: #1d4ed8;
+}
+
+.vendor-cancel-btn:disabled,
+.vendor-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 700px) {
+  .vendor-modal {
+    max-width: 100%;
+  }
+
+  .vendor-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vendor-form-full {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .vendor-modal-overlay {
+    padding: 10px;
+  }
+
+  .vendor-modal-header,
+  .vendor-modal form {
+    padding: 16px;
+  }
+
+  .vendor-modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .vendor-cancel-btn,
+  .vendor-save-btn {
+    width: 100%;
+  }
+}
+
+/* ==========================================================
+   VENDOR AUDIT INFORMATION
+========================================================== */
+
+.vendor-audit-section {
+  margin-top: 8px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.vendor-audit-header {
+  margin-bottom: 14px;
+}
+
+.vendor-audit-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.vendor-audit-header p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.vendor-audit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.vendor-audit-grid input[readonly] {
+  background: #f8fafc;
+  color: #475569;
+  cursor: default;
+}
+
+@media (max-width: 700px) {
+  .vendor-audit-grid {
+    grid-template-columns: 1fr;
+  }
+}
