@@ -14,6 +14,9 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
+import LeaveService from "../../../Services/LeaveService";
+import api from "../../../Services/api";
+
 import {
     Dialog,
     DialogTitle,
@@ -33,8 +36,6 @@ import {
     Divider,
 } from "@mui/material";
 
-import LeaveService from "../../../Services/LeaveService";
-import api from "../../../Services/api";
 import { useAuth } from "../../../../context/AuthContext";
 
 
@@ -56,7 +57,7 @@ const [profile, setProfile] = useState(null);
     const [selectedLeave, setSelectedLeave] = useState(null);
     const [leavePolicies, setLeavePolicies] = useState([]);
     const [leaveBalances, setLeaveBalances] = useState([]);
-
+const [employeeShifts, setEmployeeShifts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -136,8 +137,233 @@ const [profile, setProfile] = useState(null);
 
             setProfile(employee);
 
-
             // =====================================================
+            // LOAD ASSIGNED SHIFT
+            // =====================================================
+
+            try {
+                const shiftResponse = await fetch(
+                    "https://localhost:7292/api/Shift",
+                    {
+                        headers: {
+                            Accept: "application/json",
+                        },
+                    }
+                );
+
+                if (!shiftResponse.ok) {
+                    throw new Error(
+                        `Shift API returned ${shiftResponse.status}`
+                    );
+                }
+
+                const shiftData =
+                    await shiftResponse.json();
+
+                const shifts =
+                    Array.isArray(shiftData)
+                        ? shiftData
+                        : [];
+
+                const profileAzureEmployeeId =
+                    employee?.azureEmployeeId ??
+                    employee?.azureEmployeeID;
+
+                const profileCode =
+                    employee?.employeeCode;
+
+                const profileName =
+                    employee?.displayName ||
+                    employee?.employeeName ||
+                    [
+                        employee?.firstName,
+                        employee?.lastName,
+                    ]
+                        .filter(Boolean)
+                        .join(" ");
+
+                const normalizeIdentity = (value) =>
+                    String(value ?? "")
+                        .trim()
+                        .toLowerCase();
+
+                /* =================================================
+                   ONLY ACTIVE / CURRENT SHIFT ASSIGNMENTS
+                   ================================================= */
+
+                const today = new Date();
+
+                const todayOnly = new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    today.getDate()
+                );
+
+                const activeShifts =
+                    shifts.filter((shift) => {
+
+                        // Ignore inactive shifts
+                        if (
+                            shift?.status &&
+                            normalizeIdentity(shift.status) !==
+                                "active"
+                        ) {
+                            return false;
+                        }
+
+                        // From Date
+                        const from = shift?.fromDate
+                            ? new Date(shift.fromDate)
+                            : null;
+
+                        // To Date
+                        const to = shift?.toDate
+                            ? new Date(shift.toDate)
+                            : null;
+
+                        if (
+                            from &&
+                            !Number.isNaN(from.getTime())
+                        ) {
+                            from.setHours(0, 0, 0, 0);
+
+                            if (todayOnly < from) {
+                                return false;
+                            }
+                        }
+
+                        if (
+                            to &&
+                            !Number.isNaN(to.getTime())
+                        ) {
+                            to.setHours(
+                                23,
+                                59,
+                                59,
+                                999
+                            );
+
+                            if (todayOnly > to) {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    });
+
+                /* =================================================
+                   MATCH SHIFT WITH LOGGED-IN EMPLOYEE
+                   ================================================= */
+
+                const rankedShifts =
+                    activeShifts
+                        .map((shift) => {
+
+                            const shiftEmployeeId =
+                                shift?.employeeId;
+
+                            const shiftAzureEmployeeId =
+                                shift?.azureEmployeeId ??
+                                shift?.azureEmployeeID;
+
+                            let score = 0;
+
+                            // Employee ID = strongest normal match
+                            if (
+                                shiftEmployeeId != null &&
+                                Number(shiftEmployeeId) ===
+                                    Number(employeeId)
+                            ) {
+                                score += 100;
+                            }
+
+                            // Azure Employee ID
+                            if (
+                                profileAzureEmployeeId != null &&
+                                normalizeIdentity(
+                                    shiftAzureEmployeeId
+                                ) ===
+                                    normalizeIdentity(
+                                        profileAzureEmployeeId
+                                    )
+                            ) {
+                                score += 200;
+                            }
+
+                            // Employee Code
+                            if (
+                                profileCode &&
+                                normalizeIdentity(
+                                    shift?.employeeCode
+                                ) ===
+                                    normalizeIdentity(
+                                        profileCode
+                                    )
+                            ) {
+                                score += 20;
+                            }
+
+                            // Employee Name
+                            if (
+                                profileName &&
+                                normalizeIdentity(
+                                    shift?.employeeName
+                                ) ===
+                                    normalizeIdentity(
+                                        profileName
+                                    )
+                            ) {
+                                score += 50;
+                            }
+
+                            return {
+                                shift,
+                                score,
+                            };
+                        })
+                        .filter(
+                            (item) => item.score > 0
+                        )
+                        .sort(
+                            (a, b) =>
+                                b.score - a.score
+                        );
+
+                const matchedShift =
+                    rankedShifts[0]?.shift || null;
+
+                console.log(
+                    "My Leave - Logged-in Employee ID:",
+                    employeeId
+                );
+
+                console.log(
+                    "My Leave - Active Shifts:",
+                    activeShifts
+                );
+
+                console.log(
+                    "My Leave - Matched Shift:",
+                    matchedShift
+                );
+
+                setEmployeeShifts(
+                    matchedShift
+                        ? [matchedShift]
+                        : []
+                );
+
+            } catch (shiftError) {
+
+                console.error(
+                    "My Leave - Unable to load assigned shift:",
+                    shiftError
+                );
+
+                setEmployeeShifts([]);
+            }
+
+
             // 2. LOAD ALL DATA
             // =====================================================
 
@@ -315,32 +541,55 @@ const [profile, setProfile] = useState(null);
     // "Female" = available only to Female employees.
     const eligibleLeaveTypes = useMemo(() => {
 
-        const employeeGender =
-            String(profile?.gender || "")
-                .trim()
-                .toLowerCase();
+        // Normalize all supported gender values so that
+        // "Male"/"M" and "Female"/"F" work consistently.
+        const normalizeGender = (value) => {
+            const gender = String(value || "").trim().toLowerCase();
+
+            if (gender === "m" || gender === "male") return "male";
+            if (gender === "f" || gender === "female") return "female";
+            if (gender === "all" || gender === "everyone") return "all";
+
+            return "";
+        };
+
+        const employeeGender = normalizeGender(profile?.gender);
+
+        // Only leave types with a POSITIVE balance are available
+        // in the Apply Leave dropdown.
+        //
+        // Gender eligibility is still checked separately, so:
+        // Female -> matching Female leave only
+        // Male   -> matching Male leave only
+        // All    -> available to everyone, provided balance > 0
+        // CompOff -> remains available when its balance > 0
+        const availableLeaveTypeIds = new Set(
+            (Array.isArray(leaveBalances) ? leaveBalances : [])
+                .filter((balance) => Number(balance?.balanceDays) > 0)
+                .map((balance) => Number(balance?.leaveTypeId))
+                .filter((id) => Number.isFinite(id) && id > 0)
+        );
 
         return leaveTypes.filter((type) => {
+            const leaveTypeId = Number(type?.leaveTypeId);
 
-            const eligibleGender =
-                String(type?.eligibleGender || "")
-                    .trim()
-                    .toLowerCase();
+            // No balance row or balance = 0 -> do not show.
+            if (!availableLeaveTypeIds.has(leaveTypeId)) {
+                return false;
+            }
 
-            if (
-                !eligibleGender ||
-                eligibleGender === "all"
-            ) {
+            const eligibleGender = normalizeGender(type?.eligibleGender);
+
+            // Blank / All / Everyone = available to everyone.
+            if (!eligibleGender || eligibleGender === "all") {
                 return true;
             }
 
-            return (
-                employeeGender &&
-                eligibleGender === employeeGender
-            );
+            // Male/Female leave must match logged-in employee gender.
+            return employeeGender === eligibleGender;
         });
 
-    }, [leaveTypes, profile]);
+    }, [leaveTypes, leaveBalances, profile]);
 
 
     // =========================================================
@@ -356,27 +605,265 @@ const [profile, setProfile] = useState(null);
             return 0;
         }
 
-        const from =
-            new Date(fromDate);
+        const toLocalDateKey = (value) => {
+            if (!value) {
+                return "";
+            }
 
-        const to =
-            new Date(toDate);
+            const stringValue = String(value);
 
-        if (
-            isNaN(from.getTime()) ||
-            isNaN(to.getTime())
-        ) {
+            if (/^\d{4}-\d{2}-\d{2}/.test(stringValue)) {
+                return stringValue.substring(0, 10);
+            }
+
+            const parsed = new Date(value);
+
+            if (isNaN(parsed.getTime())) {
+                return "";
+            }
+
+            const year = parsed.getFullYear();
+            const month = String(parsed.getMonth() + 1).padStart(2, "0");
+            const day = String(parsed.getDate()).padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        };
+
+        const fromKey = toLocalDateKey(fromDate);
+        const toKey = toLocalDateKey(toDate);
+
+        if (!fromKey || !toKey || fromKey > toKey) {
             return 0;
         }
 
-        return (
-            Math.floor(
-                (
-                    to.getTime() -
-                    from.getTime()
-                ) /
-                (1000 * 60 * 60 * 24)
-            ) + 1
+        const [fromYear, fromMonth, fromDay] =
+            fromKey.split("-").map(Number);
+
+        const [toYear, toMonth, toDay] =
+            toKey.split("-").map(Number);
+
+        const current = new Date(
+            fromYear,
+            fromMonth - 1,
+            fromDay
+        );
+
+        const end = new Date(
+            toYear,
+            toMonth - 1,
+            toDay
+        );
+
+        let workingDays = 0;
+
+        while (current <= end) {
+
+            const dateKey =
+                `${current.getFullYear()}-${String(
+                    current.getMonth() + 1
+                ).padStart(2, "0")}-${String(
+                    current.getDate()
+                ).padStart(2, "0")}`;
+
+            // Find the shift assigned to this exact date.
+            const matchingShifts =
+                Array.isArray(employeeShifts)
+                    ? employeeShifts.filter((shift) => {
+
+                        const status =
+                            String(
+                                shift?.status ??
+                                shift?.Status ??
+                                ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+                        if (
+                            status &&
+                            status !== "active"
+                        ) {
+                            return false;
+                        }
+
+                        const shiftFrom =
+                            toLocalDateKey(
+                                shift?.fromDate ??
+                                shift?.FromDate ??
+                                shift?.startDate ??
+                                shift?.StartDate
+                            );
+
+                        const shiftTo =
+                            toLocalDateKey(
+                                shift?.toDate ??
+                                shift?.ToDate ??
+                                shift?.endDate ??
+                                shift?.EndDate
+                            );
+
+                        return (
+                            (!shiftFrom ||
+                                dateKey >= shiftFrom) &&
+                            (!shiftTo ||
+                                dateKey <= shiftTo)
+                        );
+                    })
+                    : [];
+
+            matchingShifts.sort((a, b) => {
+
+                const aFrom =
+                    toLocalDateKey(
+                        a?.fromDate ??
+                        a?.FromDate ??
+                        a?.startDate ??
+                        a?.StartDate
+                    ) || "";
+
+                const bFrom =
+                    toLocalDateKey(
+                        b?.fromDate ??
+                        b?.FromDate ??
+                        b?.startDate ??
+                        b?.StartDate
+                    ) || "";
+
+                return bFrom.localeCompare(aFrom);
+            });
+
+            const shift =
+                matchingShifts[0] || null;
+
+            // If no shift is available, preserve the existing behavior:
+            // treat the date as a normal working leave day.
+            if (!shift) {
+                workingDays++;
+            } else {
+
+                const dayName =
+                    current
+                        .toLocaleDateString(
+                            "en-US",
+                            { weekday: "long" }
+                        )
+                        .toLowerCase();
+
+                const weeklyOff1 =
+                    String(
+                        shift?.weeklyOff1 ??
+                        shift?.WeeklyOff1 ??
+                        shift?.weeklyoff1 ??
+                        shift?.Weeklyoff1 ??
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase();
+
+                const weeklyOff2 =
+                    String(
+                        shift?.weeklyOff2 ??
+                        shift?.WeeklyOff2 ??
+                        shift?.weeklyoff2 ??
+                        shift?.Weeklyoff2 ??
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase();
+
+                const isWeekOff =
+                    dayName === weeklyOff1 ||
+                    dayName === weeklyOff2;
+
+                if (!isWeekOff) {
+                    workingDays++;
+                }
+            }
+
+            current.setDate(
+                current.getDate() + 1
+            );
+        }
+
+        return workingDays;
+    };
+
+
+    // =========================================================
+    // PERSISTED LEAVE DAY HELPERS
+    // =========================================================
+    // Approved/partial-approved leaves are driven by LeaveDays
+    // returned by LeaveService. This prevents the UI from treating
+    // the whole FromDate -> ToDate range as approved.
+    //
+    // If LeaveDays are not present (for older/pending records),
+    // the existing date-range calculation is used as a fallback.
+
+    const getLeaveDaysCollection = (leave) => {
+        if (Array.isArray(leave?.leaveDays)) {
+            return leave.leaveDays;
+        }
+
+        if (Array.isArray(leave?.LeaveDays)) {
+            return leave.LeaveDays;
+        }
+
+        return [];
+    };
+
+
+    const getPersistedLeaveDayForDate = (leave, date) => {
+        const dateKey = getDateKey(date);
+
+        return getLeaveDaysCollection(leave).find(
+            (leaveDay) =>
+                getLeaveDateKey(
+                    leaveDay?.leaveDate ??
+                    leaveDay?.LeaveDate
+                ) === dateKey
+        ) || null;
+    };
+
+
+    const getEffectiveLeaveDays = (leave) => {
+        if (!leave) {
+            return 0;
+        }
+
+        const persistedDays =
+            getLeaveDaysCollection(leave);
+
+        const leaveStatus =
+            String(
+                leave?.status || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        // For approved/partially-approved leaves, use the actual
+        // approved LeaveDays saved by the backend.
+        if (
+            leaveStatus === "approved" &&
+            persistedDays.length > 0
+        ) {
+            return persistedDays.filter(
+                (leaveDay) =>
+                    String(
+                        leaveDay?.status ??
+                        leaveDay?.Status ??
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase() ===
+                    "approved"
+            ).length;
+        }
+
+        // For pending/new/legacy records, preserve the existing
+        // date-range calculation.
+        return calculateDays(
+            leave.fromDate,
+            leave.toDate
         );
     };
 
@@ -662,9 +1149,6 @@ const [profile, setProfile] = useState(null);
                 ) => {
 
                     const days =
-                        Number(
-                            leave.noOfDays
-                        ) ||
                         calculateDays(
                             leave.fromDate,
                             leave.toDate
@@ -702,10 +1186,7 @@ const [profile, setProfile] = useState(null);
 
                         return (
                             total +
-                            calculateDays(
-                                leave.fromDate,
-                                leave.toDate
-                            )
+                            getEffectiveLeaveDays(leave)
                         );
 
                     },
@@ -778,10 +1259,7 @@ const [profile, setProfile] = useState(null);
                             );
 
                         const days =
-                            calculateDays(
-                                leave.fromDate,
-                                leave.toDate
-                            );
+                            getEffectiveLeaveDays(leave);
 
                         if (
                             !distribution[name]
@@ -812,7 +1290,14 @@ const [profile, setProfile] = useState(null);
     const employeeBalanceRows =
         useMemo(() => {
 
+            // Show only leave types with a balance greater than 0.
+            // This removes zero-balance rows from My Leave Balance
+            // without changing the underlying leaveBalances state.
             return [...leaveBalances]
+                .filter(
+                    (balance) =>
+                        Number(balance?.balanceDays) > 0
+                )
                 .sort(
                     (a, b) =>
                         Number(a.leaveTypeId) -
@@ -820,6 +1305,7 @@ const [profile, setProfile] = useState(null);
                 );
 
         }, [leaveBalances]);
+
 
 
     // =========================================================
@@ -969,76 +1455,322 @@ const [profile, setProfile] = useState(null);
 
 
     // =========================================================
+    // GET SHIFT ASSIGNED FOR A SPECIFIC DATE
+    // =========================================================
+    // An employee can have multiple shift assignments over time.
+    // The assignment whose From Date <= calendar date <= To Date
+    // is used for that calendar date.
+
+    const getShiftForDate = (date) => {
+        if (!Array.isArray(employeeShifts) || employeeShifts.length === 0) return null;
+
+        const dateKey = getDateKey(date);
+        const matchingShifts = employeeShifts.filter((shift) => {
+            const fromKey = getLeaveDateKey(
+                shift?.fromDate ?? shift?.FromDate ?? shift?.startDate ?? shift?.StartDate
+            );
+            const toKey = getLeaveDateKey(
+                shift?.toDate ?? shift?.ToDate ?? shift?.endDate ?? shift?.EndDate
+            );
+            return (!fromKey || dateKey >= fromKey) && (!toKey || dateKey <= toKey);
+        });
+
+        if (matchingShifts.length === 0) return null;
+
+        matchingShifts.sort((a, b) => {
+            const aFrom = getLeaveDateKey(
+                a?.fromDate ?? a?.FromDate ?? a?.startDate ?? a?.StartDate
+            ) || "";
+            const bFrom = getLeaveDateKey(
+                b?.fromDate ?? b?.FromDate ?? b?.startDate ?? b?.StartDate
+            ) || "";
+            return bFrom.localeCompare(aFrom);
+        });
+
+        return matchingShifts[0];
+    };
+
+
     // CALENDAR STATUS
     // =========================================================
 
-    const getCalendarStatus =
-        (date) => {
+    // =========================================================
+    // CHECK WHETHER A DATE IS A PAID WEEK OFF
+    // =========================================================
+    // Week Off is completely independent of Leave status.
+    // If a date is a Week Off, the calendar must ALWAYS show
+    // Week Off — never Pending, Approved or Rejected.
 
-            const dateLeaves =
-                getCalendarLeavesForDate(
-                    date
-                );
+    const isWeeklyOffDate = (date) => {
 
-            if (
-                dateLeaves.length === 0
-            ) {
-                return null;
-            }
+        const shift = getShiftForDate(date);
 
-            const approved =
-                dateLeaves.find(
-                    (leave) =>
-                        String(
-                            leave.status
-                        ).toLowerCase() ===
-                        "approved"
-                );
+        if (!shift) {
+            return false;
+        }
 
-            if (approved) {
-                return {
-                    status: "approved",
-                    leaves: dateLeaves,
-                };
-            }
+        const dayName =
+            date
+                .toLocaleDateString("en-US", {
+                    weekday: "long",
+                })
+                .toLowerCase();
 
-            const pending =
-                dateLeaves.find(
-                    (leave) =>
-                        String(
-                            leave.status
-                        ).toLowerCase() ===
-                        "pending"
-                );
+        const weeklyOff1 =
+            String(
+                shift?.weeklyOff1 ??
+                shift?.WeeklyOff1 ??
+                shift?.weeklyoff1 ??
+                shift?.Weeklyoff1 ??
+                ""
+            )
+                .trim()
+                .toLowerCase();
 
-            if (pending) {
-                return {
-                    status: "pending",
-                    leaves: dateLeaves,
-                };
-            }
+        const weeklyOff2 =
+            String(
+                shift?.weeklyOff2 ??
+                shift?.WeeklyOff2 ??
+                shift?.weeklyoff2 ??
+                shift?.Weeklyoff2 ??
+                ""
+            )
+                .trim()
+                .toLowerCase();
 
-            const rejected =
-                dateLeaves.find(
-                    (leave) =>
-                        String(
-                            leave.status
-                        ).toLowerCase() ===
-                        "rejected"
-                );
+        return (
+            dayName === weeklyOff1 ||
+            dayName === weeklyOff2
+        );
+    };
 
-            if (rejected) {
-                return {
-                    status: "rejected",
-                    leaves: dateLeaves,
-                };
-            }
 
+    // =========================================================
+    // CALENDAR STATUS
+    // =========================================================
+
+    const getCalendarStatus = (date) => {
+
+        // =====================================================
+        // 1. WEEK OFF ALWAYS HAS HIGHEST PRIORITY
+        // =====================================================
+
+        if (isWeeklyOffDate(date)) {
             return {
-                status: "normal",
-                leaves: dateLeaves,
+                status: "weeklyoff",
+                leaves: [],
             };
-        };
+        }
+
+        // =====================================================
+        // 2. LEAVE / COMPOFF STATUS
+        // =====================================================
+
+        const dateLeaves =
+            getCalendarLeavesForDate(date);
+
+        if (!dateLeaves.length) {
+            return null;
+        }
+
+        const dateKey =
+            getDateKey(date);
+
+        // =====================================================
+        // CALENDAR DISPLAY COLORS
+        // =====================================================
+        // Approved       -> green
+        // Pending        -> orange/yellow
+        // Rejected       -> red
+        // Not Approved   -> red
+        //
+        // IMPORTANT:
+        // This is only calendar display logic. It does NOT change
+        // leave balance/deduction or backend approval logic.
+
+        const calendarLeaves =
+            dateLeaves
+                .map((leave) => {
+                    const status =
+                        String(
+                            leave?.status ?? ""
+                        )
+                            .trim()
+                            .toLowerCase();
+
+                    // -------------------------------------------------
+                    // FULLY APPROVED / PARTIALLY APPROVED LEAVE
+                    // -------------------------------------------------
+                    // If LeaveDays exist, decide the colour for this
+                    // exact calendar date from the persisted LeaveDay.
+                    if (
+                        status === "approved" ||
+                        status === "partially approved" ||
+                        status === "partial approved" ||
+                        status === "partialapproval"
+                    ) {
+                        const persistedDays =
+                            getLeaveDaysCollection(leave);
+
+                        if (persistedDays.length > 0) {
+                            const leaveDay =
+                                persistedDays.find(
+                                    (item) =>
+                                        getLeaveDateKey(
+                                            item?.leaveDate ??
+                                            item?.LeaveDate
+                                        ) === dateKey
+                                );
+
+                            if (!leaveDay) {
+                                return null;
+                            }
+
+                            const dayStatus =
+                                String(
+                                    leaveDay?.status ??
+                                    leaveDay?.Status ??
+                                    ""
+                                )
+                                    .trim()
+                                    .toLowerCase();
+
+                            // Approved date -> green
+                            if (dayStatus === "approved") {
+                                return {
+                                    leave,
+                                    calendarStatus: "approved",
+                                };
+                            }
+
+                            // Pending date -> orange/yellow
+                            if (dayStatus === "pending") {
+                                return {
+                                    leave: {
+                                        ...leave,
+                                        status: "Pending",
+                                    },
+                                    calendarStatus: "pending",
+                                };
+                            }
+
+                            // Not Approved / Rejected date -> red
+                            if (
+                                dayStatus === "notapproved" ||
+                                dayStatus === "not approved" ||
+                                dayStatus === "rejected" ||
+                                dayStatus === "not_approved" ||
+                                dayStatus === "not-approved"
+                            ) {
+                                return {
+                                    leave: {
+                                        ...leave,
+                                        status:
+                                            dayStatus === "rejected"
+                                                ? "Rejected"
+                                                : "Not Approved",
+                                    },
+                                    calendarStatus: "rejected",
+                                };
+                            }
+
+                            // Unknown LeaveDay status:
+                            // do not display it as an approved date.
+                            return null;
+                        }
+
+                        // Legacy approved leave without LeaveDays:
+                        // keep the existing full-range behavior.
+                        return {
+                            leave,
+                            calendarStatus: "approved",
+                        };
+                    }
+
+                    // -------------------------------------------------
+                    // PENDING LEAVE
+                    // -------------------------------------------------
+                    // Pending keeps the existing orange/yellow color.
+                    if (status === "pending") {
+                        return {
+                            leave,
+                            calendarStatus: "pending",
+                        };
+                    }
+
+                    // -------------------------------------------------
+                    // REJECTED / NOT APPROVED / CANCELLED
+                    // -------------------------------------------------
+                    // These statuses are displayed in red.
+                    if (
+                        status === "rejected" ||
+                        status === "notapproved" ||
+                        status === "not approved" ||
+                        status === "not_approved" ||
+                        status === "not-approved" ||
+                        status === "cancelled" ||
+                        status === "canceled"
+                    ) {
+                        return {
+                            leave,
+                            calendarStatus: "rejected",
+                        };
+                    }
+
+                    return null;
+                })
+                .filter(Boolean);
+
+        if (!calendarLeaves.length) {
+            return null;
+        }
+
+        // Approved has priority over pending/rejected when the same date
+        // has more than one leave record.
+        const approved =
+            calendarLeaves.find(
+                (item) =>
+                    item.calendarStatus === "approved"
+            );
+
+        if (approved) {
+            return {
+                status: "approved",
+                leaves: [approved.leave],
+            };
+        }
+
+        // Rejected / Not Approved has priority over Pending when the
+        // same date contains both statuses.
+        const redLeave =
+            calendarLeaves.find(
+                (item) =>
+                    item.calendarStatus === "rejected"
+            );
+
+        if (redLeave) {
+            return {
+                status: "rejected",
+                leaves: [redLeave.leave],
+            };
+        }
+
+        // Pending -> orange/yellow.
+        const pendingLeave =
+            calendarLeaves.find(
+                (item) =>
+                    item.calendarStatus === "pending"
+            );
+
+        if (pendingLeave) {
+            return {
+                status: "pending",
+                leaves: [pendingLeave.leave],
+            };
+        }
+
+        return null;
+    };
 
 
     // =========================================================
@@ -1180,6 +1912,17 @@ const [profile, setProfile] = useState(null);
                 };
             }
 
+            if (
+                status === "weeklyoff"
+            ) {
+
+                return {
+                    background: "#e8f7ee",
+                    border: "#8fd3a9",
+                    color: "#16803c",
+                };
+            }
+
             return {
                 background: "#ffffff",
                 border: "#e5e7eb",
@@ -1196,7 +1939,14 @@ const [profile, setProfile] = useState(null);
         (calendarData) => {
 
             if (!calendarData) {
-                return "";
+                return "No leave";
+            }
+
+            if (
+                calendarData.status ===
+                "weeklyoff"
+            ) {
+                return "Week Off";
             }
 
             return calendarData.leaves
@@ -1331,7 +2081,8 @@ const [profile, setProfile] = useState(null);
             }
 
             // Prevent submission if an already-selected leave type
-            // is not eligible for the logged-in employee.
+            // is not assigned/eligible for the logged-in employee.
+            // This keeps submit validation consistent with the dropdown.
             const selectedLeaveType =
                 leaveTypes.find(
                     (type) =>
@@ -1348,7 +2099,7 @@ const [profile, setProfile] = useState(null);
                 )
             ) {
                 setFormError(
-                    "You are not eligible for the selected leave type."
+                    "You are not eligible for the selected leave type or it is not assigned to you."
                 );
 
                 return;
@@ -1382,6 +2133,43 @@ const [profile, setProfile] = useState(null);
 
                 setFormError(
                     "End date cannot be before start date."
+                );
+
+                return;
+            }
+
+
+            // =====================================================
+            // WEEK OFF VALIDATION
+            // =====================================================
+            // A Week Off is not a working day and should never
+            // create a Pending/Rejected/Approved leave entry for
+            // the calendar. A request containing only Week Off
+            // dates is therefore blocked.
+
+            const requestedFrom =
+                new Date(`${leaveForm.fromDate}T00:00:00`);
+
+            const requestedTo =
+                new Date(`${leaveForm.toDate}T00:00:00`);
+
+            let workingDayFound = false;
+            const checkDate = new Date(requestedFrom);
+
+            while (checkDate <= requestedTo) {
+                if (!isWeeklyOffDate(checkDate)) {
+                    workingDayFound = true;
+                    break;
+                }
+
+                checkDate.setDate(
+                    checkDate.getDate() + 1
+                );
+            }
+
+            if (!workingDayFound) {
+                setFormError(
+                    "The selected date is a Week Off. Leave cannot be applied on a Week Off."
                 );
 
                 return;
@@ -2543,7 +3331,10 @@ const closeViewLeaveDialog = () => {
                                             arrow
                                             placement="top"
                                             title={
-                                                calendarData
+                                                calendarData?.status ===
+                                                "weeklyoff"
+                                                    ? "Week Off"
+                                                    : calendarData
                                                     ? (
                                                         <Box>
                                                             {calendarData.leaves.map(
@@ -2593,9 +3384,8 @@ const closeViewLeaveDialog = () => {
                                                                             }
                                                                             {" • "}
                                                                             {
-                                                                                calculateDays(
-                                                                                    leave.fromDate,
-                                                                                    leave.toDate
+                                                                                getEffectiveLeaveDays(
+                                                                                    leave
                                                                                 )
                                                                             }
                                                                             {" day(s)"}
@@ -2676,20 +3466,33 @@ const closeViewLeaveDialog = () => {
 
 
                                                 {calendarData && (
-
-                                                    <Box
-                                                        sx={{
-                                                            width: 6,
-                                                            height: 6,
-                                                            borderRadius:
-                                                                "50%",
-                                                            background:
-                                                                colors.color,
-                                                            mt:
-                                                                0.4,
-                                                        }}
-                                                    />
-
+                                                    calendarData.status ===
+                                                    "weeklyoff" ? (
+                                                        <Typography
+                                                            sx={{
+                                                                fontSize: "8px",
+                                                                fontWeight: 700,
+                                                                mt: 0.3,
+                                                                textAlign: "center",
+                                                                lineHeight: 1.1,
+                                                            }}
+                                                        >
+                                                           Week Off
+                                                        </Typography>
+                                                    ) : (
+                                                        <Box
+                                                            sx={{
+                                                                width: 6,
+                                                                height: 6,
+                                                                borderRadius:
+                                                                    "50%",
+                                                                background:
+                                                                    colors.color,
+                                                                mt:
+                                                                    0.4,
+                                                            }}
+                                                        />
+                                                    )
                                                 )}
 
 
@@ -2774,6 +3577,20 @@ const closeViewLeaveDialog = () => {
                                         "#fff0f0",
                                     color:
                                         "#c62828",
+                                    fontWeight: 600,
+                                    fontSize:
+                                        "11px",
+                                }}
+                            />
+
+                            <Chip
+                                size="small"
+                                label="Week Off"
+                                sx={{
+                                    background:
+                                        "#e8f7ee",
+                                    color:
+                                        "#16803c",
                                     fontWeight: 600,
                                     fontSize:
                                         "11px",
@@ -2939,9 +3756,8 @@ const closeViewLeaveDialog = () => {
                                                 <td>
 
                                                     {
-                                                        calculateDays(
-                                                            leave.fromDate,
-                                                            leave.toDate
+                                                        getEffectiveLeaveDays(
+                                                            leave
                                                         )
                                                     }
 
@@ -3536,9 +4352,8 @@ const closeViewLeaveDialog = () => {
                             color: "#1e293b",
                         }}
                     >
-                        {calculateDays(
-                            selectedLeave.fromDate,
-                            selectedLeave.toDate
+                        {getEffectiveLeaveDays(
+                            selectedLeave
                         )}{" "}
                         Day(s)
                     </div>

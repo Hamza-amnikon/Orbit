@@ -19,100 +19,88 @@ import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
+import RequestQuoteRoundedIcon from "@mui/icons-material/RequestQuoteRounded";
+
 
 import { useAuth } from "../../../context/AuthContext";
-
 
 /* ============================================================
    SIDEBAR MENU
    ============================================================ */
 
 export const menu = [
-
+  {
+    title: "Dashboard",
+    icon: <DashboardRoundedIcon />,
+    path: "/",
+    permissionPath: "/",
+  },
+  {
+    title: "Employees",
+    icon: <PeopleRoundedIcon />,
+    path: "/employees",
+    permissionPath: "/employees",
+  },
+  {
+    title: "Attendance",
+    icon: <AccessTimeRoundedIcon />,
+    path: "/attendance",
+    permissionPath: "/attendance",
+  },
+  {
+    title: "Leave",
+    icon: <EventBusyRoundedIcon />,
+    path: "/leave",
+    permissionPath: "/leave",
+  },
+  {
+    title: "Approvals",
+    icon: <ApprovalRoundedIcon />,
+    path: "/approvals",
+    permissionPath: "/approvals",
+  },
+  {
+    title: "Payroll",
+    icon: <PaymentsRoundedIcon />,
+    path: "/payroll",
+    permissionPath: "/payroll",
+  },
+  {
+    title: "Reports",
+    icon: <AssessmentRoundedIcon />,
+    path: "/reports",
+    permissionPath: "/reports",
+  },
+  {
+    title: "Tickets",
+    icon: <ConfirmationNumberRoundedIcon />,
+    path: "/tickets",
+    permissionPath: "/tickets",
+  },
+  {
+    title: "Documents",
+    icon: <DescriptionRoundedIcon />,
+    path: "/documents",
+    permissionPath: "/documents",
+  },
+  {
+    title: "Settings",
+    icon: <SettingsRoundedIcon />,
+    path: "/settings",
+    permissionPath: "/settings",
+  },
+  {
+    title: "Permission ",
+    icon: <SettingsRoundedIcon />,
+    path: "/permission-management",
+    permissionPath: "/permission-management",
+  },
     {
-        title: "Dashboard",
-        icon: <DashboardRoundedIcon />,
-        path: "/",
-        permissionPath: "/",
-    },
-
-    {
-        title: "Employees",
-        icon: <PeopleRoundedIcon />,
-        path: "/employees",
-        permissionPath: "/employees",
-    },
-
-    {
-        title: "Attendance",
-        icon: <AccessTimeRoundedIcon />,
-        path: "/attendance",
-        permissionPath: "/attendance",
-    },
-
-    {
-        title: "Leave",
-        icon: <EventBusyRoundedIcon />,
-        path: "/leave",
-        permissionPath: "/leave",
-    },
-
-    {
-        title: "Approvals",
-        icon: <ApprovalRoundedIcon />,
-        path: "/approvals",
-        permissionPath: "/approvals",
-    },
-
-    {
-        title: "Payroll",
-        icon: <PaymentsRoundedIcon />,
-        path: "/payroll",
-        permissionPath: "/payroll",
-    },
-
-    {
-        title: "Reports",
-        icon: <AssessmentRoundedIcon />,
-        path: "/reports",
-        permissionPath: "/reports",
-    },
-
-    {
-        title: "Tickets",
-        icon: <ConfirmationNumberRoundedIcon />,
-        path: "/tickets",
-        permissionPath: "/tickets",
-    },
-
-    {
-        title: "Documents",
-        icon: <DescriptionRoundedIcon />,
-        path: "/documents",
-        permissionPath: "/documents",
-    },
-
-    {
-        title: "Settings",
-        icon: <SettingsRoundedIcon />,
-        path: "/settings",
-        permissionPath: "/settings",
-    },
-
-    {
-        title: "Permission",
-        icon: <SettingsRoundedIcon />,
-        path: "/permission-management",
-        permissionPath: "/permission-management",
-    },
-
-    {
-        title: "Reimbursement",
-        icon: <ReceiptLongRoundedIcon />,
-        path: "/reimbursements",
-        permissionPath: "/reimbursements",
-    },
-
+    title: "Reimbursement",
+    icon: <ReceiptLongRoundedIcon />,
+    path: "/reimbursements",
+    permissionPath: "/reimbursements",
+  },
 ];
 
 
@@ -183,18 +171,16 @@ function Sidebar() {
     };
 
 
-    /* ========================================================
-       PERMISSION FILTER
-       ======================================================== */
+  // =========================================================
+  // FILTER MENU BASED ON PERMISSIONS
+  // =========================================================
 
-    const allowedMenu =
-        menu.filter(
-            (item) =>
-                hasPermission(
-                    item.permissionPath,
-                    "view"
-                )
-        );
+  const allowedMenu = menu.filter((item) =>
+    hasPermission(
+      item.permissionPath,
+      "view"
+    )
+  );
 
 
     /* ========================================================

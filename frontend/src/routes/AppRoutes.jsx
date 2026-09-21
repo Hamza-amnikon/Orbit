@@ -63,10 +63,8 @@ import ShiftManagement from "../Admin/AttendanceManagement/ShiftManagement/Shift
 import CompOff from "../Admin/Leave/CompOff/CompOff";
 
 import PermissionManagement from "../Admin/PermissionManagement/Permissions";
-import ReimbursementDashboard from "../Admin/Reimbursement/ReimbursementDashboard";
-import ReimbursementRequests from "../Admin/Reimbursement/Reimbursement";
-
-import MyReimbursements from "../Admin/Reimbursement/MyReimbursement";
+import Reimbursement from "../Admin/Reimbursement/Reimbursement";
+import Bill from "../Admin/Bill/Bill";
 
 /* ============================================================
    PERMISSION PAGE CATALOG
@@ -97,7 +95,7 @@ export const PERMISSION_PAGES = [
         route: "/dashboard",
     },
     {
-        module: "Employee Management",
+        module: "Dashboard",
         pageName: "My Dashboard",
         route: "/MyDashboard",
     },
@@ -342,26 +340,23 @@ export const PERMISSION_PAGES = [
     },
 
     {
-    module: "Approval",
-    pageName: "Approvals",
-    route: "/approvals",
-},
+        module: "Approval",
+        pageName: "Approvals",
+        route: "/approvals",
+    },
 
-  {
-    module: "Reimbursement",
-    pageName: "Dashboard Reimbursements",
-    route: "/reimbursements",
-},
- {
-    module: "Reimbursement",
-    pageName: "M Reimbursements",
-    route: "/reimbursements/my",
-},
- {
-    module: "Reimbursement",
-    pageName: "Req Reimbursements",
-    route: "/reimbursements/requests",
-},
+    {
+        module: "Reimbursement",
+        pageName: "Reimbursements",
+        route: "/reimbursements",
+    },
+
+    {
+        module: "Bill",
+        pageName: "Bill",
+        route: "/bills",
+    },
+
 ];
 
 
@@ -495,10 +490,10 @@ function AppRoutes() {
                             element={<Role />}
                         />
 
-                    <Route
+                        {/* <Route
                         path="/employees/my-dashboard"
                         element={<Dashboard />}
-                    />
+                    /> */}
 
                         <Route
                             path="/employees/EmployeeHierarchy"
@@ -630,38 +625,32 @@ function AppRoutes() {
                         <Route
                             path="/approvals"
                             element={<Approval />}
-                        /> 
+                        />
                         <Route
                             path="/MyDashboard"
                             element={<MyDashboard />}
-                        /> 
-                       {/* =====================================================
-    REIMBURSEMENT
-===================================================== */}
-
-<Route
-    path="/reimbursements"
-    element={<ReimbursementDashboard />}
-/>
-
-<Route
-    path="/reimbursements/requests"
-    element={<ReimbursementRequests />}
-/>
-
-<Route
-    path="/reimbursements/my"
-    element={<MyReimbursements />}
-/>
-
-                         </Route>
+                        />
+                        <Route
+                            path="/reimbursements"
+                            element={<Reimbursement />}
+                        />
+                        
+                        <Route
+                        path="/bills"
+                        element={<Bill />}
+                    />
 
                 </Route>
+            
+
+                    </Route>
+
+                    
 
             </Route>
 
         </Routes>
-        
+
     );
 }
 

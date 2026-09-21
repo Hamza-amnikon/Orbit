@@ -1,0 +1,457 @@
+/* =========================================================
+   VENDOR TABLE CARD
+========================================================= */
+
+.vendor-table-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.vendor-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.vendor-table-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.vendor-table-header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.vendor-count {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   FILTERS
+========================================================= */
+
+.vendor-table-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+/* SEARCH */
+
+.vendor-search-box {
+  flex: 1;
+  min-width: 220px;
+}
+
+.vendor-search-box input {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+
+  border: 1px solid #dbe3ef;
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #334155;
+
+  font-size: 11px;
+  outline: none;
+
+  box-sizing: border-box;
+}
+
+.vendor-search-box input::placeholder {
+  color: #94a3b8;
+}
+
+.vendor-search-box input:focus {
+  border-color: #4c8ff7;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
+}
+
+/* STATUS */
+
+.vendor-status-filter {
+  width: 140px;
+  height: 36px;
+
+  padding: 0 10px;
+
+  border: 1px solid #dbe3ef;
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #334155;
+
+  font-size: 11px;
+  outline: none;
+  cursor: pointer;
+}
+
+.vendor-status-filter:focus {
+  border-color: #4c8ff7;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
+}
+
+/* APPLY */
+
+.vendor-filter-btn {
+  height: 36px;
+  min-width: 70px;
+
+  padding: 0 16px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.vendor-filter-btn:hover {
+  background: #1d4ed8;
+}
+
+/* RESET */
+
+.vendor-reset-btn {
+  height: 36px;
+  min-width: 65px;
+
+  padding: 0 14px;
+
+  border: 1px solid #dbe3ef;
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.vendor-reset-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+/* =========================================================
+   TABLE WRAPPER
+========================================================= */
+
+.vendor-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.vendor-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1500px;
+}
+
+.vendor-table thead {
+  background: #f8fafc;
+}
+
+.vendor-table th {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.vendor-table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 12px;
+  color: #344a94;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLE ROW
+========================================================= */
+
+.vendor-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.vendor-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.vendor-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.vendor-table-empty {
+  text-align: center !important;
+  padding: 30px 16px !important;
+  color: #94a3b8 !important;
+  font-size: 12px !important;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.vendor-status-active,
+.vendor-status-inactive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.vendor-status-active {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.vendor-status-inactive {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .vendor-table-header {
+    padding: 16px;
+  }
+
+  .vendor-table th,
+  .vendor-table td {
+    padding: 11px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .vendor-table-header {
+    align-items: flex-start;
+    gap: 10px;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .vendor-table-filters {
+    flex-wrap: wrap;
+    padding: 14px 16px;
+  }
+
+  .vendor-search-box {
+    flex: 1 1 100%;
+  }
+
+  .vendor-status-filter {
+    flex: 1;
+  }
+
+  .vendor-filter-btn,
+  .vendor-reset-btn {
+    flex: 1;
+  }
+
+  .vendor-table-header {
+    padding: 16px;
+  }
+
+  .vendor-table th,
+  .vendor-table td {
+    padding: 11px 12px;
+  }
+}
+
+/* =========================================================
+   VENDOR ACTION BUTTONS
+   VIEW + UPDATE ONLY
+========================================================= */
+
+.vendor-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.vendor-actions button {
+  height: 28px;
+  padding: 0 9px;
+  margin: 0;
+  border-radius: 5px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+/* =========================================================
+   VIEW BUTTON
+========================================================= */
+
+.vendor-view-action {
+  color: #2563eb;
+  background: #eef6ff;
+  border: 1px solid #b9d5ff;
+}
+
+.vendor-view-action:hover {
+  color: #1769d1;
+  background: #dcecff;
+  border-color: #8fbaff;
+}
+
+/* =========================================================
+   UPDATE BUTTON
+========================================================= */
+
+.vendor-update-action {
+  color: #475467;
+  background: #f8fafc;
+  border: 1px solid #d0d5dd;
+}
+
+.vendor-update-action:hover {
+  color: #344054;
+  background: #f2f4f7;
+  border-color: #98a2b3;
+}
+
+/* =========================================================
+   VENDOR DELETE ACTION
+========================================================= */
+
+.vendor-delete-action {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.vendor-delete-action:hover {
+  color: #b91c1c;
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+/* =========================================================
+   VENDOR VIEW DIALOG
+========================================================= */
+
+.vendor-view-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.vendor-view-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.vendor-view-item span {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.vendor-view-item strong {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.vendor-view-full {
+  grid-column: 1 / -1;
+}
+
+.vendor-view-section-title {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+}
+
+@media (max-width: 600px) {
+  .vendor-view-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vendor-view-full,
+  .vendor-view-section-title {
+    grid-column: auto;
+  }
+}

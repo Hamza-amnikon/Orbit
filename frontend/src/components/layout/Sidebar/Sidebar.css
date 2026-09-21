@@ -1,58 +1,44 @@
-/* ============================================================
-   SIDEBAR
-   ============================================================ */
+.sidebar{
+    position:fixed;
 
-.sidebar {
-    position: fixed;
+    top:0;
+    left:0;
 
-    top: 0;
-    left: 0;
+    width:280px;
+    height:100vh;
 
-    width: 228px;
-    height: 100vh;
+    background:#fff;
 
-    box-sizing: border-box;
+    border-right:1px solid #e5e7eb;
 
-    background: #ffffff;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
 
-    border-right: 1px solid #edf1f7;
+    padding:24px;
 
-    display: flex;
-    flex-direction: column;
+    overflow:hidden;
 
-    padding: 0 16px;
+    z-index:1000;
+}
 
-    z-index: 1000;
-
-    overflow: hidden;
+.sidebar-top{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
 }
 
 
-/* ============================================================
-   LOGO
-   ============================================================ */
-
-.sidebar-logo {
-    width: 100%;
-    height: 125px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    flex-shrink: 0;
-
-    padding-top: 8px;
-
-    box-sizing: border-box;
+.logo{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:18px;
 }
-
 
 .logo-image {
-    width: 178px;
-    height: 105px;
-
+    width: 100%;
+    height: 100%;
     object-fit: contain;
 
     display: block;
@@ -73,32 +59,27 @@
     display: flex;
 
     flex-direction: column;
-
-    gap: 3px;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    padding: 4px 0 12px;
-
-    scrollbar-width: none;
-
-    overscroll-behavior: contain;
 }
 
-
-/* ============================================================
-   HIDE SCROLLBAR
-   ============================================================ */
-
-.sidebar-menu::-webkit-scrollbar {
-    display: none;
+.logo-text h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #2563eb;
+    letter-spacing: 0.5px;
 }
 
-
-/* ============================================================
-   MENU ITEM
-   ============================================================ */
+.logo-text span {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+}
+.sidebar-menu{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
 
 .menu-item {
     width: 100%;
@@ -176,14 +157,12 @@
 }
 
 
-/* ============================================================
-   MENU ICON
-   ============================================================ */
+.sidebar-footer {
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+}
 
-.menu-icon {
-    width: 22px;
-    height: 22px;
-
+.profile {
     display: flex;
 
     align-items: center;

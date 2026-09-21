@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Checkbox, FormControlLabel, Typography, Box, Chip, Divider, Button, TextField } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import "./LeaveRequests.css";
 import { useAuth } from "../../../context/AuthContext";
 
+<<<<<<< HEAD
 const LEAVE_API = "https://sparkapi.amnikontechnologies.com:7206/api/Leave";
 const LEAVE_TYPE_API = "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
+=======
+const LEAVE_API = "https://localhost:7206/api/Leave";
+const LEAVE_TYPE_API = "https://localhost:7206/api/LeaveType";
+const SHIFT_API = "https://localhost:7292/api/Shift";
+>>>>>>> origin/mahinoor
 
 export default function LeaveRequests() {
     const [searchParams] = useSearchParams();
@@ -105,6 +112,12 @@ export default function LeaveRequests() {
     const [selectedStatus, setSelectedStatus] = useState("");
     const [managerComment, setManagerComment] = useState("");
 
+    const [openPartialApprovalDialog, setOpenPartialApprovalDialog] = useState(false);
+    const [approvalDates, setApprovalDates] = useState([]);
+    const [approvalDateInfo, setApprovalDateInfo] = useState([]);
+    const [approvalSubmitting, setApprovalSubmitting] = useState(false);
+    const [allShifts, setAllShifts] = useState([]);
+
     const [viewLeave, setViewLeave] = useState(null);
 
     const [statusFilter, setStatusFilter] = useState(
@@ -120,6 +133,7 @@ export default function LeaveRequests() {
     useEffect(() => {
         loadLeaves();
         loadLeaveTypes();
+        loadShifts();
     }, []);
 
     // ==========================================================
@@ -149,6 +163,20 @@ export default function LeaveRequests() {
     }
 
     // ==========================================================
+    // LOAD SHIFT ASSIGNMENTS
+    // ==========================================================
+
+    async function loadShifts() {
+        try {
+            const response = await axios.get(SHIFT_API, getAuthConfig());
+            setAllShifts(Array.isArray(response.data) ? response.data : []);
+        } catch (error) {
+            console.error("Shift Error:", error);
+            setAllShifts([]);
+        }
+    }
+
+    // ==========================================================
     // GET LEAVE TYPE NAME
     // ==========================================================
 
@@ -164,13 +192,102 @@ export default function LeaveRequests() {
     // OPEN APPROVE / REJECT POPUP
     // ==========================================================
 
+    // ==========================================================
+    // PARTIAL APPROVAL DATE HELPERS
+    // ==========================================================
+
+    function toDateKey(value) {
+        if (!value) return "";
+        const s = String(value);
+        if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return "";
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    }
+
+    function formatDateKey(key) {
+        if (!key) return "-";
+        const [y,m,d] = key.split("-").map(Number);
+        return new Date(y,m-1,d).toLocaleDateString("en-GB");
+    }
+
+    function getRequestDateKeys(leave) {
+        const fromKey = toDateKey(leave?.fromDate);
+        const toKey = toDateKey(leave?.toDate);
+        if (!fromKey || !toKey || fromKey > toKey) return [];
+        const [fy,fm,fd] = fromKey.split("-").map(Number);
+        const [ty,tm,td] = toKey.split("-").map(Number);
+        const current = new Date(fy,fm-1,fd);
+        const end = new Date(ty,tm-1,td);
+        const result = [];
+        while (current <= end) {
+            result.push(`${current.getFullYear()}-${String(current.getMonth()+1).padStart(2,"0")}-${String(current.getDate()).padStart(2,"0")}`);
+            current.setDate(current.getDate()+1);
+        }
+        return result;
+    }
+
+    function getShiftForEmployeeDate(leave, dateKey) {
+        if (!Array.isArray(allShifts)) return null;
+        const employeeId = Number(leave?.employeeId);
+        const matches = allShifts.filter(shift => {
+            if (shift?.status && String(shift.status).trim().toLowerCase() !== "active") return false;
+            if (Number(shift?.employeeId) !== employeeId) return false;
+            const from = toDateKey(shift?.fromDate ?? shift?.FromDate ?? shift?.startDate ?? shift?.StartDate);
+            const to = toDateKey(shift?.toDate ?? shift?.ToDate ?? shift?.endDate ?? shift?.EndDate);
+            return (!from || dateKey >= from) && (!to || dateKey <= to);
+        });
+        matches.sort((a,b) => (toDateKey(b?.fromDate ?? b?.FromDate ?? b?.startDate ?? b?.StartDate) || "").localeCompare(toDateKey(a?.fromDate ?? a?.FromDate ?? a?.startDate ?? a?.StartDate) || ""));
+        return matches[0] || null;
+    }
+
+    function isWeekOffForEmployeeDate(leave, dateKey) {
+        const shift = getShiftForEmployeeDate(leave, dateKey);
+        if (!shift) return false;
+        const [y,m,d] = dateKey.split("-").map(Number);
+        const dayName = new Date(y,m-1,d).toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+        const off1 = String(shift?.weeklyOff1 ?? shift?.WeeklyOff1 ?? shift?.weeklyoff1 ?? shift?.Weeklyoff1 ?? "").trim().toLowerCase();
+        const off2 = String(shift?.weeklyOff2 ?? shift?.WeeklyOff2 ?? shift?.weeklyoff2 ?? shift?.Weeklyoff2 ?? "").trim().toLowerCase();
+        return dayName === off1 || dayName === off2;
+    }
+
     function openStatusPopup(leave, status) {
         if (!canApprove) return;
-
+        setManagerComment("");
+        if (status === "Approved") {
+            const info = getRequestDateKeys(leave).map(dateKey => ({ dateKey, weekOff: isWeekOffForEmployeeDate(leave, dateKey) }));
+            setSelectedLeave(leave);
+            setSelectedStatus("Approved");
+            setApprovalDateInfo(info);
+            setApprovalDates(info.filter(x => !x.weekOff).map(x => x.dateKey));
+            setOpenPartialApprovalDialog(true);
+            return;
+        }
         setSelectedLeave(leave);
         setSelectedStatus(status);
-        setManagerComment("");
+        setApprovalDateInfo([]);
+        setApprovalDates([]);
     }
+
+    function closePartialApprovalDialog() {
+        if (approvalSubmitting) return;
+        setOpenPartialApprovalDialog(false);
+        setSelectedLeave(null);
+        setSelectedStatus("");
+        setManagerComment("");
+        setApprovalDates([]);
+        setApprovalDateInfo([]);
+    }
+
+    function toggleApprovalDate(dateKey) {
+        setApprovalDates(prev => prev.includes(dateKey) ? prev.filter(x => x !== dateKey) : [...prev, dateKey]);
+    }
+
+    function selectAllWorkingDates() {
+        setApprovalDates(approvalDateInfo.filter(x => !x.weekOff).map(x => x.dateKey));
+    }
+
+    function clearAllWorkingDates() { setApprovalDates([]); }
 
     // ==========================================================
     // UPDATE STATUS
@@ -186,6 +303,11 @@ export default function LeaveRequests() {
             return;
         }
 
+        // Make sure the logged-in employee is available.
+        if (!validateAuthenticatedEmployee()) {
+            return;
+        }
+
         console.log("==========================================");
         console.log("Leave Status Update");
         console.log("Action:", selectedStatus);
@@ -195,23 +317,58 @@ export default function LeaveRequests() {
         console.log("Approved / Rejected By EmployeeName:", currentEmployeeName);
         console.log("==========================================");
 
+        if (selectedStatus === "Approved") {
+            const workingDates = approvalDateInfo.filter(
+                (x) => !x.weekOff
+            );
+
+            if (workingDates.length === 0) {
+                alert(
+                    "This leave request contains only Paid Week Off dates. There are no working days available for approval."
+                );
+                return;
+            }
+
+            if (approvalDates.length === 0) {
+                alert("Please select at least one working day to approve.");
+                return;
+            }
+        }
+
         try {
+            setApprovalSubmitting(true);
+
             await axios.put(
                 `${LEAVE_API}/${selectedLeave.leaveId}/status`,
                 {
                     status: selectedStatus,
 
-                    // IMPORTANT:
-                    // Never use a hard-coded Admin ID.
-                    // The logged-in employee is the person who approved/rejected.
+                    // Logged-in employee is the approver/rejector.
+                    // No hard-coded employee ID is used.
                     approvedBy: Number(currentEmployeeId),
-
-                    // Optional display value for APIs that support it.
-                    // Backend should still prefer deriving the identity from JWT.
                     approvedByName: currentEmployeeName,
                     approvedByEmployeeCode: currentEmployeeCode,
 
-                    managerComment: managerComment.trim()
+                    managerComment: managerComment.trim(),
+
+                    // Approved working dates only.
+                    approvedDates:
+                        selectedStatus === "Approved"
+                            ? approvalDates
+                            : [],
+
+                    approvedDays:
+                        selectedStatus === "Approved"
+                            ? approvalDates.length
+                            : 0,
+
+                    partialApproval:
+                        selectedStatus === "Approved"
+                            ? approvalDates.length <
+                              approvalDateInfo.filter(
+                                  (x) => !x.weekOff
+                              ).length
+                            : false
                 },
                 getAuthConfig()
             );
@@ -222,30 +379,116 @@ export default function LeaveRequests() {
                     : "Leave Rejected Successfully"
             );
 
-            // Close popup
+            // Close popup.
+            setOpenPartialApprovalDialog(false);
             setSelectedLeave(null);
             setSelectedStatus("");
             setManagerComment("");
+            setApprovalDates([]);
+            setApprovalDateInfo([]);
 
-            // Refresh table
+            // Refresh table.
             await loadLeaves();
+
         } catch (error) {
             console.error("Update Leave Status Error:", error);
 
+            // The LeaveService can save the Leave/LeaveDays/balance
+            // and then return 500 if its following ApprovalService
+            // call fails. Verify the actual saved Leave status before
+            // showing a failure message.
+            if (
+                error?.response?.status >= 500 ||
+                error?.code === "ERR_NETWORK"
+            ) {
+                try {
+                    console.log(
+                        "Leave status update returned an error. Verifying saved leave..."
+                    );
+
+                    const verifyResponse = await axios.get(
+                        LEAVE_API,
+                        getAuthConfig()
+                    );
+
+                    const latestLeaves = Array.isArray(
+                        verifyResponse.data
+                    )
+                        ? verifyResponse.data
+                        : [];
+
+                    const latestLeave = latestLeaves.find(
+                        (leave) =>
+                            Number(leave?.leaveId) ===
+                            Number(selectedLeave?.leaveId)
+                    );
+
+                    console.log(
+                        "Verified Leave after status error:",
+                        latestLeave
+                    );
+
+                    if (
+                        latestLeave &&
+                        String(latestLeave?.status || "")
+                            .trim()
+                            .toLowerCase() ===
+                        String(selectedStatus || "")
+                            .trim()
+                            .toLowerCase()
+                    ) {
+                        alert(
+                            selectedStatus === "Approved"
+                                ? "Leave Approved Successfully"
+                                : "Leave Rejected Successfully"
+                        );
+
+                        setOpenPartialApprovalDialog(false);
+                        setSelectedLeave(null);
+                        setSelectedStatus("");
+                        setManagerComment("");
+                        setApprovalDates([]);
+                        setApprovalDateInfo([]);
+
+                        setLeaves(latestLeaves);
+
+                        return;
+                    }
+                } catch (verifyError) {
+                    console.error(
+                        "Leave status verification failed:",
+                        verifyError
+                    );
+                }
+            }
+
             if (error?.response?.status === 401) {
-                alert("Your session has expired. Please sign in again.");
+                alert(
+                    "Your session has expired. Please sign in again."
+                );
                 return;
             }
 
             if (error?.response?.status === 403) {
-                alert("You are not authorized to approve or reject leave requests.");
+                alert(
+                    "You are not authorized to approve or reject leave requests."
+                );
                 return;
             }
 
-            alert(
+            const serverMessage =
                 error?.response?.data?.message ||
+                (typeof error?.response?.data === "string"
+                    ? error.response.data
+                    : null);
+
+            alert(
+                serverMessage ||
                 "Unable to update leave status."
             );
+
+        } finally {
+            setApprovalSubmitting(false);
         }
     }
 
@@ -253,17 +496,151 @@ export default function LeaveRequests() {
     // CALCULATE LEAVE DAYS
     // ==========================================================
 
-    function calculateDays(fromDate, toDate) {
+    function calculateDays(fromDate, toDate, employeeId = null) {
         const from = new Date(fromDate);
         const to = new Date(toDate);
 
-        const difference = to - from;
+        if (
+            Number.isNaN(from.getTime()) ||
+            Number.isNaN(to.getTime())
+        ) {
+            return 0;
+        }
 
-        return (
-            Math.floor(
-                difference / (1000 * 60 * 60 * 24)
-            ) + 1
-        );
+        from.setHours(0, 0, 0, 0);
+        to.setHours(0, 0, 0, 0);
+
+        // Preserve the existing calendar-day behavior if shift data
+        // is not available yet.
+        if (
+            employeeId === null ||
+            employeeId === undefined ||
+            !Array.isArray(allShifts) ||
+            allShifts.length === 0
+        ) {
+            const difference = to - from;
+
+            return (
+                Math.floor(
+                    difference / (1000 * 60 * 60 * 24)
+                ) + 1
+            );
+        }
+
+        let workingDays = 0;
+        const current = new Date(from);
+
+        while (current <= to) {
+            const dateKey =
+                `${current.getFullYear()}-${String(
+                    current.getMonth() + 1
+                ).padStart(2, "0")}-${String(
+                    current.getDate()
+                ).padStart(2, "0")}`;
+
+            const matchingShifts = allShifts.filter((shift) => {
+                const status = String(
+                    shift?.status ??
+                    shift?.Status ??
+                    ""
+                ).trim().toLowerCase();
+
+                if (status && status !== "active") {
+                    return false;
+                }
+
+                if (
+                    Number(shift?.employeeId) !==
+                    Number(employeeId)
+                ) {
+                    return false;
+                }
+
+                const shiftFrom = toDateKey(
+                    shift?.fromDate ??
+                    shift?.FromDate ??
+                    shift?.startDate ??
+                    shift?.StartDate
+                );
+
+                const shiftTo = toDateKey(
+                    shift?.toDate ??
+                    shift?.ToDate ??
+                    shift?.endDate ??
+                    shift?.EndDate
+                );
+
+                return (
+                    (!shiftFrom || dateKey >= shiftFrom) &&
+                    (!shiftTo || dateKey <= shiftTo)
+                );
+            });
+
+            matchingShifts.sort((a, b) => {
+                const aFrom =
+                    toDateKey(
+                        a?.fromDate ??
+                        a?.FromDate ??
+                        a?.startDate ??
+                        a?.StartDate
+                    ) || "";
+
+                const bFrom =
+                    toDateKey(
+                        b?.fromDate ??
+                        b?.FromDate ??
+                        b?.startDate ??
+                        b?.StartDate
+                    ) || "";
+
+                return bFrom.localeCompare(aFrom);
+            });
+
+            const shift = matchingShifts[0] || null;
+
+            if (shift) {
+                const dayName = current
+                    .toLocaleDateString("en-US", {
+                        weekday: "long",
+                    })
+                    .toLowerCase();
+
+                const weeklyOff1 = String(
+                    shift?.weeklyOff1 ??
+                    shift?.WeeklyOff1 ??
+                    shift?.weeklyoff1 ??
+                    shift?.Weeklyoff1 ??
+                    ""
+                ).trim().toLowerCase();
+
+                const weeklyOff2 = String(
+                    shift?.weeklyOff2 ??
+                    shift?.WeeklyOff2 ??
+                    shift?.weeklyoff2 ??
+                    shift?.Weeklyoff2 ??
+                    ""
+                ).trim().toLowerCase();
+
+                // Paid Week Off is not a leave day.
+                if (
+                    dayName === weeklyOff1 ||
+                    dayName === weeklyOff2
+                ) {
+                    current.setDate(
+                        current.getDate() + 1
+                    );
+                    continue;
+                }
+            }
+
+            workingDays++;
+
+            current.setDate(
+                current.getDate() + 1
+            );
+        }
+
+        return workingDays;
     }
 
     // ==========================================================
@@ -391,6 +768,7 @@ export default function LeaveRequests() {
                         onClick={() => {
                             loadLeaves();
                             loadLeaveTypes();
+                            loadShifts();
                         }}
                     >
                         ↻ Refresh
@@ -607,7 +985,8 @@ export default function LeaveRequests() {
                                             {
                                                 calculateDays(
                                                     leave.fromDate,
-                                                    leave.toDate
+                                                    leave.toDate,
+                                                    leave.employeeId
                                                 )
                                             }
 
@@ -718,7 +1097,7 @@ export default function LeaveRequests() {
                 APPROVE / REJECT POPUP
             ================================================== */}
 
-            {selectedLeave && (
+            {selectedLeave && selectedStatus === "Rejected" && (
 
                 <div className="leave-modal-overlay">
 
@@ -963,6 +1342,77 @@ export default function LeaveRequests() {
 
 
             {/* ==================================================
+                MUI PARTIAL APPROVAL DIALOG
+            ================================================== */}
+
+            <Dialog
+                open={openPartialApprovalDialog}
+                onClose={closePartialApprovalDialog}
+                fullWidth
+                maxWidth="sm"
+            >
+                <DialogTitle sx={{ fontWeight: 700 }}>
+                    Approve Leave Request
+                </DialogTitle>
+
+                <DialogContent dividers>
+                    {selectedLeave && (
+                        <>
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 1.5, mb: 2 }}>
+                                <Box><Typography variant="caption" color="text.secondary">Employee ID</Typography><Typography fontWeight={600}>{selectedLeave.employeeId}</Typography></Box>
+                                <Box><Typography variant="caption" color="text.secondary">Leave Type</Typography><Typography fontWeight={600}>{getLeaveTypeName(selectedLeave.leaveTypeId)}</Typography></Box>
+                                <Box><Typography variant="caption" color="text.secondary">From</Typography><Typography fontWeight={600}>{formatDate(selectedLeave.fromDate)}</Typography></Box>
+                                <Box><Typography variant="caption" color="text.secondary">To</Typography><Typography fontWeight={600}>{formatDate(selectedLeave.toDate)}</Typography></Box>
+                            </Box>
+
+                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+                                <Chip size="small" label={`Requested: ${approvalDateInfo.filter(x => !x.weekOff).length} day(s)`} />
+                                <Chip size="small" color="success" variant="outlined" label={`Approved: ${approvalDates.length} day(s)`} />
+                                <Chip size="small" color="warning" variant="outlined" label={`Week Off: ${approvalDateInfo.filter(x => x.weekOff).length}`} />
+                                <Chip size="small" color="error" variant="outlined" label={`Rejected: ${approvalDateInfo.filter(x => !x.weekOff).length - approvalDates.length}`} />
+                            </Box>
+
+                            <Divider sx={{ mb: 1.5 }} />
+                            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>Select days to approve</Typography>
+
+                            <Box sx={{ display: "flex", gap: 1, mb: 1.5 }}>
+                                <Button size="small" variant="outlined" onClick={selectAllWorkingDates}>Select All Working Days</Button>
+                                <Button size="small" variant="text" onClick={clearAllWorkingDates}>Clear</Button>
+                            </Box>
+
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                                {approvalDateInfo.map(item => (
+                                    <Box key={item.dateKey} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", border: "1px solid #e5e7eb", borderRadius: "8px", px: 1, py: 0.4 }}>
+                                        {item.weekOff ? (
+                                            <>
+                                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: "#16803c" }}>{formatDateKey(item.dateKey)}</Typography>
+                                                <Chip size="small" color="success" label="Week Off" />
+                                            </>
+                                        ) : (
+                                            <FormControlLabel
+                                                sx={{ m: 0, width: "100%" }}
+                                                control={<Checkbox checked={approvalDates.includes(item.dateKey)} onChange={() => toggleApprovalDate(item.dateKey)} />}
+                                                label={<Typography sx={{ fontSize: 14, fontWeight: 600 }}>{formatDateKey(item.dateKey)}</Typography>}
+                                            />
+                                        )}
+                                    </Box>
+                                ))}
+                            </Box>
+
+                            <TextField fullWidth multiline minRows={3} label="Manager Comment" value={managerComment} onChange={e => setManagerComment(e.target.value)} placeholder="Enter approval comment" sx={{ mt: 2 }} />
+                        </>
+                    )}
+                </DialogContent>
+
+                <DialogActions sx={{ px: 3, py: 2 }}>
+                    <Button onClick={closePartialApprovalDialog} disabled={approvalSubmitting}>Cancel</Button>
+                    <Button variant="contained" color="success" onClick={updateStatus} disabled={approvalSubmitting || approvalDates.length === 0}>
+                        {approvalSubmitting ? "Approving..." : "Approve Selected Days"}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* ==================================================
                 VIEW LEAVE DETAILS POPUP
             ================================================== */}
 
@@ -1100,7 +1550,8 @@ export default function LeaveRequests() {
                                         {
                                             calculateDays(
                                                 viewLeave.fromDate,
-                                                viewLeave.toDate
+                                                viewLeave.toDate,
+                                                viewLeave.employeeId
                                             )
                                         }
 

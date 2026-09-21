@@ -69,6 +69,9 @@ export default function LeavePolicy() {
         effectiveTo: "",
         status: "Active",
 
+        // Employee Type Eligibility
+        eligibleEmployeeTypes: ["Full-Time"],
+
     });
 
 
@@ -157,6 +160,9 @@ export default function LeavePolicy() {
             effectiveTo: "",
             status: "Active",
 
+            // Employee Type Eligibility
+            eligibleEmployeeTypes: ["Full-Time"],
+
         });
 
         setEditingPolicy(null);
@@ -232,6 +238,19 @@ export default function LeavePolicy() {
 
                 status:
                     formData.status,
+
+                // Employee Type Eligibility
+                appliesToFullTime:
+                    Array.isArray(formData.eligibleEmployeeTypes) &&
+                    formData.eligibleEmployeeTypes.includes("Full-Time"),
+
+                appliesToPartTime:
+                    Array.isArray(formData.eligibleEmployeeTypes) &&
+                    formData.eligibleEmployeeTypes.includes("Part-Time"),
+
+                appliesToIntern:
+                    Array.isArray(formData.eligibleEmployeeTypes) &&
+                    formData.eligibleEmployeeTypes.includes("Intern"),
 
             };
 
@@ -355,6 +374,13 @@ export default function LeavePolicy() {
 
             status:
                 policy.status,
+
+            // Employee Type Eligibility
+            eligibleEmployeeTypes: [
+                ...(policy.appliesToFullTime ? ["Full-Time"] : []),
+                ...(policy.appliesToPartTime ? ["Part-Time"] : []),
+                ...(policy.appliesToIntern ? ["Intern"] : []),
+            ],
 
         });
 

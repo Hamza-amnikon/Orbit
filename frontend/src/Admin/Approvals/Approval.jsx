@@ -16,6 +16,18 @@ import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    IconButton,
+    Typography,
+    Box,
+    TextField,
+    Button
+} from "@mui/material";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -868,13 +880,10 @@ const handleExport = () => {
                 {/* PENDING */}
 
                 <div
-                    className="approval-card"
+                    className="approval-card approval-card-clickable"
                     onClick={() =>
                         handleCardClick("Pending")
                     }
-                    style={{
-                        cursor: "pointer"
-                    }}
                 >
 
                     <div className="approval-card-icon pending">
@@ -907,13 +916,10 @@ const handleExport = () => {
                 {/* APPROVED */}
 
                 <div
-                    className="approval-card"
+                    className="approval-card approval-card-clickable"
                     onClick={() =>
                         handleCardClick("Approved")
                     }
-                    style={{
-                        cursor: "pointer"
-                    }}
                 >
 
                     <div className="approval-card-icon approved">
@@ -946,13 +952,10 @@ const handleExport = () => {
                 {/* REJECTED */}
 
                 <div
-                    className="approval-card"
+                    className="approval-card approval-card-clickable"
                     onClick={() =>
                         handleCardClick("Rejected")
                     }
-                    style={{
-                        cursor: "pointer"
-                    }}
                 >
 
                     <div className="approval-card-icon rejected">
@@ -985,13 +988,10 @@ const handleExport = () => {
                 {/* TOTAL */}
 
                 <div
-                    className="approval-card"
+                    className="approval-card approval-card-clickable"
                     onClick={() =>
                         handleCardClick("All")
                     }
-                    style={{
-                        cursor: "pointer"
-                    }}
                 >
 
                     <div className="approval-card-icon total">
@@ -1532,12 +1532,12 @@ const handleExport = () => {
             <div className="approval-details-header">
                 <div>
                     <h2>Leave Request Details</h2>
-                    <p>
+                    {/* <p>
                         Request ID:{" "}
                         {selectedRequest.requestId ||
                             selectedRequest.leaveId ||
                             "—"}
-                    </p>
+                    </p> */}
                 </div>
 
                 <button
@@ -1664,161 +1664,185 @@ const handleExport = () => {
 
 
 {selectedLeave && (
-    <div className="approval-details-overlay">
-        <div className="approval-details-modal">
-
-            <div className="approval-details-header">
-                <div>
-                    <h2>
+    <Dialog
+        open={Boolean(selectedLeave)}
+        onClose={() => {
+            setSelectedLeave(null);
+            setSelectedStatus("");
+            setManagerComment("");
+        }}
+        fullWidth
+        maxWidth="sm"
+        aria-labelledby="approval-dialog-title"
+        PaperProps={{
+            className: "approval-action-dialog-paper"
+        }}
+        BackdropProps={{
+            className: "approval-action-dialog-backdrop"
+        }}
+    >
+        <DialogTitle
+            id="approval-dialog-title"
+            className="approval-action-dialog-title"
+        >
+            <Box className="approval-action-dialog-title-row">
+                <Box>
+                    <Typography
+                        variant="h6"
+                        className="approval-action-dialog-heading"
+                    >
                         {selectedStatus === "Approved"
                             ? "Approve Leave"
                             : "Reject Leave"}
-                    </h2>
+                    </Typography>
 
-                    <p>
+                    <Typography
+                        variant="caption"
+                        className="approval-action-dialog-subtitle"
+                    >
                         Request ID:{" "}
                         {selectedLeave.requestId ||
                             selectedLeave.leaveId ||
                             "—"}
-                    </p>
-                </div>
+                    </Typography>
+                </Box>
 
-                <button
-                    type="button"
-                    className="approval-details-close"
+                <IconButton
+                    size="small"
+                    aria-label="Close"
+                    className="approval-action-dialog-close"
                     onClick={() => {
                         setSelectedLeave(null);
                         setSelectedStatus("");
                         setManagerComment("");
                     }}
                 >
-                    ×
-                </button>
-            </div>
+                    <CloseRoundedIcon fontSize="small" />
+                </IconButton>
+            </Box>
+        </DialogTitle>
 
-            <div className="approval-details-body">
+        <DialogContent
+            dividers
+            className="approval-action-dialog-content"
+        >
+            <Box className="approval-action-details-grid">
 
-                <div className="approval-detail-item">
-                    <span>Employee ID</span>
-                    <strong>
+                <Box className="approval-action-detail">
+                    <Typography className="approval-action-detail-label">
+                        Employee ID
+                    </Typography>
+                    <Typography className="approval-action-detail-value">
                         {selectedLeave.employeeId || "—"}
-                    </strong>
-                </div>
+                    </Typography>
+                </Box>
 
-                <div className="approval-detail-item">
-                    <span>Employee Name</span>
-                    <strong>
+                <Box className="approval-action-detail">
+                    <Typography className="approval-action-detail-label">
+                        Employee Name
+                    </Typography>
+                    <Typography className="approval-action-detail-value">
                         {selectedLeave.employeeName || "—"}
-                    </strong>
-                </div>
+                    </Typography>
+                </Box>
 
-                <div className="approval-detail-item">
-                    <span>Leave Type</span>
-                    <strong>
+                <Box className="approval-action-detail">
+                    <Typography className="approval-action-detail-label">
+                        Leave Type
+                    </Typography>
+                    <Typography className="approval-action-detail-value">
                         {getLeaveTypeName(
                             selectedLeave.leaveTypeId
                         )}
-                    </strong>
-                </div>
+                    </Typography>
+                </Box>
 
-                <div className="approval-detail-item">
-                    <span>From Date</span>
-                    <strong>
+                <Box className="approval-action-detail">
+                    <Typography className="approval-action-detail-label">
+                        From Date
+                    </Typography>
+                    <Typography className="approval-action-detail-value">
                         {formatDate(selectedLeave.fromDate)}
-                    </strong>
-                </div>
+                    </Typography>
+                </Box>
 
-                <div className="approval-detail-item">
-                    <span>To Date</span>
-                    <strong>
+                <Box className="approval-action-detail">
+                    <Typography className="approval-action-detail-label">
+                        To Date
+                    </Typography>
+                    <Typography className="approval-action-detail-value">
                         {formatDate(selectedLeave.toDate)}
-                    </strong>
-                </div>
+                    </Typography>
+                </Box>
 
-                <div className="approval-detail-item">
-                    <span>Reason</span>
-                    <strong>
+                <Box className="approval-action-detail">
+                    <Typography className="approval-action-detail-label">
+                        Reason
+                    </Typography>
+                    <Typography className="approval-action-detail-value">
                         {selectedLeave.reason || "—"}
-                    </strong>
-                </div>
+                    </Typography>
+                </Box>
 
-                <div style={{ marginTop: "18px", width: "100%" }}>
-                    <label
-                        htmlFor="approval-manager-comment"
-                        style={{
-                            display: "block",
-                            marginBottom: "8px",
-                            fontWeight: 600
-                        }}
-                    >
-                        Manager Comment
-                    </label>
+            </Box>
 
-                    <textarea
-                        id="approval-manager-comment"
-                        value={managerComment}
-                        onChange={(event) =>
-                            setManagerComment(event.target.value)
-                        }
-                        placeholder={
-                            selectedStatus === "Approved"
-                                ? "Enter approval comment"
-                                : "Enter reason for rejection"
-                        }
-                        rows={4}
-                        style={{
-                            width: "100%",
-                            boxSizing: "border-box",
-                            resize: "vertical",
-                            padding: "10px",
-                            border: "1px solid #d8dee9",
-                            borderRadius: "8px",
-                            fontFamily: "inherit"
-                        }}
-                    />
-                </div>
+            <Box className="approval-action-comment">
+                <Typography className="approval-action-comment-label">
+                    Manager Comment
+                </Typography>
 
-            </div>
+                <TextField
+                    id="approval-manager-comment"
+                    value={managerComment}
+                    onChange={(event) =>
+                        setManagerComment(event.target.value)
+                    }
+                    placeholder={
+                        selectedStatus === "Approved"
+                            ? "Enter approval comment"
+                            : "Enter reason for rejection"
+                    }
+                    multiline
+                    minRows={3}
+                    fullWidth
+                    variant="outlined"
+                    className="approval-action-comment-field"
+                />
+            </Box>
+        </DialogContent>
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    gap: "10px",
-                    padding: "0 24px 24px"
+        <DialogActions className="approval-action-dialog-actions">
+            <Button
+                type="button"
+                variant="outlined"
+                className="approval-action-cancel-btn"
+                onClick={() => {
+                    setSelectedLeave(null);
+                    setSelectedStatus("");
+                    setManagerComment("");
                 }}
             >
-                <button
+                Cancel
+            </Button>
+
+            {selectedStatus === "Approved" && !canApprove ? null : (
+                <Button
                     type="button"
-                    className="modal-cancel-btn"
-                    onClick={() => {
-                        setSelectedLeave(null);
-                        setSelectedStatus("");
-                        setManagerComment("");
-                    }}
+                    variant="contained"
+                    className={
+                        selectedStatus === "Approved"
+                            ? "approval-action-confirm-btn approval-action-confirm-approve"
+                            : "approval-action-confirm-btn approval-action-confirm-reject"
+                    }
+                    onClick={updateStatus}
                 >
-                    Cancel
-                </button>
-
-                {selectedStatus === "Approved" && !canApprove ? null : (
-                    <button
-                        type="button"
-                        className={
-                            selectedStatus === "Approved"
-                                ? "modal-approve-btn"
-                                : "modal-reject-btn"
-                        }
-                        onClick={updateStatus}
-                    >
-                        {selectedStatus === "Approved"
-                            ? "Confirm Approval"
-                            : "Confirm Rejection"}
-                    </button>
-                )}
-            </div>
-
-        </div>
-    </div>
+                    {selectedStatus === "Approved"
+                        ? "Confirm Approval"
+                        : "Confirm Rejection"}
+                </Button>
+            )}
+        </DialogActions>
+    </Dialog>
 )}
 
 

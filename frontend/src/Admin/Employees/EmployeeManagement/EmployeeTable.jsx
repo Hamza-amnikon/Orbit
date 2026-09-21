@@ -419,35 +419,7 @@ function EmployeeTable({
       </div>
 
 
-      {/* =================================================
-          SEARCH
-      ================================================= */}
-
-      <div
-        style={{
-          marginBottom: "20px",
-        }}
-      >
-
-        <TextField
-          fullWidth
-          size="small"
-          placeholder="Search employees..."
-          value={search}
-          onChange={(e) =>
-            setSearch(e.target.value)
-          }
-
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-        />
-
-      </div>
+     
 
 
       {/* =================================================
