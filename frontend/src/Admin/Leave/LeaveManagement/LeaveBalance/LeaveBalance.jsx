@@ -48,7 +48,7 @@ const LEAVE_TYPE_API =
   "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
 
 const LEAVE_SYNC_API =
-  "https://localhost:7206/api/Leave/sync";
+  "https://sparkapi.amnikontechnologies.com:7206/api/Leave/sync";
 
 export default function LeaveBalance() {
 

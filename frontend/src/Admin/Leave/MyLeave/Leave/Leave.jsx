@@ -143,7 +143,7 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
 
             try {
                 const shiftResponse = await fetch(
-                    "https://localhost:7292/api/Shift",
+                    "https://sparkapi.amnikontechnologies.com:7292/api/Shift",
                     {
                         headers: {
                             Accept: "application/json",

@@ -9,7 +9,7 @@ import { useAuth } from "../../../context/AuthContext";
 const LEAVE_API = "https://sparkapi.amnikontechnologies.com:7206/api/Leave";
 const LEAVE_TYPE_API = "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
 
-const SHIFT_API = "https://localhost:7292/api/Shift";
+const SHIFT_API = "https://sparkapi.amnikontechnologies.com:7292/api/Shift";
 
 
 export default function LeaveRequests() {
