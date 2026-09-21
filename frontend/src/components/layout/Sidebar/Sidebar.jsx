@@ -101,6 +101,13 @@ export const menu = [
     path: "/reimbursements",
     permissionPath: "/reimbursements",
   },
+      {
+    title: "Bills",
+    icon: <ReceiptLongRoundedIcon />,
+    path: "/bills",
+    permissionPath: "/bills",
+  },
+  
 ];
 
 

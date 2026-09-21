@@ -63,8 +63,13 @@ import ShiftManagement from "../Admin/AttendanceManagement/ShiftManagement/Shift
 import CompOff from "../Admin/Leave/CompOff/CompOff";
 
 import PermissionManagement from "../Admin/PermissionManagement/Permissions";
-import Reimbursement from "../Admin/Reimbursement/Reimbursement";
+import ReimbursementDashboard from "../Admin/Reimbursement/ReimbursementDashboard";
+import MyReimbursement from "../Admin/Reimbursement/MyReimbursement";
+import ReimbursementRequest from "../Admin/Reimbursement/Reimbursement";
+
+
 import Bill from "../Admin/Bill/Bill";
+import MyReimbursements from "../Admin/Reimbursement/MyReimbursement";
 
 /* ============================================================
    PERMISSION PAGE CATALOG
@@ -350,7 +355,16 @@ export const PERMISSION_PAGES = [
         pageName: "Reimbursements",
         route: "/reimbursements",
     },
-
+    {
+        module: "Reimbursement",
+        pageName: "Reimbursements",
+        route: "/reimbursements/My",
+    },
+        {
+        module: "Reimbursement",
+        pageName: "Reimbursements",
+        route: "/reimbursements/requests",
+    },
     {
         module: "Bill",
         pageName: "Bill",
@@ -632,9 +646,16 @@ function AppRoutes() {
                         />
                         <Route
                             path="/reimbursements"
-                            element={<Reimbursement />}
+                            element={<ReimbursementDashboard />}
                         />
-                        
+                        <Route
+                            path="/reimbursements/requests"
+                            element={<ReimbursementRequest />}
+                        />
+                                                <Route
+                            path="/reimbursements/My"
+                            element={<MyReimbursements />}
+                        />
                         <Route
                         path="/bills"
                         element={<Bill />}
