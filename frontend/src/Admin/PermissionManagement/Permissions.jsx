@@ -555,6 +555,7 @@ export default function Permissions() {
 
   const [roleSearch, setRoleSearch] = useState("");
   const [pageSearch, setPageSearch] = useState("");
+  const [openPermissionId, setOpenPermissionId] = useState(null);
 
   const [activeTab, setActiveTab] = useState("roles");
 
@@ -1218,7 +1219,128 @@ const modules = useMemo(() => {
   };
 
   /* ========================================================================
-     Toggle module
+     Permission action helpers
+  ======================================================================== */
+
+  const getEffectivePermissionActions = (permission) => {
+    if (!permission?.id) {
+      return {
+        view: false,
+        create: false,
+        edit: false,
+        delete: false,
+        approve: false,
+        export: false,
+      };
+    }
+
+    const permissionId = normalizeId(permission.id);
+    const savedActions = permissionActions[permissionId] || {};
+
+    if (isDefaultMainPermission(permission.raw, permissions)) {
+      return {
+        view: true,
+        create: true,
+        edit: true,
+        delete: true,
+        approve: true,
+        export: true,
+      };
+    }
+
+    return {
+      view: isPersonalPage(permission.raw)
+        ? true
+        : Boolean(savedActions.view),
+      create: Boolean(savedActions.create),
+      edit: Boolean(savedActions.edit),
+      delete: Boolean(savedActions.delete),
+      approve: Boolean(savedActions.approve),
+      export: Boolean(savedActions.export),
+    };
+  };
+
+  /* ========================================================================
+     Toggle page ALL permissions
+  ======================================================================== */
+
+  const togglePageAll = (permission) => {
+    if (!permission?.id) return;
+
+    const permissionId = normalizeId(permission.id);
+    const currentActions = getEffectivePermissionActions(permission);
+
+    const pageAllSelected = ACTIONS.every(
+      (action) => Boolean(currentActions[action]),
+    );
+
+    const shouldSelectAll = !pageAllSelected;
+    const personalPage = isPersonalPage(permission.raw);
+    const defaultMainPage = isDefaultMainPermission(
+      permission.raw,
+      permissions,
+    );
+
+    // Preserve the existing protected default-main-page behavior.
+    if (defaultMainPage) {
+      return;
+    }
+
+    const updatedActions = {
+      view: shouldSelectAll || personalPage,
+      create: shouldSelectAll,
+      edit: shouldSelectAll,
+      delete: shouldSelectAll,
+      approve: shouldSelectAll,
+      export: shouldSelectAll,
+    };
+
+    setPermissionActions((previous) => ({
+      ...previous,
+      [permissionId]: updatedActions,
+    }));
+
+    setSelectedPermissions((previous) => {
+      const next = new Set(previous);
+
+      if (Object.values(updatedActions).some(Boolean)) {
+        next.add(permissionId);
+      } else {
+        next.delete(permissionId);
+      }
+
+      return next;
+    });
+
+    if (!updatedActions.view) {
+      const moduleName = permission.module || "HRMS";
+
+      if (isSameId(loginPages[moduleName], permissionId)) {
+        setLoginPages((previous) => {
+          const next = { ...previous };
+          delete next[moduleName];
+          return next;
+        });
+      }
+    }
+  };
+
+  /* ========================================================================
+     Toggle page action panel
+  ======================================================================== */
+
+  const togglePermissionActionPanel = (permission) => {
+    if (!permission?.id) return;
+
+    const permissionId = normalizeId(permission.id);
+
+    setOpenPermissionId((previous) =>
+      previous === permissionId ? null : permissionId,
+    );
+  };
+
+  /* ========================================================================
+     Toggle module ALL permissions
   ======================================================================== */
 
   const toggleModule = (module) => {
@@ -1230,30 +1352,46 @@ const modules = useMemo(() => {
 
     if (pages.length === 0) return;
 
-    const pageIds = pages.map((page) =>
-      normalizeId(page.id),
-    );
+    const moduleAllSelected = pages.every((page) => {
+      const actions = getEffectivePermissionActions(page);
 
-    const moduleSelected =
-      pageIds.every((id) =>
-        selectedPermissions.has(id),
+      return ACTIONS.every(
+        (action) => Boolean(actions[action]),
       );
+    });
+
+    const shouldSelectAll = !moduleAllSelected;
 
     setPermissionActions((previous) => {
-      const next = {
-        ...previous,
-      };
+      const next = { ...previous };
 
       pages.forEach((page) => {
         const id = normalizeId(page.id);
+        const personalPage = isPersonalPage(page.raw);
+        const defaultMainPage = isDefaultMainPermission(
+          page.raw,
+          permissions,
+        );
+
+        if (defaultMainPage) {
+          next[id] = {
+            view: true,
+            create: true,
+            edit: true,
+            delete: true,
+            approve: true,
+            export: true,
+          };
+          return;
+        }
 
         next[id] = {
-          view: !moduleSelected,
-          create: !moduleSelected,
-          edit: !moduleSelected,
-          delete: !moduleSelected,
-          approve: !moduleSelected,
-          export: !moduleSelected,
+          view: shouldSelectAll || personalPage,
+          create: shouldSelectAll,
+          edit: shouldSelectAll,
+          delete: shouldSelectAll,
+          approve: shouldSelectAll,
+          export: shouldSelectAll,
         };
       });
 
@@ -1263,18 +1401,25 @@ const modules = useMemo(() => {
     setSelectedPermissions((previous) => {
       const next = new Set(previous);
 
-      pageIds.forEach((id) => {
-        if (moduleSelected) {
-          next.delete(id);
-        } else {
+      pages.forEach((page) => {
+        const id = normalizeId(page.id);
+        const personalPage = isPersonalPage(page.raw);
+        const defaultMainPage = isDefaultMainPermission(
+          page.raw,
+          permissions,
+        );
+
+        if (shouldSelectAll || personalPage || defaultMainPage) {
           next.add(id);
+        } else {
+          next.delete(id);
         }
       });
 
       return next;
     });
 
-    if (moduleSelected) {
+    if (!shouldSelectAll) {
       const moduleName = module.moduleName;
 
       if (loginPages[moduleName]) {
@@ -1380,7 +1525,7 @@ const modules = useMemo(() => {
     const permissionId = normalizeId(permission.id);
 
     const actions =
-      permissionActions[permissionId] || {};
+      getEffectivePermissionActions(permission);
 
     if (!toBoolean(actions.view)) {
       setError(
@@ -2107,34 +2252,8 @@ const modules = useMemo(() => {
     const permissionId =
       normalizeId(permission.id);
 
-    const savedActions =
-      permissionActions[permissionId];
-
-    const isDefaultMain =
-      isDefaultMainPermission(
-        permission.raw,
-        permissions,
-      );
-
-    const actions = isDefaultMain
-      ? {
-          view: true,
-          create: true,
-          edit: true,
-          delete: true,
-          approve: true,
-          export: true,
-        }
-      : {
-          view: isPersonalPage(permission.raw)
-            ? true
-            : savedActions?.view ?? false,
-          create: savedActions?.create ?? false,
-          edit: savedActions?.edit ?? false,
-          delete: savedActions?.delete ?? false,
-          approve: savedActions?.approve ?? false,
-          export: savedActions?.export ?? false,
-        };
+    const actions =
+      getEffectivePermissionActions(permission);
 
     return (
       <input
@@ -2497,30 +2616,33 @@ const modules = useMemo(() => {
                       {getEmployeeName(selectedUser).charAt(0).toUpperCase()}
                     </div>
 
-                    <div>
-                      <h2>{getEmployeeName(selectedUser)}</h2>
+                    <div className="permission-user-detail-info">
+                      <div className="permission-user-detail-title-row">
+                        <h2>{getEmployeeName(selectedUser)}</h2>
+                      </div>
 
                       <div className="permission-user-meta">
-                        <span>
-                          Azure Employee ID:{" "}
+                        <div className="permission-user-meta-item">
+                          <span>Employee ID</span>
                           <strong>{getEmployeeAzureId(selectedUser)}</strong>
-                        </span>
-                        <span>
-                          Employee Code:{" "}
-                          <strong>{getEmployeeCode(selectedUser)}</strong>
-                        </span>
-                        <span>
-                          Email:{" "}
+                        </div>
+
+
+                        <div className="permission-user-meta-item permission-user-meta-email">
+                          <span>Email</span>
                           <strong>{getEmployeeEmail(selectedUser)}</strong>
-                        </span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   <div className="permission-user-role-card">
-                    <UserRoleIcon />
-                    <div>
-                      <span>Role</span>
+                    <div className="permission-user-role-icon">
+                      <UserRoleIcon />
+                    </div>
+
+                    <div className="permission-user-role-content">
+                      <span>ROLE</span>
                       <strong>
                         {getRoleName(getRoleForEmployee(selectedUser))}
                       </strong>
@@ -2554,8 +2676,20 @@ const modules = useMemo(() => {
                     Loading permissions...
                   </div>
                 ) : (
-                  <div className="permission-user-table-wrapper">
-                    <table className="permission-user-table">
+                  <div className="permission-user-table-section">
+                    <div className="permission-user-table-header">
+                      <div>
+                        <h3>Access Permissions</h3>
+                        <p>Permissions inherited from the selected employee's role.</p>
+                      </div>
+                      <span className="permission-user-table-status">
+                        <span className="permission-user-status-dot"></span>
+                        Read only
+                      </span>
+                    </div>
+
+                    <div className="permission-user-table-wrapper">
+                      <table className="permission-user-table">
                       <thead>
                         <tr>
                           <th>PAGE</th>
@@ -2613,7 +2747,8 @@ const modules = useMemo(() => {
                           </React.Fragment>
                         ))}
                       </tbody>
-                    </table>
+                      </table>
+                    </div>
                   </div>
                 )}
 
@@ -2842,12 +2977,12 @@ const modules = useMemo(() => {
             )}
 
             {/* ========================================================
-                PERMISSION TABLE
+                PERMISSION LIST
             ======================================================== */}
 
-            <div className="permission-table-wrapper">
+            <div className="permission-table-wrapper permission-modern-wrapper">
 
-              <table className="permission-table">
+              <table className="permission-table permission-modern-table">
 
                 <thead>
 
@@ -2857,32 +2992,16 @@ const modules = useMemo(() => {
                       PAGE
                     </th>
 
-                    <th>
+                    <th className="permission-login-column">
                       LOGIN
                     </th>
 
-                    <th>
-                      VIEW
+                    <th className="permission-access-column">
+                      ACCESS
                     </th>
 
-                    <th>
-                      CREATE
-                    </th>
-
-                    <th>
-                      EDIT
-                    </th>
-
-                    <th>
-                      DELETE
-                    </th>
-
-                    <th>
-                      APPROVE
-                    </th>
-
-                    <th>
-                      EXPORT
+                    <th className="permission-actions-column">
+                      ACTIONS
                     </th>
 
                   </tr>
@@ -2893,206 +3012,175 @@ const modules = useMemo(() => {
 
                   {filteredModules.length === 0 && (
                     <tr>
-
                       <td
-                        colSpan="8"
+                        colSpan="4"
                         className="permission-no-pages"
                       >
-                        No permissions/pages
-                        found.
+                        No permissions/pages found.
                       </td>
-
                     </tr>
                   )}
 
-                  {filteredModules.map(
-                    (module) => {
+                  {filteredModules.map((module) => {
 
-                      const moduleOpen =
-                        expandedModules.has(
-                          module.moduleName,
+                    const moduleOpen = expandedModules.has(
+                      module.moduleName,
+                    );
+
+                    const moduleAllSelected =
+                      module.pages.length > 0 &&
+                      module.pages.every((page) => {
+                        const actions =
+                          getEffectivePermissionActions(page);
+
+                        return ACTIONS.every((action) =>
+                          Boolean(actions[action]),
                         );
+                      });
 
-                      const modulePermissionIds =
-                        module.pages
-                          .map(
-                            (page) =>
-                              page.id,
-                          )
-                          .filter(
-                            (id) =>
-                              id !== null &&
-                              id !== undefined,
-                          )
-                          .map(
-                            normalizeId,
-                          );
+                    const moduleHasSomeSelected =
+                      module.pages.some((page) => {
+                        const actions =
+                          getEffectivePermissionActions(page);
 
-                      const moduleSelected =
-                        modulePermissionIds.length >
-                          0 &&
-                        modulePermissionIds.every(
-                          (id) =>
-                            selectedPermissions.has(
-                              id,
-                            ),
+                        return ACTIONS.some((action) =>
+                          Boolean(actions[action]),
                         );
+                      });
 
-                      return (
-                        <React.Fragment
-                          key={
-                            module.moduleName
-                          }
-                        >
+                    const moduleIndeterminate =
+                      moduleHasSomeSelected && !moduleAllSelected;
 
-                          {/* MODULE */}
+                    return (
+                      <React.Fragment key={module.moduleName}>
 
-                          <tr className="permission-module-row">
+                        {/* MODULE */}
 
-                            <td>
+                        <tr className="permission-module-row permission-modern-module-row">
 
-                              <div className="permission-module-name">
+                          <td>
+                            <div className="permission-module-name">
 
-                                <button
-                                  type="button"
-                                  className="permission-module-toggle"
-                                  onClick={() =>
-                                    toggleModuleExpanded(
-                                      module.moduleName,
-                                    )
-                                  }
-                                >
-                                  <ChevronIcon
-                                    open={
-                                      moduleOpen
-                                    }
-                                  />
-                                </button>
+                              <button
+                                type="button"
+                                className="permission-module-toggle"
+                                onClick={() =>
+                                  toggleModuleExpanded(
+                                    module.moduleName,
+                                  )
+                                }
+                                title={
+                                  moduleOpen
+                                    ? "Collapse module"
+                                    : "Expand module"
+                                }
+                              >
+                                <ChevronIcon open={moduleOpen} />
+                              </button>
 
-                                <ShieldIcon />
+                              <ShieldIcon />
 
-                                <strong>
-                                  {
-                                    module.moduleName
-                                  }
-                                </strong>
+                              <strong>
+                                {module.moduleName}
+                              </strong>
 
-                                <span className="permission-count-badge">
-                                  {
-                                    module.pages
-                                      .length
-                                  }
-                                </span>
+                              <span className="permission-count-badge">
+                                {module.pages.length}
+                              </span>
 
-                              </div>
+                            </div>
+                          </td>
 
-                            </td>
+                          <td colSpan="2" />
 
-                            <td
-                              colSpan="7"
-                              className="permission-module-action"
+                          <td className="permission-module-all-cell">
+                            <label
+                              className="permission-all-control"
+                              title="Select all permissions for this module"
                             >
-
-                              <label>
-
-                                <span>
-                                  Select all
-                                  permissions
-                                  for this
-                                  module.
-                                </span>
-
-                                <input
-                                  type="checkbox"
-                                  className="permission-checkbox"
-                                  checked={
-                                    moduleSelected
+                              <span>ALL</span>
+                              <input
+                                type="checkbox"
+                                className="permission-checkbox"
+                                checked={moduleAllSelected}
+                                ref={(element) => {
+                                  if (element) {
+                                    element.indeterminate =
+                                      moduleIndeterminate;
                                   }
-                                  onChange={() =>
-                                    toggleModule(
-                                      module,
-                                    )
-                                  }
-                                />
+                                }}
+                                onChange={() =>
+                                  toggleModule(module)
+                                }
+                              />
+                            </label>
+                          </td>
 
-                              </label>
+                        </tr>
 
-                            </td>
+                        {/* PAGES */}
 
-                          </tr>
+                        {moduleOpen &&
+                          module.pages.map((permission, index) => {
 
-                          {/* PAGES */}
+                            const permissionId =
+                              normalizeId(permission.id);
 
-                          {moduleOpen &&
-                            module.pages.map(
-                              (
-                                permission,
-                                index,
-                              ) => (
-                                <tr
-                                  className="permission-page-row"
-                                  key={`${normalizeId(
-                                    permission.id,
-                                  )}-${index}`}
-                                >
+                            const actions =
+                              getEffectivePermissionActions(permission);
+
+                            const selectedCount = ACTIONS.filter(
+                              (action) => Boolean(actions[action]),
+                            ).length;
+
+                            const pageAllSelected =
+                              selectedCount === ACTIONS.length;
+
+                            const pageAllIndeterminate =
+                              selectedCount > 0 &&
+                              selectedCount < ACTIONS.length;
+
+                            const isPanelOpen =
+                              openPermissionId === permissionId;
+
+                            const accessEnabled = Boolean(actions.view);
+
+                            return (
+                              <React.Fragment
+                                key={`${permissionId}-${index}`}
+                              >
+
+                                <tr className="permission-page-row permission-modern-page-row">
 
                                   <td>
-
                                     <div className="permission-page-name">
-
                                       <strong>
-                                        {
-                                          permission.page
-                                        }
+                                        {permission.page}
                                       </strong>
 
                                       {permission.path && (
                                         <span>
-                                          {
-                                            permission.path
-                                          }
+                                          {permission.path}
                                         </span>
                                       )}
-
                                     </div>
-
                                   </td>
 
-                                  <td>
+                                  <td className="permission-login-cell">
                                     <input
                                       type="radio"
                                       name={`loginPage-${module.moduleName}`}
-                                      className="permission-checkbox"
+                                      className="permission-login-radio"
                                       checked={isSameId(
-                                        loginPages[
-                                          module.moduleName
-                                        ],
-                                        normalizeId(
-                                          permission.id,
-                                        ),
+                                        loginPages[module.moduleName],
+                                        permissionId,
                                       )}
                                       onChange={() =>
-                                        selectLoginPage(
-                                          permission,
-                                        )
+                                        selectLoginPage(permission)
                                       }
-                                      disabled={
-                                        !toBoolean(
-                                          permissionActions[
-                                            normalizeId(
-                                              permission.id,
-                                            )
-                                          ]?.view,
-                                        )
-                                      }
+                                      disabled={!accessEnabled}
                                       title={
-                                        toBoolean(
-                                          permissionActions[
-                                            normalizeId(
-                                              permission.id,
-                                            )
-                                          ]?.view,
-                                        )
+                                        accessEnabled
                                           ? "Set as login page"
                                           : "View permission is required"
                                       }
@@ -3100,55 +3188,150 @@ const modules = useMemo(() => {
                                   </td>
 
                                   <td>
-                                    {renderPermissionCheckbox(
-                                      permission,
-                                      "view",
-                                    )}
+                                    <span
+                                      className={`permission-access-badge ${
+                                        accessEnabled
+                                          ? "enabled"
+                                          : "disabled"
+                                      }`}
+                                    >
+                                      {accessEnabled
+                                        ? "Enabled"
+                                        : "No access"}
+                                    </span>
                                   </td>
 
-                                  <td>
-                                    {renderPermissionCheckbox(
-                                      permission,
-                                      "create",
-                                    )}
-                                  </td>
-
-                                  <td>
-                                    {renderPermissionCheckbox(
-                                      permission,
-                                      "edit",
-                                    )}
-                                  </td>
-
-                                  <td>
-                                    {renderPermissionCheckbox(
-                                      permission,
-                                      "delete",
-                                    )}
-                                  </td>
-
-                                  <td>
-                                    {renderPermissionCheckbox(
-                                      permission,
-                                      "approve",
-                                    )}
-                                  </td>
-
-                                  <td>
-                                    {renderPermissionCheckbox(
-                                      permission,
-                                      "export",
-                                    )}
+                                  <td className="permission-actions-cell">
+                                    <button
+                                      type="button"
+                                      className={`permission-manage-button ${
+                                        isPanelOpen ? "active" : ""
+                                      }`}
+                                      onClick={() =>
+                                        togglePermissionActionPanel(
+                                          permission,
+                                        )
+                                      }
+                                    >
+                                      <span>
+                                        Manage
+                                      </span>
+                                      <span
+                                        className={`permission-manage-count ${
+                                          pageAllSelected
+                                            ? "complete"
+                                            : ""
+                                        }`}
+                                      >
+                                        {selectedCount}/
+                                        {ACTIONS.length}
+                                      </span>
+                                      <span className="permission-manage-chevron">
+                                        {isPanelOpen ? "▲" : "▼"}
+                                      </span>
+                                    </button>
                                   </td>
 
                                 </tr>
-                              ),
-                            )}
 
-                        </React.Fragment>
-                      );
-                    },
-                  )}
+                                {isPanelOpen && (
+                                  <tr className="permission-manage-row">
+                                    <td colSpan="4">
+                                      <div className="permission-manage-panel">
+
+                                        <div className="permission-manage-header">
+                                          <div>
+                                            <strong>
+                                              Manage permissions
+                                            </strong>
+                                            <span>
+                                              {permission.page}
+                                            </span>
+                                          </div>
+
+                                          <label
+                                            className="permission-inline-all"
+                                            title="Select all permissions for this page"
+                                          >
+                                            <span>ALL</span>
+                                            <input
+                                              type="checkbox"
+                                              className="permission-checkbox"
+                                              checked={pageAllSelected}
+                                              disabled={
+                                                isDefaultMainPermission(
+                                                  permission.raw,
+                                                  permissions,
+                                                )
+                                              }
+                                              ref={(element) => {
+                                                if (element) {
+                                                  element.indeterminate =
+                                                    pageAllIndeterminate;
+                                                }
+                                              }}
+                                              onChange={() =>
+                                                togglePageAll(permission)
+                                              }
+                                            />
+                                          </label>
+                                        </div>
+
+                                        <div className="permission-action-grid">
+                                          {ACTIONS.map((action) => {
+                                            const label =
+                                              action.charAt(0).toUpperCase() +
+                                              action.slice(1);
+
+                                            return (
+                                              <label
+                                                key={action}
+                                                className={`permission-action-option ${
+                                                  actions[action]
+                                                    ? "selected"
+                                                    : ""
+                                                }`}
+                                              >
+                                                <span>
+                                                  {label}
+                                                </span>
+                                                {renderPermissionCheckbox(
+                                                  permission,
+                                                  action,
+                                                )}
+                                              </label>
+                                            );
+                                          })}
+                                        </div>
+
+                                        <div className="permission-manage-footer">
+                                          <span>
+                                            {selectedCount} of {ACTIONS.length} permissions enabled
+                                          </span>
+                                          <span>
+                                            Login page: {
+                                              isSameId(
+                                                loginPages[module.moduleName],
+                                                permissionId,
+                                              )
+                                                ? "Selected"
+                                                : "Not selected"
+                                            }
+                                          </span>
+                                        </div>
+
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
+
+                              </React.Fragment>
+                            );
+                          })}
+
+                      </React.Fragment>
+                    );
+                  })}
 
                 </tbody>
 
@@ -3234,6 +3417,7 @@ const modules = useMemo(() => {
               </div>
 
             </div>
+
 
           </section>
 

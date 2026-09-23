@@ -3,10 +3,11 @@ import React, {
     useMemo,
     useState
 } from "react";
+
 import { jsPDF } from "jspdf";
 import * as XLSX from "xlsx";
-
 import autoTable from "jspdf-autotable";
+
 import "./Approval.css";
 
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
@@ -17,6 +18,7 @@ import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+
 import {
     Dialog,
     DialogTitle,
@@ -25,13 +27,30 @@ import {
     IconButton,
     Typography,
     Box,
-    TextField,
     Button
 } from "@mui/material";
+
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import api from "../Services/api";
+
+// ============================================================
+// CENTRAL APPROVAL SERVICE
+// ============================================================
+
+const APPROVAL_API_BASE_URL =
+    "https://localhost:7128/api";
+
+const EMPLOYEE_API_BASE_URL =
+    "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+
+const BILL_API_BASE_URL =
+    "https://localhost:7008";
+
+// ============================================================
+// APPROVAL PAGE
+// ============================================================
 
 const Approval = () => {
 
@@ -39,11 +58,17 @@ const Approval = () => {
 
     const { hasPermission } = useAuth();
 
-    const canApprove = hasPermission("/approvals", "approve");
-    const canExport = hasPermission("/approvals", "export");
+    const canApprove =
+        hasPermission("/approvals", "approve");
+
+    const canExport =
+        hasPermission("/approvals", "export");
 
     const [searchParams] = useSearchParams();
 
+    // ========================================================
+    // STATE
+    // ========================================================
 
     const [requests, setRequests] = useState([]);
 
@@ -51,215 +76,299 @@ const Approval = () => {
 
     const [error, setError] = useState("");
 
+    const [search, setSearch] = useState("");
 
-const [search, setSearch] = useState("");
+    const [requestType, setRequestType] =
+        useState("All");
 
-const [requestType, setRequestType] =
-    useState("All");
+    const [status, setStatus] =
+        useState(
+            searchParams.get("status") || "All"
+        );
 
-const [status, setStatus] =
-    useState(
-        searchParams.get("status") || "All"
-    );
+    const [date, setDate] = useState("");
 
-const [selectedRequest, setSelectedRequest] = useState(null);
+    const [selectedRequest, setSelectedRequest] =
+        useState(null);
 
-const [selectedLeave, setSelectedLeave] = useState(null);
-const [selectedStatus, setSelectedStatus] = useState("");
-const [profile, setProfile] = useState(null);
-const [managerComment, setManagerComment] = useState("");
+    const [selectedStatus, setSelectedStatus] =
+        useState("");
 
-const [leaveTypes, setLeaveTypes] = useState([]);
-const [employees, setEmployees] = useState([]);
+    const [profile, setProfile] =
+        useState(null);
 
-const [date, setDate] = useState("");
+    // EmployeeService lookup used to display the real
+    // employee name in ApprovalService requests.
+    const [employeeMap, setEmployeeMap] =
+        useState({});
 
-
-    // =========================================================
+    // ========================================================
     // LOAD APPROVAL REQUESTS
-    // =========================================================
+    // ========================================================
+    // IMPORTANT:
+    // This page talks only to ApprovalService.
+    // It does NOT call LeaveService, BillService,
+    // EmployeeService, or any other module service.
+    // ========================================================
 
     useEffect(() => {
-
         loadApprovalRequests();
-
     }, []);
 
-
-const loadApprovalRequests = async () => {
-    try {
-        setLoading(true);
-        setError("");
-
-        // =====================================================
-        // 1. GET LOGGED-IN EMPLOYEE
-        // Same logic used by Leave Request page.
-        // =====================================================
-        const profileResponse = await api.get("/Auth/profile");
-        const employee = profileResponse.data;
-
-        if (!employee?.employeeId) {
-            throw new Error("Logged-in employee ID was not found.");
-        }
-
-        const employeeId = Number(employee.employeeId);
-
-        setProfile(employee);
-
-        console.log(
-            "Logged-in Employee Profile:",
-            employee
-        );
-
-        console.log(
-            "Logged-in Employee ID:",
-            employeeId
-        );
-
-        // =====================================================
-        // 2. GET APPROVAL REQUESTS
-        // =====================================================
-
-        const approvalResponse = await axios.get(
-            "https://sparkapi.amnikontechnologies.com:7128/api/Approval"
-        );
-
-        const approvalData = Array.isArray(approvalResponse.data)
-            ? approvalResponse.data
-            : approvalResponse.data?.data || [];
-
-        // =====================================================
-        // 3. GET LEAVE REQUESTS
-        // Leave is the source of truth for Leave status.
-        // =====================================================
-
-        const leaveResponse = await axios.get(
-            "https://sparkapi.amnikontechnologies.com:7206/api/Leave"
-        );
-
-        const leaveData = Array.isArray(leaveResponse.data)
-            ? leaveResponse.data
-            : leaveResponse.data?.data || [];
-
-        // =====================================================
-        // 4. GET LEAVE TYPES
-        // =====================================================
+    const loadApprovalRequests = async () => {
 
         try {
-            const leaveTypeResponse = await axios.get(
-                "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType"
+
+            setLoading(true);
+            setError("");
+
+            // ------------------------------------------------
+            // Logged-in employee
+            // ------------------------------------------------
+
+            try {
+
+                const profileResponse =
+                    await api.get("/Auth/profile");
+
+                const employee =
+                    profileResponse.data;
+
+                setProfile(employee);
+
+                console.log(
+                    "Logged-in Employee Profile:",
+                    employee
+                );
+
+                console.log(
+                    "Logged-in Employee ID:",
+                    employee?.employeeId
+                );
+
+            } catch (profileError) {
+
+                console.error(
+                    "Profile API Error:",
+                    profileError
+                );
+
+                setProfile(null);
+            }
+
+            // ------------------------------------------------
+            // EmployeeService
+            // ------------------------------------------------
+            // ApprovalService stores the workflow/request data.
+            // EmployeeService is used only to resolve the real
+            // employee name for the UI.
+            // ------------------------------------------------
+
+            let employeeLookup = {};
+
+            try {
+
+                const token =
+                    localStorage.getItem("token") ||
+                    localStorage.getItem("accessToken");
+
+                const employeeResponse =
+                    await axios.get(
+                        EMPLOYEE_API_BASE_URL,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                                ...(token
+                                    ? {
+                                        Authorization:
+                                            `Bearer ${token}`
+                                    }
+                                    : {})
+                            }
+                        }
+                    );
+
+                const employeePayload =
+                    employeeResponse.data;
+
+                const employeeData =
+                    Array.isArray(employeePayload)
+                        ? employeePayload
+                        : Array.isArray(employeePayload?.data)
+                            ? employeePayload.data
+                            : Array.isArray(employeePayload?.employees)
+                                ? employeePayload.employees
+                                : Array.isArray(employeePayload?.items)
+                                    ? employeePayload.items
+                                    : [];
+
+                employeeData.forEach((employee) => {
+
+                    const id = Number(
+                        employee?.employeeId ??
+                        employee?.EmployeeId ??
+                        employee?.employeeID ??
+                        employee?.id ??
+                        employee?.Id
+                    );
+
+                    if (
+                        Number.isFinite(id) &&
+                        id > 0
+                    ) {
+                        employeeLookup[id] = employee;
+                    }
+
+                });
+
+                setEmployeeMap(employeeLookup);
+
+                console.log(
+                    "EmployeeService lookup loaded:",
+                    employeeLookup
+                );
+
+                console.log(
+                    "Employee 21 from EmployeeService:",
+                    employeeLookup[21]
+                );
+
+            } catch (employeeError) {
+
+                // Employee name lookup must not stop the
+                // ApprovalService workflow from loading.
+                console.error(
+                    "EmployeeService Error:",
+                    employeeError
+                );
+
+                setEmployeeMap({});
+            }
+
+            // ------------------------------------------------
+            // Central ApprovalService
+            // ------------------------------------------------
+
+            const approvalResponse =
+                await axios.get(
+                    `${APPROVAL_API_BASE_URL}/Approval`
+                );
+
+            const approvalData =
+                Array.isArray(approvalResponse.data)
+                    ? approvalResponse.data
+                    : approvalResponse.data?.data || [];
+
+            // ------------------------------------------------
+            // Normalize ApprovalRequest fields.
+            // ApprovalService remains the approval authority.
+            // EmployeeService supplies the display name.
+            // ------------------------------------------------
+
+            const normalizedRequests =
+                approvalData.map((approval) => {
+
+                    const employeeId =
+                        approval.employeeId ??
+                        approval.employee?.employeeId ??
+                        null;
+
+                    const employee =
+                        employeeLookup[Number(employeeId)];
+
+                    const employeeName =
+                        employee?.employeeName ??
+                        employee?.EmployeeName ??
+                        employee?.name ??
+                        employee?.Name ??
+                        approval.employeeName ??
+                        approval.employee?.employeeName ??
+                        approval.employee?.name ??
+                        (
+                            employeeId
+                                ? `Employee ${employeeId}`
+                                : ""
+                        );
+
+                    return {
+
+                        ...approval,
+
+                        approvalRequestId:
+                            approval.approvalRequestId ??
+                            approval.id ??
+                            null,
+
+                        requestId:
+                            approval.requestId ??
+                            null,
+
+                        employeeId,
+
+                        employeeName,
+
+                        requestType:
+                            approval.requestType ??
+                            "",
+
+                        status:
+                            approval.status ??
+                            "Pending",
+
+                        approvalLevel:
+                            approval.approvalLevel ??
+                            0,
+
+                        currentApproverId:
+                            approval.currentApproverId ??
+                            null,
+
+                        requestedDate:
+                            approval.requestedDate ??
+                            approval.createdDate ??
+                            null,
+
+                        actionDate:
+                            approval.actionDate ??
+                            null
+
+                    };
+
+                });
+
+            setRequests(normalizedRequests);
+
+        } catch (err) {
+
+            console.error(
+                "Approval API Error:",
+                err
             );
 
-            const leaveTypeData = Array.isArray(leaveTypeResponse.data)
-                ? leaveTypeResponse.data
-                : leaveTypeResponse.data?.data || [];
+            const message =
+                err?.response?.data?.message ||
+                (
+                    typeof err?.response?.data === "string"
+                        ? err.response.data
+                        : ""
+                ) ||
+                err?.message ||
+                "Unable to load approval requests.";
 
-            setLeaveTypes(leaveTypeData);
-        } catch (leaveTypeError) {
-            console.error("Leave Type Error:", leaveTypeError);
-            setLeaveTypes([]);
+            setError(message);
+
+            setRequests([]);
+
+        } finally {
+
+            setLoading(false);
+
         }
+    };
 
-        // =====================================================
-        // 5. GET EMPLOYEES
-        // Used only to display Approved / Rejected By as a name.
-        // =====================================================
-
-        try {
-            const employeeResponse = await axios.get(
-                "https://sparkapi.amnikontechnologies.com:7002/api/Employee"
-            );
-
-            const employeeData = Array.isArray(employeeResponse.data)
-                ? employeeResponse.data
-                : employeeResponse.data?.data || [];
-
-            setEmployees(employeeData);
-        } catch (employeeError) {
-            console.error("Employee API Error:", employeeError);
-            setEmployees([]);
-        }
-
-        // =====================================================
-        // 6. COMBINE APPROVAL + LEAVE DATA
-        // =====================================================
-
-        const combinedRequests = approvalData.map((approval) => {
-
-            const leave = leaveData.find(
-                (item) =>
-                    Number(item.leaveId) ===
-                    Number(approval.requestId)
-            );
-
-            return {
-                ...approval,
-
-                // Leave ID
-                leaveId: leave?.leaveId || approval.requestId || null,
-
-                // Employee details
-                employeeId: leave?.employeeId || approval.employeeId || null,
-                employeeName:
-                    leave?.employeeName ||
-                    approval.employeeName ||
-                    approval.employee?.employeeName ||
-                    "",
-                azureEmployeeId:
-                    leave?.azureEmployeeId ||
-                    approval.azureEmployeeId ||
-                    approval.employee?.azureEmployeeId ||
-                    "",
-
-                // Leave details
-                fromDate: leave?.fromDate || "",
-                toDate: leave?.toDate || "",
-                leaveTypeId: leave?.leaveTypeId || null,
-                reason: leave?.reason || "",
-                noOfDays: leave?.noOfDays || null,
-
-                // Dates / comments
-                appliedOn:
-                    leave?.appliedDate ||
-                    leave?.appliedOn ||
-                    approval.appliedOn ||
-                    approval.requestedDate ||
-                    "",
-                managerComment: leave?.managerComment || "",
-                approvedBy: leave?.approvedBy || null,
-                approvedDate: leave?.approvedDate || null,
-
-                // IMPORTANT: Leave status is the source of truth
-                status: leave?.status || approval.status
-            };
-        });
-
-        setRequests(combinedRequests);
-
-    } catch (err) {
-
-        console.error(
-            "Approval API Error:",
-            err
-        );
-
-        setError(
-            err?.response?.data?.message ||
-            err?.response?.data ||
-            "Unable to load approval requests."
-        );
-
-        setRequests([]);
-
-    } finally {
-        setLoading(false);
-    }
-};
-
-
-    // =========================================================
+    // ========================================================
     // CARD REDIRECT / FILTER
-    // =========================================================
+    // ========================================================
 
     const handleCardClick = (selectedStatus) => {
 
@@ -268,68 +377,56 @@ const loadApprovalRequests = async () => {
         navigate(
             `/approvals?status=${selectedStatus}`
         );
-
     };
 
-
-    // =========================================================
+    // ========================================================
     // STATISTICS
-    // =========================================================
+    // ========================================================
 
     const statistics = useMemo(() => {
 
-        const pending = requests.filter(
-            request =>
-                String(
-                    request.status || ""
-                ).toLowerCase() === "pending"
-        ).length;
+        const pending =
+            requests.filter(
+                request =>
+                    String(request.status || "")
+                        .toLowerCase() === "pending"
+            ).length;
 
+        const approved =
+            requests.filter(
+                request =>
+                    String(request.status || "")
+                        .toLowerCase() === "approved"
+            ).length;
 
-        const approved = requests.filter(
-            request =>
-                String(
-                    request.status || ""
-                ).toLowerCase() === "approved"
-        ).length;
-
-
-        const rejected = requests.filter(
-            request =>
-                String(
-                    request.status || ""
-                ).toLowerCase() === "rejected"
-        ).length;
-
+        const rejected =
+            requests.filter(
+                request =>
+                    String(request.status || "")
+                        .toLowerCase() === "rejected"
+            ).length;
 
         return {
-
             pending,
-
             approved,
-
             rejected,
-
             total: requests.length
-
         };
 
     }, [requests]);
 
-
-    // =========================================================
-    // REQUEST TYPES FROM API
-    // =========================================================
+    // ========================================================
+    // REQUEST TYPES
+    // ========================================================
 
     const requestTypes = useMemo(() => {
 
-        const types = requests
-            .map(
-                request =>
+        const types =
+            requests
+                .map(request =>
                     request.requestType
-            )
-            .filter(Boolean);
-
+                )
+                .filter(Boolean);
 
         return [
             ...new Set(types)
@@ -337,154 +434,112 @@ const loadApprovalRequests = async () => {
 
     }, [requests]);
 
-
-    // =========================================================
+    // ========================================================
     // FILTER
-    // =========================================================
+    // ========================================================
 
     const filteredRequests = useMemo(() => {
 
         return requests.filter(request => {
 
-
             const employeeName =
-                request.employeeName ||
-                request.employee?.employeeName ||
-                "";
-
+                request.employeeName || "";
 
             const employeeId =
-                request.employeeId ||
-                request.employee?.employeeId ||
-                "";
+                request.employeeId || "";
 
+            const approvalRequestId =
+                request.approvalRequestId || "";
 
             const requestId =
-                request.requestId ||
-                request.id ||
-                request.approvalRequestId ||
-                "";
-
+                request.requestId || "";
 
             const requestTypeValue =
                 request.requestType || "";
 
-
             const statusValue =
                 request.status || "";
-
 
             const searchText =
                 search
                     .trim()
                     .toLowerCase();
 
-
             const matchesSearch =
-
                 !searchText ||
-
                 employeeName
                     .toLowerCase()
                     .includes(searchText) ||
-
                 String(employeeId)
                     .toLowerCase()
                     .includes(searchText) ||
-
+                String(approvalRequestId)
+                    .toLowerCase()
+                    .includes(searchText) ||
                 String(requestId)
+                    .toLowerCase()
+                    .includes(searchText) ||
+                requestTypeValue
                     .toLowerCase()
                     .includes(searchText);
 
-
             const matchesRequestType =
-
                 requestType === "All" ||
-
-                requestTypeValue ===
-                    requestType;
-
+                requestTypeValue === requestType;
 
             const matchesStatus =
-
                 status === "All" ||
-
                 String(statusValue)
                     .toLowerCase() ===
                 status.toLowerCase();
 
-
             const appliedDate =
-                request.appliedOn ||
-                request.createdDate ||
                 request.requestedDate ||
+                request.createdDate ||
                 "";
 
-
             const matchesDate =
-
                 !date ||
-
                 String(appliedDate)
                     .startsWith(date);
 
-
             return (
-
                 matchesSearch &&
-
                 matchesRequestType &&
-
                 matchesStatus &&
-
                 matchesDate
-
             );
 
         });
 
     }, [
-
         requests,
-
         search,
-
         requestType,
-
         status,
-
         date
-
     ]);
 
-
-    // =========================================================
+    // ========================================================
     // DATE FORMAT
-    // =========================================================
+    // ========================================================
 
     const formatDate = (value) => {
 
         if (!value) {
-
             return "—";
-
         }
-
 
         const parsedDate =
             new Date(value);
-
 
         if (
             Number.isNaN(
                 parsedDate.getTime()
             )
         ) {
-
             return value;
-
         }
-
 
         return parsedDate.toLocaleDateString(
             "en-GB",
@@ -494,13 +549,11 @@ const loadApprovalRequests = async () => {
                 year: "numeric"
             }
         );
-
     };
 
-
-    // =========================================================
+    // ========================================================
     // STATUS CLASS
-    // =========================================================
+    // ========================================================
 
     const getStatusClass = (value) => {
 
@@ -508,353 +561,506 @@ const loadApprovalRequests = async () => {
             String(value || "")
                 .toLowerCase();
 
-
-        if (
-            currentStatus === "pending"
-        ) {
-
+        if (currentStatus === "pending") {
             return "pending";
-
         }
 
-
-        if (
-            currentStatus === "approved"
-        ) {
-
+        if (currentStatus === "approved") {
             return "approved";
-
         }
 
-
-        if (
-            currentStatus === "rejected"
-        ) {
-
+        if (currentStatus === "rejected") {
             return "rejected";
-
         }
-
 
         return "";
-
     };
 
+    // ========================================================
+    // EMPLOYEE NAME
+    // ========================================================
 
-    // =========================================================
-    // VIEW REQUEST
-    // =========================================================
+    const getEmployeeName = (request) => {
 
-const getLeaveTypeName = (leaveTypeId) => {
-    const leaveType = leaveTypes.find(
-        (type) =>
-            Number(type.leaveTypeId) ===
-            Number(leaveTypeId)
-    );
+        const employeeId =
+            Number(
+                request?.employeeId ??
+                request?.employee?.employeeId
+            );
 
-    return leaveType?.leaveTypeName || "—";
-};
+        const employee =
+            Number.isFinite(employeeId) &&
+            employeeId > 0
+                ? employeeMap[employeeId]
+                : null;
 
+        return (
+            employee?.employeeName ||
+            employee?.EmployeeName ||
+            employee?.name ||
+            employee?.Name ||
+            request?.employeeName ||
+            request?.employee?.employeeName ||
+            request?.employee?.name ||
+            (
+                Number.isFinite(employeeId) &&
+                employeeId > 0
+                    ? `Employee ${employeeId}`
+                    : "—"
+            )
+        );
+    };
 
-const calculateDays = (fromDate, toDate) => {
-    if (!fromDate || !toDate) {
-        return "—";
-    }
+    // ========================================================
+    // CURRENT APPROVER CHECK
+    // ========================================================
+    // The backend is the final authority, but we also use the
+    // same check in the UI so users only see approval actions
+    // for requests assigned to their employee ID.
+    // ========================================================
 
-    const from = new Date(fromDate);
-    const to = new Date(toDate);
+    const getLoggedInEmployeeId = () => {
+        const id =
+            profile?.employeeId ??
+            profile?.EmployeeId ??
+            profile?.employeeID ??
+            profile?.id ??
+            null;
 
-    const difference =
-        Math.floor((to - from) / (1000 * 60 * 60 * 24)) + 1;
+        const numericId = Number(id);
 
-    return difference > 0 ? difference : "—";
-};
+        return Number.isFinite(numericId) && numericId > 0
+            ? numericId
+            : null;
+    };
 
+    const isCurrentApprover = (request) => {
+        const loggedInEmployeeId =
+            getLoggedInEmployeeId();
 
-const getEmployeeNameById = (employeeId) => {
-    if (!employeeId) {
-        return "—";
-    }
+        const currentApproverId =
+            Number(request?.currentApproverId);
 
-    const employee = employees.find(
-        (emp) =>
-            Number(emp.employeeId) ===
-            Number(employeeId)
-    );
+        return (
+            loggedInEmployeeId !== null &&
+            Number.isFinite(currentApproverId) &&
+            currentApproverId > 0 &&
+            loggedInEmployeeId === currentApproverId
+        );
+    };
 
-    return (
-        employee?.employeeName ||
-        employee?.name ||
-        employee?.fullName ||
-        String(employeeId)
-    );
-};
+    // ========================================================
+    // OPEN APPROVAL ACTION
+    // ========================================================
 
+    const openStatusPopup = (
+        request,
+        requestedStatus
+    ) => {
+        // Buttons are disabled in the table when the logged-in
+        // employee is not the current approver. The backend
+        // validation in updateStatus remains the final authority.
+        setSelectedRequest(request);
+        setSelectedStatus(requestedStatus);
+    };
 
-// =========================================================
-// LEAVE APPROVE / REJECT POPUP
-// Uses the same Leave API used by Leave Requests page.
-// =========================================================
-
-const openStatusPopup = (request, selectedStatus) => {
-    setSelectedLeave(request);
-    setSelectedStatus(selectedStatus);
-    setManagerComment("");
-};
-
+    // ========================================================
+    // CENTRAL APPROVE / REJECT
+    // ========================================================
+    // This is the important change.
+    //
+    // NEVER call:
+    // /api/Leave/.../status
+    // /api/Bill/.../status
+    //
+    // ApprovalService is now the single approval authority.
+    // ========================================================
 
 const updateStatus = async () => {
-    if (!selectedLeave) {
+
+    if (!selectedRequest) {
         return;
     }
 
-    if (selectedStatus === "Approved" && !canApprove) {
-        alert("You do not have permission to approve this request.");
+    if (
+        selectedStatus === "Approved" &&
+        !canApprove
+    ) {
+        alert(
+            "You do not have permission to approve this request."
+        );
         return;
     }
 
-    if (!selectedLeave.leaveId) {
-        alert("Leave request ID not found.");
+    const approvalRequestId =
+        selectedRequest.approvalRequestId ||
+        selectedRequest.id;
+
+    if (!approvalRequestId) {
+        alert(
+            "Approval Request ID was not found."
+        );
         return;
     }
 
-    if (!profile?.employeeId) {
-        alert("Logged-in employee information is not available.");
+    const loggedInEmployeeId =
+        getLoggedInEmployeeId();
+
+    if (!loggedInEmployeeId) {
+        alert(
+            "Logged-in employee ID was not found. Please log in again."
+        );
         return;
     }
 
-    if (!managerComment.trim()) {
-        alert("Please enter a manager comment.");
+    const currentApproverId =
+        Number(selectedRequest.currentApproverId);
+
+    if (
+        !Number.isFinite(currentApproverId) ||
+        currentApproverId <= 0
+    ) {
+        alert(
+            "Current approver ID was not found for this request."
+        );
+        return;
+    }
+
+    if (
+        loggedInEmployeeId !== currentApproverId
+    ) {
+        alert(
+            `You are not the current approver for this request.\n\n` +
+            `Current Approver ID: ${currentApproverId}\n` +
+            `Your Employee ID: ${loggedInEmployeeId}`
+        );
         return;
     }
 
     try {
-await axios.put(
-    `https://sparkapi.amnikontechnologies.com:7206/api/Leave/${selectedLeave.leaveId}/status`,
-    {
-        status: selectedStatus,
 
-        approvedBy:
+        // ============================================================
+        // TOKEN
+        // ============================================================
+
+        const token =
+            localStorage.getItem("token") ||
+            localStorage.getItem("accessToken");
+
+        const authHeaders = {
+            "Content-Type": "application/json",
+            ...(token
+                ? {
+                    Authorization:
+                        `Bearer ${token}`
+                }
+                : {})
+        };
+
+
+        // ============================================================
+        // 1. APPROVE / REJECT IN CENTRAL APPROVAL SERVICE
+        // ============================================================
+
+        if (
             selectedStatus === "Approved"
-                ? Number(profile?.employeeId)
-                : null,
+        ) {
 
-        rejectedBy:
+            await axios.put(
+                `${APPROVAL_API_BASE_URL}/Approval/${approvalRequestId}/approve`,
+                {
+                    approverId: loggedInEmployeeId
+                },
+                {
+                    headers: authHeaders
+                }
+            );
+
+        }
+
+        else if (
             selectedStatus === "Rejected"
-                ? Number(profile?.employeeId)
-                : null,
+        ) {
 
-        managerComment: managerComment.trim()
-    }
-);
+            await axios.put(
+                `${APPROVAL_API_BASE_URL}/Approval/${approvalRequestId}/reject`,
+                {
+                    approverId: loggedInEmployeeId
+                },
+                {
+                    headers: authHeaders
+                }
+            );
+
+        }
+
+        else {
+
+            alert(
+                "Invalid approval status."
+            );
+
+            return;
+        }
+
+
+        // ============================================================
+        // 2. SUCCESS
+        // ============================================================
+        // ApprovalService is the single approval authority.
+        // Module pages/services are responsible for reflecting the
+        // approval result through their existing workflow.
+        // ============================================================
+
 
         alert(
             selectedStatus === "Approved"
-                ? "Leave Approved Successfully"
-                : "Leave Rejected Successfully"
+                ? "Request approved successfully."
+                : "Request rejected successfully."
         );
 
-        setSelectedLeave(null);
-        setSelectedStatus("");
-        setManagerComment("");
 
-        // Refresh Approval page.
-        // The Leave API is the source of truth for status.
+        setSelectedRequest(null);
+        setSelectedStatus("");
+
+
+        // Reload ApprovalService
         await loadApprovalRequests();
 
+
     } catch (error) {
+
         console.error(
-            "Update Leave Status Error:",
+            "Update Approval Status Error:",
             error
         );
 
-        alert(
+
+        const message =
             error?.response?.data?.message ||
-            error?.response?.data ||
-            "Unable to update leave status."
-        );
+            (
+                typeof error?.response?.data === "string"
+                    ? error.response.data
+                    : ""
+            ) ||
+            error?.message ||
+            "Unable to update approval status.";
+
+
+        alert(message);
     }
 };
 
+    // ========================================================
+    // VIEW REQUEST
+    // ========================================================
 
-const handleView = (request) => {
-    setSelectedRequest(request);
-};
+    const handleView = (request) => {
 
-const handleCloseDetails = () => {
-    setSelectedRequest(null);
-};
+        // View is a details-only action.
+        // Clearing selectedStatus prevents the
+        // Approve/Reject dialog from opening.
+        setSelectedStatus("");
+        setSelectedRequest(request);
+    };
 
-    // =========================================================
+    const handleCloseDetails = () => {
+        setSelectedRequest(null);
+    };
+
+    // ========================================================
     // EXPORT
-    // =========================================================
+    // ========================================================
 
-const handleExport = () => {
+    const handleExport = () => {
 
-    if (!filteredRequests || filteredRequests.length === 0) {
-        alert("No approval requests available to export.");
-        return;
-    }
-
-    const exportData = filteredRequests.map((request) => ({
-        "Request ID":
-            request.requestId ||
-            request.approvalRequestId ||
-            "",
-
-        "Employee ID":
-            request.employeeId || "",
-
-        "Employee Name":
-            request.employeeName || "",
-
-        "Request Type":
-            request.requestType || "",
-
-        "From Date":
-            formatDate(request.fromDate),
-
-        "To Date":
-            formatDate(request.toDate),
-
-        "Applied On":
-            formatDate(request.appliedOn),
-
-        "Status":
-            request.status || "",
-
-        "Approved / Rejected By":
-            getEmployeeNameById(request.approvedBy)
-    }));
-
-
-    // =========================
-    // EXCEL
-    // =========================
-
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-
-    const workbook = XLSX.utils.book_new();
-
-    XLSX.utils.book_append_sheet(
-        workbook,
-        worksheet,
-        "Approval Requests"
-    );
-
-    worksheet["!cols"] = [
-        { wch: 14 },
-        { wch: 14 },
-        { wch: 25 },
-        { wch: 18 },
-        { wch: 16 },
-        { wch: 16 },
-        { wch: 16 },
-        { wch: 14 },
-        { wch: 25 }
-    ];
-
-    XLSX.writeFile(
-        workbook,
-        "Approval_Requests.xlsx"
-    );
-
-
-    // =========================
-    // PDF
-    // =========================
-
-    const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4"
-    });
-
-    pdf.setFontSize(18);
-
-    pdf.text(
-        "Approval Requests",
-        14,
-        15
-    );
-
-    pdf.setFontSize(10);
-
-    pdf.text(
-        `Total Requests: ${filteredRequests.length}`,
-        14,
-        22
-    );
-
-    const headers = [[
-        "Request ID",
-        "Employee ID",
-        "Employee Name",
-        "Request Type",
-        "From Date",
-        "To Date",
-        "Applied On",
-        "Status",
-        "Approved / Rejected By"
-    ]];
-
-    const rows = filteredRequests.map((request) => [
-        request.requestId ||
-            request.approvalRequestId ||
-            "",
-
-        request.employeeId || "",
-
-        request.employeeName || "",
-
-        request.requestType || "",
-
-        formatDate(request.fromDate),
-
-        formatDate(request.toDate),
-
-        formatDate(request.appliedOn),
-
-        request.status || "",
-
-        getEmployeeNameById(
-            request.approvedBy
-        )
-    ]);
-
-    autoTable(pdf, {
-        head: headers,
-        body: rows,
-        startY: 28,
-        theme: "grid",
-
-        styles: {
-            fontSize: 8,
-            cellPadding: 3
-        },
-
-        headStyles: {
-            fontSize: 8,
-            fontStyle: "bold"
+        if (
+            !filteredRequests ||
+            filteredRequests.length === 0
+        ) {
+            alert(
+                "No approval requests available to export."
+            );
+            return;
         }
-    });
 
-    pdf.save(
-        "Approval_Requests.pdf"
-    );
-};
-    // =========================================================
+        const exportData =
+            filteredRequests.map(request => ({
+
+                "Approval Request ID":
+                    request.approvalRequestId || "",
+
+                "Request ID":
+                    request.requestId || "",
+
+                "Employee ID":
+                    request.employeeId || "",
+
+                "Employee Name":
+                    getEmployeeName(request),
+
+                "Request Type":
+                    request.requestType || "",
+
+                "Approval Level":
+                    request.approvalLevel || "",
+
+                "Current Approver ID":
+                    request.currentApproverId || "",
+
+                "Requested On":
+                    formatDate(
+                        request.requestedDate
+                    ),
+
+                "Action Date":
+                    formatDate(
+                        request.actionDate
+                    ),
+
+                "Status":
+                    request.status || ""
+
+            }));
+
+        // ----------------------------------------------------
+        // Excel
+        // ----------------------------------------------------
+
+        const worksheet =
+            XLSX.utils.json_to_sheet(
+                exportData
+            );
+
+        const workbook =
+            XLSX.utils.book_new();
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            "Approval Requests"
+        );
+
+        worksheet["!cols"] = [
+            { wch: 20 },
+            { wch: 14 },
+            { wch: 14 },
+            { wch: 25 },
+            { wch: 18 },
+            { wch: 16 },
+            { wch: 20 },
+            { wch: 18 },
+            { wch: 18 },
+            { wch: 14 }
+        ];
+
+        XLSX.writeFile(
+            workbook,
+            "Approval_Requests.xlsx"
+        );
+
+        // ----------------------------------------------------
+        // PDF
+        // ----------------------------------------------------
+
+        const pdf =
+            new jsPDF({
+                orientation: "landscape",
+                unit: "mm",
+                format: "a4"
+            });
+
+        pdf.setFontSize(18);
+
+        pdf.text(
+            "Approval Requests",
+            14,
+            15
+        );
+
+        pdf.setFontSize(10);
+
+        pdf.text(
+            `Total Requests: ${filteredRequests.length}`,
+            14,
+            22
+        );
+
+        const headers = [[
+            "Approval ID",
+            "Request ID",
+            "Employee ID",
+            "Employee Name",
+            "Request Type",
+            "Level",
+            "Approver ID",
+            "Requested On",
+            "Action Date",
+            "Status"
+        ]];
+
+        const rows =
+            filteredRequests.map(request => [
+
+                request.approvalRequestId || "",
+
+                request.requestId || "",
+
+                request.employeeId || "",
+
+                getEmployeeName(request),
+
+                request.requestType || "",
+
+                request.approvalLevel || "",
+
+                request.currentApproverId || "",
+
+                formatDate(
+                    request.requestedDate
+                ),
+
+                formatDate(
+                    request.actionDate
+                ),
+
+                request.status || ""
+
+            ]);
+
+        autoTable(pdf, {
+            head: headers,
+            body: rows,
+            startY: 28,
+            theme: "grid",
+
+            styles: {
+                fontSize: 8,
+                cellPadding: 3
+            },
+
+            headStyles: {
+                fontSize: 8,
+                fontStyle: "bold"
+            }
+        });
+
+        pdf.save(
+            "Approval_Requests.pdf"
+        );
+    };
+
+    // ========================================================
     // RENDER
-    // =========================================================
+    // ========================================================
 
     return (
 
         <div className="approval-page">
 
-
-            {/* =====================================================
+            {/* =================================================
                 HEADER
-            ===================================================== */}
+            ================================================= */}
 
             <div className="approval-header">
 
@@ -869,15 +1075,11 @@ const handleExport = () => {
 
             </div>
 
-
-            {/* =====================================================
+            {/* =================================================
                 SUMMARY CARDS
-            ===================================================== */}
+            ================================================= */}
 
             <div className="approval-summary">
-
-
-                {/* PENDING */}
 
                 <div
                     className="approval-card approval-card-clickable"
@@ -887,11 +1089,8 @@ const handleExport = () => {
                 >
 
                     <div className="approval-card-icon pending">
-
                         <AccessTimeRoundedIcon />
-
                     </div>
-
 
                     <div>
 
@@ -912,9 +1111,6 @@ const handleExport = () => {
 
                 </div>
 
-
-                {/* APPROVED */}
-
                 <div
                     className="approval-card approval-card-clickable"
                     onClick={() =>
@@ -923,11 +1119,8 @@ const handleExport = () => {
                 >
 
                     <div className="approval-card-icon approved">
-
                         <CheckCircleRoundedIcon />
-
                     </div>
-
 
                     <div>
 
@@ -948,9 +1141,6 @@ const handleExport = () => {
 
                 </div>
 
-
-                {/* REJECTED */}
-
                 <div
                     className="approval-card approval-card-clickable"
                     onClick={() =>
@@ -959,11 +1149,8 @@ const handleExport = () => {
                 >
 
                     <div className="approval-card-icon rejected">
-
                         <CancelRoundedIcon />
-
                     </div>
-
 
                     <div>
 
@@ -984,9 +1171,6 @@ const handleExport = () => {
 
                 </div>
 
-
-                {/* TOTAL */}
-
                 <div
                     className="approval-card approval-card-clickable"
                     onClick={() =>
@@ -995,11 +1179,8 @@ const handleExport = () => {
                 >
 
                     <div className="approval-card-icon total">
-
                         <FolderRoundedIcon />
-
                     </div>
-
 
                     <div>
 
@@ -1020,23 +1201,17 @@ const handleExport = () => {
 
                 </div>
 
-
             </div>
 
-
-            {/* =====================================================
+            {/* =================================================
                 REQUEST PANEL
-            ===================================================== */}
+            ================================================= */}
 
             <div className="approval-panel">
-
 
                 {/* FILTER BAR */}
 
                 <div className="approval-filter-bar">
-
-
-                    {/* SEARCH */}
 
                     <div className="approval-search">
 
@@ -1054,9 +1229,6 @@ const handleExport = () => {
                         />
 
                     </div>
-
-
-                    {/* REQUEST TYPE */}
 
                     <div className="approval-select">
 
@@ -1077,7 +1249,6 @@ const handleExport = () => {
                                 All
                             </option>
 
-
                             {requestTypes.map(type => (
 
                                 <option
@@ -1092,9 +1263,6 @@ const handleExport = () => {
                         </select>
 
                     </div>
-
-
-                    {/* STATUS */}
 
                     <div className="approval-select">
 
@@ -1140,9 +1308,6 @@ const handleExport = () => {
 
                     </div>
 
-
-                    {/* DATE */}
-
                     <div className="approval-date">
 
                         <label>
@@ -1165,10 +1330,8 @@ const handleExport = () => {
 
                     </div>
 
-
-                    {/* EXPORT */}
-
                     {canExport && (
+
                         <button
                             type="button"
                             className="approval-export-btn"
@@ -1180,11 +1343,10 @@ const handleExport = () => {
                             Export
 
                         </button>
+
                     )}
 
-
                 </div>
-
 
                 {/* =================================================
                     TABLE
@@ -1193,7 +1355,6 @@ const handleExport = () => {
                 <div className="approval-table-wrapper">
 
                     <table className="approval-table">
-
 
                         <thead>
 
@@ -1235,9 +1396,7 @@ const handleExport = () => {
 
                         </thead>
 
-
                         <tbody>
-
 
                             {loading && (
 
@@ -1254,7 +1413,6 @@ const handleExport = () => {
 
                             )}
 
-
                             {!loading &&
                                 error && (
 
@@ -1270,7 +1428,6 @@ const handleExport = () => {
                                     </tr>
 
                                 )}
-
 
                             {!loading &&
                                 !error &&
@@ -1289,24 +1446,19 @@ const handleExport = () => {
 
                                 )}
 
-
                             {!loading &&
                                 !error &&
                                 filteredRequests.map(
-                                    (request) => {
-
+                                    request => {
 
                                         const employeeName =
-                                            request.employeeName ||
-                                            request.employee?.employeeName ||
-                                            "—";
-
+                                            getEmployeeName(
+                                                request
+                                            );
 
                                         const employeeId =
                                             request.employeeId ||
-                                            request.employee?.employeeId ||
                                             "—";
-
 
                                         return (
 
@@ -1318,22 +1470,13 @@ const handleExport = () => {
                                                 }
                                             >
 
-
-                                                {/* REQUEST ID */}
-
                                                 <td>
 
-                                                    {
-                                                        request.requestId ||
-                                                        request.id ||
+                                                    {request.requestId ||
                                                         request.approvalRequestId ||
-                                                        "—"
-                                                    }
+                                                        "—"}
 
                                                 </td>
-
-
-                                                {/* EMPLOYEE */}
 
                                                 <td>
 
@@ -1348,7 +1491,6 @@ const handleExport = () => {
                                                                 .toUpperCase()}
 
                                                         </div>
-
 
                                                         <div>
 
@@ -1367,61 +1509,36 @@ const handleExport = () => {
 
                                                 </td>
 
-
-                                                {/* REQUEST TYPE */}
-
                                                 <td>
 
-                                                    {
-                                                        request.requestType ||
-                                                        "—"
-                                                    }
+                                                    {request.requestType ||
+                                                        "—"}
 
                                                 </td>
 
-
-                                                {/* FROM */}
-
                                                 <td>
 
-                                                    {
-                                                        formatDate(
-                                                            request.fromDate
-                                                        )
-                                                    }
+                                                    {formatDate(
+                                                        request.fromDate
+                                                    )}
 
                                                 </td>
 
-
-                                                {/* TO */}
-
                                                 <td>
 
-                                                    {
-                                                        formatDate(
-                                                            request.toDate
-                                                        )
-                                                    }
+                                                    {formatDate(
+                                                        request.toDate
+                                                    )}
 
                                                 </td>
 
-
-                                                {/* APPLIED */}
-
                                                 <td>
 
-                                                    {
-                                                        formatDate(
-                                                            request.appliedOn ||
-                                                            request.createdDate ||
-                                                            request.requestedDate
-                                                        )
-                                                    }
+                                                    {formatDate(
+                                                        request.requestedDate
+                                                    )}
 
                                                 </td>
-
-
-                                                {/* STATUS */}
 
                                                 <td>
 
@@ -1431,74 +1548,106 @@ const handleExport = () => {
                                                         )}`}
                                                     >
 
-                                                        {
-                                                            request.status ||
-                                                            "—"
-                                                        }
+                                                        {request.status ||
+                                                            "—"}
 
                                                     </span>
 
                                                 </td>
 
+                                                <td>
 
-                                                {/* ACTION */}
+                                                    <div className="approval-actions">
 
-<td>
-    <div className="approval-actions">
+                                                        {String(
+                                                            request.status ||
+                                                            ""
+                                                        ).toLowerCase() ===
+                                                            "pending" && (
 
-        {String(request.status || "").toLowerCase() === "pending" && (
-            <>
-                {canApprove && (
-                    <button
-                        type="button"
-                        className="approval-approve-btn"
-                        onClick={() =>
-                            openStatusPopup(request, "Approved")
-                        }
-                    >
-                        Approve
-                    </button>
-                )}
+                                                            <>
 
-                <button
-                    type="button"
-                    className="approval-reject-btn"
-                    onClick={() =>
-                        openStatusPopup(request, "Rejected")
-                    }
-                >
-                    Reject
-                </button>
-            </>
-        )}
+                                                                {canApprove && (
 
-        <button
-            type="button"
-            className="approval-view-btn"
-            onClick={() => handleView(request)}
-        >
-            <VisibilityRoundedIcon />
-            View
-        </button>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="approval-approve-btn"
+                                                                        disabled={
+                                                                            !isCurrentApprover(request)
+                                                                        }
+                                                                        title={
+                                                                            !isCurrentApprover(request)
+                                                                                ? `Current approver is Employee ${request.currentApproverId ?? "—"}`
+                                                                                : "Approve request"
+                                                                        }
+                                                                        onClick={() =>
+                                                                            openStatusPopup(
+                                                                                request,
+                                                                                "Approved"
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Approve
+                                                                    </button>
 
-    </div>
-</td>
+                                                                )}
 
+                                                                <button
+                                                                    type="button"
+                                                                    className="approval-reject-btn"
+                                                                    disabled={
+                                                                        !isCurrentApprover(request)
+                                                                    }
+                                                                    title={
+                                                                        !isCurrentApprover(request)
+                                                                            ? `Current approver is Employee ${request.currentApproverId ?? "—"}`
+                                                                            : "Reject request"
+                                                                    }
+                                                                    onClick={() =>
+                                                                        openStatusPopup(
+                                                                            request,
+                                                                            "Rejected"
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Reject
+                                                                </button>
+
+                                                            </>
+
+                                                        )}
+
+                                                        <button
+                                                            type="button"
+                                                            className="approval-view-btn"
+                                                            onClick={() =>
+                                                                handleView(
+                                                                    request
+                                                                )
+                                                            }
+                                                        >
+
+                                                            <VisibilityRoundedIcon />
+
+                                                            View
+
+                                                        </button>
+
+                                                    </div>
+
+                                                </td>
 
                                             </tr>
 
                                         );
-
                                     }
                                 )}
-
 
                         </tbody>
 
                     </table>
 
                 </div>
-
 
                 {/* =================================================
                     FOOTER
@@ -1522,336 +1671,467 @@ const handleExport = () => {
 
                 </div>
 
-
             </div>
 
-{selectedRequest && (
-    <div className="approval-details-overlay">
-        <div className="approval-details-modal">
+            {/* =================================================
+                GENERIC REQUEST DETAILS
+            ================================================= */}
 
-            <div className="approval-details-header">
-                <div>
-                    <h2>Leave Request Details</h2>
-                    {/* <p>
-                        Request ID:{" "}
-                        {selectedRequest.requestId ||
-                            selectedRequest.leaveId ||
-                            "—"}
-                    </p> */}
-                </div>
+            {selectedRequest && (
 
-                <button
-                    type="button"
-                    className="approval-details-close"
-                    onClick={handleCloseDetails}
-                >
-                    ×
-                </button>
-            </div>
+                <div className="approval-details-overlay">
 
-            <div className="approval-details-body">
+                    <div className="approval-details-modal">
 
-                <div className="approval-detail-item">
-                    <span>Employee ID</span>
-                    <strong>
-                        {selectedRequest.employeeId || "—"}
-                    </strong>
-                </div>
+                        <div className="approval-details-header">
 
-                <div className="approval-detail-item">
-                    <span>Azure Employee ID</span>
-                    <strong>
-                        {selectedRequest.azureEmployeeId || "—"}
-                    </strong>
-                </div>
+                            <div>
 
-                <div className="approval-detail-item">
-                    <span>Employee Name</span>
-                    <strong>
-                        {selectedRequest.employeeName || "—"}
-                    </strong>
-                </div>
+                                <h2>
+                                    {selectedRequest.requestType ||
+                                        "Request"}{" "}
+                                    Details
+                                </h2>
 
-                <div className="approval-detail-item">
-                    <span>Leave Type</span>
-                    <strong>
-                        {getLeaveTypeName(
-                            selectedRequest.leaveTypeId
-                        )}
-                    </strong>
-                </div>
+                            </div>
 
-                <div className="approval-detail-item">
-                    <span>From Date</span>
-                    <strong>
-                        {formatDate(selectedRequest.fromDate)}
-                    </strong>
-                </div>
+                            <button
+                                type="button"
+                                className="approval-details-close"
+                                onClick={
+                                    handleCloseDetails
+                                }
+                            >
+                                ×
+                            </button>
 
-                <div className="approval-detail-item">
-                    <span>To Date</span>
-                    <strong>
-                        {formatDate(selectedRequest.toDate)}
-                    </strong>
-                </div>
-
-                <div className="approval-detail-item">
-                    <span>Number of Days</span>
-                    <strong>
-                        {calculateDays(
-                            selectedRequest.fromDate,
-                            selectedRequest.toDate
-                        )}
-                    </strong>
-                </div>
-
-                <div className="approval-detail-item">
-                    <span>Status</span>
-                    <span
-                        className={`approval-status ${getStatusClass(
-                            selectedRequest.status
-                        )}`}
-                    >
-                        {selectedRequest.status || "—"}
-                    </span>
-                </div>
-
-                <div className="approval-detail-item">
-                    <span>Reason</span>
-                    <strong>
-                        {selectedRequest.reason || "—"}
-                    </strong>
-                </div>
-
-                <div className="approval-detail-item">
-                    <span>Manager Comment</span>
-                    <strong>
-                        {selectedRequest.managerComment || "—"}
-                    </strong>
-                </div>
-
-                {String(
-                    selectedRequest.status || ""
-                ).toLowerCase() !== "pending" && (
-                    <>
-                        <div className="approval-detail-item">
-                            <span>Approved / Rejected By</span>
-                            <strong>
-                                {getEmployeeNameById(
-                                    selectedRequest.approvedBy
-                                )}
-                            </strong>
                         </div>
 
-                        <div className="approval-detail-item">
-                            <span>Decision Date</span>
-                            <strong>
-                                {selectedRequest.approvedDate
-                                    ? formatDate(
-                                        selectedRequest.approvedDate
-                                    )
-                                    : "—"}
-                            </strong>
+                        <div className="approval-details-body">
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Approval Request ID
+                                </span>
+                                <strong>
+                                    {selectedRequest.approvalRequestId ||
+                                        "—"}
+                                </strong>
+                            </div>
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Request ID
+                                </span>
+                                <strong>
+                                    {selectedRequest.requestId ||
+                                        "—"}
+                                </strong>
+                            </div>
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Request Type
+                                </span>
+                                <strong>
+                                    {selectedRequest.requestType ||
+                                        "—"}
+                                </strong>
+                            </div>
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Employee ID
+                                </span>
+                                <strong>
+                                    {selectedRequest.employeeId ||
+                                        "—"}
+                                </strong>
+                            </div>
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Employee Name
+                                </span>
+                                <strong>
+                                    {getEmployeeName(
+                                        selectedRequest
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Approval Level
+                                </span>
+                                <strong>
+                                    {selectedRequest.approvalLevel ||
+                                        "—"}
+                                </strong>
+                            </div>
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Current Approver ID
+                                </span>
+                                <strong>
+                                    {selectedRequest.currentApproverId ||
+                                        "—"}
+                                </strong>
+                            </div>
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Requested On
+                                </span>
+                                <strong>
+                                    {formatDate(
+                                        selectedRequest.requestedDate
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Action Date
+                                </span>
+                                <strong>
+                                    {formatDate(
+                                        selectedRequest.actionDate
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Status
+                                </span>
+
+                                <span
+                                    className={`approval-status ${getStatusClass(
+                                        selectedRequest.status
+                                    )}`}
+                                >
+                                    {selectedRequest.status ||
+                                        "—"}
+                                </span>
+
+                            </div>
+
                         </div>
-                    </>
-                )}
 
-            </div>
+                    </div>
 
-        </div>
-    </div>
-)}
+                </div>
+            )}
 
+            {/* =================================================
+                GENERIC APPROVE / REJECT DIALOG
+            ================================================= */}
 
-{selectedLeave && (
-    <Dialog
-        open={Boolean(selectedLeave)}
-        onClose={() => {
-            setSelectedLeave(null);
-            setSelectedStatus("");
-            setManagerComment("");
-        }}
-        fullWidth
-        maxWidth="sm"
-        aria-labelledby="approval-dialog-title"
-        PaperProps={{
-            className: "approval-action-dialog-paper"
-        }}
-        BackdropProps={{
-            className: "approval-action-dialog-backdrop"
-        }}
-    >
-        <DialogTitle
-            id="approval-dialog-title"
-            className="approval-action-dialog-title"
-        >
-            <Box className="approval-action-dialog-title-row">
-                <Box>
-                    <Typography
-                        variant="h6"
-                        className="approval-action-dialog-heading"
-                    >
-                        {selectedStatus === "Approved"
-                            ? "Approve Leave"
-                            : "Reject Leave"}
-                    </Typography>
+            {selectedRequest && selectedStatus && (
 
-                    <Typography
-                        variant="caption"
-                        className="approval-action-dialog-subtitle"
-                    >
-                        Request ID:{" "}
-                        {selectedLeave.requestId ||
-                            selectedLeave.leaveId ||
-                            "—"}
-                    </Typography>
-                </Box>
+                <Dialog
+                    open={Boolean(selectedRequest && selectedStatus)}
+                    onClose={() => {
 
-                <IconButton
-                    size="small"
-                    aria-label="Close"
-                    className="approval-action-dialog-close"
-                    onClick={() => {
-                        setSelectedLeave(null);
+                        setSelectedRequest(null);
                         setSelectedStatus("");
-                        setManagerComment("");
+
+                    }}
+                    fullWidth
+                    maxWidth="sm"
+                    aria-labelledby="approval-dialog-title"
+
+                    PaperProps={{
+                        className:
+                            "approval-action-dialog-paper"
+                    }}
+
+                    slotProps={{
+                        backdrop: {
+                            className:
+                                "approval-action-dialog-backdrop"
+                        }
                     }}
                 >
-                    <CloseRoundedIcon fontSize="small" />
-                </IconButton>
-            </Box>
-        </DialogTitle>
 
-        <DialogContent
-            dividers
-            className="approval-action-dialog-content"
-        >
-            <Box className="approval-action-details-grid">
+                    <DialogTitle
+                        id="approval-dialog-title"
+                        className="approval-action-dialog-title"
+                    >
 
-                <Box className="approval-action-detail">
-                    <Typography className="approval-action-detail-label">
-                        Employee ID
-                    </Typography>
-                    <Typography className="approval-action-detail-value">
-                        {selectedLeave.employeeId || "—"}
-                    </Typography>
-                </Box>
+                        <Box
+                            className="approval-action-dialog-title-row"
+                        >
 
-                <Box className="approval-action-detail">
-                    <Typography className="approval-action-detail-label">
-                        Employee Name
-                    </Typography>
-                    <Typography className="approval-action-detail-value">
-                        {selectedLeave.employeeName || "—"}
-                    </Typography>
-                </Box>
+                            <Box>
 
-                <Box className="approval-action-detail">
-                    <Typography className="approval-action-detail-label">
-                        Leave Type
-                    </Typography>
-                    <Typography className="approval-action-detail-value">
-                        {getLeaveTypeName(
-                            selectedLeave.leaveTypeId
-                        )}
-                    </Typography>
-                </Box>
+                                <Typography
+                                    variant="h6"
+                                    className="approval-action-dialog-heading"
+                                >
+                                    {selectedStatus ===
+                                        "Approved"
+                                        ? `Approve ${selectedRequest.requestType || "Request"}`
+                                        : `Reject ${selectedRequest.requestType || "Request"}`}
+                                </Typography>
 
-                <Box className="approval-action-detail">
-                    <Typography className="approval-action-detail-label">
-                        From Date
-                    </Typography>
-                    <Typography className="approval-action-detail-value">
-                        {formatDate(selectedLeave.fromDate)}
-                    </Typography>
-                </Box>
+                                <Typography
+                                    variant="caption"
+                                    className="approval-action-dialog-subtitle"
+                                >
+                                    Approval Request ID:{" "}
+                                    {
+                                        selectedRequest.approvalRequestId ||
+                                        "—"
+                                    }
+                                </Typography>
 
-                <Box className="approval-action-detail">
-                    <Typography className="approval-action-detail-label">
-                        To Date
-                    </Typography>
-                    <Typography className="approval-action-detail-value">
-                        {formatDate(selectedLeave.toDate)}
-                    </Typography>
-                </Box>
+                            </Box>
 
-                <Box className="approval-action-detail">
-                    <Typography className="approval-action-detail-label">
-                        Reason
-                    </Typography>
-                    <Typography className="approval-action-detail-value">
-                        {selectedLeave.reason || "—"}
-                    </Typography>
-                </Box>
+                            <IconButton
+                                size="small"
+                                aria-label="Close"
+                                className="approval-action-dialog-close"
+                                onClick={() => {
 
-            </Box>
+                                    setSelectedRequest(
+                                        null
+                                    );
 
-            <Box className="approval-action-comment">
-                <Typography className="approval-action-comment-label">
-                    Manager Comment
-                </Typography>
+                                    setSelectedStatus(
+                                        ""
+                                    );
 
-                <TextField
-                    id="approval-manager-comment"
-                    value={managerComment}
-                    onChange={(event) =>
-                        setManagerComment(event.target.value)
-                    }
-                    placeholder={
-                        selectedStatus === "Approved"
-                            ? "Enter approval comment"
-                            : "Enter reason for rejection"
-                    }
-                    multiline
-                    minRows={3}
-                    fullWidth
-                    variant="outlined"
-                    className="approval-action-comment-field"
-                />
-            </Box>
-        </DialogContent>
+                                }}
+                            >
+                                <CloseRoundedIcon
+                                    fontSize="small"
+                                />
+                            </IconButton>
 
-        <DialogActions className="approval-action-dialog-actions">
-            <Button
-                type="button"
-                variant="outlined"
-                className="approval-action-cancel-btn"
-                onClick={() => {
-                    setSelectedLeave(null);
-                    setSelectedStatus("");
-                    setManagerComment("");
-                }}
-            >
-                Cancel
-            </Button>
+                        </Box>
 
-            {selectedStatus === "Approved" && !canApprove ? null : (
-                <Button
-                    type="button"
-                    variant="contained"
-                    className={
-                        selectedStatus === "Approved"
-                            ? "approval-action-confirm-btn approval-action-confirm-approve"
-                            : "approval-action-confirm-btn approval-action-confirm-reject"
-                    }
-                    onClick={updateStatus}
-                >
-                    {selectedStatus === "Approved"
-                        ? "Confirm Approval"
-                        : "Confirm Rejection"}
-                </Button>
+                    </DialogTitle>
+
+                    <DialogContent
+                        dividers
+                        className="approval-action-dialog-content"
+                    >
+
+                        <Box
+                            className="approval-action-details-grid"
+                        >
+
+                            <Box
+                                className="approval-action-detail"
+                            >
+
+                                <Typography
+                                    className="approval-action-detail-label"
+                                >
+                                    Request Type
+                                </Typography>
+
+                                <Typography
+                                    className="approval-action-detail-value"
+                                >
+                                    {
+                                        selectedRequest.requestType ||
+                                        "—"
+                                    }
+                                </Typography>
+
+                            </Box>
+
+                            <Box
+                                className="approval-action-detail"
+                            >
+
+                                <Typography
+                                    className="approval-action-detail-label"
+                                >
+                                    Request ID
+                                </Typography>
+
+                                <Typography
+                                    className="approval-action-detail-value"
+                                >
+                                    {
+                                        selectedRequest.requestId ||
+                                        "—"
+                                    }
+                                </Typography>
+
+                            </Box>
+
+                            <Box
+                                className="approval-action-detail"
+                            >
+
+                                <Typography
+                                    className="approval-action-detail-label"
+                                >
+                                    Employee ID
+                                </Typography>
+
+                                <Typography
+                                    className="approval-action-detail-value"
+                                >
+                                    {
+                                        selectedRequest.employeeId ||
+                                        "—"
+                                    }
+                                </Typography>
+
+                            </Box>
+
+                            <Box
+                                className="approval-action-detail"
+                            >
+
+                                <Typography
+                                    className="approval-action-detail-label"
+                                >
+                                    Employee Name
+                                </Typography>
+
+                                <Typography
+                                    className="approval-action-detail-value"
+                                >
+                                    {
+                                        getEmployeeName(
+                                            selectedRequest
+                                        )
+                                    }
+                                </Typography>
+
+                            </Box>
+
+                            <Box
+                                className="approval-action-detail"
+                            >
+
+                                <Typography
+                                    className="approval-action-detail-label"
+                                >
+                                    Approval Level
+                                </Typography>
+
+                                <Typography
+                                    className="approval-action-detail-value"
+                                >
+                                    {
+                                        selectedRequest.approvalLevel ||
+                                        "—"
+                                    }
+                                </Typography>
+
+                            </Box>
+
+                            <Box
+                                className="approval-action-detail"
+                            >
+
+                                <Typography
+                                    className="approval-action-detail-label"
+                                >
+                                    Current Approver ID
+                                </Typography>
+
+                                <Typography
+                                    className="approval-action-detail-value"
+                                >
+                                    {
+                                        selectedRequest.currentApproverId ||
+                                        "—"
+                                    }
+                                </Typography>
+
+                            </Box>
+
+                            <Box
+                                className="approval-action-detail"
+                            >
+
+                                <Typography
+                                    className="approval-action-detail-label"
+                                >
+                                    Logged-in Employee ID
+                                </Typography>
+
+                                <Typography
+                                    className="approval-action-detail-value"
+                                >
+                                    {
+                                        getLoggedInEmployeeId() ||
+                                        "—"
+                                    }
+                                </Typography>
+
+                            </Box>
+
+                        </Box>
+
+                    </DialogContent>
+
+                    <DialogActions
+                        className="approval-action-dialog-actions"
+                    >
+
+                        <Button
+                            type="button"
+                            variant="outlined"
+                            className="approval-action-cancel-btn"
+                            onClick={() => {
+
+                                setSelectedRequest(
+                                    null
+                                );
+
+                                setSelectedStatus(
+                                    ""
+                                );
+
+                            }}
+                        >
+                            Cancel
+                        </Button>
+
+                        <Button
+                            type="button"
+                            variant="contained"
+                            disabled={
+                                !isCurrentApprover(selectedRequest) ||
+                                (
+                                    selectedStatus === "Approved" &&
+                                    !canApprove
+                                )
+                            }
+                            className={
+                                selectedStatus ===
+                                    "Approved"
+                                    ? "approval-action-confirm-btn approval-action-confirm-approve"
+                                    : "approval-action-confirm-btn approval-action-confirm-reject"
+                            }
+                            onClick={updateStatus}
+                        >
+                            {selectedStatus ===
+                                "Approved"
+                                ? "Confirm Approval"
+                                : "Confirm Rejection"}
+                        </Button>
+
+                    </DialogActions>
+
+                </Dialog>
+
             )}
-        </DialogActions>
-    </Dialog>
-)}
-
-
 
         </div>
 
     );
-
 };
-
 
 export default Approval;
