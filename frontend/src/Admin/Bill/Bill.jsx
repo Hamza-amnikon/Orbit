@@ -57,11 +57,9 @@ import {
 ============================================================ */
 
 const BILL_API_BASE_URL = "https://localhost:7008";
-const EMPLOYEE_API_BASE_URL = "https://localhost:7002";
+const EMPLOYEE_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
 const APPROVAL_API_BASE_URL =
-  import.meta.env.VITE_APPROVAL_API_BASE_URL ||
-  "https://localhost:7128";
-
+    "https://localhost:7128";
 
 const Bill = () => {
 
@@ -166,7 +164,6 @@ const [showVendorForm, setShowVendorForm] = useState(false);
     category: "",
     invoiceNumber: "",
     billDate: "",
-    dueDate: "",
     amount: "",
     description: "",
   };
@@ -587,31 +584,6 @@ const loadVendors = async () => {
     }
 
 
-    if (!billForm.dueDate) {
-
-      setError(
-        "Due Date is required."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      billForm.dueDate <
-      billForm.billDate
-    ) {
-
-      setError(
-        "Due Date cannot be earlier than Bill Date."
-      );
-
-      return;
-
-    }
-
-
     if (
       !billForm.amount ||
       Number(billForm.amount) <= 0
@@ -677,8 +649,11 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
             billDate:
               billForm.billDate,
 
+            // The Create Bill form does not currently show a separate Due Date.
+            // Use the Bill Date so the backend never receives a Due Date earlier than Bill Date.
             dueDate:
-              billForm.dueDate,
+              billForm.dueDate ||
+              billForm.billDate,
 
             amount:
               Number(billForm.amount),
@@ -871,8 +846,10 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
         localStorage.getItem("token") ||
         localStorage.getItem("accessToken");
 
+      // EmployeeService returns the employee collection.
+      // Resolve the approver/rejector by EmployeeId.
       const response = await fetch(
-        `${EMPLOYEE_API_BASE_URL}/api/Employee/${numericId}`,
+        EMPLOYEE_API_BASE_URL,
         {
           headers: {
             ...(token
@@ -888,10 +865,27 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
 
       const result = await response.json().catch(() => null);
 
-      const employee =
-        result?.data ||
-        result?.employee ||
-        result;
+      const employeeData =
+        Array.isArray(result)
+          ? result
+          : Array.isArray(result?.data)
+            ? result.data
+            : Array.isArray(result?.employees)
+              ? result.employees
+              : Array.isArray(result?.items)
+                ? result.items
+                : [];
+
+      const employee = employeeData.find((item) => {
+        const employeeId =
+          item?.employeeId ??
+          item?.EmployeeId ??
+          item?.employeeID ??
+          item?.id ??
+          item?.Id;
+
+        return Number(employeeId) === numericId;
+      });
 
       const name =
         employee?.employeeName ||
@@ -945,74 +939,62 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
      VIEW BILL
   ========================================================== */
 
-  const handleViewBill = (bill) => {
+const handleViewBill = (bill) => {
+  setSelectedBill(bill);
 
-    setSelectedBill(bill);
+  setOriginalPaymentStatus(
+    bill?.paymentStatus || "Pending"
+  );
 
-    setOriginalPaymentStatus(
-      bill?.paymentStatus || "Pending"
-    );
+  setShowMoreMenu(null);
 
-    setShowMoreMenu(null);
+  // IMPORTANT: close Edit modal before opening View modal
+  setShowEditModal(false);
 
-    setShowViewModal(true);
-
-  };
+  setShowViewModal(true);
+};
 
 
   /* ==========================================================
      EDIT BILL
   ========================================================== */
 
-  const handleEditBill = (bill) => {
+const handleEditBill = (bill) => {
+  setSelectedBill(bill);
 
-    setSelectedBill(bill);
+  setBillForm({
+    billNumber: bill.billNumber || "",
 
+    vendorId:
+      bill.vendorId !== undefined &&
+      bill.vendorId !== null
+        ? String(bill.vendorId)
+        : "",
 
-    setBillForm({
+    category: bill.category || "",
 
-      billNumber:
-        bill.billNumber || "",
+    invoiceNumber: bill.invoiceNumber || "",
 
-      vendorId:
-        bill.vendorId !== undefined &&
-        bill.vendorId !== null
-          ? String(bill.vendorId)
-          : "",
+    billDate: bill.billDate
+      ? bill.billDate.substring(0, 10)
+      : "",
 
-      category:
-        bill.category || "",
+    amount:
+      bill.amount !== undefined &&
+      bill.amount !== null
+        ? String(bill.amount)
+        : "",
 
-      invoiceNumber:
-        bill.invoiceNumber || "",
+    description: bill.description || "",
+  });
 
-      billDate:
-        bill.billDate
-          ? bill.billDate.substring(0, 10)
-          : "",
+  setShowMoreMenu(null);
 
-      dueDate:
-        bill.dueDate
-          ? bill.dueDate.substring(0, 10)
-          : "",
+  // IMPORTANT: close View modal before opening Edit modal
+  setShowViewModal(false);
 
-      amount:
-        bill.amount !== undefined &&
-        bill.amount !== null
-          ? String(bill.amount)
-          : "",
-
-      description:
-        bill.description || "",
-
-    });
-
-
-    setShowMoreMenu(null);
-
-    setShowEditModal(true);
-
-  };
+  setShowEditModal(true);
+};
 
 
   /* ==========================================================
@@ -1071,27 +1053,10 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
     }
 
 
-    if (
-      !billForm.billDate ||
-      !billForm.dueDate
-    ) {
+    if (!billForm.billDate) {
 
       setError(
-        "Bill Date and Due Date are required."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      billForm.dueDate <
-      billForm.billDate
-    ) {
-
-      setError(
-        "Due Date cannot be earlier than Bill Date."
+        "Bill Date is required."
       );
 
       return;
@@ -1161,9 +1126,6 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
 
             billDate:
               billForm.billDate,
-
-            dueDate:
-              billForm.dueDate,
 
             amount:
               Number(billForm.amount),
@@ -1335,15 +1297,29 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
         approval.currentApproverId ??
         approval.CurrentApproverId;
 
+      const approvalLevel =
+        approval.approvalLevel ??
+        approval.ApprovalLevel ??
+        null;
+
+      // Show exactly which employee currently owns this approval.
+      console.log("BILL APPROVAL DETAILS:", {
+        approvalRequestId: approvalId,
+        currentApproverId: assignedApproverId,
+        approvalLevel: approvalLevel,
+        billId: statusBill.billId,
+      });
+
       // The ApprovalService determines the current approver from
-      // HierarchyService when the request is created. Do not allow
-      // another employee to approve/reject from this page.
+      // HierarchyService. Do not allow another employee to approve/reject.
       if (
         assignedApproverId &&
         Number(assignedApproverId) !== Number(currentEmployeeId)
       ) {
         throw new Error(
-          `This bill is assigned to Employee ID ${assignedApproverId} for approval.`
+          `This bill is assigned to Employee ID ${assignedApproverId} for approval. ` +
+          `Approval Level: ${approvalLevel ?? "—"}. ` +
+          `Your Employee ID: ${currentEmployeeId}.`
         );
       }
 
@@ -1397,13 +1373,16 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
       const approvalAction =
         newStatus === "Approved" ? "approve" : "reject";
 
-      const approvalResponse = await fetch(
-        `${APPROVAL_API_BASE_URL}/api/Approval/${approvalId}/${approvalAction}`,
-        {
-          method: "PUT",
-          headers: authHeaders,
-        }
-      );
+const approvalResponse = await fetch(
+    `${APPROVAL_API_BASE_URL}/api/Approval/${approvalId}/${approvalAction}`,
+    {
+        method: "PUT",
+        headers: authHeaders,
+        body: JSON.stringify({
+            approverId: Number(currentEmployeeId),
+        }),
+    }
+);
 
       const approvalResult = await approvalResponse
         .json()
@@ -1762,7 +1741,6 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
       "Vendor",
       "Category",
       "Bill Date",
-      "Due Date",
       "Amount",
       "Status",
       "Payment Status",
@@ -1773,7 +1751,6 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
       bill.vendorName || bill.vendorId || "",
       bill.category || "",
       formatDate(bill.billDate),
-      formatDate(bill.dueDate),
       bill.amount ?? "",
       bill.status || "",
       bill.paymentStatus || "",
@@ -2592,10 +2569,6 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
                 </th>
 
                 <th>
-                  Due Date
-                </th>
-
-                <th>
                   Amount
                 </th>
 
@@ -2626,7 +2599,7 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
                 <tr>
 
                   <td
-                    colSpan="9"
+                    colSpan="8"
                     className="table-message"
                   >
                     Loading bills...
@@ -2645,7 +2618,7 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
                   <tr>
 
                     <td
-                      colSpan="9"
+                      colSpan="8"
                       className="table-message"
                     >
                       No bills found.
@@ -2718,17 +2691,6 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
 
                       {formatDate(
                         bill.billDate
-                      )}
-
-                    </td>
-
-
-                    {/* DUE DATE */}
-
-                    <td>
-
-                      {formatDate(
-                        bill.dueDate
                       )}
 
                     </td>
@@ -3053,22 +3015,6 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
                 fullWidth
                 required
                 variant="outlined"
-                label="Due Date"
-                name="dueDate"
-                type="date"
-                value={billForm.dueDate}
-                onChange={handleBillFormChange}
-                size="small"
-                disabled={savingBill}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-
-              <TextField
-                fullWidth
-                required
-                variant="outlined"
                 label="Amount"
                 name="amount"
                 type="number"
@@ -3198,11 +3144,11 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
                     Bill Details
                   </h2>
 
-                  <p>
+                  {/* <p>
                     {
                       selectedBill.billNumber
                     }
-                  </p>
+                  </p> */}
 
                 </div>
 
@@ -3291,19 +3237,6 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
                   <strong>
                     {formatDate(
                       selectedBill.billDate
-                    )}
-                  </strong>
-                </div>
-
-
-                <div>
-                  <label>
-                    Due Date
-                  </label>
-
-                  <strong>
-                    {formatDate(
-                      selectedBill.dueDate
                     )}
                   </strong>
                 </div>
@@ -3696,291 +3629,318 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
         </DialogActions>
       </Dialog>
 
-      {/* ======================================================
-          EDIT BILL MODAL
-      ====================================================== */}
-
-      {showEditModal &&
-        selectedBill && (
-
-          <div
-            className="bill-modal-overlay"
-            onMouseDown={(e) => {
-
-              if (
-                e.target ===
-                e.currentTarget &&
-                !savingBill
-              ) {
-
-                setShowEditModal(
-                  false
-                );
-
-              }
-
-            }}
-          >
-
-            <div className="bill-modal">
-
-
-              <div className="bill-modal-header">
-
-                <div>
-
-                  <h2>
-                    Edit Bill
-                  </h2>
-
-                  <p>
-                    {
-                      selectedBill.billNumber
-                    }
-                  </p>
-
-                </div>
-
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowEditModal(
-                      false
-                    )
-                  }
-                  disabled={savingBill}
-                >
-
-                  <CloseRoundedIcon />
-
-                </button>
-
-              </div>
-
-
-              <form
-                onSubmit={
-                  handleUpdateBill
-                }
-              >
-
-                <div className="bill-form-grid">
-
-
-                  <div className="bill-form-group">
-
-                    <label>
-                      Bill Number *
-                    </label>
-
-                    <input
-                      type="text"
-                      name="billNumber"
-                      value={
-                        billForm.billNumber
-                      }
-                      onChange={
-                        handleBillFormChange
-                      }
-                    />
-
-                  </div>
-
-
-                  <div className="bill-form-group">
-
-                    <label>
-                      Vendor *
-                    </label>
-
-                    <select
-                      name="vendorId"
-                      value={billForm.vendorId}
-                      onChange={
-                        handleBillFormChange
-                      }
-                    >
-                      <option value="">
-                        Select Vendor
-                      </option>
-
-                      {vendors.map((vendor) => (
-                        <option
-                          key={vendor.vendorId}
-                          value={vendor.vendorId}
-                        >
-                          {vendor.vendorName}
-                        </option>
-                      ))}
-                    </select>
-
-                  </div>
-
-
-                  <div className="bill-form-group">
-
-                    <label>
-                      Category *
-                    </label>
-
-                    <input
-                      type="text"
-                      name="category"
-                      value={
-                        billForm.category
-                      }
-                      onChange={
-                        handleBillFormChange
-                      }
-                    />
-
-                  </div>
-
-
-                  <div className="bill-form-group">
-
-                    <label>
-                      Invoice Number
-                    </label>
-
-                    <input
-                      type="text"
-                      name="invoiceNumber"
-                      value={
-                        billForm.invoiceNumber
-                      }
-                      onChange={
-                        handleBillFormChange
-                      }
-                    />
-
-                  </div>
-
-
-                  <div className="bill-form-group">
-
-                    <label>
-                      Bill Date *
-                    </label>
-
-                    <input
-                      type="date"
-                      name="billDate"
-                      value={
-                        billForm.billDate
-                      }
-                      onChange={
-                        handleBillFormChange
-                      }
-                    />
-
-                  </div>
-
-
-                  <div className="bill-form-group">
-
-                    <label>
-                      Due Date *
-                    </label>
-
-                    <input
-                      type="date"
-                      name="dueDate"
-                      value={
-                        billForm.dueDate
-                      }
-                      onChange={
-                        handleBillFormChange
-                      }
-                    />
-
-                  </div>
-
-
-                  <div className="bill-form-group">
-
-                    <label>
-                      Amount *
-                    </label>
-
-                    <input
-                      type="number"
-                      name="amount"
-                      value={
-                        billForm.amount
-                      }
-                      onChange={
-                        handleBillFormChange
-                      }
-                      min="0.01"
-                      step="0.01"
-                    />
-
-                  </div>
-
-
-                  <div className="bill-form-group bill-form-full">
-
-                    <label>
-                      Description
-                    </label>
-
-                    <textarea
-                      name="description"
-                      value={
-                        billForm.description
-                      }
-                      onChange={
-                        handleBillFormChange
-                      }
-                      rows="4"
-                    />
-
-                  </div>
-
-
-                </div>
-
-
-                <div className="bill-modal-footer">
-
-                  <button
-                    type="button"
-                    className="bill-cancel-btn"
-                    onClick={() =>
-                      setShowEditModal(
-                        false
-                      )
-                    }
-                    disabled={savingBill}
-                  >
-                    Cancel
-                  </button>
-
-
-                  <button
-                    type="submit"
-                    className="bill-save-btn"
-                    disabled={savingBill}
-                  >
-
-                    {savingBill
-                      ? "Saving..."
-                      : "Save Changes"}
-
-                  </button>
-
-                </div>
-
-
-              </form>
-
-            </div>
-
-          </div>
-
-        )}
+{/* ======================================================
+    EDIT BILL MODAL - MUI
+====================================================== */}
+
+<Dialog
+  open={showEditModal && !!selectedBill}
+  onClose={savingBill ? undefined : () => setShowEditModal(false)}
+  fullWidth
+  maxWidth="sm"
+  PaperProps={{
+    sx: {
+      width: "100%",
+      maxWidth: "560px",
+      borderRadius: "12px",
+      overflow: "hidden",
+      boxShadow: "0 20px 50px rgba(15, 23, 42, 0.20)",
+    },
+  }}
+>
+  <DialogTitle
+    sx={{
+      px: 2.5,
+      py: 1.7,
+      borderBottom: "1px solid #edf1f5",
+    }}
+  >
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: 1,
+      }}
+    >
+      <Box>
+        <Typography
+          sx={{
+            fontSize: "18px",
+            fontWeight: 700,
+            color: "#1f2937",
+            lineHeight: 1.25,
+          }}
+        >
+          Edit Bill
+        </Typography>
+
+        <Typography
+          sx={{
+            mt: 0.4,
+            fontSize: "11px",
+            color: "#8ba4c7",
+            fontWeight: 600,
+          }}
+        >
+          {selectedBill?.billNumber || "-"}
+        </Typography>
+      </Box>
+
+      <IconButton
+        size="small"
+        onClick={() => setShowEditModal(false)}
+        disabled={savingBill}
+        sx={{
+          width: 30,
+          height: 30,
+          color: "#64748b",
+          borderRadius: "6px",
+          "&:hover": {
+            backgroundColor: "#f8fafc",
+          },
+        }}
+      >
+        <CloseRoundedIcon fontSize="small" />
+      </IconButton>
+    </Box>
+  </DialogTitle>
+
+  <Box
+    component="form"
+    onSubmit={handleUpdateBill}
+    noValidate
+  >
+    <DialogContent
+      sx={{
+        px: 2.5,
+        py: 2.2,
+
+        "& .MuiTextField-root": {
+          minWidth: 0,
+        },
+
+        "& .MuiInputLabel-root": {
+          fontSize: "12px",
+        },
+
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "6px",
+          backgroundColor: "#fff",
+        },
+
+        "& .MuiInputBase-input, & .MuiSelect-select": {
+          fontSize: "12px",
+        },
+
+        "& .MuiOutlinedInput-input": {
+          padding: "9px 11px",
+        },
+      }}
+    >
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "1fr 1fr",
+          },
+          gap: 1.7,
+        }}
+      >
+
+        {/* BILL NUMBER */}
+
+        <TextField
+          fullWidth
+          required
+          variant="outlined"
+          label="Bill Number"
+          name="billNumber"
+          value={billForm.billNumber}
+          onChange={handleBillFormChange}
+          size="small"
+          disabled={savingBill}
+        />
+
+        {/* VENDOR */}
+
+        <TextField
+          fullWidth
+          required
+          select
+          variant="outlined"
+          label="Vendor"
+          name="vendorId"
+          value={billForm.vendorId}
+          onChange={handleBillFormChange}
+          size="small"
+          disabled={savingBill}
+        >
+          <MenuItem value="">
+            Select Vendor
+          </MenuItem>
+
+          {vendors.map((vendor) => (
+            <MenuItem
+              key={vendor.vendorId}
+              value={vendor.vendorId}
+            >
+              {vendor.vendorName}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        {/* CATEGORY */}
+
+        <TextField
+          fullWidth
+          required
+          variant="outlined"
+          label="Category"
+          name="category"
+          value={billForm.category}
+          onChange={handleBillFormChange}
+          size="small"
+          disabled={savingBill}
+        />
+
+        {/* INVOICE NUMBER */}
+
+        <TextField
+          fullWidth
+          variant="outlined"
+          label="Invoice Number"
+          name="invoiceNumber"
+          value={billForm.invoiceNumber}
+          onChange={handleBillFormChange}
+          size="small"
+          disabled={savingBill}
+        />
+
+        {/* BILL DATE */}
+
+        <TextField
+          fullWidth
+          required
+          variant="outlined"
+          label="Bill Date"
+          name="billDate"
+          type="date"
+          value={billForm.billDate}
+          onChange={handleBillFormChange}
+          size="small"
+          disabled={savingBill}
+slotProps={{
+  inputLabel: {
+    shrink: true,
+  },
+}}
+        />
+
+        {/* AMOUNT */}
+
+        <TextField
+          fullWidth
+          required
+          variant="outlined"
+          label="Amount"
+          name="amount"
+          type="number"
+          value={billForm.amount}
+          onChange={handleBillFormChange}
+          size="small"
+          disabled={savingBill}
+          inputProps={{
+            min: 0.01,
+            step: 0.01,
+          }}
+        />
+
+        {/* DESCRIPTION */}
+
+        <TextField
+          fullWidth
+          variant="outlined"
+          label="Description"
+          name="description"
+          value={billForm.description}
+          onChange={handleBillFormChange}
+          multiline
+          rows={4}
+          size="small"
+          disabled={savingBill}
+          sx={{
+            gridColumn: {
+              xs: "1",
+              sm: "1 / -1",
+            },
+          }}
+        />
+      </Box>
+    </DialogContent>
+
+    <Divider />
+
+    <DialogActions
+      sx={{
+        px: 2.5,
+        py: 1.5,
+        gap: 1,
+      }}
+    >
+      {/* CANCEL */}
+
+      <Button
+        type="button"
+        variant="outlined"
+        size="small"
+        onClick={() => setShowEditModal(false)}
+        disabled={savingBill}
+        sx={{
+          textTransform: "none",
+          height: "34px",
+          minWidth: "76px",
+          borderRadius: "6px",
+          borderColor: "#dbe2eb",
+          color: "#475569",
+          fontSize: "11px",
+          "&:hover": {
+            borderColor: "#cbd5e1",
+            backgroundColor: "#f8fafc",
+          },
+        }}
+      >
+        Cancel
+      </Button>
+
+      {/* SAVE */}
+
+      <Button
+        type="submit"
+        variant="contained"
+        size="small"
+        disabled={savingBill}
+        sx={{
+          textTransform: "none",
+          height: "34px",
+          minWidth: "105px",
+          borderRadius: "6px",
+          backgroundColor: "#2563eb",
+          fontSize: "11px",
+          fontWeight: 600,
+          boxShadow: "none",
+          "&:hover": {
+            backgroundColor: "#1d4ed8",
+            boxShadow: "none",
+          },
+        }}
+      >
+        {savingBill ? "Saving..." : "Save Changes"}
+      </Button>
+    </DialogActions>
+  </Box>
+</Dialog>
 
 
       {/* ======================================================

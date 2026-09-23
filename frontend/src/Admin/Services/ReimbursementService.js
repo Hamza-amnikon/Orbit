@@ -5,7 +5,7 @@ import axios from "axios";
 // ============================================================
 
 const API_BASE_URL =
-  "https://localhost:7282/api/reimbursements";
+  "https://sparkapi.amnikontechnologies.com:7282/api/reimbursements";
 
 // ============================================================
 // AXIOS INSTANCE
