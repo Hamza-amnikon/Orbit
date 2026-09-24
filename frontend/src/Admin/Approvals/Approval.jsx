@@ -142,7 +142,21 @@ const Approval = () => {
 
                 console.log(
                     "Logged-in Employee ID:",
-                    employee?.employeeId
+                    employee?.employeeId ??
+                    employee?.EmployeeId ??
+                    employee?.employeeID ??
+                    employee?.id ??
+                    employee?.Id
+                );
+
+                console.log(
+                    "Logged-in Azure Employee ID:",
+                    employee?.azureEmployeeId ??
+                    employee?.AzureEmployeeId ??
+                    employee?.azureEmployeeID ??
+                    employee?.AzureEmployeeID ??
+                    employee?.azureId ??
+                    employee?.AzureId
                 );
 
             } catch (profileError) {
@@ -386,20 +400,130 @@ const Approval = () => {
     // for requests assigned to their employee ID.
     // ========================================================
 
-    const getLoggedInEmployeeId = () => {
-        const id =
-            profile?.employeeId ??
-            profile?.EmployeeId ??
-            profile?.employeeID ??
-            profile?.id ??
-            null;
+const getLoggedInEmployeeId = () => {
 
-        const numericId = Number(id);
+    // ============================================================
+    // 1. INTERNAL EMPLOYEE ID
+    // ============================================================
 
-        return Number.isFinite(numericId) && numericId > 0
-            ? numericId
-            : null;
-    };
+    const employeeId =
+        profile?.employeeId ??
+        profile?.EmployeeId ??
+        profile?.employeeID ??
+        profile?.employee?.employeeId ??
+        profile?.employee?.EmployeeId ??
+        profile?.employee?.employeeID ??
+        null;
+
+    const numericEmployeeId = Number(employeeId);
+
+    if (
+        Number.isFinite(numericEmployeeId) &&
+        numericEmployeeId > 0
+    ) {
+        console.log(
+            "Approval: Logged-in EmployeeId =",
+            numericEmployeeId
+        );
+
+        return numericEmployeeId;
+    }
+
+    // ============================================================
+    // 2. AZURE EMPLOYEE ID
+    // ============================================================
+
+    const azureEmployeeId =
+        profile?.azureEmployeeId ??
+        profile?.AzureEmployeeId ??
+        profile?.azureEmployeeID ??
+        profile?.AzureEmployeeID ??
+        profile?.azureId ??
+        profile?.AzureId ??
+        profile?.employee?.azureEmployeeId ??
+        profile?.employee?.AzureEmployeeId ??
+        profile?.employee?.azureEmployeeID ??
+        profile?.employee?.AzureEmployeeID ??
+        null;
+
+    if (!azureEmployeeId) {
+        console.warn(
+            "Approval: No EmployeeId or AzureEmployeeId found in profile.",
+            profile
+        );
+
+        return null;
+    }
+
+    const normalizedAzureId =
+        String(azureEmployeeId)
+            .trim()
+            .toLowerCase();
+
+    // ============================================================
+    // 3. AZURE ID → INTERNAL EMPLOYEE ID
+    // ============================================================
+
+    const matchedEmployee =
+        Object.values(employeeMap).find(employee => {
+
+            const employeeAzureId =
+                employee?.azureEmployeeId ??
+                employee?.AzureEmployeeId ??
+                employee?.azureEmployeeID ??
+                employee?.AzureEmployeeID ??
+                employee?.azureId ??
+                employee?.AzureId ??
+                null;
+
+            return (
+                employeeAzureId &&
+                String(employeeAzureId)
+                    .trim()
+                    .toLowerCase() ===
+                normalizedAzureId
+            );
+        });
+
+    if (!matchedEmployee) {
+
+        console.warn(
+            "Approval: Azure Employee ID was not found in EmployeeService.",
+            azureEmployeeId
+        );
+
+        return null;
+    }
+
+    const resolvedEmployeeId =
+        Number(
+            matchedEmployee?.employeeId ??
+            matchedEmployee?.EmployeeId ??
+            matchedEmployee?.employeeID ??
+            matchedEmployee?.Id
+        );
+
+    if (
+        !Number.isFinite(resolvedEmployeeId) ||
+        resolvedEmployeeId <= 0
+    ) {
+        console.warn(
+            "Approval: Could not resolve internal EmployeeId.",
+            matchedEmployee
+        );
+
+        return null;
+    }
+
+    console.log(
+        "Approval: Azure EmployeeId",
+        azureEmployeeId,
+        "→ EmployeeId",
+        resolvedEmployeeId
+    );
+
+    return resolvedEmployeeId;
+};
 
     const isCurrentApprover = (request) => {
         const loggedInEmployeeId =
@@ -447,7 +571,7 @@ const Approval = () => {
             );
         });
 
-    }, [requests, profile]);
+    }, [requests, profile, employeeMap]);
 
     const isPreviousApprover = (request) => {
 

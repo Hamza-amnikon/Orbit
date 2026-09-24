@@ -622,7 +622,10 @@ export default function Permissions() {
   const [employees, setEmployees] = useState([]);
   const [permissions, setPermissions] = useState([]);
 
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(() => {
+  const savedRoleId = localStorage.getItem("permissionSelectedRoleId");
+  return savedRoleId ? { id: savedRoleId } : null;
+});
 
   const [rolePermissions, setRolePermissions] = useState([]);
 
@@ -707,22 +710,42 @@ export default function Permissions() {
       */
 
       if (rolesData.length > 0) {
-        setSelectedRole((currentRole) => {
-          if (!currentRole) {
-            return rolesData[0];
+        const savedRoleId = localStorage.getItem(
+          "permissionSelectedRoleId",
+        );
+
+        const savedRole = savedRoleId
+          ? rolesData.find((role) =>
+              isSameId(
+                getId(role),
+                savedRoleId,
+              ),
+            )
+          : null;
+
+        const roleToSelect = savedRole || rolesData[0];
+
+        setSelectedRole(roleToSelect);
+
+        // Remember the default role when nothing was saved yet.
+        if (!savedRole) {
+          const defaultRoleId = getId(roleToSelect);
+
+          if (
+            defaultRoleId !== null &&
+            defaultRoleId !== undefined
+          ) {
+            localStorage.setItem(
+              "permissionSelectedRoleId",
+              String(defaultRoleId),
+            );
           }
-
-          const stillExists = rolesData.find((role) =>
-            isSameId(
-              getId(role),
-              getId(currentRole),
-            ),
-          );
-
-          return stillExists || rolesData[0];
-        });
+        }
       } else {
         setSelectedRole(null);
+        localStorage.removeItem(
+          "permissionSelectedRoleId",
+        );
       }
 
       /*
@@ -910,60 +933,12 @@ permissions.forEach((permission) => {
   }
 });
 
-// For Employee, only the explicitly requested main Sidebar pages are
-// selected automatically. Remove any old/stale DB selection for other
-// main Sidebar pages (for example Employees) from the UI state.
-// This does not affect personal/My pages, which are handled above.
-if (isEmployeeRole(selectedRole)) {
-  permissions.forEach((permission) => {
-    const permissionId = getId(permission);
-
-    if (permissionId === null || permissionId === undefined) {
-      return;
-    }
-
-    const id = normalizeId(permissionId);
-
-    // Employee automatic access is STRICTLY limited to:
-    // 1. My / personal pages -> all 6 permissions
-    // 2. Attendance, Leave, Payroll, Tickets, Settings, Reimbursement -> View only
-    // Everything else (including Approval and Employees) must NOT be selected
-    // automatically, even if an old DB record exists.
-    if (isPersonalPage(permission)) {
-      loadedActions[id] = {
-        view: true,
-        create: true,
-        edit: true,
-        delete: true,
-        approve: true,
-        export: true,
-      };
-      assignedIds.add(id);
-      return;
-    }
-
-    if (isEmployeeDefaultSidebarPage(permission)) {
-      loadedActions[id] = {
-        view: true,
-        create: false,
-        edit: false,
-        delete: false,
-        approve: false,
-        export: false,
-      };
-      assignedIds.add(id);
-      return;
-    }
-
-    // Clear every other page from the Employee UI state.
-    delete loadedActions[id];
-    assignedIds.delete(id);
-  });
-
-  // Keep the existing Login Page radio-button selection.
-  // Login-page selection is independent from the automatic Employee
-  // sidebar defaults. Do not clear an existing login-page assignment here.
-}
+// IMPORTANT: Keep permissions returned by the database.
+// Employee defaults are applied above, but we must NOT delete other
+// permissions that were explicitly saved for this role. This makes
+// newly-added modules/pages persistent after refresh as long as their
+// Permission records exist in the Permission API and the RolePermission
+// assignment has been saved.
 
 setPermissionActions(loadedActions);
         setSelectedPermissions(assignedIds);
@@ -1594,11 +1569,21 @@ const modules = useMemo(() => {
      Select role
   ======================================================================== */
 
-  const handleRoleSelect = (role) => {
-    setSelectedRole(role);
-    setSuccessMessage("");
-    setError("");
-  };
+const handleRoleSelect = (role) => {
+  setSelectedRole(role);
+
+  const roleId = getId(role);
+
+  if (roleId !== null && roleId !== undefined) {
+    localStorage.setItem(
+      "permissionSelectedRoleId",
+      String(roleId)
+    );
+  }
+
+  setSuccessMessage("");
+  setError("");
+};
 
 
   const selectLoginPage = (permission) => {
