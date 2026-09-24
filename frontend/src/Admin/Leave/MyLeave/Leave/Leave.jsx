@@ -4408,7 +4408,13 @@ const closeViewLeaveDialog = () => {
                                     color: "#1e293b",
                                 }}
                             >
-                                {selectedLeave.approvedByName || "-"}
+                                {selectedLeave.approvedByName ||
+ selectedLeave.ApprovedByName ||
+ selectedLeave.approvedByEmployeeName ||
+ selectedLeave.ApprovedByEmployeeName ||
+ selectedLeave.approvedBy ||
+ selectedLeave.ApprovedBy ||
+ "-"}
                             </div>
                         </div>
 
@@ -4473,7 +4479,11 @@ const closeViewLeaveDialog = () => {
                                     color: "#1e293b",
                                 }}
                             >
-                                {selectedLeave.rejectedByName || "-"}
+                                {selectedLeave.rejectedByName ||
+ selectedLeave.RejectedByName ||
+ selectedLeave.rejectedByEmployeeName ||
+ selectedLeave.RejectedByEmployeeName ||
+ "-"}
                             </div>
                         </div>
 

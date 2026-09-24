@@ -138,15 +138,39 @@ export default function LeaveRequests() {
     // LOAD LEAVE REQUESTS
     // ==========================================================
 
-    async function loadLeaves() {
-        try {
-            const response = await axios.get(LEAVE_API, getAuthConfig());
-            setLeaves(response.data);
-        } catch (error) {
-            console.error("Leave Request Error:", error);
-        }
-    }
+async function loadLeaves() {
+    try {
+        const response = await axios.get(
+            LEAVE_API,
+            getAuthConfig()
+        );
 
+        console.log(
+            "========== LEAVE API RESPONSE =========="
+        );
+
+        console.log(
+            JSON.stringify(
+                response.data,
+                null,
+                2
+            )
+        );
+
+        console.log(
+            "========================================"
+        );
+
+        setLeaves(response.data);
+
+    } catch (error) {
+
+        console.error(
+            "Leave Request Error:",
+            error
+        );
+    }
+}
     // ==========================================================
     // LOAD LEAVE TYPES
     // ==========================================================
@@ -343,9 +367,15 @@ export default function LeaveRequests() {
 
                     // Logged-in employee is the approver/rejector.
                     // No hard-coded employee ID is used.
-                    approvedBy: Number(currentEmployeeId),
-                    approvedByName: currentEmployeeName,
-                    approvedByEmployeeCode: currentEmployeeCode,
+approvedBy: Number(currentEmployeeId),
+
+rejectedBy:
+    selectedStatus === "Rejected"
+        ? Number(currentEmployeeId)
+        : null,
+
+approvedByName: currentEmployeeName,
+approvedByEmployeeCode: currentEmployeeCode,
 
                     managerComment: managerComment.trim(),
 
@@ -1612,58 +1642,72 @@ export default function LeaveRequests() {
 
                             </div>
 
+{/* Approval / Rejection Information */}
 
-                            {/* Approval Information */}
+{viewLeave.status !== "Pending" && (
 
-                            {viewLeave.status !==
-                                "Pending" && (
+    <div className="leave-details-grid approval-details">
 
-                                <div className="leave-details-grid approval-details">
+        <div className="leave-detail-item">
 
-                                    <div className="leave-detail-item">
+            <span>
+                {viewLeave.status === "Rejected"
+                    ? "Rejected By"
+                    : "Approved By"}
+            </span>
 
-                                        <span>
-                                            Approved / Rejected By
-                                        </span>
+            <strong>
+                {viewLeave.status === "Rejected"
+                    ? (
+                        viewLeave.rejectedByName ||
+                        viewLeave.RejectedByName ||
+                        viewLeave.rejectedByEmployeeName ||
+                        viewLeave.RejectedByEmployeeName ||
+                        viewLeave.rejectedBy ||
+                        viewLeave.RejectedBy ||
+                        "-"
+                    )
+                    : (
+                        viewLeave.approvedByName ||
+                        viewLeave.ApprovedByName ||
+                        viewLeave.approvedByEmployeeName ||
+                        viewLeave.ApprovedByEmployeeName ||
+                        viewLeave.approvedBy ||
+                        viewLeave.ApprovedBy ||
+                        "-"
+                    )}
+            </strong>
 
-                                        <strong>
-                                            {
-                                                viewLeave.approvedByName ||
-                                                viewLeave.ApprovedByName ||
-                                                viewLeave.approvedByEmployeeName ||
-                                                viewLeave.ApprovedByEmployeeName ||
-                                                viewLeave.approvedBy ||
-                                                viewLeave.ApprovedBy ||
-                                                "-"
-                                            }
-                                        </strong>
-
-                                    </div>
+        </div>
 
 
-                                    <div className="leave-detail-item">
+        <div className="leave-detail-item">
 
-                                        <span>
-                                            Decision Date
-                                        </span>
+            <span>
+                {viewLeave.status === "Rejected"
+                    ? "Rejected Date"
+                    : "Approved Date"}
+            </span>
 
-                                        <strong>
+            <strong>
+                {viewLeave.status === "Rejected"
+                    ? (
+                        viewLeave.rejectedDate
+                            ? formatDate(viewLeave.rejectedDate)
+                            : "-"
+                    )
+                    : (
+                        viewLeave.approvedDate
+                            ? formatDate(viewLeave.approvedDate)
+                            : "-"
+                    )}
+            </strong>
 
-                                            {
-                                                viewLeave.approvedDate
-                                                    ? formatDate(
-                                                        viewLeave.approvedDate
-                                                    )
-                                                    : "-"
-                                            }
+        </div>
 
-                                        </strong>
+    </div>
 
-                                    </div>
-
-                                </div>
-
-                            )}
+)}
 
                         </div>
 

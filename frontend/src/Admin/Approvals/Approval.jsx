@@ -45,8 +45,7 @@ const APPROVAL_API_BASE_URL =
 const EMPLOYEE_API_BASE_URL =
     "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
 
-const BILL_API_BASE_URL =
-    "https://localhost:7008";
+const BILL_API_BASE_URL = "https://localhost:7008";
 
 // ============================================================
 // APPROVAL PAGE
@@ -228,11 +227,6 @@ const Approval = () => {
                     employeeLookup
                 );
 
-                console.log(
-                    "Employee 21 from EmployeeService:",
-                    employeeLookup[21]
-                );
-
             } catch (employeeError) {
 
                 // Employee name lookup must not stop the
@@ -323,6 +317,11 @@ const Approval = () => {
                             approval.currentApproverId ??
                             null,
 
+                        previousApproverId:
+                            approval.previousApproverId ??
+                            approval.PreviousApproverId ??
+                            null,
+
                         requestedDate:
                             approval.requestedDate ??
                             approval.createdDate ??
@@ -380,27 +379,118 @@ const Approval = () => {
     };
 
     // ========================================================
+    // CURRENT APPROVER CHECK
+    // ========================================================
+    // The backend is the final authority, but we also use the
+    // same check in the UI so users only see approval actions
+    // for requests assigned to their employee ID.
+    // ========================================================
+
+    const getLoggedInEmployeeId = () => {
+        const id =
+            profile?.employeeId ??
+            profile?.EmployeeId ??
+            profile?.employeeID ??
+            profile?.id ??
+            null;
+
+        const numericId = Number(id);
+
+        return Number.isFinite(numericId) && numericId > 0
+            ? numericId
+            : null;
+    };
+
+    const isCurrentApprover = (request) => {
+        const loggedInEmployeeId =
+            getLoggedInEmployeeId();
+
+        const currentApproverId =
+            Number(request?.currentApproverId);
+
+        return (
+            loggedInEmployeeId !== null &&
+            Number.isFinite(currentApproverId) &&
+            currentApproverId > 0 &&
+            loggedInEmployeeId === currentApproverId
+        );
+    };
+
+    // ========================================================
+    // REQUESTS RELEVANT TO LOGGED-IN EMPLOYEE
+    // ========================================================
+    // Requests assigned to the logged-in employee are shown.
+    // An escalated request is also visible to the immediately previous
+    // approver, but that previous approver cannot take action.
+    // ========================================================
+
+    const visibleRequests = useMemo(() => {
+
+        const loggedInEmployeeId =
+            getLoggedInEmployeeId();
+
+        if (!loggedInEmployeeId) {
+            return [];
+        }
+
+        return requests.filter(request => {
+
+            const currentApproverId =
+                Number(request.currentApproverId);
+
+            const previousApproverId =
+                Number(request.previousApproverId);
+
+            return (
+                currentApproverId === Number(loggedInEmployeeId) ||
+                previousApproverId === Number(loggedInEmployeeId)
+            );
+        });
+
+    }, [requests, profile]);
+
+    const isPreviousApprover = (request) => {
+
+        const loggedInEmployeeId =
+            getLoggedInEmployeeId();
+
+        const previousApproverId =
+            Number(request?.previousApproverId);
+
+        const currentApproverId =
+            Number(request?.currentApproverId);
+
+        return (
+            loggedInEmployeeId !== null &&
+            Number.isFinite(previousApproverId) &&
+            previousApproverId > 0 &&
+            loggedInEmployeeId === previousApproverId &&
+            loggedInEmployeeId !== currentApproverId
+        );
+    };
+
+    // ========================================================
     // STATISTICS
     // ========================================================
 
     const statistics = useMemo(() => {
 
         const pending =
-            requests.filter(
+            visibleRequests.filter(
                 request =>
                     String(request.status || "")
                         .toLowerCase() === "pending"
             ).length;
 
         const approved =
-            requests.filter(
+            visibleRequests.filter(
                 request =>
                     String(request.status || "")
                         .toLowerCase() === "approved"
             ).length;
 
         const rejected =
-            requests.filter(
+            visibleRequests.filter(
                 request =>
                     String(request.status || "")
                         .toLowerCase() === "rejected"
@@ -410,10 +500,10 @@ const Approval = () => {
             pending,
             approved,
             rejected,
-            total: requests.length
+            total: visibleRequests.length
         };
 
-    }, [requests]);
+    }, [visibleRequests]);
 
     // ========================================================
     // REQUEST TYPES
@@ -422,7 +512,7 @@ const Approval = () => {
     const requestTypes = useMemo(() => {
 
         const types =
-            requests
+            visibleRequests
                 .map(request =>
                     request.requestType
                 )
@@ -432,15 +522,15 @@ const Approval = () => {
             ...new Set(types)
         ];
 
-    }, [requests]);
+    }, [visibleRequests]);
 
     // ========================================================
     // FILTER
     // ========================================================
 
-    const filteredRequests = useMemo(() => {
+const filteredRequests = useMemo(() => {
 
-        return requests.filter(request => {
+    return visibleRequests.filter(request => {
 
             const employeeName =
                 request.employeeName || "";
@@ -512,13 +602,13 @@ const Approval = () => {
 
         });
 
-    }, [
-        requests,
-        search,
-        requestType,
-        status,
-        date
-    ]);
+}, [
+    visibleRequests,
+    search,
+    requestType,
+    status,
+    date
+]);
 
     // ========================================================
     // DATE FORMAT
@@ -608,44 +698,6 @@ const Approval = () => {
                     ? `Employee ${employeeId}`
                     : "—"
             )
-        );
-    };
-
-    // ========================================================
-    // CURRENT APPROVER CHECK
-    // ========================================================
-    // The backend is the final authority, but we also use the
-    // same check in the UI so users only see approval actions
-    // for requests assigned to their employee ID.
-    // ========================================================
-
-    const getLoggedInEmployeeId = () => {
-        const id =
-            profile?.employeeId ??
-            profile?.EmployeeId ??
-            profile?.employeeID ??
-            profile?.id ??
-            null;
-
-        const numericId = Number(id);
-
-        return Number.isFinite(numericId) && numericId > 0
-            ? numericId
-            : null;
-    };
-
-    const isCurrentApprover = (request) => {
-        const loggedInEmployeeId =
-            getLoggedInEmployeeId();
-
-        const currentApproverId =
-            Number(request?.currentApproverId);
-
-        return (
-            loggedInEmployeeId !== null &&
-            Number.isFinite(currentApproverId) &&
-            currentApproverId > 0 &&
-            loggedInEmployeeId === currentApproverId
         );
     };
 
@@ -868,6 +920,7 @@ const updateStatus = async () => {
         setSelectedRequest(null);
     };
 
+
     // ========================================================
     // EXPORT
     // ========================================================
@@ -907,6 +960,9 @@ const updateStatus = async () => {
 
                 "Current Approver ID":
                     request.currentApproverId || "",
+
+                "Previous Approver ID":
+                    request.previousApproverId || "",
 
                 "Requested On":
                     formatDate(
@@ -994,6 +1050,7 @@ const updateStatus = async () => {
             "Request Type",
             "Level",
             "Approver ID",
+            "Previous Approver ID",
             "Requested On",
             "Action Date",
             "Status"
@@ -1015,6 +1072,8 @@ const updateStatus = async () => {
                 request.approvalLevel || "",
 
                 request.currentApproverId || "",
+
+                request.previousApproverId || "",
 
                 formatDate(
                     request.requestedDate
@@ -1468,6 +1527,16 @@ const updateStatus = async () => {
                                                     request.requestId ||
                                                     request.id
                                                 }
+                                                className={
+                                                    isPreviousApprover(request)
+                                                        ? "approval-row-escalated"
+                                                        : ""
+                                                }
+                                                title={
+                                                    isPreviousApprover(request)
+                                                        ? "This request was escalated to another approver. You can view it, but you can no longer approve or reject it."
+                                                        : undefined
+                                                }
                                             >
 
                                                 <td>
@@ -1573,7 +1642,8 @@ const updateStatus = async () => {
                                                                         type="button"
                                                                         className="approval-approve-btn"
                                                                         disabled={
-                                                                            !isCurrentApprover(request)
+                                                                            !isCurrentApprover(request) ||
+                                                                            isPreviousApprover(request)
                                                                         }
                                                                         title={
                                                                             !isCurrentApprover(request)
@@ -1596,7 +1666,8 @@ const updateStatus = async () => {
                                                                     type="button"
                                                                     className="approval-reject-btn"
                                                                     disabled={
-                                                                        !isCurrentApprover(request)
+                                                                        !isCurrentApprover(request) ||
+                                                                        isPreviousApprover(request)
                                                                     }
                                                                     title={
                                                                         !isCurrentApprover(request)
@@ -1663,7 +1734,7 @@ const updateStatus = async () => {
 
                         {" "}of{" "}
 
-                        {requests.length}
+                        {visibleRequests.length}
 
                         {" "}entries
 
@@ -1776,6 +1847,16 @@ const updateStatus = async () => {
                                 </span>
                                 <strong>
                                     {selectedRequest.currentApproverId ||
+                                        "—"}
+                                </strong>
+                            </div>
+
+                            <div className="approval-detail-item">
+                                <span>
+                                    Previous Approver ID
+                                </span>
+                                <strong>
+                                    {selectedRequest.previousApproverId ||
                                         "—"}
                                 </strong>
                             </div>
@@ -2058,6 +2139,27 @@ const updateStatus = async () => {
                                 <Typography
                                     className="approval-action-detail-label"
                                 >
+                                    Previous Approver ID
+                                </Typography>
+
+                                <Typography
+                                    className="approval-action-detail-value"
+                                >
+                                    {
+                                        selectedRequest.previousApproverId ||
+                                        "—"
+                                    }
+                                </Typography>
+
+                            </Box>
+
+                            <Box
+                                className="approval-action-detail"
+                            >
+
+                                <Typography
+                                    className="approval-action-detail-label"
+                                >
                                     Logged-in Employee ID
                                 </Typography>
 
@@ -2104,6 +2206,7 @@ const updateStatus = async () => {
                             variant="contained"
                             disabled={
                                 !isCurrentApprover(selectedRequest) ||
+                                isPreviousApprover(selectedRequest) ||
                                 (
                                     selectedStatus === "Approved" &&
                                     !canApprove
