@@ -40,7 +40,7 @@ import api from "../Services/api";
 // ============================================================
 
 const APPROVAL_API_BASE_URL =
-    "https://localhost:7128/api";
+    "https://sparkapi.amnikontechnologies.com:7128/api";
 
 const EMPLOYEE_API_BASE_URL =
     "https://sparkapi.amnikontechnologies.com:7002/api/Employee";

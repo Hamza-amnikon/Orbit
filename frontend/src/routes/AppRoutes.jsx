@@ -71,6 +71,9 @@ import ReimbursementRequest from "../Admin/Reimbursement/Reimbursement";
 import Bill from "../Admin/Bill/Bill";
 import MyReimbursements from "../Admin/Reimbursement/MyReimbursement";
 
+import Policy from "../Admin/Policy/Policy";
+import PolicyDashboard from "../Admin/Policy/PolicyDashboard";
+import CompanyPolicy from "../Admin/Policy/CompanyPolicy";
 /* ============================================================
    PERMISSION PAGE CATALOG
 
@@ -370,6 +373,23 @@ export const PERMISSION_PAGES = [
         pageName: "Bill",
         route: "/bills",
     },
+{
+    module: "Company Policy",
+    pageName: "Policy",
+    route: "/policy",
+},
+
+{
+    module: "Company Policy",
+    pageName: "Policy Management",
+    route: "/policy-management",
+},
+
+{
+    module: "Company Policy",
+    pageName: "Company Policies",
+    route: "/company-policies",
+},
 
 ];
 
@@ -660,6 +680,24 @@ function AppRoutes() {
                         path="/bills"
                         element={<Bill />}
                     />
+{/* ========================================================
+    POLICY
+======================================================== */}
+
+<Route
+    path="/policy"
+    element={<Policy />}
+/>
+
+<Route
+    path="/policy-management"
+    element={<PolicyDashboard />}
+/>
+
+<Route
+    path="/company-policies"
+    element={<CompanyPolicy />}
+/>
 
                 </Route>
             

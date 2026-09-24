@@ -1,0 +1,1134 @@
+/* =========================================================
+   COMPANY POLICIES PAGE
+========================================================= */
+
+.company-policies-page {
+    width: 100%;
+    min-height: 100%;
+    padding: 30px 36px;
+    box-sizing: border-box;
+    background: #f5f7fb;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.company-policy-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 25px;
+}
+
+.company-policy-title-icon {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+    background: #edf4ff;
+    color: #2867e8;
+}
+
+.company-policy-title-icon svg {
+    font-size: 25px;
+}
+
+.company-policy-title {
+    margin: 0 !important;
+    color: #082653 !important;
+    font-size: 30px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+}
+
+.company-policy-description {
+    margin: 5px 0 0 !important;
+    color: #6781a6 !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+}
+
+.company-policy-refresh {
+    margin-left: auto !important;
+
+    width: 42px !important;
+    height: 42px !important;
+
+    border: 1px solid #dce4ed !important;
+    border-radius: 9px !important;
+
+    background: #ffffff !important;
+    color: #526b88 !important;
+}
+
+.company-policy-refresh:hover {
+    background: #f2f6fc !important;
+    color: #2867e8 !important;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.company-policy-alert {
+    margin-bottom: 16px !important;
+    border-radius: 10px !important;
+}
+
+/* =========================================================
+   SEARCH + FILTER
+========================================================= */
+
+.company-policy-filter {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border: 1px solid #e0e7f0;
+    border-radius: 14px;
+
+    box-shadow:
+        0 6px 18px rgba(30, 65, 120, 0.04);
+}
+
+.company-policy-search {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+.company-policy-search .MuiOutlinedInput-root {
+    width: 100%;
+    height: 42px;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #385d8b;
+    font-size: 13px;
+}
+
+.company-policy-search .MuiOutlinedInput-notchedOutline {
+    border-color: #d7e0eb;
+}
+
+.company-policy-search:hover
+.MuiOutlinedInput-notchedOutline {
+    border-color: #c5d4e5;
+}
+
+.company-policy-search
+.MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline {
+    border-color: #8db4f5;
+    border-width: 1px;
+}
+
+.company-policy-search
+.MuiInputAdornment-root
+svg {
+    color: #7891b0;
+    font-size: 20px;
+}
+
+.company-policy-search
+.MuiOutlinedInput-input {
+    padding: 10px 0;
+    font-size: 13px;
+}
+
+.company-policy-search
+.MuiOutlinedInput-input::placeholder {
+    color: #9aabc0;
+    opacity: 1;
+}
+
+/* =========================================================
+   CATEGORY
+========================================================= */
+
+.company-policy-category-filter {
+    width: 180px !important;
+    min-width: 180px !important;
+    flex: 0 0 180px !important;
+}
+
+.company-policy-category-filter
+.MuiOutlinedInput-root {
+    height: 42px;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #385d8b;
+    font-size: 13px;
+}
+
+.company-policy-category-filter
+.MuiOutlinedInput-notchedOutline {
+    border-color: #d7e0eb;
+}
+
+.company-policy-category-filter
+.MuiSelect-select {
+    padding: 10px 34px 10px 12px !important;
+}
+
+/* =========================================================
+   COUNT
+========================================================= */
+
+.company-policy-count {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 18px 2px 12px;
+
+    box-sizing: border-box;
+}
+
+.company-policy-count strong {
+    color: #17395f;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.company-policy-count span {
+    color: #8094ad;
+    font-size: 12px;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.company-policy-loading {
+    width: 100%;
+    min-height: 260px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    color: #6d829e;
+}
+
+/* =========================================================
+   POLICY GRID
+========================================================= */
+
+.company-policy-grid {
+    width: 100%;
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 18px !important;
+
+    align-items: stretch !important;
+}
+
+/* =========================================================
+   POLICY CARD
+========================================================= */
+
+/*
+   IMPORTANT:
+   Force the complete card into a vertical layout.
+*/
+
+.company-policy-grid
+.company-policy-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 360px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+
+    position: relative !important;
+
+    padding: 18px !important;
+
+    margin: 0 !important;
+
+    border: 1px solid #e0e7f0 !important;
+    border-radius: 15px !important;
+
+    background: #ffffff !important;
+
+    box-shadow:
+        0 7px 20px rgba(30, 65, 120, 0.05) !important;
+
+    overflow: hidden !important;
+
+    transform: none;
+}
+
+.company-policy-grid
+.company-policy-card:hover {
+    transform: translateY(-3px);
+
+    border-color: #d3dfed !important;
+
+    box-shadow:
+        0 12px 28px rgba(30, 65, 120, 0.09) !important;
+}
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-card-top {
+    width: 100% !important;
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    justify-content: space-between !important;
+
+    flex-shrink: 0 !important;
+
+    margin: 0 !important;
+}
+
+/* =========================================================
+   PDF ICON
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-pdf {
+    width: 40px !important;
+    height: 40px !important;
+
+    min-width: 40px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 10px !important;
+
+    background: #fff0f0 !important;
+
+    color: #ef3d3d !important;
+}
+
+.company-policy-pdf svg {
+    font-size: 22px;
+}
+
+/* =========================================================
+   PUBLISHED CHIP
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-published {
+    width: auto !important;
+    max-width: max-content !important;
+
+    height: auto !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    border-radius: 6px !important;
+
+    background: #eaf9f1 !important;
+
+    color: #11965b !important;
+}
+
+.company-policy-published
+.MuiChip-label {
+    padding: 5px 9px !important;
+
+    font-size: 9px !important;
+
+    line-height: 1.2 !important;
+
+    font-weight: 700 !important;
+}
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-card-title {
+    width: 100% !important;
+
+    display: block !important;
+
+    margin: 17px 0 4px !important;
+
+    padding: 0 !important;
+
+    color: #092653 !important;
+
+    font-size: 16px !important;
+
+    line-height: 1.35 !important;
+
+    font-weight: 700 !important;
+
+    text-align: left !important;
+}
+
+/* =========================================================
+   CODE
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-code {
+    width: 100% !important;
+
+    display: block !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    color: #8aa0ba !important;
+
+    font-size: 10px !important;
+
+    line-height: 1.3 !important;
+
+    text-align: left !important;
+}
+
+/* =========================================================
+   META
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-meta {
+    width: 100% !important;
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    justify-content: flex-start !important;
+
+    flex-wrap: wrap !important;
+
+    gap: 9px !important;
+
+    margin-top: 13px !important;
+
+    padding: 0 !important;
+}
+
+/* =========================================================
+   CATEGORY CHIP
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-category {
+    width: auto !important;
+    max-width: max-content !important;
+
+    height: auto !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    border-radius: 5px !important;
+
+    background: #edf4ff !important;
+
+    color: #2867e8 !important;
+}
+
+.company-policy-category
+.MuiChip-label {
+    padding: 5px 8px !important;
+
+    font-size: 9px !important;
+
+    line-height: 1.2 !important;
+
+    font-weight: 600 !important;
+}
+
+/* =========================================================
+   VERSION CHIP
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-version {
+    width: auto !important;
+    max-width: max-content !important;
+
+    height: auto !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    border-radius: 5px !important;
+
+    background: #f1f4f8 !important;
+
+    color: #647c99 !important;
+}
+
+.company-policy-version
+.MuiChip-label {
+    padding: 5px 8px !important;
+
+    font-size: 9px !important;
+
+    line-height: 1.2 !important;
+
+    font-weight: 600 !important;
+}
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-card-description {
+    width: 100% !important;
+
+    min-height: 58px !important;
+
+    display: block !important;
+
+    margin: 13px 0 !important;
+
+    padding: 0 !important;
+
+    color: #627d9f !important;
+
+    font-size: 11px !important;
+
+    line-height: 1.55 !important;
+
+    text-align: left !important;
+}
+
+/* =========================================================
+   EFFECTIVE DATE
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-date {
+    width: 100% !important;
+
+    min-height: 34px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    justify-content: flex-start !important;
+
+    gap: 7px !important;
+
+    margin: 0 !important;
+
+    padding: 9px !important;
+
+    border-radius: 7px !important;
+
+    background: #f6f8fb !important;
+
+    color: #506b8b !important;
+}
+
+.company-policy-date svg {
+    width: 14px;
+    height: 14px;
+
+    flex-shrink: 0;
+}
+
+.company-policy-date span {
+    color: #506b8b;
+
+    font-size: 10px;
+
+    line-height: 1.3;
+}
+
+/* =========================================================
+   ACKNOWLEDGEMENT REQUIRED
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-ack {
+    width: 100% !important;
+
+    min-height: 34px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    justify-content: flex-start !important;
+
+    gap: 7px !important;
+
+    margin-top: 10px !important;
+
+    padding: 9px !important;
+
+    border-radius: 7px !important;
+
+    background: #fff6ec !important;
+
+    color: #d86608 !important;
+}
+
+.company-policy-ack svg {
+    width: 14px;
+    height: 14px;
+
+    flex-shrink: 0;
+}
+
+.company-policy-ack span {
+    color: #d86608;
+
+    font-size: 10px;
+
+    line-height: 1.3;
+
+    font-weight: 600;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-actions {
+    width: 100% !important;
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    justify-content: stretch !important;
+
+    gap: 7px !important;
+
+    margin-top: auto !important;
+
+    padding-top: 12px !important;
+}
+
+/* =========================================================
+   VIEW BUTTON
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-view {
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+
+    height: 38px !important;
+
+    min-height: 38px !important;
+
+    padding: 0 13px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    border: 0 !important;
+
+    border-radius: 7px !important;
+
+    background: #2867e8 !important;
+
+    color: #ffffff !important;
+
+    font-size: 11px !important;
+
+    font-weight: 700 !important;
+
+    text-transform: none !important;
+
+    box-shadow: none !important;
+}
+
+.company-policy-view:hover {
+    background: #1f5bd1 !important;
+
+    box-shadow:
+        0 5px 12px rgba(40, 103, 232, 0.18) !important;
+}
+
+.company-policy-view svg {
+    font-size: 17px;
+}
+
+/* =========================================================
+   DOWNLOAD
+========================================================= */
+
+.company-policy-grid
+.company-policy-card
+.company-policy-download {
+    width: 40px !important;
+
+    min-width: 40px !important;
+
+    height: 38px !important;
+
+    padding: 0 !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    border: 1px solid #dce4ed !important;
+
+    border-radius: 7px !important;
+
+    background: #ffffff !important;
+
+    color: #526b88 !important;
+}
+
+.company-policy-download:hover {
+    background: #f2f6fc !important;
+
+    border-color: #cbd8e8 !important;
+
+    color: #2867e8 !important;
+}
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.company-policy-empty {
+    width: 100%;
+
+    margin-top: 20px;
+
+    padding: 45px 25px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e0e7f0;
+
+    border-radius: 15px;
+
+    background: #ffffff;
+
+    text-align: center;
+}
+
+.company-policy-empty-icon {
+    width: 60px;
+    height: 60px;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #edf4ff;
+
+    color: #2867e8;
+}
+
+.company-policy-empty-icon svg {
+    font-size: 30px;
+}
+
+.company-policy-empty-title {
+    color: #082653 !important;
+
+    font-size: 18px !important;
+
+    font-weight: 700 !important;
+}
+
+.company-policy-empty-description {
+    margin-top: 7px !important;
+
+    color: #8094ad !important;
+
+    font-size: 12px !important;
+}
+
+/* =========================================================
+   PDF DIALOG
+========================================================= */
+
+.company-policy-dialog .MuiDialog-paper {
+    width: min(1100px, 94vw) !important;
+
+    height: min(850px, 92vh) !important;
+
+    max-width: none !important;
+
+    margin: 16px !important;
+
+    overflow: hidden !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    border-radius: 14px !important;
+
+    background: #ffffff !important;
+}
+
+/* =========================================================
+   PDF HEADER
+========================================================= */
+
+.company-policy-dialog-title {
+    min-height: 65px !important;
+
+    padding: 0 18px !important;
+
+    box-sizing: border-box;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: space-between !important;
+
+    border-bottom: 1px solid #e4eaf1;
+}
+
+.company-policy-dialog-title strong {
+    display: block;
+
+    color: #0a2852;
+
+    font-size: 16px;
+
+    font-weight: 700;
+}
+
+.company-policy-dialog-title span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #8aa0ba;
+
+    font-size: 10px;
+}
+
+/* =========================================================
+   PDF CONTENT
+========================================================= */
+
+.company-policy-dialog-content {
+    padding: 0 !important;
+
+    background: #525659 !important;
+
+    overflow: hidden !important;
+
+    flex: 1 1 auto !important;
+
+    min-height: 0 !important;
+}
+
+.company-policy-pdf-frame {
+    width: 100% !important;
+
+    height: 100% !important;
+
+    min-height: 400px !important;
+
+    display: block !important;
+
+    border: none !important;
+
+    background: #ffffff !important;
+}
+
+/* =========================================================
+   DIALOG ACTIONS
+========================================================= */
+
+.company-policy-dialog-actions {
+    min-height: 65px !important;
+
+    padding: 12px 18px !important;
+
+    box-sizing: border-box;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: flex-end !important;
+
+    gap: 10px !important;
+
+    border-top: 1px solid #e4eaf1;
+
+    background: #ffffff;
+}
+
+.company-policy-dialog-actions-ack {
+    justify-content: space-between !important;
+}
+
+.company-policy-acknowledge-control {
+    margin: 0 !important;
+
+    flex: 1;
+
+    min-width: 300px;
+}
+
+.company-policy-acknowledge-control .MuiTypography-root {
+    color: #27486f !important;
+
+    font-size: 13px !important;
+
+    font-weight: 500 !important;
+}
+
+.company-policy-dialog-buttons {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.company-policy-dialog-close {
+    min-width: 80px !important;
+
+    height: 38px !important;
+
+    border: 1px solid #dce4ed !important;
+
+    border-radius: 7px !important;
+
+    background: #ffffff !important;
+
+    color: #526b88 !important;
+
+    text-transform: none !important;
+}
+
+.company-policy-dialog-download {
+    min-width: 110px !important;
+
+    height: 38px !important;
+
+    border-radius: 7px !important;
+
+    background: #2867e8 !important;
+
+    color: #ffffff !important;
+
+    text-transform: none !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+    .company-policy-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 850px) {
+    .company-policies-page {
+        padding: 24px;
+    }
+
+    .company-policy-filter {
+        flex-wrap: wrap;
+    }
+
+    .company-policy-search {
+        flex-basis: 100% !important;
+    }
+
+    .company-policy-category-filter {
+        width: 100% !important;
+        min-width: 0 !important;
+        flex: 1 1 100% !important;
+    }
+
+    .company-policy-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .company-policy-dialog .MuiDialog-paper {
+        width: calc(100vw - 24px) !important;
+        height: calc(100vh - 24px) !important;
+        margin: 12px !important;
+    }
+
+    .company-policy-dialog-actions-ack {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .company-policy-acknowledge-control {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .company-policy-dialog-buttons {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 600px) {
+    .company-policies-page {
+        padding: 20px 14px;
+    }
+
+    .company-policy-title {
+        font-size: 25px !important;
+    }
+
+    .company-policy-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .company-policy-count {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
+
+@media (max-width: 500px) {
+    .company-policy-header {
+        gap: 10px;
+    }
+
+    .company-policy-title-icon {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+    }
+
+    .company-policy-title {
+        font-size: 22px !important;
+    }
+
+    .company-policy-description {
+        font-size: 11px !important;
+    }
+
+    .company-policy-card {
+        min-height: 350px !important;
+    }
+
+    .company-policy-dialog .MuiDialog-paper {
+        width: calc(100vw - 12px) !important;
+        height: calc(100vh - 12px) !important;
+        margin: 6px !important;
+    }
+
+    .company-policy-dialog-actions {
+        padding: 10px 12px !important;
+    }
+
+    .company-policy-dialog-actions-ack {
+        gap: 8px !important;
+    }
+
+    .company-policy-dialog-buttons {
+        width: 100%;
+    }
+
+    .company-policy-dialog-buttons .MuiButton-root {
+        flex: 1;
+    }
+}

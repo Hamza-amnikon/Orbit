@@ -1,0 +1,1027 @@
+/* =========================================================
+   POLICY DASHBOARD
+========================================================= */
+
+.policy-dashboard {
+    min-height: 100%;
+    width: 100%;
+    padding: 28px 34px;
+    box-sizing: border-box;
+    background: #f5f7fb;
+}
+
+
+/* =========================================================
+   DASHBOARD HEADER
+========================================================= */
+
+.policy-dashboard-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 26px;
+    width: 100%;
+}
+
+.policy-dashboard-header-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    min-width: 0;
+    flex: 1;
+}
+
+.policy-dashboard-heading {
+    min-width: 0;
+    flex: 1;
+}
+
+.policy-dashboard-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+    padding-top: 8px;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.policy-back-button {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: 1px solid #dce5f1 !important;
+    border-radius: 10px !important;
+
+    background: #ffffff !important;
+    color: #2167df !important;
+
+    cursor: pointer;
+    box-shadow: none !important;
+
+    flex-shrink: 0;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease !important;
+}
+
+.policy-back-button:hover {
+    background: #f2f6fc !important;
+    border-color: #cbd9ea !important;
+    transform: translateX(-2px);
+}
+
+.policy-back-button svg {
+    font-size: 21px;
+}
+
+
+/* =========================================================
+   DASHBOARD BREADCRUMB
+========================================================= */
+
+.policy-dashboard-breadcrumb {
+    margin-bottom: 5px;
+
+    color: #6c85a7;
+
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   DASHBOARD TITLE
+========================================================= */
+
+.policy-dashboard-top h1 {
+    margin: 0;
+
+    color: #082653;
+
+    font-size: 30px;
+    line-height: 1.2;
+
+    font-weight: 700;
+}
+
+.policy-dashboard-top p {
+    margin: 6px 0 0;
+
+    color: #6780a3;
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ADD POLICY BUTTON
+========================================================= */
+
+.policy-add-button {
+    height: 44px !important;
+
+    min-width: 125px !important;
+
+    padding: 0 18px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 7px;
+
+    border: 0 !important;
+    border-radius: 9px !important;
+
+    background: #2867e8 !important;
+
+    color: #ffffff !important;
+
+    font-size: 13px !important;
+    font-weight: 700 !important;
+
+    text-transform: none !important;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 12px rgba(40, 103, 232, 0.18) !important;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease !important;
+}
+
+.policy-add-button:hover {
+    background: #1f5bd1 !important;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 16px rgba(40, 103, 232, 0.24) !important;
+}
+
+.policy-add-button:active {
+    transform: translateY(0);
+}
+
+.policy-add-button svg {
+    font-size: 19px;
+}
+
+
+/* =========================================================
+   REFRESH BUTTON
+========================================================= */
+
+.policy-refresh-button {
+    width: 44px !important;
+    height: 44px !important;
+
+    min-width: 44px !important;
+
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: 1px solid #dce5f1 !important;
+    border-radius: 9px !important;
+
+    background: #ffffff !important;
+
+    color: #607b9f !important;
+
+    box-shadow: none !important;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease !important;
+}
+
+.policy-refresh-button:hover {
+    background: #f2f6fc !important;
+    border-color: #cbd9ea !important;
+    color: #2167df !important;
+}
+
+.policy-refresh-button:active {
+    transform: scale(0.96);
+}
+
+.policy-refresh-button svg {
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   ERROR ALERT
+========================================================= */
+
+.policy-dashboard-alert {
+    margin-bottom: 18px !important;
+    border-radius: 10px !important;
+}
+
+
+/* =========================================================
+   STATISTICS GRID
+========================================================= */
+
+.policy-stat-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   STAT CARD
+========================================================= */
+
+.policy-stat-card {
+    min-height: 92px;
+
+    padding: 18px 20px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e8f2;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 6px 18px rgba(30, 65, 120, 0.05);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.policy-stat-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 9px 22px rgba(30, 65, 120, 0.08);
+}
+
+.policy-stat-card span {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #6982a4;
+
+    font-size: 12px;
+    line-height: 1.3;
+
+    font-weight: 500;
+}
+
+.policy-stat-card strong {
+    display: block;
+
+    color: #0a2852;
+
+    font-size: 28px;
+    line-height: 1;
+
+    font-weight: 700;
+}
+
+.policy-stat-card.green strong {
+    color: #10a95f;
+}
+
+.policy-stat-card.orange strong {
+    color: #ed8a16;
+}
+
+.policy-stat-card.gray strong {
+    color: #6e7d91;
+}
+
+
+/* =========================================================
+   DASHBOARD TOOLBAR
+========================================================= */
+
+.policy-dashboard-toolbar {
+    min-height: 64px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+
+    padding: 10px 14px;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e8f2;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 5px 16px rgba(30, 65, 120, 0.04);
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.policy-search {
+    flex: 1;
+
+    min-width: 220px;
+    height: 42px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 0 13px;
+
+    border: 1px solid #dce5f1;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.policy-search:focus-within {
+    border-color: #8db4f5;
+
+    box-shadow:
+        0 0 0 3px rgba(40, 103, 232, 0.08);
+}
+
+.policy-search svg {
+    flex-shrink: 0;
+
+    color: #7690b2;
+
+    font-size: 20px;
+}
+
+.policy-search input {
+    width: 100%;
+    height: 40px;
+
+    padding: 0;
+
+    border: 0;
+
+    outline: none;
+
+    background: transparent;
+
+    color: #284b78;
+
+    font: inherit;
+
+    font-size: 13px;
+}
+
+.policy-search input::placeholder {
+    color: #9aabc0;
+}
+
+
+/* =========================================================
+   FILTER SELECTS
+========================================================= */
+
+.policy-filter-control {
+    min-width: 150px;
+}
+
+.policy-filter-control .MuiOutlinedInput-root {
+    height: 42px !important;
+
+    border-radius: 9px !important;
+
+    background: #ffffff;
+}
+
+.policy-filter-control .MuiOutlinedInput-notchedOutline {
+    border-color: #dce5f1 !important;
+}
+
+.policy-filter-control:hover
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #c6d5e8 !important;
+}
+
+.policy-filter-control
+    .Mui-focused
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #8db4f5 !important;
+}
+
+.policy-filter-control .MuiSelect-select {
+    color: #365a88 !important;
+
+    font-size: 13px !important;
+}
+
+
+/* =========================================================
+   MANAGEMENT TABLE
+========================================================= */
+
+.policy-management-table {
+    width: 100%;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e8f2;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 6px 20px rgba(30, 65, 120, 0.05);
+}
+
+
+/* =========================================================
+   MUI TABLE
+========================================================= */
+
+.policy-mui-table {
+    width: 100%;
+}
+
+.policy-mui-table thead th {
+    background: #f8faff !important;
+
+    color: #7087a6 !important;
+
+    font-size: 11px !important;
+
+    line-height: 1.2 !important;
+
+    font-weight: 700 !important;
+
+    text-transform: uppercase;
+
+    border-bottom: 1px solid #edf1f6 !important;
+
+    padding: 15px 16px !important;
+}
+
+.policy-mui-table tbody td {
+    border-bottom: 1px solid #edf1f6 !important;
+
+    color: #466789;
+
+    font-size: 12px;
+
+    padding: 14px 16px !important;
+}
+
+.policy-mui-table tbody tr:last-child td {
+    border-bottom: 0 !important;
+}
+
+.policy-mui-table tbody tr:hover {
+    background: #fbfcff !important;
+}
+
+
+/* =========================================================
+   POLICY COLUMN
+========================================================= */
+
+.policy-table-policy {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   PDF ICON
+========================================================= */
+
+.policy-pdf-icon {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #fff0f0;
+
+    color: #ef3b3b;
+}
+
+.policy-pdf-icon svg {
+    font-size: 21px;
+}
+
+
+/* =========================================================
+   POLICY TITLE / CODE
+========================================================= */
+
+.policy-table-policy-info {
+    min-width: 0;
+}
+
+.policy-table-policy strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #0a2852;
+
+    font-size: 13px;
+
+    line-height: 1.35;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+}
+
+.policy-table-policy small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #91a3ba;
+
+    font-size: 10px;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLE VALUE
+========================================================= */
+
+.policy-table-value {
+    color: #365a88 !important;
+
+    font-size: 12px !important;
+
+    font-weight: 500 !important;
+}
+
+
+/* =========================================================
+   CATEGORY
+========================================================= */
+
+.policy-category {
+    display: inline-flex !important;
+
+    width: fit-content;
+
+    padding: 5px 9px !important;
+
+    border-radius: 6px !important;
+
+    background: #edf4ff !important;
+
+    color: #2867e8 !important;
+
+    font-size: 10px !important;
+
+    line-height: 1.2 !important;
+
+    font-weight: 600 !important;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.policy-status {
+    width: fit-content;
+
+    padding: 5px 9px !important;
+
+    border-radius: 6px !important;
+
+    font-size: 10px !important;
+
+    line-height: 1.2 !important;
+
+    font-weight: 700 !important;
+}
+
+.policy-status.published {
+    background: #eaf9f1 !important;
+
+    color: #11955a !important;
+}
+
+.policy-status.draft {
+    background: #fff5e5 !important;
+
+    color: #d98413 !important;
+}
+
+.policy-status.archived {
+    background: #edf0f4 !important;
+
+    color: #6d7887 !important;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.policy-actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 5px;
+}
+
+.policy-actions button {
+    width: 32px !important;
+    height: 32px !important;
+
+    min-width: 32px !important;
+
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: 1px solid #dfe6ef !important;
+
+    border-radius: 7px !important;
+
+    background: #ffffff !important;
+
+    color: #52749e !important;
+
+    cursor: pointer;
+
+    box-shadow: none !important;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.policy-actions button:hover {
+    background: #f2f6fc !important;
+
+    border-color: #d2deec !important;
+
+    color: #2167df !important;
+}
+
+.policy-actions button.delete:hover {
+    background: #fff1f1 !important;
+
+    border-color: #ffd5d5 !important;
+
+    color: #e33a3a !important;
+}
+
+.policy-actions button:active {
+    transform: scale(0.96);
+}
+
+.policy-actions svg {
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.policy-table-loading {
+    min-height: 180px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    color: #7187a5;
+}
+
+.policy-table-loading .MuiTypography-root {
+    color: #7187a5;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.policy-empty {
+    padding: 60px 20px;
+
+    text-align: center;
+
+    color: #7d91ad;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE - 1100px
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .policy-stat-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .policy-mui-table {
+        min-width: 850px;
+    }
+
+    .policy-management-table {
+        overflow-x: auto;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - 850px
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .policy-dashboard {
+        padding: 24px;
+    }
+
+    .policy-dashboard-top {
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+
+        gap: 14px;
+    }
+
+    .policy-dashboard-header-left {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .policy-dashboard-header-actions {
+        width: 100%;
+
+        justify-content: flex-end;
+
+        padding-top: 0;
+    }
+
+    .policy-dashboard-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .policy-search {
+        flex-basis: 100%;
+    }
+
+    .policy-filter-control {
+        flex: 1;
+        min-width: 140px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - 650px
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .policy-dashboard {
+        padding: 20px 16px;
+    }
+
+    .policy-dashboard-top {
+        gap: 12px;
+
+        margin-bottom: 22px;
+    }
+
+    .policy-dashboard-header-left {
+        gap: 12px;
+    }
+
+    .policy-dashboard-top h1 {
+        font-size: 25px;
+    }
+
+    .policy-dashboard-top p {
+        font-size: 13px;
+    }
+
+    .policy-back-button {
+        width: 38px !important;
+        height: 38px !important;
+
+        min-width: 38px !important;
+    }
+
+    .policy-dashboard-header-actions {
+        width: 100%;
+
+        display: grid;
+
+        grid-template-columns: 1fr 42px;
+
+        gap: 8px;
+    }
+
+    .policy-add-button {
+        width: 100% !important;
+
+        height: 42px !important;
+    }
+
+    .policy-refresh-button {
+        width: 42px !important;
+        height: 42px !important;
+    }
+
+    .policy-stat-grid {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+    }
+
+    .policy-stat-card {
+        min-height: 82px;
+
+        padding: 14px 15px;
+    }
+
+    .policy-stat-card strong {
+        font-size: 24px;
+    }
+
+    .policy-dashboard-toolbar {
+        padding: 10px;
+
+        gap: 9px;
+    }
+
+    .policy-filter-control {
+        min-width: 0;
+
+        width: 100%;
+
+        flex-basis: 100%;
+    }
+
+    /* Mobile table becomes horizontally scrollable */
+
+    .policy-management-table {
+        overflow-x: auto;
+
+        border-radius: 11px;
+    }
+
+    .policy-mui-table {
+        min-width: 850px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - 450px
+========================================================= */
+
+@media (max-width: 450px) {
+
+    .policy-dashboard {
+        padding: 18px 12px;
+    }
+
+    .policy-dashboard-top {
+        align-items: flex-start;
+    }
+
+    .policy-dashboard-header-left {
+        gap: 10px;
+    }
+
+    .policy-dashboard-top h1 {
+        font-size: 23px;
+    }
+
+    .policy-dashboard-top p {
+        font-size: 12px;
+    }
+
+    .policy-stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .policy-stat-card {
+        min-height: 76px;
+    }
+
+    .policy-dashboard-header-actions {
+        grid-template-columns: 1fr 42px;
+    }
+
+    .policy-add-button {
+        width: 100% !important;
+
+        min-width: 0 !important;
+    }
+
+    .policy-dashboard-toolbar {
+        padding: 9px;
+    }
+
+    .policy-search {
+        min-width: 0;
+    }
+
+    .policy-management-table {
+        border-radius: 11px;
+    }
+}
