@@ -913,15 +913,7 @@ const PolicyDashboard = () => {
                                                 ) && (
                                                     <Tooltip title="Edit">
 
-                                                        <IconButton
-                                                            onClick={() =>
-                                                                handleEdit(
-                                                                    policy
-                                                                )
-                                                            }
-                                                        >
-                                                            <EditRoundedIcon />
-                                                        </IconButton>
+                                                      
 
                                                     </Tooltip>
                                                 )}

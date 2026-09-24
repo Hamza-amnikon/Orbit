@@ -40,7 +40,9 @@ import PolicyService from "../Services/PolicyService";
 
 import "./CompanyPolicies.css";
 
+
 const CompanyPolicy = () => {
+
     // ============================================================
     // STATE
     // ============================================================
@@ -55,6 +57,7 @@ const CompanyPolicy = () => {
 
     const [error, setError] = useState("");
 
+
     // ============================================================
     // PDF DIALOG
     // ============================================================
@@ -66,9 +69,12 @@ const CompanyPolicy = () => {
 
     const [pdfUrl, setPdfUrl] = useState("");
 
-    const [pdfLoading, setPdfLoading] = useState(false);
+    const [pdfLoading, setPdfLoading] =
+        useState(false);
 
-    const [pdfError, setPdfError] = useState("");
+    const [pdfError, setPdfError] =
+        useState("");
+
 
     // ============================================================
     // ACKNOWLEDGEMENT
@@ -82,6 +88,7 @@ const CompanyPolicy = () => {
 
     const [ackCheckLoading, setAckCheckLoading] =
         useState(false);
+
 
     // ============================================================
     // LOAD PUBLISHED POLICIES
@@ -100,8 +107,57 @@ const CompanyPolicy = () => {
             const policyData =
                 response?.data || [];
 
-            setPolicies(policyData);
+            // ========================================================
+            // CHECK ACKNOWLEDGEMENT STATUS FOR EVERY POLICY
+            // ========================================================
+            //
+            // The backend GET acknowledgement endpoint is now
+            // anonymous and checks the PolicyAcknowledgements table.
+            //
+            // If an acknowledgement record exists for the policy,
+            // the policy card shows "Acknowledged".
+            //
+            // ========================================================
+
+            const policiesWithAcknowledgement =
+                await Promise.all(
+                    policyData.map(
+                        async (policy) => {
+                            try {
+                                const acknowledgement =
+                                    await PolicyService.getAcknowledgement(
+                                        policy.policyId
+                                    );
+
+                                return {
+                                    ...policy,
+                                    acknowledged:
+                                        acknowledgement?.acknowledged ===
+                                        true,
+                                };
+
+                            } catch (ackError) {
+
+                                console.error(
+                                    `Check Policy Acknowledgement Error for Policy ${policy.policyId}:`,
+                                    ackError
+                                );
+
+                                return {
+                                    ...policy,
+                                    acknowledged: false,
+                                };
+                            }
+                        }
+                    )
+                );
+
+            setPolicies(
+                policiesWithAcknowledgement
+            );
+
         } catch (err) {
+
             console.error(
                 "Load Company Policies Error:",
                 err
@@ -109,22 +165,27 @@ const CompanyPolicy = () => {
 
             setError(
                 err?.response?.data?.message ||
-                    "Failed to load company policies."
+                err?.message ||
+                "Failed to load company policies."
             );
+
         } finally {
             setLoading(false);
         }
     };
 
+
     useEffect(() => {
         loadPolicies();
     }, []);
+
 
     // ============================================================
     // CATEGORIES
     // ============================================================
 
     const categories = useMemo(() => {
+
         return [
             "All",
             ...new Set(
@@ -136,17 +197,21 @@ const CompanyPolicy = () => {
                     .filter(Boolean)
             ),
         ];
+
     }, [policies]);
+
 
     // ============================================================
     // FILTER POLICIES
     // ============================================================
 
     const filteredPolicies = useMemo(() => {
+
         const searchValue =
             search.toLowerCase().trim();
 
         return policies.filter((policy) => {
+
             const title =
                 policy.policyTitle || "";
 
@@ -157,6 +222,7 @@ const CompanyPolicy = () => {
                 title
                     .toLowerCase()
                     .includes(searchValue) ||
+
                 code
                     .toLowerCase()
                     .includes(searchValue);
@@ -170,38 +236,71 @@ const CompanyPolicy = () => {
                 matchesCategory
             );
         });
+
     }, [
         policies,
         search,
         category,
     ]);
 
+
     // ============================================================
     // FORMAT DATE
     // ============================================================
 
     const formatDate = (date) => {
+
         if (!date) {
             return "-";
         }
 
-        return new Date(
-            date
-        ).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        });
+        const parsedDate =
+            new Date(date);
+
+        if (
+            Number.isNaN(
+                parsedDate.getTime()
+            )
+        ) {
+            return "-";
+        }
+
+        return parsedDate.toLocaleDateString(
+            "en-GB",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+            }
+        );
     };
+
 
     // ============================================================
     // CHECK ACKNOWLEDGEMENT
+    // ============================================================
+    //
+    // The backend GET endpoint checks the
+    // PolicyAcknowledgements table directly.
+    //
+    // This method is also available for refreshing the status of
+    // an individual policy when needed.
+    //
+    // IMPORTANT:
+    // View PDF does NOT call this method.
+    //
     // ============================================================
 
     const checkAcknowledgement = async (
         policyId
     ) => {
+
+        if (!policyId) {
+            return false;
+        }
+
         try {
+
             setAckCheckLoading(true);
 
             const response =
@@ -216,48 +315,112 @@ const CompanyPolicy = () => {
                 isAcknowledged
             );
 
-            // Update local policy state too
-            setPolicies((previousPolicies) =>
-                previousPolicies.map(
-                    (policy) =>
-                        policy.policyId ===
+            setPolicies(
+                (previousPolicies) =>
+                    previousPolicies.map(
+                        (policy) =>
+                            policy.policyId ===
+                            policyId
+                                ? {
+                                      ...policy,
+                                      acknowledged:
+                                          isAcknowledged,
+                                  }
+                                : policy
+                    )
+            );
+
+            setSelectedPolicy(
+                (previousPolicy) =>
+                    previousPolicy &&
+                    previousPolicy.policyId ===
                         policyId
-                            ? {
-                                  ...policy,
-                                  acknowledged:
-                                      isAcknowledged,
-                              }
-                            : policy
-                )
+                        ? {
+                              ...previousPolicy,
+                              acknowledged:
+                                  isAcknowledged,
+                          }
+                        : previousPolicy
             );
 
             return isAcknowledged;
+
         } catch (err) {
+
             console.error(
                 "Check Policy Acknowledgement Error:",
                 err
             );
 
             /*
+             * IMPORTANT:
+             *
+             * Do not log the employee out here.
+             * Do not close the PDF.
              * Do not block the employee from viewing
-             * the policy if acknowledgement checking
-             * fails.
+             * the company policy.
              */
+
             setAcknowledged(false);
 
             return false;
+
         } finally {
+
             setAckCheckLoading(false);
         }
     };
 
+
     // ============================================================
     // OPEN POLICY
     // ============================================================
+    //
+    // IMPORTANT CHANGE:
+    //
+    // We DO NOT call getAcknowledgement() here.
+    //
+    // Previously:
+    //
+    // View
+    //   ↓
+    // getAcknowledgement()
+    //   ↓
+    // possible 401
+    //   ↓
+    // global axios interceptor
+    //   ↓
+    // logout
+    //
+    // Now:
+    //
+    // View
+    //   ↓
+    // open dialog
+    //   ↓
+    // get PDF
+    //
+    // ============================================================
 
-    const handleViewPolicy = async (policy) => {
+    const handleViewPolicy = async (
+        policy
+    ) => {
+
+        if (!policy?.policyId) {
+            return;
+        }
+
         try {
+
+            // ====================================================
+            // SELECT POLICY
+            // ====================================================
+
             setSelectedPolicy(policy);
+
+            // ====================================================
+            // OPEN DIALOG IMMEDIATELY
+            // ====================================================
 
             setPdfOpen(true);
 
@@ -267,31 +430,27 @@ const CompanyPolicy = () => {
 
             setError("");
 
-            setAcknowledged(false);
+            setAcknowledged(
+                policy?.acknowledged === true
+            );
+
 
             // ====================================================
             // CLEAR OLD PDF
             // ====================================================
 
             if (pdfUrl) {
-                URL.revokeObjectURL(pdfUrl);
+
+                URL.revokeObjectURL(
+                    pdfUrl
+                );
+
                 setPdfUrl("");
             }
 
-            // ====================================================
-            // CHECK ACKNOWLEDGEMENT
-            // ====================================================
-
-            if (
-                policy.acknowledgementRequired
-            ) {
-                await checkAcknowledgement(
-                    policy.policyId
-                );
-            }
 
             // ====================================================
-            // LOAD PDF
+            // LOAD PDF ONLY
             // ====================================================
 
             const blob =
@@ -299,89 +458,210 @@ const CompanyPolicy = () => {
                     policy.policyId
                 );
 
+
+            // ====================================================
+            // VALIDATE BLOB
+            // ====================================================
+
+            if (!blob) {
+                throw new Error(
+                    "Policy PDF was not received."
+                );
+            }
+
+            if (
+                blob.size === 0
+            ) {
+                throw new Error(
+                    "Policy PDF is empty."
+                );
+            }
+
+
+            // ====================================================
+            // CHECK CONTENT TYPE
+            // ====================================================
+
+            if (
+                blob.type &&
+                !blob.type.includes(
+                    "pdf"
+                )
+            ) {
+
+                console.warn(
+                    "Policy PDF response content type:",
+                    blob.type
+                );
+            }
+
+
             // ====================================================
             // CREATE BLOB URL
             // ====================================================
 
             const blobUrl =
-                URL.createObjectURL(blob);
+                URL.createObjectURL(
+                    blob
+                );
 
-            setPdfUrl(blobUrl);
+            setPdfUrl(
+                blobUrl
+            );
+
         } catch (err) {
+
             console.error(
                 "Load Policy PDF Error:",
                 err
             );
 
+            /*
+             * Important:
+             *
+             * Do not perform logout here.
+             *
+             * A PDF loading failure is a policy
+             * document problem, not automatically
+             * an authentication problem.
+             */
+
+            let message =
+                "Unable to load the policy PDF.";
+
+            if (
+                err?.message
+            ) {
+                message =
+                    err.message;
+            }
+
+            if (
+                err?.response?.data?.message
+            ) {
+                message =
+                    err.response.data.message;
+            }
+
             setPdfError(
-                err?.response?.data?.message ||
-                    "Unable to load the policy PDF."
+                message
             );
+
         } finally {
-            setPdfLoading(false);
+
+            setPdfLoading(
+                false
+            );
         }
     };
+
 
     // ============================================================
     // CLOSE PDF
     // ============================================================
 
     const handleClosePdf = () => {
+
         setPdfOpen(false);
 
         setAcknowledged(false);
 
+        setPdfLoading(false);
+
+        setAckCheckLoading(false);
+
         if (pdfUrl) {
-            URL.revokeObjectURL(pdfUrl);
+
+            URL.revokeObjectURL(
+                pdfUrl
+            );
+
             setPdfUrl("");
         }
 
         setTimeout(() => {
-            setSelectedPolicy(null);
+
+            setSelectedPolicy(
+                null
+            );
+
             setPdfError("");
-            setAckCheckLoading(false);
+
         }, 200);
     };
+
 
     // ============================================================
     // DOWNLOAD
     // ============================================================
 
-    const handleDownload = (policy) => {
+    const handleDownload = (
+        policy
+    ) => {
+
         if (!policy?.policyId) {
             return;
         }
 
-        const downloadUrl =
-            PolicyService.getDownloadUrl(
-                policy.policyId
+        try {
+
+            const downloadUrl =
+                PolicyService.getDownloadUrl(
+                    policy.policyId
+                );
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+            link.href =
+                downloadUrl;
+
+            link.target =
+                "_blank";
+
+            link.rel =
+                "noopener noreferrer";
+
+            document.body.appendChild(
+                link
             );
 
-        const link =
-            document.createElement("a");
+            link.click();
 
-        link.href = downloadUrl;
+            document.body.removeChild(
+                link
+            );
 
-        link.target = "_blank";
+        } catch (err) {
 
-        link.rel =
-            "noopener noreferrer";
+            console.error(
+                "Policy Download Error:",
+                err
+            );
 
-        document.body.appendChild(link);
-
-        link.click();
-
-        document.body.removeChild(link);
+            setError(
+                "Unable to download the policy PDF."
+            );
+        }
     };
+
 
     // ============================================================
     // ACKNOWLEDGE POLICY
     // ============================================================
 
     const handleAcknowledge = async () => {
+
         if (!selectedPolicy) {
             return;
         }
+
+
+        // ========================================================
+        // CHECK CHECKBOX
+        // ========================================================
 
         if (
             selectedPolicy.acknowledgementRequired &&
@@ -390,7 +670,11 @@ const CompanyPolicy = () => {
             return;
         }
 
-        // Already acknowledged
+
+        // ========================================================
+        // ALREADY ACKNOWLEDGED
+        // ========================================================
+
         if (
             selectedPolicy.acknowledgementRequired &&
             selectedPolicy.acknowledged === true
@@ -398,13 +682,16 @@ const CompanyPolicy = () => {
             return;
         }
 
+
         try {
+
             setAckLoading(true);
 
             setError("");
 
+
             // ====================================================
-            // CALL BACKEND
+            // ACKNOWLEDGE BACKEND
             // ====================================================
 
             const response =
@@ -412,32 +699,41 @@ const CompanyPolicy = () => {
                     selectedPolicy.policyId
                 );
 
+
             if (
                 response?.success === false
             ) {
+
                 throw new Error(
                     response?.message ||
-                        "Failed to acknowledge policy."
+                    "Failed to acknowledge policy."
                 );
             }
 
+
             // ====================================================
-            // UPDATE LOCAL STATE
+            // UPDATE POLICY LIST
             // ====================================================
 
-            setPolicies((previousPolicies) =>
-                previousPolicies.map(
-                    (policy) =>
-                        policy.policyId ===
-                        selectedPolicy.policyId
-                            ? {
-                                  ...policy,
-                                  acknowledged:
-                                      true,
-                              }
-                            : policy
-                )
+            setPolicies(
+                (previousPolicies) =>
+                    previousPolicies.map(
+                        (policy) =>
+                            policy.policyId ===
+                            selectedPolicy.policyId
+                                ? {
+                                      ...policy,
+                                      acknowledged:
+                                          true,
+                                  }
+                                : policy
+                    )
             );
+
+
+            // ====================================================
+            // UPDATE SELECTED POLICY
+            // ====================================================
 
             setSelectedPolicy(
                 (previousPolicy) =>
@@ -450,25 +746,45 @@ const CompanyPolicy = () => {
                         : previousPolicy
             );
 
-            setAcknowledged(true);
+
+            setAcknowledged(
+                true
+            );
+
 
             // ====================================================
-            // CLOSE AFTER SUCCESS
+            // CLOSE DIALOG
             // ====================================================
 
             setPdfOpen(false);
 
+
             if (pdfUrl) {
-                URL.revokeObjectURL(pdfUrl);
+
+                URL.revokeObjectURL(
+                    pdfUrl
+                );
+
                 setPdfUrl("");
             }
 
+
             setTimeout(() => {
-                setSelectedPolicy(null);
-                setAcknowledged(false);
+
+                setSelectedPolicy(
+                    null
+                );
+
+                setAcknowledged(
+                    false
+                );
+
                 setPdfError("");
+
             }, 200);
+
         } catch (err) {
+
             console.error(
                 "Policy Acknowledgement Error:",
                 err
@@ -476,25 +792,37 @@ const CompanyPolicy = () => {
 
             setError(
                 err?.response?.data?.message ||
-                    err?.message ||
-                    "Failed to acknowledge policy."
+                err?.message ||
+                "Failed to acknowledge policy."
             );
+
         } finally {
-            setAckLoading(false);
+
+            setAckLoading(
+                false
+            );
         }
     };
+
 
     // ============================================================
     // CLEANUP BLOB URL
     // ============================================================
 
     useEffect(() => {
+
         return () => {
+
             if (pdfUrl) {
-                URL.revokeObjectURL(pdfUrl);
+
+                URL.revokeObjectURL(
+                    pdfUrl
+                );
             }
         };
+
     }, [pdfUrl]);
+
 
     // ============================================================
     // UI
@@ -514,6 +842,7 @@ const CompanyPolicy = () => {
                 </Box>
 
                 <Box>
+
                     <Typography
                         component="h1"
                         className="company-policy-title"
@@ -529,19 +858,27 @@ const CompanyPolicy = () => {
                         guidelines and important
                         information.
                     </Typography>
+
                 </Box>
 
                 <Tooltip title="Refresh">
+
                     <IconButton
                         className="company-policy-refresh"
-                        onClick={loadPolicies}
-                        disabled={loading}
+                        onClick={
+                            loadPolicies
+                        }
+                        disabled={
+                            loading
+                        }
                     >
                         <RefreshRoundedIcon />
                     </IconButton>
+
                 </Tooltip>
 
             </Box>
+
 
             {/* ==================================================
                 ERROR
@@ -558,6 +895,7 @@ const CompanyPolicy = () => {
                     {error}
                 </Alert>
             )}
+
 
             {/* ==================================================
                 FILTER
@@ -585,10 +923,12 @@ const CompanyPolicy = () => {
                     }}
                 />
 
+
                 <FormControl
                     size="small"
                     className="company-policy-category-filter"
                 >
+
                     <Select
                         value={category}
                         onChange={(e) =>
@@ -597,22 +937,27 @@ const CompanyPolicy = () => {
                             )
                         }
                     >
+
                         {categories.map(
                             (item) => (
                                 <MenuItem
                                     key={item}
                                     value={item}
                                 >
-                                    {item === "All"
+                                    {item ===
+                                    "All"
                                         ? "All Categories"
                                         : item}
                                 </MenuItem>
                             )
                         )}
+
                     </Select>
+
                 </FormControl>
 
             </Box>
+
 
             {/* ==================================================
                 COUNT
@@ -621,15 +966,18 @@ const CompanyPolicy = () => {
             <Box className="company-policy-count">
 
                 <Typography>
+
                     <strong>
                         {
                             filteredPolicies.length
                         }
                     </strong>{" "}
+
                     {filteredPolicies.length ===
                     1
                         ? "Policy"
                         : "Policies"}
+
                 </Typography>
 
                 <Typography component="span">
@@ -638,22 +986,28 @@ const CompanyPolicy = () => {
 
             </Box>
 
+
             {/* ==================================================
                 LOADING / EMPTY / LIST
             ================================================== */}
 
             {loading ? (
+
                 <Box className="company-policy-loading">
 
-                    <CircularProgress size={30} />
+                    <CircularProgress
+                        size={30}
+                    />
 
                     <Typography>
                         Loading policies...
                     </Typography>
 
                 </Box>
+
             ) : filteredPolicies.length ===
               0 ? (
+
                 <Box className="company-policy-empty">
 
                     <Box className="company-policy-empty-icon">
@@ -675,11 +1029,14 @@ const CompanyPolicy = () => {
                     </Typography>
 
                 </Box>
+
             ) : (
+
                 <Box className="company-policy-grid">
 
                     {filteredPolicies.map(
                         (policy) => (
+
                             <Box
                                 key={
                                     policy.policyId
@@ -705,6 +1062,7 @@ const CompanyPolicy = () => {
 
                                 </Box>
 
+
                                 {/* TITLE */}
 
                                 <Typography
@@ -716,6 +1074,7 @@ const CompanyPolicy = () => {
                                     }
                                 </Typography>
 
+
                                 <Typography
                                     className="company-policy-code"
                                 >
@@ -723,6 +1082,7 @@ const CompanyPolicy = () => {
                                         policy.policyCode
                                     }
                                 </Typography>
+
 
                                 {/* META */}
 
@@ -736,11 +1096,14 @@ const CompanyPolicy = () => {
                                     />
 
                                     <Chip
-                                        label={`Version ${policy.version}`}
+                                        label={
+                                            `Version ${policy.version}`
+                                        }
                                         className="company-policy-version"
                                     />
 
                                 </Box>
+
 
                                 {/* DESCRIPTION */}
 
@@ -753,6 +1116,7 @@ const CompanyPolicy = () => {
                                     }
                                 </Typography>
 
+
                                 {/* DATE */}
 
                                 <Box className="company-policy-date">
@@ -760,17 +1124,22 @@ const CompanyPolicy = () => {
                                     <CalendarTodayRoundedIcon />
 
                                     <Typography component="span">
+
                                         Effective{" "}
+
                                         {formatDate(
                                             policy.effectiveDate
                                         )}
+
                                     </Typography>
 
                                 </Box>
 
+
                                 {/* ACKNOWLEDGEMENT */}
 
                                 {policy.acknowledgementRequired && (
+
                                     <Box
                                         className={
                                             policy.acknowledged
@@ -778,6 +1147,7 @@ const CompanyPolicy = () => {
                                                 : "company-policy-ack"
                                         }
                                     >
+
                                         {policy.acknowledged ? (
                                             <CheckCircleRoundedIcon />
                                         ) : (
@@ -785,12 +1155,17 @@ const CompanyPolicy = () => {
                                         )}
 
                                         <Typography component="span">
+
                                             {policy.acknowledged
                                                 ? "Acknowledged"
                                                 : "Acknowledgement Required"}
+
                                         </Typography>
+
                                     </Box>
+
                                 )}
+
 
                                 {/* ACTIONS */}
 
@@ -811,6 +1186,7 @@ const CompanyPolicy = () => {
                                         View PDF
                                     </Button>
 
+
                                     <IconButton
                                         className="company-policy-download"
                                         onClick={() =>
@@ -826,11 +1202,14 @@ const CompanyPolicy = () => {
                                 </Box>
 
                             </Box>
+
                         )
                     )}
 
                 </Box>
+
             )}
+
 
             {/* ==================================================
                 PDF VIEWER DIALOG
@@ -838,7 +1217,9 @@ const CompanyPolicy = () => {
 
             <Dialog
                 open={pdfOpen}
-                onClose={handleClosePdf}
+                onClose={
+                    handleClosePdf
+                }
                 fullWidth
                 maxWidth={false}
                 className="company-policy-dialog"
@@ -848,9 +1229,12 @@ const CompanyPolicy = () => {
                     HEADER
                 ================================================== */}
 
-                <DialogTitle className="company-policy-dialog-title">
+                <DialogTitle
+                    className="company-policy-dialog-title"
+                >
 
                     <Box>
+
                         <strong>
                             {
                                 selectedPolicy?.policyTitle ||
@@ -864,7 +1248,9 @@ const CompanyPolicy = () => {
                                 ""
                             }
                         </span>
+
                     </Box>
+
 
                     <IconButton
                         onClick={
@@ -876,63 +1262,88 @@ const CompanyPolicy = () => {
 
                 </DialogTitle>
 
+
                 {/* ==================================================
                     PDF CONTENT
                 ================================================== */}
 
-                <DialogContent className="company-policy-dialog-content">
+                <DialogContent
+                    className="company-policy-dialog-content"
+                >
 
                     {pdfLoading ? (
+
                         <Box
                             sx={{
                                 width: "100%",
                                 height: "100%",
-                                minHeight: "400px",
+                                minHeight:
+                                    "400px",
                                 display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                flexDirection: "column",
+                                alignItems:
+                                    "center",
+                                justifyContent:
+                                    "center",
+                                flexDirection:
+                                    "column",
                                 gap: 2,
-                                background: "#525659",
+                                background:
+                                    "#525659",
                             }}
                         >
+
                             <CircularProgress
                                 sx={{
-                                    color: "#ffffff",
+                                    color:
+                                        "#ffffff",
                                 }}
                             />
 
                             <Typography
                                 sx={{
-                                    color: "#ffffff",
+                                    color:
+                                        "#ffffff",
                                 }}
                             >
-                                {ackCheckLoading
-                                    ? "Checking acknowledgement..."
-                                    : "Loading PDF..."}
+                                Loading PDF...
                             </Typography>
+
                         </Box>
+
                     ) : pdfError ? (
+
                         <Box
                             sx={{
                                 width: "100%",
                                 height: "100%",
-                                minHeight: "400px",
+                                minHeight:
+                                    "400px",
                                 display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                flexDirection: "column",
+                                alignItems:
+                                    "center",
+                                justifyContent:
+                                    "center",
+                                flexDirection:
+                                    "column",
                                 gap: 2,
-                                background: "#525659",
+                                background:
+                                    "#525659",
                             }}
                         >
+
                             <Typography
                                 sx={{
-                                    color: "#ffffff",
+                                    color:
+                                        "#ffffff",
+                                    textAlign:
+                                        "center",
+                                    padding:
+                                        "20px",
                                 }}
                             >
                                 {pdfError}
                             </Typography>
+
 
                             <Button
                                 variant="contained"
@@ -945,8 +1356,11 @@ const CompanyPolicy = () => {
                             >
                                 Retry
                             </Button>
+
                         </Box>
+
                     ) : pdfUrl ? (
+
                         <iframe
                             src={pdfUrl}
                             title={
@@ -955,20 +1369,52 @@ const CompanyPolicy = () => {
                             }
                             className="company-policy-pdf-frame"
                         />
-                    ) : null}
+
+                    ) : (
+
+                        <Box
+                            sx={{
+                                width: "100%",
+                                minHeight:
+                                    "400px",
+                                display: "flex",
+                                alignItems:
+                                    "center",
+                                justifyContent:
+                                    "center",
+                                background:
+                                    "#525659",
+                            }}
+                        >
+
+                            <Typography
+                                sx={{
+                                    color:
+                                        "#ffffff",
+                                }}
+                            >
+                                No PDF available.
+                            </Typography>
+
+                        </Box>
+
+                    )}
 
                 </DialogContent>
+
 
                 {/* ==================================================
                     ACKNOWLEDGEMENT FOOTER
                 ================================================== */}
 
                 {selectedPolicy?.acknowledgementRequired ? (
+
                     <DialogActions
                         className="company-policy-dialog-actions company-policy-dialog-actions-ack"
                     >
 
                         {selectedPolicy?.acknowledged ? (
+
                             <Box className="company-policy-already-acknowledged">
 
                                 <CheckCircleRoundedIcon />
@@ -980,7 +1426,9 @@ const CompanyPolicy = () => {
                                 </Typography>
 
                             </Box>
+
                         ) : (
+
                             <FormControlLabel
                                 className="company-policy-acknowledge-control"
                                 control={
@@ -994,7 +1442,6 @@ const CompanyPolicy = () => {
                                             )
                                         }
                                         disabled={
-                                            ackCheckLoading ||
                                             ackLoading
                                         }
                                         color="primary"
@@ -1002,7 +1449,9 @@ const CompanyPolicy = () => {
                                 }
                                 label="I acknowledge that I have read and understood this policy."
                             />
+
                         )}
+
 
                         <Box className="company-policy-dialog-buttons">
 
@@ -1016,7 +1465,9 @@ const CompanyPolicy = () => {
                                 Close
                             </Button>
 
+
                             {!selectedPolicy?.acknowledged && (
+
                                 <Button
                                     variant="contained"
                                     className="company-policy-dialog-download"
@@ -1028,21 +1479,25 @@ const CompanyPolicy = () => {
                                     }
                                     disabled={
                                         !acknowledged ||
-                                        ackLoading ||
-                                        ackCheckLoading
+                                        ackLoading
                                     }
                                 >
                                     {ackLoading
                                         ? "Saving..."
                                         : "Acknowledge"}
                                 </Button>
+
                             )}
 
                         </Box>
 
                     </DialogActions>
+
                 ) : (
-                    <DialogActions className="company-policy-dialog-actions">
+
+                    <DialogActions
+                        className="company-policy-dialog-actions"
+                    >
 
                         <Button
                             variant="outlined"
@@ -1053,6 +1508,7 @@ const CompanyPolicy = () => {
                         >
                             Close
                         </Button>
+
 
                         <Button
                             variant="contained"
@@ -1070,6 +1526,7 @@ const CompanyPolicy = () => {
                         </Button>
 
                     </DialogActions>
+
                 )}
 
             </Dialog>

@@ -1,44 +1,108 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5028/api/Policy";
+// ============================================================
+// POLICY API
+// ============================================================
+
+const API_URL =
+    "http://localhost:5028/api/Policy";
+
+
+// ============================================================
+// ISOLATED POLICY AXIOS INSTANCE
+// ============================================================
+//
+// IMPORTANT:
+//
+// Do NOT use the application's global axios instance.
+//
+// Your main application has a global 401 interceptor which can
+// logout the user.
+//
+// PolicyService remains independent from that interceptor.
+//
+// ============================================================
+
+const policyAxios = axios.create({
+    baseURL: API_URL,
+    timeout: 30000,
+    withCredentials: true,
+});
+
+
+// ============================================================
+// POLICY SERVICE
+// ============================================================
 
 const PolicyService = {
-    // ============================================================
+
+    // ========================================================
     // GET ALL POLICIES
-    // ============================================================
+    // ========================================================
 
     getPolicies: async (params = {}) => {
-        const response = await axios.get(API_URL, {
-            params,
-        });
+        try {
+            const response =
+                await policyAxios.get(
+                    "",
+                    {
+                        params,
+                    }
+                );
 
-        return response.data;
+            return response.data;
+        } catch (error) {
+            console.error(
+                "Get Policies Error:",
+                error
+            );
+
+            throw error;
+        }
     },
 
-    // ============================================================
+
+    // ========================================================
     // GET POLICY BY ID
-    // ============================================================
+    // ========================================================
 
     getPolicyById: async (id) => {
-        const response = await axios.get(
-            `${API_URL}/${id}`
-        );
+        try {
+            const response =
+                await policyAxios.get(
+                    `/${id}`
+                );
 
-        return response.data;
+            return response.data;
+        } catch (error) {
+            console.error(
+                "Get Policy Error:",
+                error
+            );
+
+            throw error;
+        }
     },
 
-    // ============================================================
+
+    // ========================================================
     // CREATE POLICY
-    // ============================================================
+    // ========================================================
 
     createPolicy: async (policyData) => {
-        const formData = new FormData();
 
+        const formData =
+            new FormData();
+
+
+        // POLICY TITLE
         formData.append(
             "PolicyTitle",
-            policyData.PolicyTitle
+            policyData.PolicyTitle || ""
         );
 
+
+        // POLICY CODE
         if (policyData.PolicyCode) {
             formData.append(
                 "PolicyCode",
@@ -46,21 +110,29 @@ const PolicyService = {
             );
         }
 
+
+        // CATEGORY
         formData.append(
             "Category",
-            policyData.Category
+            policyData.Category || ""
         );
 
+
+        // VERSION
         formData.append(
             "Version",
-            policyData.Version
+            policyData.Version || "1.0"
         );
 
+
+        // EFFECTIVE DATE
         formData.append(
             "EffectiveDate",
-            policyData.EffectiveDate
+            policyData.EffectiveDate || ""
         );
 
+
+        // DESCRIPTION
         if (policyData.Description) {
             formData.append(
                 "Description",
@@ -68,13 +140,19 @@ const PolicyService = {
             );
         }
 
+
+        // ACKNOWLEDGEMENT REQUIRED
         formData.append(
             "AcknowledgementRequired",
             String(
-                policyData.AcknowledgementRequired
+                Boolean(
+                    policyData.AcknowledgementRequired
+                )
             )
         );
 
+
+        // PDF
         if (policyData.File) {
             formData.append(
                 "File",
@@ -82,47 +160,77 @@ const PolicyService = {
             );
         }
 
-        const response = await axios.post(
-            API_URL,
-            formData,
-            {
-                headers: {
-                    "Content-Type":
-                        "multipart/form-data",
-                },
-            }
-        );
 
-        return response.data;
+        try {
+            const response =
+                await policyAxios.post(
+                    "",
+                    formData
+                );
+
+            return response.data;
+        } catch (error) {
+            console.error(
+                "Create Policy Error:",
+                error
+            );
+
+            throw error;
+        }
     },
 
-    // ============================================================
+
+    // ========================================================
     // UPDATE POLICY
-    // ============================================================
+    // ========================================================
 
-    updatePolicy: async (id, policyData) => {
-        const formData = new FormData();
+    updatePolicy: async (
+        id,
+        policyData
+    ) => {
 
+        const formData =
+            new FormData();
+
+
+        // POLICY TITLE
         formData.append(
             "PolicyTitle",
-            policyData.PolicyTitle
+            policyData.PolicyTitle || ""
         );
 
+
+        // POLICY CODE
+        if (policyData.PolicyCode) {
+            formData.append(
+                "PolicyCode",
+                policyData.PolicyCode
+            );
+        }
+
+
+        // CATEGORY
         formData.append(
             "Category",
-            policyData.Category
+            policyData.Category || ""
         );
 
+
+        // VERSION
         formData.append(
             "Version",
-            policyData.Version
+            policyData.Version || "1.0"
         );
 
+
+        // EFFECTIVE DATE
         formData.append(
             "EffectiveDate",
-            policyData.EffectiveDate
+            policyData.EffectiveDate || ""
         );
 
+
+        // DESCRIPTION
         if (policyData.Description) {
             formData.append(
                 "Description",
@@ -130,13 +238,19 @@ const PolicyService = {
             );
         }
 
+
+        // ACKNOWLEDGEMENT REQUIRED
         formData.append(
             "AcknowledgementRequired",
             String(
-                policyData.AcknowledgementRequired
+                Boolean(
+                    policyData.AcknowledgementRequired
+                )
             )
         );
 
+
+        // NEW PDF
         if (policyData.File) {
             formData.append(
                 "File",
@@ -144,129 +258,486 @@ const PolicyService = {
             );
         }
 
-        const response = await axios.put(
-            `${API_URL}/${id}`,
-            formData,
-            {
-                headers: {
-                    "Content-Type":
-                        "multipart/form-data",
-                },
-            }
-        );
 
-        return response.data;
+        try {
+            const response =
+                await policyAxios.put(
+                    `/${id}`,
+                    formData
+                );
+
+            return response.data;
+        } catch (error) {
+            console.error(
+                "Update Policy Error:",
+                error
+            );
+
+            throw error;
+        }
     },
 
-    // ============================================================
+
+    // ========================================================
     // PUBLISH POLICY
-    // ============================================================
+    // ========================================================
 
     publishPolicy: async (id) => {
-        const response = await axios.post(
-            `${API_URL}/${id}/publish`
-        );
+        try {
+            const response =
+                await policyAxios.post(
+                    `/${id}/publish`
+                );
 
-        return response.data;
+            return response.data;
+        } catch (error) {
+            console.error(
+                "Publish Policy Error:",
+                error
+            );
+
+            throw error;
+        }
     },
 
-    // ============================================================
+
+    // ========================================================
     // ARCHIVE POLICY
-    // ============================================================
+    // ========================================================
 
     archivePolicy: async (id) => {
-        const response = await axios.post(
-            `${API_URL}/${id}/archive`
-        );
+        try {
+            const response =
+                await policyAxios.post(
+                    `/${id}/archive`
+                );
 
-        return response.data;
+            return response.data;
+        } catch (error) {
+            console.error(
+                "Archive Policy Error:",
+                error
+            );
+
+            throw error;
+        }
     },
 
-    // ============================================================
+
+    // ========================================================
     // DELETE POLICY
-    // ============================================================
+    // ========================================================
 
     deletePolicy: async (id) => {
-        const response = await axios.delete(
-            `${API_URL}/${id}`
-        );
+        try {
+            const response =
+                await policyAxios.delete(
+                    `/${id}`
+                );
 
-        return response.data;
+            return response.data;
+        } catch (error) {
+            console.error(
+                "Delete Policy Error:",
+                error
+            );
+
+            throw error;
+        }
     },
 
-    // ============================================================
+
+    // ========================================================
     // GET PDF AS BLOB
+    // ========================================================
     //
-    // Used by the PDF viewer.
-    // This prevents the browser from directly navigating to
-    // the API PDF endpoint.
-    // ============================================================
+    // Uses FETCH instead of Axios.
+    //
+    // This bypasses the application's global Axios
+    // interceptor.
+    //
+    // ========================================================
 
     getFileBlob: async (id) => {
-        const response = await axios.get(
-            `${API_URL}/${id}/file`,
-            {
-                responseType: "blob",
-            }
-        );
 
-        return response.data;
+        const url =
+            `${API_URL}/${id}/file`;
+
+        try {
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+
+                        credentials:
+                            "include",
+
+                        headers: {
+                            Accept:
+                                "application/pdf",
+                        },
+                    }
+                );
+
+
+            // HANDLE ERROR
+
+            if (!response.ok) {
+
+                let message =
+                    `Unable to load PDF (${response.status}).`;
+
+                try {
+                    const contentType =
+                        response.headers.get(
+                            "content-type"
+                        ) || "";
+
+                    if (
+                        contentType.includes(
+                            "application/json"
+                        )
+                    ) {
+                        const errorData =
+                            await response.json();
+
+                        message =
+                            errorData?.message ||
+                            errorData?.error ||
+                            message;
+                    }
+                } catch {
+                    // Keep default message.
+                }
+
+
+                const error =
+                    new Error(message);
+
+                error.status =
+                    response.status;
+
+                error.response = {
+                    status:
+                        response.status,
+                };
+
+                throw error;
+            }
+
+
+            // READ PDF
+
+            const blob =
+                await response.blob();
+
+
+            if (
+                !blob ||
+                blob.size === 0
+            ) {
+                throw new Error(
+                    "The policy PDF is empty."
+                );
+            }
+
+
+            return blob;
+
+        } catch (error) {
+
+            console.error(
+                "Policy PDF Request Error:",
+                error
+            );
+
+            throw error;
+        }
     },
 
-    // ============================================================
+
+    // ========================================================
     // GET PDF URL
-    // ============================================================
+    // ========================================================
 
     getFileUrl: (id) => {
         return `${API_URL}/${id}/file`;
     },
 
-    // ============================================================
-    // GET DOWNLOAD URL
-    // ============================================================
+
+    // ========================================================
+    // DOWNLOAD URL
+    // ========================================================
 
     getDownloadUrl: (id) => {
         return `${API_URL}/${id}/download`;
     },
 
-    // ============================================================
+
+    // ========================================================
     // ACKNOWLEDGE POLICY
+    // ========================================================
     //
-    // POST:
-    // /api/Policy/{id}/acknowledge
+    // POST remains authenticated.
     //
-    // The backend determines the logged-in employee.
-    // ============================================================
+    // The backend needs to know which employee is
+    // acknowledging the policy.
+    //
+    // React does NOT send EmployeeId.
+    //
+    // The backend gets EmployeeId from the JWT.
+    //
+    // ========================================================
 
     acknowledgePolicy: async (id) => {
-        const response = await axios.post(
-            `${API_URL}/${id}/acknowledge`
-        );
 
-        return response.data;
+        const url =
+            `${API_URL}/${id}/acknowledge`;
+
+        try {
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "POST",
+
+                        credentials:
+                            "include",
+
+                        headers: {
+                            Accept:
+                                "application/json",
+                        },
+                    }
+                );
+
+
+            // HANDLE ERROR
+
+            if (!response.ok) {
+
+                let message =
+                    `Unable to acknowledge policy (${response.status}).`;
+
+                let errorData =
+                    null;
+
+
+                try {
+
+                    const contentType =
+                        response.headers.get(
+                            "content-type"
+                        ) || "";
+
+
+                    if (
+                        contentType.includes(
+                            "application/json"
+                        )
+                    ) {
+                        errorData =
+                            await response.json();
+
+                        message =
+                            errorData?.message ||
+                            errorData?.error ||
+                            message;
+                    }
+
+                } catch {
+                    // Keep default message.
+                }
+
+
+                const error =
+                    new Error(message);
+
+                error.status =
+                    response.status;
+
+                error.response = {
+                    status:
+                        response.status,
+
+                    data:
+                        errorData,
+                };
+
+                throw error;
+            }
+
+
+            // RESPONSE
+
+            const data =
+                await response.json();
+
+            return data;
+
+        } catch (error) {
+
+            console.error(
+                "Policy Acknowledgement Error:",
+                error
+            );
+
+            // IMPORTANT:
+            // Do NOT logout here.
+            //
+            // Return the error to CompanyPolicy.jsx.
+
+            throw error;
+        }
     },
 
-    // ============================================================
-    // CHECK POLICY ACKNOWLEDGEMENT
+
+    // ========================================================
+    // CHECK ACKNOWLEDGEMENT
+    // ========================================================
     //
-    // GET:
-    // /api/Policy/{id}/acknowledgement
+    // IMPORTANT:
     //
-    // Expected response:
+    // The backend GET endpoint is now anonymous.
     //
-    // {
-    //     success: true,
-    //     acknowledged: true
-    // }
-    // ============================================================
+    // It checks PolicyAcknowledgements directly.
+    //
+    // Example:
+    //
+    // GET /api/Policy/5/acknowledgement
+    //
+    // Database:
+    //
+    // PolicyId = 5
+    //
+    // Record exists:
+    //     acknowledged = true
+    //
+    // Record doesn't exist:
+    //     acknowledged = false
+    //
+    // No JWT is required.
+    //
+    // ========================================================
 
     getAcknowledgement: async (id) => {
-        const response = await axios.get(
-            `${API_URL}/${id}/acknowledgement`
-        );
 
-        return response.data;
+        const url =
+            `${API_URL}/${id}/acknowledgement`;
+
+        try {
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+
+                        // Keep credentials enabled.
+                        // It does not hurt the anonymous
+                        // endpoint and keeps this compatible
+                        // with the application environment.
+                        credentials:
+                            "include",
+
+                        headers: {
+                            Accept:
+                                "application/json",
+                        },
+                    }
+                );
+
+
+            // HANDLE ERROR
+
+            if (!response.ok) {
+
+                let message =
+                    `Unable to check policy acknowledgement (${response.status}).`;
+
+                let errorData =
+                    null;
+
+
+                try {
+
+                    const contentType =
+                        response.headers.get(
+                            "content-type"
+                        ) || "";
+
+
+                    if (
+                        contentType.includes(
+                            "application/json"
+                        )
+                    ) {
+                        errorData =
+                            await response.json();
+
+                        message =
+                            errorData?.message ||
+                            errorData?.error ||
+                            message;
+                    }
+
+                } catch {
+                    // Keep default message.
+                }
+
+
+                const error =
+                    new Error(message);
+
+                error.status =
+                    response.status;
+
+                error.response = {
+                    status:
+                        response.status,
+
+                    data:
+                        errorData,
+                };
+
+                throw error;
+            }
+
+
+            // RESPONSE
+
+            const data =
+                await response.json();
+
+
+            // Always return the backend response.
+            //
+            // Expected:
+            //
+            // {
+            //     success: true,
+            //     acknowledged: true
+            // }
+
+            return data;
+
+        } catch (error) {
+
+            console.error(
+                "Policy Acknowledgement Check Error:",
+                error
+            );
+
+            throw error;
+        }
     },
 };
+
+
+// ============================================================
+// EXPORT
+// ============================================================
 
 export default PolicyService;
