@@ -80,6 +80,10 @@ const MyReimbursements = () => {
     const [submitting, setSubmitting] =
         useState(false);
 
+    // Error shown only inside the New Reimbursement dialog
+    const [formError, setFormError] =
+        useState("");
+
     const [form, setForm] = useState({
         category: "",
         amount: "",
@@ -626,7 +630,7 @@ const MyReimbursements = () => {
 
                 setSubmitting(true);
 
-                setError("");
+                setFormError("");
 
                 // ------------------------------------------------
                 // EMPLOYEE ID
@@ -699,43 +703,40 @@ const MyReimbursements = () => {
                 // RECEIPT
                 // ------------------------------------------------
 
-                if (
-                    form.receipt
-                ) {
+// ------------------------------------------------
+// RECEIPT - REQUIRED
+// ------------------------------------------------
 
-                    const fileName =
-                        form.receipt.name ||
-                        "";
+if (!form.receipt) {
+    throw new Error(
+        "Please upload a PDF receipt before submitting the reimbursement."
+    );
+}
 
-                    const isPdf =
-                        fileName
-                            .toLowerCase()
-                            .endsWith(
-                                ".pdf"
-                            );
+const fileName =
+    form.receipt.name || "";
 
-                    if (!isPdf) {
+const isPdf =
+    fileName
+        .toLowerCase()
+        .endsWith(".pdf");
 
-                        throw new Error(
-                            "Only PDF files are allowed for reimbursement receipts."
-                        );
-                    }
+if (!isPdf) {
+    throw new Error(
+        "Only PDF files are allowed for reimbursement receipts."
+    );
+}
 
-                    const maxSize =
-                        10 *
-                        1024 *
-                        1024;
+const maxSize =
+    10 *
+    1024 *
+    1024;
 
-                    if (
-                        form.receipt.size >
-                        maxSize
-                    ) {
-
-                        throw new Error(
-                            "PDF file size cannot exceed 10 MB."
-                        );
-                    }
-                }
+if (form.receipt.size > maxSize) {
+    throw new Error(
+        "PDF file size cannot exceed 10 MB."
+    );
+}
 
                 // ------------------------------------------------
                 // REQUEST DATA
@@ -774,8 +775,7 @@ const MyReimbursements = () => {
                         new Date().toISOString(),
 
                     receiptFile:
-                        form.receipt ||
-                        null,
+                        form.receipt,
                 };
 
                 console.log(
@@ -795,6 +795,7 @@ const MyReimbursements = () => {
                 // SUCCESS
                 // ------------------------------------------------
 
+                setFormError("");
                 setOpenDialog(false);
 
                 setForm({
@@ -816,7 +817,7 @@ const MyReimbursements = () => {
                     err
                 );
 
-                setError(
+                setFormError(
                     err.message ||
                     "Unable to create reimbursement."
                 );
@@ -1140,9 +1141,10 @@ const MyReimbursements = () => {
                     startIcon={
                         <AddRoundedIcon />
                     }
-                    onClick={() =>
-                        setOpenDialog(true)
-                    }
+                    onClick={() => {
+                        setFormError("");
+                        setOpenDialog(true);
+                    }}
                     className="new-reimbursement-button"
                 >
                     New Reimbursement
@@ -1503,6 +1505,7 @@ const MyReimbursements = () => {
                 onClose={() => {
 
                     if (!submitting) {
+                        setFormError("");
                         setOpenDialog(false);
                     }
 
@@ -1516,6 +1519,19 @@ const MyReimbursements = () => {
                 </DialogTitle>
 
                 <DialogContent>
+
+                    {formError && (
+                        <Alert
+                            severity="error"
+                            onClose={() => setFormError("")}
+                            sx={{
+                                mb: 2,
+                                borderRadius: "10px",
+                            }}
+                        >
+                            {formError}
+                        </Alert>
+                    )}
 
                     <Box
                         className="my-reimbursement-form"
@@ -1591,10 +1607,11 @@ const MyReimbursements = () => {
 
                             {form.receipt
                                 ? form.receipt.name
-                                : "Upload Receipt"}
+                                : "Upload Receipt *"}
 
                             <input
                                 hidden
+                                required
                                 type="file"
                                 name="receipt"
                                 accept=".pdf,application/pdf"
@@ -1612,9 +1629,12 @@ const MyReimbursements = () => {
                 <DialogActions>
 
                     <Button
-                        onClick={() =>
-                            setOpenDialog(false)
-                        }
+                        onClick={() => {
+                            if (!submitting) {
+                                setFormError("");
+                                setOpenDialog(false);
+                            }
+                        }}
                         disabled={submitting}
                     >
                         Cancel
