@@ -103,6 +103,89 @@ const getRoleName = (role) => {
   );
 };
 
+// ----------------------------------------------------------
+// Employee-only automatic permission defaults
+// ----------------------------------------------------------
+
+const isEmployeeRole = (role) =>
+  getRoleName(role).trim().toLowerCase() === "employee";
+
+const EMPLOYEE_DEFAULT_SIDEBAR_ROUTES = [
+  "/attendance",
+  "/leave",
+  "/payroll",
+  "/tickets",
+  "/settings",
+  "/reimbursement",
+  "/reimbursements",
+];
+
+const EMPLOYEE_DEFAULT_SIDEBAR_NAMES = [
+  "attendance",
+  "leave",
+  "payroll",
+  "tickets",
+  "settings",
+  "reimbursement",
+  "reimbursements",
+];
+
+const isEmployeeDefaultSidebarPage = (permission) => {
+  if (!permission) return false;
+
+  const pageName = getPageName(permission)
+    .trim()
+    .toLowerCase();
+
+  const route = getPagePath(permission)
+    .trim()
+    .toLowerCase()
+    .replace(/\/+$/, "");
+
+  return (
+    EMPLOYEE_DEFAULT_SIDEBAR_ROUTES.includes(route) ||
+    EMPLOYEE_DEFAULT_SIDEBAR_NAMES.includes(pageName)
+  );
+};
+
+const getEmployeeDefaultSidebarPermissions = (permissionList) => {
+  if (!Array.isArray(permissionList)) return [];
+
+  return permissionList.filter((permission) =>
+    isEmployeeDefaultSidebarPage(permission),
+  );
+};
+
+const getDefaultPermissionActions = (permission, role) => {
+  if (!isEmployeeRole(role)) {
+    return null;
+  }
+
+  if (isPersonalPage(permission)) {
+    return {
+      view: true,
+      create: true,
+      edit: true,
+      delete: true,
+      approve: true,
+      export: true,
+    };
+  }
+
+  if (isEmployeeDefaultSidebarPage(permission)) {
+    return {
+      view: true,
+      create: false,
+      edit: false,
+      delete: false,
+      approve: false,
+      export: false,
+    };
+  }
+
+  return null;
+};
+
 const getPermissionName = (permission) => {
   return String(
     firstValue(
@@ -793,8 +876,19 @@ export default function Permissions() {
         });
 
 // ----------------------------------------------------------
-// DEFAULT VIEW ACCESS FOR PERSONAL / "MY" PAGES
+// EMPLOYEE-ONLY DEFAULT PERMISSIONS
 // ----------------------------------------------------------
+// Employee:
+//   Main Sidebar pages -> View only
+//   My / personal pages -> all six actions
+//
+// Other roles:
+//   No automatic defaults. Existing DB permissions are respected.
+// ----------------------------------------------------------
+
+const defaultPermissionActionsForRole =
+  (permission) =>
+    getDefaultPermissionActions(permission, selectedRole);
 
 permissions.forEach((permission) => {
   const permissionId = getId(permission);
@@ -804,78 +898,71 @@ permissions.forEach((permission) => {
   }
 
   const id = normalizeId(permissionId);
+  const defaultActions = defaultPermissionActionsForRole(permission);
 
-  // Personal / self-service pages always get View access.
-  // Existing Create/Edit/Delete/Approve/Export values are preserved.
-  if (isPersonalPage(permission)) {
+  if (defaultActions) {
     loadedActions[id] = {
       ...(loadedActions[id] || {}),
-      view: true,
-      create: loadedActions[id]?.create ?? false,
-      edit: loadedActions[id]?.edit ?? false,
-      delete: loadedActions[id]?.delete ?? false,
-      approve: loadedActions[id]?.approve ?? false,
-      export: loadedActions[id]?.export ?? false,
+      ...defaultActions,
     };
 
     assignedIds.add(id);
   }
 });
 
+// For Employee, only the explicitly requested main Sidebar pages are
+// selected automatically. Remove any old/stale DB selection for other
+// main Sidebar pages (for example Employees) from the UI state.
+// This does not affect personal/My pages, which are handled above.
+if (isEmployeeRole(selectedRole)) {
+  permissions.forEach((permission) => {
+    const permissionId = getId(permission);
 
+    if (permissionId === null || permissionId === undefined) {
+      return;
+    }
 
+    const id = normalizeId(permissionId);
 
-// ----------------------------------------------------------
-// DEFAULT MAIN SIDEBAR PAGES FOR EVERY ROLE
-// ----------------------------------------------------------
+    // Employee automatic access is STRICTLY limited to:
+    // 1. My / personal pages -> all 6 permissions
+    // 2. Attendance, Leave, Payroll, Tickets, Settings, Reimbursement -> View only
+    // Everything else (including Approval and Employees) must NOT be selected
+    // automatically, even if an old DB record exists.
+    if (isPersonalPage(permission)) {
+      loadedActions[id] = {
+        view: true,
+        create: true,
+        edit: true,
+        delete: true,
+        approve: true,
+        export: true,
+      };
+      assignedIds.add(id);
+      return;
+    }
 
-const defaultMainPermissions =
-  getDefaultMainPermissions(permissions);
+    if (isEmployeeDefaultSidebarPage(permission)) {
+      loadedActions[id] = {
+        view: true,
+        create: false,
+        edit: false,
+        delete: false,
+        approve: false,
+        export: false,
+      };
+      assignedIds.add(id);
+      return;
+    }
 
-defaultMainPermissions.forEach((permission) => {
-  const permissionId = normalizeId(getId(permission));
+    // Clear every other page from the Employee UI state.
+    delete loadedActions[id];
+    assignedIds.delete(id);
+  });
 
-  loadedActions[permissionId] = {
-    view: true,
-    create: true,
-    edit: true,
-    delete: true,
-    approve: true,
-    export: true,
-  };
-
-  assignedIds.add(permissionId);
-});
-
-
-// DEFAULT LANDING PAGE FOR EVERY ROLE
-// ----------------------------------------------------------
-// Resolve it from the existing Sidebar menu and give it all six
-// actions plus Login access. This is applied after DB values so
-// every role receives the same default landing-page selection.
-
-const defaultLandingPermission =
-  getDefaultLandingPermission(permissions);
-
-if (defaultLandingPermission) {
-  const defaultLandingId = normalizeId(
-    getId(defaultLandingPermission),
-  );
-
-  loadedActions[defaultLandingId] = {
-    view: true,
-    create: true,
-    edit: true,
-    delete: true,
-    approve: true,
-    export: true,
-  };
-
-  assignedIds.add(defaultLandingId);
-
-  loadedLoginPages[
-    getModuleName(defaultLandingPermission)
-  ] = defaultLandingId;
+  // Keep the existing Login Page radio-button selection.
+  // Login-page selection is independent from the automatic Employee
+  // sidebar defaults. Do not clear an existing login-page assignment here.
 }
 
 setPermissionActions(loadedActions);
@@ -1237,21 +1324,20 @@ const modules = useMemo(() => {
     const permissionId = normalizeId(permission.id);
     const savedActions = permissionActions[permissionId] || {};
 
-    if (isDefaultMainPermission(permission.raw, permissions)) {
+    const defaultActions = getDefaultPermissionActions(
+      permission.raw,
+      selectedRole,
+    );
+
+    if (defaultActions) {
       return {
-        view: true,
-        create: true,
-        edit: true,
-        delete: true,
-        approve: true,
-        export: true,
+        ...defaultActions,
+        ...savedActions,
       };
     }
 
     return {
-      view: isPersonalPage(permission.raw)
-        ? true
-        : Boolean(savedActions.view),
+      view: Boolean(savedActions.view),
       create: Boolean(savedActions.create),
       edit: Boolean(savedActions.edit),
       delete: Boolean(savedActions.delete),
@@ -1276,16 +1362,6 @@ const modules = useMemo(() => {
 
     const shouldSelectAll = !pageAllSelected;
     const personalPage = isPersonalPage(permission.raw);
-    const defaultMainPage = isDefaultMainPermission(
-      permission.raw,
-      permissions,
-    );
-
-    // Preserve the existing protected default-main-page behavior.
-    if (defaultMainPage) {
-      return;
-    }
-
     const updatedActions = {
       view: shouldSelectAll || personalPage,
       create: shouldSelectAll,
@@ -1368,31 +1444,33 @@ const modules = useMemo(() => {
       pages.forEach((page) => {
         const id = normalizeId(page.id);
         const personalPage = isPersonalPage(page.raw);
-        const defaultMainPage = isDefaultMainPermission(
+        const defaultActions = getDefaultPermissionActions(
           page.raw,
-          permissions,
+          selectedRole,
         );
 
-        if (defaultMainPage) {
-          next[id] = {
-            view: true,
-            create: true,
-            edit: true,
-            delete: true,
-            approve: true,
-            export: true,
-          };
-          return;
-        }
-
-        next[id] = {
-          view: shouldSelectAll || personalPage,
-          create: shouldSelectAll,
-          edit: shouldSelectAll,
-          delete: shouldSelectAll,
-          approve: shouldSelectAll,
-          export: shouldSelectAll,
-        };
+        next[id] = defaultActions
+          ? {
+              ...defaultActions,
+              ...(shouldSelectAll
+                ? {
+                    view: true,
+                    create: true,
+                    edit: true,
+                    delete: true,
+                    approve: true,
+                    export: true,
+                  }
+                : {}),
+            }
+          : {
+              view: shouldSelectAll || personalPage,
+              create: shouldSelectAll,
+              edit: shouldSelectAll,
+              delete: shouldSelectAll,
+              approve: shouldSelectAll,
+              export: shouldSelectAll,
+            };
       });
 
       return next;
@@ -1404,12 +1482,16 @@ const modules = useMemo(() => {
       pages.forEach((page) => {
         const id = normalizeId(page.id);
         const personalPage = isPersonalPage(page.raw);
-        const defaultMainPage = isDefaultMainPermission(
+        const defaultActions = getDefaultPermissionActions(
           page.raw,
-          permissions,
+          selectedRole,
         );
 
-        if (shouldSelectAll || personalPage || defaultMainPage) {
+        if (
+          shouldSelectAll ||
+          personalPage ||
+          (defaultActions && Object.values(defaultActions).some(Boolean))
+        ) {
           next.add(id);
         } else {
           next.delete(id);
@@ -1629,22 +1711,17 @@ const modules = useMemo(() => {
         const permissionId =
           normalizeId(permission.id);
 
-          const actions =
-          isDefaultMainPermission(
+          const defaultActions = getDefaultPermissionActions(
             permission.raw,
-            permissions,
-          )
+            selectedRole,
+          );
+
+          const actions = defaultActions
             ? {
-                view: true,
-                create: true,
-                edit: true,
-                delete: true,
-                approve: true,
-                export: true,
+                ...defaultActions,
+                ...(permissionActions[permissionId] || {}),
               }
-            : permissionActions[
-                permissionId
-              ] || {
+            : permissionActions[permissionId] || {
                 view: false,
                 create: false,
                 edit: false,
@@ -1828,49 +1905,24 @@ const modules = useMemo(() => {
         }
       });
 
-      // Re-apply the dynamic default main sidebar pages after reload.
-      const reloadedDefaultMainPermissions =
-        getDefaultMainPermissions(permissions);
+      // Re-apply Employee-only defaults after reload.
+      permissions.forEach((permission) => {
+        const defaultActions = getDefaultPermissionActions(
+          permission,
+          selectedRole,
+        );
 
-      reloadedDefaultMainPermissions.forEach((permission) => {
+        if (!defaultActions) return;
+
         const id = normalizeId(getId(permission));
 
         updatedActions[id] = {
-          view: true,
-          create: true,
-          edit: true,
-          delete: true,
-          approve: true,
-          export: true,
+          ...defaultActions,
+          ...(updatedActions[id] || {}),
         };
 
         updatedIds.add(id);
       });
-
-      // Re-apply the dynamic default landing page after reload.
-      const reloadedDefaultLanding =
-        getDefaultLandingPermission(permissions);
-
-      if (reloadedDefaultLanding) {
-        const defaultLandingId = normalizeId(
-          getId(reloadedDefaultLanding),
-        );
-
-        updatedActions[defaultLandingId] = {
-          view: true,
-          create: true,
-          edit: true,
-          delete: true,
-          approve: true,
-          export: true,
-        };
-
-        updatedIds.add(defaultLandingId);
-
-        updatedLoginPages[
-          getModuleName(reloadedDefaultLanding)
-        ] = defaultLandingId;
-      }
 
       setPermissionActions(
         updatedActions,
@@ -1994,49 +2046,24 @@ const modules = useMemo(() => {
       }
     });
 
-    // Re-apply the dynamic default main sidebar pages on Cancel as well.
-    const restoredDefaultMainPermissions =
-      getDefaultMainPermissions(permissions);
+    // Re-apply Employee-only defaults on Cancel as well.
+    permissions.forEach((permission) => {
+      const defaultActions = getDefaultPermissionActions(
+        permission,
+        selectedRole,
+      );
 
-    restoredDefaultMainPermissions.forEach((permission) => {
+      if (!defaultActions) return;
+
       const id = normalizeId(getId(permission));
 
       restoredActions[id] = {
-        view: true,
-        create: true,
-        edit: true,
-        delete: true,
-        approve: true,
-        export: true,
+        ...defaultActions,
+        ...(restoredActions[id] || {}),
       };
 
       assignedIds.add(id);
     });
-
-    // Re-apply the dynamic default landing page on Cancel as well.
-    const restoredDefaultLanding =
-      getDefaultLandingPermission(permissions);
-
-    if (restoredDefaultLanding) {
-      const defaultLandingId = normalizeId(
-        getId(restoredDefaultLanding),
-      );
-
-      restoredActions[defaultLandingId] = {
-        view: true,
-        create: true,
-        edit: true,
-        delete: true,
-        approve: true,
-        export: true,
-      };
-
-      assignedIds.add(defaultLandingId);
-
-      restoredLoginPages[
-        getModuleName(restoredDefaultLanding)
-      ] = defaultLandingId;
-    }
 
     setPermissionActions(
       restoredActions,
@@ -3258,12 +3285,6 @@ const modules = useMemo(() => {
                                               type="checkbox"
                                               className="permission-checkbox"
                                               checked={pageAllSelected}
-                                              disabled={
-                                                isDefaultMainPermission(
-                                                  permission.raw,
-                                                  permissions,
-                                                )
-                                              }
                                               ref={(element) => {
                                                 if (element) {
                                                   element.indeterminate =
