@@ -104,75 +104,94 @@ const getRoleName = (role) => {
 };
 
 // ----------------------------------------------------------
-// Employee-only automatic permission defaults
+// DEFAULT PERMISSIONS FOR ALL ROLES
+// ----------------------------------------------------------
+// Main Sidebar pages are identified from the actual Sidebar `menu`.
+// Only the main Sidebar page gets View by default.
+// Child/detail pages do NOT become default permissions.
+//
+// Every My / personal page gets View by default and its Login radio
+// is selected for its module.
 // ----------------------------------------------------------
 
-const isEmployeeRole = (role) =>
-  getRoleName(role).trim().toLowerCase() === "employee";
-
-const EMPLOYEE_DEFAULT_SIDEBAR_ROUTES = [
-  "/attendance",
-  "/leave",
-  "/payroll",
-  "/tickets",
-  "/settings",
-  "/reimbursement",
-  "/reimbursements",
-];
-
-const EMPLOYEE_DEFAULT_SIDEBAR_NAMES = [
-  "attendance",
-  "leave",
-  "payroll",
-  "tickets",
-  "settings",
-  "reimbursement",
-  "reimbursements",
-];
-
-const isEmployeeDefaultSidebarPage = (permission) => {
-  if (!permission) return false;
-
-  const pageName = getPageName(permission)
-    .trim()
-    .toLowerCase();
-
-  const route = getPagePath(permission)
+const normalizePermissionValue = (value) =>
+  String(value || "")
     .trim()
     .toLowerCase()
     .replace(/\/+$/, "");
 
+// These are the ONLY main Sidebar modules that receive the default
+// View permission for every role.
+// Do not add Employee, Approval, Bill, Document, Reports, etc. here.
+const DEFAULT_SIDEBAR_NAMES = new Set([
+  "attendance",
+  "leave",
+  "payroll",
+  "ticket",
+  "tickets",
+  "policy",
+  "reimbursements",
+  "settings",
+  "dashboard",
+]);
+
+const DEFAULT_SIDEBAR_ROUTES = new Set([
+  "/attendance",
+  "/leave",
+  "/payroll",
+  "/ticket",
+  "/tickets",
+  "/policy",
+  "/reimbursement",
+  "/settings",
+  "/dashboard",
+]);
+
+const isDefaultSidebarPage = (permission) => {
+  if (!permission) return false;
+
+  const permissionPath = normalizePermissionValue(
+    getPagePath(permission),
+  );
+
+  const permissionPageName = normalizePermissionValue(
+    getPageName(permission),
+  );
+
+  // ONLY these seven exact Sidebar pages are defaults for every role.
+  // Child pages such as Dashboard, Logs, Holiday, Employees, Reports,
+  // Approval, Bill, Document, etc. are NOT defaults.
   return (
-    EMPLOYEE_DEFAULT_SIDEBAR_ROUTES.includes(route) ||
-    EMPLOYEE_DEFAULT_SIDEBAR_NAMES.includes(pageName)
+    DEFAULT_SIDEBAR_NAMES.has(permissionPageName) ||
+    DEFAULT_SIDEBAR_ROUTES.has(permissionPath)
   );
 };
 
-const getEmployeeDefaultSidebarPermissions = (permissionList) => {
-  if (!Array.isArray(permissionList)) return [];
-
-  return permissionList.filter((permission) =>
-    isEmployeeDefaultSidebarPage(permission),
-  );
+// Every personal/self-service page gets its own default login radio.
+// Examples: My Dashboard, My Attendance, My Leave, My Payroll, etc.
+const isDefaultLoginPage = (permission) => {
+  return isPersonalPage(permission);
 };
 
-const getDefaultPermissionActions = (permission, role) => {
-  if (!isEmployeeRole(role)) {
-    return null;
-  }
+const getDefaultPermissionActions = (permission) => {
+  if (!permission) return null;
 
-  if (isPersonalPage(permission)) {
+  // My / personal pages:
+  // View ON, all other actions OFF.
+  if (isDefaultLoginPage(permission)) {
     return {
       view: true,
-      create: true,
-      edit: true,
-      delete: true,
-      approve: true,
-      export: true,
+      create: false,
+      edit: false,
+      delete: false,
+      approve: false,
+      export: false,
     };
   }
 
-  if (isEmployeeDefaultSidebarPage(permission)) {
+  // Main Sidebar pages:
+  // View ON, all other actions OFF.
+  if (isDefaultSidebarPage(permission)) {
     return {
       view: true,
       create: false,
@@ -805,6 +824,15 @@ export default function Permissions() {
         return;
       }
 
+      // The old database contains broad/legacy permissions. For each role,
+      // the first load after this change must start from the requested
+      // defaults. After the user saves once, normal saved permissions are
+      // loaded on subsequent refreshes.
+      const defaultsInitializedKey =
+        `permissionDefaultsInitialized-v2-${normalizeId(roleId)}`;
+      const defaultsAlreadyInitialized =
+        localStorage.getItem(defaultsInitializedKey) === "true";
+
       try {
         setLoadingRolePermissions(true);
         setError("");
@@ -825,7 +853,11 @@ export default function Permissions() {
         const loadedActions = {};
         const loadedLoginPages = {};
 
-        data.forEach((item) => {
+        // Do not hydrate the UI from legacy DB permissions on the first
+        // initialization of a role. They will be removed when the user
+        // saves the requested default state.
+        if (defaultsAlreadyInitialized) {
+          data.forEach((item) => {
           const permissionId = firstValue(
             item,
             [
@@ -896,22 +928,16 @@ export default function Permissions() {
           if (Object.values(actions).some(Boolean)) {
             assignedIds.add(id);
           }
-        });
+          });
+        }
 
 // ----------------------------------------------------------
-// EMPLOYEE-ONLY DEFAULT PERMISSIONS
+// DEFAULT PERMISSIONS FOR ALL ROLES
 // ----------------------------------------------------------
-// Employee:
-//   Main Sidebar pages -> View only
-//   My / personal pages -> all six actions
-//
-// Other roles:
-//   No automatic defaults. Existing DB permissions are respected.
+// Attendance, Leave, Payroll, Ticket, Policy, Reimbursement and
+// Settings always get View permission.
+// Every personal/My page gets a default login radio.
 // ----------------------------------------------------------
-
-const defaultPermissionActionsForRole =
-  (permission) =>
-    getDefaultPermissionActions(permission, selectedRole);
 
 permissions.forEach((permission) => {
   const permissionId = getId(permission);
@@ -921,9 +947,10 @@ permissions.forEach((permission) => {
   }
 
   const id = normalizeId(permissionId);
-  const defaultActions = defaultPermissionActionsForRole(permission);
+  const defaultActions = getDefaultPermissionActions(permission);
 
   if (defaultActions) {
+    // Force the requested default state on refresh for every role.
     loadedActions[id] = {
       ...(loadedActions[id] || {}),
       ...defaultActions,
@@ -933,12 +960,52 @@ permissions.forEach((permission) => {
   }
 });
 
-// IMPORTANT: Keep permissions returned by the database.
-// Employee defaults are applied above, but we must NOT delete other
-// permissions that were explicitly saved for this role. This makes
-// newly-added modules/pages persistent after refresh as long as their
-// Permission records exist in the Permission API and the RolePermission
-// assignment has been saved.
+// ----------------------------------------------------------
+// DEFAULT LOGIN RADIOS FOR ALL ROLES
+// ----------------------------------------------------------
+// Every personal/self-service page gets its radio selected.
+// Examples: My Dashboard, My Attendance, My Leave, My Payroll, etc.
+// Non-personal pages never receive a default login radio.
+// ----------------------------------------------------------
+
+// Start from the default personal pages instead of preserving an
+// unrelated saved login page. This guarantees the requested state
+// after a browser refresh for every role.
+Object.keys(loadedLoginPages).forEach((moduleName) => {
+  delete loadedLoginPages[moduleName];
+});
+
+permissions.forEach((permission) => {
+  if (!isDefaultLoginPage(permission)) {
+    return;
+  }
+
+  const permissionId = getId(permission);
+
+  if (permissionId === null || permissionId === undefined) {
+    return;
+  }
+
+  const id = normalizeId(permissionId);
+  const moduleName = getModuleName(permission);
+
+  // Personal pages need View permission so their radio can be selected.
+  loadedActions[id] = {
+    ...(loadedActions[id] || {}),
+    view: true,
+  };
+
+  assignedIds.add(id);
+
+  // One login radio per module.
+  // If the module has a My page, that page is selected.
+  if (!loadedLoginPages[moduleName]) {
+    loadedLoginPages[moduleName] = id;
+  }
+});
+
+// Keep saved custom permissions from the database.
+// The requested Sidebar/My-page defaults are applied on top of them.
 
 setPermissionActions(loadedActions);
         setSelectedPermissions(assignedIds);
@@ -1207,71 +1274,42 @@ const modules = useMemo(() => {
   ) => {
     if (!permission?.id) return;
 
-    const permissionId =
-      normalizeId(permission.id);
+    const permissionId = normalizeId(permission.id);
 
     setPermissionActions((previous) => {
       const current =
         previous[permissionId] ||
-        (isPersonalPage(permission.raw)
-          ? {
-              view: true,
-              create: false,
-              edit: false,
-              delete: false,
-              approve: false,
-              export: false,
-            }
-          : {
-              view: false,
-              create: false,
-              edit: false,
-              delete: false,
-              approve: false,
-              export: false,
-            });
+        getDefaultPermissionActions(permission.raw) || {
+          view: false,
+          create: false,
+          edit: false,
+          delete: false,
+          approve: false,
+          export: false,
+        };
 
       const updated = {
         ...current,
-        [action]: !current[action],
+        [action]: !Boolean(current[action]),
       };
-
-      if (action === "view" && !updated.view) {
-        const moduleName =
-          permission.module || "HRMS";
-
-        if (
-          isSameId(
-            loginPages[moduleName],
-            permissionId,
-          )
-        ) {
-          setLoginPages((previous) => {
-            const next = { ...previous };
-            delete next[moduleName];
-            return next;
-          });
-        }
-      }
 
       const hasAnyAction =
         Object.values(updated).some(Boolean);
 
-      setSelectedPermissions(
-        (selectedPrevious) => {
-          const next = new Set(
-            selectedPrevious,
-          );
+      setSelectedPermissions((selectedPrevious) => {
+        const next = new Set(selectedPrevious);
 
-          if (hasAnyAction) {
-            next.add(permissionId);
-          } else {
-            next.delete(permissionId);
-          }
+        if (hasAnyAction) {
+          next.add(permissionId);
+        } else {
+          next.delete(permissionId);
+        }
 
-          return next;
-        },
-      );
+        return next;
+      });
+
+      // Login radio is intentionally NOT changed here.
+      // Permission checkboxes and login radios are independent.
 
       return {
         ...previous,
@@ -1297,27 +1335,51 @@ const modules = useMemo(() => {
     }
 
     const permissionId = normalizeId(permission.id);
-    const savedActions = permissionActions[permissionId] || {};
 
+    /*
+     * If this permission already has local state, use that state.
+     * This is important so the existing Manage / checkbox UI continues
+     * to work after the user changes a permission.
+     */
+    if (
+      Object.prototype.hasOwnProperty.call(
+        permissionActions,
+        permissionId,
+      )
+    ) {
+      const savedActions = permissionActions[permissionId] || {};
+
+      return {
+        view: Boolean(savedActions.view),
+        create: Boolean(savedActions.create),
+        edit: Boolean(savedActions.edit),
+        delete: Boolean(savedActions.delete),
+        approve: Boolean(savedActions.approve),
+        export: Boolean(savedActions.export),
+      };
+    }
+
+    /*
+     * No saved/local state:
+     * apply only the requested defaults.
+     */
     const defaultActions = getDefaultPermissionActions(
       permission.raw,
-      selectedRole,
     );
 
     if (defaultActions) {
       return {
         ...defaultActions,
-        ...savedActions,
       };
     }
 
     return {
-      view: Boolean(savedActions.view),
-      create: Boolean(savedActions.create),
-      edit: Boolean(savedActions.edit),
-      delete: Boolean(savedActions.delete),
-      approve: Boolean(savedActions.approve),
-      export: Boolean(savedActions.export),
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+      approve: false,
+      export: false,
     };
   };
 
@@ -1329,22 +1391,37 @@ const modules = useMemo(() => {
     if (!permission?.id) return;
 
     const permissionId = normalizeId(permission.id);
-    const currentActions = getEffectivePermissionActions(permission);
+    const currentActions =
+      getEffectivePermissionActions(permission);
 
     const pageAllSelected = ACTIONS.every(
       (action) => Boolean(currentActions[action]),
     );
 
     const shouldSelectAll = !pageAllSelected;
-    const personalPage = isPersonalPage(permission.raw);
-    const updatedActions = {
-      view: shouldSelectAll || personalPage,
-      create: shouldSelectAll,
-      edit: shouldSelectAll,
-      delete: shouldSelectAll,
-      approve: shouldSelectAll,
-      export: shouldSelectAll,
-    };
+
+    // Checking ALL gives all six actions.
+    // Unchecking ALL restores only the required default for this page:
+    // Sidebar/My page = View only; every other page = no permissions.
+    const updatedActions = shouldSelectAll
+      ? {
+          view: true,
+          create: true,
+          edit: true,
+          delete: true,
+          approve: true,
+          export: true,
+        }
+      : (
+          getDefaultPermissionActions(permission.raw) || {
+            view: false,
+            create: false,
+            edit: false,
+            delete: false,
+            approve: false,
+            export: false,
+          }
+        );
 
     setPermissionActions((previous) => ({
       ...previous,
@@ -1363,17 +1440,8 @@ const modules = useMemo(() => {
       return next;
     });
 
-    if (!updatedActions.view) {
-      const moduleName = permission.module || "HRMS";
-
-      if (isSameId(loginPages[moduleName], permissionId)) {
-        setLoginPages((previous) => {
-          const next = { ...previous };
-          delete next[moduleName];
-          return next;
-        });
-      }
-    }
+    // Do NOT clear loginPages here.
+    // The login radio is independent from page permissions.
   };
 
   /* ========================================================================
@@ -1398,13 +1466,15 @@ const modules = useMemo(() => {
     const pages = module.pages.filter(
       (page) =>
         page.id !== null &&
-        page.id !== undefined,
+        page.id !== undefined &&
+        page.id !== "",
     );
 
     if (pages.length === 0) return;
 
     const moduleAllSelected = pages.every((page) => {
-      const actions = getEffectivePermissionActions(page);
+      const actions =
+        getEffectivePermissionActions(page);
 
       return ACTIONS.every(
         (action) => Boolean(actions[action]),
@@ -1414,38 +1484,32 @@ const modules = useMemo(() => {
     const shouldSelectAll = !moduleAllSelected;
 
     setPermissionActions((previous) => {
-      const next = { ...previous };
+      const next = {
+        ...previous,
+      };
 
       pages.forEach((page) => {
         const id = normalizeId(page.id);
-        const personalPage = isPersonalPage(page.raw);
-        const defaultActions = getDefaultPermissionActions(
-          page.raw,
-          selectedRole,
-        );
 
-        next[id] = defaultActions
+        next[id] = shouldSelectAll
           ? {
-              ...defaultActions,
-              ...(shouldSelectAll
-                ? {
-                    view: true,
-                    create: true,
-                    edit: true,
-                    delete: true,
-                    approve: true,
-                    export: true,
-                  }
-                : {}),
+              view: true,
+              create: true,
+              edit: true,
+              delete: true,
+              approve: true,
+              export: true,
             }
-          : {
-              view: shouldSelectAll || personalPage,
-              create: shouldSelectAll,
-              edit: shouldSelectAll,
-              delete: shouldSelectAll,
-              approve: shouldSelectAll,
-              export: shouldSelectAll,
-            };
+          : (
+              getDefaultPermissionActions(page.raw) || {
+                view: false,
+                create: false,
+                edit: false,
+                delete: false,
+                approve: false,
+                export: false,
+              }
+            );
       });
 
       return next;
@@ -1456,17 +1520,15 @@ const modules = useMemo(() => {
 
       pages.forEach((page) => {
         const id = normalizeId(page.id);
-        const personalPage = isPersonalPage(page.raw);
-        const defaultActions = getDefaultPermissionActions(
-          page.raw,
-          selectedRole,
-        );
 
-        if (
+        const defaultActions =
+          getDefaultPermissionActions(page.raw);
+
+        const shouldRemainSelected =
           shouldSelectAll ||
-          personalPage ||
-          (defaultActions && Object.values(defaultActions).some(Boolean))
-        ) {
+          Boolean(defaultActions && Object.values(defaultActions).some(Boolean));
+
+        if (shouldRemainSelected) {
           next.add(id);
         } else {
           next.delete(id);
@@ -1476,17 +1538,8 @@ const modules = useMemo(() => {
       return next;
     });
 
-    if (!shouldSelectAll) {
-      const moduleName = module.moduleName;
-
-      if (loginPages[moduleName]) {
-        setLoginPages((previous) => {
-          const next = { ...previous };
-          delete next[moduleName];
-          return next;
-        });
-      }
-    }
+    // Do NOT clear loginPages.
+    // Module ALL controls permissions only.
   };
 
   /* ========================================================================
@@ -1512,8 +1565,7 @@ const modules = useMemo(() => {
     );
 
   const toggleAll = () => {
-    const shouldSelectAll =
-      !allSelected;
+    const shouldSelectAll = !allSelected;
 
     setPermissionActions((previous) => {
       const next = {
@@ -1521,28 +1573,62 @@ const modules = useMemo(() => {
       };
 
       allPermissionIds.forEach((id) => {
-        next[id] = {
-          view: shouldSelectAll,
-          create: shouldSelectAll,
-          edit: shouldSelectAll,
-          delete: shouldSelectAll,
-          approve: shouldSelectAll,
-          export: shouldSelectAll,
-        };
+        if (shouldSelectAll) {
+          next[id] = {
+            view: true,
+            create: true,
+            edit: true,
+            delete: true,
+            approve: true,
+            export: true,
+          };
+          return;
+        }
+
+        const permission = permissionRows.find(
+          (item) => normalizeId(item.id) === id,
+        );
+
+        next[id] =
+          getDefaultPermissionActions(permission?.raw) || {
+            view: false,
+            create: false,
+            edit: false,
+            delete: false,
+            approve: false,
+            export: false,
+          };
       });
 
       return next;
     });
 
-    setSelectedPermissions(
-      shouldSelectAll
-        ? new Set(allPermissionIds)
-        : new Set(),
-    );
+    if (shouldSelectAll) {
+      setSelectedPermissions(new Set(allPermissionIds));
+    } else {
+      // IMPORTANT:
+      // Unchecking Select All resets to the required defaults only.
+      const defaultIds = new Set();
 
-    if (!shouldSelectAll) {
-      setLoginPages({});
+      permissionRows.forEach((permission) => {
+        if (!permission?.id) return;
+
+        const defaultActions =
+          getDefaultPermissionActions(permission.raw);
+
+        if (
+          defaultActions &&
+          Object.values(defaultActions).some(Boolean)
+        ) {
+          defaultIds.add(normalizeId(permission.id));
+        }
+      });
+
+      setSelectedPermissions(defaultIds);
     }
+
+    // Do NOT clear loginPages.
+    // Select All controls permissions only.
   };
 
   /* ========================================================================
@@ -1586,32 +1672,42 @@ const handleRoleSelect = (role) => {
 };
 
 
-  const selectLoginPage = (permission) => {
-    if (!permission?.id) return;
+const selectLoginPage = (permission) => {
+  if (!permission?.id) return;
 
-    const permissionId = normalizeId(permission.id);
+  const permissionId = normalizeId(permission.id);
+  const moduleName =
+    getModuleName(permission.raw || permission) || "HRMS";
 
-    const actions =
-      getEffectivePermissionActions(permission);
+  setError("");
 
-    if (!toBoolean(actions.view)) {
-      setError(
-        "Login page must have View permission.",
-      );
-      return;
-    }
+  // Select login radio
+  setLoginPages((previous) => ({
+    ...previous,
+    [moduleName]: permissionId,
+  }));
 
-    const moduleName =
-      permission.module || "HRMS";
+  // Login page must automatically have View permission
+  setPermissionActions((previous) => ({
+    ...previous,
+    [permissionId]: {
+      ...(previous[permissionId] || {}),
+      view: true,
+      create: Boolean(previous[permissionId]?.create),
+      edit: Boolean(previous[permissionId]?.edit),
+      delete: Boolean(previous[permissionId]?.delete),
+      approve: Boolean(previous[permissionId]?.approve),
+      export: Boolean(previous[permissionId]?.export),
+    },
+  }));
 
-    setError("");
-
-    setLoginPages((previous) => ({
-      ...previous,
-      [moduleName]: permissionId,
-    }));
-  };
-
+  // Mark permission as selected
+  setSelectedPermissions((previous) => {
+    const next = new Set(previous);
+    next.add(permissionId);
+    return next;
+  });
+};
   /* ========================================================================
      Save permissions
   ======================================================================== */
@@ -1631,20 +1727,6 @@ const handleRoleSelect = (role) => {
         "Selected role does not have a valid ID.",
       );
       return;
-    }
-
-    for (const [moduleName, permissionId] of Object.entries(
-      loginPages,
-    )) {
-      const loginActions =
-        permissionActions[permissionId] || {};
-
-      if (!toBoolean(loginActions.view)) {
-        setError(
-          `Login page for ${moduleName} must have View permission.`,
-        );
-        return;
-      }
     }
 
     try {
@@ -1696,24 +1778,28 @@ const handleRoleSelect = (role) => {
         const permissionId =
           normalizeId(permission.id);
 
-          const defaultActions = getDefaultPermissionActions(
+        const savedActions =
+          permissionActions[permissionId];
+
+        const defaultActions =
+          getDefaultPermissionActions(
             permission.raw,
-            selectedRole,
           );
 
-          const actions = defaultActions
-            ? {
-                ...defaultActions,
-                ...(permissionActions[permissionId] || {}),
-              }
-            : permissionActions[permissionId] || {
-                view: false,
-                create: false,
-                edit: false,
-                delete: false,
-                approve: false,
-                export: false,
-              };
+        /*
+         * Local state is authoritative when the user has changed
+         * the permission. Otherwise use the default state.
+         */
+        const actions =
+          savedActions ||
+          defaultActions || {
+            view: false,
+            create: false,
+            edit: false,
+            delete: false,
+            approve: false,
+            export: false,
+          };
 
         const hasAnyAction =
           Object.values(actions).some(
@@ -1747,7 +1833,7 @@ const handleRoleSelect = (role) => {
         */
 
         const moduleName =
-          permission.module || "HRMS";
+          getModuleName(permission.raw || permission) || "HRMS";
 
         const isLoginPage = isSameId(
           loginPages[moduleName],
@@ -1890,11 +1976,10 @@ const handleRoleSelect = (role) => {
         }
       });
 
-      // Re-apply Employee-only defaults after reload.
+      // Re-apply the default permissions for ALL roles after reload.
       permissions.forEach((permission) => {
         const defaultActions = getDefaultPermissionActions(
           permission,
-          selectedRole,
         );
 
         if (!defaultActions) return;
@@ -1902,11 +1987,43 @@ const handleRoleSelect = (role) => {
         const id = normalizeId(getId(permission));
 
         updatedActions[id] = {
-          ...defaultActions,
           ...(updatedActions[id] || {}),
+          ...defaultActions,
         };
 
         updatedIds.add(id);
+      });
+
+      // Re-apply the personal-page radio defaults after reload.
+      // Every My-* / personal page gets its module's radio selected.
+      Object.keys(updatedLoginPages).forEach((moduleName) => {
+        delete updatedLoginPages[moduleName];
+      });
+
+      permissions.forEach((permission) => {
+        if (!isDefaultLoginPage(permission)) {
+          return;
+        }
+
+        const permissionId = getId(permission);
+
+        if (permissionId === null || permissionId === undefined) {
+          return;
+        }
+
+        const id = normalizeId(permissionId);
+        const moduleName = getModuleName(permission);
+
+        updatedActions[id] = {
+          ...(updatedActions[id] || {}),
+          view: true,
+        };
+
+        updatedIds.add(id);
+
+        if (!updatedLoginPages[moduleName]) {
+          updatedLoginPages[moduleName] = id;
+        }
       });
 
       setPermissionActions(
@@ -1919,6 +2036,13 @@ const handleRoleSelect = (role) => {
 
       setLoginPages(
         updatedLoginPages,
+      );
+
+      // From this point onward, this role has been normalized and its
+      // saved permissions can be loaded normally after refresh.
+      localStorage.setItem(
+        `permissionDefaultsInitialized-v2-${normalizeId(roleId)}`,
+        "true",
       );
 
       setSuccessMessage(
@@ -1947,6 +2071,46 @@ const handleRoleSelect = (role) => {
   ======================================================================== */
 
   const cancelChanges = () => {
+    const roleId = selectedRole ? getId(selectedRole) : null;
+    const defaultsAlreadyInitialized = roleId
+      ? localStorage.getItem(
+          `permissionDefaultsInitialized-v2-${normalizeId(roleId)}`,
+        ) === "true"
+      : false;
+
+    // Before the role is initialized/saved, Cancel must also show the
+    // requested defaults instead of resurrecting the old broad DB state.
+    if (!defaultsAlreadyInitialized) {
+      const defaultIds = new Set();
+      const defaultActions = {};
+      const defaultLoginPages = {};
+
+      permissions.forEach((permission) => {
+        const permissionId = getId(permission);
+        if (permissionId === null || permissionId === undefined) return;
+
+        const id = normalizeId(permissionId);
+        const actions = getDefaultPermissionActions(permission);
+
+        if (actions) {
+          defaultActions[id] = { ...actions };
+          defaultIds.add(id);
+        }
+
+        if (isDefaultLoginPage(permission)) {
+          const moduleName = getModuleName(permission);
+          defaultLoginPages[moduleName] = id;
+        }
+      });
+
+      setPermissionActions(defaultActions);
+      setSelectedPermissions(defaultIds);
+      setLoginPages(defaultLoginPages);
+      setSuccessMessage("");
+      setError("");
+      return;
+    }
+
     const assignedIds = new Set();
     const restoredActions = {};
     const restoredLoginPages = {};
@@ -2031,11 +2195,10 @@ const handleRoleSelect = (role) => {
       }
     });
 
-    // Re-apply Employee-only defaults on Cancel as well.
+    // Keep the same default permissions on Cancel.
     permissions.forEach((permission) => {
       const defaultActions = getDefaultPermissionActions(
         permission,
-        selectedRole,
       );
 
       if (!defaultActions) return;
@@ -2043,11 +2206,43 @@ const handleRoleSelect = (role) => {
       const id = normalizeId(getId(permission));
 
       restoredActions[id] = {
-        ...defaultActions,
         ...(restoredActions[id] || {}),
+        ...defaultActions,
       };
 
       assignedIds.add(id);
+    });
+
+    // Restore the requested default radio state on Cancel as well.
+    // Every My-* / personal page gets its module's radio selected.
+    Object.keys(restoredLoginPages).forEach((moduleName) => {
+      delete restoredLoginPages[moduleName];
+    });
+
+    permissions.forEach((permission) => {
+      if (!isDefaultLoginPage(permission)) {
+        return;
+      }
+
+      const permissionId = getId(permission);
+
+      if (permissionId === null || permissionId === undefined) {
+        return;
+      }
+
+      const id = normalizeId(permissionId);
+      const moduleName = getModuleName(permission);
+
+      restoredActions[id] = {
+        ...(restoredActions[id] || {}),
+        view: true,
+      };
+
+      assignedIds.add(id);
+
+      if (!restoredLoginPages[moduleName]) {
+        restoredLoginPages[moduleName] = id;
+      }
     });
 
     setPermissionActions(
@@ -3190,12 +3385,7 @@ const handleRoleSelect = (role) => {
                                       onChange={() =>
                                         selectLoginPage(permission)
                                       }
-                                      disabled={!accessEnabled}
-                                      title={
-                                        accessEnabled
-                                          ? "Set as login page"
-                                          : "View permission is required"
-                                      }
+                                      title="Set as login page"
                                     />
                                   </td>
 
