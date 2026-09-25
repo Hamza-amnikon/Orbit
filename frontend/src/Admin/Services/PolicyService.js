@@ -5,7 +5,7 @@ import axios from "axios";
 // ============================================================
 
 const API_URL =
-    "http://localhost:5028/api/Policy";
+    "https://sparkapi.amnikontechnologies.com:7112/api/Policy";
 
 
 // ============================================================
