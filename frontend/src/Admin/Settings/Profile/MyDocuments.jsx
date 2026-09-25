@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "./Documents.css";
+import "./MyDocuments.css";
 import { useAuth } from "../../../context/AuthContext";
 
 /* ======================================================
