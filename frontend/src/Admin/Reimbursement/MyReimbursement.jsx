@@ -53,7 +53,21 @@ import {
 
 const MyReimbursements = () => {
 
-    const { user, profile } = useAuth();
+    const { user, profile, hasPermission } = useAuth();
+
+    // ========================================================
+    // PERMISSIONS
+    // ========================================================
+
+    const canView = hasPermission(
+        "/reimbursements/my",
+        "view"
+    );
+
+    const canCreate = hasPermission(
+        "/reimbursements/my",
+        "create"
+    );
 
     // ========================================================
     // CLAIMS
@@ -396,9 +410,15 @@ const MyReimbursements = () => {
 
     useEffect(() => {
 
+        if (!canView) {
+            setLoading(false);
+            setClaims([]);
+            return;
+        }
+
         loadMyReimbursements();
 
-    }, [employeeId]);
+    }, [employeeId, canView]);
 
     // ========================================================
     // FILTER CLAIMS
@@ -625,6 +645,13 @@ const MyReimbursements = () => {
 
     const handleSubmit =
         async () => {
+
+            if (!canCreate) {
+                setFormError(
+                    "You do not have permission to create reimbursement requests."
+                );
+                return;
+            }
 
             try {
 
@@ -1100,6 +1127,37 @@ if (form.receipt.size > maxSize) {
         );
 
     // ========================================================
+    // ACCESS DENIED
+    // ========================================================
+
+    if (!canView) {
+        return (
+            <Box
+                sx={{
+                    padding: "60px",
+                    textAlign: "center",
+                }}
+            >
+                <Typography
+                    variant="h5"
+                    fontWeight={600}
+                >
+                    Access Denied
+                </Typography>
+
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 1 }}
+                >
+                    You do not have permission to access
+                    My Reimbursements.
+                </Typography>
+            </Box>
+        );
+    }
+
+    // ========================================================
     // RENDER
     // ========================================================
 
@@ -1136,19 +1194,21 @@ if (form.receipt.size > maxSize) {
 
                 </Box>
 
-                <Button
-                    variant="contained"
-                    startIcon={
-                        <AddRoundedIcon />
-                    }
-                    onClick={() => {
-                        setFormError("");
-                        setOpenDialog(true);
-                    }}
-                    className="new-reimbursement-button"
-                >
-                    New Reimbursement
-                </Button>
+                {canCreate && (
+                    <Button
+                        variant="contained"
+                        startIcon={
+                            <AddRoundedIcon />
+                        }
+                        onClick={() => {
+                            setFormError("");
+                            setOpenDialog(true);
+                        }}
+                        className="new-reimbursement-button"
+                    >
+                        New Reimbursement
+                    </Button>
+                )}
 
             </Box>
 

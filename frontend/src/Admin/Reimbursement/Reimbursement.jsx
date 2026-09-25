@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./Reimbursement.css";
-// import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import {
     Avatar,
     Alert,
@@ -117,6 +117,42 @@ const emptyForm = {
 
 function Reimbursement() {
 
+    // =====================================================
+    // PERMISSIONS
+    // =====================================================
+
+    const { hasPermission } = useAuth();
+
+    const canView = hasPermission(
+        "/reimbursement",
+        "view"
+    );
+
+    const canCreate = hasPermission(
+        "/reimbursement",
+        "create"
+    );
+
+    const canEdit = hasPermission(
+        "/reimbursement",
+        "edit"
+    );
+
+    const canDelete = hasPermission(
+        "/reimbursement",
+        "delete"
+    );
+
+    const canApprove = hasPermission(
+        "/reimbursement",
+        "approve"
+    );
+
+    const canExport = hasPermission(
+        "/reimbursement",
+        "export"
+    );
+
     const [reimbursements, setReimbursements] = useState([]);
 
     const [summary, setSummary] = useState({
@@ -148,6 +184,8 @@ function Reimbursement() {
     const [selectedReimbursement, setSelectedReimbursement] =
         useState(null);
 
+    
+    
     /*
      * This ID is set ONLY after the PDF has been
      * successfully fetched and opened.
@@ -258,6 +296,11 @@ function Reimbursement() {
 
     const loadData = async () => {
 
+        if (!canView) {
+            setLoading(false);
+            return;
+        }
+
         try {
 
             setLoading(true);
@@ -282,7 +325,7 @@ function Reimbursement() {
 
         loadData();
 
-    }, []);
+    }, [canView]);
 
 
     /* =====================================================
@@ -941,6 +984,13 @@ function Reimbursement() {
 
         event.preventDefault();
 
+        if (!canCreate) {
+            setError(
+                "You do not have permission to create reimbursement claims."
+            );
+            return;
+        }
+
         if (submitting) {
             return;
         }
@@ -1134,6 +1184,13 @@ function Reimbursement() {
         status
     ) => {
 
+        if (!canApprove) {
+            setError(
+                "You do not have permission to approve or reject reimbursement claims."
+            );
+            return;
+        }
+
         if (!selectedReimbursement) {
             return;
         }
@@ -1244,6 +1301,33 @@ function Reimbursement() {
        RENDER
     ===================================================== */
 
+    if (!canView) {
+        return (
+            <Box
+                sx={{
+                    padding: "60px",
+                    textAlign: "center",
+                }}
+            >
+                <Typography
+                    variant="h5"
+                    fontWeight={600}
+                >
+                    Access Denied
+                </Typography>
+
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 1 }}
+                >
+                    You do not have permission to access
+                    the Reimbursement page.
+                </Typography>
+            </Box>
+        );
+    }
+
     return (
 
         <Box className="reimbursement-page">
@@ -1271,18 +1355,20 @@ function Reimbursement() {
 
                 </Box>
 
-                <Button
-                    variant="contained"
-                    startIcon={
-                        <AddRoundedIcon />
-                    }
-                    className="reimbursement-new-button"
-                    onClick={
-                        handleOpenForm
-                    }
-                >
-                    New Reimbursement
-                </Button>
+                {canCreate && (
+                    <Button
+                        variant="contained"
+                        startIcon={
+                            <AddRoundedIcon />
+                        }
+                        className="reimbursement-new-button"
+                        onClick={
+                            handleOpenForm
+                        }
+                    >
+                        New Reimbursement
+                    </Button>
+                )}
 
             </Box>
 

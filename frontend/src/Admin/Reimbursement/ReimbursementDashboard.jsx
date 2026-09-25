@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
@@ -19,20 +20,86 @@ const ReimbursementDashboard = () => {
 
     const navigate = useNavigate();
 
+    const { hasPermission } = useAuth();
+
+
+    // =========================================================
+    // PERMISSIONS
+    // =========================================================
+
+    const canViewRequests = hasPermission(
+        "/reimbursements/requests",
+        "view"
+    );
+
+    const canViewMyReimbursements = hasPermission(
+        "/reimbursements/my",
+        "view"
+    );
+
 
     // =========================================================
     // NAVIGATION
     // =========================================================
 
     const openRequests = () => {
+
+        if (!canViewRequests) {
+            return;
+        }
+
         navigate("/reimbursements/requests");
     };
 
 
     const openMyReimbursements = () => {
+
+        if (!canViewMyReimbursements) {
+            return;
+        }
+
         navigate("/reimbursements/my");
     };
 
+
+    // =========================================================
+    // ACCESS DENIED
+    // =========================================================
+
+    if (!canViewRequests && !canViewMyReimbursements) {
+
+        return (
+            <Box
+                sx={{
+                    padding: "60px",
+                    textAlign: "center",
+                }}
+            >
+
+                <Typography
+                    variant="h5"
+                    fontWeight={600}
+                >
+                    Access Denied
+                </Typography>
+
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 1 }}
+                >
+                    You do not have permission to access
+                    Reimbursement Management.
+                </Typography>
+
+            </Box>
+        );
+    }
+
+
+    // =========================================================
+    // PAGE
+    // =========================================================
 
     return (
         <Box className="reimbursement-dashboard">
@@ -72,135 +139,142 @@ const ReimbursementDashboard = () => {
                     REIMBURSEMENT REQUESTS
                 ================================================= */}
 
-                <Card
-                    elevation={0}
-                    className="
-                        reimbursement-module-card
-                        reimbursement-requests-card
-                    "
-                    onClick={openRequests}
-                >
+                {canViewRequests && (
 
-                    <CardContent className="reimbursement-card-content">
+                    <Card
+                        elevation={0}
+                        className="
+                            reimbursement-module-card
+                            reimbursement-requests-card
+                        "
+                        onClick={openRequests}
+                    >
 
-                        {/* ICON */}
+                        <CardContent className="reimbursement-card-content">
 
-                        <Box
-                            className="
-                                reimbursement-module-icon
-                                reimbursement-requests-icon
-                            "
-                        >
-                            <ReceiptLongRoundedIcon />
-                        </Box>
+                            {/* ICON */}
 
-
-                        {/* TITLE */}
-
-                        <Typography
-                            variant="h6"
-                            className="reimbursement-card-title"
-                        >
-                            Reimbursement Requests
-                        </Typography>
+                            <Box
+                                className="
+                                    reimbursement-module-icon
+                                    reimbursement-requests-icon
+                                "
+                            >
+                                <ReceiptLongRoundedIcon />
+                            </Box>
 
 
-                        {/* DESCRIPTION */}
+                            {/* TITLE */}
 
-                        <Typography
-                            variant="body2"
-                            className="reimbursement-card-description"
-                        >
-                            Review and manage employee reimbursement
-                            requests, receipts, approvals and rejections.
-                        </Typography>
+                            <Typography
+                                variant="h6"
+                                className="reimbursement-card-title"
+                            >
+                                Reimbursement Requests
+                            </Typography>
 
 
-                        {/* OPEN MODULE */}
-
-                        <Box className="reimbursement-open-module">
+                            {/* DESCRIPTION */}
 
                             <Typography
                                 variant="body2"
+                                className="reimbursement-card-description"
                             >
-                                Open Module
+                                Review and manage employee reimbursement
+                                requests, receipts, approvals and rejections.
                             </Typography>
 
-                            <ArrowForwardRoundedIcon />
 
-                        </Box>
+                            {/* OPEN MODULE */}
 
-                    </CardContent>
+                            <Box className="reimbursement-open-module">
 
-                </Card>
+                                <Typography
+                                    variant="body2"
+                                >
+                                    Open Module
+                                </Typography>
 
+                                <ArrowForwardRoundedIcon />
+
+                            </Box>
+
+                        </CardContent>
+
+                    </Card>
+
+                )}
 
 
                 {/* =================================================
                     MY REIMBURSEMENTS
                 ================================================= */}
 
-                <Card
-                    elevation={0}
-                    className="
-                        reimbursement-module-card
-                        reimbursement-my-card
-                    "
-                    onClick={openMyReimbursements}
-                >
+                {canViewMyReimbursements && (
 
-                    <CardContent className="reimbursement-card-content">
+                    <Card
+                        elevation={0}
+                        className="
+                            reimbursement-module-card
+                            reimbursement-my-card
+                        "
+                        onClick={openMyReimbursements}
+                    >
 
-                        {/* ICON */}
+                        <CardContent className="reimbursement-card-content">
 
-                        <Box
-                            className="
-                                reimbursement-module-icon
-                                reimbursement-my-icon
-                            "
-                        >
-                            <AccountBalanceWalletRoundedIcon />
-                        </Box>
+                            {/* ICON */}
 
-
-                        {/* TITLE */}
-
-                        <Typography
-                            variant="h6"
-                            className="reimbursement-card-title"
-                        >
-                            My Reimbursements
-                        </Typography>
+                            <Box
+                                className="
+                                    reimbursement-module-icon
+                                    reimbursement-my-icon
+                                "
+                            >
+                                <AccountBalanceWalletRoundedIcon />
+                            </Box>
 
 
-                        {/* DESCRIPTION */}
+                            {/* TITLE */}
 
-                        <Typography
-                            variant="body2"
-                            className="reimbursement-card-description"
-                        >
-                            View your reimbursement requests, claim
-                            history, receipts and approval status.
-                        </Typography>
+                            <Typography
+                                variant="h6"
+                                className="reimbursement-card-title"
+                            >
+                                My Reimbursements
+                            </Typography>
 
 
-                        {/* OPEN MODULE */}
-
-                        <Box className="reimbursement-open-module">
+                            {/* DESCRIPTION */}
 
                             <Typography
                                 variant="body2"
+                                className="reimbursement-card-description"
                             >
-                                Open Module
+                                View your reimbursement requests, claim
+                                history, receipts and approval status.
                             </Typography>
 
-                            <ArrowForwardRoundedIcon />
 
-                        </Box>
+                            {/* OPEN MODULE */}
 
-                    </CardContent>
+                            <Box className="reimbursement-open-module">
 
-                </Card>
+                                <Typography
+                                    variant="body2"
+                                >
+                                    Open Module
+                                </Typography>
+
+                                <ArrowForwardRoundedIcon />
+
+                            </Box>
+
+                        </CardContent>
+
+                    </Card>
+
+                )}
 
             </Box>
 
