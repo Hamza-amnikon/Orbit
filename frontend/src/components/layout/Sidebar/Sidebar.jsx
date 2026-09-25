@@ -20,6 +20,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import RequestQuoteRoundedIcon from "@mui/icons-material/RequestQuoteRounded";
+import PolicyRoundedIcon from "@mui/icons-material/PolicyRounded";
 
 
 import { useAuth } from "../../../context/AuthContext";
@@ -107,6 +108,13 @@ export const menu = [
     path: "/bills",
     permissionPath: "/bills",
   },
+
+{
+    title: "Policy",
+    icon: <PolicyRoundedIcon />,
+    path: "/policy",
+    permissionPath: "/policy",
+},
   
 ];
 

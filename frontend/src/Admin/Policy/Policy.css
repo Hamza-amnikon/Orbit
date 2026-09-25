@@ -1,0 +1,461 @@
+/* =========================================================
+   POLICY PAGE
+========================================================= */
+
+.policy-page {
+    min-height: 100%;
+    width: 100%;
+    padding: 30px 36px;
+    box-sizing: border-box;
+
+    background: #f5f7fb;
+}
+
+
+/* =========================================================
+   BREADCRUMB
+========================================================= */
+
+.policy-breadcrumb-wrapper {
+    margin-bottom: 25px;
+}
+
+.policy-breadcrumb {
+    display: flex;
+    align-items: center;
+
+    color: #6380aa !important;
+}
+
+.policy-breadcrumb .MuiBreadcrumbs-separator {
+    margin: 0 8px;
+
+    color: #9aacc4;
+
+    font-size: 13px;
+}
+
+.policy-breadcrumb-home {
+    width: 22px;
+    height: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.policy-breadcrumb-home svg {
+    font-size: 18px;
+    color: #6380aa;
+}
+
+.policy-breadcrumb-current {
+    color: #6380aa !important;
+
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.policy-header {
+    margin-bottom: 28px;
+}
+
+.policy-header-title {
+    margin: 0 !important;
+
+    color: #082653;
+
+    font-size: 32px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+}
+
+.policy-header-description {
+    margin-top: 8px !important;
+
+    color: #6480a7;
+
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+}
+
+
+/* =========================================================
+   MODULE GRID
+========================================================= */
+
+.policy-module-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 320px));
+
+    gap: 20px;
+
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   MODULE CARD
+========================================================= */
+
+.policy-module-card {
+    position: relative;
+
+    min-height: 245px;
+
+    overflow: hidden;
+
+    border: 1px solid #e1e8f2 !important;
+    border-radius: 16px !important;
+
+    background: #ffffff !important;
+
+    box-shadow:
+        0 8px 24px rgba(24, 62, 120, 0.06) !important;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease !important;
+}
+
+.policy-module-card:hover {
+    transform: translateY(-3px);
+
+    border-color: #d6e1f0 !important;
+
+    box-shadow:
+        0 14px 30px rgba(24, 62, 120, 0.10) !important;
+}
+
+
+/* =========================================================
+   CARD CONTENT
+========================================================= */
+
+.policy-module-card-content {
+    position: relative;
+
+    min-height: 245px;
+
+    box-sizing: border-box;
+
+    padding: 20px !important;
+
+    display: flex;
+    flex-direction: column;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   MODULE ICON
+========================================================= */
+
+.policy-module-icon {
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+    z-index: 3;
+
+    border-radius: 15px;
+}
+
+.policy-module-icon svg {
+    color: #ffffff;
+
+    font-size: 32px;
+}
+
+
+/* =========================================================
+   MODULE CONTENT
+========================================================= */
+
+.policy-module-content {
+    position: relative;
+
+    z-index: 3;
+
+    flex: 1;
+
+    margin-top: 18px;
+}
+
+.policy-module-title {
+    margin: 0 0 8px !important;
+
+    color: #071f45;
+
+    font-size: 18px !important;
+    line-height: 1.3 !important;
+    font-weight: 700 !important;
+}
+
+.policy-module-description {
+    max-width: 270px;
+
+    margin: 0 !important;
+
+    color: #6480a7;
+
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+}
+
+
+/* =========================================================
+   OPEN MODULE BUTTON
+========================================================= */
+
+.policy-open-module {
+    position: relative !important;
+
+    z-index: 4;
+
+    width: 100%;
+
+    min-height: 40px;
+
+    margin-top: 15px !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    border: 0 !important;
+
+    background: transparent !important;
+
+    color: #1769e0 !important;
+
+    font-size: 13px !important;
+    font-weight: 700 !important;
+
+    text-align: left !important;
+
+    text-transform: none !important;
+
+    box-shadow: none !important;
+
+    cursor: pointer;
+
+    transition: none !important;
+}
+
+.policy-open-module:hover {
+    background: transparent !important;
+
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   ARROW
+========================================================= */
+
+.policy-arrow {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #edf4ff;
+
+    color: #1769e0;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.policy-arrow svg {
+    font-size: 21px;
+}
+
+.policy-module-card:hover .policy-arrow {
+    transform: translateX(4px);
+
+    background: #e4efff;
+}
+
+
+/* =========================================================
+   DECORATIVE CIRCLE
+========================================================= */
+
+.policy-card-decoration {
+    position: absolute;
+
+    right: -25px;
+    bottom: -45px;
+
+    width: 130px;
+    height: 130px;
+
+    border-radius: 50%;
+
+    opacity: 0.8;
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+
+/* =========================================================
+   BLUE POLICY CARD
+========================================================= */
+
+.policy-card-blue .policy-module-icon {
+    background: #2867e8;
+}
+
+.policy-card-blue .policy-card-decoration {
+    background: #e3edff;
+}
+
+
+/* =========================================================
+   GREEN COMPANY POLICY CARD
+========================================================= */
+
+.policy-card-green .policy-module-icon {
+    background: #12ad62;
+}
+
+.policy-card-green .policy-card-decoration {
+    background: #e1f6eb;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.policy-empty-card {
+    max-width: 520px;
+
+    border: 1px solid #e1e8f2 !important;
+    border-radius: 16px !important;
+
+    background: #ffffff !important;
+
+    box-shadow:
+        0 8px 24px rgba(24, 62, 120, 0.06) !important;
+
+    text-align: center;
+}
+
+.policy-empty-card .MuiCardContent-root {
+    padding: 40px 30px !important;
+}
+
+.policy-empty-icon {
+    width: 64px;
+    height: 64px;
+
+    margin: 0 auto 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background: #edf4ff;
+
+    color: #2867e8;
+}
+
+.policy-empty-icon svg {
+    font-size: 32px;
+}
+
+.policy-empty-title {
+    color: #082653 !important;
+
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.policy-empty-description {
+    max-width: 420px;
+
+    margin: 8px auto 0 !important;
+
+    color: #6480a7 !important;
+
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .policy-module-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    .policy-page {
+        padding: 22px;
+    }
+
+    .policy-module-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .policy-page {
+        padding: 18px 16px;
+    }
+
+    .policy-header-title {
+        font-size: 27px !important;
+    }
+
+    .policy-header-description {
+        font-size: 14px !important;
+    }
+
+    .policy-module-card {
+        min-height: 230px;
+    }
+
+    .policy-module-card-content {
+        min-height: 230px;
+    }
+}

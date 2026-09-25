@@ -13,7 +13,7 @@ import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 
-const API_URL = "https://localhost:7256/api/Document";
+const API_URL = "https://sparkapi.amnikontechnologies.com:7256/api/Document";
 const EMPLOYEE_API_URL = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
 
 function DocumentManagement() {

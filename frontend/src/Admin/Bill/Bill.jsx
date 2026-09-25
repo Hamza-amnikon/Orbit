@@ -58,7 +58,8 @@ import {
 
 const BILL_API_BASE_URL = "https://localhost:7008";
 const EMPLOYEE_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
-const APPROVAL_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7128";
+const APPROVAL_API_BASE_URL =
+    "https://localhost:7128";
 
 const Bill = () => {
 
