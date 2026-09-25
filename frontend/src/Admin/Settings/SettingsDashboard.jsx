@@ -9,7 +9,7 @@ import ProfileInfo from "./Profile/ProfileInfo";
 import EmploymentInfo from "./Profile/EmploymentInfo";
 import ContactInfo from "./Profile/ContactInfo";
 import EmergencyContact from "./Profile/EmergencyContact";
-import Documents from "./Profile/MyDocuments";
+import Documents from "./Profile/Docs";
 
 import { getProfile } from "../Services/ProfileService";
 

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Docs.css";
-import { useAuth } from "../../../context/AuthContext";
 
 /* ======================================================
    VALIDATION REGEX
@@ -19,12 +18,6 @@ const validationRules = {
 const API_URL = "https://sparkapi.amnikontechnologies.com:7256/api/Document";
 
 function Documents({ profile }) {
-    const { hasPermission } = useAuth();
-
-    const permissionRoute = "/documents";
-    const canView = hasPermission(permissionRoute, "view");
-    const canCreate = hasPermission(permissionRoute, "create");
-    const canEdit = hasPermission(permissionRoute, "edit");
 
     const [documents, setDocuments] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -72,18 +65,12 @@ function Documents({ profile }) {
     ====================================================== */
 
     useEffect(() => {
-        if (employeeId && canView) {
+        if (employeeId) {
             loadDocuments();
         }
-    }, [employeeId, canView]);
+    }, [employeeId]);
 
     const loadDocuments = async () => {
-        if (!canView) {
-            setDocuments([]);
-            setLoading(false);
-            return;
-        }
-
         try {
             setLoading(true);
 
@@ -176,11 +163,6 @@ function Documents({ profile }) {
     ====================================================== */
 
     const handleFileChange = (field, event) => {
-        if (!canCreate && !canEdit) {
-            event.target.value = "";
-            return;
-        }
-
         const file = event.target.files?.[0] || null;
 
         if (!file) return;
@@ -379,14 +361,6 @@ function Documents({ profile }) {
 
         const existing = getDocument(type);
 
-        if (existing?.documentId && !canEdit) {
-            throw new Error("You do not have edit permission for documents.");
-        }
-
-        if (!existing?.documentId && !canCreate) {
-            throw new Error("You do not have create permission for documents.");
-        }
-
         /* ==================================================
            CASE 1:
            NEW FILE SELECTED
@@ -578,10 +552,6 @@ const payload = {
 
     const saveDraft = async () => {
         try {
-            if (!canCreate && !canEdit) {
-                return;
-            }
-
             if (!employeeId) {
                 alert(
                     "Employee ID is not available."
@@ -677,14 +647,6 @@ const payload = {
                     existing?.status ===
                     "Approved"
                 ) {
-                    continue;
-                }
-
-                if (existing?.documentId && !canEdit) {
-                    continue;
-                }
-
-                if (!existing?.documentId && !canCreate) {
                     continue;
                 }
 
@@ -969,10 +931,6 @@ const payload = {
 
     const submitDocuments = async () => {
         try {
-            if (!canCreate && !canEdit) {
-                return;
-            }
-
             if (!employeeId) {
                 alert(
                     "Employee ID is not available."
@@ -1095,14 +1053,6 @@ const payload = {
                     existing?.status ===
                     "Approved"
                 ) {
-                    continue;
-                }
-
-                if (existing?.documentId && !canEdit) {
-                    continue;
-                }
-
-                if (!existing?.documentId && !canCreate) {
                     continue;
                 }
 
@@ -1290,15 +1240,6 @@ const payload = {
        DO NOT CHANGE
     ====================================================== */
 
-    if (!canView) {
-        return (
-            <div style={{ padding: "60px", textAlign: "center" }}>
-                <h2>Access Denied</h2>
-                <p>You do not have permission to access this page.</p>
-            </div>
-        );
-    }
-
     return (
         <div className="documents-container">
 
@@ -1390,7 +1331,7 @@ const payload = {
 
                             <div
                                 className="upload-box"
-                                style={{ display: canCreate || canEdit ? undefined : "none" }}
+                                
                                 onClick={() =>
                                     document
                                         .getElementById(
@@ -1478,7 +1419,7 @@ const payload = {
 
                             <div
                                 className="upload-box"
-                                style={{ display: canCreate || canEdit ? undefined : "none" }}
+                                
                                 onClick={() =>
                                     document
                                         .getElementById(
@@ -1581,7 +1522,7 @@ const payload = {
 
                             <div
                                 className="upload-box"
-                                style={{ display: canCreate || canEdit ? undefined : "none" }}
+                                
                                 onClick={() =>
                                     document
                                         .getElementById(
@@ -1753,7 +1694,7 @@ const payload = {
 
                             <div
                                 className="upload-box"
-                                style={{ display: canCreate || canEdit ? undefined : "none" }}
+                                
                                 onClick={() =>
                                     document
                                         .getElementById(
@@ -1834,7 +1775,7 @@ const payload = {
                                 )}
                             </div>
 
-                            <label className="upload-button" style={{ display: canCreate || canEdit ? undefined : "none" }}>
+                            <label className="upload-button" >
                                 ☁ Upload
                                 <input
                                     type="file"
@@ -1870,7 +1811,7 @@ const payload = {
                                 )}
                             </div>
 
-                            <label className="upload-button" style={{ display: canCreate || canEdit ? undefined : "none" }}>
+                            <label className="upload-button" >
                                 ☁ Upload
                                 <input
                                     type="file"
@@ -1908,7 +1849,7 @@ const payload = {
                                 )}
                             </div>
 
-                            <label className="upload-button" style={{ display: canCreate || canEdit ? undefined : "none" }}>
+                            <label className="upload-button" >
                                 ☁ Upload
                                 <input
                                     type="file"
@@ -1944,7 +1885,7 @@ const payload = {
                                 )}
                             </div>
 
-                            <label className="upload-button" style={{ display: canCreate || canEdit ? undefined : "none" }}>
+                            <label className="upload-button" >
                                 ☁ Upload
                                 <input
                                     type="file"
@@ -1980,7 +1921,7 @@ const payload = {
                                 )}
                             </div>
 
-                            <label className="upload-button" style={{ display: canCreate || canEdit ? undefined : "none" }}>
+                            <label className="upload-button" >
                                 ☁ Upload
                                 <input
                                     type="file"
@@ -2017,31 +1958,27 @@ const payload = {
 
                 <div className="document-actions">
 
-                    {(canCreate || canEdit) && (
-                        <button
-                            type="button"
-                            className="save-draft-button"
-                            onClick={saveDraft}
-                            disabled={saving}
-                        >
-                            {saving
-                                ? "Saving..."
-                                : "Save Draft"}
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        className="save-draft-button"
+                        onClick={saveDraft}
+                        disabled={saving}
+                    >
+                        {saving
+                            ? "Saving..."
+                            : "Save Draft"}
+                    </button>
 
-                    {(canCreate || canEdit) && (
-                        <button
-                            type="button"
-                            className="submit-document-button"
-                            onClick={submitDocuments}
-                            disabled={saving}
-                        >
-                            {saving
-                                ? "Submitting..."
-                                : "➤ Submit for HR Approval"}
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        className="submit-document-button"
+                        onClick={submitDocuments}
+                        disabled={saving}
+                    >
+                        {saving
+                            ? "Submitting..."
+                            : "➤ Submit for HR Approval"}
+                    </button>
 
                 </div>
 
