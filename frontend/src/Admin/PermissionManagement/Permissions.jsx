@@ -934,31 +934,35 @@ export default function Permissions() {
 // ----------------------------------------------------------
 // DEFAULT PERMISSIONS FOR ALL ROLES
 // ----------------------------------------------------------
-// Attendance, Leave, Payroll, Ticket, Policy, Reimbursement and
-// Settings always get View permission.
-// Every personal/My page gets a default login radio.
+// Apply the requested defaults only when this role is being
+// initialized for the first time.
+//
+// After the role has been saved once, the database/API state is
+// authoritative. This prevents saved checkbox selections from
+// being overwritten on refresh or when the role is loaded again.
 // ----------------------------------------------------------
 
-permissions.forEach((permission) => {
-  const permissionId = getId(permission);
+if (!defaultsAlreadyInitialized) {
+  permissions.forEach((permission) => {
+    const permissionId = getId(permission);
 
-  if (permissionId === null || permissionId === undefined) {
-    return;
-  }
+    if (permissionId === null || permissionId === undefined) {
+      return;
+    }
 
-  const id = normalizeId(permissionId);
-  const defaultActions = getDefaultPermissionActions(permission);
+    const id = normalizeId(permissionId);
+    const defaultActions = getDefaultPermissionActions(permission);
 
-  if (defaultActions) {
-    // Force the requested default state on refresh for every role.
-    loadedActions[id] = {
-      ...(loadedActions[id] || {}),
-      ...defaultActions,
-    };
+    if (defaultActions) {
+      loadedActions[id] = {
+        ...(loadedActions[id] || {}),
+        ...defaultActions,
+      };
 
-    assignedIds.add(id);
-  }
-});
+      assignedIds.add(id);
+    }
+  });
+}
 
 // ----------------------------------------------------------
 // DEFAULT LOGIN RADIOS FOR ALL ROLES
@@ -1976,55 +1980,13 @@ const selectLoginPage = (permission) => {
         }
       });
 
-      // Re-apply the default permissions for ALL roles after reload.
-      permissions.forEach((permission) => {
-        const defaultActions = getDefaultPermissionActions(
-          permission,
-        );
-
-        if (!defaultActions) return;
-
-        const id = normalizeId(getId(permission));
-
-        updatedActions[id] = {
-          ...(updatedActions[id] || {}),
-          ...defaultActions,
-        };
-
-        updatedIds.add(id);
-      });
-
-      // Re-apply the personal-page radio defaults after reload.
-      // Every My-* / personal page gets its module's radio selected.
-      Object.keys(updatedLoginPages).forEach((moduleName) => {
-        delete updatedLoginPages[moduleName];
-      });
-
-      permissions.forEach((permission) => {
-        if (!isDefaultLoginPage(permission)) {
-          return;
-        }
-
-        const permissionId = getId(permission);
-
-        if (permissionId === null || permissionId === undefined) {
-          return;
-        }
-
-        const id = normalizeId(permissionId);
-        const moduleName = getModuleName(permission);
-
-        updatedActions[id] = {
-          ...(updatedActions[id] || {}),
-          view: true,
-        };
-
-        updatedIds.add(id);
-
-        if (!updatedLoginPages[moduleName]) {
-          updatedLoginPages[moduleName] = id;
-        }
-      });
+      // The API response is authoritative after Save.
+      // Do NOT re-apply default permissions here because doing so
+      // overwrites the user's saved checkbox selections.
+      //
+      // Personal-page/login-page defaults are also not re-applied here.
+      // The IsLoginPage value returned by the API is used above.
+      // This keeps the saved role configuration exactly as persisted.
 
       setPermissionActions(
         updatedActions,
@@ -2038,8 +2000,8 @@ const selectLoginPage = (permission) => {
         updatedLoginPages,
       );
 
-      // From this point onward, this role has been normalized and its
-      // saved permissions can be loaded normally after refresh.
+      // From this point onward, this role is initialized and the
+      // saved permissions returned by the API are authoritative.
       localStorage.setItem(
         `permissionDefaultsInitialized-v2-${normalizeId(roleId)}`,
         "true",
