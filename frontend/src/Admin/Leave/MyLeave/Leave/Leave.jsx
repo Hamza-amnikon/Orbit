@@ -1740,41 +1740,47 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
             };
         }
 
-        // Rejected / Not Approved has priority over Pending when the
-        // same date contains both statuses.
-        const redLeave =
-            calendarLeaves.find(
-                (item) =>
-                    item.calendarStatus === "rejected"
-            );
+// Pending has priority over Rejected / Not Approved
+// when both exist for the same date.
+//
+// Example:
+// Old request -> Rejected
+// New request -> Pending
+// Calendar    -> Pending (yellow)
+const pendingLeave =
+    calendarLeaves.find(
+        (item) =>
+            item.calendarStatus === "pending"
+    );
 
-        if (redLeave) {
-            return {
-                status: "rejected",
-                leaves: [redLeave.leave],
-            };
-        }
-
-        // Pending -> orange/yellow.
-        const pendingLeave =
-            calendarLeaves.find(
-                (item) =>
-                    item.calendarStatus === "pending"
-            );
-
-        if (pendingLeave) {
-            return {
-                status: "pending",
-                leaves: [pendingLeave.leave],
-            };
-        }
-
-        return null;
+if (pendingLeave) {
+    return {
+        status: "pending",
+        leaves: [pendingLeave.leave],
     };
+}
+
+// Rejected / Not Approved is shown only when there is
+// no active Pending request for the same date.
+const redLeave =
+    calendarLeaves.find(
+        (item) =>
+            item.calendarStatus === "rejected"
+    );
+
+if (redLeave) {
+    return {
+        status: "rejected",
+        leaves: [redLeave.leave],
+    };
+}
+
+return null;
+};
 
 
-    // =========================================================
-    // CALENDAR MONTH HELPERS
+// =========================================================
+// CALENDAR MONTH HELPERS
     // =========================================================
 
     const calendarYear =
@@ -4582,3 +4588,4 @@ const closeViewLeaveDialog = () => {
 
 
 export default Leave;
+
