@@ -110,7 +110,7 @@ const getRoleName = (role) => {
 // Only the main Sidebar page gets View by default.
 // Child/detail pages do NOT become default permissions.
 //
-// Every My / personal page gets View by default and its Login radio
+// Every My / personal page gets ALL permissions by default and its Login radio
 // is selected for its module.
 // ----------------------------------------------------------
 
@@ -158,35 +158,93 @@ const isDefaultSidebarPage = (permission) => {
     getPageName(permission),
   );
 
-  // ONLY these seven exact Sidebar pages are defaults for every role.
-  // Child pages such as Dashboard, Logs, Holiday, Employees, Reports,
-  // Approval, Bill, Document, etc. are NOT defaults.
+  // ONLY these exact Sidebar pages are defaults for every role.
   return (
     DEFAULT_SIDEBAR_NAMES.has(permissionPageName) ||
     DEFAULT_SIDEBAR_ROUTES.has(permissionPath)
   );
 };
 
+// Ticket is available to EVERY role with full access.
+// Match Ticket/Tickets by both permission name and route so the
+// existing API naming does not matter.
+const isTicketPage = (permission) => {
+  if (!permission) return false;
+
+  const pageName = normalizePermissionValue(getPageName(permission));
+  const moduleName = normalizePermissionValue(getModuleName(permission));
+  const pagePath = normalizePermissionValue(getPagePath(permission));
+
+  return (
+    pageName === "ticket" ||
+    pageName === "tickets" ||
+    moduleName === "ticket" ||
+    moduleName === "tickets" ||
+    pagePath === "/ticket" ||
+    pagePath === "/tickets"
+  );
+};
+
+// Company Policy is available to EVERY role with full access.
+// Only the Company Policy page gets this special treatment; other
+// policy-related pages keep their existing permission behavior.
+const isCompanyPolicyPage = (permission) => {
+  if (!permission) return false;
+
+  const pageName = normalizePermissionValue(getPageName(permission));
+  const moduleName = normalizePermissionValue(getModuleName(permission));
+  const pagePath = normalizePermissionValue(getPagePath(permission));
+
+  // IMPORTANT: The Company Policies row is /company-policies.
+  // Do NOT match /policy because that is a separate Policy page.
+  return (
+    pageName === "company policy" ||
+    pageName === "company policies" ||
+    pageName === "companypolicy" ||
+    pageName === "companypolicies" ||
+    pagePath === "/company-policy" ||
+    pagePath === "/company-policies" ||
+    (moduleName === "policy" &&
+      (pageName === "company policy" ||
+        pageName === "company policies" ||
+        pageName === "companypolicy" ||
+        pageName === "companypolicies"))
+  );
+};
+
+const getFullAccessActions = () => ({
+  view: true,
+  create: true,
+  edit: true,
+  delete: true,
+  approve: true,
+  export: true,
+});
+
 // Every personal/self-service page gets its own default login radio.
+// Company Policies is also the default radio for the Policy module.
 // Examples: My Dashboard, My Attendance, My Leave, My Payroll, etc.
 const isDefaultLoginPage = (permission) => {
-  return isPersonalPage(permission);
+  return isPersonalPage(permission) || isCompanyPolicyPage(permission);
 };
 
 const getDefaultPermissionActions = (permission) => {
   if (!permission) return null;
 
+  // Ticket/Tickets: full access for EVERY role.
+  if (isTicketPage(permission)) {
+    return getFullAccessActions();
+  }
+
+  // Company Policy: full access for EVERY role.
+  if (isCompanyPolicyPage(permission)) {
+    return getFullAccessActions();
+  }
+
   // My / personal pages:
-  // View ON, all other actions OFF.
+  // ALL actions ON by default.
   if (isDefaultLoginPage(permission)) {
-    return {
-      view: true,
-      create: false,
-      edit: false,
-      delete: false,
-      approve: false,
-      export: false,
-    };
+    return getFullAccessActions();
   }
 
   // Main Sidebar pages:
@@ -287,8 +345,96 @@ const getPagePath = (permission) => {
 // Checks BOTH page name and route, case-insensitively.
 // ----------------------------------------------------------
 
+const isMyLabel = (value) => {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]+/g, "");
+
+  return (
+    normalized === "mydashboard" ||
+    normalized.startsWith("my")
+  );
+};
+
+const getMenuItemPath = (item) =>
+  normalizePermissionValue(
+    firstValue(
+      item,
+      [
+        "permissionPath",
+        "PermissionPath",
+        "path",
+        "Path",
+        "route",
+        "Route",
+        "url",
+        "Url",
+      ],
+      "",
+    ),
+  );
+
+const getMenuItemName = (item) =>
+  String(
+    firstValue(
+      item,
+      [
+        "pageName",
+        "PageName",
+        "label",
+        "Label",
+        "name",
+        "Name",
+        "title",
+        "Title",
+      ],
+      "",
+    ),
+  )
+    .trim()
+    .toLowerCase();
+
+const getMenuChildren = (item) => {
+  if (!item) return [];
+
+  const children = [
+    item.children,
+    item.Children,
+    item.items,
+    item.Items,
+    item.subItems,
+    item.SubItems,
+    item.menuItems,
+    item.MenuItems,
+  ];
+
+  return children.find(Array.isArray) || [];
+};
+
+const isPersonalMenuItem = (item) => {
+  if (!item) return false;
+
+  const name = getMenuItemName(item);
+  const path = getMenuItemPath(item);
+
+  return (
+    isMyLabel(name) ||
+    path === "/my" ||
+    path.startsWith("/my/") ||
+    path.startsWith("/my-") ||
+    path.startsWith("/my_")
+  );
+};
+
 const isPersonalPage = (permission) => {
+  if (!permission) return false;
+
   const pageName = getPageName(permission)
+    .trim()
+    .toLowerCase();
+
+  const moduleName = getModuleName(permission)
     .trim()
     .toLowerCase();
 
@@ -296,12 +442,12 @@ const isPersonalPage = (permission) => {
     .trim()
     .toLowerCase();
 
+  // 1. Direct My-page naming.
   const personalPageName =
-    pageName === "mydashboard" ||
-    pageName.startsWith("my ") ||
-    pageName.startsWith("my-") ||
-    pageName.startsWith("my_");
+    isMyLabel(pageName) ||
+    isMyLabel(moduleName);
 
+  // 2. Direct My-page route.
   const personalRoute = route
     .split("/")
     .filter(Boolean)
@@ -310,10 +456,32 @@ const isPersonalPage = (permission) => {
         segment === "my" ||
         segment === "mydashboard" ||
         segment.startsWith("my-") ||
-        segment.startsWith("my_"),
+        segment.startsWith("my_") ||
+        segment.startsWith("my"),
     );
 
-  return personalPageName || personalRoute;
+  // 3. Important: some permission records use a normal route/name
+  // such as /attendance or Attendance, while the Sidebar displays
+  // that page as "My Attendance". Match the actual Sidebar menu so
+  // My Attendance / My Payroll / My Leave are detected without
+  // changing normal Attendance / Payroll / Leave permissions.
+  const personalMenuMatch =
+    Array.isArray(menu) &&
+    menu.some((item) => {
+      if (!isPersonalMenuItem(item)) return false;
+
+      const menuPath = getMenuItemPath(item);
+      const menuName = getMenuItemName(item);
+
+      return (
+        (menuPath && route && menuPath === route) ||
+        (menuName && pageName === menuName) ||
+        (menuName && isMyLabel(menuName) &&
+          pageName === menuName.replace(/^my[\s_-]*/i, "").trim())
+      );
+    });
+
+  return personalPageName || personalRoute || personalMenuMatch;
 };
 
 // ----------------------------------------------------------
@@ -829,7 +997,7 @@ export default function Permissions() {
       // defaults. After the user saves once, normal saved permissions are
       // loaded on subsequent refreshes.
       const defaultsInitializedKey =
-        `permissionDefaultsInitialized-v2-${normalizeId(roleId)}`;
+        `permissionDefaultsInitialized-v4-${normalizeId(roleId)}`;
       const defaultsAlreadyInitialized =
         localStorage.getItem(defaultsInitializedKey) === "true";
 
@@ -968,8 +1136,9 @@ if (!defaultsAlreadyInitialized) {
 // DEFAULT LOGIN RADIOS FOR ALL ROLES
 // ----------------------------------------------------------
 // Every personal/self-service page gets its radio selected.
+// Company Policies is also selected by default in the Policy module.
 // Examples: My Dashboard, My Attendance, My Leave, My Payroll, etc.
-// Non-personal pages never receive a default login radio.
+// Other non-personal pages never receive a default login radio.
 // ----------------------------------------------------------
 
 // Start from the default personal pages instead of preserving an
@@ -993,23 +1162,56 @@ permissions.forEach((permission) => {
   const id = normalizeId(permissionId);
   const moduleName = getModuleName(permission);
 
-  // Personal pages need View permission so their radio can be selected.
+  // Personal/My pages get ALL permissions by default.
+  // View is required for the login page, while the remaining actions
+  // are also enabled for My Leave / My Attendance / My Payroll / etc.
   loadedActions[id] = {
     ...(loadedActions[id] || {}),
     view: true,
+    create: true,
+    edit: true,
+    delete: true,
+    approve: true,
+    export: true,
   };
 
   assignedIds.add(id);
 
   // One login radio per module.
   // If the module has a My page, that page is selected.
+  // For the Policy module, Company Policies is selected.
   if (!loadedLoginPages[moduleName]) {
     loadedLoginPages[moduleName] = id;
   }
 });
 
-// Keep saved custom permissions from the database.
-// The requested Sidebar/My-page defaults are applied on top of them.
+// ----------------------------------------------------------
+// TICKET + COMPANY POLICY ACCESS FOR EVERY ROLE
+// ----------------------------------------------------------
+// Ticket/Tickets and Company Policies are intentionally different from normal modules:
+// every role must have View + Create + Edit + Delete + Approve + Export.
+// This is applied even when the role already has saved permissions,
+// so existing roles are upgraded to the required access too.
+permissions.forEach((permission) => {
+  if (!isTicketPage(permission) && !isCompanyPolicyPage(permission)) {
+    return;
+  }
+
+  const permissionId = getId(permission);
+
+  if (permissionId === null || permissionId === undefined) {
+    return;
+  }
+
+  const id = normalizeId(permissionId);
+
+  loadedActions[id] = {
+    ...(loadedActions[id] || {}),
+    ...getFullAccessActions(),
+  };
+
+  assignedIds.add(id);
+});
 
 setPermissionActions(loadedActions);
         setSelectedPermissions(assignedIds);
@@ -2003,7 +2205,7 @@ const selectLoginPage = (permission) => {
       // From this point onward, this role is initialized and the
       // saved permissions returned by the API are authoritative.
       localStorage.setItem(
-        `permissionDefaultsInitialized-v2-${normalizeId(roleId)}`,
+        `permissionDefaultsInitialized-v4-${normalizeId(roleId)}`,
         "true",
       );
 
@@ -2036,7 +2238,7 @@ const selectLoginPage = (permission) => {
     const roleId = selectedRole ? getId(selectedRole) : null;
     const defaultsAlreadyInitialized = roleId
       ? localStorage.getItem(
-          `permissionDefaultsInitialized-v2-${normalizeId(roleId)}`,
+          `permissionDefaultsInitialized-v4-${normalizeId(roleId)}`,
         ) === "true"
       : false;
 
@@ -2198,6 +2400,11 @@ const selectLoginPage = (permission) => {
       restoredActions[id] = {
         ...(restoredActions[id] || {}),
         view: true,
+        create: true,
+        edit: true,
+        delete: true,
+        approve: true,
+        export: true,
       };
 
       assignedIds.add(id);
