@@ -211,14 +211,7 @@ function DashboardBottom() {
 
                     </div>
 
-                    <button
-                        className="view-events-button"
-                        onClick={() =>
-                            navigate("/employee/attendance")
-                        }
-                    >
-                        View All
-                    </button>
+                    
 
                 </div>
 
