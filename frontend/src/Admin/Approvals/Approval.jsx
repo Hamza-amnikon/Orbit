@@ -1085,9 +1085,6 @@ const updateStatus = async () => {
                 "Current Approver ID":
                     request.currentApproverId || "",
 
-                "Previous Approver ID":
-                    request.previousApproverId || "",
-
                 "Requested On":
                     formatDate(
                         request.requestedDate
@@ -1174,7 +1171,6 @@ const updateStatus = async () => {
             "Request Type",
             "Level",
             "Approver ID",
-            "Previous Approver ID",
             "Requested On",
             "Action Date",
             "Status"
@@ -1196,8 +1192,6 @@ const updateStatus = async () => {
                 request.approvalLevel || "",
 
                 request.currentApproverId || "",
-
-                request.previousApproverId || "",
 
                 formatDate(
                     request.requestedDate
@@ -1977,16 +1971,6 @@ const updateStatus = async () => {
 
                             <div className="approval-detail-item">
                                 <span>
-                                    Previous Approver ID
-                                </span>
-                                <strong>
-                                    {selectedRequest.previousApproverId ||
-                                        "—"}
-                                </strong>
-                            </div>
-
-                            <div className="approval-detail-item">
-                                <span>
                                     Requested On
                                 </span>
                                 <strong>
@@ -2250,27 +2234,6 @@ const updateStatus = async () => {
                                 >
                                     {
                                         selectedRequest.currentApproverId ||
-                                        "—"
-                                    }
-                                </Typography>
-
-                            </Box>
-
-                            <Box
-                                className="approval-action-detail"
-                            >
-
-                                <Typography
-                                    className="approval-action-detail-label"
-                                >
-                                    Previous Approver ID
-                                </Typography>
-
-                                <Typography
-                                    className="approval-action-detail-value"
-                                >
-                                    {
-                                        selectedRequest.previousApproverId ||
                                         "—"
                                     }
                                 </Typography>

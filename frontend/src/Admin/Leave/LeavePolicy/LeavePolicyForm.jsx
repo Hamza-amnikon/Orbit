@@ -250,9 +250,9 @@ export default function LeavePolicyForm({
                                         Event Based
                                     </MenuItem>
 
-                                    <MenuItem value="None">
+                                    {/* <MenuItem value="None">
                                         None
-                                    </MenuItem>
+                                    </MenuItem> */}
 
                                 </Select>
 
