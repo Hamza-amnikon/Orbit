@@ -1,6 +1,7 @@
 import "./SettingsDashboard.css";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import ProfileHeader from "./Profile/ProfileHeader/ProfileHeader";
 import ProfileStats from "./Profile/ProfileStats";
@@ -16,13 +17,39 @@ import { getProfile } from "../Services/ProfileService";
 
 export default function SettingsDashboard() {
 
+    // =========================================================
+    // URL QUERY PARAMETERS
+    // =========================================================
+
+    const [searchParams] = useSearchParams();
+
+
+    // =========================================================
+    // PROFILE STATE
+    // =========================================================
+
     const [profile, setProfile] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
 
-    const [activeTab, setActiveTab] = useState("personal");
+
+    // =========================================================
+    // ACTIVE TAB
+    //
+    // /settings
+    //              -> personal
+    //
+    // /settings?tab=documents
+    //              -> documents
+    // =========================================================
+
+    const initialTab = searchParams.get("tab");
+
+    const [activeTab, setActiveTab] = useState(
+        initialTab || "personal"
+    );
 
 
     // =========================================================

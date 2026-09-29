@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import Sidebar from "../Sidebar/Sidebar";
 import Navbar from "../Navbar/Navbar";
@@ -10,7 +10,6 @@ import "./DashboardLayout.css";
 
 function DashboardLayout() {
     const navigate = useNavigate();
-    const location = useLocation();
 
     const {
         sparkAccessGranted,
@@ -41,17 +40,19 @@ function DashboardLayout() {
     ]);
 
     // ==========================================================
-    // OPEN SETTINGS / DOCUMENTS
+    // OPEN DOCUMENTS TAB DIRECTLY
     // ==========================================================
 
     const handleCompleteDocuments = () => {
+        // Close popup
         setOnboardingPromptOpen(false);
 
-        navigate("/settings");
+        // Open Settings directly on Documents tab
+        navigate("/settings?tab=documents");
     };
 
     // ==========================================================
-    // IF ACCESS IS GRANTED
+    // ONBOARDING PROMPT VISIBILITY
     // ==========================================================
 
     const showOnboardingPrompt =
@@ -60,18 +61,35 @@ function DashboardLayout() {
         !profileLoading &&
         !sparkAccessGranted;
 
+    // ==========================================================
+    // RENDER
+    // ==========================================================
+
     return (
         <div className="dashboard-layout">
 
-            {/* SIDEBAR */}
+            {/* ==================================================
+                SIDEBAR
+            ================================================== */}
+
             <Sidebar />
+
+            {/* ==================================================
+                MAIN AREA
+            ================================================== */}
 
             <div className="dashboard-main">
 
-                {/* NAVBAR */}
+                {/* ==================================================
+                    NAVBAR
+                ================================================== */}
+
                 <Navbar />
 
-                {/* PAGE CONTENT */}
+                {/* ==================================================
+                    PAGE CONTENT
+                ================================================== */}
+
                 <main className="dashboard-content">
                     <Outlet />
                 </main>
@@ -87,14 +105,17 @@ function DashboardLayout() {
 
                     <div className="onboarding-prompt">
 
+                        {/* WARNING ICON */}
                         <div className="onboarding-prompt-icon">
                             !
                         </div>
 
+                        {/* TITLE */}
                         <h2>
                             Complete Your Onboarding
                         </h2>
 
+                        {/* DESCRIPTION */}
                         <p>
                             Your required onboarding documents
                             have not been fully approved yet.
@@ -105,6 +126,7 @@ function DashboardLayout() {
                             documents to get full access to Spark.
                         </p>
 
+                        {/* REQUIRED DOCUMENTS */}
                         <p className="onboarding-required-text">
                             Required documents:
                         </p>
@@ -117,6 +139,7 @@ function DashboardLayout() {
                             <li>Education Certificate</li>
                         </ul>
 
+                        {/* BUTTON */}
                         <button
                             type="button"
                             onClick={handleCompleteDocuments}
