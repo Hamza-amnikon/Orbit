@@ -311,3 +311,297 @@
         transition: none;
     }
 }
+
+
+/* ============================================================
+   ONBOARDING PROMPT
+   IMPORTANT:
+   These styles do NOT modify the dashboard/sidebar layout.
+   ============================================================ */
+
+.onboarding-prompt-overlay {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(15, 23, 42, 0.55);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    z-index: 99999;
+
+    animation: onboardingFadeIn 0.2s ease;
+}
+
+
+/* ============================================================
+   ONBOARDING MODAL
+   ============================================================ */
+
+.onboarding-prompt {
+    width: 100%;
+
+    max-width: 480px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border-radius: 16px;
+
+    padding: 32px;
+
+    text-align: center;
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.20);
+
+    animation: onboardingSlideUp 0.25s ease;
+}
+
+
+/* ============================================================
+   WARNING ICON
+   ============================================================ */
+
+.onboarding-prompt-icon {
+    width: 56px;
+    height: 56px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: #fff4e5;
+
+    color: #f59e0b;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   TITLE
+   ============================================================ */
+
+.onboarding-prompt h2 {
+    margin: 0 0 14px;
+
+    font-size: 24px;
+
+    line-height: 1.3;
+
+    font-weight: 700;
+
+    color: #172554;
+}
+
+
+/* ============================================================
+   DESCRIPTION
+   ============================================================ */
+
+.onboarding-prompt p {
+    margin: 0 0 12px;
+
+    color: #64748b;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   REQUIRED DOCUMENTS TITLE
+   ============================================================ */
+
+.onboarding-required-text {
+    margin-top: 20px !important;
+
+    margin-bottom: 8px !important;
+
+    font-weight: 600;
+
+    color: #334155 !important;
+}
+
+
+/* ============================================================
+   REQUIRED DOCUMENT LIST
+   ============================================================ */
+
+.onboarding-document-list {
+    margin: 8px auto 24px;
+
+    padding: 0;
+
+    list-style: none;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 8px;
+}
+
+
+/* ============================================================
+   DOCUMENT ITEM
+   ============================================================ */
+
+.onboarding-document-list li {
+    padding: 7px 12px;
+
+    background: #f1f5f9;
+
+    border-radius: 8px;
+
+    color: #475569;
+
+    font-size: 13px;
+
+    font-weight: 500;
+}
+
+
+/* ============================================================
+   SUBMIT DOCUMENT BUTTON
+   ============================================================ */
+
+.onboarding-prompt-button {
+    width: 100%;
+
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 13px 20px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.onboarding-prompt-button:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+}
+
+
+.onboarding-prompt-button:active {
+    transform: translateY(0);
+}
+
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes onboardingFadeIn {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+@keyframes onboardingSlideUp {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(15px)
+            scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+/* ============================================================
+   MOBILE ONBOARDING POPUP
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+    .onboarding-prompt-overlay {
+        padding: 15px;
+    }
+
+    .onboarding-prompt {
+        max-width: 100%;
+
+        padding: 24px;
+
+        border-radius: 14px;
+    }
+
+    .onboarding-prompt h2 {
+        font-size: 21px;
+    }
+
+    .onboarding-prompt-icon {
+        width: 48px;
+        height: 48px;
+
+        font-size: 24px;
+    }
+
+    .onboarding-document-list {
+        gap: 6px;
+    }
+
+    .onboarding-document-list li {
+        font-size: 12px;
+
+        padding: 6px 9px;
+    }
+}

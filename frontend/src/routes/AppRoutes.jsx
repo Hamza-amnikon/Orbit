@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet, useLocation } from "react-router-dom";
+import { Routes, Route, Outlet, useLocation, Navigate } from "react-router-dom";
 import { syncPermissions } from "../Admin/Services/PermissionService";
 import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
@@ -399,10 +399,20 @@ export const PERMISSION_PAGES = [
 ============================================================ */
 
 function PermissionGuard() {
-    const { hasPermission, loading, profileLoading } = useAuth();
+    const {
+        hasPermission,
+        loading,
+        profileLoading,
+        sparkAccessLoading,
+    } = useAuth();
+
     const location = useLocation();
 
-    if (loading || profileLoading) {
+    if (
+        loading ||
+        profileLoading ||
+        sparkAccessLoading
+    ) {
         return <div>Loading...</div>;
     }
 
@@ -425,6 +435,135 @@ function PermissionGuard() {
     }
 
     return <Outlet />;
+}
+
+function OnboardingGuard() {
+    const {
+        sparkAccessGranted,
+        sparkAccessLoading,
+        loading,
+        profileLoading,
+        hasPermission,
+    } = useAuth();
+
+    const location = useLocation();
+
+    /*
+    =========================================================
+    WAIT FOR AUTH + PROFILE + SPARK ACCESS
+    =========================================================
+
+    Do not redirect the employee to Settings until the
+    onboarding access check has completed.
+    =========================================================
+    */
+
+    if (
+        loading ||
+        profileLoading ||
+        sparkAccessLoading
+    ) {
+        return <div>Loading...</div>;
+    }
+
+    const pathname =
+        location.pathname
+            .toLowerCase()
+            .replace(/\/$/, "") || "/";
+
+
+    /*
+    =========================================================
+    SETTINGS IS ALWAYS AVAILABLE
+    =========================================================
+
+    Employees who have not completed onboarding must be able
+    to open Settings and upload/complete their documents.
+    =========================================================
+    */
+
+    const isSettings =
+        pathname === "/settings" ||
+        pathname.startsWith("/settings/");
+
+
+    /*
+    =========================================================
+    HR DOCUMENT MANAGEMENT
+    =========================================================
+
+    Keep /documents available to users who already have the
+    normal Document Management permission.
+
+    This does not give ordinary employees access to HR
+    Document Management.
+    =========================================================
+    */
+
+    const isHrDocuments =
+        pathname === "/documents";
+
+    const canAccessHrDocuments =
+        hasPermission(
+            "/documents",
+            "view"
+        );
+
+
+    /*
+    =========================================================
+    FULL SPARK ACCESS
+    =========================================================
+
+    Backend has confirmed all required documents are approved.
+    Normal role/permission checks continue through
+    PermissionGuard.
+    =========================================================
+    */
+
+    if (sparkAccessGranted === true) {
+        return <Outlet />;
+    }
+
+
+    /*
+    =========================================================
+    INCOMPLETE ONBOARDING
+    =========================================================
+
+    If accessGranted is false, the employee can only use
+    Settings (plus HR Document Management when their normal
+    role explicitly has that permission).
+    =========================================================
+    */
+
+    if (
+        isSettings ||
+        (
+            isHrDocuments &&
+            canAccessHrDocuments
+        )
+    ) {
+        return <Outlet />;
+    }
+
+
+    /*
+    =========================================================
+    BLOCK DIRECT URL ACCESS
+    =========================================================
+
+    Typing /dashboard, /leave, /payroll, etc. manually must
+    still redirect the incomplete employee to Settings.
+    =========================================================
+    */
+
+    return (
+        <Navigate
+            to="/settings"
+            replace
+        />
+    );
 }
 
 function AppRoutes() {
@@ -468,9 +607,11 @@ function AppRoutes() {
 
             <Route element={<PrivateRoute />}>
 
-                <Route element={<PermissionGuard />}>
+                <Route element={<OnboardingGuard />}>
 
-                    <Route element={<DashboardLayout />}>
+                    <Route element={<PermissionGuard />}>
+
+                        <Route element={<DashboardLayout />}>
 
                         <Route
                             path="/"
@@ -699,12 +840,11 @@ function AppRoutes() {
     element={<CompanyPolicy />}
 />
 
-                </Route>
-            
+                        </Route>
 
                     </Route>
 
-                    
+                </Route>
 
             </Route>
 
