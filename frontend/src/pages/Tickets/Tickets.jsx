@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 
 function Tickets() {
@@ -5,6 +6,13 @@ function Tickets() {
 
     const permissionRoute = "/tickets";
     const canView = hasPermission(permissionRoute, "view");
+
+    useEffect(() => {
+        if (canView) {
+            window.location.href =
+                "https://astra.amnikontechnologies.com/osticket/scp/login.php";
+        }
+    }, [canView]);
 
     if (!canView) {
         return (
@@ -16,15 +24,14 @@ function Tickets() {
     }
 
     return (
-        <a style={{ width: "100%", height: "100vh" }}>
-            <iframe
-                src="https://astra.amnikontechnologies.com/osticket/scp/login.php"
-                title="Tickets"
-                width="100%"
-                height="100%"
-                style={{ border: "none" }}
-            />
-        </a>
+        <div
+            style={{
+                padding: "60px",
+                textAlign: "center",
+            }}
+        >
+            <h2>Opening Tickets...</h2>
+        </div>
     );
 }
 
