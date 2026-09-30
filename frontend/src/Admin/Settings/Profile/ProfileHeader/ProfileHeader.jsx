@@ -18,13 +18,13 @@ function ProfileHeader({ profile }) {
 
                 <div className="cover-overlay"></div>
 
-                <button className="edit-profile-btn">
+                {/* <button className="edit-profile-btn">
 
                     <Edit fontSize="small" />
 
                     Edit Profile
 
-                </button>
+                </button> */}
 
             </div>
 
