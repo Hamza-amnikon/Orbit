@@ -638,21 +638,7 @@ function Navbar({ title }) {
 
                             {/* PROFILE */}
 
-                            <button
-                                type="button"
-                                className="profile-menu-item"
-                                onClick={
-                                    handleProfile
-                                }
-                            >
-
-                                <PersonOutlineRoundedIcon />
-
-                                <span>
-                                    Profile
-                                </span>
-
-                            </button>
+                          
 
 
                             {/* SETTINGS */}
