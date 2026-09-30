@@ -36,6 +36,10 @@ function Navbar({ title }) {
 
     const [menuOpen, setMenuOpen] = useState(false);
 
+    // Tracks whether the profile image failed to load.
+    // If it fails, the avatar falls back to the employee's first initial.
+    const [profileImageError, setProfileImageError] = useState(false);
+
 
     /* ========================================================
        PAGE TITLE
@@ -95,16 +99,12 @@ function Navbar({ title }) {
         }
 
 
-        if (
-            path.includes("permission")
-        ) {
+        if (path.includes("permission")) {
             return "Permission";
         }
 
 
-        if (
-            path.includes("reimbursement")
-        ) {
+        if (path.includes("reimbursement")) {
             return "Reimbursements";
         }
 
@@ -149,6 +149,7 @@ function Navbar({ title }) {
                 if (mounted) {
 
                     setProfile(data);
+
                 }
 
             }
@@ -170,21 +171,52 @@ function Navbar({ title }) {
         return () => {
 
             mounted = false;
+
         };
 
     }, []);
 
 
     /* ========================================================
-       INITIAL
+       RESET PROFILE IMAGE ERROR
        ======================================================== */
 
-    const getInitial = () => {
+    useEffect(() => {
+
+        setProfileImageError(false);
+
+    }, [profile?.photoUrl]);
+
+
+    /* ========================================================
+       GET PROFILE NAME
+       ======================================================== */
+
+    const getProfileName = () => {
 
         const name =
             profile?.displayName ||
             profile?.name ||
-            profile?.fullName;
+            profile?.fullName ||
+            profile?.employeeName ||
+            profile?.userName ||
+            "";
+
+        return String(name).trim();
+
+    };
+
+
+    /* ========================================================
+       INITIAL
+       
+       If there is no profile image,
+       show the first letter of the employee name.
+       ======================================================== */
+
+    const getInitial = () => {
+
+        const name = getProfileName();
 
 
         if (!name) {
@@ -193,9 +225,9 @@ function Navbar({ title }) {
 
 
         return name
-            .trim()
             .charAt(0)
             .toUpperCase();
+
     };
 
 
@@ -209,8 +241,11 @@ function Navbar({ title }) {
             profile?.displayName ||
             profile?.name ||
             profile?.fullName ||
+            profile?.employeeName ||
+            profile?.userName ||
             "Employee"
         );
+
     };
 
 
@@ -226,7 +261,19 @@ function Navbar({ title }) {
             profile?.role ||
             "Employee"
         );
+
     };
+
+
+    /* ========================================================
+       CHECK PROFILE IMAGE
+       ======================================================== */
+
+    const hasProfileImage =
+        Boolean(
+            profile?.photoUrl &&
+            String(profile.photoUrl).trim()
+        ) && !profileImageError;
 
 
     /* ========================================================
@@ -239,12 +286,14 @@ function Navbar({ title }) {
             (previous) =>
                 !previous
         );
+
     };
 
 
     const closeMenu = () => {
 
         setMenuOpen(false);
+
     };
 
 
@@ -259,6 +308,7 @@ function Navbar({ title }) {
         navigate(
             "/employee/profile"
         );
+
     };
 
 
@@ -271,6 +321,7 @@ function Navbar({ title }) {
         closeMenu();
 
         navigate("/settings");
+
     };
 
 
@@ -309,6 +360,7 @@ function Navbar({ title }) {
                 replace: true,
             }
         );
+
     };
 
 
@@ -323,6 +375,7 @@ function Navbar({ title }) {
                 "oya:toggle-sidebar"
             )
         );
+
     };
 
 
@@ -342,6 +395,7 @@ function Navbar({ title }) {
             "Search:",
             value
         );
+
     };
 
 
@@ -352,6 +406,7 @@ function Navbar({ title }) {
     return (
 
         <header className="navbar">
+
 
             {/* ==================================================
                 LEFT SIDE
@@ -388,7 +443,6 @@ function Navbar({ title }) {
                     </h2>
 
                 </div>
-
 
 
             </div>
@@ -464,35 +518,41 @@ function Navbar({ title }) {
                             menuOpen
                         }
                         aria-haspopup="menu"
+                        aria-label={`Open profile menu for ${getDisplayName()}`}
                     >
 
 
-                        {/* AVATAR */}
+                        {/* =================================================
+                            AVATAR
+                        ================================================= */}
 
                         <div className="avatar">
 
-                            {profile?.photoUrl ? (
+                            {hasProfileImage ? (
 
                                 <img
-                                    src={
-                                        profile.photoUrl
-                                    }
-                                    alt={
-                                        getDisplayName()
-                                    }
+                                    src={profile.photoUrl}
+                                    alt=""
                                     className="navbar-avatar-image"
+                                    onError={() => {
+                                        setProfileImageError(true);
+                                    }}
                                 />
 
                             ) : (
 
-                                getInitial()
+                                <span className="navbar-avatar-initial">
+                                    {getInitial()}
+                                </span>
 
                             )}
 
                         </div>
 
 
-                        {/* USER INFORMATION */}
+                        {/* =================================================
+                            USER INFORMATION
+                        ================================================= */}
 
                         <div className="user-info">
 
@@ -507,7 +567,9 @@ function Navbar({ title }) {
                         </div>
 
 
-                        {/* ARROW */}
+                        {/* =================================================
+                            ARROW
+                        ================================================= */}
 
                         <KeyboardArrowDownRoundedIcon
                             className="profile-arrow"
@@ -534,21 +596,22 @@ function Navbar({ title }) {
 
                                 <div className="avatar profile-menu-avatar">
 
-                                    {profile?.photoUrl ? (
+                                    {hasProfileImage ? (
 
                                         <img
-                                            src={
-                                                profile.photoUrl
-                                            }
-                                            alt={
-                                                getDisplayName()
-                                            }
+                                            src={profile.photoUrl}
+                                            alt=""
                                             className="navbar-avatar-image"
+                                            onError={() => {
+                                                setProfileImageError(true);
+                                            }}
                                         />
 
                                     ) : (
 
-                                        getInitial()
+                                        <span className="navbar-avatar-initial">
+                                            {getInitial()}
+                                        </span>
 
                                     )}
 
@@ -632,17 +695,21 @@ function Navbar({ title }) {
 
                             </button>
 
+
                         </div>
 
                     )}
 
+
                 </div>
+
 
             </div>
 
         </header>
 
     );
+
 }
 
 
