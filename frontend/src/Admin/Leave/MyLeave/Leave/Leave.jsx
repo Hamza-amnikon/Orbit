@@ -13,6 +13,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
 
 import LeaveService from "../../../Services/LeaveService";
 import api from "../../../Services/api";
@@ -45,6 +46,7 @@ const Leave = () => {
     const permissionRoute = "/leave/my-leave";
     const canView = hasPermission(permissionRoute, "view");
     const canCreate = hasPermission(permissionRoute, "create");
+    const canEdit = hasPermission(permissionRoute, "edit");
 
     // =========================================================
     // STATE
@@ -55,6 +57,9 @@ const [profile, setProfile] = useState(null);
     const [leaveTypes, setLeaveTypes] = useState([]);
     const [openViewLeaveDialog, setOpenViewLeaveDialog] = useState(false);
     const [selectedLeave, setSelectedLeave] = useState(null);
+    const [editingLeave, setEditingLeave] = useState(null);
+    const [documentLoading, setDocumentLoading] = useState(false);
+    const [documentError, setDocumentError] = useState("");
     const [leavePolicies, setLeavePolicies] = useState([]);
     const [leaveBalances, setLeaveBalances] = useState([]);
 const [employeeShifts, setEmployeeShifts] = useState([]);
@@ -1346,11 +1351,24 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
 
 
     // =========================================================
-    // TODAY
+    // LEAVE DATE RANGE
     // =========================================================
 
+    const today = new Date();
+
     const todayString =
-        new Date()
+        today
+            .toISOString()
+            .split("T")[0];
+
+    // Allow leave to be applied up to 7 calendar days back.
+    const oneWeekBackDate = new Date(today);
+    oneWeekBackDate.setDate(
+        oneWeekBackDate.getDate() - 7
+    );
+
+    const minLeaveDate =
+        oneWeekBackDate
             .toISOString()
             .split("T")[0];
 
@@ -1979,6 +1997,7 @@ return null;
             return;
         }
 
+        setEditingLeave(null);
         setFormError("");
 
         setLeaveForm({
@@ -2004,6 +2023,7 @@ return null;
         }
 
         setOpenLeaveDialog(false);
+        setEditingLeave(null);
         setFormError("");
     };
 
@@ -2060,7 +2080,11 @@ return null;
     const handleSubmitLeave =
         async () => {
 
-            if (!canCreate) {
+            if (editingLeave) {
+                if (!canEdit) {
+                    return;
+                }
+            } else if (!canCreate) {
                 return;
             }
 
@@ -2146,6 +2170,25 @@ return null;
 
 
             // =====================================================
+            // BACKDATED LEAVE VALIDATION
+            // =====================================================
+
+            const minimumAllowedDate =
+                new Date(`${minLeaveDate}T00:00:00`);
+
+            const selectedFromDate =
+                new Date(`${leaveForm.fromDate}T00:00:00`);
+
+            if (selectedFromDate < minimumAllowedDate) {
+                setFormError(
+                    "Leave can be applied only for today or up to 7 days back."
+                );
+
+                return;
+            }
+
+
+            // =====================================================
             // WEEK OFF VALIDATION
             // =====================================================
             // A Week Off is not a working day and should never
@@ -2194,9 +2237,13 @@ return null;
             }
 
 
+            const hasExistingDocument =
+                !!editingLeave?.documentPath;
+
             if (
                 requiresDocument &&
-                !leaveForm.document
+                !leaveForm.document &&
+                !hasExistingDocument
             ) {
 
                 setFormError(
@@ -2262,12 +2309,20 @@ return null;
 
                 setSubmittingLeave(true);
 
-                await LeaveService.applyLeave(
-                    leaveData
-                );
+                if (editingLeave?.leaveId) {
+                    await LeaveService.updateLeave(
+                        editingLeave.leaveId,
+                        leaveData
+                    );
+                } else {
+                    await LeaveService.applyLeave(
+                        leaveData
+                    );
+                }
 
 
                 setOpenLeaveDialog(false);
+                setEditingLeave(null);
 
 
                 setLeaveForm({
@@ -2294,7 +2349,9 @@ return null;
                 const message =
                     submitError?.response?.data?.message ||
                     submitError?.response?.data ||
-                    "Unable to submit leave request. Please try again.";
+                    (editingLeave
+                        ? "Unable to update leave request. Please try again."
+                        : "Unable to submit leave request. Please try again.");
 
                 setFormError(
                     typeof message ===
@@ -2315,7 +2372,108 @@ return null;
 // =========================================================
 const handleViewLeave = (leave) => {
     setSelectedLeave(leave);
+    setDocumentError("");
+    setDocumentLoading(false);
     setOpenViewLeaveDialog(true);
+};
+
+// =========================================================
+// EDIT LEAVE REQUEST
+// =========================================================
+const handleEditLeave = (leave) => {
+    if (!canEdit) {
+        return;
+    }
+
+    const status = String(leave?.status || "")
+        .trim()
+        .toLowerCase();
+
+    if (status !== "pending") {
+        setDocumentError("Only pending leave requests can be edited.");
+        return;
+    }
+
+    setOpenViewLeaveDialog(false);
+    setDocumentError("");
+    setDocumentLoading(false);
+    setEditingLeave(leave);
+    setFormError("");
+
+    setLeaveForm({
+        leaveTypeId: String(leave.leaveTypeId ?? ""),
+        fromDate: leave.fromDate
+            ? String(leave.fromDate).substring(0, 10)
+            : "",
+        toDate: leave.toDate
+            ? String(leave.toDate).substring(0, 10)
+            : "",
+        reason: leave.reason || "",
+        document: null,
+    });
+
+    setOpenLeaveDialog(true);
+};
+
+// =========================================================
+// VIEW ATTACHED LEAVE DOCUMENT
+// =========================================================
+const handleViewLeaveDocument = async () => {
+    const leaveId = selectedLeave?.leaveId ?? selectedLeave?.LeaveId;
+
+    if (!leaveId) {
+        setDocumentError("Leave ID was not found.");
+        return;
+    }
+
+    try {
+        setDocumentLoading(true);
+        setDocumentError("");
+
+        const blob = await LeaveService.getLeaveDocument(
+            leaveId
+        );
+
+        if (!blob) {
+            throw new Error("Document was not returned by the server.");
+        }
+
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        const newWindow = window.open(
+            blobUrl,
+            "_blank",
+            "noopener,noreferrer"
+        );
+
+        if (!newWindow) {
+            window.URL.revokeObjectURL(blobUrl);
+            throw new Error(
+                "Popup was blocked by the browser. Please allow popups for this site."
+            );
+        }
+
+        // Keep the object URL alive long enough for the new tab to load.
+        setTimeout(() => {
+            window.URL.revokeObjectURL(blobUrl);
+        }, 60000);
+    } catch (error) {
+        console.error("View Leave Document Error:", error);
+
+        let message = "Unable to open the attached document.";
+
+        if (error?.response?.status === 404) {
+            message = "No document was found for this leave request.";
+        } else if (error?.response?.status === 409) {
+            message = "The document is still pending approval.";
+        } else if (error?.message) {
+            message = error.message;
+        }
+
+        setDocumentError(message);
+    } finally {
+        setDocumentLoading(false);
+    }
 };
 
 // =========================================================
@@ -2324,6 +2482,8 @@ const handleViewLeave = (leave) => {
 const closeViewLeaveDialog = () => {
     setOpenViewLeaveDialog(false);
     setSelectedLeave(null);
+    setDocumentError("");
+    setDocumentLoading(false);
 };
     // =========================================================
     // VIEW PERMISSION
@@ -3847,7 +4007,9 @@ const closeViewLeaveDialog = () => {
                                 fontSize: 20,
                             }}
                         >
-                            Apply for Leave
+                            {editingLeave
+                                ? "Edit Leave Request"
+                                : "Apply for Leave"}
                         </Typography>
 
                         <Typography
@@ -3857,7 +4019,9 @@ const closeViewLeaveDialog = () => {
                                 mt: 0.4,
                             }}
                         >
-                            Submit a new leave request
+                            {editingLeave
+                                ? "Update your pending leave request"
+                                : "Submit a new leave request"}
                         </Typography>
 
                     </Box>
@@ -3981,7 +4145,7 @@ const closeViewLeaveDialog = () => {
             onChange={handleLeaveFormChange}
             slotProps={{
                 htmlInput: {
-                    min: todayString,
+                    min: minLeaveDate,
                 },
             }}
             disabled={submittingLeave}
@@ -4005,7 +4169,7 @@ const closeViewLeaveDialog = () => {
                 htmlInput: {
                     min:
                         leaveForm.fromDate ||
-                        todayString,
+                        minLeaveDate,
                 },
             }}
             disabled={submittingLeave}
@@ -4088,7 +4252,7 @@ const closeViewLeaveDialog = () => {
 
                         {/* DOCUMENT */}
 
-                        {requiresDocument && (
+                        {(requiresDocument || editingLeave?.documentPath) && (
 
                             <Box>
 
@@ -4110,11 +4274,23 @@ const closeViewLeaveDialog = () => {
                                         mb: 1.5,
                                     }}
                                 >
-                                    This leave type
-                                    requires a
-                                    supporting document.
+                                    {editingLeave?.documentPath
+                                        ? "You can keep the existing document or choose a new document to replace it."
+                                        : "This leave type requires a supporting document."}
                                 </Typography>
 
+
+                                {editingLeave?.documentPath && !leaveForm.document && (
+                                    <Typography
+                                        sx={{
+                                            fontSize: 12,
+                                            color: "#475569",
+                                            mb: 1,
+                                        }}
+                                    >
+                                        Existing document attached. Choose a new file below to replace it.
+                                    </Typography>
+                                )}
 
                                 <Button
                                     variant="outlined"
@@ -4214,8 +4390,8 @@ const closeViewLeaveDialog = () => {
                         >
                             {
                                 submittingLeave
-                                    ? "Submitting..."
-                                    : "Submit Request"
+                                    ? (editingLeave ? "Updating..." : "Submitting...")
+                                    : (editingLeave ? "Update Request" : "Submit Request")
                             }
                         </Button>
                     )}
@@ -4556,7 +4732,73 @@ const closeViewLeaveDialog = () => {
                     </div>
                 </div>
 
+                {/* Supporting Document */}
+                {selectedLeave.documentPath && (
+                    <div>
+                        <div
+                            style={{
+                                fontSize: "12px",
+                                color: "#64748b",
+                                marginBottom: "8px",
+                            }}
+                        >
+                            Supporting Document
+                        </div>
 
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "12px",
+                                padding: "12px 14px",
+                                border: "1px solid #e2e8f0",
+                                borderRadius: "8px",
+                                background: "#f8fafc",
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontSize: "14px",
+                                    fontWeight: 600,
+                                    color: "#334155",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap",
+                                }}
+                            >
+                                Attached Document
+                            </Typography>
+
+                            <Button
+                                variant="outlined"
+                                size="small"
+                                startIcon={
+                                    documentLoading ? (
+                                        <CircularProgress size={16} />
+                                    ) : (
+                                        <VisibilityIcon />
+                                    )
+                                }
+                                onClick={handleViewLeaveDocument}
+                                disabled={documentLoading}
+                            >
+                                {documentLoading
+                                    ? "Opening..."
+                                    : "View Document"}
+                            </Button>
+                        </div>
+
+                        {documentError && (
+                            <Alert
+                                severity="error"
+                                sx={{ mt: 1 }}
+                            >
+                                {documentError}
+                            </Alert>
+                        )}
+                    </div>
+                )}
 
             </div>
         )}
@@ -4571,8 +4813,28 @@ const closeViewLeaveDialog = () => {
     <DialogActions
         sx={{
             padding: "12px 20px",
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
         }}
     >
+        {canEdit &&
+            String(selectedLeave?.status || "")
+                .toLowerCase() === "pending" && (
+            <Button
+                onClick={() => handleEditLeave(selectedLeave)}
+                variant="outlined"
+                startIcon={<EditIcon />}
+                sx={{
+                    textTransform: "none",
+                    borderRadius: "8px",
+                    fontWeight: 600,
+                }}
+            >
+                Edit
+            </Button>
+        )}
+
         <Button
             onClick={closeViewLeaveDialog}
             variant="contained"

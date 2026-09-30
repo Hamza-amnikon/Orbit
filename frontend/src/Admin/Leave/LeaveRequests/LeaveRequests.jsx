@@ -118,6 +118,12 @@ export default function LeaveRequests() {
 
     const [viewLeave, setViewLeave] = useState(null);
 
+    // Supporting document for the View Leave Request popup
+    const [viewDocumentUrl, setViewDocumentUrl] = useState("");
+    const [viewDocumentType, setViewDocumentType] = useState("");
+    const [viewDocumentLoading, setViewDocumentLoading] = useState(false);
+    const [viewDocumentError, setViewDocumentError] = useState("");
+
     const [statusFilter, setStatusFilter] = useState(
         searchParams.get("status") || "All"
     );
@@ -196,6 +202,85 @@ async function loadLeaves() {
             console.error("Shift Error:", error);
             setAllShifts([]);
         }
+    }
+
+    // ==========================================================
+    // LOAD SUPPORTING DOCUMENT FOR VIEW POPUP
+    // ==========================================================
+
+    useEffect(() => {
+        let objectUrl = null;
+
+        async function loadViewDocument() {
+            if (!viewLeave?.leaveId) {
+                setViewDocumentUrl("");
+                setViewDocumentType("");
+                setViewDocumentError("");
+                setViewDocumentLoading(false);
+                return;
+            }
+
+            setViewDocumentLoading(true);
+            setViewDocumentError("");
+            setViewDocumentUrl("");
+            setViewDocumentType("");
+
+            try {
+                const response = await axios.get(
+                    `${LEAVE_API}/${viewLeave.leaveId}/document`,
+                    {
+                        ...getAuthConfig(),
+                        responseType: "blob"
+                    }
+                );
+
+                const contentType =
+                    response?.headers?.["content-type"] ||
+                    response?.data?.type ||
+                    "application/octet-stream";
+
+                objectUrl = URL.createObjectURL(response.data);
+
+                setViewDocumentUrl(objectUrl);
+                setViewDocumentType(contentType);
+            } catch (error) {
+                console.error(
+                    "Leave supporting document load error:",
+                    error
+                );
+
+                setViewDocumentUrl("");
+                setViewDocumentType("");
+
+                if (error?.response?.status === 404) {
+                    setViewDocumentError(
+                        "No supporting document is attached to this leave request."
+                    );
+                } else {
+                    setViewDocumentError(
+                        "Unable to load the supporting document."
+                    );
+                }
+            } finally {
+                setViewDocumentLoading(false);
+            }
+        }
+
+        loadViewDocument();
+
+        return () => {
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
+    }, [viewLeave?.leaveId]);
+
+    function closeViewLeave() {
+        setViewLeave(null);
+        setViewDocumentUrl("");
+        setViewDocumentType("");
+        setViewDocumentError("");
+        setViewDocumentLoading(false);
     }
 
     // ==========================================================
@@ -1462,11 +1547,7 @@ approvedByEmployeeCode: currentEmployeeCode,
                             <button
                                 type="button"
                                 className="leave-modal-close"
-                                onClick={() =>
-                                    setViewLeave(
-                                        null
-                                    )
-                                }
+                                onClick={closeViewLeave}
                             >
                                 ×
                             </button>
@@ -1642,6 +1723,52 @@ approvedByEmployeeCode: currentEmployeeCode,
 
                             </div>
 
+{/* Supporting Document - show only when a document exists */}
+{(viewDocumentLoading || viewDocumentUrl) && (
+    <div
+        className="leave-detail-section"
+        style={{
+            marginTop: "16px",
+            paddingTop: "16px",
+            borderTop: "1px solid #e5e7eb"
+        }}
+    >
+        <span
+            style={{
+                display: "block",
+                fontWeight: 600,
+                marginBottom: "10px"
+            }}
+        >
+            Supporting Document
+        </span>
+
+        {viewDocumentLoading ? (
+            <Typography
+                variant="body2"
+                color="text.secondary"
+            >
+                Loading document...
+            </Typography>
+        ) : viewDocumentUrl ? (
+            <Button
+                variant="outlined"
+                component="a"
+                href={viewDocumentUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                    textTransform: "none",
+                    borderRadius: "8px",
+                    fontWeight: 600
+                }}
+            >
+                View / Open Document
+            </Button>
+        ) : null}
+    </div>
+)}
+
 {/* Approval / Rejection Information */}
 
 {viewLeave.status !== "Pending" && (
@@ -1719,11 +1846,7 @@ approvedByEmployeeCode: currentEmployeeCode,
                             <button
                                 type="button"
                                 className="modal-cancel-btn"
-                                onClick={() =>
-                                    setViewLeave(
-                                        null
-                                    )
-                                }
+                                onClick={closeViewLeave}
                             >
                                 Close
                             </button>

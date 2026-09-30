@@ -56,10 +56,9 @@ import {
    BILL API
 ============================================================ */
 
-const BILL_API_BASE_URL = "https://localhost:7008";
+const BILL_API_BASE_URL = "http://localhost:5016";
 const EMPLOYEE_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
-const APPROVAL_API_BASE_URL =
-    "https://localhost:7128";
+const APPROVAL_API = "https://sparkapi.amnikontechnologies.com:7128/api";
 
 const Bill = () => {
 
@@ -171,6 +170,12 @@ const [showVendorForm, setShowVendorForm] = useState(false);
 
   const [billForm, setBillForm] =
     useState(emptyBillForm);
+
+  // Supporting document selected while creating a bill
+  const [billDocument, setBillDocument] = useState(null);
+  const [billDocumentUrl, setBillDocumentUrl] = useState("");
+  const [billDocumentName, setBillDocumentName] = useState("");
+  const [loadingBillDocument, setLoadingBillDocument] = useState(false);
 
 const [vendors, setVendors] = useState([]);
   /* ==========================================================
@@ -465,6 +470,7 @@ useEffect(() => {
     });
 
     setSelectedBill(null);
+    setBillDocument(null);
 
     setError("");
 
@@ -484,6 +490,7 @@ useEffect(() => {
     setBillForm({
       ...emptyBillForm,
     });
+    setBillDocument(null);
 
   };
 
@@ -612,60 +619,79 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
 
 
 
+      // ------------------------------------------------------------
+      // Send bill + optional supporting document as multipart/form-data
+      // ------------------------------------------------------------
+      const formData = new FormData();
+
+      formData.append(
+        "billNumber",
+        billForm.billNumber.trim()
+      );
+
+      formData.append(
+        "vendorId",
+        String(Number(billForm.vendorId))
+      );
+
+      formData.append(
+        "category",
+        billForm.category.trim()
+      );
+
+      formData.append(
+        "invoiceNumber",
+        billForm.invoiceNumber.trim()
+      );
+
+      formData.append(
+        "billDate",
+        billForm.billDate
+      );
+
+      // The Create Bill form does not currently show a separate Due Date.
+      // Use the Bill Date so the backend never receives a Due Date earlier than Bill Date.
+      formData.append(
+        "dueDate",
+        billForm.dueDate || billForm.billDate
+      );
+
+      formData.append(
+        "amount",
+        String(Number(billForm.amount))
+      );
+
+      formData.append(
+        "description",
+        billForm.description.trim()
+      );
+
+      formData.append(
+        "employeeId",
+        String(Number(currentEmployeeId))
+      );
+
+      if (billDocument) {
+        formData.append(
+          "document",
+          billDocument,
+          billDocument.name
+        );
+      }
+
       const response = await fetch(
         `${BILL_API_BASE_URL}/api/Bill`,
         {
           method: "POST",
-
           headers: {
-
-            "Content-Type":
-              "application/json",
-
             ...(token
               ? {
                   Authorization:
                     `Bearer ${token}`,
                 }
               : {}),
-
           },
-
-          body: JSON.stringify({
-
-            billNumber:
-              billForm.billNumber.trim(),
-
-            vendorId:
-              Number(billForm.vendorId),
-
-            category:
-              billForm.category.trim(),
-
-            invoiceNumber:
-              billForm.invoiceNumber.trim() ||
-              null,
-
-            billDate:
-              billForm.billDate,
-
-            // The Create Bill form does not currently show a separate Due Date.
-            // Use the Bill Date so the backend never receives a Due Date earlier than Bill Date.
-            dueDate:
-              billForm.dueDate ||
-              billForm.billDate,
-
-            amount:
-              Number(billForm.amount),
-
-            description:
-              billForm.description.trim() ||
-              null,
-
-              employeeId: Number(currentEmployeeId),
-
-          }),
-
+          body: formData,
         }
       );
 
@@ -692,6 +718,7 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
       setBillForm({
         ...emptyBillForm,
       });
+      setBillDocument(null);
 
 
 
@@ -936,10 +963,31 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
   }, [selectedBill]);
 
   /* ==========================================================
+     CLEAN UP BILL DOCUMENT PREVIEW URL
+  ========================================================== */
+
+  useEffect(() => {
+    return () => {
+      if (billDocumentUrl) {
+        URL.revokeObjectURL(billDocumentUrl);
+      }
+    };
+  }, [billDocumentUrl]);
+
+  /* ==========================================================
      VIEW BILL
   ========================================================== */
 
-const handleViewBill = (bill) => {
+const handleViewBill = async (bill) => {
+  // Clean up the previous document preview URL.
+  if (billDocumentUrl) {
+    URL.revokeObjectURL(billDocumentUrl);
+  }
+
+  setBillDocumentUrl("");
+  setBillDocumentName("");
+  setLoadingBillDocument(true);
+
   setSelectedBill(bill);
 
   setOriginalPaymentStatus(
@@ -952,6 +1000,53 @@ const handleViewBill = (bill) => {
   setShowEditModal(false);
 
   setShowViewModal(true);
+
+  // Load the document from BillService. A 404 simply means
+  // this bill does not have a supporting document.
+  try {
+    const token =
+      localStorage.getItem("token") ||
+      localStorage.getItem("accessToken");
+
+    const response = await fetch(
+      `${BILL_API_BASE_URL}/api/Bill/${bill.billId}/document`,
+      {
+        headers: {
+          ...(token
+            ? { Authorization: `Bearer ${token}` }
+            : {}),
+        },
+      }
+    );
+
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      setBillDocumentUrl(url);
+
+      const contentDisposition =
+        response.headers.get("content-disposition") || "";
+
+      const fileNameMatch =
+        contentDisposition.match(
+          /filename[^;=\\n]*=((['"]).*?\\2|[^;\\n]*)/i
+        );
+
+      const fileName =
+        fileNameMatch?.[1]
+          ?.replace(/^["']|["']$/g, "")
+          ?.trim() ||
+        bill.documentName ||
+        "Upload Bill";
+
+      setBillDocumentName(fileName);
+    }
+  } catch (err) {
+    console.error("Failed to load bill document:", err);
+  } finally {
+    setLoadingBillDocument(false);
+  }
 };
 
 
@@ -1225,10 +1320,10 @@ const handleEditBill = (bill) => {
       return;
     }
 
-    if (!APPROVAL_API_BASE_URL) {
-      setError("Approval API URL is not configured. Set VITE_APPROVAL_API_BASE_URL in the frontend environment.");
-      return;
-    }
+if (!APPROVAL_API) {
+  setError("Approval API URL is not configured.");
+  return;
+}
 
     try {
       setSavingStatus(true);
@@ -1251,7 +1346,7 @@ const handleEditBill = (bill) => {
       //    ApprovalService exposes GET /api/Approval.
       // ------------------------------------------------------------
       const approvalsResponse = await fetch(
-        `${APPROVAL_API_BASE_URL}/api/Approval`,
+        `${APPROVAL_API}/Approval`,
         { headers: authHeaders }
       );
 
@@ -1374,7 +1469,7 @@ const handleEditBill = (bill) => {
         newStatus === "Approved" ? "approve" : "reject";
 
 const approvalResponse = await fetch(
-    `${APPROVAL_API_BASE_URL}/api/Approval/${approvalId}/${approvalAction}`,
+    `${APPROVAL_API}/Approval/${approvalId}/${approvalAction}`,
     {
         method: "PUT",
         headers: authHeaders,
@@ -1479,11 +1574,21 @@ const approvalResponse = await fetch(
     // No payment change - simply close the modal.
     if (!hasPaymentChanged) {
       setShowViewModal(false);
+      if (billDocumentUrl) {
+        URL.revokeObjectURL(billDocumentUrl);
+      }
+      setBillDocumentUrl("");
+      setBillDocumentName("");
       return;
     }
 
     if (selectedBill.status !== "Approved") {
       setShowViewModal(false);
+      if (billDocumentUrl) {
+        URL.revokeObjectURL(billDocumentUrl);
+      }
+      setBillDocumentUrl("");
+      setBillDocumentName("");
       return;
     }
 
@@ -1555,6 +1660,11 @@ const approvalResponse = await fetch(
 
       setOriginalPaymentStatus(currentPaymentStatus);
       setShowViewModal(false);
+      if (billDocumentUrl) {
+        URL.revokeObjectURL(billDocumentUrl);
+      }
+      setBillDocumentUrl("");
+      setBillDocumentName("");
 
     } catch (err) {
       console.error(
@@ -3006,6 +3116,7 @@ const approvalResponse = await fetch(
                 onChange={handleBillFormChange}
                 size="small"
                 disabled={savingBill}
+                className="bill-form-date-input"
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -3047,6 +3158,111 @@ const approvalResponse = await fetch(
                   },
                 }}
               />
+
+              {/* SUPPORTING DOCUMENT */}
+              <Box
+                sx={{
+                  gridColumn: {
+                    xs: "1",
+                    sm: "1 / -1",
+                  },
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "6px",
+                  p: 1.25,
+                  backgroundColor: "#f8fafc",
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    color: "#475569",
+                    mb: 0.8,
+                  }}
+                >
+                  {/* Upload Bill */}
+                </Typography>
+
+                <Button
+                  component="label"
+                  variant="outlined"
+                  size="small"
+                  disabled={savingBill}
+                  sx={{
+                    textTransform: "none",
+                    fontSize: "11px",
+                    borderRadius: "6px",
+                    borderColor: "#cbd5e1",
+                    color: "#475569",
+                  }}
+                >
+                  Attach Bill
+                  <input
+                    type="file"
+                    hidden
+                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                    onChange={(e) => {
+                      const file =
+                        e.target.files?.[0] || null;
+
+                      if (!file) {
+                        setBillDocument(null);
+                        return;
+                      }
+
+                      const allowedTypes = [
+                        "application/pdf",
+                        "image/jpeg",
+                        "image/png",
+                        "application/msword",
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                      ];
+
+                      const extensionAllowed =
+                        /\.(pdf|jpg|jpeg|png|doc|docx)$/i.test(
+                          file.name
+                        );
+
+                      if (
+                        !allowedTypes.includes(file.type) &&
+                        !extensionAllowed
+                      ) {
+                        setError(
+                          "Only PDF, JPG, JPEG, PNG, DOC or DOCX files are allowed."
+                        );
+                        e.target.value = "";
+                        setBillDocument(null);
+                        return;
+                      }
+
+                      if (file.size > 2 * 1024 * 1024) {
+                        setError(
+                          "Supporting document must be 2 MB or smaller."
+                        );
+                        e.target.value = "";
+                        setBillDocument(null);
+                        return;
+                      }
+
+                      setError("");
+                      setBillDocument(file);
+                    }}
+                  />
+                </Button>
+
+                {billDocument && (
+                  <Typography
+                    sx={{
+                      mt: 0.8,
+                      fontSize: "11px",
+                      color: "#64748b",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    Selected: <strong>{billDocument.name}</strong>
+                  </Typography>
+                )}
+              </Box>
             </Box>
           </DialogContent>
 
@@ -3331,6 +3547,53 @@ const approvalResponse = await fetch(
 
                 </div>
 
+                {/* BILL ATTACHMENT */}
+                {(loadingBillDocument || billDocumentUrl) && (
+                  <div className="bill-details-full">
+                    <label>Bill Attachment</label>
+
+                    {loadingBillDocument ? (
+                      <p>Loading document...</p>
+                    ) : (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          flexWrap: "wrap",
+                          mt: 0.5,
+                        }}
+                      >
+                        <Button
+                          type="button"
+                          variant="outlined"
+                          size="small"
+                          onClick={() => {
+                            if (billDocumentUrl) {
+                              window.open(
+                                billDocumentUrl,
+                                "_blank",
+                                "noopener,noreferrer"
+                              );
+                            }
+                          }}
+                          sx={{
+                            textTransform: "none",
+                            fontSize: "11px",
+                            height: "30px",
+                            borderRadius: "6px",
+                            borderColor: "#bfdbfe",
+                            color: "#2563eb",
+                            backgroundColor: "#eff6ff",
+                          }}
+                        >
+                          View Document
+                        </Button>
+                      </Box>
+                    )}
+                  </div>
+                )}
+
                 {selectedBill.status === "Approved" && (
                   <div className="bill-details-full bill-approval-details">
                     <label>Approved By</label>
@@ -3365,7 +3628,7 @@ const approvalResponse = await fetch(
                   onClick={handleCloseViewModal}
                   disabled={savingPayment}
                 >
-                  {savingPayment ? "Updating..." : "Update"}
+                  {savingPayment ? "Updating..." : "Cancel"}
                 </button>
 
 
@@ -3831,11 +4094,12 @@ const approvalResponse = await fetch(
           onChange={handleBillFormChange}
           size="small"
           disabled={savingBill}
-slotProps={{
-  inputLabel: {
-    shrink: true,
-  },
-}}
+          className="bill-form-date-input"
+          slotProps={{
+            inputLabel: {
+              shrink: true,
+            },
+          }}
         />
 
         {/* AMOUNT */}

@@ -262,6 +262,19 @@
 /* ============================================================
    DATE INPUT
 ============================================================ */
+/* ============================================================
+   BILL FORM DATE INPUT
+   Hide the browser date placeholder until the field is clicked.
+============================================================ */
+
+.bill-form-date-input input[type="date"]:not(:focus):not(:valid) {
+  color: transparent;
+}
+
+.bill-form-date-input input[type="date"]:focus {
+  color: inherit;
+}
+
 
 .bill-date-input {
   position: relative;
