@@ -37,25 +37,6 @@ const LeaveService = {
 
   // =========================================================
   // GET APPROVAL DETAILS BY LEAVE REQUEST ID
-  //
-  // Example:
-  // Leave ID = 8
-  //
-  // GET:
-  // https://sparkapi.amnikontechnologies.com:7128/api/Approval/request/8
-  //
-  // Returns:
-  // {
-  //   approvalRequestId: 3,
-  //   requestType: "Leave",
-  //   requestId: 8,
-  //   employeeId: 37,
-  //   currentApproverId: 31,
-  //   approvalLevel: 3,
-  //   status: "Pending",
-  //   requestedDate: "...",
-  //   actionDate: null
-  // }
   // =========================================================
 
   getApprovalByRequestId: async (requestId) => {
@@ -67,26 +48,24 @@ const LeaveService = {
       }
 
       const response = await axios.get(
-        `${APPROVAL_API_URL}/Approval/request/${requestId}`,
+        `${APPROVAL_API_URL}/Approval/request/${requestId}`
       );
 
       console.log("Approval Details:", response.data);
 
       return response.data || null;
     } catch (error) {
-      // -------------------------------------------------
-      // Approval record does not exist
-      // -------------------------------------------------
-
       if (error?.response?.status === 404) {
-        console.warn(`No approval request found for Leave ID ${requestId}.`);
+        console.warn(
+          `No approval request found for Leave ID ${requestId}.`
+        );
 
         return null;
       }
 
       console.error(
         `Failed to get approval details for Leave ID ${requestId}:`,
-        error,
+        error
       );
 
       throw error;
@@ -99,9 +78,14 @@ const LeaveService = {
 
   getLeaveBalances: async () => {
     try {
-      const response = await axios.get(`${API_URL}/EmployeeLeaveBalance`);
+      const response = await axios.get(
+        `${API_URL}/EmployeeLeaveBalance`
+      );
 
-      console.log("Employee Leave Balance API Response:", response.data);
+      console.log(
+        "Employee Leave Balance API Response:",
+        response.data
+      );
 
       return Array.isArray(response.data) ? response.data : [];
     } catch (error) {
@@ -123,15 +107,23 @@ const LeaveService = {
 
   getEmployeeLeaveBalances: async (employeeId) => {
     try {
-      const response = await axios.get(`${API_URL}/EmployeeLeaveBalance`);
-
-      const balances = Array.isArray(response.data) ? response.data : [];
-
-      const employeeBalances = balances.filter(
-        (balance) => Number(balance.employeeId) === Number(employeeId),
+      const response = await axios.get(
+        `${API_URL}/EmployeeLeaveBalance`
       );
 
-      console.log("Employee Leave Balances:", employeeBalances);
+      const balances = Array.isArray(response.data)
+        ? response.data
+        : [];
+
+      const employeeBalances = balances.filter(
+        (balance) =>
+          Number(balance.employeeId) === Number(employeeId)
+      );
+
+      console.log(
+        "Employee Leave Balances:",
+        employeeBalances
+      );
 
       return employeeBalances;
     } catch (error) {
@@ -139,7 +131,10 @@ const LeaveService = {
         return [];
       }
 
-      console.error("Failed to get employee leave balances:", error);
+      console.error(
+        "Failed to get employee leave balances:",
+        error
+      );
 
       throw error;
     }
@@ -151,9 +146,13 @@ const LeaveService = {
 
   getLeaveTypes: async () => {
     try {
-      const response = await axios.get(`${API_URL}/LeaveType/active`);
+      const response = await axios.get(
+        `${API_URL}/LeaveType/active`
+      );
 
-      return Array.isArray(response.data) ? response.data : [];
+      return Array.isArray(response.data)
+        ? response.data
+        : [];
     } catch (error) {
       if (error?.response?.status === 404) {
         console.warn("No active leave types found.");
@@ -173,15 +172,22 @@ const LeaveService = {
 
   getAllLeaveTypes: async () => {
     try {
-      const response = await axios.get(`${API_URL}/LeaveType`);
+      const response = await axios.get(
+        `${API_URL}/LeaveType`
+      );
 
-      return Array.isArray(response.data) ? response.data : [];
+      return Array.isArray(response.data)
+        ? response.data
+        : [];
     } catch (error) {
       if (error?.response?.status === 404) {
         return [];
       }
 
-      console.error("Failed to get all leave types:", error);
+      console.error(
+        "Failed to get all leave types:",
+        error
+      );
 
       throw error;
     }
@@ -193,9 +199,13 @@ const LeaveService = {
 
   getLeavePolicies: async () => {
     try {
-      const response = await axios.get(`${API_URL}/LeavePolicy`);
+      const response = await axios.get(
+        `${API_URL}/LeavePolicy`
+      );
 
-      return Array.isArray(response.data) ? response.data : [];
+      return Array.isArray(response.data)
+        ? response.data
+        : [];
     } catch (error) {
       if (error?.response?.status === 404) {
         console.warn("No leave policies found.");
@@ -203,7 +213,10 @@ const LeaveService = {
         return [];
       }
 
-      console.error("Failed to get leave policies:", error);
+      console.error(
+        "Failed to get leave policies:",
+        error
+      );
 
       throw error;
     }
@@ -215,42 +228,24 @@ const LeaveService = {
 
   getLeavePolicyById: async (policyId) => {
     try {
-      const response = await axios.get(`${API_URL}/LeavePolicy/${policyId}`);
-
-      return response.data;
-    } catch (error) {
-      if (error?.response?.status === 404) {
-        console.warn(`Leave policy ${policyId} not found.`);
-
-        return null;
-      }
-
-      console.error("Failed to get leave policy:", error);
-
-      throw error;
-    }
-  },
-
-  // =========================================================
-  // GET APPROVAL DETAILS FOR LEAVE REQUEST
-  // =========================================================
-  getApprovalByRequestId: async (requestId) => {
-    try {
       const response = await axios.get(
-        `https://sparkapi.amnikontechnologies.com:7128/api/Approval/request/${requestId}`,
+        `${API_URL}/LeavePolicy/${policyId}`
       );
 
-      console.log("Approval Details:", response.data);
-
       return response.data;
     } catch (error) {
       if (error?.response?.status === 404) {
-        console.warn(`No approval request found for Leave ID ${requestId}`);
+        console.warn(
+          `Leave policy ${policyId} not found.`
+        );
 
         return null;
       }
 
-      console.error("Failed to get approval details:", error);
+      console.error(
+        "Failed to get leave policy:",
+        error
+      );
 
       throw error;
     }
@@ -270,7 +265,10 @@ const LeaveService = {
 
       console.log("DATA:", leaveData);
 
-      console.log("IS FORMDATA:", leaveData instanceof FormData);
+      console.log(
+        "IS FORMDATA:",
+        leaveData instanceof FormData
+      );
 
       // -------------------------------------------------
       // Debug FormData
@@ -282,7 +280,10 @@ const LeaveService = {
         }
       }
 
-      const response = await axios.post(`${API_URL}/Leave`, leaveData);
+      const response = await axios.post(
+        `${API_URL}/Leave`,
+        leaveData
+      );
 
       console.log("=================================");
       console.log("APPLY LEAVE SUCCESS");
@@ -300,15 +301,66 @@ const LeaveService = {
 
       console.log("ERROR:", error);
 
-      console.log("STATUS:", error?.response?.status);
+      console.log(
+        "STATUS:",
+        error?.response?.status
+      );
 
-      console.log("STATUS TEXT:", error?.response?.statusText);
+      console.log(
+        "STATUS TEXT:",
+        error?.response?.statusText
+      );
 
-      console.log("RESPONSE DATA:", error?.response?.data);
+      console.log(
+        "RESPONSE DATA:",
+        error?.response?.data
+      );
 
-      console.log("VALIDATION ERRORS:", error?.response?.data?.errors);
+      console.log(
+        "VALIDATION ERRORS:",
+        error?.response?.data?.errors
+      );
 
-      console.log("REQUEST DATA:", error?.config?.data);
+      console.log(
+        "REQUEST DATA:",
+        error?.config?.data
+      );
+
+      throw error;
+    }
+  },
+
+  // =========================================================
+  // GET LEAVE DOCUMENT
+  // =========================================================
+  //
+  // Used from:
+  // My Leave -> Recent Leave Request -> View
+  //
+  // The document is fetched using the Leave ID.
+  // It is returned as a Blob so the React page can
+  // open the actual uploaded document in a new tab.
+  // =========================================================
+
+  getLeaveDocument: async (leaveId) => {
+    try {
+      if (!leaveId) {
+        throw new Error("Leave ID is required.");
+      }
+
+      const response = await axios.get(
+        `${API_URL}/Leave/${leaveId}/document`,
+        {
+          responseType: "blob",
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error(
+        `Failed to get document for Leave ID ${leaveId}:`,
+        error
+      );
 
       throw error;
     }
@@ -322,12 +374,15 @@ const LeaveService = {
     try {
       const response = await axios.put(
         `${API_URL}/Leave/${leaveId}`,
-        leaveData,
+        leaveData
       );
 
       return response.data;
     } catch (error) {
-      console.error("Failed to update leave request:", error);
+      console.error(
+        "Failed to update leave request:",
+        error
+      );
 
       throw error;
     }
@@ -341,12 +396,15 @@ const LeaveService = {
     try {
       const response = await axios.put(
         `${API_URL}/Leave/${leaveId}/status`,
-        data,
+        data
       );
 
       return response.data;
     } catch (error) {
-      console.error("Failed to cancel leave:", error);
+      console.error(
+        "Failed to cancel leave:",
+        error
+      );
 
       throw error;
     }

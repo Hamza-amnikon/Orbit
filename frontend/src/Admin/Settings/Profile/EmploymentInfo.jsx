@@ -16,14 +16,9 @@ function EmploymentInfo({ profile }) {
             title="Employment Information"
         >
 
-<InfoRow
-    label="Employee ID"
-    value={profile.azureEmployeeId || "-"}
-/>
-
             <InfoRow
-                label="Employee Code"
-                value={profile.employeeCode || "-"}
+                label="Employee ID"
+                value={profile.azureEmployeeId || "-"}
             />
 
             <InfoRow
