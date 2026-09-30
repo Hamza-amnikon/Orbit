@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import Sidebar from "../Sidebar/Sidebar";
 import Navbar from "../Navbar/Navbar";
@@ -9,7 +9,9 @@ import { useAuth } from "../../../context/AuthContext";
 import "./DashboardLayout.css";
 
 function DashboardLayout() {
+
     const navigate = useNavigate();
+    const location = useLocation();
 
     const {
         sparkAccessGranted,
@@ -17,39 +19,87 @@ function DashboardLayout() {
         profileLoading
     } = useAuth();
 
-    const [onboardingPromptOpen, setOnboardingPromptOpen] = useState(false);
 
     // ==========================================================
-    // SHOW ONBOARDING PROMPT WHEN ACCESS IS NOT GRANTED
+    // ONBOARDING PROMPT STATE
+    // ==========================================================
+
+    const [onboardingPromptOpen, setOnboardingPromptOpen] =
+        useState(false);
+
+
+    // ==========================================================
+    // CHECK IF USER IS CURRENTLY ON DOCUMENTS PAGE
+    // ==========================================================
+
+    const isDocumentsPage =
+        location.pathname === "/settings" &&
+        new URLSearchParams(location.search).get("tab") === "documents";
+
+
+    // ==========================================================
+    // SHOW ONBOARDING PROMPT
     // ==========================================================
 
     useEffect(() => {
-        if (
-            !sparkAccessLoading &&
-            !profileLoading &&
-            !sparkAccessGranted
-        ) {
-            setOnboardingPromptOpen(true);
-        } else if (sparkAccessGranted) {
+
+        // If access has already been granted,
+        // close the prompt.
+        if (sparkAccessGranted) {
+
             setOnboardingPromptOpen(false);
+
+            return;
         }
+
+
+        // Wait until authentication/profile/access
+        // information has finished loading.
+        if (
+            sparkAccessLoading ||
+            profileLoading
+        ) {
+
+            return;
+        }
+
+
+        // If employee is already on the Documents page,
+        // don't cover the upload UI with the popup.
+        if (isDocumentsPage) {
+
+            setOnboardingPromptOpen(false);
+
+            return;
+        }
+
+
+        // Employee does not have full access.
+        setOnboardingPromptOpen(true);
+
     }, [
         sparkAccessGranted,
         sparkAccessLoading,
-        profileLoading
+        profileLoading,
+        isDocumentsPage
     ]);
 
+
     // ==========================================================
-    // OPEN DOCUMENTS TAB DIRECTLY
+    // OPEN DOCUMENTS DIRECTLY
     // ==========================================================
 
     const handleCompleteDocuments = () => {
-        // Close popup
+
+        // Close popup first.
         setOnboardingPromptOpen(false);
 
-        // Open Settings directly on Documents tab
+
+        // Go directly to the Documents tab.
         navigate("/settings?tab=documents");
+
     };
+
 
     // ==========================================================
     // ONBOARDING PROMPT VISIBILITY
@@ -59,14 +109,18 @@ function DashboardLayout() {
         onboardingPromptOpen &&
         !sparkAccessLoading &&
         !profileLoading &&
-        !sparkAccessGranted;
+        !sparkAccessGranted &&
+        !isDocumentsPage;
+
 
     // ==========================================================
     // RENDER
     // ==========================================================
 
     return (
+
         <div className="dashboard-layout">
+
 
             {/* ==================================================
                 SIDEBAR
@@ -74,11 +128,13 @@ function DashboardLayout() {
 
             <Sidebar />
 
+
             {/* ==================================================
                 MAIN AREA
             ================================================== */}
 
             <div className="dashboard-main">
+
 
                 {/* ==================================================
                     NAVBAR
@@ -86,74 +142,134 @@ function DashboardLayout() {
 
                 <Navbar />
 
+
                 {/* ==================================================
                     PAGE CONTENT
                 ================================================== */}
 
                 <main className="dashboard-content">
+
                     <Outlet />
+
                 </main>
 
+
             </div>
+
 
             {/* ==================================================
                 ONBOARDING PROMPT
             ================================================== */}
 
             {showOnboardingPrompt && (
+
                 <div className="onboarding-prompt-overlay">
+
 
                     <div className="onboarding-prompt">
 
-                        {/* WARNING ICON */}
+
+                        {/* ==================================================
+                            WARNING ICON
+                        ================================================== */}
+
                         <div className="onboarding-prompt-icon">
+
                             !
+
                         </div>
 
-                        {/* TITLE */}
+
+                        {/* ==================================================
+                            TITLE
+                        ================================================== */}
+
                         <h2>
+
                             Complete Your Onboarding
+
                         </h2>
 
-                        {/* DESCRIPTION */}
+
+                        {/* ==================================================
+                            DESCRIPTION
+                        ================================================== */}
+
                         <p>
+
                             Your required onboarding documents
                             have not been fully approved yet.
+
                         </p>
+
 
                         <p>
+
                             Please upload and submit all required
                             documents to get full access to Spark.
+
                         </p>
 
-                        {/* REQUIRED DOCUMENTS */}
+
+                        {/* ==================================================
+                            REQUIRED DOCUMENTS
+                        ================================================== */}
+
                         <p className="onboarding-required-text">
+
                             Required documents:
+
                         </p>
+
 
                         <ul className="onboarding-document-list">
-                            <li>Aadhaar</li>
-                            <li>PAN</li>
-                            <li>UAN</li>
-                            <li>Bank</li>
-                            <li>Education Certificate</li>
+
+                            <li>
+                                Aadhaar
+                            </li>
+
+                            <li>
+                                PAN
+                            </li>
+
+                            <li>
+                                UAN
+                            </li>
+
+                            <li>
+                                Bank
+                            </li>
+
+                            <li>
+                                Education Certificate
+                            </li>
+
                         </ul>
 
-                        {/* BUTTON */}
+
+                        {/* ==================================================
+                            SUBMIT DOCUMENTS BUTTON
+                        ================================================== */}
+
                         <button
                             type="button"
                             onClick={handleCompleteDocuments}
                             className="onboarding-prompt-button"
                         >
+
                             Submit Documents
+
                         </button>
+
 
                     </div>
 
                 </div>
+
             )}
 
         </div>
+
     );
 }
 

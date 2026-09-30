@@ -37,19 +37,116 @@ export default function SettingsDashboard() {
 
     // =========================================================
     // ACTIVE TAB
-    //
-    // /settings
-    //              -> personal
-    //
-    // /settings?tab=documents
-    //              -> documents
     // =========================================================
 
-    const initialTab = searchParams.get("tab");
-
     const [activeTab, setActiveTab] = useState(
-        initialTab || "personal"
+        searchParams.get("tab") || "personal"
     );
+
+
+    // =========================================================
+    // UPDATE ACTIVE TAB WHEN URL CHANGES
+    // =========================================================
+
+    useEffect(() => {
+
+        const tab = searchParams.get("tab");
+
+        const validTabs = [
+            "personal",
+            "employment",
+            "contact",
+            "documents",
+            "skills",
+            "timeline"
+        ];
+
+        if (validTabs.includes(tab)) {
+
+            setActiveTab(tab);
+
+        } else {
+
+            setActiveTab("personal");
+
+        }
+
+    }, [searchParams]);
+
+
+    // =========================================================
+    // AUTO SCROLL TO DOCUMENTS
+    //
+    // When:
+    // /settings?tab=documents
+    //
+    // the Documents component is rendered and the page
+    // automatically scrolls down to the Documents section.
+    // =========================================================
+
+    useEffect(() => {
+
+        if (activeTab !== "documents") {
+            return;
+        }
+
+        let scrollAttempts = 0;
+        const maxAttempts = 10;
+
+        const scrollToDocuments = () => {
+
+            const documentsSection =
+                document.getElementById(
+                    "employee-documents-section"
+                );
+
+            if (documentsSection) {
+
+                documentsSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+                return true;
+            }
+
+            return false;
+        };
+
+
+        // Try immediately
+        if (scrollToDocuments()) {
+            return;
+        }
+
+
+        // Documents may need a moment to render.
+        // Retry a few times instead of requiring refresh.
+        const interval = setInterval(() => {
+
+            scrollAttempts++;
+
+            const found = scrollToDocuments();
+
+            if (
+                found ||
+                scrollAttempts >= maxAttempts
+            ) {
+
+                clearInterval(interval);
+
+            }
+
+        }, 150);
+
+
+        return () => {
+
+            clearInterval(interval);
+
+        };
+
+    }, [activeTab]);
 
 
     // =========================================================
@@ -308,9 +405,18 @@ export default function SettingsDashboard() {
 
             {activeTab === "documents" && (
 
-                <Documents
-                    profile={profile}
-                />
+                <div
+                    id="employee-documents-section"
+                    style={{
+                        scrollMarginTop: "20px"
+                    }}
+                >
+
+                    <Documents
+                        profile={profile}
+                    />
+
+                </div>
 
             )}
 
