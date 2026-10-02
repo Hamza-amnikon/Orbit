@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = `${import.meta.env.VITE_ATTENDANCE_API_BASE_URL}/api/Attendance`;
+const API_URL =
+    `${import.meta.env.VITE_ATTENDANCE_API_BASE_URL}/api/Attendance`;
 
 const AttendanceService = {
 
