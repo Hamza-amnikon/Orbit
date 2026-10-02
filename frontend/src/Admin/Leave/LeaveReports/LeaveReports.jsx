@@ -37,9 +37,11 @@ import autoTable from "jspdf-autotable";
 import "./LeaveReports.css";
 import { useAuth } from "../../../context/AuthContext";
 
-const LEAVE_API = "https://sparkapi.amnikontechnologies.com:7206/api/Leave";
-const LEAVE_TYPE_API = "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
-const EMPLOYEE_API = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+const LEAVE_API =
+    `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/Leave`;
+const LEAVE_TYPE_API =
+    `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/LeaveType`;
+const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
 const EMPTY_FILTERS = {
     employeeId: "ALL",

@@ -2,7 +2,7 @@
 // ShiftService.js
 // =====================================================
 
-const SHIFT_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7292";
+const SHIFT_API_BASE_URL =  `${import.meta.env.VITE_SHIFT_API_BASE_URL}/api/Shift`;
 
 
 // =====================================================

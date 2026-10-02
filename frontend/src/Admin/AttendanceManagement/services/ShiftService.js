@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://sparkapi.amnikontechnologies.com:7292/api/Shift";
-
+const API_URL =  `${import.meta.env.VITE_SHIFT_API_BASE_URL}/api/Shift`;
 // =====================================================
 // GET ALL SHIFT ASSIGNMENTS
 // =====================================================

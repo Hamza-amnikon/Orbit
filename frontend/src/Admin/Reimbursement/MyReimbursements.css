@@ -1179,3 +1179,32 @@
     }
 
 }
+
+/* ============================================================
+   MY REIMBURSEMENT - DATE FIELD
+   ============================================================ */
+
+/* Hide dd/mm/yyyy initially */
+.my-reimbursement-form
+input[type="date"]::-webkit-datetime-edit {
+    color: transparent !important;
+}
+
+/* Show dd/mm/yyyy when clicked */
+.my-reimbursement-form
+input[type="date"]:focus::-webkit-datetime-edit {
+    color: #344054 !important;
+}
+
+/* Show selected date */
+.my-reimbursement-form
+input[type="date"]:valid::-webkit-datetime-edit {
+    color: #344054 !important;
+}
+
+/* Keep calendar icon visible */
+.my-reimbursement-form
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 1 !important;
+    cursor: pointer;
+}

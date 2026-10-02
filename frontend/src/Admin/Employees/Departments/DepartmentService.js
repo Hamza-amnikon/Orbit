@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://sparkapi.amnikontechnologies.com:7240/api/Department";
+const API_URL = `${import.meta.env.VITE_DEPARTMENT_API_BASE_URL}/api/Department`;
 
 export const getDepartments = async () => {
   const response = await axios.get(API_URL);

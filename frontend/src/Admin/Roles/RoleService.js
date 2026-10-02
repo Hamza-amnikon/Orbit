@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "https://sparkapi.amnikontechnologies.com:7249/api/Role",
+    baseURL: `${import.meta.env.VITE_ROLE_API_BASE_URL}/api/Role`,
     headers: {
         "Content-Type": "application/json",
     },

@@ -17,8 +17,8 @@ import {
 // API
 // =========================================================
 
-const API_URL = "https://sparkapi.amnikontechnologies.com:7283/api/Hierarchy";
-const EMPLOYEE_API = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+const API_URL = `${import.meta.env.VITE_HIERARCHY_API_BASE_URL}/api/Hierarchy`;
+const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
 // =========================================================
 // COMPONENT

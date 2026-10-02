@@ -40,10 +40,10 @@ import api from "../Services/api";
 // ============================================================
 
 const APPROVAL_API_BASE_URL =
-    "https://sparkapi.amnikontechnologies.com:7128/api";
+    `${import.meta.env.VITE_APPROVAL_API_BASE_URL}/api`;
 
 const EMPLOYEE_API_BASE_URL =
-    "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+    `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
 const BILL_API_BASE_URL =
     "http://localhost:5016";
@@ -1319,10 +1319,10 @@ const Approval = () => {
                         "accessToken"
                     );
 
-                const response =
-                    await axios.get(
-                        `https://sparkapi.amnikontechnologies.com:7206/api/Leave/${leaveId}/document`,
-                        {
+const response =
+    await axios.get(
+        `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/Leave/${leaveId}/document`,
+        {
                             responseType:
                                 "blob",
 

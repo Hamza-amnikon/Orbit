@@ -1144,46 +1144,42 @@ if (!defaultsAlreadyInitialized) {
 // Start from the default personal pages instead of preserving an
 // unrelated saved login page. This guarantees the requested state
 // after a browser refresh for every role.
-Object.keys(loadedLoginPages).forEach((moduleName) => {
-  delete loadedLoginPages[moduleName];
-});
+// DEFAULT LOGIN RADIOS FOR ALL ROLES
+// Apply default login pages ONLY when the role
+// has not been initialized/saved yet.
 
-permissions.forEach((permission) => {
-  if (!isDefaultLoginPage(permission)) {
-    return;
-  }
+if (!defaultsAlreadyInitialized) {
+  permissions.forEach((permission) => {
+    if (!isDefaultLoginPage(permission)) {
+      return;
+    }
 
-  const permissionId = getId(permission);
+    const permissionId = getId(permission);
 
-  if (permissionId === null || permissionId === undefined) {
-    return;
-  }
+    if (permissionId === null || permissionId === undefined) {
+      return;
+    }
 
-  const id = normalizeId(permissionId);
-  const moduleName = getModuleName(permission);
+    const id = normalizeId(permissionId);
+    const moduleName = getModuleName(permission);
 
-  // Personal/My pages get ALL permissions by default.
-  // View is required for the login page, while the remaining actions
-  // are also enabled for My Leave / My Attendance / My Payroll / etc.
-  loadedActions[id] = {
-    ...(loadedActions[id] || {}),
-    view: true,
-    create: true,
-    edit: true,
-    delete: true,
-    approve: true,
-    export: true,
-  };
+    loadedActions[id] = {
+      ...(loadedActions[id] || {}),
+      view: true,
+      create: true,
+      edit: true,
+      delete: true,
+      approve: true,
+      export: true,
+    };
 
-  assignedIds.add(id);
+    assignedIds.add(id);
 
-  // One login radio per module.
-  // If the module has a My page, that page is selected.
-  // For the Policy module, Company Policies is selected.
-  if (!loadedLoginPages[moduleName]) {
-    loadedLoginPages[moduleName] = id;
-  }
-});
+    if (!loadedLoginPages[moduleName]) {
+      loadedLoginPages[moduleName] = id;
+    }
+  });
+}
 
 // ----------------------------------------------------------
 // TICKET + COMPANY POLICY ACCESS FOR EVERY ROLE

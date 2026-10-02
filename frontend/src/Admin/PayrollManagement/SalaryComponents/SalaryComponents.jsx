@@ -39,14 +39,8 @@ import { useAuth } from "../../../context/AuthContext";
 | PAYROLL API
 |--------------------------------------------------------------------------
 |
-| Your PayrollService.API is running on:
-|
-| https://sparkapi.amnikontechnologies.com:5111
-|
-| Do NOT use https://sparkapi.amnikontechnologies.com:7206 here.
-|
 */
-const API_URL = "https://sparkapi.amnikontechnologies.com:5111/api";
+const API_URL = `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
 
 /*
 |--------------------------------------------------------------------------

@@ -42,22 +42,22 @@ function EmployeeEditDialog({
   // =========================================================
 
   const EMPLOYEE_API =
-    "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+    `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
   const EMPLOYEE_TYPE_API =
-    "https://sparkapi.amnikontechnologies.com:7084/api/EmployeeType";
+     `${import.meta.env.VITE_EMPLOYEE_TYPE_API_BASE_URL}/api/EmployeeType`;
 
   const LOCATION_API =
-    "https://sparkapi.amnikontechnologies.com:7281/api/Location/active";
+    `${import.meta.env.VITE_LOCATION_API_BASE_URL}/api/Location/active`;
 
   const DESIGNATION_API =
-    "https://sparkapi.amnikontechnologies.com:7241/api/Designation";
+    `${import.meta.env.VITE_DESIGNATION_API_BASE_URL}/api/Designation`;
 
   const DEPARTMENT_API =
-    "https://sparkapi.amnikontechnologies.com:7240/api/Department";
+   `${import.meta.env.VITE_DEPARTMENT_API_BASE_URL}/api/Department`;
 
   const ROLE_API =
-    "https://sparkapi.amnikontechnologies.com:7249/api/Role/active";
+    `${import.meta.env.VITE_ROLE_API_BASE_URL}/api/Role/active`;
 
   // =========================================================
   // PERSONAL INFORMATION

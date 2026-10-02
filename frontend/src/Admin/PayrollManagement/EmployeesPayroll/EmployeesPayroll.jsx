@@ -35,10 +35,10 @@ import "./EmployeesPayroll.css";
 ========================================================= */
 
 const EMPLOYEE_API =
-    "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+    `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
 const PAYROLL_API =
-    "https://sparkapi.amnikontechnologies.com:5111/api";
+    `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
 
 const EMPLOYEE_SALARIES_API =
     `${PAYROLL_API}/EmployeeSalaries`;
@@ -1523,9 +1523,9 @@ const handleDelete = async (assignment) => {
     if (!confirmed) return;
 
     try {
-        await axios.delete(
-            `https://sparkapi.amnikontechnologies.com:5111/api/EmployeeSalaries/${employeeSalaryId}`
-        );
+await axios.delete(
+    `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api/EmployeeSalaries/${employeeSalaryId}`
+);
 
         // Remove the deleted assignment from the table
         setAssignments((prev) =>

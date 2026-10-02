@@ -148,7 +148,7 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
 
             try {
                 const shiftResponse = await fetch(
-                    "https://sparkapi.amnikontechnologies.com:7292/api/Shift",
+                     `${import.meta.env.VITE_SHIFT_API_BASE_URL}/api/Shift`,
                     {
                         headers: {
                             Accept: "application/json",

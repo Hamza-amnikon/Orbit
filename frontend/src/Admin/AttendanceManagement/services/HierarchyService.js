@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://sparkapi.amnikontechnologies.com:7283/api/Hierarchy";
+const API_URL = `${import.meta.env.VITE_HIERARCHY_API_BASE_URL}/api/Hierarchy`;
 
 const HierarchyService = {
 

@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://sparkapi.amnikontechnologies.com:5111/api";
+const API_BASE_URL = `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
 
 /* ============================================================
    RESPONSE HANDLER

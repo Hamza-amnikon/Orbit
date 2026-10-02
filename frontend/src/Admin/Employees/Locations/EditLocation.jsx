@@ -12,7 +12,7 @@ import {
     Grid
 } from "@mui/material";
 
-const API = "https://sparkapi.amnikontechnologies.com:7281/api/location";
+const API = `${import.meta.env.VITE_LOCATION_API_BASE_URL}/api/location`;
 
 function EditLocation({
     open,

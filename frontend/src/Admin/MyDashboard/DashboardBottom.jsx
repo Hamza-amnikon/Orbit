@@ -9,7 +9,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import DescriptionIcon from "@mui/icons-material/Description";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
-const EVENT_API = "https://sparkapi.amnikontechnologies.com:7234";
+const API_URL = `${import.meta.env.VITE_EVENT_API_BASE_URL}/api/Event`;
 
 function DashboardBottom() {
     const navigate = useNavigate();
@@ -25,18 +25,6 @@ function DashboardBottom() {
         const loadHolidays = async () => {
             try {
                 setLoadingHolidays(true);
-
-                /*
-                 * EventService.API
-                 *
-                 * If your controller route is:
-                 *   [Route("api/[controller]")]
-                 *
-                 * and controller is EventController,
-                 * this becomes:
-                 *
-                 *   https://sparkapi.amnikontechnologies.com:7234/api/Event
-                 */
 
                 const response = await fetch(
                     `${EVENT_API}/api/Event`

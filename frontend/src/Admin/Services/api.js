@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://sparkapi.amnikontechnologies.com:7278/api",
+  baseURL: `${import.meta.env.VITE_AUTH_API_BASE_URL}/api`,
   headers: {
     "Content-Type": "application/json",
   },

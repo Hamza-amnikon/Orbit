@@ -3,10 +3,10 @@
 // ============================================================
 
 const PERMISSION_API =
-  import.meta.env.VITE_PERMISSION_API_URL || "https://sparkapi.amnikontechnologies.com:7146/api";
+  `${import.meta.env.VITE_PERMISSION_API_BASE_URL}/api`;
 
 const ROLE_API =
-  import.meta.env.VITE_ROLE_API_URL || "https://sparkapi.amnikontechnologies.com:7249/api";
+  import.meta.env.VITE_ROLE_API_URL || `${import.meta.env.VITE_ROLE_API_BASE_URL}/api/Role`;
 
 // ============================================================
 // ID HELPER

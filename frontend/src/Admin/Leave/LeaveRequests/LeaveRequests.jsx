@@ -6,10 +6,13 @@ import "./LeaveRequests.css";
 import { useAuth } from "../../../context/AuthContext";
 
 
-const LEAVE_API = "https://sparkapi.amnikontechnologies.com:7206/api/Leave";
-const LEAVE_TYPE_API = "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
+const LEAVE_API =
+    `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/Leave`;
 
-const SHIFT_API = "https://sparkapi.amnikontechnologies.com:7292/api/Shift";
+const LEAVE_TYPE_API =
+    `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/LeaveType`;
+    
+const SHIFT_API =  `${import.meta.env.VITE_SHIFT_API_BASE_URL}/api/Shift`;
 
 
 export default function LeaveRequests() {

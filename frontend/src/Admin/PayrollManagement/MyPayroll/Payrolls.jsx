@@ -45,8 +45,9 @@ import sparkLogo from "../../../Images/amnikon-logo.png";
    API
    ========================================================= */
 
-const PAYROLL_API = "https://sparkapi.amnikontechnologies.com:5111/api";
-const EMPLOYEE_API = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+const PAYROLL_API =
+    `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
+const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
 /* =========================================================
    HELPERS

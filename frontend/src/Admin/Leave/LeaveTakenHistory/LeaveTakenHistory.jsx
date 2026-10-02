@@ -4,8 +4,11 @@ import "./LeaveTakenHistory.css";
 import { useAuth } from "../../../context/AuthContext";
 import * as XLSX from "xlsx";
 
-const LEAVE_API = "https://sparkapi.amnikontechnologies.com:7206/api/Leave";
-const LEAVE_TYPE_API = "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
+const LEAVE_API =
+    `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/Leave`;
+
+const LEAVE_TYPE_API =
+    `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/LeaveType`;
 
 export default function LeaveTakenHistory() {
 

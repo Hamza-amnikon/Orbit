@@ -4,13 +4,13 @@ import axios from "axios";
 // LEAVE SERVICE API
 // =========================================================
 
-const API_URL = "https://sparkapi.amnikontechnologies.com:7206/api";
+const API_URL = `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api`;
 
 // =========================================================
 // APPROVAL SERVICE API
 // =========================================================
 
-const APPROVAL_API_URL = "https://sparkapi.amnikontechnologies.com:7128/api";
+const APPROVAL_API_URL = `${import.meta.env.VITE_APPROVAL_API_BASE_URL}/api`;
 
 const LeaveService = {
   // =========================================================

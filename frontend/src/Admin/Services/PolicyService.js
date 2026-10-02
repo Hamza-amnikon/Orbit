@@ -4,8 +4,7 @@ import axios from "axios";
 // POLICY API
 // ============================================================
 
-const API_URL =
-    "https://sparkapi.amnikontechnologies.com:7112/api/Policy";
+const API_URL = `${import.meta.env.VITE_POLICY_API_BASE_URL}/api/Policy`;
 
 
 // ============================================================

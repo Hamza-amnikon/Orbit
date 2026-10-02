@@ -38,8 +38,7 @@ import LeaveService from "../../Services/LeaveService";
 ========================================================= */
 
 const SHIFT_API_URL =
-    "https://sparkapi.amnikontechnologies.com:7292/api/Shift";
-
+  `${import.meta.env.VITE_SHIFT_API_BASE_URL}/api/Shift`;
 
 /* =========================================================
    COMPONENT

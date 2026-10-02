@@ -12,11 +12,10 @@ import "./HolidayEvents.css";
 
 import { useAuth } from "../../../context/AuthContext";
 
-const EVENT_API =
-    "https://sparkapi.amnikontechnologies.com:7234/api/Event";
+const API_URL = `${import.meta.env.VITE_EVENT_API_BASE_URL}/api/Event`;
 
 const LOCATION_API =
-    "https://sparkapi.amnikontechnologies.com:7281/api/location";
+    `${import.meta.env.VITE_LOCATION_API_BASE_URL}/api/location`;
 
 export default function HolidayEvents() {
 

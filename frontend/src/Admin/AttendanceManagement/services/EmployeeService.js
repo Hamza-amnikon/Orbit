@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+const API_URL = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
 
 const EmployeeService = {

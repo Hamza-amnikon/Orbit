@@ -13,8 +13,8 @@ import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 
-const API_URL = "https://sparkapi.amnikontechnologies.com:7256/api/Document";
-const EMPLOYEE_API_URL = "https://sparkapi.amnikontechnologies.com:7002/api/Employee";
+const API_URL = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
+const EMPLOYEE_API_URL = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
 function DocumentManagement() {
   const { hasPermission } = useAuth();

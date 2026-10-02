@@ -54,7 +54,8 @@ import {
 } from "../Services/ReimbursementService";
 
 
-const API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7282";
+const API_BASE_URL =
+    import.meta.env.VITE_REIMBURSEMENT_API_BASE_URL;
 
 
 const employees = [
@@ -124,32 +125,32 @@ function Reimbursement() {
     const { hasPermission } = useAuth();
 
     const canView = hasPermission(
-        "/reimbursement",
+        "/reimbursements/requests",
         "view"
     );
 
     const canCreate = hasPermission(
-        "/reimbursement",
+        "/reimbursements/requests",
         "create"
     );
 
     const canEdit = hasPermission(
-        "/reimbursement",
+        "/reimbursements/requests",
         "edit"
     );
 
     const canDelete = hasPermission(
-        "/reimbursement",
+        "/reimbursements/requests",
         "delete"
     );
 
     const canApprove = hasPermission(
-        "/reimbursement",
+        "/reimbursements/requests",
         "approve"
     );
 
     const canExport = hasPermission(
-        "/reimbursement",
+        "/reimbursements/requests",
         "export"
     );
 
@@ -184,8 +185,7 @@ function Reimbursement() {
     const [selectedReimbursement, setSelectedReimbursement] =
         useState(null);
 
-    
-    
+
     /*
      * This ID is set ONLY after the PDF has been
      * successfully fetched and opened.
@@ -996,68 +996,50 @@ function Reimbursement() {
         }
 
         if (!formData.employeeId) {
-
             setError(
                 "Please select an employee."
             );
-
             return;
-
         }
 
         if (!formData.category) {
-
             setError(
                 "Please select an expense category."
             );
-
             return;
-
         }
 
         if (!formData.expenseDate) {
-
             setError(
                 "Please select the expense date."
             );
-
             return;
-
         }
 
         if (
             !formData.amount ||
             Number(formData.amount) <= 0
         ) {
-
             setError(
                 "Please enter a valid amount."
             );
-
             return;
-
         }
 
         if (
             !formData.description.trim()
         ) {
-
             setError(
                 "Please enter a description."
             );
-
             return;
-
         }
 
         if (!formData.receipt) {
-
             setError(
                 "Please attach the reimbursement receipt as a PDF."
             );
-
             return;
-
         }
 
         try {
@@ -1997,8 +1979,7 @@ function Reimbursement() {
                         <Box
                             className="reimbursement-form-grid"
                         >
-
-                            {/* EMPLOYEE */}
+                                                        {/* EMPLOYEE */}
 
                             <TextField
                                 fullWidth

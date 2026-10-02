@@ -2,9 +2,10 @@ const authService = {
   login() {
     const frontendUrl = window.location.origin;
 
-    window.location.href = `https://sparkapi.amnikontechnologies.com:7278/api/auth/login?frontend=${encodeURIComponent(
-      frontendUrl,
-    )}`;
+    window.location.href =
+  `${import.meta.env.VITE_AUTH_API_BASE_URL}/api/auth/login?frontend=${encodeURIComponent(
+    frontendUrl,
+  )}`;
   },
 
   logout() {

@@ -10,7 +10,7 @@ import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-const API_URL = "https://sparkapi.amnikontechnologies.com:7249/api/Role";
+const API_URL = `${import.meta.env.VITE_ROLE_API_BASE_URL}/api/Role`;
 
 function RoleForm({
     fetchRoles,

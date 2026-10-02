@@ -5,7 +5,7 @@ import axios from "axios";
 // ============================================================
 
 const API_BASE_URL =
-  "https://sparkapi.amnikontechnologies.com:7282/api/reimbursements";
+  `${import.meta.env.VITE_REIMBURSEMENT_API_BASE_URL}/api/reimbursements`;
 
 // ============================================================
 // AXIOS INSTANCE

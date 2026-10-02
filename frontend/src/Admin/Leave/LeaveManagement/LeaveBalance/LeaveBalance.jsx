@@ -42,13 +42,13 @@ import {
 } from "@mui/icons-material";
 
 const BALANCE_API =
-  "https://sparkapi.amnikontechnologies.com:7206/api/EmployeeLeaveBalance";
+    `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/EmployeeLeaveBalance`;
 
 const LEAVE_TYPE_API =
-  "https://sparkapi.amnikontechnologies.com:7206/api/LeaveType";
+    `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/LeaveType`;
 
 const LEAVE_SYNC_API =
-  "https://sparkapi.amnikontechnologies.com:7206/api/Leave/assign-to-all";
+    `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/Leave/assign-to-all`;
 
 export default function LeaveBalance() {
 

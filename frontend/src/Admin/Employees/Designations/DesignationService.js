@@ -4,7 +4,7 @@ import axios from "axios";
 // API
 // =========================================================
 
-const API_URL = "https://sparkapi.amnikontechnologies.com:7241/api/Designation";
+const API_URL = `${import.meta.env.VITE_DESIGNATION_API_BASE_URL}/api/Designation`;
 
 // =========================================================
 // AUTH CONFIG

@@ -34,7 +34,7 @@ import { useAuth } from "../../../context/AuthContext";
 function Locations() {
   const navigate = useNavigate();
 
-  const API = "https://sparkapi.amnikontechnologies.com:7281/api/location";
+  const API = `${import.meta.env.VITE_LOCATION_API_BASE_URL}/api/location`;
 
   // =========================================================
   // PERMISSIONS

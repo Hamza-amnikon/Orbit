@@ -15,7 +15,7 @@ const validationRules = {
     ifsc: /^[A-Z]{4}0[A-Z0-9]{6}$/,
 };
 
-const API_URL = "https://sparkapi.amnikontechnologies.com:7256/api/Document";
+const API_URL = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
 
 function Documents({ profile }) {
 
