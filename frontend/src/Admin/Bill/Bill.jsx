@@ -141,6 +141,7 @@ const Bill = () => {
   const [statusComment, setStatusComment] = useState("");
   const [savingStatus, setSavingStatus] = useState(false);
   const [employeeNames, setEmployeeNames] = useState({});
+  const [employeeAzureIds, setEmployeeAzureIds] = useState({});
   const [savingPayment, setSavingPayment] = useState(false);
   const [originalPaymentStatus, setOriginalPaymentStatus] = useState("Pending");
 
@@ -915,15 +916,31 @@ console.log("CURRENT LOGGED-IN EMPLOYEE NAME:", currentEmployeeName);
       });
 
       const name =
-        employee?.employeeName ||
-        employee?.EmployeeName ||
-        employee?.fullName ||
-        employee?.FullName ||
-        employee?.displayName ||
-        employee?.DisplayName ||
-        employee?.name ||
-        employee?.Name ||
+        employee?.employeeName ??
+        employee?.EmployeeName ??
+        employee?.fullName ??
+        employee?.FullName ??
+        employee?.displayName ??
+        employee?.DisplayName ??
+        employee?.name ??
+        employee?.Name ??
         "-";
+
+const azureEmployeeId =
+  employee?.azureEmployeeId ??
+  employee?.AzureEmployeeId ??
+  employee?.azureEmployeeID ??
+  employee?.AzureEmployeeID ??
+  employee?.azureId ??
+  employee?.AzureId ??
+  "-";
+
+if (azureEmployeeId !== "-") {
+  setEmployeeAzureIds((previous) => ({
+    ...previous,
+    [numericId]: azureEmployeeId,
+  }));
+}
 
       if (name !== "-") {
         setEmployeeNames((previous) => ({
@@ -3599,7 +3616,7 @@ const approvalResponse = await fetch(
                     <label>Approved By</label>
                     <p>
                       <strong>Name:</strong> {selectedBill.approvedByName || employeeNames[selectedBill.approvedBy] || "-"}<br />
-                      <strong>Employee ID:</strong> {selectedBill.approvedBy ?? "-"}<br />
+                      <strong>Employee ID:</strong> {employeeAzureIds[selectedBill.approvedBy] || "-"}<br />
                       <strong>Approved Date:</strong> {formatDate(selectedBill.approvedDate)}
                     </p>
                   </div>
@@ -3610,7 +3627,7 @@ const approvalResponse = await fetch(
                     <label>Rejected By</label>
                     <p>
                       <strong>Name:</strong> {selectedBill.rejectedByName || employeeNames[selectedBill.rejectedBy] || "-"}<br />
-                      <strong>Employee ID:</strong> {selectedBill.rejectedBy ?? "-"}<br />
+                      <strong>Employee ID:</strong> {employeeAzureIds[selectedBill.rejectedBy] ?? "-"}<br />
                       <strong>Rejected Date:</strong> {formatDate(selectedBill.rejectedDate)}
                     </p>
                   </div>
@@ -3622,14 +3639,14 @@ const approvalResponse = await fetch(
 
               <div className="bill-modal-footer">
 
-                <button
-                  type="button"
-                  className="bill-cancel-btn"
-                  onClick={handleCloseViewModal}
-                  disabled={savingPayment}
-                >
-                  {savingPayment ? "Updating..." : "Cancel"}
-                </button>
+<button
+  type="button"
+  className="bill-cancel-btn"
+  onClick={handleCloseViewModal}
+  disabled={savingPayment}
+>
+  {savingPayment ? "Updating..." : "Cancel"}
+</button>
 
 
                 {selectedBill.status !==
