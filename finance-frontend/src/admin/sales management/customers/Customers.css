@@ -2,7 +2,7 @@
     width: 100%;
     min-height: 100vh;
     padding: 28px 32px 40px;
-    background-color: #f4f7fa;
+    background-color: #f5f7fb;
 }
 
 
@@ -18,19 +18,19 @@
 .customers-title {
     font-size: 24px !important;
     font-weight: 700 !important;
-    color: #102a43 !important;
+    color: #111827 !important;
 }
 
 .customers-subtitle {
     margin-top: 4px !important;
     font-size: 13px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
 }
 
 .add-customer-button {
     height: 40px !important;
     padding: 0 18px !important;
-    background-color: #1976d2 !important;
+    background-color: #2563eb !important;
 }
 
 
@@ -54,14 +54,14 @@
 
 .summary-label {
     font-size: 12px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
 }
 
 .summary-value {
     margin-top: 8px !important;
     font-size: 22px !important;
     font-weight: 700 !important;
-    color: #102a43 !important;
+    color: #111827 !important;
 }
 
 
@@ -87,7 +87,7 @@
 .customers-table-title {
     font-size: 16px !important;
     font-weight: 700 !important;
-    color: #102a43 !important;
+    color: #111827 !important;
 }
 
 .customer-actions {
@@ -103,7 +103,7 @@
     align-items: center;
     gap: 8px;
     padding: 0 10px;
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     border-radius: 6px;
     background-color: #ffffff;
 }
@@ -118,7 +118,7 @@
     border: none;
     outline: none;
     font-size: 12px;
-    color: #102a43;
+    color: #111827;
     background: transparent;
 }
 
@@ -128,7 +128,7 @@
 
 .filter-button {
     height: 36px !important;
-    border-color: #d9e2ec !important;
+    border-color: #e5eaf1 !important;
     color: #486581 !important;
     font-size: 12px !important;
 }
@@ -161,19 +161,19 @@
 .table-header-row > p {
     font-size: 11px !important;
     font-weight: 600 !important;
-    color: #627d98 !important;
+    color: #64748b !important;
     text-transform: uppercase;
 }
 
 .table-row > p {
     font-size: 12px !important;
-    color: #102a43 !important;
+    color: #111827 !important;
 }
 
 .customer-name {
     font-size: 13px !important;
     font-weight: 600 !important;
-    color: #102a43 !important;
+    color: #111827 !important;
 }
 
 .customer-code {
@@ -205,7 +205,7 @@
 .view-button {
     min-width: auto !important;
     padding: 4px 10px !important;
-    color: #1976d2 !important;
+    color: #2563eb !important;
     font-size: 12px !important;
 }
 
@@ -255,12 +255,12 @@
 }
 
 .customer-search input {
-    border: 1px solid #1976D2;
-    color: #102A43;
+    border: 1px solid #2563eb;
+    color: #111827;
 }
 
 .customer-search input:focus {
-    border-color: #1976D2;
+    border-color: #2563eb;
     outline: none;
     box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.12);
 }

@@ -6,7 +6,7 @@
     width: 100%;
     min-height: 100vh;
     padding: 28px 32px 40px;
-    background: #f4f7fa;
+    background: #f5f7fb;
     box-sizing: border-box;
 }
 
@@ -23,19 +23,19 @@
 }
 
 .dashboard-title {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-size: 26px !important;
     font-weight: 700 !important;
 }
 
 .dashboard-subtitle {
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 14px !important;
     margin-top: 4px !important;
 }
 
 .date-filter {
-    color: #102a43 !important;
+    color: #111827 !important;
     border-color: #bcccdc !important;
     text-transform: none !important;
     font-weight: 500 !important;
@@ -43,7 +43,7 @@
 }
 
 .date-filter:hover {
-    border-color: #1976d2 !important;
+    border-color: #2563eb !important;
     background: #f5f9fd !important;
 }
 
@@ -59,7 +59,7 @@
 
 .summary-card {
     height: 100%;
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     border-radius: 10px !important;
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
     background: #ffffff !important;
@@ -89,8 +89,8 @@
     align-items: center;
     justify-content: center;
     border-radius: 9px;
-    background: #eaf3fb;
-    color: #1976d2;
+    background: #eff6ff;
+    color: #2563eb;
 }
 
 .card-icon svg {
@@ -98,14 +98,14 @@
 }
 
 .card-label {
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 13px !important;
     font-weight: 500 !important;
     margin-bottom: 5px !important;
 }
 
 .card-value {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-size: 23px !important;
     font-weight: 700 !important;
 }
@@ -129,7 +129,7 @@
 }
 
 .neutral-change {
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 11px !important;
     font-weight: 500 !important;
 }
@@ -164,7 +164,7 @@
 
 .dashboard-card {
     height: 100%;
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     border-radius: 10px !important;
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
     background: #ffffff !important;
@@ -182,7 +182,7 @@
 }
 
 .section-title {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-size: 16px !important;
     font-weight: 700 !important;
 }
@@ -194,12 +194,12 @@
 }
 
 .section-icon {
-    color: #1976d2;
+    color: #2563eb;
     font-size: 24px !important;
 }
 
 .view-button {
-    color: #1976d2 !important;
+    color: #2563eb !important;
     text-transform: none !important;
     font-size: 12px !important;
     font-weight: 600 !important;
@@ -251,7 +251,7 @@
 
 .chart-lines span {
     width: 100%;
-    border-top: 1px dashed #d9e2ec;
+    border-top: 1px dashed #e5eaf1;
 }
 
 
@@ -274,7 +274,7 @@
 }
 
 .income-bar {
-    background: #1976d2;
+    background: #2563eb;
 }
 
 .expense-bar {
@@ -360,7 +360,7 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    color: #627d98;
+    color: #64748b;
     font-size: 12px;
 }
 
@@ -372,7 +372,7 @@
 }
 
 .income-dot {
-    background: #1976d2;
+    background: #2563eb;
 }
 
 .expense-dot {
@@ -390,17 +390,17 @@
     justify-content: space-between;
     padding: 14px;
     margin-bottom: 12px;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #f1f6fa;
 }
 
 .cash-total p:first-child {
-    color: #627d98;
+    color: #64748b;
     font-size: 12px;
 }
 
 .cash-total p:last-child {
-    color: #102a43;
+    color: #111827;
     font-size: 19px;
     font-weight: 700;
 }
@@ -425,9 +425,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 7px;
-    background: #eaf3fb;
-    color: #1976d2;
+    border-radius: 10px;
+    background: #eff6ff;
+    color: #2563eb;
     font-size: 13px;
     font-weight: 700;
 }
@@ -445,14 +445,14 @@
 }
 
 .bank-item > p {
-    color: #102a43;
+    color: #111827;
     font-size: 12px;
     font-weight: 600;
 }
 
 .full-width-button {
     margin-top: 16px !important;
-    color: #1976d2 !important;
+    color: #2563eb !important;
     border-color: #b8cbe0 !important;
     text-transform: none !important;
 }
@@ -570,7 +570,7 @@
 }
 
 .invoice-right > p:first-child {
-    color: #102a43;
+    color: #111827;
     font-size: 12px;
     font-weight: 700;
 }
@@ -596,7 +596,7 @@
 
 .quick-actions-card {
     margin-top: 16px;
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     border-radius: 10px !important;
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
 }
@@ -613,7 +613,7 @@
 }
 
 .quick-actions-title {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-size: 15px !important;
     font-weight: 700 !important;
 }
@@ -629,14 +629,14 @@
 }
 
 .quick-actions button {
-    color: #1976d2;
+    color: #2563eb;
     border-color: #b8cbe0;
     text-transform: none;
     font-size: 12px;
 }
 
 .quick-actions button:hover {
-    border-color: #1976d2;
+    border-color: #2563eb;
     background: #f1f7fc;
 }
 

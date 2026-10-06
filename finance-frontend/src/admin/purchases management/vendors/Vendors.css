@@ -6,7 +6,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 28px 32px 40px;
-    background: #f4f7fa;
+    background: #f5f7fb;
     box-sizing: border-box;
 }
 
@@ -22,7 +22,7 @@
 }
 
 .vendors-title {
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 28px !important;
     font-weight: 700 !important;
     line-height: 1.2 !important;
@@ -30,15 +30,15 @@
 
 .vendors-subtitle {
     margin-top: 6px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 14px !important;
 }
 
 .add-vendor-button {
     min-height: 42px !important;
     padding: 0 18px !important;
-    border-radius: 7px !important;
-    background-color: #1976d2 !important;
+    border-radius: 10px !important;
+    background-color: #2563eb !important;
     color: #ffffff !important;
     font-weight: 600 !important;
     text-transform: none !important;
@@ -61,8 +61,8 @@
 
 .vendor-summary-card {
     min-height: 112px;
-    border: 1px solid #d9e2ec;
-    border-radius: 8px !important;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px !important;
     background: #ffffff !important;
     box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
 }
@@ -72,14 +72,14 @@
 }
 
 .vendor-summary-label {
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 13px !important;
     font-weight: 500 !important;
     margin-bottom: 8px !important;
 }
 
 .vendor-summary-value {
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 24px !important;
     font-weight: 700 !important;
 }
@@ -90,8 +90,8 @@
 
 .vendor-list-card {
     width: 100%;
-    border: 1px solid #d9e2ec;
-    border-radius: 8px !important;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px !important;
     background: #ffffff !important;
     box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
 }
@@ -109,18 +109,18 @@
     align-items: center;
     justify-content: space-between;
     padding: 22px 24px;
-    border-bottom: 1px solid #d9e2ec;
+    border-bottom: 1px solid #e5eaf1;
 }
 
 .vendor-list-title {
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 18px !important;
     font-weight: 700 !important;
 }
 
 .vendor-list-subtitle {
     margin-top: 4px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 13px !important;
 }
 
@@ -150,7 +150,7 @@
 .vendor-search-box svg {
     width: 20px;
     height: 20px;
-    color: #627d98;
+    color: #64748b;
 }
 
 .vendor-search-box input {
@@ -158,7 +158,7 @@
     border: none;
     outline: none;
     background: transparent;
-    color: #102a43;
+    color: #111827;
     font-size: 13px;
 }
 
@@ -173,16 +173,16 @@
 .vendor-filter-button {
     min-height: 40px !important;
     padding: 0 14px !important;
-    border: 1px solid #1976d2 !important;
+    border: 1px solid #2563eb !important;
     border-radius: 6px !important;
-    color: #1976d2 !important;
+    color: #2563eb !important;
     background: #ffffff !important;
     text-transform: none !important;
     font-weight: 600 !important;
 }
 
 .vendor-filter-button:hover {
-    background: #eaf3fb !important;
+    background: #eff6ff !important;
     border-color: #1565c0 !important;
 }
 
@@ -205,7 +205,7 @@
     min-height: 48px;
     padding: 0 24px;
     background: #f7f9fc;
-    border-bottom: 1px solid #d9e2ec;
+    border-bottom: 1px solid #e5eaf1;
     column-gap: 16px;
 }
 
@@ -253,7 +253,7 @@
 }
 
 .vendor-name {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-size: 14px !important;
     font-weight: 600 !important;
 }
@@ -265,12 +265,12 @@
 }
 
 .vendor-code {
-    color: #1976d2 !important;
+    color: #2563eb !important;
     font-weight: 600 !important;
 }
 
 .vendor-amount {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-weight: 600 !important;
 }
 
@@ -295,7 +295,7 @@
 
 .vendor-status.inactive {
     background: #f1f3f5;
-    color: #627d98;
+    color: #64748b;
 }
 
 /* =========================================
@@ -306,7 +306,7 @@
     min-width: 52px !important;
     padding: 5px 10px !important;
     border-radius: 5px !important;
-    color: #1976d2 !important;
+    color: #2563eb !important;
     background: transparent !important;
     font-size: 12px !important;
     font-weight: 600 !important;
@@ -314,7 +314,7 @@
 }
 
 .vendor-view-button:hover {
-    background: #eaf3fb !important;
+    background: #eff6ff !important;
 }
 
 /* =========================================

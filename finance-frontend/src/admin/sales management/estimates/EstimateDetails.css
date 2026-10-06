@@ -2,7 +2,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 28px;
-    background-color: #f4f7fa;
+    background-color: #f5f7fb;
 }
 
 .estimate-details-container {
@@ -35,11 +35,11 @@
     height: 40px;
     padding: 0 !important;
 
-    color: #1976d2 !important;
+    color: #2563eb !important;
     background-color: #ffffff !important;
 
-    border: 1px solid #d9e2ec !important;
-    border-radius: 7px !important;
+    border: 1px solid #e5eaf1 !important;
+    border-radius: 10px !important;
 }
 
 .estimate-details-back-button:hover {
@@ -47,14 +47,14 @@
 }
 
 .estimate-details-title {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-size: 22px !important;
     font-weight: 700 !important;
 }
 
 .estimate-details-subtitle {
     margin-top: 3px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 12px !important;
 }
 
@@ -72,8 +72,8 @@
 
 .estimate-print-button,
 .estimate-edit-button {
-    border-color: #1976d2 !important;
-    color: #1976d2 !important;
+    border-color: #2563eb !important;
+    color: #2563eb !important;
     background-color: #ffffff !important;
 }
 
@@ -83,7 +83,7 @@
 }
 
 .estimate-send-button {
-    background-color: #1976d2 !important;
+    background-color: #2563eb !important;
     color: #ffffff !important;
 }
 
@@ -99,8 +99,8 @@
 .estimate-preview-card {
     width: 100%;
 
-    border: 1px solid #d9e2ec;
-    border-radius: 8px !important;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px !important;
 
     background-color: #ffffff;
 
@@ -123,14 +123,14 @@
 }
 
 .estimate-company-name {
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 24px !important;
     font-weight: 700 !important;
 }
 
 .estimate-company-details {
     margin-top: 4px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 12px !important;
 }
 
@@ -139,7 +139,7 @@
 }
 
 .estimate-preview-label {
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 11px !important;
     font-weight: 600 !important;
     letter-spacing: 1px;
@@ -147,7 +147,7 @@
 
 .estimate-preview-number {
     margin-top: 4px !important;
-    color: #1976d2 !important;
+    color: #2563eb !important;
     font-size: 20px !important;
     font-weight: 700 !important;
 }
@@ -158,7 +158,7 @@
     margin-top: 8px !important;
     padding: 4px 12px;
 
-    color: #1976d2 !important;
+    color: #2563eb !important;
     background-color: #eaf3ff;
 
     border-radius: 20px;
@@ -188,7 +188,7 @@
 .estimate-info-label {
     margin-bottom: 7px !important;
 
-    color: #627d98 !important;
+    color: #64748b !important;
 
     font-size: 10px !important;
     font-weight: 700 !important;
@@ -196,14 +196,14 @@
 }
 
 .estimate-customer-name {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-size: 15px !important;
     font-weight: 700 !important;
 }
 
 .estimate-info-text {
     margin-top: 4px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 12px !important;
 }
 
@@ -214,7 +214,7 @@
 }
 
 .estimate-info-value {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-size: 13px !important;
     font-weight: 600 !important;
 }
@@ -227,7 +227,7 @@
 .estimate-section-title {
     margin-bottom: 12px !important;
 
-    color: #102a43 !important;
+    color: #111827 !important;
 
     font-size: 15px !important;
     font-weight: 700 !important;
@@ -246,8 +246,8 @@
     width: 100%;
     overflow: hidden;
 
-    border: 1px solid #d9e2ec;
-    border-radius: 7px;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px;
 }
 
 .estimate-item-header,
@@ -267,7 +267,7 @@
 
     color: #ffffff;
 
-    background-color: #0b2a43;
+    background-color: #111827;
 
     font-size: 11px;
     font-weight: 600;
@@ -277,7 +277,7 @@
     min-height: 62px;
     padding: 0 16px;
 
-    color: #102a43;
+    color: #111827;
 
     font-size: 12px;
 
@@ -285,12 +285,12 @@
 }
 
 .estimate-item-name {
-    color: #1976d2 !important;
+    color: #2563eb !important;
     font-weight: 600 !important;
 }
 
 .estimate-item-amount {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-weight: 600 !important;
 }
 
@@ -313,8 +313,8 @@
 
     background-color: #f8fafc;
 
-    border: 1px solid #d9e2ec;
-    border-radius: 7px;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px;
 }
 
 .estimate-details-total-row {
@@ -323,7 +323,7 @@
 
     padding: 7px 0;
 
-    color: #627d98;
+    color: #64748b;
 
     font-size: 13px;
 }
@@ -335,16 +335,16 @@
     margin-top: 10px;
     padding-top: 14px;
 
-    color: #102a43;
+    color: #111827;
 
-    border-top: 1px solid #d9e2ec;
+    border-top: 1px solid #e5eaf1;
 
     font-size: 16px;
     font-weight: 700;
 }
 
 .estimate-details-grand-total p:last-child {
-    color: #1976d2;
+    color: #2563eb;
 }
 
 
@@ -364,7 +364,7 @@
 .estimate-terms {
     max-width: 800px;
 
-    color: #627d98 !important;
+    color: #64748b !important;
 
     font-size: 12px !important;
     line-height: 1.7 !important;

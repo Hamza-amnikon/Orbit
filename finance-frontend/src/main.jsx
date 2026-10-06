@@ -6,6 +6,7 @@ import App from "./App";
 import theme from "./styles/theme";
 
 import "./index.css";
+import "./styles/finance-ui.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>

@@ -2,7 +2,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 28px 32px 40px;
-    background-color: #f4f7fa;
+    background-color: #f5f7fb;
 }
 
 /* =========================
@@ -18,21 +18,21 @@
 }
 
 .purchase-orders-title {
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 28px !important;
     font-weight: 700 !important;
 }
 
 .purchase-orders-subtitle {
     margin-top: 6px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 14px !important;
 }
 
 .add-purchase-order-button {
     min-height: 42px !important;
     padding: 0 18px !important;
-    background-color: #1976d2 !important;
+    background-color: #2563eb !important;
     color: #ffffff !important;
     font-weight: 600 !important;
 }
@@ -53,7 +53,7 @@
 }
 
 .purchase-order-summary-card {
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     background-color: #ffffff;
     box-shadow: 0 1px 4px rgba(16, 42, 67, 0.06) !important;
 }
@@ -63,14 +63,14 @@
 }
 
 .purchase-order-summary-label {
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 13px !important;
     font-weight: 600 !important;
 }
 
 .purchase-order-summary-value {
     margin-top: 8px !important;
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 25px !important;
     font-weight: 700 !important;
 }
@@ -81,7 +81,7 @@
 
 .purchase-order-list-card {
     width: 100%;
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     background-color: #ffffff;
     box-shadow: 0 1px 4px rgba(16, 42, 67, 0.06) !important;
 }
@@ -100,14 +100,14 @@
 }
 
 .purchase-order-list-title {
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 17px !important;
     font-weight: 700 !important;
 }
 
 .purchase-order-list-subtitle {
     margin-top: 4px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 13px !important;
 }
 
@@ -128,7 +128,7 @@
     align-items: center;
     gap: 8px;
     padding: 0 12px;
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     border-radius: 6px;
     background-color: #ffffff;
 }
@@ -136,7 +136,7 @@
 .purchase-order-search-box svg {
     width: 20px;
     height: 20px;
-    color: #627d98;
+    color: #64748b;
 }
 
 .purchase-order-search-box input {
@@ -144,7 +144,7 @@
     border: none;
     outline: none;
     background: transparent;
-    color: #102a43;
+    color: #111827;
     font-size: 13px;
 }
 
@@ -158,8 +158,8 @@
 
 .purchase-order-filter-button {
     height: 40px !important;
-    border-color: #1976d2 !important;
-    color: #1976d2 !important;
+    border-color: #2563eb !important;
+    color: #2563eb !important;
     font-weight: 600 !important;
 }
 
@@ -185,12 +185,12 @@
 
 .purchase-order-table-header {
     min-height: 48px;
-    background-color: #f4f7fa;
-    border-bottom: 1px solid #d9e2ec;
+    background-color: #f5f7fb;
+    border-bottom: 1px solid #e5eaf1;
 }
 
 .purchase-order-table-header .MuiTypography-root {
-    color: #627d98;
+    color: #64748b;
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
@@ -207,17 +207,17 @@
 }
 
 .purchase-order-table-row .MuiTypography-root {
-    color: #102a43;
+    color: #111827;
     font-size: 13px;
 }
 
 .purchase-order-number {
-    color: #1976d2 !important;
+    color: #2563eb !important;
     font-weight: 700 !important;
 }
 
 .purchase-order-amount {
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-weight: 700 !important;
 }
 
@@ -255,13 +255,13 @@
 .purchase-order-view-button {
     min-width: auto !important;
     padding: 5px 10px !important;
-    color: #1976d2 !important;
+    color: #2563eb !important;
     font-size: 13px !important;
     font-weight: 600 !important;
 }
 
 .purchase-order-view-button:hover {
-    background-color: #eaf3fb !important;
+    background-color: #eff6ff !important;
 }
 
 /* =========================
