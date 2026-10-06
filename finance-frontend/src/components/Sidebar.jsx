@@ -13,7 +13,6 @@ import {
 import { NavLink } from "react-router-dom";
 
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
-import AccountBalanceRoundedIcon from "@mui/icons-material/AccountBalanceRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import RequestQuoteRoundedIcon from "@mui/icons-material/RequestQuoteRounded";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
@@ -26,8 +25,9 @@ import ExpandLessRoundedIcon from "@mui/icons-material/ExpandLessRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 
 import "./Sidebar.css";
+import logo from "../assets/amnikon-logo.png";
 
-const Sidebar = () => {
+const Sidebar = ({ desktop, open, onClose }) => {
     const [openSales, setOpenSales] = useState(true);
     const [openPurchases, setOpenPurchases] = useState(true);
     const [openBanking, setOpenBanking] = useState(true);
@@ -39,6 +39,7 @@ const Sidebar = () => {
         <ListItemButton
             className="sidebar-item"
             onClick={onClick}
+            aria-expanded={open}
         >
             <ListItemIcon className="sidebar-icon">
                 {icon}
@@ -61,6 +62,7 @@ const Sidebar = () => {
         <ListItemButton
             component={NavLink}
             to={path}
+            onClick={onClose}
             className="sidebar-child"
         >
             <ListItemText primary={title} />
@@ -69,16 +71,15 @@ const Sidebar = () => {
 
     return (
         <Drawer
-            variant="permanent"
+            variant={desktop ? "permanent" : "temporary"}
+            open={desktop || open}
+            onClose={onClose}
             className="finance-sidebar"
         >
             {/* Logo */}
             <Box className="sidebar-logo">
-                <AccountBalanceRoundedIcon className="sidebar-logo-icon" />
-
-                <Typography className="sidebar-logo-text">
-                    FINANCE
-                </Typography>
+                <img src={logo} alt="Amnikon" className="finance-brand-logo" />
+                <Typography className="sidebar-logo-text">Finance</Typography>
             </Box>
 
             <List className="sidebar-list">
@@ -87,6 +88,8 @@ const Sidebar = () => {
                 <ListItemButton
                     component={NavLink}
                     to="/"
+                    end
+                    onClick={onClose}
                     className="sidebar-item"
                 >
                     <ListItemIcon className="sidebar-icon">

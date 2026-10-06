@@ -10,7 +10,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 18px 24px;
-    background: #0b2a43;
+    background: #111827;
     color: #ffffff;
 }
 
@@ -26,8 +26,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    background: #1976d2;
+    border-radius: 10px;
+    background: #2563eb;
 }
 
 .bill-form-icon svg {
@@ -42,7 +42,7 @@
 
 .bill-form-subtitle {
     margin-top: 2px !important;
-    color: #d9e2ec;
+    color: #e5eaf1;
     font-size: 12px !important;
 }
 
@@ -62,7 +62,7 @@
 
 .bill-form-section-title {
     margin-bottom: 18px !important;
-    color: #0b2a43;
+    color: #111827;
     font-size: 15px !important;
     font-weight: 700 !important;
 }
@@ -84,27 +84,27 @@
 }
 
 .bill-form .MuiInputLabel-root {
-    color: #627d98;
+    color: #64748b;
 }
 
 .bill-form .MuiOutlinedInput-root {
-    border-radius: 7px;
+    border-radius: 10px;
 }
 
 .bill-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #1976d2;
+    border-color: #2563eb;
 }
 
 .bill-form
     .MuiOutlinedInput-root.Mui-focused
     .MuiOutlinedInput-notchedOutline {
-    border-color: #1976d2;
+    border-color: #2563eb;
     border-width: 1px;
 }
 
 .bill-form
     .MuiInputLabel-root.Mui-focused {
-    color: #1976d2;
+    color: #2563eb;
 }
 
 /* Summary */
@@ -123,7 +123,7 @@
 }
 
 .bill-summary-line .MuiTypography-root {
-    color: #627d98;
+    color: #64748b;
     font-size: 13px;
 }
 
@@ -140,7 +140,7 @@
 }
 
 .bill-summary-total .MuiTypography-root {
-    color: #0b2a43;
+    color: #111827;
     font-size: 17px;
     font-weight: 700;
 }
@@ -154,33 +154,33 @@
     gap: 12px;
     padding: 16px 24px;
     background: #f8fafc;
-    border-top: 1px solid #d9e2ec;
+    border-top: 1px solid #e5eaf1;
 }
 
 .bill-form-cancel-button {
     min-width: 90px !important;
     border-color: #bcccdc !important;
     color: #486581 !important;
-    border-radius: 7px !important;
+    border-radius: 10px !important;
     font-weight: 600 !important;
 }
 
 .bill-form-save-button {
     min-width: 130px !important;
-    background: #1976d2 !important;
+    background: #2563eb !important;
     color: #ffffff !important;
-    border-radius: 7px !important;
+    border-radius: 10px !important;
     font-weight: 600 !important;
 }
 
 .bill-form-save-button:hover {
-    background: #125ea8 !important;
+    background: #1d4ed8 !important;
 }
 
 /* Divider */
 
 .bill-form > .MuiDivider-root {
-    border-color: #d9e2ec;
+    border-color: #e5eaf1;
 }
 
 /* Responsive */

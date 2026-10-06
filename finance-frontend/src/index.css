@@ -1,13 +1,13 @@
 :root {
-    --primary-dark: #0B2A43;
-    --sidebar-dark: #102A43;
+    --primary-dark: #111827;
+    --sidebar-dark: #111827;
     --sidebar-hover: #173F60;
-    --primary-blue: #1976D2;
-    --page-bg: #F4F7FA;
+    --primary-blue: #2563eb;
+    --page-bg: #f5f7fb;
     --white: #FFFFFF;
-    --border: #D9E2EC;
-    --text-dark: #102A43;
-    --text-light: #627D98;
+    --border: #e5eaf1;
+    --text-dark: #111827;
+    --text-light: #64748b;
 }
 
 * {

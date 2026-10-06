@@ -4,8 +4,8 @@
 
 .payment-form {
     width: 100%;
-    background-color: #f4f7fa;
-    border-radius: 8px;
+    background-color: #f5f7fb;
+    border-radius: 10px;
     overflow: hidden;
 }
 
@@ -20,7 +20,7 @@
 
     padding: 20px 24px;
 
-    background-color: #0b2a43;
+    background-color: #111827;
     color: #ffffff;
 }
 
@@ -43,7 +43,7 @@
 
 .payment-form-subtitle {
     margin-top: 3px !important;
-    color: #d9e2ec !important;
+    color: #e5eaf1 !important;
     font-size: 12px !important;
 }
 
@@ -67,7 +67,7 @@
 .payment-form-section-title {
     margin-bottom: 18px !important;
 
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 16px !important;
     font-weight: 700 !important;
 }
@@ -89,11 +89,11 @@
 }
 
 .payment-form .MuiInputLabel-root {
-    color: #627d98;
+    color: #64748b;
 }
 
 .payment-form .MuiInputLabel-root.Mui-focused {
-    color: #1976d2;
+    color: #2563eb;
 }
 
 .payment-form .MuiOutlinedInput-root {
@@ -102,12 +102,12 @@
 
 .payment-form .MuiOutlinedInput-root:hover
 .MuiOutlinedInput-notchedOutline {
-    border-color: #1976d2;
+    border-color: #2563eb;
 }
 
 .payment-form .MuiOutlinedInput-root.Mui-focused
 .MuiOutlinedInput-notchedOutline {
-    border-color: #1976d2;
+    border-color: #2563eb;
     border-width: 1px;
 }
 
@@ -117,7 +117,7 @@
 
 .payment-form-divider {
     margin: 26px 0 !important;
-    border-color: #d9e2ec !important;
+    border-color: #e5eaf1 !important;
 }
 
 /* =========================================
@@ -131,14 +131,14 @@
 
     background-color: #f7f9fc;
 
-    border: 1px solid #d9e2ec;
-    border-radius: 8px;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px;
 }
 
 .payment-form-summary-title {
     margin-bottom: 14px !important;
 
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 14px !important;
     font-weight: 700 !important;
 }
@@ -150,12 +150,12 @@
 }
 
 .payment-form-summary-label {
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 13px !important;
 }
 
 .payment-form-summary-value {
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 18px !important;
     font-weight: 700 !important;
 }
@@ -174,23 +174,23 @@
 
     background-color: #ffffff;
 
-    border-top: 1px solid #d9e2ec;
+    border-top: 1px solid #e5eaf1;
 }
 
 .payment-form-cancel-button {
-    color: #0b2a43 !important;
+    color: #111827 !important;
     border-color: #cbd5e1 !important;
 
     text-transform: none !important;
 }
 
 .payment-form-cancel-button:hover {
-    border-color: #1976d2 !important;
+    border-color: #2563eb !important;
     background-color: #f4f8fc !important;
 }
 
 .payment-form-save-button {
-    background-color: #1976d2 !important;
+    background-color: #2563eb !important;
     color: #ffffff !important;
 
     text-transform: none !important;

@@ -2,7 +2,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 28px 32px 40px;
-    background-color: #f4f7fa;
+    background-color: #f5f7fb;
 }
 
 /* Header */
@@ -22,14 +22,14 @@
 }
 
 .sales-order-details-title {
-    color: #102a43;
+    color: #111827;
     font-size: 24px !important;
     font-weight: 700 !important;
 }
 
 .sales-order-details-subtitle {
     margin-top: 3px !important;
-    color: #627d98;
+    color: #64748b;
     font-size: 13px !important;
 }
 
@@ -43,27 +43,27 @@
 .sales-order-action-button {
     min-height: 38px !important;
     border-color: #c5d2df !important;
-    color: #102a43 !important;
+    color: #111827 !important;
     background-color: #ffffff !important;
     text-transform: none !important;
 }
 
 .sales-order-back-button:hover,
 .sales-order-action-button:hover {
-    border-color: #1976d2 !important;
-    color: #1976d2 !important;
+    border-color: #2563eb !important;
+    color: #2563eb !important;
     background-color: #f7fbff !important;
 }
 
 .sales-order-send-button {
     min-height: 38px !important;
-    background-color: #1976d2 !important;
+    background-color: #2563eb !important;
     color: #ffffff !important;
     text-transform: none !important;
 }
 
 .sales-order-send-button:hover {
-    background-color: #125ea8 !important;
+    background-color: #1d4ed8 !important;
 }
 
 /* Main Document */
@@ -71,7 +71,7 @@
 .sales-order-document-card {
     width: 100%;
     background-color: #ffffff !important;
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
 }
 
@@ -89,14 +89,14 @@
 }
 
 .sales-order-company-name {
-    color: #102a43;
+    color: #111827;
     font-size: 22px !important;
     font-weight: 700 !important;
 }
 
 .sales-order-company-text {
     margin-top: 4px !important;
-    color: #627d98;
+    color: #64748b;
     font-size: 13px !important;
 }
 
@@ -106,7 +106,7 @@
 }
 
 .sales-order-document-label {
-    color: #1976d2;
+    color: #2563eb;
     font-size: 12px !important;
     font-weight: 700 !important;
     letter-spacing: 1px;
@@ -114,7 +114,7 @@
 
 .sales-order-document-number {
     margin-top: 4px !important;
-    color: #102a43;
+    color: #111827;
     font-size: 21px !important;
     font-weight: 700 !important;
 }
@@ -134,7 +134,7 @@
 
 .sales-order-divider {
     margin: 26px 0 !important;
-    border-color: #d9e2ec !important;
+    border-color: #e5eaf1 !important;
 }
 
 /* Information Sections */
@@ -152,21 +152,21 @@
 
 .sales-order-section-title {
     margin-bottom: 12px !important;
-    color: #102a43;
+    color: #111827;
     font-size: 14px !important;
     font-weight: 700 !important;
 }
 
 .sales-order-customer-name {
     margin-bottom: 5px !important;
-    color: #102a43;
+    color: #111827;
     font-size: 15px !important;
     font-weight: 600 !important;
 }
 
 .sales-order-info-text {
     margin-top: 4px !important;
-    color: #627d98;
+    color: #64748b;
     font-size: 13px !important;
 }
 
@@ -177,12 +177,12 @@
     gap: 20px;
     padding: 7px 0;
     border-bottom: 1px solid #edf1f5;
-    color: #627d98;
+    color: #64748b;
     font-size: 13px;
 }
 
 .sales-order-meta-row strong {
-    color: #102a43;
+    color: #111827;
     font-weight: 600;
 }
 
@@ -196,8 +196,8 @@
 .sales-order-item-table {
     width: 100%;
     overflow: hidden;
-    border: 1px solid #d9e2ec;
-    border-radius: 8px;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px;
 }
 
 .sales-order-item-header {
@@ -207,8 +207,8 @@
     gap: 15px;
     padding: 13px 16px;
     background-color: #f1f5f9;
-    border-bottom: 1px solid #d9e2ec;
-    color: #102a43;
+    border-bottom: 1px solid #e5eaf1;
+    color: #111827;
     font-size: 12px;
     font-weight: 700;
 }
@@ -219,24 +219,24 @@
     align-items: center;
     gap: 15px;
     padding: 18px 16px;
-    color: #102a43;
+    color: #111827;
     font-size: 13px;
 }
 
 .sales-order-item-name {
-    color: #102a43;
+    color: #111827;
     font-size: 14px !important;
     font-weight: 600 !important;
 }
 
 .sales-order-item-description {
     margin-top: 4px !important;
-    color: #627d98;
+    color: #64748b;
     font-size: 12px !important;
 }
 
 .sales-order-item-total {
-    color: #102a43;
+    color: #111827;
     font-weight: 700 !important;
 }
 
@@ -251,14 +251,14 @@
 
 .sales-order-address-card {
     padding: 20px;
-    border: 1px solid #d9e2ec;
-    border-radius: 8px;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px;
     background-color: #fbfcfe;
 }
 
 .sales-order-address-name {
     margin-bottom: 3px !important;
-    color: #102a43;
+    color: #111827;
     font-size: 14px !important;
     font-weight: 600 !important;
 }
@@ -274,7 +274,7 @@
 
 .sales-order-notes {
     max-width: 700px;
-    color: #627d98;
+    color: #64748b;
     font-size: 13px !important;
     line-height: 1.7 !important;
 }
@@ -287,8 +287,8 @@
 
 .sales-order-summary {
     padding: 20px;
-    border: 1px solid #d9e2ec;
-    border-radius: 8px;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px;
     background-color: #fbfcfe;
 }
 
@@ -298,18 +298,18 @@
     justify-content: space-between;
     gap: 20px;
     padding: 9px 0;
-    color: #627d98;
+    color: #64748b;
     font-size: 13px;
 }
 
 .sales-order-summary-row strong {
-    color: #102a43;
+    color: #111827;
     font-weight: 600;
 }
 
 .sales-order-summary .MuiDivider-root {
     margin: 7px 0;
-    border-color: #d9e2ec;
+    border-color: #e5eaf1;
 }
 
 .sales-order-grand-total-row {
@@ -318,13 +318,13 @@
     justify-content: space-between;
     gap: 20px;
     padding-top: 10px;
-    color: #102a43;
+    color: #111827;
     font-size: 15px;
     font-weight: 700;
 }
 
 .sales-order-grand-total-row strong {
-    color: #1976d2;
+    color: #2563eb;
     font-size: 18px;
 }
 

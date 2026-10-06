@@ -14,6 +14,7 @@ import Vendors from "./admin/purchases management/vendors/Vendors";
 import PurchaseOrders from "./admin/purchases management/purchase orders/PurchaseOrders";
 import Bills from "./admin/purchases management/bills/Bills";
 import VendorCredits from "./admin/purchases management/vendor credits/VendorCredits";
+import PaymentsMade from "./admin/purchases management/Payments Made/PaymentsMade";
 
 function App() {
     return (
@@ -72,8 +73,10 @@ function App() {
     path="/purchases/vendor-credits"
     element={<VendorCredits />}
 />
-
-
+<Route
+    path="/purchases/payments"
+    element={<PaymentsMade />}
+/>
 
                 </Route>
 

@@ -1,7 +1,7 @@
 .customer-details-page {
     width: 100%;
     min-height: calc(100vh - 70px);
-    background-color: #f4f7fa;
+    background-color: #f5f7fb;
 }
 
 .customer-details-header {
@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 22px 28px;
-    background-color: #1976d2;
+    background-color: #2563eb;
     color: #ffffff;
 }
 
@@ -54,18 +54,18 @@
     padding: 5px 12px;
     border-radius: 20px;
     background-color: #ffffff;
-    color: #1976d2 !important;
+    color: #2563eb !important;
     font-size: 12px !important;
     font-weight: 600 !important;
 }
 
 .customer-edit-button {
     background-color: #ffffff !important;
-    color: #1976d2 !important;
+    color: #2563eb !important;
 }
 
 .customer-edit-button:hover {
-    background-color: #f4f7fa !important;
+    background-color: #f5f7fb !important;
 }
 
 .customer-details-content {
@@ -74,13 +74,13 @@
 
 .customer-info-card,
 .customer-transactions-card {
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     box-shadow: none !important;
 }
 
 .customer-section-title {
     margin-bottom: 20px !important;
-    color: #102a43 !important;
+    color: #111827 !important;
     font-size: 16px !important;
     font-weight: 700 !important;
 }
@@ -98,18 +98,18 @@
 }
 
 .customer-info-item svg {
-    color: #1976d2;
+    color: #2563eb;
     font-size: 22px;
 }
 
 .customer-info-label {
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 11px !important;
     margin-bottom: 4px !important;
 }
 
 .customer-info-value {
-    color: #102a43 !important;
+    color: #111827 !important;
     font-size: 13px !important;
     font-weight: 600 !important;
 }
@@ -122,18 +122,18 @@
 }
 
 .customer-financial-card {
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     box-shadow: none !important;
 }
 
 .financial-label {
-    color: #627d98 !important;
+    color: #64748b !important;
     font-size: 11px !important;
 }
 
 .financial-value {
     margin-top: 6px !important;
-    color: #1976d2 !important;
+    color: #2563eb !important;
     font-size: 18px !important;
     font-weight: 700 !important;
 }
@@ -148,14 +148,14 @@
     align-items: center;
     min-height: 52px;
     border-top: 1px solid #e5ebf0;
-    color: #102a43;
+    color: #111827;
     font-size: 13px;
 }
 
 .transaction-header {
     border-top: none;
     min-height: 40px;
-    color: #627d98;
+    color: #64748b;
     font-size: 11px;
     font-weight: 600;
 }

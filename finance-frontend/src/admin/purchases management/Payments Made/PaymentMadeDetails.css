@@ -1,0 +1,209 @@
+.payment-made-details-page {
+    padding: 28px;
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+/* Top */
+
+.payment-made-details-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.payment-made-back-button {
+    color: #111827 !important;
+    text-transform: none !important;
+}
+
+.payment-made-print-button {
+    background: #2563eb !important;
+    text-transform: none !important;
+}
+
+/* Heading */
+
+.payment-made-details-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.payment-made-details-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: #111827;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-made-details-icon svg {
+    font-size: 24px;
+}
+
+.payment-made-details-title {
+    color: #111827;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+}
+
+.payment-made-details-subtitle {
+    color: #64748b;
+    font-size: 13px !important;
+}
+
+/* Card */
+
+.payment-made-details-card {
+    border: 1px solid #e5eaf1;
+    overflow: hidden;
+}
+
+/* Company */
+
+.payment-made-company {
+    padding: 25px;
+    background: #111827;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+}
+
+.company-name {
+    color: #ffffff;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+.company-address {
+    color: #e5eaf1;
+    font-size: 12px !important;
+    margin-top: 5px !important;
+}
+
+.payment-document {
+    text-align: right;
+}
+
+.payment-document-label {
+    color: #e5eaf1;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+.payment-document-number {
+    color: #ffffff;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    margin: 3px 0 8px !important;
+}
+
+.payment-details-status {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Sections */
+
+.payment-details-section {
+    padding: 24px;
+    border-bottom: 1px solid #e5eaf1;
+}
+
+.payment-details-section-title {
+    color: #111827;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    margin-bottom: 18px !important;
+}
+
+.payment-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 30px;
+}
+
+.payment-details-grid span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.payment-details-grid strong {
+    color: #111827;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Amount */
+
+.payment-made-amount-box {
+    margin: 22px 24px;
+    padding: 18px 20px;
+    background: #f5f7fb;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-made-amount-box span {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.payment-made-amount-box strong {
+    color: #111827;
+    font-size: 22px;
+}
+
+/* Notes */
+
+.payment-details-notes {
+    padding: 24px;
+}
+
+.payment-details-notes > p {
+    color: #486581;
+    font-size: 13px;
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+    .payment-made-details-page {
+        padding: 18px;
+    }
+
+    .payment-made-company {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .payment-document {
+        text-align: left;
+    }
+
+    .payment-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-made-amount-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}

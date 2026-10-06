@@ -18,7 +18,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 18px 24px;
-    background: #0b2a43;
+    background: #111827;
     color: #ffffff;
 }
 
@@ -34,8 +34,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 7px;
-    background: #1976d2;
+    border-radius: 10px;
+    background: #2563eb;
     color: #ffffff;
 }
 
@@ -51,7 +51,7 @@
 
 .vendor-form-subtitle {
     margin-top: 3px !important;
-    color: #d9e2ec !important;
+    color: #e5eaf1 !important;
     font-size: 12px !important;
 }
 
@@ -76,7 +76,7 @@
 
 .vendor-form-section-title {
     margin-bottom: 16px !important;
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 15px !important;
     font-weight: 700 !important;
 }
@@ -100,12 +100,12 @@
 }
 
 .vendor-form .MuiInputLabel-root {
-    color: #627d98;
+    color: #64748b;
     font-size: 13px;
 }
 
 .vendor-form .MuiInputLabel-root.Mui-focused {
-    color: #1976d2;
+    color: #2563eb;
 }
 
 .vendor-form .MuiOutlinedInput-root {
@@ -120,18 +120,18 @@
 
 .vendor-form .MuiOutlinedInput-root:hover
 .MuiOutlinedInput-notchedOutline {
-    border-color: #1976d2;
+    border-color: #2563eb;
 }
 
 .vendor-form .MuiOutlinedInput-root.Mui-focused
 .MuiOutlinedInput-notchedOutline {
-    border-color: #1976d2;
+    border-color: #2563eb;
     border-width: 1px;
 }
 
 .vendor-form .MuiOutlinedInput-input {
     padding: 12px 14px;
-    color: #102a43;
+    color: #111827;
 }
 
 .vendor-form .MuiInputBase-input::placeholder {
@@ -149,7 +149,7 @@
 
 .vendor-form-divider {
     margin: 24px 0 !important;
-    border-color: #d9e2ec !important;
+    border-color: #e5eaf1 !important;
 }
 
 /* =========================================
@@ -162,7 +162,7 @@
     justify-content: flex-end;
     gap: 12px;
     padding: 16px 24px;
-    border-top: 1px solid #d9e2ec;
+    border-top: 1px solid #e5eaf1;
     background: #f8fafc;
 }
 
@@ -182,8 +182,8 @@
 }
 
 .vendor-form-cancel-button:hover {
-    border-color: #627d98 !important;
-    background: #f4f7fa !important;
+    border-color: #64748b !important;
+    background: #f5f7fb !important;
 }
 
 /* =========================================
@@ -194,7 +194,7 @@
     min-height: 40px !important;
     padding: 0 18px !important;
     border-radius: 6px !important;
-    background: #1976d2 !important;
+    background: #2563eb !important;
     color: #ffffff !important;
     text-transform: none !important;
     font-weight: 600 !important;
@@ -213,7 +213,7 @@
 }
 
 .vendor-form-body::-webkit-scrollbar-track {
-    background: #f4f7fa;
+    background: #f5f7fb;
 }
 
 .vendor-form-body::-webkit-scrollbar-thumb {

@@ -1,81 +1,30 @@
 import { createTheme } from "@mui/material/styles";
+import colors from "./colors";
+import typography from "./typography";
 
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: "#0B2A43",
-        },
-
-        secondary: {
-            main: "#1976D2",
-        },
-
-        background: {
-            default: "#F4F7FA",
-            paper: "#FFFFFF",
-        },
-
-        text: {
-            primary: "#102A43",
-            secondary: "#627D98",
-        },
-
-        divider: "#D9E2EC",
+export default createTheme({
+  palette: {
+    primary: { main: colors.primary }, secondary: { main: colors.secondary },
+    background: { default: colors.background, paper: colors.paper },
+    text: { primary: colors.textPrimary, secondary: colors.textSecondary },
+    success: { main: colors.success }, warning: { main: colors.warning },
+    error: { main: colors.error }, divider: colors.border,
+  },
+  typography: { ...typography, fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif" },
+  shape: { borderRadius: 12 },
+  components: {
+    MuiButton: {
+      defaultProps: { disableElevation: true },
+      styleOverrides: { root: { textTransform: "none", borderRadius: 10, fontWeight: 600, minHeight: 40 } },
     },
-
-    typography: {
-        fontFamily: "Arial, Helvetica, sans-serif",
-
-        h1: {
-            fontWeight: 700,
-        },
-
-        h2: {
-            fontWeight: 700,
-        },
-
-        h3: {
-            fontWeight: 700,
-        },
-
-        h4: {
-            fontWeight: 700,
-        },
-
-        h5: {
-            fontWeight: 700,
-        },
-
-        h6: {
-            fontWeight: 700,
-        },
-
-        button: {
-            textTransform: "none",
-            fontWeight: 600,
-        },
-    },
-
-    shape: {
-        borderRadius: 8,
-    },
-
-    components: {
-        MuiCard: {
-            styleOverrides: {
-                root: {
-                    borderRadius: 8,
-                    boxShadow: "0 1px 3px rgba(16, 42, 67, 0.08)",
-                },
-            },
-        },
-
-        MuiButton: {
-            defaultProps: {
-                disableElevation: true,
-            },
-        },
-    },
+    MuiCard: { styleOverrides: { root: {
+      borderRadius: 16, border: "1px solid #e5eaf1", boxShadow: "0 4px 17px rgba(15,23,42,.035)",
+    } } },
+    MuiDialog: { styleOverrides: { paper: { borderRadius: 18 } } },
+    MuiOutlinedInput: { styleOverrides: { root: { borderRadius: 10 } } },
+    MuiTableCell: { styleOverrides: {
+      head: { background: "#f8fafc", color: colors.textSecondary, fontSize: 12, fontWeight: 700 },
+      root: { borderBottom: "1px solid #edf0f4", padding: "16px" },
+    } },
+  },
 });
-
-export default theme;

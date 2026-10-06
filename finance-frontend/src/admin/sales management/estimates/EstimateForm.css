@@ -2,7 +2,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 28px;
-    background-color: #f4f7fa;
+    background-color: #f5f7fb;
 }
 
 .estimate-form-container {
@@ -19,7 +19,7 @@
 .estimate-form-card {
     width: 100%;
     overflow: hidden;
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     border-radius: 10px !important;
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.08) !important;
 }
@@ -40,7 +40,7 @@
 
     padding: 20px 24px;
 
-    background-color: #1976d2;
+    background-color: #2563eb;
 }
 
 .estimate-form-title {
@@ -94,7 +94,7 @@
 .estimate-section-title {
     padding-bottom: 10px;
 
-    color: #102a43 !important;
+    color: #111827 !important;
 
     font-size: 15px !important;
     font-weight: 700 !important;
@@ -125,16 +125,16 @@
 }
 
 .estimate-form .MuiOutlinedInput-root:hover fieldset {
-    border-color: #1976d2;
+    border-color: #2563eb;
 }
 
 .estimate-form .MuiOutlinedInput-root.Mui-focused fieldset {
-    border-color: #1976d2;
+    border-color: #2563eb;
     border-width: 1px;
 }
 
 .estimate-form .MuiInputLabel-root.Mui-focused {
-    color: #1976d2;
+    color: #2563eb;
 }
 
 
@@ -158,8 +158,8 @@
 
     background-color: #f8fafc;
 
-    border: 1px solid #d9e2ec;
-    border-radius: 8px;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px;
 }
 
 .estimate-total-row {
@@ -169,7 +169,7 @@
 
     padding: 7px 0;
 
-    color: #627d98;
+    color: #64748b;
 
     font-size: 13px;
 }
@@ -182,18 +182,18 @@
     margin-top: 10px;
     padding-top: 14px;
 
-    border-top: 1px solid #d9e2ec;
+    border-top: 1px solid #e5eaf1;
 }
 
 .estimate-grand-total-label {
-    color: #102a43 !important;
+    color: #111827 !important;
 
     font-size: 16px !important;
     font-weight: 700 !important;
 }
 
 .estimate-grand-total-value {
-    color: #1976d2 !important;
+    color: #2563eb !important;
 
     font-size: 18px !important;
     font-weight: 700 !important;
@@ -225,16 +225,16 @@
 .estimate-cancel-button {
     border-color: #b0bec5 !important;
 
-    color: #102a43 !important;
+    color: #111827 !important;
 }
 
 .estimate-cancel-button:hover {
-    background-color: #f4f7fa !important;
-    border-color: #102a43 !important;
+    background-color: #f5f7fb !important;
+    border-color: #111827 !important;
 }
 
 .save-estimate-button {
-    background-color: #1976d2 !important;
+    background-color: #2563eb !important;
 
     color: #ffffff !important;
 }

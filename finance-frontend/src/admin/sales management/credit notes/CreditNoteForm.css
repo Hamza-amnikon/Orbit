@@ -4,7 +4,7 @@
 
 .credit-note-form {
     width: 100%;
-    background-color: #f4f7fa;
+    background-color: #f5f7fb;
 }
 
 /* Form Header */
@@ -13,9 +13,9 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
-    background-color: #1976d2;
+    background-color: #2563eb;
     color: #ffffff;
-    border-radius: 8px 8px 0 0;
+    border-radius: 10px 8px 0 0;
 }
 
 .credit-note-form-title {
@@ -41,7 +41,7 @@
 /* Form Cards */
 .credit-note-form-card {
     margin: 18px 0;
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     background-color: #ffffff !important;
     box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
 }
@@ -53,7 +53,7 @@
 /* Section Titles */
 .credit-note-form-section-title {
     margin-bottom: 18px !important;
-    color: #0b2a43 !important;
+    color: #111827 !important;
     font-size: 16px !important;
     font-weight: 700 !important;
 }
@@ -71,26 +71,26 @@
 }
 
 .credit-note-form .MuiInputLabel-root {
-    color: #627d98;
+    color: #64748b;
 }
 
 .credit-note-form .MuiInputLabel-root.Mui-focused {
-    color: #1976d2;
+    color: #2563eb;
 }
 
 .credit-note-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #1976d2;
+    border-color: #2563eb;
 }
 
 .credit-note-form .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #1976d2;
+    border-color: #2563eb;
     border-width: 2px;
 }
 
 /* Summary */
 .credit-note-summary-card {
     margin: 18px 0;
-    border: 1px solid #d9e2ec;
+    border: 1px solid #e5eaf1;
     background-color: #ffffff !important;
     box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
 }
@@ -104,12 +104,12 @@
     align-items: center;
     justify-content: space-between;
     padding: 9px 0;
-    color: #627d98;
+    color: #64748b;
     font-size: 14px;
 }
 
 .credit-note-summary-row .MuiTypography-root:last-child {
-    color: #102a43;
+    color: #111827;
     font-weight: 600;
 }
 
@@ -121,13 +121,13 @@
 }
 
 .credit-note-grand-total-row .MuiTypography-root:first-child {
-    color: #0b2a43;
+    color: #111827;
     font-size: 16px;
     font-weight: 700;
 }
 
 .credit-note-grand-total-row .MuiTypography-root:last-child {
-    color: #1976d2;
+    color: #2563eb;
     font-size: 20px;
     font-weight: 700;
 }
@@ -143,19 +143,19 @@
 
 .credit-note-cancel-button {
     min-width: 100px !important;
-    color: #0b2a43 !important;
+    color: #111827 !important;
     border-color: #b8c7d6 !important;
     text-transform: none !important;
 }
 
 .credit-note-cancel-button:hover {
-    border-color: #1976d2 !important;
+    border-color: #2563eb !important;
     background-color: #f0f6fc !important;
 }
 
 .credit-note-save-button {
     min-width: 150px !important;
-    background-color: #1976d2 !important;
+    background-color: #2563eb !important;
     color: #ffffff !important;
     text-transform: none !important;
 }
@@ -187,8 +187,8 @@
     max-width: 1100px;
     max-height: 92vh;
     overflow-y: auto;
-    background-color: #f4f7fa;
-    border-radius: 8px;
+    background-color: #f5f7fb;
+    border-radius: 10px;
     box-shadow: 0 12px 35px rgba(16, 42, 67, 0.22);
 }
 

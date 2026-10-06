@@ -17,19 +17,19 @@
 .customer-form-title {
     font-size: 20px !important;
     font-weight: 700 !important;
-    color: #102a43 !important;
+    color: #111827 !important;
 }
 
 .customer-form-subtitle {
     margin-top: 4px !important;
     font-size: 12px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
 }
 
 .customer-close-button {
     min-width: auto !important;
     padding: 6px !important;
-    color: #627d98 !important;
+    color: #64748b !important;
 }
 
 .customer-form {

@@ -1,0 +1,265 @@
+.payments-made-page {
+    padding: 28px;
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+/* Header */
+
+.payments-made-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.payments-made-title {
+    color: #111827;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+}
+
+.payments-made-subtitle {
+    color: #64748b;
+    margin-top: 4px !important;
+    font-size: 14px !important;
+}
+
+.payments-made-add-button {
+    background: #2563eb !important;
+    border-radius: 10px !important;
+    padding: 10px 18px !important;
+}
+
+.payments-made-add-button:hover {
+    background: #125ca8 !important;
+}
+
+/* Summary */
+
+.payments-made-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.payments-made-summary-card {
+    border: 1px solid #e5eaf1;
+    box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
+}
+
+.summary-label {
+    color: #64748b;
+    font-size: 13px !important;
+    margin-bottom: 8px !important;
+}
+
+.summary-value {
+    color: #111827;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+}
+
+/* List */
+
+.payments-made-list-card {
+    border: 1px solid #e5eaf1;
+    overflow: hidden;
+}
+
+.payments-made-list-header {
+    padding: 20px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5eaf1;
+}
+
+.payments-made-list-title {
+    color: #111827;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.payments-made-list-subtitle {
+    color: #64748b;
+    font-size: 13px !important;
+    margin-top: 4px !important;
+}
+
+.payments-made-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.payments-made-search {
+    height: 38px;
+    width: 240px;
+    border: 1px solid #e5eaf1;
+    border-radius: 6px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 7px;
+}
+
+.payments-made-search svg {
+    color: #64748b;
+    font-size: 20px;
+}
+
+.payments-made-search input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 13px;
+    color: #111827;
+}
+
+.payments-made-filter-button {
+    height: 38px !important;
+    color: #111827 !important;
+    border-color: #e5eaf1 !important;
+}
+
+/* Table */
+
+.payments-made-table-wrapper {
+    overflow-x: auto;
+}
+
+.payments-made-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.payments-made-table th {
+    background: #f8fafc;
+    color: #111827;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5eaf1;
+    white-space: nowrap;
+}
+
+.payments-made-table td {
+    color: #334e68;
+    font-size: 13px;
+    padding: 16px;
+    border-bottom: 1px solid #e6edf3;
+    white-space: nowrap;
+}
+
+.payments-made-table tbody tr:hover {
+    background: #f8fbff;
+}
+
+/* Status */
+
+.payment-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.payment-status.paid {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.payment-status.pending {
+    background: #fff8e1;
+    color: #b26a00;
+}
+
+.payment-status.cancelled {
+    background: #ffebee;
+    color: #c62828;
+}
+
+/* View */
+
+.payment-view-button {
+    color: #2563eb !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    min-width: auto !important;
+}
+
+/* Modal */
+
+.payment-made-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(16, 42, 67, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.payment-made-modal {
+    width: min(900px, 100%);
+    max-height: 92vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 10px;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .payments-made-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .payments-made-page {
+        padding: 18px;
+    }
+
+    .payments-made-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .payments-made-list-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .payments-made-actions {
+        width: 100%;
+    }
+
+    .payments-made-search {
+        width: 100%;
+    }
+}
+
+@media (max-width: 550px) {
+    .payments-made-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .payments-made-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .payments-made-filter-button {
+        width: 100%;
+    }
+}
