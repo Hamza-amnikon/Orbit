@@ -1,0 +1,9 @@
+import { runtime } from './rule-store.ts';
+
+export const privateHeaders={'Cache-Control':'no-store, private','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'};
+export function json(data:unknown,status=200){return Response.json(data,{status,headers:privateHeaders});}
+export function sameOrigin(request:Request){const origin=request.headers.get('origin');const site=process.env.PUBLIC_ORIGIN;if(origin!==site)throw Error('Same-origin requests only.');if(request.headers.get('sec-fetch-site')==='cross-site')throw Error('Cross-origin requests are not permitted.');}
+async function equal(a:string,b:string){const encoder=new TextEncoder();const [x,y]=await Promise.all([crypto.subtle.digest('SHA-256',encoder.encode(a)),crypto.subtle.digest('SHA-256',encoder.encode(b))]);const aa=new Uint8Array(x),bb=new Uint8Array(y);return aa.reduce((acc,n,i)=>acc|(n^bb[i]),0)===0;}
+export async function admin(request:Request){const configured=runtime().ADMIN_TOKEN;if(configured)return await equal(request.headers.get('authorization')?.replace(/^Bearer /,'')??'',configured);return false;}
+export async function monitorAuth(request:Request){const configured=runtime().MONITOR_TOKEN;return !!configured&&await equal(request.headers.get('authorization')?.replace(/^Bearer /,'')??'',configured);}
+export async function body(request:Request){if(!request.headers.get('content-type')?.startsWith('application/json'))throw Error('JSON request required.');const reader=request.body?.getReader();if(!reader)throw Error('Request body required.');let bytes=0;const chunks:Uint8Array[]=[];while(true){const {value,done}=await reader.read();if(done)break;bytes+=value.length;if(bytes>8192){await reader.cancel();throw Error('Request too large.');}chunks.push(value);}const combined=new Uint8Array(bytes);let offset=0;for(const c of chunks){combined.set(c,offset);offset+=c.length;}return JSON.parse(new TextDecoder().decode(combined));}
