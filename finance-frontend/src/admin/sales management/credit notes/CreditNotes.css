@@ -1,0 +1,561 @@
+.credit-notes-page {
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    padding: 28px 32px 40px;
+    background-color: #f4f7fa;
+}
+
+/* =========================
+   Page Header
+========================= */
+
+.credit-notes-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.credit-notes-title {
+    color: #0b2a43 !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+}
+
+.credit-notes-subtitle {
+    margin-top: 4px !important;
+    color: #627d98 !important;
+    font-size: 14px !important;
+}
+
+.add-credit-note-button {
+    background-color: #1976d2 !important;
+    color: #ffffff !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+    border-radius: 7px !important;
+    padding: 9px 18px !important;
+}
+
+.add-credit-note-button:hover {
+    background-color: #1565c0 !important;
+}
+
+/* =========================
+   Summary Cards
+========================= */
+
+.credit-note-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.credit-note-summary-card {
+    border: 1px solid #d9e2ec !important;
+    border-radius: 8px !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
+}
+
+.credit-note-summary-card .MuiCardContent-root {
+    padding: 20px !important;
+}
+
+.credit-note-summary-label {
+    color: #627d98 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    margin-bottom: 8px !important;
+}
+
+.credit-note-summary-value {
+    color: #0b2a43 !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================
+   Credit Note List
+========================= */
+
+.credit-note-list-card {
+    border: 1px solid #d9e2ec !important;
+    border-radius: 8px !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
+}
+
+.credit-note-list-content {
+    padding: 24px !important;
+}
+
+.credit-note-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.credit-note-list-title {
+    color: #0b2a43 !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.credit-note-list-subtitle {
+    margin-top: 4px !important;
+    color: #627d98 !important;
+    font-size: 13px !important;
+}
+
+.credit-note-list-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.credit-note-search-box {
+    width: 240px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    border: 1px solid #d9e2ec;
+    border-radius: 7px;
+    background-color: #ffffff;
+}
+
+.credit-note-search-box svg {
+    color: #627d98;
+    font-size: 20px;
+}
+
+.credit-note-search-box input {
+    width: 100%;
+    border: none;
+    outline: none;
+    color: #102a43;
+    background: transparent;
+    font-size: 13px;
+}
+
+.credit-note-search-box input::placeholder {
+    color: #829ab1;
+}
+
+.credit-note-filter-button {
+    height: 40px !important;
+    border-color: #b8c7d6 !important;
+    color: #0b2a43 !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+.credit-note-filter-button:hover {
+    border-color: #1976d2 !important;
+    background-color: #f4f8fc !important;
+}
+
+/* =========================
+   Table
+========================= */
+
+.credit-note-table-header,
+.credit-note-table-row {
+    display: grid;
+    grid-template-columns:
+        120px
+        minmax(170px, 1.5fr)
+        110px
+        120px
+        120px
+        100px
+        70px;
+    align-items: center;
+    column-gap: 16px;
+}
+
+.credit-note-table-header {
+    min-height: 44px;
+    padding: 0 12px;
+    border-top: 1px solid #e3ebf3;
+    border-bottom: 1px solid #d9e2ec;
+    background-color: #f8fafc;
+}
+
+.credit-note-table-header .MuiTypography-root {
+    color: #627d98 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.credit-note-table-row {
+    min-height: 64px;
+    padding: 0 12px;
+    border-bottom: 1px solid #e8eef4;
+}
+
+.credit-note-table-row:last-child {
+    border-bottom: none;
+}
+
+.credit-note-table-row .MuiTypography-root {
+    color: #334e68;
+    font-size: 13px;
+}
+
+.credit-note-number {
+    color: #1976d2 !important;
+    font-weight: 700 !important;
+}
+
+.credit-note-amount {
+    color: #0b2a43 !important;
+    font-weight: 700 !important;
+}
+
+/* =========================
+   Status
+========================= */
+
+.credit-note-status {
+    width: fit-content;
+    min-width: 70px;
+    padding: 5px 9px;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.credit-note-status.issued {
+    color: #1565c0;
+    background-color: #e3f2fd;
+}
+
+.credit-note-status.applied {
+    color: #2e7d32;
+    background-color: #e8f5e9;
+}
+
+.credit-note-status.draft {
+    color: #627d98;
+    background-color: #f1f3f5;
+}
+
+.credit-note-status.refunded {
+    color: #6a1b9a;
+    background-color: #f3e5f5;
+}
+
+/* =========================
+   View Button
+========================= */
+
+.credit-note-view-button {
+    min-width: auto !important;
+    padding: 4px 8px !important;
+    color: #1976d2 !important;
+    text-transform: none !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.credit-note-view-button:hover {
+    background-color: #eaf3fb !important;
+}
+
+/* =========================
+   Modal
+========================= */
+
+.credit-note-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background-color: rgba(244, 247, 250, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    overflow-y: auto;
+}
+
+.credit-note-modal {
+    width: 100%;
+    max-width: 1050px;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+    border-radius: 8px;
+}
+
+/* =========================
+   Form
+========================= */
+
+.credit-note-form {
+    width: 100%;
+    background-color: #f4f7fa;
+    border-radius: 8px;
+}
+
+.credit-note-form-header {
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    background-color: #1976d2;
+    border-radius: 8px 8px 0 0;
+}
+
+.credit-note-form-title {
+    color: #ffffff !important;
+    font-size: 19px !important;
+    font-weight: 700 !important;
+}
+
+.credit-note-form-subtitle {
+    margin-top: 3px !important;
+    color: rgba(255, 255, 255, 0.86) !important;
+    font-size: 12px !important;
+}
+
+.credit-note-close-button {
+    color: #ffffff !important;
+}
+
+.credit-note-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.credit-note-form-card,
+.credit-note-summary-card {
+    margin: 16px 20px 0 !important;
+    border: 1px solid #d9e2ec !important;
+    border-radius: 8px !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 1px 3px rgba(16, 42, 67, 0.07) !important;
+}
+
+.credit-note-form-card .MuiCardContent-root,
+.credit-note-summary-card .MuiCardContent-root {
+    padding: 20px !important;
+}
+
+.credit-note-form-section-title {
+    margin-bottom: 18px !important;
+    color: #0b2a43 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+.credit-note-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.credit-note-form-grid .MuiTextField-root {
+    background-color: #ffffff;
+}
+
+.credit-note-form-grid .MuiInputLabel-root {
+    color: #627d98;
+}
+
+.credit-note-form-grid .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+}
+
+.credit-note-form-grid .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+    border-width: 1px;
+}
+
+/* =========================
+   Form Summary
+========================= */
+
+.credit-note-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.credit-note-summary-row .MuiTypography-root {
+    color: #627d98;
+    font-size: 13px;
+}
+
+.credit-note-summary-row .MuiTypography-root:last-child {
+    color: #334e68;
+    font-weight: 600;
+}
+
+.credit-note-grand-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+}
+
+.credit-note-grand-total-row .MuiTypography-root:first-child {
+    color: #0b2a43 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+.credit-note-grand-total-row .MuiTypography-root:last-child {
+    color: #1976d2 !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================
+   Form Actions
+========================= */
+
+.credit-note-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px;
+}
+
+.credit-note-cancel-button {
+    color: #0b2a43 !important;
+    border-color: #b8c7d6 !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+.credit-note-cancel-button:hover {
+    border-color: #1976d2 !important;
+    background-color: #f4f8fc !important;
+}
+
+.credit-note-save-button {
+    background-color: #1976d2 !important;
+    color: #ffffff !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+.credit-note-save-button:hover {
+    background-color: #1565c0 !important;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1200px) {
+    .credit-note-summary-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .credit-note-table-header,
+    .credit-note-table-row {
+        grid-template-columns:
+            110px
+            minmax(150px, 1.5fr)
+            100px
+            110px
+            110px
+            90px
+            60px;
+        column-gap: 12px;
+    }
+}
+
+@media (max-width: 900px) {
+    .credit-notes-page {
+        padding: 24px 20px 32px;
+    }
+
+    .credit-notes-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .credit-note-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .credit-note-list-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .credit-note-list-actions {
+        width: 100%;
+    }
+
+    .credit-note-search-box {
+        flex: 1;
+    }
+
+    .credit-note-table-header,
+    .credit-note-table-row {
+        min-width: 850px;
+    }
+
+    .credit-note-list-content {
+        overflow-x: auto;
+    }
+
+    .credit-note-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .credit-notes-page {
+        padding: 20px 14px 28px;
+    }
+
+    .credit-note-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .credit-note-list-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .credit-note-search-box {
+        width: 100%;
+    }
+
+    .credit-note-filter-button {
+        width: 100%;
+    }
+
+    .credit-note-modal-overlay {
+        padding: 10px;
+    }
+
+    .credit-note-modal {
+        max-height: calc(100vh - 20px);
+    }
+
+    .credit-note-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .credit-note-form-actions .MuiButton-root {
+        width: 100%;
+    }
+}

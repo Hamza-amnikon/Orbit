@@ -1,0 +1,252 @@
+/* =========================================
+   CREDIT NOTE FORM
+========================================= */
+
+.credit-note-form {
+    width: 100%;
+    background-color: #f4f7fa;
+}
+
+/* Form Header */
+.credit-note-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background-color: #1976d2;
+    color: #ffffff;
+    border-radius: 8px 8px 0 0;
+}
+
+.credit-note-form-title {
+    color: #ffffff !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+}
+
+.credit-note-form-subtitle {
+    margin-top: 4px !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 13px !important;
+}
+
+.credit-note-close-button {
+    color: #ffffff !important;
+}
+
+.credit-note-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Form Cards */
+.credit-note-form-card {
+    margin: 18px 0;
+    border: 1px solid #d9e2ec;
+    background-color: #ffffff !important;
+    box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
+}
+
+.credit-note-form-card .MuiCardContent-root {
+    padding: 22px !important;
+}
+
+/* Section Titles */
+.credit-note-form-section-title {
+    margin-bottom: 18px !important;
+    color: #0b2a43 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+/* Form Grid */
+.credit-note-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+/* MUI TextField */
+.credit-note-form .MuiTextField-root {
+    background-color: #ffffff;
+}
+
+.credit-note-form .MuiInputLabel-root {
+    color: #627d98;
+}
+
+.credit-note-form .MuiInputLabel-root.Mui-focused {
+    color: #1976d2;
+}
+
+.credit-note-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+}
+
+.credit-note-form .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+    border-width: 2px;
+}
+
+/* Summary */
+.credit-note-summary-card {
+    margin: 18px 0;
+    border: 1px solid #d9e2ec;
+    background-color: #ffffff !important;
+    box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
+}
+
+.credit-note-summary-card .MuiCardContent-root {
+    padding: 22px !important;
+}
+
+.credit-note-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0;
+    color: #627d98;
+    font-size: 14px;
+}
+
+.credit-note-summary-row .MuiTypography-root:last-child {
+    color: #102a43;
+    font-weight: 600;
+}
+
+.credit-note-grand-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+}
+
+.credit-note-grand-total-row .MuiTypography-root:first-child {
+    color: #0b2a43;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.credit-note-grand-total-row .MuiTypography-root:last-child {
+    color: #1976d2;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Form Actions */
+.credit-note-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0 20px;
+}
+
+.credit-note-cancel-button {
+    min-width: 100px !important;
+    color: #0b2a43 !important;
+    border-color: #b8c7d6 !important;
+    text-transform: none !important;
+}
+
+.credit-note-cancel-button:hover {
+    border-color: #1976d2 !important;
+    background-color: #f0f6fc !important;
+}
+
+.credit-note-save-button {
+    min-width: 150px !important;
+    background-color: #1976d2 !important;
+    color: #ffffff !important;
+    text-transform: none !important;
+}
+
+.credit-note-save-button:hover {
+    background-color: #1565c0 !important;
+}
+
+/* =========================================
+   CREDIT NOTE MODAL
+========================================= */
+
+.credit-note-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background-color: rgba(244, 247, 250, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    overflow-y: auto;
+}
+
+.credit-note-modal {
+    width: 100%;
+    max-width: 1100px;
+    max-height: 92vh;
+    overflow-y: auto;
+    background-color: #f4f7fa;
+    border-radius: 8px;
+    box-shadow: 0 12px 35px rgba(16, 42, 67, 0.22);
+}
+
+/* Modal Scrollbar */
+.credit-note-modal::-webkit-scrollbar {
+    width: 7px;
+}
+
+.credit-note-modal::-webkit-scrollbar-track {
+    background: #edf2f7;
+}
+
+.credit-note-modal::-webkit-scrollbar-thumb {
+    background: #9fb3c8;
+    border-radius: 6px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .credit-note-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .credit-note-modal-overlay {
+        padding: 15px;
+    }
+
+    .credit-note-modal {
+        max-height: 95vh;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .credit-note-form-header {
+        padding: 16px;
+    }
+
+    .credit-note-form-title {
+        font-size: 19px !important;
+    }
+
+    .credit-note-form-card .MuiCardContent-root,
+    .credit-note-summary-card .MuiCardContent-root {
+        padding: 16px !important;
+    }
+
+    .credit-note-form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .credit-note-cancel-button,
+    .credit-note-save-button {
+        width: 100%;
+    }
+}

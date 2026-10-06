@@ -1,0 +1,323 @@
+.vendor-credit-details-page {
+    min-height: calc(100vh - 70px);
+    padding: 28px 32px;
+    background: #f4f7fa;
+}
+
+/* Header */
+
+.vendor-credit-details-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.vendor-credit-details-back-button {
+    padding: 0 !important;
+    margin-bottom: 10px !important;
+    color: #1976d2 !important;
+    text-transform: none !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.vendor-credit-details-back-button:hover {
+    background: transparent !important;
+    color: #1565c0 !important;
+}
+
+.vendor-credit-details-title {
+    color: #0b2a43 !important;
+    font-size: 26px !important;
+    font-weight: 700 !important;
+}
+
+.vendor-credit-details-subtitle {
+    margin-top: 4px !important;
+    color: #627d98 !important;
+    font-size: 14px !important;
+}
+
+.vendor-credit-print-button {
+    min-width: 100px !important;
+    height: 40px;
+    color: #0b2a43 !important;
+    border-color: #d9e2ec !important;
+    border-radius: 7px !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+.vendor-credit-print-button:hover {
+    border-color: #1976d2 !important;
+    background: #f4f8fc !important;
+}
+
+/* Main Card */
+
+.vendor-credit-details-card {
+    padding: 32px !important;
+    background: #ffffff !important;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px !important;
+    box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
+}
+
+/* Company */
+
+.vendor-credit-company-section {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 26px;
+    border-bottom: 1px solid #d9e2ec;
+}
+
+.vendor-credit-company-name {
+    color: #0b2a43 !important;
+    font-size: 21px !important;
+    font-weight: 700 !important;
+}
+
+.vendor-credit-company-address {
+    margin-top: 5px !important;
+    color: #627d98 !important;
+    font-size: 13px !important;
+}
+
+.vendor-credit-document-info {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.vendor-credit-document-label {
+    color: #627d98 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px;
+}
+
+.vendor-credit-document-number {
+    margin-top: 4px !important;
+    color: #0b2a43 !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+}
+
+.vendor-credit-detail-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    margin-top: 8px;
+    padding: 5px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.vendor-credit-detail-status.issued {
+    color: #1565c0;
+    background: #e3f2fd;
+}
+
+/* Sections */
+
+.vendor-credit-detail-section {
+    padding: 26px 0;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.vendor-credit-detail-section-title {
+    margin-bottom: 18px !important;
+    color: #0b2a43 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+/* Information Grid */
+
+.vendor-credit-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 28px;
+}
+
+.vendor-credit-info-label {
+    margin-bottom: 5px !important;
+    color: #627d98 !important;
+    font-size: 12px !important;
+}
+
+.vendor-credit-info-value {
+    color: #102a43 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    word-break: break-word;
+}
+
+/* Items Table */
+
+.vendor-credit-items-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.vendor-credit-items-table {
+    width: 100%;
+    min-width: 750px;
+    border-collapse: collapse;
+}
+
+.vendor-credit-items-table thead {
+    background: #f8fafc;
+}
+
+.vendor-credit-items-table th {
+    padding: 13px 15px;
+    color: #627d98;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-bottom: 1px solid #d9e2ec;
+    white-space: nowrap;
+}
+
+.vendor-credit-items-table td {
+    padding: 15px;
+    color: #102a43;
+    font-size: 14px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.vendor-credit-items-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Totals */
+
+.vendor-credit-total-section {
+    width: 360px;
+    max-width: 100%;
+    margin-left: auto;
+    padding: 24px 0;
+}
+
+.vendor-credit-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    color: #627d98;
+    font-size: 14px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.vendor-credit-total-row p:last-child {
+    color: #102a43;
+    font-weight: 600;
+}
+
+.vendor-credit-total-final {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 17px;
+    color: #0b2a43;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.vendor-credit-total-final p:last-child {
+    color: #1976d2;
+}
+
+/* Address */
+
+.vendor-credit-address-section {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px;
+    padding: 26px 0;
+    border-top: 1px solid #edf1f5;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.vendor-credit-address-text {
+    color: #627d98 !important;
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+}
+
+/* Notes */
+
+.vendor-credit-notes-section {
+    padding-top: 26px;
+}
+
+.vendor-credit-notes-text {
+    color: #627d98 !important;
+    font-size: 14px !important;
+    line-height: 1.7 !important;
+}
+
+.vendor-credit-terms-title {
+    margin-top: 24px !important;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .vendor-credit-details-page {
+        padding: 24px;
+    }
+
+    .vendor-credit-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .vendor-credit-address-section {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .vendor-credit-details-page {
+        padding: 20px 16px;
+    }
+
+    .vendor-credit-details-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .vendor-credit-print-button {
+        width: 100%;
+    }
+
+    .vendor-credit-details-card {
+        padding: 20px !important;
+    }
+
+    .vendor-credit-company-section {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .vendor-credit-document-info {
+        align-items: flex-start;
+    }
+
+    .vendor-credit-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .vendor-credit-total-section {
+        width: 100%;
+    }
+}

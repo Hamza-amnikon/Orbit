@@ -1,0 +1,39 @@
+:root {
+    --primary-dark: #0B2A43;
+    --sidebar-dark: #102A43;
+    --sidebar-hover: #173F60;
+    --primary-blue: #1976D2;
+    --page-bg: #F4F7FA;
+    --white: #FFFFFF;
+    --border: #D9E2EC;
+    --text-dark: #102A43;
+    --text-light: #627D98;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    width: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    background-color: var(--page-bg);
+    color: var(--text-dark);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+}

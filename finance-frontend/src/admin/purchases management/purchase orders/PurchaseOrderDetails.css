@@ -1,0 +1,379 @@
+.purchase-order-details-page {
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    padding: 28px 32px 40px;
+    background-color: #f4f7fa;
+}
+
+/* =========================
+   Header
+========================= */
+
+.purchase-order-details-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.purchase-order-back-button {
+    padding: 0 !important;
+    margin-bottom: 8px !important;
+    color: #1976d2 !important;
+    font-weight: 600 !important;
+}
+
+.purchase-order-details-title {
+    color: #0b2a43 !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+}
+
+.purchase-order-details-subtitle {
+    margin-top: 6px !important;
+    color: #627d98 !important;
+    font-size: 14px !important;
+}
+
+.purchase-order-details-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.purchase-order-print-button {
+    min-width: 105px !important;
+    border-color: #1976d2 !important;
+    color: #1976d2 !important;
+    font-weight: 600 !important;
+}
+
+/* =========================
+   Main Card
+========================= */
+
+.purchase-order-details-card {
+    width: 100%;
+    border: 1px solid #d9e2ec;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
+}
+
+.purchase-order-details-card .MuiCardContent-root {
+    padding: 30px !important;
+}
+
+/* =========================
+   Document Header
+========================= */
+
+.purchase-order-document-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.purchase-order-company-name {
+    color: #0b2a43 !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+}
+
+.purchase-order-company-info {
+    margin-top: 4px !important;
+    color: #627d98 !important;
+    font-size: 14px !important;
+}
+
+.purchase-order-document-right {
+    min-width: 180px;
+    text-align: right;
+}
+
+.purchase-order-document-label {
+    color: #627d98 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px;
+}
+
+.purchase-order-number-large {
+    margin-top: 4px !important;
+    color: #1976d2 !important;
+    font-size: 23px !important;
+    font-weight: 700 !important;
+}
+
+.purchase-order-details-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.purchase-order-details-status.confirmed {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* =========================
+   Divider
+========================= */
+
+.purchase-order-details-divider {
+    margin: 26px 0 !important;
+    border-color: #e1e8ef !important;
+}
+
+/* =========================
+   Section Titles
+========================= */
+
+.purchase-order-section-title {
+    margin-bottom: 18px !important;
+    color: #0b2a43 !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================
+   Information Grid
+========================= */
+
+.purchase-order-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 30px;
+}
+
+.purchase-order-info-item {
+    min-width: 0;
+}
+
+.purchase-order-info-label {
+    margin-bottom: 5px !important;
+    color: #627d98 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.purchase-order-info-value {
+    color: #102a43 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    word-break: break-word;
+}
+
+.purchase-order-info-text {
+    margin-top: 4px !important;
+    color: #627d98 !important;
+    font-size: 13px !important;
+}
+
+/* =========================
+   Item Table
+========================= */
+
+.purchase-order-item-table {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+}
+
+.purchase-order-item-header,
+.purchase-order-item-row {
+    min-width: 850px;
+    display: grid;
+    grid-template-columns: 1.4fr 2fr 0.6fr 1fr 0.7fr 1.1fr;
+    align-items: center;
+    column-gap: 16px;
+    padding: 0 18px;
+}
+
+.purchase-order-item-header {
+    min-height: 48px;
+    background-color: #f4f7fa;
+    border-bottom: 1px solid #d9e2ec;
+}
+
+.purchase-order-item-header .MuiTypography-root {
+    color: #627d98;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.purchase-order-item-row {
+    min-height: 64px;
+}
+
+.purchase-order-item-row .MuiTypography-root {
+    color: #102a43;
+    font-size: 13px;
+}
+
+.purchase-order-item-name {
+    font-weight: 600 !important;
+}
+
+.purchase-order-item-amount {
+    color: #0b2a43 !important;
+    font-weight: 700 !important;
+}
+
+/* =========================
+   Total
+========================= */
+
+.purchase-order-total-section {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.purchase-order-total-box {
+    width: 380px;
+    padding: 18px 20px;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    background-color: #f8fafc;
+}
+
+.purchase-order-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    color: #627d98;
+    font-size: 14px;
+}
+
+.purchase-order-total-row .MuiTypography-root:last-child {
+    color: #102a43;
+    font-weight: 600;
+}
+
+.purchase-order-total-box .MuiDivider-root {
+    margin: 8px 0;
+    border-color: #d9e2ec;
+}
+
+.purchase-order-grand-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+}
+
+.purchase-order-grand-total .MuiTypography-root {
+    color: #0b2a43;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.purchase-order-grand-total .MuiTypography-root:last-child {
+    color: #1976d2;
+}
+
+/* =========================
+   Address
+========================= */
+
+.purchase-order-address-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.purchase-order-address-box {
+    padding: 18px;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    background-color: #f8fafc;
+}
+
+.purchase-order-address-title {
+    margin-bottom: 10px !important;
+    color: #0b2a43 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================
+   Notes
+========================= */
+
+.purchase-order-notes {
+    padding: 15px 18px;
+    border-left: 4px solid #1976d2;
+    border-radius: 4px;
+    background-color: #f4f7fa;
+    color: #627d98 !important;
+    font-size: 14px !important;
+    line-height: 1.7 !important;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1000px) {
+    .purchase-order-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .purchase-order-details-page {
+        padding: 22px 20px 30px;
+    }
+
+    .purchase-order-details-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .purchase-order-document-header {
+        flex-direction: column;
+    }
+
+    .purchase-order-document-right {
+        min-width: auto;
+        text-align: left;
+    }
+
+    .purchase-order-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .purchase-order-address-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .purchase-order-total-box {
+        width: 100%;
+    }
+
+    .purchase-order-details-card .MuiCardContent-root {
+        padding: 22px !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .purchase-order-details-page {
+        padding: 18px 14px 25px;
+    }
+
+    .purchase-order-details-title {
+        font-size: 23px !important;
+    }
+
+    .purchase-order-company-name {
+        font-size: 19px !important;
+    }
+}

@@ -1,0 +1,269 @@
+/* =========================================
+   VENDOR FORM
+========================================= */
+
+.vendor-form {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* =========================================
+   FORM HEADER
+========================================= */
+
+.vendor-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    background: #0b2a43;
+    color: #ffffff;
+}
+
+.vendor-form-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vendor-form-header-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: #1976d2;
+    color: #ffffff;
+}
+
+.vendor-form-header-icon svg {
+    font-size: 22px;
+}
+
+.vendor-form-title {
+    color: #ffffff !important;
+    font-size: 19px !important;
+    font-weight: 700 !important;
+}
+
+.vendor-form-subtitle {
+    margin-top: 3px !important;
+    color: #d9e2ec !important;
+    font-size: 12px !important;
+}
+
+.vendor-form-close-button {
+    color: #ffffff !important;
+}
+
+.vendor-form-close-button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* =========================================
+   FORM BODY
+========================================= */
+
+.vendor-form-body {
+    max-height: 65vh;
+    overflow-y: auto;
+    padding: 24px;
+    background: #ffffff;
+}
+
+.vendor-form-section-title {
+    margin-bottom: 16px !important;
+    color: #0b2a43 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================================
+   FORM GRID
+========================================= */
+
+.vendor-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+/* =========================================
+   MATERIAL UI TEXT FIELDS
+========================================= */
+
+.vendor-form .MuiTextField-root {
+    width: 100%;
+}
+
+.vendor-form .MuiInputLabel-root {
+    color: #627d98;
+    font-size: 13px;
+}
+
+.vendor-form .MuiInputLabel-root.Mui-focused {
+    color: #1976d2;
+}
+
+.vendor-form .MuiOutlinedInput-root {
+    background: #ffffff;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.vendor-form .MuiOutlinedInput-notchedOutline {
+    border-color: #bcccdc;
+}
+
+.vendor-form .MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+}
+
+.vendor-form .MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+    border-width: 1px;
+}
+
+.vendor-form .MuiOutlinedInput-input {
+    padding: 12px 14px;
+    color: #102a43;
+}
+
+.vendor-form .MuiInputBase-input::placeholder {
+    color: #829ab1;
+    opacity: 1;
+}
+
+.vendor-form .MuiSelect-select {
+    padding: 12px 14px !important;
+}
+
+/* =========================================
+   DIVIDER
+========================================= */
+
+.vendor-form-divider {
+    margin: 24px 0 !important;
+    border-color: #d9e2ec !important;
+}
+
+/* =========================================
+   FORM FOOTER
+========================================= */
+
+.vendor-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #d9e2ec;
+    background: #f8fafc;
+}
+
+/* =========================================
+   CANCEL BUTTON
+========================================= */
+
+.vendor-form-cancel-button {
+    min-height: 40px !important;
+    padding: 0 18px !important;
+    border: 1px solid #bcccdc !important;
+    border-radius: 6px !important;
+    color: #486581 !important;
+    background: #ffffff !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+.vendor-form-cancel-button:hover {
+    border-color: #627d98 !important;
+    background: #f4f7fa !important;
+}
+
+/* =========================================
+   SAVE BUTTON
+========================================= */
+
+.vendor-form-save-button {
+    min-height: 40px !important;
+    padding: 0 18px !important;
+    border-radius: 6px !important;
+    background: #1976d2 !important;
+    color: #ffffff !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+.vendor-form-save-button:hover {
+    background: #1565c0 !important;
+}
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+
+.vendor-form-body::-webkit-scrollbar {
+    width: 7px;
+}
+
+.vendor-form-body::-webkit-scrollbar-track {
+    background: #f4f7fa;
+}
+
+.vendor-form-body::-webkit-scrollbar-thumb {
+    background: #bcccdc;
+    border-radius: 10px;
+}
+
+.vendor-form-body::-webkit-scrollbar-thumb:hover {
+    background: #829ab1;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+    .vendor-form-header {
+        padding: 16px 18px;
+    }
+
+    .vendor-form-body {
+        padding: 20px 18px;
+    }
+
+    .vendor-form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .vendor-form-footer {
+        padding: 14px 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .vendor-form-title {
+        font-size: 17px !important;
+    }
+
+    .vendor-form-subtitle {
+        font-size: 11px !important;
+    }
+
+    .vendor-form-footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .vendor-form-cancel-button,
+    .vendor-form-save-button {
+        width: 100%;
+    }
+}

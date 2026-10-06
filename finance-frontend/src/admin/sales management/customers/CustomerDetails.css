@@ -1,0 +1,201 @@
+.customer-details-page {
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    background-color: #f4f7fa;
+}
+
+.customer-details-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 28px;
+    background-color: #1976d2;
+    color: #ffffff;
+}
+
+.customer-details-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.customer-back-button {
+    min-width: 38px !important;
+    width: 38px;
+    height: 38px;
+    padding: 0 !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+}
+
+.customer-back-button:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.customer-details-title {
+    color: #ffffff !important;
+    font-size: 21px !important;
+    font-weight: 700 !important;
+}
+
+.customer-details-code {
+    margin-top: 3px !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 12px !important;
+}
+
+.customer-details-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.customer-status {
+    padding: 5px 12px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    color: #1976d2 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.customer-edit-button {
+    background-color: #ffffff !important;
+    color: #1976d2 !important;
+}
+
+.customer-edit-button:hover {
+    background-color: #f4f7fa !important;
+}
+
+.customer-details-content {
+    padding: 24px 28px;
+}
+
+.customer-info-card,
+.customer-transactions-card {
+    border: 1px solid #d9e2ec;
+    box-shadow: none !important;
+}
+
+.customer-section-title {
+    margin-bottom: 20px !important;
+    color: #102a43 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.customer-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.customer-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.customer-info-item svg {
+    color: #1976d2;
+    font-size: 22px;
+}
+
+.customer-info-label {
+    color: #627d98 !important;
+    font-size: 11px !important;
+    margin-bottom: 4px !important;
+}
+
+.customer-info-value {
+    color: #102a43 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+.customer-financial-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 20px 0;
+}
+
+.customer-financial-card {
+    border: 1px solid #d9e2ec;
+    box-shadow: none !important;
+}
+
+.financial-label {
+    color: #627d98 !important;
+    font-size: 11px !important;
+}
+
+.financial-value {
+    margin-top: 6px !important;
+    color: #1976d2 !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.customer-transactions-card {
+    margin-top: 20px;
+}
+
+.transaction-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    align-items: center;
+    min-height: 52px;
+    border-top: 1px solid #e5ebf0;
+    color: #102a43;
+    font-size: 13px;
+}
+
+.transaction-header {
+    border-top: none;
+    min-height: 40px;
+    color: #627d98;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.transaction-paid {
+    color: #2e7d32 !important;
+    font-weight: 600 !important;
+}
+
+.transaction-pending {
+    color: #ed6c02 !important;
+    font-weight: 600 !important;
+}
+
+@media (max-width: 900px) {
+    .customer-financial-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .customer-details-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .customer-details-header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .customer-info-grid,
+    .customer-financial-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .transaction-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 12px 0;
+    }
+}

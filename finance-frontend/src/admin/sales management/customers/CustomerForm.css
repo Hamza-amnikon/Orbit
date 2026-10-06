@@ -1,0 +1,78 @@
+.customer-form-card {
+    width: 100%;
+    border: 1px solid #e1e8ef;
+}
+
+.customer-form-card .MuiCardContent-root {
+    padding: 24px !important;
+}
+
+.customer-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.customer-form-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #102a43 !important;
+}
+
+.customer-form-subtitle {
+    margin-top: 4px !important;
+    font-size: 12px !important;
+    color: #627d98 !important;
+}
+
+.customer-close-button {
+    min-width: auto !important;
+    padding: 6px !important;
+    color: #627d98 !important;
+}
+
+.customer-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.customer-form .MuiTextField-root {
+    width: 100%;
+}
+
+.customer-form .MuiInputLabel-root {
+    font-size: 13px;
+}
+
+.customer-form .MuiInputBase-input {
+    font-size: 13px;
+}
+
+.customer-form .MuiInputBase-inputMultiline {
+    font-size: 13px;
+}
+
+.customer-form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.customer-form-actions .MuiButton-root {
+    min-height: 38px;
+    padding: 0 18px;
+}
+
+@media (max-width: 700px) {
+    .customer-form {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-form-actions {
+        grid-column: auto;
+    }
+}

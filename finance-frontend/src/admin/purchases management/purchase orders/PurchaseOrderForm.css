@@ -1,0 +1,276 @@
+.purchase-order-form {
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* =========================
+   Header
+========================= */
+
+.purchase-order-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background-color: #0b2a43;
+    color: #ffffff;
+}
+
+.purchase-order-form-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.purchase-order-form-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background-color: #1976d2;
+}
+
+.purchase-order-form-icon svg {
+    font-size: 23px;
+}
+
+.purchase-order-form-title {
+    color: #ffffff !important;
+    font-size: 19px !important;
+    font-weight: 700 !important;
+}
+
+.purchase-order-form-subtitle {
+    margin-top: 3px !important;
+    color: #d9e2ec !important;
+    font-size: 12px !important;
+}
+
+.purchase-order-form-close {
+    color: #ffffff !important;
+}
+
+.purchase-order-form-close:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* =========================
+   Body
+========================= */
+
+.purchase-order-form-body {
+    max-height: calc(92vh - 150px);
+    overflow-y: auto;
+    padding: 26px;
+}
+
+.purchase-order-form-body::-webkit-scrollbar {
+    width: 7px;
+}
+
+.purchase-order-form-body::-webkit-scrollbar-track {
+    background: #f4f7fa;
+}
+
+.purchase-order-form-body::-webkit-scrollbar-thumb {
+    background: #bcccdc;
+    border-radius: 10px;
+}
+
+.purchase-order-form-section-title {
+    margin-bottom: 16px !important;
+    color: #0b2a43 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================
+   Form Grid
+========================= */
+
+.purchase-order-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.purchase-order-description-field {
+    margin-top: 18px;
+}
+
+/* =========================
+   MUI TextFields
+========================= */
+
+.purchase-order-form .MuiTextField-root {
+    background-color: #ffffff;
+}
+
+.purchase-order-form .MuiOutlinedInput-root {
+    border-radius: 7px;
+}
+
+.purchase-order-form .MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+}
+
+.purchase-order-form .MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+    border-width: 2px;
+}
+
+.purchase-order-form .MuiInputLabel-root.Mui-focused {
+    color: #1976d2;
+}
+
+/* =========================
+   Divider
+========================= */
+
+.purchase-order-form-divider {
+    margin: 26px 0 !important;
+    border-color: #e1e8ef !important;
+}
+
+/* =========================
+   Terms
+========================= */
+
+.purchase-order-terms-field {
+    margin-top: 18px !important;
+}
+
+/* =========================
+   Summary
+========================= */
+
+.purchase-order-summary-box {
+    width: 100%;
+    max-width: 450px;
+    margin-left: auto;
+    padding: 18px 20px;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    background-color: #f8fafc;
+}
+
+.purchase-order-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    color: #627d98;
+    font-size: 14px;
+}
+
+.purchase-order-summary-row .MuiTypography-root:last-child {
+    color: #102a43;
+    font-weight: 600;
+}
+
+.purchase-order-summary-box .MuiDivider-root {
+    margin: 8px 0;
+    border-color: #d9e2ec;
+}
+
+.purchase-order-summary-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+}
+
+.purchase-order-summary-total .MuiTypography-root {
+    color: #0b2a43;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.purchase-order-summary-total .MuiTypography-root:last-child {
+    color: #1976d2;
+}
+
+/* =========================
+   Footer
+========================= */
+
+.purchase-order-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 26px;
+    border-top: 1px solid #e1e8ef;
+    background-color: #ffffff;
+}
+
+.purchase-order-cancel-button {
+    min-width: 90px !important;
+    border-color: #bcccdc !important;
+    color: #486581 !important;
+    font-weight: 600 !important;
+}
+
+.purchase-order-cancel-button:hover {
+    border-color: #1976d2 !important;
+    color: #1976d2 !important;
+}
+
+.purchase-order-save-button {
+    min-width: 180px !important;
+    background-color: #1976d2 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+.purchase-order-save-button:hover {
+    background-color: #1565c0 !important;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 800px) {
+    .purchase-order-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .purchase-order-form-body {
+        padding: 22px;
+    }
+
+    .purchase-order-summary-box {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 550px) {
+    .purchase-order-form-header {
+        padding: 16px 18px;
+    }
+
+    .purchase-order-form-title {
+        font-size: 17px !important;
+    }
+
+    .purchase-order-form-body {
+        padding: 18px;
+    }
+
+    .purchase-order-form-footer {
+        flex-direction: column-reverse;
+        padding: 14px 18px;
+    }
+
+    .purchase-order-cancel-button,
+    .purchase-order-save-button {
+        width: 100%;
+    }
+}

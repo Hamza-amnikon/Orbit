@@ -1,0 +1,464 @@
+.estimate-details-page {
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    padding: 28px;
+    background-color: #f4f7fa;
+}
+
+.estimate-details-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+/* ================================= */
+/* Header */
+/* ================================= */
+
+.estimate-details-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.estimate-details-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.estimate-details-back-button {
+    min-width: 40px !important;
+    width: 40px;
+    height: 40px;
+    padding: 0 !important;
+
+    color: #1976d2 !important;
+    background-color: #ffffff !important;
+
+    border: 1px solid #d9e2ec !important;
+    border-radius: 7px !important;
+}
+
+.estimate-details-back-button:hover {
+    background-color: #eaf3ff !important;
+}
+
+.estimate-details-title {
+    color: #102a43 !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+}
+
+.estimate-details-subtitle {
+    margin-top: 3px !important;
+    color: #627d98 !important;
+    font-size: 12px !important;
+}
+
+.estimate-details-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.estimate-details-actions .MuiButton-root {
+    min-height: 38px;
+    padding: 0 16px;
+    border-radius: 6px;
+}
+
+.estimate-print-button,
+.estimate-edit-button {
+    border-color: #1976d2 !important;
+    color: #1976d2 !important;
+    background-color: #ffffff !important;
+}
+
+.estimate-print-button:hover,
+.estimate-edit-button:hover {
+    background-color: #eaf3ff !important;
+}
+
+.estimate-send-button {
+    background-color: #1976d2 !important;
+    color: #ffffff !important;
+}
+
+.estimate-send-button:hover {
+    background-color: #1565c0 !important;
+}
+
+
+/* ================================= */
+/* Estimate Preview */
+/* ================================= */
+
+.estimate-preview-card {
+    width: 100%;
+
+    border: 1px solid #d9e2ec;
+    border-radius: 8px !important;
+
+    background-color: #ffffff;
+
+    box-shadow: 0 2px 8px rgba(16, 42, 67, 0.07) !important;
+}
+
+.estimate-preview-card .MuiCardContent-root {
+    padding: 32px !important;
+}
+
+
+/* ================================= */
+/* Company Header */
+/* ================================= */
+
+.estimate-preview-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.estimate-company-name {
+    color: #0b2a43 !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+}
+
+.estimate-company-details {
+    margin-top: 4px !important;
+    color: #627d98 !important;
+    font-size: 12px !important;
+}
+
+.estimate-preview-meta {
+    text-align: right;
+}
+
+.estimate-preview-label {
+    color: #627d98 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px;
+}
+
+.estimate-preview-number {
+    margin-top: 4px !important;
+    color: #1976d2 !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+.estimate-preview-status {
+    display: inline-block;
+
+    margin-top: 8px !important;
+    padding: 4px 12px;
+
+    color: #1976d2 !important;
+    background-color: #eaf3ff;
+
+    border-radius: 20px;
+
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+.estimate-divider {
+    margin: 24px 0 !important;
+    border-color: #e5ebf0 !important;
+}
+
+
+/* ================================= */
+/* Customer Information */
+/* ================================= */
+
+.estimate-customer-section {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    margin-bottom: 28px;
+}
+
+.estimate-info-label {
+    margin-bottom: 7px !important;
+
+    color: #627d98 !important;
+
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.7px;
+}
+
+.estimate-customer-name {
+    color: #102a43 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+.estimate-info-text {
+    margin-top: 4px !important;
+    color: #627d98 !important;
+    font-size: 12px !important;
+}
+
+.estimate-date-section {
+    display: flex;
+    gap: 60px;
+    text-align: right;
+}
+
+.estimate-info-value {
+    color: #102a43 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+
+/* ================================= */
+/* Sections */
+/* ================================= */
+
+.estimate-section-title {
+    margin-bottom: 12px !important;
+
+    color: #102a43 !important;
+
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+
+/* ================================= */
+/* Items */
+/* ================================= */
+
+.estimate-items-section {
+    margin-bottom: 28px;
+}
+
+.estimate-item-table {
+    width: 100%;
+    overflow: hidden;
+
+    border: 1px solid #d9e2ec;
+    border-radius: 7px;
+}
+
+.estimate-item-header,
+.estimate-item-row {
+    display: grid;
+
+    grid-template-columns: 1.5fr 2fr 0.6fr 1fr 1fr;
+
+    align-items: center;
+
+    column-gap: 16px;
+}
+
+.estimate-item-header {
+    min-height: 44px;
+    padding: 0 16px;
+
+    color: #ffffff;
+
+    background-color: #0b2a43;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.estimate-item-row {
+    min-height: 62px;
+    padding: 0 16px;
+
+    color: #102a43;
+
+    font-size: 12px;
+
+    border-top: 1px solid #e5ebf0;
+}
+
+.estimate-item-name {
+    color: #1976d2 !important;
+    font-weight: 600 !important;
+}
+
+.estimate-item-amount {
+    color: #102a43 !important;
+    font-weight: 600 !important;
+}
+
+
+/* ================================= */
+/* Totals */
+/* ================================= */
+
+.estimate-details-total-wrapper {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-bottom: 28px;
+}
+
+.estimate-details-totals {
+    width: 340px;
+
+    padding: 18px;
+
+    background-color: #f8fafc;
+
+    border: 1px solid #d9e2ec;
+    border-radius: 7px;
+}
+
+.estimate-details-total-row {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 7px 0;
+
+    color: #627d98;
+
+    font-size: 13px;
+}
+
+.estimate-details-grand-total {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 10px;
+    padding-top: 14px;
+
+    color: #102a43;
+
+    border-top: 1px solid #d9e2ec;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.estimate-details-grand-total p:last-child {
+    color: #1976d2;
+}
+
+
+/* ================================= */
+/* Notes & Terms */
+/* ================================= */
+
+.estimate-notes-section,
+.estimate-terms-section {
+    margin-top: 24px;
+    padding-top: 20px;
+
+    border-top: 1px solid #e5ebf0;
+}
+
+.estimate-notes,
+.estimate-terms {
+    max-width: 800px;
+
+    color: #627d98 !important;
+
+    font-size: 12px !important;
+    line-height: 1.7 !important;
+}
+
+
+/* ================================= */
+/* Responsive */
+/* ================================= */
+
+@media (max-width: 900px) {
+
+    .estimate-details-page {
+        padding: 20px;
+    }
+
+    .estimate-details-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .estimate-details-actions {
+        width: 100%;
+    }
+
+    .estimate-details-actions .MuiButton-root {
+        flex: 1;
+    }
+
+    .estimate-date-section {
+        gap: 30px;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .estimate-preview-card .MuiCardContent-root {
+        padding: 20px !important;
+    }
+
+    .estimate-preview-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .estimate-preview-meta {
+        text-align: left;
+    }
+
+    .estimate-customer-section {
+        flex-direction: column;
+        gap: 22px;
+    }
+
+    .estimate-date-section {
+        text-align: left;
+    }
+
+    .estimate-item-table {
+        overflow-x: auto;
+    }
+
+    .estimate-item-header,
+    .estimate-item-row {
+        min-width: 760px;
+    }
+
+    .estimate-details-total-wrapper {
+        justify-content: stretch;
+    }
+
+    .estimate-details-totals {
+        width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .estimate-details-page {
+        padding: 12px;
+    }
+
+    .estimate-details-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .estimate-details-actions .MuiButton-root {
+        width: 100%;
+    }
+
+    .estimate-date-section {
+        flex-direction: column;
+        gap: 14px;
+    }
+}

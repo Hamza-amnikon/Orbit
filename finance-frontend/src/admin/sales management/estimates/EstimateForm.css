@@ -1,0 +1,297 @@
+.estimate-form-page {
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    padding: 28px;
+    background-color: #f4f7fa;
+}
+
+.estimate-form-container {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+
+/* ================================= */
+/* Main Card */
+/* ================================= */
+
+.estimate-form-card {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid #d9e2ec;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 8px rgba(16, 42, 67, 0.08) !important;
+}
+
+.estimate-form-card .MuiCardContent-root {
+    padding: 28px !important;
+}
+
+
+/* ================================= */
+/* Header */
+/* ================================= */
+
+.estimate-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px 24px;
+
+    background-color: #1976d2;
+}
+
+.estimate-form-title {
+    color: #ffffff !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+.estimate-form-subtitle {
+    margin-top: 4px !important;
+
+    color: rgba(255, 255, 255, 0.85) !important;
+
+    font-size: 12px !important;
+}
+
+.estimate-close-button {
+    min-width: 38px !important;
+    width: 38px;
+    height: 38px;
+
+    padding: 0 !important;
+
+    color: #ffffff !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    border-radius: 6px !important;
+}
+
+.estimate-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+
+/* ================================= */
+/* Form */
+/* ================================= */
+
+.estimate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.estimate-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.estimate-section-title {
+    padding-bottom: 10px;
+
+    color: #102a43 !important;
+
+    font-size: 15px !important;
+    font-weight: 700 !important;
+
+    border-bottom: 1px solid #e5ebf0;
+}
+
+.estimate-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.estimate-form .MuiTextField-root {
+    width: 100%;
+}
+
+.estimate-form .MuiInputLabel-root {
+    font-size: 13px;
+}
+
+.estimate-form .MuiInputBase-input {
+    font-size: 13px;
+}
+
+.estimate-form .MuiOutlinedInput-root {
+    background-color: #ffffff;
+}
+
+.estimate-form .MuiOutlinedInput-root:hover fieldset {
+    border-color: #1976d2;
+}
+
+.estimate-form .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #1976d2;
+    border-width: 1px;
+}
+
+.estimate-form .MuiInputLabel-root.Mui-focused {
+    color: #1976d2;
+}
+
+
+/* ================================= */
+/* Tax */
+/* ================================= */
+
+.estimate-tax-row {
+    grid-template-columns: 1fr 1fr;
+}
+
+
+/* ================================= */
+/* Summary */
+/* ================================= */
+
+.estimate-total-section {
+    width: 100%;
+
+    padding: 20px;
+
+    background-color: #f8fafc;
+
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+}
+
+.estimate-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 7px 0;
+
+    color: #627d98;
+
+    font-size: 13px;
+}
+
+.estimate-grand-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 10px;
+    padding-top: 14px;
+
+    border-top: 1px solid #d9e2ec;
+}
+
+.estimate-grand-total-label {
+    color: #102a43 !important;
+
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.estimate-grand-total-value {
+    color: #1976d2 !important;
+
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+
+/* ================================= */
+/* Buttons */
+/* ================================= */
+
+.estimate-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    padding-top: 2px;
+}
+
+.estimate-form-actions .MuiButton-root {
+    min-height: 40px;
+
+    padding: 0 20px;
+
+    border-radius: 6px;
+}
+
+.estimate-cancel-button {
+    border-color: #b0bec5 !important;
+
+    color: #102a43 !important;
+}
+
+.estimate-cancel-button:hover {
+    background-color: #f4f7fa !important;
+    border-color: #102a43 !important;
+}
+
+.save-estimate-button {
+    background-color: #1976d2 !important;
+
+    color: #ffffff !important;
+}
+
+.save-estimate-button:hover {
+    background-color: #1565c0 !important;
+}
+
+
+/* ================================= */
+/* Responsive */
+/* ================================= */
+
+@media (max-width: 900px) {
+
+    .estimate-form-container {
+        max-width: 100%;
+    }
+
+    .estimate-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .estimate-tax-row {
+        grid-template-columns: 1fr;
+    }
+
+    .estimate-tax-row > div:last-child {
+        display: none;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .estimate-form-page {
+        padding: 16px;
+    }
+
+    .estimate-form-card .MuiCardContent-root {
+        padding: 20px !important;
+    }
+
+    .estimate-form-header {
+        padding: 18px;
+    }
+
+    .estimate-form-title {
+        font-size: 18px !important;
+    }
+
+    .estimate-form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .estimate-form-actions button {
+        width: 100%;
+    }
+}

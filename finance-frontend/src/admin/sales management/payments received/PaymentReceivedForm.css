@@ -1,0 +1,237 @@
+/* =========================================
+   PAYMENT RECEIVED FORM
+========================================= */
+
+.payment-form {
+    width: 100%;
+    background-color: #f4f7fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.payment-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px 24px;
+
+    background-color: #0b2a43;
+    color: #ffffff;
+}
+
+.payment-form-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.payment-form-header-icon {
+    font-size: 28px !important;
+    color: #ffffff !important;
+}
+
+.payment-form-title {
+    color: #ffffff !important;
+    font-size: 19px !important;
+    font-weight: 700 !important;
+}
+
+.payment-form-subtitle {
+    margin-top: 3px !important;
+    color: #d9e2ec !important;
+    font-size: 12px !important;
+}
+
+.payment-form-close-button {
+    color: #ffffff !important;
+}
+
+.payment-form-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* =========================================
+   FORM BODY
+========================================= */
+
+.payment-form-body {
+    padding: 24px;
+    background-color: #ffffff;
+}
+
+.payment-form-section-title {
+    margin-bottom: 18px !important;
+
+    color: #0b2a43 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.payment-form-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+/* =========================================
+   MATERIAL UI INPUTS
+========================================= */
+
+.payment-form .MuiTextField-root {
+    background-color: #ffffff;
+}
+
+.payment-form .MuiInputLabel-root {
+    color: #627d98;
+}
+
+.payment-form .MuiInputLabel-root.Mui-focused {
+    color: #1976d2;
+}
+
+.payment-form .MuiOutlinedInput-root {
+    border-radius: 6px;
+}
+
+.payment-form .MuiOutlinedInput-root:hover
+.MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+}
+
+.payment-form .MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+    border-width: 1px;
+}
+
+/* =========================================
+   DIVIDER
+========================================= */
+
+.payment-form-divider {
+    margin: 26px 0 !important;
+    border-color: #d9e2ec !important;
+}
+
+/* =========================================
+   SUMMARY
+========================================= */
+
+.payment-form-summary {
+    margin-top: 24px;
+
+    padding: 18px;
+
+    background-color: #f7f9fc;
+
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+}
+
+.payment-form-summary-title {
+    margin-bottom: 14px !important;
+
+    color: #0b2a43 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+.payment-form-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.payment-form-summary-label {
+    color: #627d98 !important;
+    font-size: 13px !important;
+}
+
+.payment-form-summary-value {
+    color: #0b2a43 !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.payment-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+
+    padding: 16px 24px;
+
+    background-color: #ffffff;
+
+    border-top: 1px solid #d9e2ec;
+}
+
+.payment-form-cancel-button {
+    color: #0b2a43 !important;
+    border-color: #cbd5e1 !important;
+
+    text-transform: none !important;
+}
+
+.payment-form-cancel-button:hover {
+    border-color: #1976d2 !important;
+    background-color: #f4f8fc !important;
+}
+
+.payment-form-save-button {
+    background-color: #1976d2 !important;
+    color: #ffffff !important;
+
+    text-transform: none !important;
+}
+
+.payment-form-save-button:hover {
+    background-color: #1565c0 !important;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .payment-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-form-header {
+        padding: 18px;
+    }
+
+    .payment-form-body {
+        padding: 18px;
+    }
+
+    .payment-form-footer {
+        padding: 14px 18px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .payment-form-footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .payment-form-cancel-button,
+    .payment-form-save-button {
+        width: 100%;
+    }
+}

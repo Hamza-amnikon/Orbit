@@ -1,0 +1,214 @@
+.bill-form {
+    width: 100%;
+    background: #ffffff;
+}
+
+/* Header */
+
+.bill-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    background: #0b2a43;
+    color: #ffffff;
+}
+
+.bill-form-title-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bill-form-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #1976d2;
+}
+
+.bill-form-icon svg {
+    font-size: 22px;
+}
+
+.bill-form-title {
+    color: #ffffff;
+    font-size: 19px !important;
+    font-weight: 700 !important;
+}
+
+.bill-form-subtitle {
+    margin-top: 2px !important;
+    color: #d9e2ec;
+    font-size: 12px !important;
+}
+
+.bill-form-close-button {
+    color: #ffffff !important;
+}
+
+.bill-form-close-button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Sections */
+
+.bill-form-section {
+    padding: 22px 24px;
+}
+
+.bill-form-section-title {
+    margin-bottom: 18px !important;
+    color: #0b2a43;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+.bill-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.bill-form-full-width {
+    grid-column: 1 / -1;
+}
+
+/* MUI TextFields */
+
+.bill-form .MuiTextField-root {
+    background: #ffffff;
+}
+
+.bill-form .MuiInputLabel-root {
+    color: #627d98;
+}
+
+.bill-form .MuiOutlinedInput-root {
+    border-radius: 7px;
+}
+
+.bill-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+}
+
+.bill-form
+    .MuiOutlinedInput-root.Mui-focused
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+    border-width: 1px;
+}
+
+.bill-form
+    .MuiInputLabel-root.Mui-focused {
+    color: #1976d2;
+}
+
+/* Summary */
+
+.bill-form-summary {
+    width: 360px;
+    margin-left: auto;
+    padding: 20px 24px;
+}
+
+.bill-summary-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.bill-summary-line .MuiTypography-root {
+    color: #627d98;
+    font-size: 13px;
+}
+
+.bill-summary-line .MuiTypography-root:last-child {
+    color: #334e68;
+    font-weight: 600;
+}
+
+.bill-summary-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+}
+
+.bill-summary-total .MuiTypography-root {
+    color: #0b2a43;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+/* Footer */
+
+.bill-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    background: #f8fafc;
+    border-top: 1px solid #d9e2ec;
+}
+
+.bill-form-cancel-button {
+    min-width: 90px !important;
+    border-color: #bcccdc !important;
+    color: #486581 !important;
+    border-radius: 7px !important;
+    font-weight: 600 !important;
+}
+
+.bill-form-save-button {
+    min-width: 130px !important;
+    background: #1976d2 !important;
+    color: #ffffff !important;
+    border-radius: 7px !important;
+    font-weight: 600 !important;
+}
+
+.bill-form-save-button:hover {
+    background: #125ea8 !important;
+}
+
+/* Divider */
+
+.bill-form > .MuiDivider-root {
+    border-color: #d9e2ec;
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+    .bill-form-header {
+        padding: 16px;
+    }
+
+    .bill-form-section {
+        padding: 18px 16px;
+    }
+
+    .bill-form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .bill-form-full-width {
+        grid-column: auto;
+    }
+
+    .bill-form-summary {
+        width: 100%;
+        padding: 18px 16px;
+    }
+
+    .bill-form-footer {
+        padding: 14px 16px;
+    }
+}

@@ -1,0 +1,271 @@
+.sales-order-form-page {
+    width: 100%;
+}
+
+.sales-order-form-container {
+    width: 100%;
+}
+
+.sales-order-form-card {
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+
+    border: 1px solid #d9e2ec;
+    border-radius: 10px !important;
+
+    box-shadow: 0 2px 8px rgba(16, 42, 67, 0.08) !important;
+}
+
+.sales-order-form-card .MuiCardContent-root {
+    padding: 28px !important;
+}
+
+
+/* ================================ */
+/* Header */
+/* ================================ */
+
+.sales-order-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px 24px;
+
+    background-color: #1976d2;
+}
+
+.sales-order-form-title {
+    color: #ffffff !important;
+
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+.sales-order-form-subtitle {
+    margin-top: 4px !important;
+
+    color: rgba(255, 255, 255, 0.85) !important;
+
+    font-size: 12px !important;
+}
+
+.sales-order-close-button {
+    min-width: 38px !important;
+    width: 38px;
+    height: 38px;
+
+    padding: 0 !important;
+
+    color: #ffffff !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    border-radius: 6px !important;
+}
+
+.sales-order-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+
+/* ================================ */
+/* Form */
+/* ================================ */
+
+.sales-order-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 28px;
+}
+
+.sales-order-form-section {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+.sales-order-section-title {
+    padding-bottom: 10px;
+
+    color: #102a43 !important;
+
+    font-size: 15px !important;
+    font-weight: 700 !important;
+
+    border-bottom: 1px solid #e5ebf0;
+}
+
+.sales-order-form-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+}
+
+.sales-order-form .MuiTextField-root {
+    width: 100%;
+}
+
+.sales-order-form .MuiInputLabel-root {
+    font-size: 13px;
+}
+
+.sales-order-form .MuiInputBase-input {
+    font-size: 13px;
+}
+
+.sales-order-form .MuiOutlinedInput-root {
+    background-color: #ffffff;
+}
+
+.sales-order-form .MuiOutlinedInput-root:hover fieldset {
+    border-color: #1976d2;
+}
+
+.sales-order-form .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #1976d2;
+    border-width: 1px;
+}
+
+.sales-order-form .MuiInputLabel-root.Mui-focused {
+    color: #1976d2;
+}
+
+
+/* ================================ */
+/* Total Section */
+/* ================================ */
+
+.sales-order-total-section {
+    width: 100%;
+
+    padding: 20px;
+
+    background-color: #f8fafc;
+
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+}
+
+.sales-order-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 7px 0;
+
+    color: #627d98;
+
+    font-size: 13px;
+}
+
+.sales-order-grand-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 10px;
+    padding-top: 14px;
+
+    border-top: 1px solid #d9e2ec;
+}
+
+.sales-order-grand-total-label {
+    color: #102a43 !important;
+
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.sales-order-grand-total-value {
+    color: #1976d2 !important;
+
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+
+/* ================================ */
+/* Actions */
+/* ================================ */
+
+.sales-order-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    padding-top: 2px;
+}
+
+.sales-order-form-actions .MuiButton-root {
+    min-height: 40px;
+
+    padding: 0 20px;
+
+    border-radius: 6px;
+}
+
+.sales-order-cancel-button {
+    border-color: #b0bec5 !important;
+
+    color: #102a43 !important;
+}
+
+.sales-order-cancel-button:hover {
+    background-color: #f4f7fa !important;
+
+    border-color: #102a43 !important;
+}
+
+.save-sales-order-button {
+    background-color: #1976d2 !important;
+
+    color: #ffffff !important;
+}
+
+.save-sales-order-button:hover {
+    background-color: #1565c0 !important;
+}
+
+
+/* ================================ */
+/* Responsive */
+/* ================================ */
+
+@media (max-width: 900px) {
+
+    .sales-order-form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .sales-order-form-card .MuiCardContent-root {
+        padding: 20px !important;
+    }
+
+    .sales-order-form-header {
+        padding: 18px;
+    }
+
+    .sales-order-form-title {
+        font-size: 18px !important;
+    }
+
+    .sales-order-form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .sales-order-form-actions button {
+        width: 100%;
+    }
+}

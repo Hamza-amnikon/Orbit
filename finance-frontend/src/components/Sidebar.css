@@ -1,0 +1,157 @@
+/* =========================================
+   FINANCE SIDEBAR
+========================================= */
+
+.finance-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.finance-sidebar .MuiDrawer-paper {
+    width: 250px;
+    box-sizing: border-box;
+    background-color: #102a43;
+    color: #ffffff;
+    border-right: none;
+    overflow-x: hidden;
+}
+
+
+/* =========================================
+   LOGO
+========================================= */
+
+.sidebar-logo {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    background-color: #0b2439;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-logo-icon {
+    color: #2196f3 !important;
+    font-size: 30px !important;
+    margin-right: 8px;
+}
+
+.sidebar-logo-text {
+    color: #ffffff !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+}
+
+
+/* =========================================
+   SIDEBAR LIST
+========================================= */
+
+.sidebar-list {
+    padding: 8px 4px 20px !important;
+}
+
+.sidebar-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar-list::-webkit-scrollbar-track {
+    background: #102a43;
+}
+
+.sidebar-list::-webkit-scrollbar-thumb {
+    background: #355b7d;
+    border-radius: 5px;
+}
+
+
+/* =========================================
+   SECTION TITLE
+========================================= */
+
+.sidebar-section-title {
+    color: #8fa9c0 !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.7px !important;
+    padding: 14px 16px 5px !important;
+}
+
+
+/* =========================================
+   MAIN MENU ITEM
+========================================= */
+
+.sidebar-item {
+    min-height: 42px !important;
+    margin: 2px 5px !important;
+    padding: 7px 12px !important;
+    border-radius: 7px !important;
+    color: #e4edf5 !important;
+}
+
+.sidebar-item:hover {
+    background-color: #173f60 !important;
+}
+
+.sidebar-item .MuiListItemIcon-root {
+    min-width: 34px !important;
+    color: #d1deea !important;
+}
+
+.sidebar-item .MuiListItemText-primary {
+    font-size: 14px !important;
+    color: #e4edf5 !important;
+}
+
+/* =========================================
+   CHILD MENU
+========================================= */
+
+.sidebar-child {
+    min-height: 38px !important;
+    margin: 1px 5px !important;
+    padding: 5px 12px 5px 46px !important;
+    border-radius: 7px !important;
+    color: #d8e5f0 !important;
+}
+
+.sidebar-child:hover {
+    background-color: #173f60 !important;
+}
+
+.sidebar-child .MuiListItemText-primary {
+    font-size: 13px !important;
+    color: #d8e5f0 !important;
+}
+
+
+/* =========================================
+   EXPAND ICON
+========================================= */
+
+.sidebar-expand-icon {
+    color: #b9cbd9 !important;
+    font-size: 20px !important;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .finance-sidebar {
+        width: 220px;
+    }
+
+    .finance-sidebar .MuiDrawer-paper {
+        width: 220px;
+    }
+
+    .sidebar-child {
+        padding-left: 38px !important;
+    }
+}

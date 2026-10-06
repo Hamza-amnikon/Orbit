@@ -1,0 +1,685 @@
+/* =========================================
+   FINANCE DASHBOARD
+========================================= */
+
+.finance-dashboard {
+    width: 100%;
+    min-height: 100vh;
+    padding: 28px 32px 40px;
+    background: #f4f7fa;
+    box-sizing: border-box;
+}
+
+
+/* =========================================
+   DASHBOARD HEADER
+========================================= */
+
+.dashboard-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.dashboard-title {
+    color: #102a43 !important;
+    font-size: 26px !important;
+    font-weight: 700 !important;
+}
+
+.dashboard-subtitle {
+    color: #627d98 !important;
+    font-size: 14px !important;
+    margin-top: 4px !important;
+}
+
+.date-filter {
+    color: #102a43 !important;
+    border-color: #bcccdc !important;
+    text-transform: none !important;
+    font-weight: 500 !important;
+    background: #ffffff !important;
+}
+
+.date-filter:hover {
+    border-color: #1976d2 !important;
+    background: #f5f9fd !important;
+}
+
+
+/* =========================================
+   SUMMARY CARDS
+========================================= */
+
+.summary-grid {
+    width: 100%;
+    margin: 0 0 2px !important;
+}
+
+.summary-card {
+    height: 100%;
+    border: 1px solid #d9e2ec;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
+    background: #ffffff !important;
+    transition: 0.2s ease;
+}
+
+.summary-card:hover {
+    box-shadow: 0 5px 16px rgba(16, 42, 67, 0.10) !important;
+    transform: translateY(-1px);
+}
+
+.summary-card .MuiCardContent-root {
+    padding: 20px !important;
+}
+
+.card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.card-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: #eaf3fb;
+    color: #1976d2;
+}
+
+.card-icon svg {
+    font-size: 23px;
+}
+
+.card-label {
+    color: #627d98 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    margin-bottom: 5px !important;
+}
+
+.card-value {
+    color: #102a43 !important;
+    font-size: 23px !important;
+    font-weight: 700 !important;
+}
+
+.positive-change {
+    color: #16804b !important;
+    background: #e8f7ef;
+    border-radius: 5px;
+    padding: 4px 7px;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+.negative-change {
+    color: #c0392b !important;
+    background: #fdecea;
+    border-radius: 5px;
+    padding: 4px 7px;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+.neutral-change {
+    color: #627d98 !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+}
+
+.card-footer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 9px;
+}
+
+.card-footer svg {
+    font-size: 15px;
+    color: #16804b;
+}
+
+.card-footer p {
+    color: #829ab1;
+    font-size: 11px;
+}
+
+
+/* =========================================
+   MAIN DASHBOARD CARDS
+========================================= */
+
+.dashboard-grid,
+.bottom-grid {
+    width: 100%;
+    margin: 0 !important;
+}
+
+.dashboard-card {
+    height: 100%;
+    border: 1px solid #d9e2ec;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
+    background: #ffffff !important;
+}
+
+.dashboard-card .MuiCardContent-root {
+    padding: 22px !important;
+}
+
+.section-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    color: #102a43 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.section-subtitle {
+    color: #829ab1 !important;
+    font-size: 12px !important;
+    margin-top: 4px !important;
+}
+
+.section-icon {
+    color: #1976d2;
+    font-size: 24px !important;
+}
+
+.view-button {
+    color: #1976d2 !important;
+    text-transform: none !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+
+/* =========================================
+   INCOME VS EXPENSE CHART
+========================================= */
+
+.chart-container {
+    display: flex;
+    width: 100%;
+    height: 260px;
+    margin-top: 8px;
+}
+
+.chart-y-axis {
+    width: 42px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px 0 32px;
+}
+
+.chart-y-axis span {
+    color: #829ab1;
+    font-size: 10px;
+}
+
+.chart-area {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 0 12px 32px;
+}
+
+.chart-lines {
+    position: absolute;
+    inset: 5px 0 32px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.chart-lines span {
+    width: 100%;
+    border-top: 1px dashed #d9e2ec;
+}
+
+
+/* Bar groups */
+
+.bar-group {
+    position: relative;
+    z-index: 2;
+    width: 45px;
+    height: 220px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 5px;
+}
+
+.bar {
+    width: 14px;
+    border-radius: 4px 4px 0 0;
+}
+
+.income-bar {
+    background: #1976d2;
+}
+
+.expense-bar {
+    background: #90a4ae;
+}
+
+
+/* Individual bar heights */
+
+.bar-group-1 .income-bar {
+    height: 70%;
+}
+
+.bar-group-1 .expense-bar {
+    height: 40%;
+}
+
+.bar-group-2 .income-bar {
+    height: 82%;
+}
+
+.bar-group-2 .expense-bar {
+    height: 48%;
+}
+
+.bar-group-3 .income-bar {
+    height: 62%;
+}
+
+.bar-group-3 .expense-bar {
+    height: 44%;
+}
+
+.bar-group-4 .income-bar {
+    height: 88%;
+}
+
+.bar-group-4 .expense-bar {
+    height: 55%;
+}
+
+.bar-group-5 .income-bar {
+    height: 76%;
+}
+
+.bar-group-5 .expense-bar {
+    height: 49%;
+}
+
+.bar-group-6 .income-bar {
+    height: 94%;
+}
+
+.bar-group-6 .expense-bar {
+    height: 58%;
+}
+
+
+/* Months */
+
+.chart-months {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.chart-months span {
+    color: #829ab1;
+    font-size: 10px;
+}
+
+
+/* Chart legend */
+
+.chart-legend {
+    margin-top: 4px;
+}
+
+.chart-legend > div {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #627d98;
+    font-size: 12px;
+}
+
+.legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.income-dot {
+    background: #1976d2;
+}
+
+.expense-dot {
+    background: #90a4ae;
+}
+
+
+/* =========================================
+   CASH & BANK
+========================================= */
+
+.cash-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background: #f1f6fa;
+}
+
+.cash-total p:first-child {
+    color: #627d98;
+    font-size: 12px;
+}
+
+.cash-total p:last-child {
+    color: #102a43;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.bank-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 0;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.bank-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bank-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: #eaf3fb;
+    color: #1976d2;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.bank-left p:first-child {
+    color: #243b53;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.bank-left p:last-child {
+    color: #829ab1;
+    font-size: 10px;
+    margin-top: 2px;
+}
+
+.bank-item > p {
+    color: #102a43;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.full-width-button {
+    margin-top: 16px !important;
+    color: #1976d2 !important;
+    border-color: #b8cbe0 !important;
+    text-transform: none !important;
+}
+
+
+/* =========================================
+   TRANSACTIONS
+========================================= */
+
+.transaction-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.transaction-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.transaction-row:last-child {
+    border-bottom: none;
+}
+
+.transaction-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.transaction-icon svg {
+    font-size: 17px;
+}
+
+.transaction-icon.income {
+    background: #e8f7ef;
+    color: #16804b;
+}
+
+.transaction-icon.expense {
+    background: #fdecea;
+    color: #c0392b;
+}
+
+.transaction-info {
+    flex: 1;
+}
+
+.transaction-info p:first-child {
+    color: #243b53;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.transaction-info p:last-child {
+    color: #829ab1;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+.transaction-amount {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+.transaction-amount.positive {
+    color: #16804b !important;
+}
+
+.transaction-amount.negative {
+    color: #c0392b !important;
+}
+
+
+/* =========================================
+   OUTSTANDING INVOICES
+========================================= */
+
+.invoice-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.invoice-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.invoice-row:last-child {
+    border-bottom: none;
+}
+
+.invoice-row > div:first-child p:first-child {
+    color: #243b53;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.invoice-row > div:first-child p:last-child {
+    color: #829ab1;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+.invoice-right {
+    text-align: right;
+}
+
+.invoice-right > p:first-child {
+    color: #102a43;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.due-warning,
+.overdue {
+    margin-top: 4px !important;
+    font-size: 10px !important;
+}
+
+.due-warning {
+    color: #d9822b !important;
+}
+
+.overdue {
+    color: #c0392b !important;
+}
+
+
+/* =========================================
+   QUICK ACTIONS
+========================================= */
+
+.quick-actions-card {
+    margin-top: 16px;
+    border: 1px solid #d9e2ec;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
+}
+
+.quick-actions-card .MuiCardContent-root {
+    padding: 20px !important;
+}
+
+.quick-actions-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.quick-actions-title {
+    color: #102a43 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+.quick-actions-subtitle {
+    color: #829ab1 !important;
+    font-size: 11px !important;
+    margin-top: 3px !important;
+}
+
+.quick-actions {
+    flex-wrap: wrap;
+}
+
+.quick-actions button {
+    color: #1976d2;
+    border-color: #b8cbe0;
+    text-transform: none;
+    font-size: 12px;
+}
+
+.quick-actions button:hover {
+    border-color: #1976d2;
+    background: #f1f7fc;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+    .finance-dashboard {
+        padding: 24px;
+    }
+
+    .quick-actions-wrapper {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 700px) {
+    .finance-dashboard {
+        padding: 18px;
+    }
+
+    .dashboard-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .dashboard-title {
+        font-size: 22px !important;
+    }
+
+    .chart-container {
+        height: 220px;
+    }
+
+    .bar-group {
+        width: 30px;
+    }
+
+    .bar {
+        width: 10px;
+    }
+}

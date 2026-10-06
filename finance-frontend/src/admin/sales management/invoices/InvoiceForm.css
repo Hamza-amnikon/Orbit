@@ -1,0 +1,286 @@
+.invoice-form-page {
+    width: 100%;
+    background-color: #f4f7fa;
+    border-radius: 10px;
+}
+
+/* =========================
+   FORM HEADER
+========================= */
+
+.invoice-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px 24px;
+
+    background-color: #1976d2;
+    border-radius: 10px 10px 0 0;
+}
+
+.invoice-form-title {
+    color: #ffffff !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+.invoice-form-subtitle {
+    margin-top: 4px !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 12px !important;
+}
+
+.invoice-form-close {
+    color: #ffffff !important;
+}
+
+.invoice-form-close:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* =========================
+   FORM CARD
+========================= */
+
+.invoice-form-card,
+.invoice-summary-form-card {
+    margin: 16px 20px;
+
+    border: 1px solid #d9e2ec !important;
+    border-radius: 8px !important;
+
+    background-color: #ffffff !important;
+
+    box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
+}
+
+.invoice-form-card .MuiCardContent-root,
+.invoice-summary-form-card .MuiCardContent-root {
+    padding: 22px !important;
+}
+
+/* =========================
+   SECTION HEADING
+========================= */
+
+.invoice-form-section-title {
+    margin-bottom: 18px !important;
+
+    color: #0b2a43 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================
+   FORM GRID
+========================= */
+
+.invoice-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+/* =========================
+   MUI TEXT FIELDS
+========================= */
+
+.invoice-form-card .MuiTextField-root {
+    width: 100%;
+}
+
+.invoice-form-card .MuiInputLabel-root {
+    color: #627d98;
+    font-size: 13px;
+}
+
+.invoice-form-card .MuiInputLabel-root.Mui-focused {
+    color: #1976d2;
+}
+
+.invoice-form-card .MuiOutlinedInput-root {
+    background-color: #ffffff;
+    border-radius: 7px;
+}
+
+.invoice-form-card .MuiOutlinedInput-notchedOutline {
+    border-color: #cbd5df;
+}
+
+.invoice-form-card
+    .MuiOutlinedInput-root:hover
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+}
+
+.invoice-form-card
+    .MuiOutlinedInput-root.Mui-focused
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+    border-width: 1px;
+}
+
+.invoice-form-card .MuiInputBase-input {
+    color: #102a43;
+    font-size: 13px;
+}
+
+.invoice-form-card .MuiInputBase-input::placeholder {
+    color: #8aa0b5;
+    opacity: 1;
+}
+
+/* =========================
+   SINGLE COLUMN FIELDS
+========================= */
+
+.invoice-form-single-field {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* =========================
+   SUMMARY
+========================= */
+
+.invoice-form-summary {
+    width: 100%;
+    max-width: 420px;
+    margin-left: auto;
+}
+
+.invoice-form-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 10px 0;
+
+    color: #627d98;
+    font-size: 13px;
+}
+
+.invoice-form-summary-row p:last-child {
+    color: #102a43;
+    font-weight: 600;
+}
+
+.invoice-form-summary .MuiDivider-root {
+    margin: 8px 0;
+    border-color: #d9e2ec;
+}
+
+.invoice-form-grand-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-top: 12px;
+
+    color: #0b2a43;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.invoice-form-grand-total p {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+/* =========================
+   FORM ACTIONS
+========================= */
+
+.invoice-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+
+    padding: 0 20px 22px;
+}
+
+.invoice-cancel-button {
+    min-width: 100px !important;
+    min-height: 40px !important;
+
+    border-color: #c5d2df !important;
+    border-radius: 7px !important;
+
+    color: #0b2a43 !important;
+
+    font-size: 13px !important;
+    font-weight: 600 !important;
+
+    text-transform: none !important;
+}
+
+.invoice-cancel-button:hover {
+    border-color: #1976d2 !important;
+    background-color: #f4f9fe !important;
+}
+
+.invoice-save-button {
+    min-width: 120px !important;
+    min-height: 40px !important;
+
+    border-radius: 7px !important;
+
+    background-color: #1976d2 !important;
+    color: #ffffff !important;
+
+    font-size: 13px !important;
+    font-weight: 600 !important;
+
+    text-transform: none !important;
+}
+
+.invoice-save-button:hover {
+    background-color: #125ea8 !important;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+    .invoice-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .invoice-form-header {
+        padding: 18px;
+    }
+
+    .invoice-form-card,
+    .invoice-summary-form-card {
+        margin: 14px;
+    }
+
+    .invoice-form-card .MuiCardContent-root,
+    .invoice-summary-form-card .MuiCardContent-root {
+        padding: 18px !important;
+    }
+
+    .invoice-form-actions {
+        padding: 0 14px 18px;
+    }
+
+    .invoice-form-summary {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+    .invoice-form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .invoice-cancel-button,
+    .invoice-save-button {
+        width: 100%;
+    }
+}

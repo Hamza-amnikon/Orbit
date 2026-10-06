@@ -1,0 +1,323 @@
+.estimates-page {
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    padding: 24px 28px;
+    background-color: #f4f7fa;
+}
+
+.estimates-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.estimates-title {
+    color: #102a43 !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+}
+
+.estimates-subtitle {
+    margin-top: 4px !important;
+    color: #627d98 !important;
+    font-size: 13px !important;
+}
+
+.new-estimate-button {
+    background-color: #1976d2 !important;
+    color: #ffffff !important;
+    min-height: 40px;
+    padding: 0 18px !important;
+}
+
+.new-estimate-button:hover {
+    background-color: #1565c0 !important;
+}
+
+.estimate-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.estimate-summary-card {
+    border: 1px solid #d9e2ec;
+    box-shadow: none !important;
+}
+
+.estimate-summary-label {
+    color: #627d98 !important;
+    font-size: 12px !important;
+}
+
+.estimate-summary-value {
+    margin-top: 6px !important;
+    color: #1976d2 !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+}
+
+.estimates-table-card {
+    border: 1px solid #d9e2ec;
+    box-shadow: none !important;
+}
+
+.estimates-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.estimates-table-title {
+    color: #102a43 !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+}
+
+.estimate-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.estimate-search {
+    display: flex;
+    align-items: center;
+    width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid #1976d2;
+    border-radius: 6px;
+    background-color: #ffffff;
+}
+
+.estimate-search svg {
+    color: #1976d2;
+    font-size: 20px;
+}
+
+.estimate-search input {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 0 8px;
+    color: #102a43;
+    font-size: 13px;
+}
+
+.estimate-search input::placeholder {
+    color: #7a8fa3;
+}
+
+.estimate-filter-button {
+    min-height: 38px !important;
+    border-color: #1976d2 !important;
+    color: #1976d2 !important;
+}
+
+.estimate-row {
+    display: grid;
+    grid-template-columns: 1.3fr 1.5fr 1fr 1fr 1fr 0.8fr;
+    align-items: center;
+    min-height: 64px;
+    border-top: 1px solid #e5ebf0;
+    color: #102a43;
+    font-size: 13px;
+}
+
+.estimate-header-row {
+    min-height: 44px;
+    border-top: none;
+    color: #627d98;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.estimate-number {
+    color: #1976d2 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+}
+
+.estimate-secondary {
+    margin-top: 3px !important;
+    color: #7a8fa3 !important;
+    font-size: 11px !important;
+}
+
+.estimate-amount {
+    color: #102a43 !important;
+    font-weight: 600 !important;
+}
+
+.estimate-status {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.status-sent {
+    color: #1976d2 !important;
+}
+
+.status-accepted {
+    color: #2e7d32 !important;
+}
+
+.status-draft {
+    color: #627d98 !important;
+}
+
+.status-rejected {
+    color: #d32f2f !important;
+}
+
+.estimate-view-button {
+    width: fit-content;
+    min-width: 58px !important;
+    min-height: 32px !important;
+    padding: 3px 12px !important;
+    border: 1px solid #1976d2 !important;
+    color: #1976d2 !important;
+}
+
+.estimate-view-button:hover {
+    background-color: #eaf3ff !important;
+}
+
+@media (max-width: 1100px) {
+    .estimate-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .estimate-row {
+        grid-template-columns: 1.2fr 1.4fr 1fr 1fr 1fr 0.8fr;
+    }
+}
+
+@media (max-width: 800px) {
+    .estimates-header,
+    .estimates-table-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .estimate-actions {
+        width: 100%;
+    }
+
+    .estimate-search {
+        flex: 1;
+    }
+
+    .estimates-table-card {
+        overflow-x: auto;
+    }
+
+    .estimate-row {
+        min-width: 900px;
+    }
+}
+
+@media (max-width: 600px) {
+    .estimates-page {
+        padding: 18px;
+    }
+
+    .estimate-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ================================= */
+/* New Estimate Modal */
+/* ================================= */
+
+.estimate-modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1300;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    background-color: rgba(244, 247, 250, 0.72);
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    overflow-y: auto;
+}
+
+.estimate-modal {
+    width: 100%;
+    max-width: 1050px;
+
+    max-height: calc(100vh - 60px);
+
+    margin: auto;
+
+    overflow-y: auto;
+
+    border-radius: 10px;
+
+    animation: estimateModalOpen 0.2s ease-out;
+}
+
+.estimate-modal::-webkit-scrollbar {
+    width: 6px;
+}
+
+.estimate-modal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.estimate-modal::-webkit-scrollbar-thumb {
+    background: #b8c7d6;
+    border-radius: 6px;
+}
+
+@keyframes estimateModalOpen {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+@media (max-width: 900px) {
+
+    .estimate-modal-overlay {
+        padding: 20px;
+    }
+
+    .estimate-modal {
+        max-height: calc(100vh - 40px);
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .estimate-modal-overlay {
+        padding: 10px;
+    }
+
+    .estimate-modal {
+        max-height: calc(100vh - 20px);
+    }
+
+}

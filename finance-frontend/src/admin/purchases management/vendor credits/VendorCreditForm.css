@@ -1,0 +1,244 @@
+.vendor-credit-form-page {
+    min-height: calc(100vh - 70px);
+    padding: 28px 32px;
+    background: #f4f7fa;
+}
+
+/* Header */
+
+.vendor-credit-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.vendor-credit-form-title {
+    color: #0b2a43 !important;
+    font-size: 26px !important;
+    font-weight: 700 !important;
+}
+
+.vendor-credit-form-subtitle {
+    margin-top: 4px !important;
+    color: #627d98 !important;
+    font-size: 14px !important;
+}
+
+.vendor-credit-form-close {
+    min-width: 40px !important;
+    width: 40px;
+    height: 40px;
+    padding: 0 !important;
+    color: #0b2a43 !important;
+    border: 1px solid #d9e2ec !important;
+    border-radius: 7px !important;
+}
+
+.vendor-credit-form-close:hover {
+    background: #eef5fb !important;
+}
+
+/* Sections */
+
+.vendor-credit-form-section,
+.vendor-credit-summary-section {
+    margin-bottom: 20px;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08);
+}
+
+.vendor-credit-section-title {
+    margin-bottom: 18px !important;
+    color: #0b2a43 !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+}
+
+/* Form Grid */
+
+.vendor-credit-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+/* MUI Fields */
+
+.vendor-credit-form-page .MuiTextField-root {
+    background: #ffffff;
+}
+
+.vendor-credit-form-page .MuiInputLabel-root {
+    color: #627d98;
+}
+
+.vendor-credit-form-page .MuiInputLabel-root.Mui-focused {
+    color: #1976d2;
+}
+
+.vendor-credit-form-page .MuiOutlinedInput-root {
+    border-radius: 7px;
+}
+
+.vendor-credit-form-page
+    .MuiOutlinedInput-root:hover
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+}
+
+.vendor-credit-form-page
+    .MuiOutlinedInput-root.Mui-focused
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+    border-width: 2px;
+}
+
+.vendor-credit-form-page .MuiOutlinedInput-input {
+    color: #102a43;
+    font-size: 14px;
+}
+
+/* Description */
+
+.vendor-credit-description {
+    width: 100%;
+    margin-top: 18px !important;
+}
+
+/* Address */
+
+.vendor-credit-address-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+/* Additional Fields */
+
+.vendor-credit-full-field {
+    width: 100%;
+    margin-bottom: 18px !important;
+}
+
+.vendor-credit-full-field:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Summary */
+
+.vendor-credit-summary-section {
+    max-width: 100%;
+}
+
+.vendor-credit-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 0;
+    color: #627d98;
+    font-size: 14px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.vendor-credit-summary-row p:last-child {
+    color: #102a43;
+    font-weight: 600;
+}
+
+.vendor-credit-summary-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 18px;
+    color: #0b2a43;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.vendor-credit-summary-total p:last-child {
+    color: #1976d2;
+    font-weight: 700;
+}
+
+/* Footer */
+
+.vendor-credit-form-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 0 8px;
+}
+
+.vendor-credit-cancel-button {
+    min-width: 100px !important;
+    height: 42px;
+    color: #0b2a43 !important;
+    border-color: #d9e2ec !important;
+    border-radius: 7px !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+.vendor-credit-cancel-button:hover {
+    border-color: #1976d2 !important;
+    background: #f4f8fc !important;
+}
+
+.vendor-credit-save-button {
+    min-width: 160px !important;
+    height: 42px;
+    background: #1976d2 !important;
+    color: #ffffff !important;
+    border-radius: 7px !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+.vendor-credit-save-button:hover {
+    background: #1565c0 !important;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .vendor-credit-form-page {
+        padding: 24px;
+    }
+
+    .vendor-credit-form-grid,
+    .vendor-credit-address-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .vendor-credit-form-page {
+        padding: 20px 16px;
+    }
+
+    .vendor-credit-form-header {
+        align-items: flex-start;
+    }
+
+    .vendor-credit-form-title {
+        font-size: 22px !important;
+    }
+
+    .vendor-credit-form-section,
+    .vendor-credit-summary-section {
+        padding: 18px;
+    }
+
+    .vendor-credit-form-footer {
+        flex-direction: column-reverse;
+    }
+
+    .vendor-credit-cancel-button,
+    .vendor-credit-save-button {
+        width: 100%;
+    }
+}
