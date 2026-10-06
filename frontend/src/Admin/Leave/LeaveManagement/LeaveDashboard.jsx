@@ -1,18 +1,5 @@
-import "./LeaveDashboard.css";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
-
-import {
-    DashboardRounded,
-    FactCheckRounded,
-    HistoryRounded,
-    CategoryRounded,
-    AccountBalanceWalletRounded,
-    PolicyRounded,
-    AssessmentRounded,
-    ArrowForward,
-} from "@mui/icons-material";
-
+import ModuleOverview from "../../../components/ui/ModuleOverview";
+import { DashboardRounded, FactCheckRounded, HistoryRounded, CategoryRounded, AccountBalanceWalletRounded, PolicyRounded, AssessmentRounded } from "@mui/icons-material";
 const cards = [
     {
         title: "Leave Dashboard",
@@ -72,75 +59,7 @@ const cards = [
     },
 ];
 
+
 export default function LeaveDashboard() {
-
-    const navigate = useNavigate();
-    const { hasPermission } = useAuth();
-
-    const allowedCards = cards.filter((card) =>
-        hasPermission(card.path, "view")
-    );
-
-    const openPage = (path) => {
-        navigate(path);
-    };
-
-    return (
-        <div className="employee-dashboard">
-
-            <div className="employee-header">
-                <h1>Leave Management</h1>
-
-                <p>
-                    Manage employee leaves, approvals, balances and policies
-                    from one place.
-                </p>
-            </div>
-
-            <div className="employee-grid">
-
-                {allowedCards.map((card, index) => (
-
-                    <div
-                        key={card.title}
-                        className="employee-card fade-up"
-                        style={{
-                            animationDelay: `${index * 0.1}s`,
-                        }}
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => openPage(card.path)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                                openPage(card.path);
-                            }
-                        }}
-                    >
-
-                        <div
-                            className="employee-icon"
-                            style={{
-                                background: card.color,
-                            }}
-                        >
-                            {card.icon}
-                        </div>
-
-                        <h3>{card.title}</h3>
-
-                        <p>{card.description}</p>
-
-                        <div className="card-footer">
-                            <span>Open Module</span>
-                            <ArrowForward />
-                        </div>
-
-                    </div>
-
-                ))}
-
-            </div>
-
-        </div>
-    );
+  return <ModuleOverview title="Leave Management" description="Manage employee leaves, approvals, balances and policies from one place." modules={cards} />;
 }

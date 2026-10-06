@@ -1,4 +1,5 @@
 import { useAuth } from "../../context/AuthContext";
+import AssessmentRounded from "@mui/icons-material/AssessmentRounded";
 
 function Reports() {
     const { hasPermission } = useAuth();
@@ -15,7 +16,19 @@ function Reports() {
         );
     }
 
-    return <h1>Reports</h1>;
+    return (
+        <section className="reports-page">
+            <header className="reports-header">
+                <h1>Reports</h1>
+                <p>View organization reporting tools and summaries.</p>
+            </header>
+            <div className="reports-empty">
+                <AssessmentRounded aria-hidden="true" />
+                <h2>Organization reports</h2>
+                <p>No reports are configured on this page yet.</p>
+            </div>
+        </section>
+    );
 }
 
 export default Reports;

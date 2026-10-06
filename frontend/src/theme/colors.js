@@ -6,13 +6,13 @@ const colors = {
     warning: "#F59E0B",
     error: "#DC2626",
 
-    background: "#F5F7FB",
+    background: "#F4F7FC",
     paper: "#FFFFFF",
 
-    textPrimary: "#111827",
-    textSecondary: "#6B7280",
+    textPrimary: "#111B4B",
+    textSecondary: "#5B77A1",
 
-    border: "#E5E7EB"
+    border: "#E2E9F2"
 };
 
 export default colors;

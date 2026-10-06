@@ -66,12 +66,39 @@ const theme = createTheme({
                 root: {
 
                     borderRadius: 16,
-                    boxShadow: "0 5px 20px rgba(0,0,0,.05)",
+                    border: `1px solid ${colors.border}`,
+                    boxShadow: "0 3px 12px rgba(30,64,175,.035)",
 
                 },
 
             },
 
+        },
+
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: { borderRadius: 10, backgroundColor: colors.paper },
+                notchedOutline: { borderColor: colors.border },
+            },
+        },
+        MuiDialog: {
+            styleOverrides: {
+                paper: { borderRadius: 16, border: `1px solid ${colors.border}` },
+            },
+        },
+        MuiDialogTitle: {
+            styleOverrides: {
+                root: { fontWeight: 700, color: colors.textPrimary, borderBottom: `1px solid ${colors.border}` },
+            },
+        },
+        MuiDialogActions: {
+            styleOverrides: { root: { padding: "16px 24px", gap: 8 } },
+        },
+        MuiTableCell: {
+            styleOverrides: {
+                head: { backgroundColor: "#f0f5fc", color: "#4d6f9f", fontWeight: 600, fontSize: 13 },
+                root: { borderColor: colors.border },
+            },
         },
 
     },

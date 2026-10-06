@@ -1,0 +1,175 @@
+/* Shared presentation for authenticated pages. Page-specific grids, status
+   colours and chart dimensions remain owned by their respective modules. */
+.dashboard-content.workspace-ui {
+  --workspace-heading: #111b4b;
+  --workspace-muted: #5b77a1;
+  --workspace-border: #e2e9f2;
+  --workspace-radius: 16px;
+  --workspace-shadow: 0 3px 12px rgba(30, 64, 175, .035);
+  background: linear-gradient(135deg, #f7fbff, #f3f8ff 50%, #f8fbff);
+  text-align: left;
+  container-type: inline-size;
+}
+
+.dashboard-content.workspace-ui *, .dashboard-content.workspace-ui *::before, .dashboard-content.workspace-ui *::after { box-sizing: border-box; }
+
+/* The shell supplies the page gutter once, at every screen size. */
+.dashboard-content.workspace-ui > :is(
+  .attendance-home, .employee-list-page, .employee-type-page, .designation-page,
+  .location-page, .hierarchy-page, .attendance-logs, .attendance-dashboard,
+  .employee-attendance-page, .shift-management, .holiday-events-page,
+  .leave-overview, .leave-balance-page, .leave-types-page, .leave-policy-page,
+  .leave-requests-page, .leave-history-page, .leave-reports-page, .leave-dashboard,
+  .employee-payroll-page, .pd-payroll-dashboard, .epr-employees-payroll-page,
+  .ph-payroll-history-page, .pr-payroll-process-page, .pt-payslip-templates-page,
+  .cpt-create-payslip-page, .sc-salary-components-page, .ept-payroll-process-page,
+  .document-management, .settings-dashboard, .permissions-page, .approval-page,
+  .reimbursement-page, .my-reimbursements-page, .bill-page, .policy-dashboard,
+  .company-policies-page, .reports-page, .tickets-page
+) {
+  width: 100%; max-width: none; min-width: 0; min-height: 100%;
+  margin: 0; padding: 18px 0 45px; background: transparent;
+}
+
+.dashboard-content.workspace-ui :is(
+  .employee-page-header, .hierarchy-header, .attendance-header-card,
+  .attendance-dashboard-header, .attendance-page-header, .shift-header-card,
+  .holiday-events-header, .leave-overview-header, .leave-balance-header,
+  .leave-types-header-card, .leave-policy-header-card, .leave-requests-header,
+  .leave-history-header, .leave-reports-header-card, .leave-header,
+  .payroll-page-header, .pd-payroll-dashboard-header, .epr-employees-payroll-header,
+  .ph-payroll-history-header, .pr-payroll-process-header, .pt-payslip-templates-header,
+  .cpt-create-payslip-header, .sc-salary-components-header, .document-header,
+  .settings-header, .permissions-header, .approval-header, .reimbursement-header,
+  .my-reimbursements-header, .bill-page-header, .policy-dashboard-top,
+  .company-policy-header, .reports-header
+) {
+  padding: 0; margin-bottom: 28px; border: 0; border-radius: 0;
+  background: transparent; box-shadow: none; color: var(--workspace-heading);
+  gap: 20px; flex-wrap: wrap;
+}
+
+.dashboard-content.workspace-ui :is(
+  .employee-page-header, .hierarchy-header, .attendance-header-card,
+  .attendance-dashboard-header, .attendance-page-header, .shift-header-card,
+  .holiday-events-header, .leave-overview-header, .leave-balance-title,
+  .leave-types-header, .leave-policy-header, .leave-requests-header,
+  .leave-history-header, .leave-reports-header, .leave-header, .payroll-page-header,
+  .epr-employees-payroll-title-wrapper, .ph-payroll-history-title-section,
+  .pr-payroll-title-area, .pt-payslip-templates-header, .cpt-create-payslip-header-left,
+  .document-header, .settings-header, .permissions-title-section, .approval-header,
+  .reimbursement-header-content, .bill-title-section, .policy-dashboard-header-left,
+  .company-policy-header, .reports-header
+) :is(h1, h2, .MuiTypography-h4, .MuiTypography-h5) {
+  margin: 0; color: var(--workspace-heading); font-size: clamp(22px, 2.5vw, 34px);
+  font-weight: 700; line-height: 1.2; letter-spacing: -.7px; overflow-wrap: anywhere;
+}
+
+.dashboard-content.workspace-ui :is(.pd-payroll-dashboard-title, .sc-salary-components-title,
+  .my-reimbursements-title, .reimbursement-title, .company-policy-title,
+  .epr-employees-payroll-title, .ph-payroll-history-title, .pr-payroll-process-title,
+  .pt-payslip-templates-title, .cpt-create-payslip-title, .leave-policy-title,
+  .leave-reports-title, .leave-balance-title h2, .policy-dashboard-title) {
+  margin: 0; color: var(--workspace-heading); font-size: clamp(22px, 2.5vw, 34px);
+  font-weight: 700; line-height: 1.2; letter-spacing: -.7px;
+}
+
+/* Legacy modules set heading sizes inline or with !important. Keep the
+   override limited to page titles so dialog and chart labels retain their sizes. */
+.dashboard-content.workspace-ui :is(.pd-payroll-dashboard-title,
+  .sc-salary-components-title, .my-reimbursements-title, .reimbursement-title,
+  .company-policy-title, .epr-employees-payroll-title, .ph-payroll-history-title,
+  .pr-payroll-process-title, .pt-payslip-templates-title, .cpt-create-payslip-title,
+  .leave-policy-title, .leave-reports-title, .policy-dashboard-title) {
+  font-size: clamp(22px, 2.5vw, 34px) !important;
+  color: var(--workspace-heading) !important;
+}
+
+.dashboard-content.workspace-ui :is(
+  .employee-page-header, .hierarchy-header, .attendance-header-card,
+  .attendance-dashboard-header, .shift-header-card, .holiday-events-header,
+  .leave-overview-header, .leave-requests-header, .leave-history-header,
+  .leave-header, .document-header, .settings-header, .approval-header,
+  .bill-title-section, .reports-header
+) p,
+.dashboard-content.workspace-ui :is(.pd-payroll-dashboard-subtitle, .sc-salary-components-subtitle,
+  .my-reimbursements-subtitle, .reimbursement-subtitle, .leave-balance-subtitle,
+  .leave-policy-subtitle, .leave-reports-subtitle, .leave-types-subtitle,
+  .epr-employees-payroll-subtitle, .ph-payroll-history-subtitle,
+  .pr-payroll-process-subtitle, .pt-payslip-templates-subtitle,
+  .cpt-create-payslip-subtitle, .leave-policy-description,
+  .company-policy-description) {
+  margin: 10px 0 0; color: var(--workspace-muted); font-size: 15px;
+  line-height: 1.55; opacity: 1; max-width: 850px;
+}
+
+.dashboard-content.workspace-ui :is(.role-page) {
+  width: 100%; min-width: 0; min-height: 100%; padding: 18px 0 45px; background: transparent;
+}
+.dashboard-content.workspace-ui .role-header-card {
+  margin-bottom: 28px; padding: 0; border: 0; background: transparent; box-shadow: none;
+}
+.dashboard-content.workspace-ui .role-header-card h1 {
+  color: var(--workspace-heading); font-size: clamp(22px, 2.5vw, 34px); margin: 0;
+}
+
+.dashboard-content.workspace-ui :is(.MuiCard-root, .MuiPaper-outlined, .MuiTableContainer-root,
+  .document-stat-card, .document-filter, .document-table-container,
+  .permission-stat-card, .permission-table-container, .approval-stat-card,
+  .approval-table-card, .leave-summary-card, .leave-trend-panel,
+  .upcoming-leaves-panel, .leave-balance-card, .form-card, .employee-form-card,
+  .vendor-table-card, .coming-soon-card) {
+  border: 1px solid var(--workspace-border);
+  border-radius: var(--workspace-radius); box-shadow: var(--workspace-shadow);
+}
+
+.dashboard-content.workspace-ui .MuiTableContainer-root,
+.dashboard-content.workspace-ui :is(.document-table-container, .approval-table-card,
+  .employee-table-wrapper, .designation-table-wrapper, .location-table-wrapper,
+  .employee-type-table-wrapper, .leave-history-table-wrapper,
+  .permission-table-container) { max-width: 100%; overflow-x: auto; }
+
+.dashboard-content.workspace-ui :is(table, .MuiTable-root) { width: 100%; border-collapse: collapse; }
+.dashboard-content.workspace-ui :is(th, .MuiTableCell-head) {
+  background: #f0f5fc; color: #4d6f9f; font-size: 13px; font-weight: 600;
+  border-bottom: 1px solid var(--workspace-border); padding: 14px 16px;
+}
+.dashboard-content.workspace-ui :is(td, .MuiTableCell-body) {
+  font-size: 14px; border-bottom-color: #edf1f7; padding: 14px 16px;
+}
+.dashboard-content.workspace-ui tbody tr:hover { background-color: #f8fbff; }
+.dashboard-content.workspace-ui .MuiButton-root { border-radius: 10px; text-transform: none; font-weight: 600; }
+.dashboard-content.workspace-ui .MuiOutlinedInput-root { border-radius: 10px; background-color: #fff; font-size: 14px; }
+.dashboard-content.workspace-ui .MuiOutlinedInput-notchedOutline { border-color: #dbe4ef; }
+.dashboard-content.workspace-ui :is(button, a, input, select, textarea):focus-visible { outline: 3px solid #93b8f8; outline-offset: 3px; }
+
+.dashboard-content.workspace-ui .reports-empty { padding: 32px; background: white; border: 1px solid var(--workspace-border); border-radius: 16px; color: var(--workspace-muted); }
+.dashboard-content.workspace-ui .reports-empty svg { width: 48px; height: 48px; color: #2563eb; margin-bottom: 16px; }
+.dashboard-content.workspace-ui .reports-empty h2 { color: var(--workspace-heading); font-size: 20px; margin: 0 0 8px; }
+
+.dashboard-content.workspace-ui :is(.attendance-header-card, .shift-header-card,
+  .role-header-card, .leave-types-header-card, .leave-policy-header-card,
+  .leave-reports-header-card) {
+  border: 0 !important; border-radius: 0 !important;
+  box-shadow: none !important; background: transparent !important;
+}
+.dashboard-content.workspace-ui :is(.leave-types-header-card, .leave-policy-header-card,
+  .leave-reports-header-card) > .MuiCardContent-root { padding: 0 !important; }
+
+@container (max-width: 650px) {
+  .dashboard-content.workspace-ui :is(.header-buttons, .leave-header-actions, .permissions-header-actions,
+    .pd-payroll-dashboard-header-actions, .reimbursement-header-actions) { width: 100%; flex-wrap: wrap; gap: 10px; }
+  .dashboard-content.workspace-ui :is(.stats-grid, .document-stats, .permission-stat-grid,
+    .approval-stats, .leave-summary-grid) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .dashboard-content.workspace-ui .form-row { flex-wrap: wrap; }
+  .dashboard-content.workspace-ui .form-row > .form-group { flex-basis: 100%; min-width: 0; }
+}
+@container (max-width: 380px) {
+  .dashboard-content.workspace-ui :is(.stats-grid, .document-stats, .permission-stat-grid,
+    .approval-stats, .leave-summary-grid) { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-content.workspace-ui *, .dashboard-content.workspace-ui *::before, .dashboard-content.workspace-ui *::after {
+    animation: none !important; transition: none !important; scroll-behavior: auto !important;
+  }
+}

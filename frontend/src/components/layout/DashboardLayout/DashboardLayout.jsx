@@ -7,6 +7,7 @@ import Navbar from "../Navbar/Navbar";
 import { useAuth } from "../../../context/AuthContext";
 
 import "./DashboardLayout.css";
+import "../../../theme/workspace.css";
 
 function DashboardLayout() {
 
@@ -147,7 +148,7 @@ function DashboardLayout() {
                     PAGE CONTENT
                 ================================================== */}
 
-                <main className="dashboard-content">
+                <main className="dashboard-content workspace-ui">
 
                     <Outlet />
 

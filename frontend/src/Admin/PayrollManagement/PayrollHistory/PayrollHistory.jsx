@@ -58,8 +58,11 @@ import { useAuth } from "../../../context/AuthContext";
    API CONFIGURATION
 ========================================================= */
 
-const API_BASE_URL = (
-    import.meta.env.VITE_PAYROLL_API_BASE_URL
+// Keep the module import-safe when a local .env file has not been created yet.
+// The API calls will surface their normal request error state instead of
+// crashing the entire application during startup.
+const API_BASE_URL = String(
+    import.meta.env.VITE_PAYROLL_API_BASE_URL || ""
 ).replace(/\/+$/, "");
 
 /* =========================================================

@@ -24,12 +24,7 @@ function Tickets() {
     }
 
     return (
-        <div
-            style={{
-                padding: "60px",
-                textAlign: "center",
-            }}
-        >
+        <div className="tickets-page" role="status">
             <h2>Opening Tickets...</h2>
         </div>
     );
