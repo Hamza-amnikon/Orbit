@@ -30,9 +30,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import SearchIcon from "@mui/icons-material/Search";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
-import * as XLSX from "xlsx";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import { loadPdf, loadXlsx } from "../../../utils/exportLibraries";
 
 import "./LeaveReports.css";
 import { useAuth } from "../../../context/AuthContext";
@@ -466,9 +464,10 @@ export default function LeaveReports() {
         }));
     };
 
-    const handleExportExcel = () => {
+    const handleExportExcel = async () => {
         if (!canExport || !filteredData.length) return;
 
+        const XLSX = await loadXlsx();
         const worksheet = XLSX.utils.json_to_sheet(
             getExportRows()
         );
@@ -509,9 +508,10 @@ export default function LeaveReports() {
         );
     };
 
-    const handleExportPDF = () => {
+    const handleExportPDF = async () => {
         if (!canExport || !filteredData.length) return;
 
+        const { jsPDF, autoTable } = await loadPdf();
         const doc = new jsPDF("landscape");
 
         doc.setFontSize(16);

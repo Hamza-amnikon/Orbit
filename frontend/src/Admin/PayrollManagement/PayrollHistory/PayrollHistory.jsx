@@ -47,9 +47,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import TableViewIcon from "@mui/icons-material/TableView";
 
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import * as XLSX from "xlsx";
+import { loadPdf, loadXlsx } from "../../../utils/exportLibraries";
 
 import "./PayrollHistory.css";
 import { useAuth } from "../../../context/AuthContext";
@@ -1660,7 +1658,7 @@ const PayrollHistory = ({
     ===================================================== */
 
     const handleDownloadReport =
-        () => {
+        async () => {
             if (
                 !canExport ||
                 !selectedPayroll
@@ -1668,6 +1666,7 @@ const PayrollHistory = ({
                 return;
             }
 
+            const { jsPDF, autoTable } = await loadPdf();
             const doc =
                 new jsPDF({
                     orientation:
@@ -2174,7 +2173,7 @@ const PayrollHistory = ({
     ===================================================== */
 
     const handleDownloadExcel =
-        () => {
+        async () => {
             if (
                 !canExport ||
                 !selectedPayroll
@@ -2223,6 +2222,7 @@ const PayrollHistory = ({
              * =================================================
              */
 
+            const XLSX = await loadXlsx();
             const workbook =
                 XLSX.utils.book_new();
 

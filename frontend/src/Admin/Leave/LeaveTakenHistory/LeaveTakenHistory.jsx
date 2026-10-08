@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./LeaveTakenHistory.css";
 import { useAuth } from "../../../context/AuthContext";
-import * as XLSX from "xlsx";
+import { loadXlsx } from "../../../utils/exportLibraries";
 
 const LEAVE_API =
     `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/Leave`;
@@ -158,10 +158,11 @@ export default function LeaveTakenHistory() {
     // Export Excel
     // ==========================================
 
-    const handleExport = () => {
+    const handleExport = async () => {
 
         if (!canExport) return;
 
+        const XLSX = await loadXlsx();
         const exportData = approvedLeaves.map((leave) => ({
 
             "Employee ID":

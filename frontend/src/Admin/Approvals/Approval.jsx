@@ -4,9 +4,7 @@ import React, {
     useState
 } from "react";
 
-import { jsPDF } from "jspdf";
-import * as XLSX from "xlsx";
-import autoTable from "jspdf-autotable";
+import { loadPdf, loadXlsx } from "../../utils/exportLibraries";
 
 import "./Approval.css";
 
@@ -1842,7 +1840,7 @@ const response =
     // ========================================================
 
     const handleExport =
-        () => {
+        async () => {
 
             if (
                 !filteredRequests ||
@@ -1855,6 +1853,11 @@ const response =
 
                 return;
             }
+
+            const [{ jsPDF, autoTable }, XLSX] = await Promise.all([
+                loadPdf(),
+                loadXlsx(),
+            ]);
 
             const exportData =
                 filteredRequests.map(

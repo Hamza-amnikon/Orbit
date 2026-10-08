@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import * as XLSX from "xlsx";
 import { useNavigate } from "react-router-dom";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RoleForm from "./RoleForm";
@@ -8,6 +7,7 @@ import RoleTable from "./RoleTable";
 import { getRoles } from "./RoleService";
 import "./Role.css";
 import { useAuth } from "../../context/AuthContext";
+import { loadXlsx } from "../../utils/exportLibraries";
 
 function Role() {
   const navigate = useNavigate();
@@ -92,11 +92,12 @@ function Role() {
   ).length;
 
   // Export
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
     if (!canExport) {
       return;
     }
 
+    const XLSX = await loadXlsx();
     const data = filteredRoles.map((role, index) => ({
       "S.No": index + 1,
       Role: role.role,

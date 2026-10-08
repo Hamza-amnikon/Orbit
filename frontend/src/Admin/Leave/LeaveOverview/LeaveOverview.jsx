@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import * as XLSX from "xlsx";
+import { loadXlsx } from "../../../utils/exportLibraries";
 
 import {
     BarChart,
@@ -124,12 +124,13 @@ export default function LeaveOverview() {
     // Export Leave Data
     // ==========================================
 
-    const handleExport = () => {
+    const handleExport = async () => {
 
         if (!canExport) return;
 
         console.log("Export button clicked");
 
+        const XLSX = await loadXlsx();
         const exportData = leaves.map((leave) => ({
             Employee: leave.employeeId,
             "Leave Type": getLeaveTypeName(leave.leaveTypeId),

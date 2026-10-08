@@ -1,19 +1,19 @@
+import { lazy, Suspense, useEffect } from "react";
 import { Routes, Route, Outlet, useLocation, Navigate } from "react-router-dom";
 import { syncPermissions } from "../Admin/Services/PermissionService";
-import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 
 
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
 
-import Dashboard from "../pages/Dashboard/Dashboard";
-import Attendance from "../Admin/AttendanceManagement/Attendance";
-import Approval from "../Admin/Approvals/Approval";
-import Payroll from "../Admin/PayrollManagement/Payroll";
-import Reports from "../pages/Reports/Reports";
-import Tickets from "../pages/Tickets/Tickets";
+const Dashboard = lazy(() => import("../pages/Dashboard/Dashboard"));
+const Attendance = lazy(() => import("../Admin/AttendanceManagement/Attendance"));
+const Approval = lazy(() => import("../Admin/Approvals/Approval"));
+const Payroll = lazy(() => import("../Admin/PayrollManagement/Payroll"));
+const Reports = lazy(() => import("../pages/Reports/Reports"));
+const Tickets = lazy(() => import("../pages/Tickets/Tickets"));
 
-import HolidayEvents from "../Admin/AttendanceManagement/Holiday/Holiday";
+const HolidayEvents = lazy(() => import("../Admin/AttendanceManagement/Holiday/Holiday"));
 import Login from "../pages/Login/Login";
 import AuthCallback from "./AuthCallback";
 import PrivateRoute from "./PrivateRoute";
@@ -21,59 +21,59 @@ import PrivateRoute from "./PrivateRoute";
 
 // ================= Admin =================
 
-import Employees from "../Admin/Employees/EmployeeManagement/Employees";
-import AddEmployee from "../Admin/Employees/EmployeeManagement/AddEmployee";
-import EmployeeList from "../Admin/Employees/EmployeeManagement/EmployeeList";
-import Departments from "../Admin/Employees/Departments/Departments";
-import Designations from "../Admin/Employees/Designations/Designations";
-import Locations from "../Admin/Employees/Locations/Locations";
-import EmployeeType from "../Admin/Employees/EmployeeType/EmployeeType";
-import Role from "../Admin/Roles/Role";
+const Employees = lazy(() => import("../Admin/Employees/EmployeeManagement/Employees"));
+const AddEmployee = lazy(() => import("../Admin/Employees/EmployeeManagement/AddEmployee"));
+const EmployeeList = lazy(() => import("../Admin/Employees/EmployeeManagement/EmployeeList"));
+const Departments = lazy(() => import("../Admin/Employees/Departments/Departments"));
+const Designations = lazy(() => import("../Admin/Employees/Designations/Designations"));
+const Locations = lazy(() => import("../Admin/Employees/Locations/Locations"));
+const EmployeeType = lazy(() => import("../Admin/Employees/EmployeeType/EmployeeType"));
+const Role = lazy(() => import("../Admin/Roles/Role"));
 
-import LeaveDashboard from "../Admin/Leave/LeaveManagement/LeaveDashboard";
-import LeaveTypes from "../Admin/Leave/LeaveTypes/LeaveTypes";
-import LeaveRequests from "../Admin/Leave/LeaveRequests/LeaveRequests";
-import LeaveTakenHistory from "../Admin/Leave/LeaveTakenHistory/LeaveTakenHistory";
-import LeaveOverview from "../Admin/Leave/LeaveOverview/LeaveOverview";
-import LeavePolicy from "../Admin/Leave/LeavePolicy/LeavePolicy";
-import LeaveBalance from "../Admin/Leave/LeaveManagement/LeaveBalance/LeaveBalance";
-import LeaveReports from "../Admin/Leave/LeaveReports/LeaveReports";
+const LeaveDashboard = lazy(() => import("../Admin/Leave/LeaveManagement/LeaveDashboard"));
+const LeaveTypes = lazy(() => import("../Admin/Leave/LeaveTypes/LeaveTypes"));
+const LeaveRequests = lazy(() => import("../Admin/Leave/LeaveRequests/LeaveRequests"));
+const LeaveTakenHistory = lazy(() => import("../Admin/Leave/LeaveTakenHistory/LeaveTakenHistory"));
+const LeaveOverview = lazy(() => import("../Admin/Leave/LeaveOverview/LeaveOverview"));
+const LeavePolicy = lazy(() => import("../Admin/Leave/LeavePolicy/LeavePolicy"));
+const LeaveBalance = lazy(() => import("../Admin/Leave/LeaveManagement/LeaveBalance/LeaveBalance"));
+const LeaveReports = lazy(() => import("../Admin/Leave/LeaveReports/LeaveReports"));
 
-import Hierarchy from "../Admin/Employees/EmployeeHierarchy/Hierarchy";
+const Hierarchy = lazy(() => import("../Admin/Employees/EmployeeHierarchy/Hierarchy"));
 
-import PayrollDashboard from "../Admin/PayrollManagement/PayrollDashboard/PayrollDashboard";
-import PayslipTemplates from "../Admin/PayrollManagement/PayslipTemplates/PayslipTemplates";
-import CreatePayslipTemplate from "../Admin/PayrollManagement/PayslipTemplates/CreatePayslipTemplate/CreatePayslipTemplate";
-import PayrollProcess from "../Admin/PayrollManagement/PayrollProcess/PayrollProcess";
-import EmployeesPayroll from "../Admin/PayrollManagement/EmployeesPayroll/EmployeesPayroll";
-import EmployeesHistory from "../Admin/PayrollManagement/PayrollHistory/PayrollHistory";
-import SalaryComponents from "../Admin/PayrollManagement/SalaryComponents/SalaryComponents";
+const PayrollDashboard = lazy(() => import("../Admin/PayrollManagement/PayrollDashboard/PayrollDashboard"));
+const PayslipTemplates = lazy(() => import("../Admin/PayrollManagement/PayslipTemplates/PayslipTemplates"));
+const CreatePayslipTemplate = lazy(() => import("../Admin/PayrollManagement/PayslipTemplates/CreatePayslipTemplate/CreatePayslipTemplate"));
+const PayrollProcess = lazy(() => import("../Admin/PayrollManagement/PayrollProcess/PayrollProcess"));
+const EmployeesPayroll = lazy(() => import("../Admin/PayrollManagement/EmployeesPayroll/EmployeesPayroll"));
+const EmployeesHistory = lazy(() => import("../Admin/PayrollManagement/PayrollHistory/PayrollHistory"));
+const SalaryComponents = lazy(() => import("../Admin/PayrollManagement/SalaryComponents/SalaryComponents"));
 
-import DocumentManagement from "../Admin/DocumentManagement/DocumentManagement";
-import SettingsDashboard from "../Admin/Settings/SettingsDashboard";
+const DocumentManagement = lazy(() => import("../Admin/DocumentManagement/DocumentManagement"));
+const SettingsDashboard = lazy(() => import("../Admin/Settings/SettingsDashboard"));
 
-import MyAttendance from "../Admin/AttendanceManagement/My Attendance/Attendance";
-import MyLeave from "../Admin/Leave/MyLeave/Leave/Leave";
-import MyPayroll from "../Admin/PayrollManagement/MyPayroll/Payrolls";
-import MyDashboard from "../Admin/MyDashboard/Dashboard";
+const MyAttendance = lazy(() => import("../Admin/AttendanceManagement/My Attendance/Attendance"));
+const MyLeave = lazy(() => import("../Admin/Leave/MyLeave/Leave/Leave"));
+const MyPayroll = lazy(() => import("../Admin/PayrollManagement/MyPayroll/Payrolls"));
+const MyDashboard = lazy(() => import("../Admin/MyDashboard/Dashboard"));
 
-import AttendanceLogs from "../Admin/AttendanceManagement/AttendanceLogs/AttendanceLogs";
-import AttendanceDashboard from "../Admin/AttendanceManagement/Dashboard/AttendanceDashboard";
-import ShiftManagement from "../Admin/AttendanceManagement/ShiftManagement/ShiftManagement";
-import CompOff from "../Admin/Leave/CompOff/CompOff";
+const AttendanceLogs = lazy(() => import("../Admin/AttendanceManagement/AttendanceLogs/AttendanceLogs"));
+const AttendanceDashboard = lazy(() => import("../Admin/AttendanceManagement/Dashboard/AttendanceDashboard"));
+const ShiftManagement = lazy(() => import("../Admin/AttendanceManagement/ShiftManagement/ShiftManagement"));
+const CompOff = lazy(() => import("../Admin/Leave/CompOff/CompOff"));
 
-import PermissionManagement from "../Admin/PermissionManagement/Permissions";
-import ReimbursementDashboard from "../Admin/Reimbursement/ReimbursementDashboard";
-import MyReimbursement from "../Admin/Reimbursement/MyReimbursement";
-import ReimbursementRequest from "../Admin/Reimbursement/Reimbursement";
+const PermissionManagement = lazy(() => import("../Admin/PermissionManagement/Permissions"));
+const ReimbursementDashboard = lazy(() => import("../Admin/Reimbursement/ReimbursementDashboard"));
+const MyReimbursement = lazy(() => import("../Admin/Reimbursement/MyReimbursement"));
+const ReimbursementRequest = lazy(() => import("../Admin/Reimbursement/Reimbursement"));
 
 
-import Bill from "../Admin/Bill/Bill";
-import MyReimbursements from "../Admin/Reimbursement/MyReimbursement";
+const Bill = lazy(() => import("../Admin/Bill/Bill"));
+const MyReimbursements = lazy(() => import("../Admin/Reimbursement/MyReimbursement"));
 
-import Policy from "../Admin/Policy/Policy";
-import PolicyDashboard from "../Admin/Policy/PolicyDashboard";
-import CompanyPolicy from "../Admin/Policy/CompanyPolicy";
+const Policy = lazy(() => import("../Admin/Policy/Policy"));
+const PolicyDashboard = lazy(() => import("../Admin/Policy/PolicyDashboard"));
+const CompanyPolicy = lazy(() => import("../Admin/Policy/CompanyPolicy"));
 /* ============================================================
    PERMISSION PAGE CATALOG
 
@@ -568,7 +568,13 @@ function OnboardingGuard() {
 
 function AppRoutes() {
 
+    const { isAuthenticated, loading: authLoading } = useAuth();
+
     useEffect(() => {
+        if (authLoading || !isAuthenticated) {
+            return;
+        }
+
         const registerPermissions = async () => {
             try {
                 await syncPermissions(PERMISSION_PAGES);
@@ -585,9 +591,16 @@ function AppRoutes() {
         };
 
         registerPermissions();
-    }, []);
+    }, [authLoading, isAuthenticated]);
 
     return (
+        <Suspense
+            fallback={
+                <div className="route-loading" role="status" aria-live="polite">
+                    Loading page…
+                </div>
+            }
+        >
         <Routes>
 
 
@@ -849,6 +862,7 @@ function AppRoutes() {
             </Route>
 
         </Routes>
+        </Suspense>
 
     );
 }

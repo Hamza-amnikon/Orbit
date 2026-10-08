@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -48,10 +48,6 @@ function PayslipTemplates() {
     // Approve and Export permissions are available globally.
     // This page currently has no Approve or Export action to render.
 
-    if (!canView) {
-        return null;
-    }
-
     const [templates, setTemplates] = useState([]);
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("All Status");
@@ -68,7 +64,7 @@ function PayslipTemplates() {
     // LOAD TEMPLATES
     // ============================================================
 
-    const loadTemplates = async () => {
+    const loadTemplates = useCallback(async () => {
         setLoading(true);
         setError("");
 
@@ -146,11 +142,15 @@ function PayslipTemplates() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
+        if (!canView) {
+            return;
+        }
+
         loadTemplates();
-    }, []);
+    }, [canView, loadTemplates]);
 
     // ============================================================
     // SEARCH / FILTER
@@ -180,6 +180,10 @@ function PayslipTemplates() {
             return matchesSearch && matchesStatus;
         });
     }, [templates, search, statusFilter]);
+
+    if (!canView) {
+        return null;
+    }
 
     // ============================================================
     // CREATE

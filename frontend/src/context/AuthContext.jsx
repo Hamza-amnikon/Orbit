@@ -936,21 +936,34 @@ export function AuthProvider({ children }) {
             false
         );
 
-        // Continue checking for HR approval changes.
-        const accessRefreshInterval =
-            setInterval(() => {
+        // Continue checking for HR approval changes while the tab is visible.
+        // A 30-second interval avoids an unnecessary request every 10 seconds,
+        // especially when the employee has the app open in a background tab.
+        const refreshVisibleAccess = () => {
+            if (document.visibilityState !== "hidden") {
+                checkSparkAccess(employeeId, false);
+            }
+        };
 
-                checkSparkAccess(
-                    employeeId,
-                    false
-                );
+        const accessRefreshInterval = setInterval(
+            refreshVisibleAccess,
+            30000
+        );
 
-            }, 10000);
+        document.addEventListener(
+            "visibilitychange",
+            refreshVisibleAccess
+        );
 
         return () => {
 
             clearInterval(
                 accessRefreshInterval
+            );
+
+            document.removeEventListener(
+                "visibilitychange",
+                refreshVisibleAccess
             );
 
         };
