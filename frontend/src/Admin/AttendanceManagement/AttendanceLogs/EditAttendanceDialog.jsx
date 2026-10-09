@@ -197,52 +197,30 @@ const validate = () => {
       "Status is required";
   }
 
-  if (
-    form.status === "Present" ||
-    form.status === "Late"
-  ) {
-
-    if (!form.checkIn) {
-      newErrors.checkIn =
-        "Check In is required";
-    }
-
-    if (!form.checkOut) {
-      newErrors.checkOut =
-        "Check Out is required";
-    }
-
+  if (form.checkIn && form.checkOut) {
     // Night Shift Support
-    if (
-      form.checkIn &&
-      form.checkOut
-    ) {
+    let start = new Date(
+      `${form.attendanceDate}T${form.checkIn}`
+    );
 
-      let start = new Date(
-        `${form.attendanceDate}T${form.checkIn}`
-      );
+    let end = new Date(
+      `${form.attendanceDate}T${form.checkOut}`
+    );
 
-      let end = new Date(
-        `${form.attendanceDate}T${form.checkOut}`
-      );
-
-      if (end <= start) {
-        end.setDate(end.getDate() + 1);
-      }
-
-      const diffHours =
-        (end - start) /
-        (1000 * 60 * 60);
-
-      if (diffHours > 24) {
-
-        newErrors.checkOut =
-          "Shift duration cannot exceed 24 hours.";
-
-      }
-
+    if (end <= start) {
+      end.setDate(end.getDate() + 1);
     }
 
+    const diffHours =
+      (end - start) /
+      (1000 * 60 * 60);
+
+    if (diffHours > 24) {
+
+      newErrors.checkOut =
+        "Shift duration cannot exceed 24 hours.";
+
+    }
   }
 
   if (form.remarks.length > 500) {
