@@ -1,16 +1,28 @@
-name: Spark CI/CD
+name: Spark Frontend CI/CD
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+    paths:
+      - "frontend/**"
+      - ".github/workflows/spark-ci-cd.yml"
   workflow_dispatch:
+
+concurrency:
+  group: spark-development-deployment
+  cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    name: Build and deploy to development IIS
+    runs-on:
+      - self-hosted
+      - Windows
+    timeout-minutes: 20
     env:
       VITE_APPROVAL_API_BASE_URL: ${{ vars.VITE_APPROVAL_API_BASE_URL }}
       VITE_EMPLOYEE_API_BASE_URL: ${{ vars.VITE_EMPLOYEE_API_BASE_URL }}
@@ -32,56 +44,99 @@ jobs:
       VITE_DEPARTMENT_API_BASE_URL: ${{ vars.VITE_DEPARTMENT_API_BASE_URL }}
       VITE_EMPLOYEE_SYNC_API_BASE_URL: ${{ vars.VITE_EMPLOYEE_SYNC_API_BASE_URL }}
       VITE_AUTH_API_BASE_URL: ${{ vars.VITE_AUTH_API_BASE_URL }}
+
     defaults:
       run:
-        working-directory: frontend
+        shell: powershell
+
     steps:
-      - name: Check out source
+      - name: Check out main
         uses: actions/checkout@v4
-      - name: Use Node.js
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - name: Install dependencies
-        run: npm ci
-      - name: Lint
-        run: npm run lint
-      - name: Build
-        run: npm run build
-      - name: Upload IIS artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: spark-dist-${{ github.sha }}
-          path: frontend/dist
-          if-no-files-found: error
-          retention-days: 14
 
-  deploy-iis:
-    name: Deploy to SWVMNVMPRDSPK01 IIS
-    if: github.event_name == 'workflow_dispatch'
-    needs: build
-    runs-on: [self-hosted, windows, spark-iis]
-    environment: production
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: spark-dist-${{ github.sha }}
-          path: ${{ runner.temp }}\spark-dist
-      - name: Copy build to IIS site
-        shell: powershell
-        env:
-          IIS_SITE_PATH: ${{ vars.IIS_SITE_PATH }}
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm.cmd ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm.cmd run build
+
+      - name: Validate build output
         run: |
-          $ErrorActionPreference = 'Stop'
-          if ([string]::IsNullOrWhiteSpace($env:IIS_SITE_PATH)) {
-            throw 'Configure the production variable IIS_SITE_PATH before deploying.'
+          if (-not (Test-Path -LiteralPath "frontend\dist\index.html" -PathType Leaf)) {
+            throw "Build output frontend\dist\index.html was not created."
           }
-          if (-not (Test-Path -LiteralPath $env:IIS_SITE_PATH)) {
-            throw "IIS_SITE_PATH does not exist: $env:IIS_SITE_PATH"
+
+      - name: Deploy to IIS Spark site
+        run: |
+          Import-Module WebAdministration
+
+          $siteName = "Spark"
+          $deployPath = "C:\inetpub\wwwroot\spark"
+          $buildPath = (Resolve-Path -LiteralPath "frontend\dist").Path
+          $backupPath = Join-Path $env:RUNNER_TEMP "spark-deployment-backup"
+          $savedWebConfig = Join-Path $env:RUNNER_TEMP "spark-web.config"
+
+          if (-not (Test-Path -LiteralPath "IIS:\Sites\$siteName")) {
+            throw "IIS site '$siteName' does not exist."
           }
-          $source = Join-Path $env:RUNNER_TEMP 'spark-dist'
-          Copy-Item -Path (Join-Path $source '*') -Destination $env:IIS_SITE_PATH -Recurse -Force
-          Write-Host "Deployed Spark build $env:GITHUB_SHA to $env:IIS_SITE_PATH"
+
+          if (-not (Test-Path -LiteralPath $deployPath -PathType Container)) {
+            New-Item -ItemType Directory -Path $deployPath -Force | Out-Null
+          }
+
+          if (Test-Path -LiteralPath $backupPath) {
+            Remove-Item -LiteralPath $backupPath -Recurse -Force
+          }
+          New-Item -ItemType Directory -Path $backupPath -Force | Out-Null
+
+          & robocopy.exe $deployPath $backupPath /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
+          if ($LASTEXITCODE -ge 8) {
+            throw "Could not back up the current deployment. Robocopy exit code: $LASTEXITCODE"
+          }
+
+          $webConfigPath = Join-Path $deployPath "web.config"
+          $hasWebConfig = Test-Path -LiteralPath $webConfigPath -PathType Leaf
+          if ($hasWebConfig) {
+            Copy-Item -LiteralPath $webConfigPath -Destination $savedWebConfig -Force
+          }
+
+          try {
+            Stop-Website -Name $siteName
+
+            & robocopy.exe $buildPath $deployPath /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
+            if ($LASTEXITCODE -ge 8) {
+              throw "Deployment copy failed. Robocopy exit code: $LASTEXITCODE"
+            }
+
+            if ($hasWebConfig) {
+              Copy-Item -LiteralPath $savedWebConfig -Destination $webConfigPath -Force
+            }
+          }
+          catch {
+            Write-Error "Deployment failed. Restoring the previous site files."
+
+            & robocopy.exe $backupPath $deployPath /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
+            if ($LASTEXITCODE -ge 8) {
+              Write-Error "Rollback failed. Robocopy exit code: $LASTEXITCODE"
+            }
+
+            throw
+          }
+          finally {
+            Start-Website -Name $siteName
+          }
+
+          $siteState = (Get-WebsiteState -Name $siteName).Value
+          if ($siteState -ne "Started") {
+            throw "IIS site '$siteName' did not start. Current state: $siteState"
+          }
+
+          Write-Host "Spark frontend deployed successfully to $deployPath."
