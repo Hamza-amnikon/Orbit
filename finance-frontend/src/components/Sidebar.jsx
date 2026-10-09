@@ -118,7 +118,7 @@ const Sidebar = ({ desktop, open, onClose }) => {
                     unmountOnExit
                 >
                     <List disablePadding>
-                        {childItem("Customers", "/sales/customers")}
+                        {childItem("Clients", "/sales/customers")}
                         {childItem("Estimates", "/sales/estimates")}
                         {childItem("Sales Orders", "/sales/orders")}
                         {childItem("Invoices", "/sales/invoices")}
@@ -163,6 +163,7 @@ const Sidebar = ({ desktop, open, onClose }) => {
                 <ListItemButton
                     component={NavLink}
                     to="/expenses"
+                    onClick={onClose}
                     className="sidebar-item"
                 >
                     <ListItemIcon className="sidebar-icon">
@@ -175,6 +176,7 @@ const Sidebar = ({ desktop, open, onClose }) => {
                 <ListItemButton
                     component={NavLink}
                     to="/expenses/claims"
+                    onClick={onClose}
                     className="sidebar-item"
                 >
                     <ListItemIcon className="sidebar-icon">
@@ -254,6 +256,7 @@ const Sidebar = ({ desktop, open, onClose }) => {
                     unmountOnExit
                 >
                     <List disablePadding>
+                        {childItem("Branch Comparison", "/reports/branches")}
                         {childItem("Financial Reports", "/reports/financial")}
                         {childItem("Tax Reports", "/reports/tax")}
                         {childItem("Sales Reports", "/reports/sales")}
@@ -284,6 +287,8 @@ const Sidebar = ({ desktop, open, onClose }) => {
                         {childItem("Users", "/settings/users")}
                         {childItem("Roles & Permissions", "/settings/roles")}
                         {childItem("Tax Settings", "/settings/tax")}
+                        {childItem("Exchange Rates", "/settings/exchange-rates")}
+                        {childItem("Audit History", "/settings/audit")}
                     </List>
                 </Collapse>
 
