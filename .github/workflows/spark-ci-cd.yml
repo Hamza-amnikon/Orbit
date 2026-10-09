@@ -51,10 +51,10 @@ jobs:
 
     steps:
       - name: Check out main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -140,3 +140,4 @@ jobs:
           }
 
           Write-Host "Spark frontend deployed successfully to $deployPath."
+          $global:LASTEXITCODE = 0
