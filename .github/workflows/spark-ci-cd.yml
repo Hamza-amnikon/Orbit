@@ -23,27 +23,6 @@ jobs:
       - self-hosted
       - Windows
     timeout-minutes: 20
-    env:
-      VITE_APPROVAL_API_BASE_URL: ${{ vars.VITE_APPROVAL_API_BASE_URL }}
-      VITE_EMPLOYEE_API_BASE_URL: ${{ vars.VITE_EMPLOYEE_API_BASE_URL }}
-      VITE_LEAVE_API_BASE_URL: ${{ vars.VITE_LEAVE_API_BASE_URL }}
-      VITE_ONBOARDING_API_URL: ${{ vars.VITE_ONBOARDING_API_URL }}
-      VITE_POLICY_API_BASE_URL: ${{ vars.VITE_POLICY_API_BASE_URL }}
-      VITE_ATTENDANCE_API_BASE_URL: ${{ vars.VITE_ATTENDANCE_API_BASE_URL }}
-      VITE_DOCUMENT_API_BASE_URL: ${{ vars.VITE_DOCUMENT_API_BASE_URL }}
-      VITE_EVENT_API_BASE_URL: ${{ vars.VITE_EVENT_API_BASE_URL }}
-      VITE_PAYROLL_API_BASE_URL: ${{ vars.VITE_PAYROLL_API_BASE_URL }}
-      VITE_PERMISSION_API_BASE_URL: ${{ vars.VITE_PERMISSION_API_BASE_URL }}
-      VITE_REIMBURSEMENT_API_BASE_URL: ${{ vars.VITE_REIMBURSEMENT_API_BASE_URL }}
-      VITE_SHIFT_API_BASE_URL: ${{ vars.VITE_SHIFT_API_BASE_URL }}
-      VITE_ROLE_API_BASE_URL: ${{ vars.VITE_ROLE_API_BASE_URL }}
-      VITE_LOCATION_API_BASE_URL: ${{ vars.VITE_LOCATION_API_BASE_URL }}
-      VITE_HIERARCHY_API_BASE_URL: ${{ vars.VITE_HIERARCHY_API_BASE_URL }}
-      VITE_EMPLOYEE_TYPE_API_BASE_URL: ${{ vars.VITE_EMPLOYEE_TYPE_API_BASE_URL }}
-      VITE_DESIGNATION_API_BASE_URL: ${{ vars.VITE_DESIGNATION_API_BASE_URL }}
-      VITE_DEPARTMENT_API_BASE_URL: ${{ vars.VITE_DEPARTMENT_API_BASE_URL }}
-      VITE_EMPLOYEE_SYNC_API_BASE_URL: ${{ vars.VITE_EMPLOYEE_SYNC_API_BASE_URL }}
-      VITE_AUTH_API_BASE_URL: ${{ vars.VITE_AUTH_API_BASE_URL }}
 
     defaults:
       run:
@@ -60,6 +39,21 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
+      - name: Create frontend environment file
+        env:
+          FRONTEND_ENV: ${{ secrets.FRONTEND_ENV }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:FRONTEND_ENV)) {
+            throw "The FRONTEND_ENV repository secret is missing or empty."
+          }
+
+          $environmentPath = Join-Path $env:GITHUB_WORKSPACE "frontend\.env"
+          [System.IO.File]::WriteAllText(
+            $environmentPath,
+            $env:FRONTEND_ENV,
+            [System.Text.UTF8Encoding]::new($false)
+          )
+
       - name: Install dependencies
         working-directory: frontend
         run: npm.cmd ci
@@ -67,6 +61,10 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: npm.cmd run build
+
+      - name: Remove temporary environment file
+        if: always()
+        run: Remove-Item -LiteralPath "frontend\.env" -Force -ErrorAction SilentlyContinue
 
       - name: Validate build output
         run: |
