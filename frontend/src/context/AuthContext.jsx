@@ -28,7 +28,7 @@ ONBOARDING API
 
 const ONBOARDING_API_URL =
     import.meta.env.VITE_ONBOARDING_API_URL ||
-    "https://localhost:5126";
+    "https://sparkapi.amnikontechnologies.com:5126";
 
 
 /*
