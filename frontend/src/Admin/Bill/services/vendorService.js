@@ -1,5 +1,4 @@
-const VENDOR_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7008";
-
+const VENDOR_API_BASE_URL = import.meta.env.VITE_BILL_API_BASE_URL;
 const getAuthHeaders = () => {
   const token =
     localStorage.getItem("token") ||
