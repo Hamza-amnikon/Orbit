@@ -1,4 +1,4 @@
-const VENDOR_API_BASE_URL = "http://localhost:5016";
+const VENDOR_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7008";
 
 const getAuthHeaders = () => {
   const token =

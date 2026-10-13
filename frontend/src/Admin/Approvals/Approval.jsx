@@ -44,7 +44,7 @@ const EMPLOYEE_API_BASE_URL =
     `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
 const BILL_API_BASE_URL =
-    "http://localhost:5016";
+    "https://sparkapi.amnikontechnologies.com:7008";
 
 // ============================================================
 // APPROVAL PAGE

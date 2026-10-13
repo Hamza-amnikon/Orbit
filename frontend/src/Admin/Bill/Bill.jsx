@@ -56,7 +56,7 @@ import {
    BILL API
 ============================================================ */
 
-const BILL_API_BASE_URL = "http://localhost:5016";
+const BILL_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7008";
 const EMPLOYEE_API_BASE_URL = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 const APPROVAL_API = `${import.meta.env.VITE_APPROVAL_API_BASE_URL}/api`;
 
