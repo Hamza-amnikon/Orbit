@@ -616,6 +616,8 @@ function AppRoutes() {
                 element={<AuthCallback />}
             />
 
+            <Route path="/" element={<Navigate to="/login" replace />} />
+
             {/* ================= Private ================= */}
 
             <Route element={<PrivateRoute />}>
@@ -625,11 +627,6 @@ function AppRoutes() {
                     <Route element={<PermissionGuard />}>
 
                         <Route element={<DashboardLayout />}>
-
-                        <Route
-                            path="/"
-                            element={<Dashboard />}
-                        />
 
                         <Route
                             path="/dashboard"
