@@ -1,5 +1,4 @@
 name: Spark Frontend Deploy
-
 on:
   push:
     branches: [main]
@@ -7,7 +6,6 @@ on:
       - "frontend/**"
       - ".github/workflows/spark-frontend-deploy.yml"
   workflow_dispatch:
-
 concurrency:
   group: spark-development-deployment
   cancel-in-progress: false
@@ -16,7 +14,7 @@ permissions:
 jobs:
   build-and-deploy:
     name: Build and deploy Spark frontend
-    runs-on: [self-hosted, Windows, spark-iis]
+    runs-on: [self-hosted, Windows, spark-iis, spark-frontend-deploy]
     timeout-minutes: 30
     defaults:
       run:
@@ -64,20 +62,4 @@ jobs:
           $webConfigPath = Join-Path $deployPath "web.config"
           if (Test-Path -LiteralPath $backupPath) { Remove-Item -LiteralPath $backupPath -Recurse -Force }
           New-Item -ItemType Directory -Path $backupPath -Force | Out-Null
-          & robocopy.exe $deployPath $backupPath /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
-          if ($LASTEXITCODE -ge 8) { throw "Site backup failed: robocopy $LASTEXITCODE" }
-          $hasWebConfig = Test-Path -LiteralPath $webConfigPath -PathType Leaf
-          if ($hasWebConfig) { Copy-Item -LiteralPath $webConfigPath -Destination $savedWebConfig -Force }
-          try {
-            & robocopy.exe $buildPath $deployPath /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
-            if ($LASTEXITCODE -ge 8) { throw "Publish failed: robocopy $LASTEXITCODE" }
-            if ($hasWebConfig) { Copy-Item -LiteralPath $savedWebConfig -Destination $webConfigPath -Force }
-          }
-          catch {
-            Write-Error "Publish failed. Restoring previous site files."
-            & robocopy.exe $backupPath $deployPath /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
-            if ($LASTEXITCODE -ge 8) { Write-Error "Rollback failed: robocopy $LASTEXITCODE" }
-            throw
-          }
-          Write-Host "Spark frontend deployed to $deployPath."
-          $global:LASTEXITCODE = 0
+          & robocopy.exe $deployPath $backupPath /MIR /R
