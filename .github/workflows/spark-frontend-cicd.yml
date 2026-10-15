@@ -19,7 +19,7 @@ permissions:
 jobs:
   build-and-deploy:
     name: Build and deploy Spark frontend
-    runs-on: [self-hosted, Windows, spark-iis, spark-frontend-deploy]
+    runs-on: [self-hosted, Windows, spark-iis, spark-prod-172-31-3-2]
     timeout-minutes: 30
     defaults:
       run:
