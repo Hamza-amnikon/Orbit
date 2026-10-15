@@ -1,0 +1,83 @@
+name: Spark Frontend Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/spark-frontend-deploy.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: spark-development-deployment
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  build-and-deploy:
+    name: Build and deploy Spark frontend
+    runs-on: [self-hosted, Windows, spark-iis]
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - name: Verify deployment server and folder
+        run: |
+          if ($env:COMPUTERNAME -ne "SWVMNVMPRDSPK01") { throw "Wrong deployment server: $env:COMPUTERNAME" }
+          $deployPath = "C:\inetpub\wwwroot\spark"
+          if (-not (Test-Path -LiteralPath $deployPath -PathType Container)) { throw "Missing deployment folder: $deployPath" }
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Create frontend environment file
+        env:
+          FRONTEND_ENV: ${{ secrets.FRONTEND_ENV }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:FRONTEND_ENV)) { throw "FRONTEND_ENV secret is missing or empty." }
+          $environmentPath = Join-Path $env:GITHUB_WORKSPACE "frontend\.env"
+          [System.IO.File]::WriteAllText($environmentPath, $env:FRONTEND_ENV, [System.Text.UTF8Encoding]::new($false))
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm.cmd ci
+      - name: Build frontend
+        working-directory: frontend
+        run: npm.cmd run build
+      - name: Remove temporary environment file
+        if: always()
+        run: Remove-Item -LiteralPath "frontend\.env" -Force -ErrorAction SilentlyContinue
+      - name: Validate build output
+        run: |
+          $indexPath = Join-Path $env:GITHUB_WORKSPACE "frontend\dist\index.html"
+          if (-not (Test-Path -LiteralPath $indexPath -PathType Leaf)) { throw "Frontend build output is missing." }
+      - name: Publish build to Spark
+        run: |
+          $deployPath = "C:\inetpub\wwwroot\spark"
+          $buildPath = Join-Path $env:GITHUB_WORKSPACE "frontend\dist"
+          $backupPath = Join-Path $env:RUNNER_TEMP "spark-deployment-backup"
+          $savedWebConfig = Join-Path $env:RUNNER_TEMP "spark-web.config"
+          $webConfigPath = Join-Path $deployPath "web.config"
+          if (Test-Path -LiteralPath $backupPath) { Remove-Item -LiteralPath $backupPath -Recurse -Force }
+          New-Item -ItemType Directory -Path $backupPath -Force | Out-Null
+          & robocopy.exe $deployPath $backupPath /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
+          if ($LASTEXITCODE -ge 8) { throw "Site backup failed: robocopy $LASTEXITCODE" }
+          $hasWebConfig = Test-Path -LiteralPath $webConfigPath -PathType Leaf
+          if ($hasWebConfig) { Copy-Item -LiteralPath $webConfigPath -Destination $savedWebConfig -Force }
+          try {
+            & robocopy.exe $buildPath $deployPath /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
+            if ($LASTEXITCODE -ge 8) { throw "Publish failed: robocopy $LASTEXITCODE" }
+            if ($hasWebConfig) { Copy-Item -LiteralPath $savedWebConfig -Destination $webConfigPath -Force }
+          }
+          catch {
+            Write-Error "Publish failed. Restoring previous site files."
+            & robocopy.exe $backupPath $deployPath /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
+            if ($LASTEXITCODE -ge 8) { Write-Error "Rollback failed: robocopy $LASTEXITCODE" }
+            throw
+          }
+          Write-Host "Spark frontend deployed to $deployPath."
+          $global:LASTEXITCODE = 0
