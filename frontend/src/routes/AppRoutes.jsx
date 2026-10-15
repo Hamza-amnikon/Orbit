@@ -68,7 +68,6 @@ const MyReimbursement = lazy(() => import("../Admin/Reimbursement/MyReimbursemen
 const ReimbursementRequest = lazy(() => import("../Admin/Reimbursement/Reimbursement"));
 
 
-const Bill = lazy(() => import("../Admin/Bill/Bill"));
 const MyReimbursements = lazy(() => import("../Admin/Reimbursement/MyReimbursement"));
 
 const Policy = lazy(() => import("../Admin/Policy/Policy"));
@@ -367,11 +366,6 @@ export const PERMISSION_PAGES = [
         module: "Reimbursement",
         pageName: "Reimbursements",
         route: "/reimbursements/requests",
-    },
-    {
-        module: "Bill",
-        pageName: "Bill",
-        route: "/bills",
     },
 {
     module: "Company Policy",
@@ -827,10 +821,6 @@ function AppRoutes() {
                             path="/reimbursements/My"
                             element={<MyReimbursements />}
                         />
-                        <Route
-                        path="/bills"
-                        element={<Bill />}
-                    />
 {/* ========================================================
     POLICY
 ======================================================== */}

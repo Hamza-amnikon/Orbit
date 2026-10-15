@@ -43,9 +43,6 @@ const APPROVAL_API_BASE_URL =
 const EMPLOYEE_API_BASE_URL =
     `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
-const BILL_API_BASE_URL =
-    "https://sparkapi.amnikontechnologies.com:7008";
-
 // ============================================================
 // APPROVAL PAGE
 // ============================================================
@@ -109,26 +106,6 @@ const Approval = () => {
 
     const [hasLeaveDocument, setHasLeaveDocument] =
         useState(null);
-
-    // Bill attachment
-    const [billDocumentUrl, setBillDocumentUrl] =
-        useState(null);
-
-    const [billDocumentLoading, setBillDocumentLoading] =
-        useState(false);
-
-    const [hasBillDocument, setHasBillDocument] =
-        useState(null);
-
-    // Bill details
-    const [billDetails, setBillDetails] =
-        useState(null);
-
-    const [billLoading, setBillLoading] =
-        useState(false);
-
-    const [billError, setBillError] =
-        useState("");
 
     // EmployeeService lookup
     const [employeeMap, setEmployeeMap] =
@@ -386,7 +363,12 @@ const Approval = () => {
                 );
 
             setRequests(
-                normalizedRequests
+                normalizedRequests.filter(
+                    request =>
+                        String(request.requestType || "")
+                            .trim()
+                            .toLowerCase() !== "bill"
+                )
             );
 
         } catch (err) {
@@ -1042,9 +1024,6 @@ const Approval = () => {
             request
         );
 
-        loadBillDocumentForView(
-            request
-        );
     };
 
     // ========================================================
@@ -1401,305 +1380,6 @@ const response =
         };
 
     // ========================================================
-    // BILL DOCUMENT
-    // ========================================================
-
-    const getBillIdFromApprovalRequest =
-        (request) => {
-
-            return (
-                request?.requestId ??
-                request?.billId ??
-                request?.BillId ??
-                request?.entityId ??
-                request?.entityID ??
-                null
-            );
-        };
-
-    const loadBillDocumentForView =
-        async (
-            request
-        ) => {
-
-            const requestType =
-                String(
-                    request?.requestType ||
-                    ""
-                )
-                    .trim()
-                    .toLowerCase();
-
-            if (
-                requestType !==
-                "bill"
-            ) {
-
-                setHasBillDocument(
-                    false
-                );
-
-                return;
-            }
-
-            const billId =
-                getBillIdFromApprovalRequest(
-                    request
-                );
-
-            if (!billId) {
-
-                setHasBillDocument(
-                    false
-                );
-
-                return;
-            }
-
-            try {
-
-                setBillDocumentLoading(
-                    true
-                );
-
-                setHasBillDocument(
-                    null
-                );
-
-                const token =
-                    localStorage.getItem(
-                        "token"
-                    ) ||
-                    localStorage.getItem(
-                        "accessToken"
-                    );
-
-                const response =
-                    await axios.get(
-                        `${BILL_API_BASE_URL}/api/Bill/${billId}/document`,
-                        {
-                            responseType:
-                                "blob",
-
-                            headers: {
-                                ...(token
-                                    ? {
-                                        Authorization:
-                                            `Bearer ${token}`
-                                    }
-                                    : {})
-                            }
-                        }
-                    );
-
-                const blobUrl =
-                    window.URL.createObjectURL(
-                        new Blob(
-                            [response.data],
-                            {
-                                type:
-                                    response.headers?.[
-                                        "content-type"
-                                    ] ||
-                                    "application/octet-stream"
-                            }
-                        )
-                    );
-
-                setBillDocumentUrl(
-                    blobUrl
-                );
-
-                setHasBillDocument(
-                    true
-                );
-
-            } catch (error) {
-
-                if (
-                    error?.response?.status !==
-                    404
-                ) {
-
-                    console.error(
-                        "Unable to check Bill attachment:",
-                        error
-                    );
-
-                }
-
-                setHasBillDocument(
-                    false
-                );
-
-            } finally {
-
-                setBillDocumentLoading(
-                    false
-                );
-
-            }
-        };
-
-    const handleViewBillDocument =
-        () => {
-
-            if (
-                !billDocumentUrl
-            ) {
-                return;
-            }
-
-            window.open(
-                billDocumentUrl,
-                "_blank",
-                "noopener,noreferrer"
-            );
-        };
-
-    // ========================================================
-    // BILL DETAILS
-    // ========================================================
-
-    const loadBillDetailsForView =
-        async (
-            request
-        ) => {
-
-            const requestType =
-                String(
-                    request?.requestType ||
-                    ""
-                )
-                    .trim()
-                    .toLowerCase();
-
-            if (
-                requestType !==
-                "bill"
-            ) {
-
-                setBillDetails(
-                    null
-                );
-
-                setBillError(
-                    ""
-                );
-
-                setBillLoading(
-                    false
-                );
-
-                return;
-            }
-
-            const billId =
-                request?.requestId ??
-                request?.billId ??
-                request?.BillId ??
-                request?.entityId ??
-                request?.entityID ??
-                null;
-
-            if (!billId) {
-
-                setBillDetails(
-                    null
-                );
-
-                setBillError(
-                    "Bill ID was not found."
-                );
-
-                return;
-            }
-
-            try {
-
-                setBillLoading(
-                    true
-                );
-
-                setBillError(
-                    ""
-                );
-
-                setBillDetails(
-                    null
-                );
-
-                const token =
-                    localStorage.getItem(
-                        "token"
-                    ) ||
-                    localStorage.getItem(
-                        "accessToken"
-                    );
-
-                const response =
-                    await axios.get(
-                        `${BILL_API_BASE_URL}/api/Bill/${billId}`,
-                        {
-                            headers: {
-                                "Content-Type":
-                                    "application/json",
-
-                                ...(token
-                                    ? {
-                                        Authorization:
-                                            `Bearer ${token}`
-                                    }
-                                    : {})
-                            }
-                        }
-                    );
-
-                const payload =
-                    response.data;
-
-                const bill =
-                    payload?.data ??
-                    payload?.bill ??
-                    payload;
-
-                setBillDetails(
-                    bill
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "Unable to load Bill details:",
-                    error
-                );
-
-                setBillDetails(
-                    null
-                );
-
-                setBillError(
-                    error?.response?.data?.message ||
-                    (
-                        typeof error?.response?.data ===
-                        "string"
-                            ? error.response.data
-                            : ""
-                    ) ||
-                    error?.message ||
-                    "Unable to load Bill details."
-                );
-
-            } finally {
-
-                setBillLoading(
-                    false
-                );
-
-            }
-        };
-
-    // ========================================================
     // VIEW REQUEST
     // ========================================================
 
@@ -1719,45 +1399,12 @@ const response =
                 );
             }
 
-            if (
-                billDocumentUrl
-            ) {
-
-                window.URL.revokeObjectURL(
-                    billDocumentUrl
-                );
-            }
-
             setLeaveDocumentUrl(
                 null
             );
 
             setHasLeaveDocument(
                 null
-            );
-
-            setBillDocumentUrl(
-                null
-            );
-
-            setHasBillDocument(
-                null
-            );
-
-            setBillDocumentLoading(
-                false
-            );
-
-            setBillDetails(
-                null
-            );
-
-            setBillError(
-                ""
-            );
-
-            setBillLoading(
-                false
             );
 
             setSelectedRequest(
@@ -1768,13 +1415,6 @@ const response =
                 request
             );
 
-            loadBillDetailsForView(
-                request
-            );
-
-            loadBillDocumentForView(
-                request
-            );
         };
 
     const handleCloseDetails =
@@ -1789,45 +1429,12 @@ const response =
                 );
             }
 
-            if (
-                billDocumentUrl
-            ) {
-
-                window.URL.revokeObjectURL(
-                    billDocumentUrl
-                );
-            }
-
             setLeaveDocumentUrl(
                 null
             );
 
             setHasLeaveDocument(
                 null
-            );
-
-            setBillDocumentUrl(
-                null
-            );
-
-            setHasBillDocument(
-                null
-            );
-
-            setBillDocumentLoading(
-                false
-            );
-
-            setBillDetails(
-                null
-            );
-
-            setBillError(
-                ""
-            );
-
-            setBillLoading(
-                false
             );
 
             setSelectedRequest(
@@ -2807,204 +2414,6 @@ const response =
 
                                 </div>
 
-                                {/* BILL DETAILS */}
-
-                                {String(
-                                    selectedRequest.requestType ||
-                                    ""
-                                )
-                                    .trim()
-                                    .toLowerCase() ===
-                                    "bill" && (
-
-                                    <>
-
-                                        {billLoading && (
-
-                                            <div className="approval-detail-item">
-
-                                                <span>
-                                                    Bill Details
-                                                </span>
-
-                                                <strong>
-                                                    Loading...
-                                                </strong>
-
-                                            </div>
-
-                                        )}
-
-                                        {billError && (
-
-                                            <div
-                                                className="approval-detail-item"
-                                                style={{
-                                                    gridColumn:
-                                                        "1 / -1"
-                                                }}
-                                            >
-
-                                                <span>
-                                                    Bill Details
-                                                </span>
-
-                                                <strong
-                                                    style={{
-                                                        color:
-                                                            "#dc2626"
-                                                    }}
-                                                >
-                                                    {billError}
-                                                </strong>
-
-                                            </div>
-
-                                        )}
-
-                                        {billDetails && (
-
-                                            <>
-
-                                                <div className="approval-detail-item">
-
-                                                    <span>
-                                                        Bill Number
-                                                    </span>
-
-                                                    <strong>
-                                                        {
-                                                            billDetails.billNumber ??
-                                                            billDetails.BillNumber ??
-                                                            "—"
-                                                        }
-                                                    </strong>
-
-                                                </div>
-
-                                                <div className="approval-detail-item">
-
-                                                    <span>
-                                                        Invoice Number
-                                                    </span>
-
-                                                    <strong>
-                                                        {
-                                                            billDetails.invoiceNumber ??
-                                                            billDetails.InvoiceNumber ??
-                                                            "—"
-                                                        }
-                                                    </strong>
-
-                                                </div>
-
-                                                <div className="approval-detail-item">
-
-                                                    <span>
-                                                        Vendor
-                                                    </span>
-
-                                                    <strong>
-                                                        {
-                                                            billDetails.vendorName ??
-                                                            billDetails.VendorName ??
-                                                            billDetails.vendor?.vendorName ??
-                                                            billDetails.vendor?.VendorName ??
-                                                            "—"
-                                                        }
-                                                    </strong>
-
-                                                </div>
-
-                                                <div className="approval-detail-item">
-
-                                                    <span>
-                                                        Category
-                                                    </span>
-
-                                                    <strong>
-                                                        {
-                                                            billDetails.category ??
-                                                            billDetails.Category ??
-                                                            "—"
-                                                        }
-                                                    </strong>
-
-                                                </div>
-
-                                                <div className="approval-detail-item">
-
-                                                    <span>
-                                                        Bill Date
-                                                    </span>
-
-                                                    <strong>
-                                                        {formatDate(
-                                                            billDetails.billDate ??
-                                                            billDetails.BillDate
-                                                        )}
-                                                    </strong>
-
-                                                </div>
-
-                                                <div className="approval-detail-item">
-
-                                                    <span>
-                                                        Bill Amount
-                                                    </span>
-
-                                                    <strong>
-
-                                                        ₹
-                                                        {Number(
-                                                            billDetails.amount ??
-                                                            billDetails.Amount ??
-                                                            0
-                                                        ).toLocaleString(
-                                                            "en-IN",
-                                                            {
-                                                                minimumFractionDigits:
-                                                                    2,
-
-                                                                maximumFractionDigits:
-                                                                    2
-                                                            }
-                                                        )}
-
-                                                    </strong>
-
-                                                </div>
-
-                                                <div
-                                                    className="approval-detail-item"
-                                                    style={{
-                                                        gridColumn:
-                                                            "1 / -1"
-                                                    }}
-                                                >
-
-                                                    <span>
-                                                        Description
-                                                    </span>
-
-                                                    <strong>
-                                                        {
-                                                            billDetails.description ??
-                                                            billDetails.Description ??
-                                                            "—"
-                                                        }
-                                                    </strong>
-
-                                                </div>
-
-                                            </>
-
-                                        )}
-
-                                    </>
-
-                                )}
-
                                 {/* EMPLOYEE ID */}
 
                                 <div className="approval-detail-item">
@@ -3184,64 +2593,6 @@ const response =
                                                     }
                                                     onClick={
                                                         handleViewLeaveDocument
-                                                    }
-                                                >
-                                                    View & Open Document
-                                                </Button>
-
-                                            </div>
-
-                                        </div>
-
-                                    )}
-
-                                {/* BILL DOCUMENT */}
-
-                                {String(
-                                    selectedRequest.requestType ||
-                                    ""
-                                )
-                                    .trim()
-                                    .toLowerCase() ===
-                                    "bill" &&
-                                    hasBillDocument ===
-                                    true && (
-
-                                        <div
-                                            className="approval-detail-item"
-                                            style={{
-                                                gridColumn:
-                                                    "1 / -1",
-                                                marginTop:
-                                                    "8px"
-                                            }}
-                                        >
-
-                                            <span>
-                                                Bill Attachment
-                                            </span>
-
-                                            <div
-                                                style={{
-                                                    display:
-                                                        "flex",
-                                                    alignItems:
-                                                        "center",
-                                                    gap:
-                                                        "10px",
-                                                    marginTop:
-                                                        "8px"
-                                                }}
-                                            >
-
-                                                <Button
-                                                    type="button"
-                                                    variant="outlined"
-                                                    startIcon={
-                                                        <VisibilityRoundedIcon />
-                                                    }
-                                                    onClick={
-                                                        handleViewBillDocument
                                                     }
                                                 >
                                                     View & Open Document
@@ -3521,68 +2872,6 @@ const response =
                                     </Typography>
 
                                 </Box>
-
-                                {/* BILL ATTACHMENT */}
-
-                                {String(
-                                    selectedRequest.requestType ||
-                                    ""
-                                )
-                                    .trim()
-                                    .toLowerCase() ===
-                                    "bill" && (
-
-                                    <Box
-                                        className="approval-action-detail"
-                                        sx={{
-                                            gridColumn:
-                                                "1 / -1"
-                                        }}
-                                    >
-
-                                        <Typography
-                                            className="approval-action-detail-label"
-                                        >
-                                            Bill Attachment
-                                        </Typography>
-
-                                        {billDocumentLoading ? (
-
-                                            <Typography
-                                                className="approval-action-detail-value"
-                                            >
-                                                Loading document...
-                                            </Typography>
-
-                                        ) : hasBillDocument ===
-                                            true ? (
-
-                                            <Button
-                                                type="button"
-                                                variant="outlined"
-                                                startIcon={
-                                                    <VisibilityRoundedIcon />
-                                                }
-                                                onClick={
-                                                    handleViewBillDocument
-                                                }
-                                            >
-                                                View & Open Document
-                                            </Button>
-
-                                        ) : (
-
-                                            <Typography
-                                                className="approval-action-detail-value"
-                                            >
-                                                No bill attachment available.
-                                            </Typography>
-
-                                        )}
-
-                                    </Box>
-
-                                )}
 
                                 {/* LEAVE ATTACHMENT */}
 

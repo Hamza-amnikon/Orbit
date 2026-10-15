@@ -24,7 +24,7 @@
   .ph-payroll-history-page, .pr-payroll-process-page, .pt-payslip-templates-page,
   .cpt-create-payslip-page, .sc-salary-components-page, .ept-payroll-process-page,
   .document-management, .settings-dashboard, .permissions-page, .approval-page,
-  .reimbursement-page, .my-reimbursements-page, .bill-page, .policy-dashboard,
+  .reimbursement-page, .my-reimbursements-page, .policy-dashboard,
   .company-policies-page, .reports-page, .tickets-page
 ) {
   width: 100%; max-width: none; min-width: 0; min-height: 100%;
@@ -41,7 +41,7 @@
   .ph-payroll-history-header, .pr-payroll-process-header, .pt-payslip-templates-header,
   .cpt-create-payslip-header, .sc-salary-components-header, .document-header,
   .settings-header, .permissions-header, .approval-header, .reimbursement-header,
-  .my-reimbursements-header, .bill-page-header, .policy-dashboard-top,
+  .my-reimbursements-header, .policy-dashboard-top,
   .company-policy-header, .reports-header
 ) {
   padding: 0; margin-bottom: 28px; border: 0; border-radius: 0;
@@ -58,7 +58,7 @@
   .epr-employees-payroll-title-wrapper, .ph-payroll-history-title-section,
   .pr-payroll-title-area, .pt-payslip-templates-header, .cpt-create-payslip-header-left,
   .document-header, .settings-header, .permissions-title-section, .approval-header,
-  .reimbursement-header-content, .bill-title-section, .policy-dashboard-header-left,
+  .reimbursement-header-content, .policy-dashboard-header-left,
   .company-policy-header, .reports-header
 ) :is(h1, h2, .MuiTypography-h4, .MuiTypography-h5) {
   margin: 0; color: var(--workspace-heading); font-size: clamp(22px, 2.5vw, 34px);
@@ -90,7 +90,7 @@
   .attendance-dashboard-header, .shift-header-card, .holiday-events-header,
   .leave-overview-header, .leave-requests-header, .leave-history-header,
   .leave-header, .document-header, .settings-header, .approval-header,
-  .bill-title-section, .reports-header
+  .reports-header
 ) p,
 .dashboard-content.workspace-ui :is(.pd-payroll-dashboard-subtitle, .sc-salary-components-subtitle,
   .my-reimbursements-subtitle, .reimbursement-subtitle, .leave-balance-subtitle,

@@ -122,7 +122,7 @@ const normalizePermissionValue = (value) =>
 
 // These are the ONLY main Sidebar modules that receive the default
 // View permission for every role.
-// Do not add Employee, Approval, Bill, Document, Reports, etc. here.
+// Do not add Employee, Approval, Document, Reports, etc. here.
 const DEFAULT_SIDEBAR_NAMES = new Set([
   "attendance",
   "leave",
