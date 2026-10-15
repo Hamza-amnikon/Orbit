@@ -13,6 +13,8 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
 import { getProfile } from "../../../Admin/Services/ProfileService";
+import LeaveService from "../../../Admin/Services/LeaveService";
+import PolicyService from "../../../Admin/Services/PolicyService";
 
 import "./Navbar.css";
 
@@ -35,6 +37,12 @@ function Navbar({ title }) {
     const [profile, setProfile] = useState(null);
 
     const [menuOpen, setMenuOpen] = useState(false);
+
+    const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+    const [notifications, setNotifications] = useState([]);
+
+    const [readNotificationTimes, setReadNotificationTimes] = useState({});
 
     // Tracks whether the profile image failed to load.
     // If it fails, the avatar falls back to the employee's first initial.
@@ -175,6 +183,86 @@ function Navbar({ title }) {
         };
 
     }, []);
+
+    // Notifications are loaded from the signed-in employee's leave records.
+    // No placeholder notifications are shown when the employee has no records.
+    useEffect(() => {
+        let mounted = true;
+
+        const loadNotifications = async () => {
+            try {
+                const [leaveResult, policyResult] = await Promise.allSettled([
+                    LeaveService.getLeaves(),
+                    PolicyService.getPolicies(),
+                ]);
+                const leaves = leaveResult.status === "fulfilled" ? leaveResult.value : [];
+                const policies = policyResult.status === "fulfilled"
+                    ? (Array.isArray(policyResult.value) ? policyResult.value : policyResult.value?.data ?? [])
+                    : [];
+                const employeeId = profile?.employeeId ?? profile?.employeeID ?? profile?.employee?.employeeId ?? profile?.employee?.employeeID;
+                const employeeAzureId = profile?.azureEmployeeId ?? profile?.azureEmployeeID ?? profile?.employee?.azureEmployeeId ?? profile?.employee?.azureEmployeeID;
+                const sameEmployee = (item) => {
+                    const itemEmployee = item?.employee ?? item?.Employee ?? {};
+                    const itemId = item?.employeeId ?? item?.employeeID ?? itemEmployee.employeeId ?? itemEmployee.employeeID;
+                    const itemAzureId = item?.azureEmployeeId ?? item?.azureEmployeeID ?? itemEmployee.azureEmployeeId ?? itemEmployee.azureEmployeeID;
+                    if (employeeId != null && itemId != null) return String(employeeId) === String(itemId);
+                    if (employeeAzureId && itemAzureId) return String(employeeAzureId).toLowerCase() === String(itemAzureId).toLowerCase();
+                    return false;
+                };
+                const employeeLeaves = leaves.filter(sameEmployee).slice(0, 10);
+                const mappedLeaves = employeeLeaves.map((leave, index) => {
+                    const status = String(leave.status ?? leave.leaveStatus ?? leave.approvalStatus ?? "Submitted");
+                    const type = leave.leaveTypeName ?? leave.leaveType ?? "Leave request";
+                    const normalized = status.toLowerCase();
+                    const action = normalized.includes("approv") ? "approved" : normalized.includes("reject") ? "rejected" : "submitted";
+                    return { id: leave.id ?? leave.leaveId ?? index, route: "/leave", title: action === "submitted" ? "Leave update" : "Approval update", message: `${type} was ${action}.`, status, date: leave.updatedAt ?? leave.createdAt ?? leave.requestDate };
+                });
+                const mappedPolicies = policies.slice(0, 5).map((policy, index) => ({
+                    id: `policy-${policy.id ?? policy.policyId ?? index}`,
+                    route: "/company-policy",
+                    title: "Policy update",
+                    message: `${policy.title ?? policy.policyTitle ?? policy.name ?? "A company policy"} was updated.`,
+                    date: policy.updatedAt ?? policy.modifiedDate ?? policy.createdAt,
+                }));
+                if (mounted) setNotifications([...mappedLeaves, ...mappedPolicies]);
+            } catch (error) {
+                if (mounted) setNotifications([]);
+                console.warn("Navbar notifications unavailable:", error);
+            }
+        };
+
+        if (profile) loadNotifications();
+        return () => { mounted = false; };
+    }, [profile]);
+
+    useEffect(() => {
+        if (!profile) return;
+        const employeeKey = profile?.employeeId ?? profile?.employeeID ?? profile?.azureEmployeeId ?? profile?.azureEmployeeID ?? profile?.userName ?? "employee";
+        try {
+            const saved = JSON.parse(localStorage.getItem(`oya:read-notifications:${employeeKey}`) || "{}");
+            const readTimes = Array.isArray(saved)
+                ? Object.fromEntries(saved.map((id) => [String(id), Date.now()]))
+                : saved;
+            setReadNotificationTimes(readTimes && typeof readTimes === "object" ? readTimes : {});
+        } catch {
+            setReadNotificationTimes({});
+        }
+    }, [profile]);
+
+    const visibleNotifications = notifications.filter((notification) => {
+        const readAt = Number(readNotificationTimes[String(notification.id)] || 0);
+        return !readAt;
+    });
+
+    const unreadNotifications = visibleNotifications.filter((notification) => !readNotificationTimes[String(notification.id)]);
+
+    const markNotificationRead = (notificationId) => {
+        const id = String(notificationId);
+        const next = { ...readNotificationTimes, [id]: Date.now() };
+        setReadNotificationTimes(next);
+        const employeeKey = profile?.employeeId ?? profile?.employeeID ?? profile?.azureEmployeeId ?? profile?.azureEmployeeID ?? profile?.userName ?? "employee";
+        localStorage.setItem(`oya:read-notifications:${employeeKey}`, JSON.stringify(next));
+    };
 
 
     /* ========================================================
@@ -463,15 +551,31 @@ function Navbar({ title }) {
                     type="button"
                     className="icon-btn notification-btn"
                     aria-label="Notifications"
+                    onClick={() => setNotificationsOpen((open) => !open)}
+                    aria-expanded={notificationsOpen}
                 >
 
                     <NotificationsNoneRoundedIcon />
 
-                    <span className="notification-count">
-                        3
-                    </span>
+                    {unreadNotifications.length > 0 && <span className="notification-count">{unreadNotifications.length > 99 ? "99+" : unreadNotifications.length}</span>}
 
                 </button>
+
+                {notificationsOpen && (
+                    <div className="notifications-menu" role="menu">
+                        <div className="notifications-header"><strong>Notifications</strong><span>{unreadNotifications.length} unread</span></div>
+                        {visibleNotifications.length === 0 ? (
+                            <div className="notifications-empty">You’re all caught up</div>
+                        ) : visibleNotifications.map((notification) => {
+                            const isRead = Boolean(readNotificationTimes[String(notification.id)]);
+                            return <button key={notification.id} type="button" className={`notification-item ${isRead ? "notification-read" : ""}`} onClick={() => { markNotificationRead(notification.id); setNotifications((current) => current.filter((item) => String(item.id) !== String(notification.id))); setNotificationsOpen(false); navigate(notification.route || "/leave"); }}>
+                                <span className="notification-item-title">{notification.title}</span>
+                                <span className="notification-item-message">{notification.message}</span>
+                                {notification.date && <span className="notification-item-date">{new Date(notification.date).toLocaleString()}</span>}
+                            </button>;
+                        })}
+                    </div>
+                )}
 
 
                 {/* =================================================

@@ -4,6 +4,7 @@ import React, {
     useMemo,
     useState,
 } from "react";
+import axios from "axios";
 
 import "./Payrolls.css";
 import useProfile from "../../Services/useProfile";
@@ -805,6 +806,28 @@ function Payslips() {
 
     const [error, setError] =
         useState("");
+
+    const [employeeDocuments, setEmployeeDocuments] = useState([]);
+
+    useEffect(() => {
+        const employeeId = profile?.employeeId ?? profile?.EmployeeId ?? profile?.employeeID ?? profile?.EmployeeID;
+        if (!employeeId) return;
+        const loadEmployeeDocuments = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document/employee/${employeeId}`);
+                setEmployeeDocuments(Array.isArray(response.data) ? response.data : response.data ? [response.data] : []);
+            } catch (documentError) {
+                console.warn("Payroll employee documents unavailable:", documentError);
+                setEmployeeDocuments([]);
+            }
+        };
+        loadEmployeeDocuments();
+    }, [profile]);
+
+    const getEmployeeDocumentNumber = (type) => {
+        const document = employeeDocuments.find((item) => String(item.documentType ?? item.DocumentType ?? "").toLowerCase() === type.toLowerCase());
+        return document?.documentNumber ?? document?.DocumentNumber ?? "-";
+    };
 
     const [selectedYear, setSelectedYear] =
         useState(
@@ -1665,7 +1688,7 @@ function Payslips() {
                             <InfoRow
                                 label="Employee Name"
                                 value={
-                                    payslip.employeeName
+                                    payslip.employeeName || profile?.displayName || profile?.fullName || profile?.employeeName || "-"
                                 }
                             />
 
@@ -1683,7 +1706,7 @@ function Payslips() {
                             <InfoRow
                                 label="Designation"
                                 value={
-                                    payslip.designation
+                                    payslip.designation || profile?.designation || profile?.jobTitle || "-"
                                 }
                             />
 
@@ -1701,7 +1724,7 @@ function Payslips() {
                             <InfoRow
                                 label="Date of Joining"
                                 value={dateText(
-                                    payslip.joiningDate
+                                    payslip.joiningDate || profile?.dateOfJoining || profile?.joiningDate
                                 )}
                             />
 
@@ -1712,17 +1735,9 @@ function Payslips() {
                                 }
                             />
 
-                            <InfoRow
-                                label="Payment Date"
-                                value={dateText(
-                                    payslip.generatedDate
-                                )}
-                            />
+                            <InfoRow label="PAN Number" value={getEmployeeDocumentNumber("PAN")} />
 
-                            <InfoRow
-                                label="Location"
-                                value="Turbhe, Navi Mumbai"
-                            />
+                            <InfoRow label="Aadhaar Number" value={getEmployeeDocumentNumber("Aadhaar")} />
 
                         </Box>
 
