@@ -14,7 +14,7 @@ permissions:
 jobs:
   build-and-deploy:
     name: Build and deploy Spark frontend
-    runs-on: [self-hosted, Windows, spark-iis, spark-frontend-deploy]
+    runs-on: [self-hosted, Windows, spark-iis]
     timeout-minutes: 30
     defaults:
       run:
@@ -62,4 +62,16 @@ jobs:
           $webConfigPath = Join-Path $deployPath "web.config"
           if (Test-Path -LiteralPath $backupPath) { Remove-Item -LiteralPath $backupPath -Recurse -Force }
           New-Item -ItemType Directory -Path $backupPath -Force | Out-Null
-          & robocopy.exe $deployPath $backupPath /MIR /R
+          & robocopy.exe $deployPath $backupPath /MIR /R:2 /W:2 /NFL /NDL /NP
+          if ($LASTEXITCODE -ge 8) { throw "Unable to create deployment backup (robocopy exit $LASTEXITCODE)." }
+          $hadWebConfig = Test-Path -LiteralPath $webConfigPath -PathType Leaf
+          if ($hadWebConfig) { Copy-Item -LiteralPath $webConfigPath -Destination $savedWebConfig -Force }
+          try {
+            & robocopy.exe $buildPath $deployPath /MIR /R:2 /W:2 /NFL /NDL /NP /XF web.config
+            if ($LASTEXITCODE -ge 8) { throw "Deployment copy failed (robocopy exit $LASTEXITCODE)." }
+            if ($hadWebConfig) { Copy-Item -LiteralPath $savedWebConfig -Destination $webConfigPath -Force }
+          } catch {
+            & robocopy.exe $backupPath $deployPath /MIR /R:2 /W:2 /NFL /NDL /NP
+            if ($LASTEXITCODE -ge 8) { Write-Error "Rollback copy failed (robocopy exit $LASTEXITCODE)." }
+            throw
+          }
