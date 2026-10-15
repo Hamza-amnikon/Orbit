@@ -368,7 +368,8 @@ const Approval = () => {
                     request =>
                         String(request.requestType || "")
                             .trim()
-                            .toLowerCase() !== "bill"
+                            .toLowerCase()
+                            .includes("bill") === false
                 )
             );
 

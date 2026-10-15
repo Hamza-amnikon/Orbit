@@ -17,6 +17,13 @@ const validationRules = {
 
 const API_URL = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
 
+const REQUIRED_DOCUMENT_TYPES = [
+    "Aadhaar",
+    "PAN",
+    "Bank",
+    "Education Certificate",
+];
+
 function Documents({ profile }) {
 
     const [documents, setDocuments] = useState([]);
@@ -696,12 +703,11 @@ const payload = {
     /* ======================================================
        VALIDATE REQUIRED DOCUMENTS
        
-       5 MANDATORY DOCUMENTS:
+       4 MANDATORY DOCUMENTS:
        1. Aadhaar
        2. PAN
-       3. UAN
-       4. Bank
-       5. Education Certificate
+       3. Bank
+       4. Education Certificate
     ====================================================== */
 
     const validateDocuments = () => {
@@ -795,29 +801,22 @@ const payload = {
            UAN
         ================================================== */
 
-        if (!uan) {
-            errors.push(
-                "EPFO / UAN Number is required."
-            );
-        } else if (
-            !validationRules.uan.test(
-                uan
-            )
-        ) {
-            errors.push(
-                "EPFO / UAN Number must be exactly 12 digits."
-            );
-        }
+        const hasUanDocument =
+            form.uanFile ||
+            getDocument("UAN")?.documentPath;
 
-        if (
-            !form.uanFile &&
-            !getDocument(
-                "UAN"
-            )?.documentPath
-        ) {
-            errors.push(
-                "EPFO / UAN document is required."
-            );
+        if (uan || hasUanDocument) {
+            if (!validationRules.uan.test(uan)) {
+                errors.push(
+                    "EPFO / UAN Number must be exactly 12 digits."
+                );
+            }
+
+            if (!hasUanDocument) {
+                errors.push(
+                    "EPFO / UAN document is required when providing UAN details."
+                );
+            }
         }
 
         /* ==================================================
@@ -1148,14 +1147,10 @@ const payload = {
     ====================================================== */
 
     const overallStatus = () => {
-        if (!documents.length) {
-            return "Pending HR Approval";
-        }
-
         const statuses =
-            documents.map((x) =>
+            REQUIRED_DOCUMENT_TYPES.map((type) =>
                 String(
-                    x.status || ""
+                    getDocument(type)?.status || ""
                 ).toLowerCase()
             );
 
@@ -1190,29 +1185,20 @@ const payload = {
     /* ======================================================
        COMPLETION PERCENTAGE
 
-       ONLY 5 MANDATORY DOCUMENTS
+       ONLY 4 MANDATORY DOCUMENTS
 
-       Aadhaar       = 20%
-       PAN           = 20%
-       UAN           = 20%
-       Bank          = 20%
-       Education     = 20%
+       Aadhaar       = 25%
+       PAN           = 25%
+       Bank          = 25%
+       Education     = 25%
 
        IMPORTANT:
        ONLY "Approved" COUNTS.
     ====================================================== */
 
     const completionPercentage = () => {
-        const requiredDocuments = [
-            "Aadhaar",
-            "PAN",
-            "UAN",
-            "Bank",
-            "Education Certificate",
-        ];
-
         const completedDocuments =
-            requiredDocuments.filter(
+            REQUIRED_DOCUMENT_TYPES.filter(
                 (type) => {
                     const document =
                         getDocument(type);
@@ -1230,7 +1216,7 @@ const payload = {
 
         return Math.round(
             (completedDocuments /
-                requiredDocuments.length) *
+                REQUIRED_DOCUMENT_TYPES.length) *
                 100
         );
     };
@@ -1492,7 +1478,7 @@ const payload = {
                         <div className="document-field">
 
                             <label>
-                                EPFO / UAN Number <span className="required-star">*</span>
+                                EPFO / UAN Number (optional)
                             </label>
 
                             <input

@@ -234,10 +234,6 @@ function DashboardLayout() {
                             </li>
 
                             <li>
-                                UAN
-                            </li>
-
-                            <li>
                                 Bank
                             </li>
 
