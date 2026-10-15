@@ -18,10 +18,11 @@ permissions:
 
 jobs:
   build-and-deploy:
-    name: Build and deploy to development IIS
+    name: Build and deploy to Spark IIS (172.31.3.2)
     runs-on:
       - self-hosted
       - Windows
+      - spark-iis
     timeout-minutes: 20
 
     defaults:
@@ -29,6 +30,17 @@ jobs:
         shell: powershell
 
     steps:
+      - name: Verify this is the Spark IIS server
+        run: |
+          if ($env:COMPUTERNAME -ne "SWVMNVMPRDSPK01") {
+            throw "Deployment is restricted to SWVMNVMPRDSPK01. Actual runner: $env:COMPUTERNAME"
+          }
+
+          Import-Module WebAdministration
+          if (-not (Test-Path -LiteralPath "IIS:\Sites\Spark")) {
+            throw "IIS site 'Spark' does not exist on the deployment server."
+          }
+
       - name: Check out main
         uses: actions/checkout@v5
 
