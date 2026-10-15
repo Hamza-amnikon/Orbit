@@ -410,8 +410,7 @@ function Dashboard() {
                         </h1>
 
                         <p>
-                            Welcome back! Here's what's happening
-                            in your organization today.
+                            Here is what is happening across your workspace today.
                         </p>
 
                     </div>
