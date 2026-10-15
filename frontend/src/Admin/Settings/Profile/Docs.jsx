@@ -52,7 +52,6 @@ function Documents({ profile }) {
         panFile: null,
 
         uanNumber: "",
-        uanFile: null,
 
         bankName: "",
         accountNumber: "",
@@ -594,7 +593,6 @@ const payload = {
                 {
                     type: "UAN",
                     number: form.uanNumber,
-                    file: form.uanFile,
                 },
 
                 {
@@ -801,20 +799,10 @@ const payload = {
            UAN
         ================================================== */
 
-        const hasUanDocument =
-            form.uanFile ||
-            getDocument("UAN")?.documentPath;
-
-        if (uan || hasUanDocument) {
+        if (uan) {
             if (!validationRules.uan.test(uan)) {
                 errors.push(
                     "EPFO / UAN Number must be exactly 12 digits."
-                );
-            }
-
-            if (!hasUanDocument) {
-                errors.push(
-                    "EPFO / UAN document is required when providing UAN details."
                 );
             }
         }
@@ -978,8 +966,6 @@ const payload = {
                     number:
                         form.uanNumber
                             ?.trim() || "",
-                    file:
-                        form.uanFile,
                 },
 
                 {
@@ -1495,58 +1481,6 @@ const payload = {
                                     )
                                 }
                             />
-
-                        </div>
-
-                        {/* UAN Document */}
-
-                        <div className="document-field">
-
-                            <label>
-                                EPFO / UAN Document
-                            </label>
-
-                            <div
-                                className="upload-box"
-                                
-                                onClick={() =>
-                                    document
-                                        .getElementById(
-                                            "uanFile"
-                                        )
-                                        ?.click()
-                                }
-                            >
-
-                                <span className="upload-icon">
-                                    ☁
-                                </span>
-
-                                <span>
-                                    {form.uanFile?.name ||
-                                        "Upload EPFO / UAN Document"}
-                                </span>
-
-                                <small>
-                                    PDF, DOCS, DOCX (Max. 2MB)
-                                </small>
-
-                            </div>
-
-                            <input
-                                id="uanFile"
-                                type="file"
-                                accept=".docs,.docs,.pdf"
-                                className="file-input"
-                                onChange={(e) =>
-                                    handleFileChange(
-                                        "uanFile",
-                                        e
-                                    )
-                                }
-                            />
-
-<RejectionStatus type="UAN" />
 
                         </div>
 
