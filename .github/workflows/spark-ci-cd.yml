@@ -36,9 +36,9 @@ jobs:
             throw "Deployment is restricted to SWVMNVMPRDSPK01. Actual runner: $env:COMPUTERNAME"
           }
 
-          Import-Module WebAdministration
-          if (-not (Test-Path -LiteralPath "IIS:\Sites\Spark")) {
-            throw "IIS site 'Spark' does not exist on the deployment server."
+          $deployPath = "C:\inetpub\wwwroot\spark"
+          if (-not (Test-Path -LiteralPath $deployPath -PathType Container)) {
+            throw "Spark deployment folder does not exist: $deployPath"
           }
 
       - name: Check out main
@@ -53,7 +53,7 @@ jobs:
 
       - name: Create frontend environment file
         env:
-          FRONTEND_ENV: ${{ secrets.FRONTEND_ENV }}
+          FRONTEND_ENV: {${ secrets.FRONTEND_ENV }}
         run: |
           if ([string]::IsNullOrWhiteSpace($env:FRONTEND_ENV)) {
             throw "The FRONTEND_ENV repository secret is missing or empty."
@@ -84,22 +84,15 @@ jobs:
             throw "Build output frontend\dist\index.html was not created."
           }
 
-      - name: Deploy to IIS Spark site
+      - name: Deploy to Spark web root
         run: |
-          Import-Module WebAdministration
-
-          $siteName = "Spark"
           $deployPath = "C:\inetpub\wwwroot\spark"
           $buildPath = (Resolve-Path -LiteralPath "frontend\dist").Path
           $backupPath = Join-Path $env:RUNNER_TEMP "spark-deployment-backup"
           $savedWebConfig = Join-Path $env:RUNNER_TEMP "spark-web.config"
 
-          if (-not (Test-Path -LiteralPath "IIS:\Sites\$siteName")) {
-            throw "IIS site '$siteName' does not exist."
-          }
-
           if (-not (Test-Path -LiteralPath $deployPath -PathType Container)) {
-            New-Item -ItemType Directory -Path $deployPath -Force | Out-Null
+            throw "Spark deployment folder does not exist: $deployPath"
           }
 
           if (Test-Path -LiteralPath $backupPath) {
@@ -119,8 +112,6 @@ jobs:
           }
 
           try {
-            Stop-Website -Name $siteName
-
             & robocopy.exe $buildPath $deployPath /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
             if ($LASTEXITCODE -ge 8) {
               throw "Deployment copy failed. Robocopy exit code: $LASTEXITCODE"
@@ -139,14 +130,6 @@ jobs:
             }
 
             throw
-          }
-          finally {
-            Start-Website -Name $siteName
-          }
-
-          $siteState = (Get-WebsiteState -Name $siteName).Value
-          if ($siteState -ne "Started") {
-            throw "IIS site '$siteName' did not start. Current state: $siteState"
           }
 
           Write-Host "Spark frontend deployed successfully to $deployPath."
