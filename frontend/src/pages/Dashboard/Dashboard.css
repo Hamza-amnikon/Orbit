@@ -50,11 +50,11 @@
 
     display: flex;
 
+    flex-direction: column;
+
     align-items: flex-start;
 
-    justify-content: space-between;
-
-    gap: 30px;
+    gap: 12px;
 }
 
 
@@ -102,13 +102,13 @@
 
     flex-direction: column;
 
-    align-items: flex-end;
+    align-items: flex-start;
 
     gap: 5px;
 
     flex-shrink: 0;
 
-    padding-top: 5px;
+    padding-top: 0;
 }
 
 
@@ -173,7 +173,11 @@
 
     align-items: center;
 
+    justify-content: flex-start;
+
     gap: 16px;
+
+    text-align: left;
 
     background: #ffffff;
 
@@ -189,6 +193,14 @@
     transition:
         transform 0.25s ease,
         box-shadow 0.25s ease;
+}
+
+
+.spark-dashboard-page .dashboard-stat-card {
+
+    justify-content: flex-start;
+
+    text-align: left;
 }
 
 
@@ -240,6 +252,8 @@
 .dashboard-stat-content {
 
     min-width: 0;
+
+    text-align: left;
 }
 
 
@@ -285,11 +299,13 @@
 
     display: flex;
 
-    align-items: center;
+    flex-direction: column;
 
-    justify-content: space-between;
+    align-items: flex-start;
 
-    gap: 20px;
+    justify-content: flex-start;
+
+    gap: 4px;
 
     margin-bottom: 15px;
 }
@@ -397,6 +413,12 @@
         transform 0.25s ease,
         box-shadow 0.25s ease,
         border-color 0.25s ease;
+}
+
+
+.spark-dashboard-page .dashboard-module-card {
+
+    text-align: left;
 }
 
 
@@ -758,7 +780,7 @@
 
     .welcome-date {
 
-        display: none;
+        align-items: flex-start;
     }
 
 

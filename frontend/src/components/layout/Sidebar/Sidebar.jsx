@@ -36,8 +36,8 @@ export const menu = [
   {
     title: "Dashboard",
     icon: <DashboardRoundedIcon />,
-    path: "/",
-    permissionPath: "/",
+    path: "/dashboard",
+    permissionPath: "/dashboard",
   },
   {
     title: "Employees",

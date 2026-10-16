@@ -617,7 +617,7 @@ function AppRoutes() {
                 element={<AuthCallback />}
             />
 
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
             {/* ================= Private ================= */}
 
