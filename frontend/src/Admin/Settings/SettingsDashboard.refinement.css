@@ -393,22 +393,7 @@
 
 .settings-header {
   position: relative;
-  padding-left: 15px;
-}
-
-.settings-header::before {
-  position: absolute;
-  top: 2px;
-  bottom: 2px;
-  left: 0;
-  width: 4px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #3675ee, #7d69e8);
-  content: "";
-}
-
-.settings-dashboard > .settings-header {
-  padding-left: 20px;
+  padding-left: 0;
 }
 
 .settings-dashboard .profile-header {
