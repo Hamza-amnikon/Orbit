@@ -300,6 +300,7 @@ function Role() {
           roles={filteredRoles}
           setEditRole={setEditRole}
           setShowForm={setShowForm}
+          setPendingDelete={setPendingDelete}
           canEdit={canEdit}
           canDelete={canDelete}
         />
