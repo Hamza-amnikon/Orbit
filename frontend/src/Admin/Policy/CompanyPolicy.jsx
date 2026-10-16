@@ -1,6 +1,7 @@
 import React, {
     useEffect,
     useMemo,
+    useRef,
     useState,
 } from "react";
 
@@ -9,6 +10,7 @@ import {
     Typography,
     TextField,
     FormControl,
+    InputLabel,
     Select,
     MenuItem,
     InputAdornment,
@@ -35,6 +37,7 @@ import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
 import PolicyService from "../Services/PolicyService";
 
@@ -44,6 +47,7 @@ import { Box as MuiLayoutBox } from "@mui/material";
 
 
 const CompanyPolicy = () => {
+    const searchInputRef = useRef(null);
 
     // ============================================================
     // STATE
@@ -179,6 +183,18 @@ const CompanyPolicy = () => {
 
     useEffect(() => {
         loadPolicies();
+    }, []);
+
+    useEffect(() => {
+        const handleSearchShortcut = (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+                event.preventDefault();
+                searchInputRef.current?.focus();
+            }
+        };
+
+        window.addEventListener("keydown", handleSearchShortcut);
+        return () => window.removeEventListener("keydown", handleSearchShortcut);
     }, []);
 
 
@@ -906,6 +922,7 @@ const CompanyPolicy = () => {
             <Box className="company-policy-filter">
 
                 <TextField
+                    inputRef={searchInputRef}
                     fullWidth
                     size="small"
                     value={search}
@@ -915,11 +932,26 @@ const CompanyPolicy = () => {
                         )
                     }
                     placeholder="Search policies..."
+                    aria-label="Search published policies by title or code"
                     className="company-policy-search"
                     slotProps={{ input: {
                         startAdornment: (
                             <InputAdornment position="start">
                                 <SearchRoundedIcon />
+                            </InputAdornment>
+                        ),
+                        endAdornment: (
+                            <InputAdornment position="end" className="company-policy-search-actions">
+                                {search && (
+                                    <IconButton
+                                        size="small"
+                                        aria-label="Clear policy search"
+                                        onClick={() => setSearch("")}
+                                    >
+                                        <CloseRoundedIcon fontSize="small" />
+                                    </IconButton>
+                                )}
+                                <Chip label="Ctrl K" size="small" className="company-policy-search-shortcut" />
                             </InputAdornment>
                         ),
                     } }}
@@ -931,7 +963,11 @@ const CompanyPolicy = () => {
                     className="company-policy-category-filter"
                 >
 
+                    <InputLabel id="company-policy-category-label">Category</InputLabel>
+
                     <Select
+                        labelId="company-policy-category-label"
+                        label="Category"
                         value={category}
                         onChange={(e) =>
                             setCategory(
@@ -957,6 +993,19 @@ const CompanyPolicy = () => {
                     </Select>
 
                 </FormControl>
+
+                <Button
+                    variant="outlined"
+                    className="company-policy-reset"
+                    startIcon={<RestartAltRoundedIcon />}
+                    onClick={() => {
+                        setSearch("");
+                        setCategory("All");
+                    }}
+                    disabled={!search && category === "All"}
+                >
+                    Reset
+                </Button>
 
             </Box>
 
@@ -1019,15 +1068,15 @@ const CompanyPolicy = () => {
                     <Typography
                         className="company-policy-empty-title"
                     >
-                        No Published Policies
+                        {search || category !== "All" ? "No Matching Policies" : "No Published Policies"}
                     </Typography>
 
                     <Typography
                         className="company-policy-empty-description"
                     >
-                        No published policies
-                        match your search or
-                        category.
+                        {search || category !== "All"
+                            ? "Try another search or category filter."
+                            : "Published company policies will appear here."}
                     </Typography>
 
                 </Box>

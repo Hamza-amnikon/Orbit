@@ -1,11 +1,12 @@
 import "./Profile.css";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
-function InfoCard({ title, children }) {
+function InfoCard({ icon, title, children }) {
     return (
         <MuiLayoutBox className="info-card" component="div">
 
             <MuiLayoutBox className="info-card-header" component="div">
+                {icon && <MuiLayoutBox className="section-icon info-card-icon" component="span">{icon}</MuiLayoutBox>}
                 <MuiText component="h3" variant="h6">{title}</MuiText>
             </MuiLayoutBox>
 

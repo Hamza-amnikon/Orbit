@@ -1,5 +1,10 @@
 import { MuiInputMigration } from "../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import "./Reimbursement.css";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -46,6 +51,8 @@ import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
 import UploadFileRoundedIcon from "@mui/icons-material/UploadFileRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import {
     getReimbursements,
@@ -53,45 +60,12 @@ import {
     createReimbursement,
     updateReimbursementStatus,
 } from "../Services/ReimbursementService";
+import EmployeeService from "../AttendanceManagement/services/EmployeeService";
 import { Typography as MuiText } from "@mui/material";
 
 
 const API_BASE_URL =
     import.meta.env.VITE_REIMBURSEMENT_API_BASE_URL;
-
-
-const employees = [
-    {
-        id: 1,
-        employeeCode: "EMP-1024",
-        name: "John Smith",
-    },
-    {
-        id: 2,
-        employeeCode: "EMP-1018",
-        name: "Sarah Khan",
-    },
-    {
-        id: 3,
-        employeeCode: "EMP-1009",
-        name: "Alex Thomas",
-    },
-    {
-        id: 4,
-        employeeCode: "EMP-1007",
-        name: "Michael Joseph",
-    },
-    {
-        id: 5,
-        employeeCode: "EMP-1020",
-        name: "Priya Sharma",
-    },
-    {
-        id: 6,
-        employeeCode: "EMP-1011",
-        name: "David Wilson",
-    },
-];
 
 
 const categories = [
@@ -119,6 +93,7 @@ const emptyForm = {
 
 
 function Reimbursement() {
+    const navigate = useNavigate();
 
     // =====================================================
     // PERMISSIONS
@@ -157,6 +132,12 @@ function Reimbursement() {
     );
 
     const [reimbursements, setReimbursements] = useState([]);
+
+    const [employees, setEmployees] = useState([]);
+
+    const [employeesLoading, setEmployeesLoading] = useState(false);
+
+    const [employeeLoadError, setEmployeeLoadError] = useState("");
 
     const [summary, setSummary] = useState({
         totalClaims: 0,
@@ -291,6 +272,34 @@ function Reimbursement() {
 
     };
 
+    const loadEmployees = async () => {
+        try {
+            setEmployeesLoading(true);
+            setEmployeeLoadError("");
+            const response = await EmployeeService.getAllEmployees();
+            const records = Array.isArray(response)
+                ? response
+                : Array.isArray(response?.data)
+                    ? response.data
+                    : [];
+
+            const employeeOptions = records.map((record) => {
+                const id = record?.employeeId ?? record?.EmployeeId ?? record?.employeeID ?? record?.EmployeeID ?? record?.id ?? record?.Id;
+                const name = record?.employeeName ?? record?.EmployeeName ?? record?.fullName ?? record?.FullName ?? record?.displayName ?? record?.DisplayName ?? record?.name ?? record?.Name ?? [record?.firstName ?? record?.FirstName, record?.lastName ?? record?.LastName].filter(Boolean).join(" ");
+                const employeeCode = record?.employeeCode ?? record?.EmployeeCode ?? record?.azureEmployeeId ?? record?.AzureEmployeeId ?? record?.employeeAzureId ?? record?.EmployeeAzureId ?? "";
+                return { id, name: name || "Employee", employeeCode };
+            }).filter((employee) => employee.id !== undefined && employee.id !== null && employee.id !== "");
+
+            setEmployees(employeeOptions);
+        } catch (loadError) {
+            console.error("Failed to load employees from Employee API:", loadError);
+            setEmployees([]);
+            setEmployeeLoadError("Employee list could not be loaded. Please refresh and try again.");
+        } finally {
+            setEmployeesLoading(false);
+        }
+    };
+
 
     /* =====================================================
        LOAD DATA
@@ -312,6 +321,7 @@ function Reimbursement() {
             await Promise.all([
                 loadReimbursements(),
                 loadSummary(),
+                loadEmployees(),
             ]);
 
         } finally {
@@ -398,17 +408,15 @@ function Reimbursement() {
         const employee =
             employees.find(
                 (item) =>
-                    Number(item.id) ===
-                    Number(employeeId)
+                    String(item.id) ===
+                    String(employeeId)
             );
 
         if (employee) {
-            return employee.employeeCode;
+            return employee.employeeCode || "-";
         }
 
-        return `EMP-${String(
-            employeeId
-        ).padStart(4, "0")}`;
+        return "-";
 
     };
 
@@ -845,7 +853,7 @@ function Reimbursement() {
                 ...previous,
 
                 employeeId:
-                    employee?.id || "",
+                    employee?.id ?? "",
 
                 employeeName:
                     employee?.name || "",
@@ -1320,7 +1328,18 @@ function Reimbursement() {
 
             <Box className="reimbursement-header">
 
-                <Box className="reimbursement-header-content">
+                <Box className="reimbursement-heading">
+
+                    <IconButton
+                        className="reimbursement-back-button"
+                        aria-label="Back to reimbursement overview"
+                        title="Back to reimbursement overview"
+                        onClick={() => navigate("/reimbursements")}
+                    >
+                        <ArrowBackRoundedIcon />
+                    </IconButton>
+
+                    <Box className="reimbursement-header-content">
 
                     <Typography
                         variant="h5"
@@ -1336,6 +1355,8 @@ function Reimbursement() {
                         Manage employee expense claims and
                         reimbursement requests.
                     </Typography>
+
+                    </Box>
 
                 </Box>
 
@@ -1952,36 +1973,47 @@ function Reimbursement() {
                 onClose={handleCloseForm}
                 fullWidth
                 maxWidth="md"
+                className="new-reimbursement-dialog"
             >
 
                 <Box
                     component="form"
                     onSubmit={handleSubmit}
+                    className="new-reimbursement-form"
                 >
 
-                    <DialogTitle>
+                    <DialogTitle className="new-reimbursement-titlebar">
 
-                        <Typography variant="h6">
-                            New Reimbursement
-                        </Typography>
+                        <Box className="new-reimbursement-titlecopy">
+                            <Typography variant="h6">
+                                New Reimbursement
+                            </Typography>
 
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
+                            <Typography variant="body2" color="text.secondary">
+                                Submit a new employee expense claim.
+                            </Typography>
+                        </Box>
+
+                        <IconButton
+                            className="new-reimbursement-close"
+                            aria-label="Close new reimbursement form"
+                            title="Close"
+                            onClick={handleCloseForm}
+                            disabled={submitting}
                         >
-                            Submit a new employee expense claim.
-                        </Typography>
+                            <CloseRoundedIcon />
+                        </IconButton>
 
                     </DialogTitle>
 
                     <Divider />
 
-                    <DialogContent>
+                    <DialogContent className="new-reimbursement-content">
 
                         <Box
                             className="reimbursement-form-grid"
                         >
-                                                        {/* EMPLOYEE */}
+                            {/* EMPLOYEE */}
 
                             <TextField
                                 fullWidth
@@ -1995,10 +2027,20 @@ function Reimbursement() {
                                 onChange={
                                     handleEmployeeChange
                                 }
+                                disabled={employeesLoading || employees.length === 0}
+                                error={Boolean(employeeLoadError)}
+                                helperText={
+                                    employeeLoadError ||
+                                    (employeesLoading
+                                        ? "Loading employees…"
+                                        : employees.length === 0
+                                            ? "No employees are available."
+                                            : "")
+                                }
                             >
 
                                 <MenuItem value="">
-                                    Select employee
+                                    {employeesLoading ? "Loading employees…" : "Select employee"}
                                 </MenuItem>
 
                                 {employees.map(
@@ -2013,8 +2055,7 @@ function Reimbursement() {
                                             }
                                         >
                                             {employee.name}
-                                            {" — "}
-                                            {employee.employeeCode}
+                                            {employee.employeeCode ? ` — ${employee.employeeCode}` : ""}
                                         </MenuItem>
 
                                     )
@@ -2065,22 +2106,28 @@ function Reimbursement() {
 
                             {/* DATE */}
 
-                            <TextField
-                                fullWidth
-                                required
-                                type="date"
-                                label="Expense Date"
-                                name="expenseDate"
-                                value={
-                                    formData.expenseDate
-                                }
-                                onChange={
-                                    handleInputChange
-                                }
-                                slotProps={{ inputLabel: {
-                                    shrink: true,
-                                } }}
-                            />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Expense Date"
+                                    value={formData.expenseDate ? dayjs(formData.expenseDate) : null}
+                                    onChange={(date) => {
+                                        setFormData((previous) => ({
+                                            ...previous,
+                                            expenseDate: date?.isValid() ? date.format("YYYY-MM-DD") : "",
+                                        }));
+                                    }}
+                                    format="DD-MM-YYYY"
+                                    slotProps={{
+                                        textField: {
+                                            fullWidth: true,
+                                            required: true,
+                                            name: "expenseDate",
+                                            size: "small",
+                                        },
+                                        calendarHeader: { format: "MMMM YYYY" },
+                                    }}
+                                />
+                            </LocalizationProvider>
 
 
                             {/* AMOUNT */}
@@ -2190,11 +2237,14 @@ function Reimbursement() {
                                         className="receipt-upload-button"
                                     >
 
-                                        Upload Receipt
+                                        <Box className="receipt-upload-copy">
+                                            <Typography component="span">Upload receipt</Typography>
+                                            <Typography component="small">PDF file, up to 10 MB</Typography>
+                                        </Box>
 
                                         <MuiInputMigration
-                                            hidden
                                             type="file"
+                                            className="receipt-file-input"
                                             accept="application/pdf,.pdf"
                                             onChange={
                                                 handleReceiptChange

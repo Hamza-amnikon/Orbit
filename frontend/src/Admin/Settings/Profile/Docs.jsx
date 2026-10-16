@@ -1,8 +1,9 @@
-import { MuiButtonMigration, MuiInputMigration, MuiSelectMigration } from "../../../components/ui/MuiCompat.jsx";
+import { MuiButtonMigration, MuiInputMigration } from "../../../components/ui/MuiCompat.jsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Docs.css";
 import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
+import { MenuItem, Select } from "@mui/material";
 
 /* ======================================================
    VALIDATION REGEX
@@ -1486,6 +1487,10 @@ const payload = {
 
                         </MuiLayoutBox>
 
+                        <MuiText className="document-helper-copy" component="p" variant="body2">
+                            Your UAN helps HR maintain your provident fund and employment records.
+                        </MuiText>
+
                     </MuiLayoutBox>
                 </MuiLayoutBox>
 
@@ -1582,7 +1587,10 @@ const payload = {
                                 Account Type
                             </MuiLayoutBox>
 
-                            <MuiSelectMigration
+                            <Select
+                                className="bank-account-select"
+                                variant="outlined"
+                                size="small"
                                 value={
                                     form.accountType
                                 }
@@ -1592,17 +1600,29 @@ const payload = {
                                         e.target.value
                                     )
                                 }
+                                MenuProps={{
+                                    PaperProps: {
+                                        sx: {
+                                            mt: 0.75,
+                                            border: "1px solid #dce6f3",
+                                            borderRadius: "12px",
+                                            boxShadow: "0 12px 28px rgba(25, 55, 100, 0.14)",
+                                            "& .MuiMenuItem-root": { minHeight: 40, mx: 0.75, borderRadius: "8px" },
+                                            "& .MuiMenuItem-root.Mui-selected": { backgroundColor: "#edf4ff", color: "#245bd6" },
+                                        },
+                                    },
+                                }}
                             >
 
-                                <option>
+                                <MenuItem value="Savings">
                                     Savings
-                                </option>
+                                </MenuItem>
 
-                                <option>
+                                <MenuItem value="Current">
                                     Current
-                                </option>
+                                </MenuItem>
 
-                            </MuiSelectMigration>
+                            </Select>
 
                         </MuiLayoutBox>
 

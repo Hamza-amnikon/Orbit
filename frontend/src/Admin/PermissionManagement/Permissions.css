@@ -2769,6 +2769,292 @@
     }
 }
 
+/* Permissions page polish: consistent with the app's rounded MUI surfaces. */
+.permissions-page {
+  padding: clamp(18px, 2vw, 32px) clamp(16px, 2.2vw, 36px) 36px;
+  background: #f4f8fd;
+}
+
+.permissions-header { align-items: center; margin-bottom: 22px; }
+.permissions-title-icon { border-radius: 14px; color: #356be5; box-shadow: 0 5px 15px rgba(35, 83, 154, .08); }
+.permissions-header h1 { color: #17345c; font-size: clamp(24px, 2.1vw, 30px); }
+.permissions-header p { margin-top: 7px; font-size: 14px; }
+
+.permission-save-top {
+  min-height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(115deg, #3269e8, #4c65e8);
+  box-shadow: 0 5px 12px rgba(50, 105, 232, .2);
+}
+.permission-save-top:hover:not(:disabled) { background: linear-gradient(115deg, #285bd0, #4055d1); }
+.permission-refresh-button { width: 42px; height: 42px; border-radius: 10px; }
+
+.permission-stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+.permission-stat-card {
+  min-height: 100px;
+  padding: 18px 20px;
+  border-color: #dce6f3;
+  border-radius: 15px;
+  box-shadow: 0 5px 16px rgba(33, 67, 112, .055);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.permission-stat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(33, 67, 112, .09); }
+.permission-stat-icon { border-radius: 13px; }
+.permission-stat-content > span { color: #6f849f; font-size: 12px; }
+.permission-stat-content > strong { color: #19375e; font-size: 25px; line-height: 1.2; }
+.permission-stat-content > small { color: #91a0b4; font-size: 10px; }
+
+.permission-tabs {
+  width: fit-content;
+  max-width: 100%;
+  height: auto;
+  gap: 6px;
+  padding: 5px;
+  margin-bottom: 16px;
+  border: 1px solid #dce6f3;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(33, 67, 112, .04);
+}
+.permission-tab {
+  height: 40px;
+  padding: 0 15px;
+  border-radius: 9px;
+  color: #657b96;
+  font-size: 13px;
+  font-weight: 600;
+}
+.permission-tab:hover { color: #2f66df; background: #f4f7ff; }
+.permission-tab.active {
+  color: #fff;
+  background: linear-gradient(110deg, #3269e8, #4c65e8);
+  box-shadow: 0 4px 10px rgba(50, 105, 232, .19);
+}
+.permission-tab.active:hover { color: #fff; background: linear-gradient(110deg, #3269e8, #4c65e8); }
+.permission-tab.active::after { display: none; }
+.permission-tab .permission-svg-icon { width: 17px; height: 17px; }
+
+.permission-management-layout {
+  grid-template-columns: minmax(250px, 290px) minmax(0, 1fr);
+  gap: 16px;
+}
+.permission-role-panel,
+.permission-content-panel {
+  height: 640px;
+  border-color: #dce6f3;
+  border-radius: 15px;
+  box-shadow: 0 5px 16px rgba(33, 67, 112, .055);
+}
+.permission-role-panel-header { height: 68px; padding: 0 18px; border-bottom: 1px solid #edf1f7; }
+.permission-role-panel-header h2 { font-size: 17px; color: #19375e; }
+.permission-role-search { margin: 14px 14px 12px; }
+.permission-role-search input,
+.permission-page-search input {
+  height: 42px;
+  border-color: #d8e3f1;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.permission-role-search input:focus,
+.permission-page-search input:focus { border-color: #83a7ee; box-shadow: 0 0 0 3px rgba(54, 117, 238, .1); }
+.permission-role-item { min-height: 62px; margin-bottom: 5px; border-radius: 10px; }
+.permission-role-item.selected { border-color: #c7d9fa; background: #f0f5ff; }
+.permission-role-avatar { border-radius: 11px; }
+.permission-role-info strong { font-size: 13px; }
+.permission-role-info span { font-size: 11px; }
+
+.permission-content-header { min-height: 82px; padding: 20px 22px 14px; }
+.permission-content-header h2 { font-size: 18px; color: #19375e; }
+.permission-content-header p { margin-top: 6px; font-size: 12px; }
+.permission-page-search { margin: 0 20px 14px; }
+.permission-page-search input { padding-left: 40px; }
+.permission-table-wrapper { margin: 0 18px 16px; border-color: #dce6f3; border-radius: 12px; }
+.permission-table { min-width: 820px; }
+.permission-table th { height: 46px; background: #f4f7fc; color: #607794; font-size: 10px; }
+.permission-table td { height: 46px; font-size: 12px; }
+.permission-module-row td { height: 44px; background: #f7f9fd; }
+.permission-module-name strong { font-size: 12px; }
+.permission-count-badge { min-width: 22px; height: 20px; border-radius: 8px; font-size: 10px; }
+
+.permission-alert { padding: 13px 16px; border-radius: 11px; font-size: 13px; }
+.permissions-page :is(button, input):focus-visible { outline: 3px solid rgba(54, 117, 238, .28); outline-offset: 2px; }
+
+@media (max-width: 1000px) {
+  .permission-management-layout { grid-template-columns: minmax(220px, 260px) minmax(0, 1fr); }
+  .permission-role-panel, .permission-content-panel { height: 620px; }
+}
+@media (max-width: 850px) {
+  .permission-management-layout { grid-template-columns: 1fr; }
+  .permission-role-panel { height: auto; max-height: 330px; }
+  .permission-role-list { max-height: 220px; }
+  .permission-content-panel { height: 620px; }
+}
+@media (max-width: 650px) {
+  .permissions-page { padding: 18px 14px 28px; }
+  .permissions-header { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .permissions-header-actions { width: 100%; justify-content: flex-end; }
+  .permission-stat-grid { grid-template-columns: 1fr; gap: 10px; }
+  .permission-stat-card { min-height: 82px; padding: 13px 15px; }
+  .permission-stat-icon { width: 45px; height: 45px; min-width: 45px; }
+  .permission-tabs { width: 100%; }
+  .permission-tab { flex: 1; justify-content: center; padding: 0 8px; font-size: 11px; }
+  .permission-content-panel { height: 590px; }
+  .permission-content-header { padding: 16px; }
+  .permission-table-wrapper { margin: 0 12px 12px; }
+}
+
+/* Action and search controls */
+.permissions-title-section { align-items: center; gap: 12px; }
+.permission-back-button {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  padding: 0;
+  border: 1px solid #dce6f3;
+  border-radius: 11px;
+  background: #fff;
+  color: #55708f;
+  box-shadow: 0 4px 12px rgba(33, 67, 112, .05);
+  transition: color .18s ease, border-color .18s ease, background .18s ease, transform .18s ease;
+}
+.permission-back-button:hover { transform: translateX(-2px); border-color: #a9c2ed; background: #f4f8ff; color: #3269e8; }
+.permission-back-button .permission-small-icon { width: 20px; height: 20px; }
+.permission-save-top { gap: 9px; font-size: 13px; font-weight: 650; }
+.permission-save-top .permission-small-icon { width: 18px; height: 18px; }
+.permission-refresh-button { position: relative; }
+.permission-refresh-button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 12px rgba(33, 67, 112, .08); }
+.permission-refresh-button:disabled .permission-small-icon { animation: permission-spin .8s linear infinite; }
+@keyframes permission-spin { to { transform: rotate(360deg); } }
+
+.permission-role-search,
+.permission-page-search,
+.permission-user-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  box-sizing: border-box;
+  border: 1px solid #dce6f3;
+  border-radius: 11px;
+  background: #fff;
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.permission-role-search:focus-within,
+.permission-page-search:focus-within,
+.permission-user-search:focus-within {
+  border-color: #87a8e8;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(54, 117, 238, .1);
+}
+.permission-role-search,
+.permission-user-search { min-height: 42px; padding: 0 10px 0 12px; }
+.permission-role-search { margin: 14px 14px 12px; }
+.permission-role-search > .permission-small-icon,
+.permission-page-search > .permission-small-icon,
+.permission-user-search > .permission-small-icon {
+  position: static;
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  transform: none;
+  color: #7389a5;
+}
+.permission-role-search input,
+.permission-page-search input,
+.permission-user-search input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #1c3958;
+  font-size: 13px;
+}
+.permission-role-search input:focus,
+.permission-page-search input:focus,
+.permission-user-search input:focus { border: 0; outline: 0; box-shadow: none; }
+.permission-role-search input::placeholder,
+.permission-page-search input::placeholder,
+.permission-user-search input::placeholder { color: #94a3b8; }
+.permission-page-search { min-height: 44px; padding: 0 10px 0 12px; margin: 0 18px 14px; }
+.permission-search-clear {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #8799ae;
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease;
+}
+.permission-search-clear:hover { background: #eef3fb; color: #365f9b; }
+.permission-clear-icon { width: 14px; height: 14px; }
+
+@media (max-width: 650px) {
+  .permissions-title-section { align-items: flex-start; }
+  .permission-back-button { flex-basis: 38px; width: 38px; height: 38px; min-width: 38px; }
+  .permissions-title-icon { width: 42px; height: 42px; min-width: 42px; }
+  .permissions-title-icon .permission-svg-icon { width: 25px; height: 25px; }
+}
+
+/* The global input theme adds its own search icon and Ctrl+K badge to
+   searchable MUI inputs. These page-level controls already provide both. */
+.permissions-page .permission-role-search .MuiInputBase-root,
+.permissions-page .permission-page-search .MuiInputBase-root,
+.permissions-page .permission-user-search .MuiInputBase-root {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.permissions-page .permission-role-search .MuiInputBase-root:has(input[placeholder*="Search"]),
+.permissions-page .permission-page-search .MuiInputBase-root:has(input[placeholder*="Search"]),
+.permissions-page .permission-user-search .MuiInputBase-root:has(input[placeholder*="Search"]) {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.permissions-page .permission-role-search .MuiInputBase-root::before,
+.permissions-page .permission-role-search .MuiInputBase-root::after,
+.permissions-page .permission-page-search .MuiInputBase-root::before,
+.permissions-page .permission-page-search .MuiInputBase-root::after,
+.permissions-page .permission-user-search .MuiInputBase-root::before,
+.permissions-page .permission-user-search .MuiInputBase-root::after {
+  display: none !important;
+  content: none !important;
+}
+.permissions-page .permission-role-search .MuiInputBase-input,
+.permissions-page .permission-page-search .MuiInputBase-input,
+.permissions-page .permission-user-search .MuiInputBase-input {
+  height: auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 
 /* ============================================================================
    USER PERMISSIONS - FINAL UI FIX

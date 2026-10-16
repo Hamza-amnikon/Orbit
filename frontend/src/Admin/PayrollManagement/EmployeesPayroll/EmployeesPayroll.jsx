@@ -12,11 +12,14 @@ import {
     DialogContent,
     DialogTitle,
     FormControl,
+    Alert,
     IconButton,
+    InputAdornment,
     InputLabel,
     MenuItem,
     Select,
     TextField,
+    Snackbar,
     Typography,
 } from "@mui/material";
 
@@ -24,10 +27,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import { loadXlsx } from "../../../utils/exportLibraries";
 
 import "./EmployeesPayroll.css";
 import { Typography as MuiText } from "@mui/material";
@@ -755,6 +760,7 @@ function EmployeesPayroll() {
     const canCreate = hasPermission(location.pathname, "create");
     const canEdit = hasPermission(location.pathname, "edit");
     const canDelete = hasPermission(location.pathname, "delete");
+    const canExport = hasPermission(location.pathname, "export");
 
     /* =====================================================
        PAGE
@@ -826,6 +832,15 @@ function EmployeesPayroll() {
 
     const [saving, setSaving] =
         useState(false);
+
+    const [exporting, setExporting] =
+        useState(false);
+
+    const [pageNotice, setPageNotice] =
+        useState(null);
+
+    const [deleteConfirmation, setDeleteConfirmation] =
+        useState(null);
 
 
     /* =========================================================
@@ -1184,6 +1199,57 @@ function EmployeesPayroll() {
             search,
         ]);
 
+    const handleExportAssignments = async () => {
+        if (!canExport || filteredAssignments.length === 0 || exporting) return;
+
+        setExporting(true);
+        try {
+            const rows = filteredAssignments.map((assignment) => {
+                const employee = employees.find((item) =>
+                    String(item.id) === String(assignment.employeeId) ||
+                    String(item.employeeId) === String(assignment.employeeId)
+                );
+
+                return {
+                    "Employee Name": employee?.name || "Unknown Employee",
+                    "Employee ID": employee?.employeeId || assignment.employeeId || "",
+                    Department: employee?.department || "",
+                    Designation: employee?.designation || "",
+                    "Payslip Template": assignment.templateName || "",
+                    "Annual CTC": Number(assignment.annualCtc) || 0,
+                    "Monthly CTC": Number(assignment.monthlyCtc) || 0,
+                    "Effective From": assignment.effectiveFrom || "",
+                    Status: assignment.status || "Active",
+                };
+            });
+
+            const XLSX = await loadXlsx();
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.json_to_sheet(rows);
+            worksheet["!cols"] = [
+                { wch: 26 }, { wch: 18 }, { wch: 22 }, { wch: 24 },
+                { wch: 28 }, { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 14 },
+            ];
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Employee Payroll");
+            XLSX.writeFile(
+                workbook,
+                `Employee_Payroll_${new Date().toISOString().slice(0, 10)}.xlsx`
+            );
+            setPageNotice({
+                severity: "success",
+                message: `Exported ${rows.length} employee payroll record${rows.length === 1 ? "" : "s"}.`,
+            });
+        } catch (error) {
+            console.error("Employee payroll export failed:", error);
+            setPageNotice({
+                severity: "error",
+                message: "Unable to export employee payroll. Please try again.",
+            });
+        } finally {
+            setExporting(false);
+        }
+    };
+
 
     /* =========================================================
        SELECTED EMPLOYEE
@@ -1371,16 +1437,12 @@ function EmployeesPayroll() {
 
     const handleSave = async () => {
         if (!selectedEmployee) {
-            alert(
-                "Please select an employee."
-            );
+            setPageNotice({ severity: "warning", message: "Please select an employee." });
             return;
         }
 
         if (!selectedTemplate) {
-            alert(
-                "Please select a payroll template."
-            );
+            setPageNotice({ severity: "warning", message: "Please select a payroll template." });
             return;
         }
 
@@ -1391,9 +1453,7 @@ function EmployeesPayroll() {
             !ctc ||
             ctc <= 0
         ) {
-            alert(
-                "Please enter a valid Annual CTC."
-            );
+            setPageNotice({ severity: "warning", message: "Please enter a valid Annual CTC." });
             return;
         }
 
@@ -1441,18 +1501,20 @@ function EmployeesPayroll() {
                     payload
                 );
 
-                alert(
-                    `Payroll updated successfully for ${selectedEmployee.name}.`
-                );
+                setPageNotice({
+                    severity: "success",
+                    message: `Payroll updated successfully for ${selectedEmployee.name}.`,
+                });
             } else {
                 await axios.post(
                     EMPLOYEE_SALARIES_API,
                     payload
                 );
 
-                alert(
-                    `Payroll assigned successfully to ${selectedEmployee.name}.`
-                );
+                setPageNotice({
+                    severity: "success",
+                    message: `Payroll assigned successfully to ${selectedEmployee.name}.`,
+                });
             }
 
             await loadAssignments();
@@ -1489,18 +1551,16 @@ function EmployeesPayroll() {
                 error?.message ||
                 "Unable to save employee salary.";
 
-            alert(
-                typeof message ===
-                    "string"
-                    ? message
-                    : "Unable to save employee salary."
-            );
+            setPageNotice({
+                severity: "error",
+                message: typeof message === "string" ? message : "Unable to save employee salary.",
+            });
         } finally {
             setSaving(false);
         }
     };
 
-const handleDelete = async (assignment) => {
+const handleDelete = (assignment) => {
     if (!canDelete) return;
 
     const employeeSalaryId =
@@ -1509,43 +1569,40 @@ const handleDelete = async (assignment) => {
 
     if (!employeeSalaryId) {
         console.error("Employee Salary ID not found:", assignment);
-        alert("Employee salary assignment ID was not found.");
+        setPageNotice({ severity: "error", message: "Employee salary assignment ID was not found." });
         return;
     }
 
-    const employeeName =
-        assignment.employeeName ||
-        assignment.EmployeeName ||
-        "this employee";
+    setDeleteConfirmation(assignment);
+};
 
-    const confirmed = window.confirm(
-        `Are you sure you want to delete the payroll assignment for ${employeeName}?`
-    );
+const confirmDelete = async () => {
+    if (!deleteConfirmation || !canDelete) return;
 
-    if (!confirmed) return;
+    const assignment = deleteConfirmation;
+    const employeeSalaryId = assignment.employeeSalaryId ?? assignment.EmployeeSalaryId;
+    setDeleteConfirmation(null);
 
     try {
-await axios.delete(
-    `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api/EmployeeSalaries/${employeeSalaryId}`
-);
+        await axios.delete(
+            `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api/EmployeeSalaries/${employeeSalaryId}`
+        );
 
         // Remove the deleted assignment from the table
         setAssignments((prev) =>
             prev.filter(
-                (item) =>
-                    (item.employeeSalaryId ??
-                        item.EmployeeSalaryId) !== employeeSalaryId
+                (item) => String(item.employeeSalaryId ?? item.EmployeeSalaryId) !== String(employeeSalaryId)
             )
         );
 
-        alert("Employee payroll deleted successfully.");
+        setPageNotice({ severity: "success", message: "Employee payroll assignment deleted." });
     } catch (error) {
         console.error("Error deleting employee payroll:", error);
 
-        alert(
-            error.response?.data?.message ||
-            "Failed to delete employee payroll."
-        );
+        setPageNotice({
+            severity: "error",
+            message: error.response?.data?.message || "Failed to delete employee payroll.",
+        });
     }
 };
     /* =========================================================
@@ -1593,6 +1650,7 @@ await axios.delete(
 
                         <IconButton
                             className="epr-employees-payroll-back"
+                            aria-label="Back to Employees Payroll"
                             onClick={
                                 handleBackToList
                             }
@@ -2447,6 +2505,23 @@ await axios.delete(
                         </Box>
                     )}
 
+                <Snackbar
+                    open={Boolean(pageNotice)}
+                    autoHideDuration={5000}
+                    onClose={(_, reason) => {
+                        if (reason !== "clickaway") setPageNotice(null);
+                    }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                >
+                    <Alert
+                        severity={pageNotice?.severity || "info"}
+                        variant="filled"
+                        onClose={() => setPageNotice(null)}
+                    >
+                        {pageNotice?.message}
+                    </Alert>
+                </Snackbar>
+
             </Box>
         );
     }
@@ -2467,6 +2542,7 @@ await axios.delete(
 
                     <IconButton
                         className="epr-employees-payroll-back"
+                        aria-label="Back to Payroll Management"
                         onClick={() =>
                             navigate(
                                 "/payroll"
@@ -2491,29 +2567,29 @@ await axios.delete(
                 </Box>
 
 
-                {canCreate && (
+                <Box className="epr-employees-payroll-header-actions">
+                    {canExport && (
+                        <Button
+                            variant="outlined"
+                            className="epr-employees-payroll-export-button"
+                            startIcon={<FileDownloadOutlinedIcon />}
+                            onClick={handleExportAssignments}
+                            disabled={assignmentsLoading || filteredAssignments.length === 0 || exporting}
+                        >
+                            {exporting ? "Exporting..." : "Export Excel"}
+                        </Button>
+                    )}
 
-
-
-                    <Button
-                    variant="contained"
-                    className="epr-employees-payroll-assign-button"
-                    onClick={
-                        handleOpenAssign
-                    }
-                >
-
-
-
-                        Assign Salary
-
-
-
-                    </Button>
-
-
-
-                )}
+                    {canCreate && (
+                        <Button
+                            variant="contained"
+                            className="epr-employees-payroll-assign-button"
+                            onClick={handleOpenAssign}
+                        >
+                            Assign Salary
+                        </Button>
+                    )}
+                </Box>
 
             </Box>
 
@@ -2528,6 +2604,7 @@ await axios.delete(
 
                         <TextField
                             fullWidth
+                            size="small"
                             value={search}
                             onChange={(
                                 event
@@ -2539,37 +2616,16 @@ await axios.delete(
                                 )
                             }
                             placeholder="Search employee..."
+                            inputProps={{ "aria-label": "Search employee payroll assignments" }}
                             slotProps={{ input: {
                                 startAdornment: (
-                                    <SearchIcon className="epr-table-search-icon" />
+                                    <InputAdornment position="start">
+                                        <SearchIcon className="epr-table-search-icon" />
+                                    </InputAdornment>
                                 ),
                             } }}
                         />
 
-
-                        {canCreate && (
-
-
-
-                            <Button
-                            variant="contained"
-                            className="epr-employees-payroll-assign-button epr-toolbar-button"
-                            onClick={
-                                handleOpenAssign
-                            }
-                        >
-
-
-
-                                Assign Salary
-
-
-
-                            </Button>
-
-
-
-                        )}
 
                     </Box>
 
@@ -2686,7 +2742,9 @@ await axios.delete(
                                                         ) ===
                                                         String(
                                                             assignment.employeeId
-                                                        )
+                                                        ) ||
+                                                        String(item.employeeId) ===
+                                                        String(assignment.employeeId)
                                                 );
 
                                             return (
@@ -3145,6 +3203,50 @@ await axios.delete(
                 </DialogActions>
 
             </Dialog>
+
+            <Dialog
+                open={Boolean(deleteConfirmation)}
+                onClose={() => setDeleteConfirmation(null)}
+                maxWidth="xs"
+                fullWidth
+                aria-labelledby="epr-delete-confirm-title"
+                PaperProps={{ className: "epr-delete-confirm-dialog" }}
+            >
+                <DialogTitle id="epr-delete-confirm-title">
+                    Delete payroll assignment?
+                </DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        This will remove the assigned payroll template and salary setup for this employee.
+                    </Typography>
+                </DialogContent>
+                <DialogActions className="epr-delete-confirm-actions">
+                    <Button variant="outlined" onClick={() => setDeleteConfirmation(null)}>
+                        Cancel
+                    </Button>
+                    <Button color="error" variant="contained" onClick={confirmDelete}>
+                        Delete assignment
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Snackbar
+                open={Boolean(pageNotice)}
+                autoHideDuration={5000}
+                onClose={(_, reason) => {
+                    if (reason !== "clickaway") setPageNotice(null);
+                }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            >
+                <Alert
+                    severity={pageNotice?.severity || "info"}
+                    variant="filled"
+                    onClose={() => setPageNotice(null)}
+                    sx={{ width: "100%" }}
+                >
+                    {pageNotice?.message}
+                </Alert>
+            </Snackbar>
 
         </Box>
     );

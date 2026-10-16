@@ -1,8 +1,28 @@
-import { MuiButtonMigration, MuiInputMigration, MuiSelectMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../components/ui/MuiCompat.jsx";
-import React, { useEffect, useMemo, useState } from "react";
+import { MuiButtonMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../components/ui/MuiCompat.jsx";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import "./DocumentManagement.css";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import {
+  Alert,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  Snackbar,
+  TextField,
+} from "@mui/material";
 
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
@@ -13,17 +33,23 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { loadXlsx } from "../../utils/exportLibraries";
 
 const API_URL = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
 const EMPLOYEE_API_URL = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
 function DocumentManagement() {
+  const navigate = useNavigate();
   const { hasPermission } = useAuth();
 
   const permissionRoute = "/documents";
   const canView = hasPermission(permissionRoute, "view");
   const canApprove = hasPermission(permissionRoute, "approve");
+  const canExport = hasPermission(permissionRoute, "export");
 
   const [documents, setDocuments] = useState([]);
   const [employees, setEmployees] = useState([]);
@@ -33,6 +59,14 @@ function DocumentManagement() {
   const [status, setStatus] = useState("All Status");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [exporting, setExporting] = useState(false);
+  const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [previewName, setPreviewName] = useState("");
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewError, setPreviewError] = useState("");
+  const previewRequestId = useRef(0);
 
   // ================= LOAD DOCUMENTS =================
 
@@ -127,7 +161,8 @@ function DocumentManagement() {
       const matchesSearch =
         !searchValue ||
         String(employeeId).toLowerCase().includes(searchValue) ||
-        String(employeeName).toLowerCase().includes(searchValue);
+        String(employeeName).toLowerCase().includes(searchValue) ||
+        String(documentName).toLowerCase().includes(searchValue);
 
       // Status
       const matchesStatus =
@@ -144,10 +179,6 @@ function DocumentManagement() {
         !toDate ||
         new Date(submittedOn) <=
         new Date(`${toDate}T23:59:59`);
-
-      // Document name is accessed so the API data is displayed
-      // without requiring Document Type.
-      void documentName;
 
       return (
         matchesSearch &&
@@ -190,6 +221,45 @@ function DocumentManagement() {
     setStatus("All Status");
     setFromDate("");
     setToDate("");
+  };
+
+  const handleExport = async () => {
+    if (!canExport || exporting) return;
+
+    setExporting(true);
+    try {
+      const XLSX = await loadXlsx();
+      const rows = filteredDocuments.map((document, index) => ({
+        "Sr. No.": index + 1,
+        "Employee ID": getEmployeeId(document),
+        "Employee Name": getEmployeeName(document),
+        "Document Name": getDocumentName(document),
+        "Submitted On": formatDate(getSubmittedDate(document)),
+        "Rejection Description": getStatus(document).toLowerCase() === "rejected"
+          ? document.rejectionReason || document.RejectionReason || "-"
+          : "-",
+        Status: getStatus(document),
+      }));
+      const worksheet = XLSX.utils.json_to_sheet(rows, {
+        header: ["Sr. No.", "Employee ID", "Employee Name", "Document Name", "Submitted On", "Rejection Description", "Status"],
+      });
+      worksheet["!cols"] = [
+        { wch: 10 }, { wch: 16 }, { wch: 24 }, { wch: 32 }, { wch: 18 }, { wch: 36 }, { wch: 16 },
+      ];
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Documents");
+      XLSX.writeFile(workbook, "Employee_Documents.xlsx");
+      setNotice({
+        open: true,
+        message: `Exported ${rows.length} document record${rows.length === 1 ? "" : "s"}.`,
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Failed to export documents:", error);
+      setNotice({ open: true, message: "Unable to export documents. Please try again.", severity: "error" });
+    } finally {
+      setExporting(false);
+    }
   };
 
   // ================= STATUS CLASS =================
@@ -355,7 +425,18 @@ function DocumentManagement() {
     }
   };
 
-  const handleView = (document) => {
+  const closePreview = () => {
+    previewRequestId.current += 1;
+    setPreviewOpen(false);
+    setPreviewLoading(false);
+    setPreviewError("");
+    setPreviewUrl((currentUrl) => {
+      if (currentUrl) URL.revokeObjectURL(currentUrl);
+      return "";
+    });
+  };
+
+  const handleView = async (document) => {
     if (!canView) return;
 
     const id = getDocumentId(document);
@@ -365,9 +446,33 @@ function DocumentManagement() {
       return;
     }
 
-    const documentUrl = `${API_URL}/${id}/file`;
+    setPreviewName(getDocumentName(document));
+    setPreviewError("");
+    setPreviewLoading(true);
+    setPreviewOpen(true);
+    const requestId = ++previewRequestId.current;
 
-    window.open(documentUrl, "_blank");
+    try {
+      const response = await axios.get(`${API_URL}/${id}/file`, { responseType: "blob" });
+      const contentType = response.headers?.["content-type"] || response.data?.type || "application/pdf";
+      if (requestId !== previewRequestId.current) return;
+      const previewType = contentType.toLowerCase().includes("pdf") ? contentType : "application/pdf";
+      const fileBlob = response.data instanceof Blob
+        ? new Blob([response.data], { type: previewType })
+        : new Blob([response.data], { type: previewType });
+      const nextUrl = URL.createObjectURL(fileBlob);
+      setPreviewUrl((currentUrl) => {
+        if (currentUrl) URL.revokeObjectURL(currentUrl);
+        return nextUrl;
+      });
+    } catch (error) {
+      console.error("Failed to preview document:", error);
+      if (requestId === previewRequestId.current) {
+        setPreviewError("This document could not be opened. Please try again.");
+      }
+    } finally {
+      if (requestId === previewRequestId.current) setPreviewLoading(false);
+    }
   };
 
   if (!canView) {
@@ -385,18 +490,51 @@ function DocumentManagement() {
       {/* ================= HEADER ================= */}
 
       <MuiLayoutBox className="document-header" component="div">
-        <MuiText component="h1" variant="h4">Document Management</MuiText>
-
-        <MuiText component="p" variant="body1">
-          Review and manage employee documents submitted for approval
-        </MuiText>
+        <MuiLayoutBox className="document-title-group" component="div">
+          <IconButton
+            className="document-back-button"
+            aria-label="Back to dashboard"
+            onClick={() => navigate("/dashboard")}
+          >
+            <ArrowBackRoundedIcon />
+          </IconButton>
+          <MuiLayoutBox component="div">
+            <MuiText component="h1" variant="h4">Document Management</MuiText>
+            <MuiText component="p" variant="body1">
+              Review and manage employee documents submitted for approval.
+            </MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
+        <MuiLayoutBox className="document-header-actions" component="div">
+          {canExport && (
+            <Button
+              className="document-export-button"
+              variant="contained"
+              startIcon={exporting ? <CircularProgress size={16} color="inherit" /> : <FileDownloadOutlinedIcon />}
+              onClick={handleExport}
+              disabled={exporting}
+            >
+              {exporting ? "Exporting..." : "Export Excel"}
+            </Button>
+          )}
+          <Button
+            className="document-refresh-button"
+            variant="outlined"
+            startIcon={loading ? <CircularProgress size={16} /> : <RefreshRoundedIcon />}
+            onClick={loadDocuments}
+            disabled={loading}
+          >
+            {loading ? "Refreshing..." : "Refresh"}
+          </Button>
+        </MuiLayoutBox>
       </MuiLayoutBox>
 
       {/* ================= STAT CARDS ================= */}
 
       <MuiLayoutBox className="document-stats" component="div">
 
-        <MuiLayoutBox className="document-stat-card" component="div">
+        <Card className="document-stat-card">
+          <CardContent className="document-stat-content">
           <MuiLayoutBox className="stat-icon blue" component="div">
             <DescriptionRoundedIcon />
           </MuiLayoutBox>
@@ -405,9 +543,11 @@ function DocumentManagement() {
             <MuiText component="span" variant="inherit">Total Documents</MuiText>
             <MuiText component="strong" variant="inherit">{totalDocuments}</MuiText>
           </MuiLayoutBox>
-        </MuiLayoutBox>
+          </CardContent>
+        </Card>
 
-        <MuiLayoutBox className="document-stat-card" component="div">
+        <Card className="document-stat-card">
+          <CardContent className="document-stat-content">
           <MuiLayoutBox className="stat-icon orange" component="div">
             <AccessTimeRoundedIcon />
           </MuiLayoutBox>
@@ -416,9 +556,11 @@ function DocumentManagement() {
             <MuiText component="span" variant="inherit">Pending Approval</MuiText>
             <MuiText component="strong" variant="inherit">{pendingDocuments}</MuiText>
           </MuiLayoutBox>
-        </MuiLayoutBox>
+          </CardContent>
+        </Card>
 
-        <MuiLayoutBox className="document-stat-card" component="div">
+        <Card className="document-stat-card">
+          <CardContent className="document-stat-content">
           <MuiLayoutBox className="stat-icon green" component="div">
             <CheckRoundedIcon />
           </MuiLayoutBox>
@@ -427,9 +569,11 @@ function DocumentManagement() {
             <MuiText component="span" variant="inherit">Approved</MuiText>
             <MuiText component="strong" variant="inherit">{approvedDocuments}</MuiText>
           </MuiLayoutBox>
-        </MuiLayoutBox>
+          </CardContent>
+        </Card>
 
-        <MuiLayoutBox className="document-stat-card" component="div">
+        <Card className="document-stat-card">
+          <CardContent className="document-stat-content">
           <MuiLayoutBox className="stat-icon red" component="div">
             <CloseRoundedIcon />
           </MuiLayoutBox>
@@ -438,7 +582,8 @@ function DocumentManagement() {
             <MuiText component="span" variant="inherit">Rejected</MuiText>
             <MuiText component="strong" variant="inherit">{rejectedDocuments}</MuiText>
           </MuiLayoutBox>
-        </MuiLayoutBox>
+          </CardContent>
+        </Card>
 
       </MuiLayoutBox>
 
@@ -446,74 +591,68 @@ function DocumentManagement() {
 
       <MuiLayoutBox className="document-filter" component="div">
 
-        <MuiLayoutBox className="filter-field employee-search" component="div">
-          <MuiLayoutBox component="label">Employee ID / Name</MuiLayoutBox>
-
-          <MuiLayoutBox className="search-input" component="div">
-            <MuiInputMigration
-              type="text"
-              placeholder="Search by ID or Name"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-
-            <SearchRoundedIcon />
-          </MuiLayoutBox>
-        </MuiLayoutBox>
-
-        <MuiLayoutBox className="filter-field" component="div">
-          <MuiLayoutBox component="label">Status</MuiLayoutBox>
-
-          <MuiSelectMigration
+        <TextField
+          className="document-search-field"
+          label="Search employee or document"
+          placeholder="Enter employee name, ID, or document name"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          size="small"
+          fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchRoundedIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <FormControl className="document-filter-field" size="small" fullWidth>
+          <InputLabel id="document-status-label">Status</InputLabel>
+          <Select
+            labelId="document-status-label"
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            label="Status"
+            onChange={(event) => setStatus(event.target.value)}
           >
-            <option>All Status</option>
-            <option>Submitted</option>
-            <option>Approved</option>
-            <option>Rejected</option>
-          </MuiSelectMigration>
-        </MuiLayoutBox>
-
-        <MuiLayoutBox className="filter-field" component="div">
-          <MuiLayoutBox component="label">From Date</MuiLayoutBox>
-
-          <MuiInputMigration
+            <MenuItem value="All Status">All statuses</MenuItem>
+            <MenuItem value="Submitted">Submitted</MenuItem>
+            <MenuItem value="Approved">Approved</MenuItem>
+            <MenuItem value="Rejected">Rejected</MenuItem>
+          </Select>
+        </FormControl>
+        <MuiLayoutBox className="document-date-field" component="div">
+          <MuiText component="label" variant="inherit" htmlFor="document-from-date">From date</MuiText>
+          <TextField
+            id="document-from-date"
+            className="document-filter-field"
             type="date"
+            size="small"
             value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
+            onChange={(event) => setFromDate(event.target.value)}
+            inputProps={{ "aria-label": "From date" }}
           />
         </MuiLayoutBox>
-
-        <MuiLayoutBox className="filter-field" component="div">
-          <MuiLayoutBox component="label">To Date</MuiLayoutBox>
-
-          <MuiInputMigration
+        <MuiLayoutBox className="document-date-field" component="div">
+          <MuiText component="label" variant="inherit" htmlFor="document-to-date">To date</MuiText>
+          <TextField
+            id="document-to-date"
+            className="document-filter-field"
             type="date"
+            size="small"
             value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
+            onChange={(event) => setToDate(event.target.value)}
+            inputProps={{ "aria-label": "To date" }}
           />
         </MuiLayoutBox>
-
-        <MuiLayoutBox className="filter-buttons" component="div">
-
-          <MuiButtonMigration
-            className="search-button"
-            onClick={() => { }}
-          >
-            <SearchRoundedIcon />
-            Search
-          </MuiButtonMigration>
-
-          <MuiButtonMigration
-            className="reset-button"
-            onClick={handleReset}
-          >
-            <RestartAltRoundedIcon />
-            Reset
-          </MuiButtonMigration>
-
-        </MuiLayoutBox>
+        <Button
+          className="document-reset-button"
+          variant="outlined"
+          startIcon={<RestartAltRoundedIcon />}
+          onClick={handleReset}
+        >
+          Reset filters
+        </Button>
 
       </MuiLayoutBox>
 
@@ -521,7 +660,7 @@ function DocumentManagement() {
 
       <MuiLayoutBox className="document-table-container" component="div">
 
-        <MuiTableMigration className="document-table">
+        <MuiTableMigration className="document-table" aria-label="Employee documents">
 
           <MuiTableHeadMigration>
             <MuiTableRowMigration>
@@ -651,6 +790,62 @@ function DocumentManagement() {
         </MuiLayoutBox>
 
       </MuiLayoutBox>
+
+      <Snackbar
+        open={notice.open}
+        autoHideDuration={5000}
+        onClose={() => setNotice((current) => ({ ...current, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setNotice((current) => ({ ...current, open: false }))}
+          severity={notice.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {notice.message}
+        </Alert>
+      </Snackbar>
+
+      <Dialog
+        open={previewOpen}
+        onClose={closePreview}
+        fullWidth
+        maxWidth="lg"
+        aria-labelledby="document-preview-title"
+        className="document-preview-dialog"
+      >
+        <DialogTitle id="document-preview-title" className="document-preview-title">
+          <MuiLayoutBox component="span" className="document-preview-heading">
+            <DescriptionRoundedIcon />
+            <MuiText component="span" variant="inherit">{previewName || "Document preview"}</MuiText>
+          </MuiLayoutBox>
+          <IconButton aria-label="Close document preview" onClick={closePreview} size="small">
+            <CloseRoundedIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent className="document-preview-content">
+          {previewLoading ? (
+            <MuiLayoutBox className="document-preview-state" component="div">
+              <CircularProgress />
+              <MuiText component="p" variant="body2">Loading document preview...</MuiText>
+            </MuiLayoutBox>
+          ) : previewError ? (
+            <MuiLayoutBox className="document-preview-state" component="div">
+              <Alert severity="error">{previewError}</Alert>
+            </MuiLayoutBox>
+          ) : previewUrl ? (
+            <iframe
+              className="document-preview-frame"
+              src={previewUrl}
+              title={`Preview of ${previewName}`}
+            />
+          ) : null}
+        </DialogContent>
+        <DialogActions className="document-preview-actions">
+          <Button onClick={closePreview} variant="outlined">Close</Button>
+        </DialogActions>
+      </Dialog>
 
     </MuiLayoutBox>
   );

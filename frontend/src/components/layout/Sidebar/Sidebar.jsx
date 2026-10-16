@@ -18,6 +18,7 @@ import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 import ConfirmationNumberRoundedIcon from "@mui/icons-material/ConfirmationNumberRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import RequestQuoteRoundedIcon from "@mui/icons-material/RequestQuoteRounded";
@@ -87,8 +88,8 @@ export const menu = [
     permissionPath: "/documents",
   },
   {
-    title: "Settings",
-    icon: <SettingsRoundedIcon />,
+    title: "Profile",
+    icon: <AccountCircleRoundedIcon />,
     path: "/settings",
     permissionPath: "/settings",
   },

@@ -17,7 +17,6 @@ import {
     Paper,
     Select,
     Snackbar,
-    Stack,
     TextField,
     Tooltip,
     Typography,
@@ -1099,30 +1098,39 @@ const confirmDelete = async () => {
                 onClose={closeDialog}
                 fullWidth
                 maxWidth="sm"
+                PaperProps={{ className: "sc-salary-component-dialog-paper" }}
             >
 
-                <DialogTitle>
-
-                    {editingId !== null
-                        ? "Edit Salary Component"
-                        : "Add Salary Component"}
+                <DialogTitle className="sc-salary-component-dialog-title">
+                    <Box className="sc-salary-component-dialog-heading">
+                        <Box className="sc-salary-component-dialog-icon">
+                            <AccountBalanceWalletOutlined />
+                        </Box>
+                        <Box>
+                            <Typography component="h2" className="sc-salary-component-dialog-title-text">
+                                {editingId !== null
+                                    ? "Edit Salary Component"
+                                    : "Add Salary Component"}
+                            </Typography>
+                            <Typography className="sc-salary-component-dialog-subtitle">
+                                Define how this item is calculated in payroll.
+                            </Typography>
+                        </Box>
+                    </Box>
 
                     <IconButton
                         onClick={closeDialog}
                         disabled={saving}
                         className="salary-component-dialog-close"
+                        aria-label="Close dialog"
                     >
                         <Close />
                     </IconButton>
 
                 </DialogTitle>
 
-                <DialogContent dividers>
-
-                    <Stack
-                        spacing={2.5}
-                        sx={{ pt: 1 }}
-                    >
+                <DialogContent className="sc-salary-component-dialog-content">
+                    <Box className="sc-salary-component-form-grid">
 
                         {/* NAME */}
 
@@ -1140,6 +1148,7 @@ const confirmDelete = async () => {
                                 )
                             }
                             placeholder="e.g. Basic Salary"
+                            className="sc-salary-component-form-field"
                         />
 
                         {/* CODE */}
@@ -1164,11 +1173,12 @@ const confirmDelete = async () => {
                             }
                             placeholder="e.g. BASIC_SALARY"
                             helperText="Use a unique code without spaces."
+                            className="sc-salary-component-form-field"
                         />
 
                         {/* TYPE */}
 
-                        <FormControl fullWidth>
+                        <FormControl fullWidth className="sc-salary-component-form-field">
                             <InputLabel>
                                 Component Type
                             </InputLabel>
@@ -1196,7 +1206,7 @@ const confirmDelete = async () => {
 
                         {/* CALCULATION TYPE */}
 
-                        <FormControl fullWidth>
+                        <FormControl fullWidth className="sc-salary-component-form-field">
                             <InputLabel>
                                 Calculation Type
                             </InputLabel>
@@ -1225,7 +1235,7 @@ const confirmDelete = async () => {
 
                         {/* STATUS */}
 
-                        <FormControl fullWidth>
+                        <FormControl fullWidth className="sc-salary-component-form-field sc-salary-component-status-field">
                             <InputLabel>
                                 Status
                             </InputLabel>
@@ -1255,42 +1265,16 @@ const confirmDelete = async () => {
                             </Select>
                         </FormControl>
 
-                        {/* INFORMATION */}
-
-                        <Box className="sc-salary-component-type-note">
-
-                            {form.componentType ===
-                            "Deduction" ? (
-                                <Percent />
-                            ) : (
-                                <AccountBalanceWalletOutlined />
-                            )}
-
-                            <Box>
-
-                                <Typography>
-                                    Component Type
-                                </Typography>
-
-                                <Typography>
-                                    {
-                                        form.componentType
-                                    }
-                                </Typography>
-
-                            </Box>
-
-                        </Box>
-
-                    </Stack>
+                    </Box>
 
                 </DialogContent>
 
-                <DialogActions>
+                <DialogActions className="sc-salary-component-dialog-actions">
 
                     <Button
                         onClick={closeDialog}
                         disabled={saving}
+                        className="sc-salary-component-cancel-button"
                     >
                         Cancel
                     </Button>
@@ -1301,6 +1285,7 @@ const confirmDelete = async () => {
                             variant="contained"
                             onClick={saveComponent}
                             disabled={saving}
+                            className="sc-salary-component-submit-button"
                         >
                             {saving
                                 ? "Saving..."

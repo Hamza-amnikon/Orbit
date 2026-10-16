@@ -802,3 +802,193 @@ input::placeholder {
         justify-content: flex-start;
     }
 }
+
+/* Add / edit salary component dialog */
+.sc-salary-component-dialog-paper {
+    width: min(calc(100% - 32px), 640px);
+    max-width: 640px !important;
+    overflow: hidden;
+    border: 1px solid #dce5f1;
+    border-radius: 18px !important;
+    box-shadow: 0 24px 70px rgba(18, 42, 76, 0.24) !important;
+}
+
+.sc-salary-component-dialog-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 22px 26px !important;
+    border-bottom: 1px solid #e4ebf5;
+    background: linear-gradient(120deg, #f1f6ff 0%, #ffffff 100%);
+}
+
+.sc-salary-component-dialog-heading {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 15px;
+}
+
+.sc-salary-component-dialog-icon {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    place-items: center;
+    border-radius: 14px;
+    background: #e8f0ff;
+    color: #2f67ed;
+}
+
+.sc-salary-component-dialog-icon svg {
+    font-size: 25px;
+}
+
+.sc-salary-component-dialog-title-text {
+    color: #17345f;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+}
+
+.sc-salary-component-dialog-subtitle {
+    margin-top: 4px !important;
+    color: #6e82a0;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+}
+
+.salary-component-dialog-close.MuiIconButton-root {
+    flex: 0 0 auto;
+    color: #71839d;
+}
+
+.salary-component-dialog-close.MuiIconButton-root:hover {
+    background: #eaf0f8;
+    color: #263f63;
+}
+
+.sc-salary-component-dialog-content {
+    padding: 24px 26px 26px !important;
+}
+
+.sc-salary-component-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 18px;
+    padding-top: 2px;
+}
+
+.sc-salary-component-form-field {
+    min-width: 0;
+}
+
+.sc-salary-component-form-field .MuiOutlinedInput-root {
+    min-height: 48px;
+    border-radius: 11px;
+    background: #fbfcfe;
+    color: #263d5d;
+}
+
+.sc-salary-component-form-field .MuiOutlinedInput-notchedOutline {
+    border-color: #d6e0ed;
+}
+
+.sc-salary-component-form-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #a9bbd3;
+}
+
+.sc-salary-component-form-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #3b70ee;
+    border-width: 1.5px;
+}
+
+.sc-salary-component-form-field .MuiInputLabel-root.Mui-focused {
+    color: #3268e8;
+}
+
+.sc-salary-component-form-field .MuiFormHelperText-root {
+    margin-left: 3px;
+    color: #7185a2;
+    font-size: 11px;
+}
+
+.sc-salary-component-status-field {
+    grid-column: 1 / -1;
+}
+
+.sc-salary-component-dialog-actions {
+    gap: 10px;
+    padding: 16px 26px 20px !important;
+    border-top: 1px solid #e4ebf5;
+    background: #f9fbfe;
+}
+
+.sc-salary-component-dialog-actions .MuiButton-root {
+    min-width: 112px;
+    min-height: 42px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: none;
+}
+
+.sc-salary-component-cancel-button.MuiButton-root {
+    color: #526983;
+}
+
+.sc-salary-component-submit-button.MuiButton-contained {
+    background: #2f67ed;
+    box-shadow: 0 5px 12px rgba(47, 103, 237, 0.2);
+}
+
+.sc-salary-component-submit-button.MuiButton-contained:hover {
+    background: #2457d2;
+}
+
+@media (max-width: 600px) {
+    .sc-salary-component-dialog-paper {
+        width: calc(100% - 24px);
+        margin: 12px;
+    }
+
+    .sc-salary-component-dialog-title {
+        padding: 18px 18px !important;
+    }
+
+    .sc-salary-component-dialog-heading {
+        gap: 11px;
+    }
+
+    .sc-salary-component-dialog-icon {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+        border-radius: 12px;
+    }
+
+    .sc-salary-component-dialog-title-text {
+        font-size: 18px !important;
+    }
+
+    .sc-salary-component-dialog-subtitle {
+        font-size: 12px !important;
+    }
+
+    .sc-salary-component-dialog-content {
+        padding: 20px 18px 22px !important;
+    }
+
+    .sc-salary-component-form-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .sc-salary-component-status-field {
+        grid-column: auto;
+    }
+
+    .sc-salary-component-dialog-actions {
+        padding: 14px 18px 18px !important;
+    }
+}

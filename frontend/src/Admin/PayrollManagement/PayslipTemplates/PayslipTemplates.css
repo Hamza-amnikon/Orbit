@@ -21,6 +21,30 @@
     color: #102b4c;
 }
 
+.pt-payslip-templates-heading {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.pt-payslip-templates-back.MuiIconButton-root {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    border: 1px solid #d7e2f0;
+    border-radius: 12px;
+    color: #415977;
+    background: #ffffff;
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.pt-payslip-templates-back.MuiIconButton-root:hover {
+    border-color: #b8cbed;
+    background: #edf4ff;
+    color: #2f67ed;
+}
+
 /* =========================================================
    HEADER
    ========================================================= */
@@ -36,6 +60,10 @@
 
 .pt-payslip-templates-header > .MuiBox-root:first-child {
     min-width: 0;
+}
+
+.pt-payslip-templates-header > .pt-payslip-templates-heading {
+    flex: 1 1 auto;
 }
 
 .pt-payslip-templates-title {
@@ -575,7 +603,7 @@
 
 .pt-templates-empty-card {
     width: 100% !important;
-    min-height: 300px;
+    min-height: 250px;
 
     display: flex !important;
     flex-direction: column !important;
@@ -588,8 +616,8 @@
 
     background: #ffffff !important;
 
-    border: 1px dashed #d7e1ed !important;
-    border-radius: 13px !important;
+    border: 1px solid #dce5f1 !important;
+    border-radius: 15px !important;
 
     box-shadow: none !important;
 
@@ -622,6 +650,7 @@
 }
 
 .pt-empty-template-text {
+    max-width: 440px;
     margin-bottom: 18px !important;
 
     color: #8494a8 !important;
@@ -653,7 +682,7 @@
    ========================================================= */
 
 .pt-templates-loading {
-    min-height: 300px;
+    min-height: 250px;
 
     display: flex;
     flex-direction: column;
@@ -774,6 +803,14 @@
         gap: 16px;
     }
 
+    .pt-payslip-templates-heading {
+        align-items: flex-start;
+    }
+
+    .pt-payslip-templates-back.MuiIconButton-root {
+        margin-top: 1px;
+    }
+
     .pt-payslip-templates-title {
         font-size: 25px !important;
     }
@@ -797,6 +834,62 @@
     .pt-payslip-template-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.pt-clear-template-filters.MuiButton-root {
+    min-height: 40px;
+    padding: 0 18px;
+    border-color: #cedaeb;
+    border-radius: 9px;
+    color: #315eae;
+    text-transform: none;
+    font-weight: 600;
+}
+
+.pt-clear-template-filters.MuiButton-root:hover {
+    border-color: #a9bfdf;
+    background: #f3f7fd;
+}
+
+.pt-template-delete-dialog {
+    border: 1px solid #dce5f1;
+    border-radius: 16px !important;
+    box-shadow: 0 18px 50px rgba(19, 42, 76, 0.2) !important;
+}
+
+.pt-template-delete-title.MuiDialogTitle-root {
+    padding: 22px 24px 10px;
+    color: #1d3557;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.pt-template-delete-content.MuiDialogContent-root {
+    padding: 8px 24px 18px;
+    color: #667b96;
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.pt-template-delete-actions.MuiDialogActions-root {
+    gap: 8px;
+    padding: 12px 24px 20px;
+}
+
+.pt-template-delete-actions .MuiButton-root {
+    min-height: 40px;
+    min-width: 96px;
+    border-radius: 9px;
+    text-transform: none;
+    font-weight: 600;
+}
+
+.pt-template-delete-cancel.MuiButton-root {
+    color: #526983;
+}
+
+.pt-template-delete-confirm.MuiButton-containedError {
+    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.18);
 }
 
 /* =========================================================

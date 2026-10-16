@@ -1208,3 +1208,356 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     opacity: 1 !important;
     cursor: pointer;
 }
+
+/* ============================================================
+   PERSONAL REIMBURSEMENTS POLISH
+   ============================================================ */
+
+.my-reimbursements-page {
+    padding: 30px clamp(24px, 3vw, 48px) 48px;
+    background:
+        radial-gradient(ellipse at 6% 0%, rgba(219, 234, 254, .38), transparent 38%),
+        #f5f8fd;
+}
+
+.my-reimbursements-header {
+    gap: 24px;
+    margin-bottom: 26px;
+}
+
+.my-reimbursements-title {
+    font-size: 30px !important;
+    letter-spacing: -.45px;
+}
+
+.new-reimbursement-button {
+    min-height: 46px;
+    padding: 10px 20px !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, #3675ee, #5144d8) !important;
+    box-shadow: 0 8px 20px rgba(54, 117, 238, .2) !important;
+}
+
+.new-reimbursement-button:hover {
+    box-shadow: 0 10px 24px rgba(54, 117, 238, .28) !important;
+    transform: translateY(-1px);
+}
+
+.my-summary-card {
+    min-height: 104px;
+    border-radius: 16px !important;
+    box-shadow: 0 5px 18px rgba(31, 62, 112, .045) !important;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.my-summary-card.is-clickable {
+    width: 100%;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.my-summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(31, 62, 112, .08) !important;
+}
+
+.my-summary-card.is-active {
+    border-color: #9ab8f5 !important;
+    box-shadow: 0 0 0 3px rgba(54, 117, 238, .1), 0 8px 20px rgba(31, 62, 112, .06) !important;
+}
+
+.my-summary-card.is-clickable:focus-visible {
+    outline: 3px solid rgba(54, 117, 238, .35);
+    outline-offset: 2px;
+}
+
+.my-reimbursements-table-card {
+    border-radius: 16px !important;
+    box-shadow: 0 6px 22px rgba(31, 62, 112, .045) !important;
+}
+
+.my-reimbursements-toolbar {
+    min-height: 76px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+    background: #fff;
+}
+
+.my-reimbursements-toolbar-heading,
+.my-reimbursements-toolbar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.my-reimbursements-toolbar-title {
+    color: #132b4b !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+.my-reimbursements-toolbar-caption {
+    margin-top: 3px !important;
+    color: #7588a2 !important;
+    font-size: 12px !important;
+}
+
+.my-reimbursements-toolbar-controls {
+    justify-content: flex-start;
+}
+
+.my-reimbursements-search .MuiOutlinedInput-root,
+.my-reimbursements-filter .MuiOutlinedInput-root {
+    min-height: 44px;
+    border-radius: 11px;
+}
+
+.my-reimbursements-search {
+    width: min(520px, 100%);
+}
+
+.my-reimbursements-filter {
+    min-width: 190px;
+}
+
+.my-reimbursements-refresh,
+.my-reimbursements-reset {
+    min-height: 42px !important;
+    border-color: #d4e0ef !important;
+    border-radius: 10px !important;
+    color: #315b9e !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+    white-space: nowrap;
+}
+
+.my-reimbursements-refresh:hover,
+.my-reimbursements-reset:hover {
+    border-color: #9ab8f5 !important;
+    background: #f4f8ff !important;
+}
+
+.my-reimbursements-reset.Mui-disabled {
+    color: #a7b5c7 !important;
+    border-color: #e7edf4 !important;
+}
+
+.my-reimbursements-table-header {
+    background: #f4f7fc;
+    color: #526783;
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+.my-reimbursement-row {
+    min-height: 68px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.my-reimbursement-row:last-of-type {
+    border-bottom: 0;
+}
+
+.my-reimbursement-create-paper {
+    overflow: hidden;
+    border-radius: 20px !important;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, .2) !important;
+}
+
+.my-reimbursement-create-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 26px !important;
+}
+
+.my-reimbursement-create-title .MuiTypography-h6 {
+    color: #102542;
+    font-weight: 700;
+}
+
+.my-reimbursement-create-title .MuiIconButton-root {
+    color: #71839b;
+    border: 1px solid #e2eaf4;
+    border-radius: 10px;
+}
+
+.my-reimbursement-dialog-divider {
+    height: 1px;
+    background: #e8eef6;
+}
+
+.my-reimbursement-create-dialog .MuiDialogContent-root {
+    padding: 24px 26px !important;
+}
+
+.my-reimbursement-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 16px;
+}
+
+.my-reimbursement-form .MuiOutlinedInput-root {
+    min-height: 48px;
+    border-radius: 11px;
+    background: #fff;
+}
+
+.my-reimbursement-form .MuiOutlinedInput-notchedOutline {
+    border-color: #d8e3f1;
+}
+
+.my-reimbursement-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #9cb7df;
+}
+
+.my-reimbursement-form .MuiOutlinedInput-root.Mui-focused {
+    box-shadow: 0 0 0 3px rgba(54, 117, 238, .09);
+}
+
+.my-reimbursement-form > .MuiTextField-root:nth-of-type(4) {
+    grid-column: 1 / -1;
+}
+
+.my-reimbursement-form .MuiPickersTextField-root,
+.my-reimbursement-form .my-reimbursement-date {
+    min-width: 0;
+}
+
+.my-reimbursement-create-dialog .MuiPickersTextField-root .MuiOutlinedInput-root {
+    border-radius: 11px;
+}
+
+.my-reimbursement-upload-button {
+    grid-column: 1 / -1;
+    min-height: 68px !important;
+    justify-content: flex-start !important;
+    border-style: dashed !important;
+    border-color: #b8cbea !important;
+    border-radius: 13px !important;
+    color: #315b9e !important;
+    text-transform: none !important;
+    padding: 11px 15px !important;
+    gap: 12px;
+    text-align: left;
+    background: #f8fbff !important;
+}
+
+.my-reimbursement-upload-button:hover {
+    border-color: #6e9dec !important;
+    background: #f1f6ff !important;
+}
+
+.my-reimbursement-upload-icon {
+    flex: 0 0 auto;
+    color: #3675ee;
+    font-size: 24px !important;
+}
+
+.my-reimbursement-upload-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
+
+.my-reimbursement-upload-title {
+    max-width: 100%;
+    overflow: hidden;
+    color: #23456f;
+    font-size: 13px;
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.my-reimbursement-required {
+    color: #d14343;
+}
+
+.my-reimbursement-upload-hint {
+    color: #7b8da5;
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.my-reimbursement-file-input {
+    display: none !important;
+}
+
+.my-reimbursement-create-dialog .MuiDialogActions-root {
+    padding: 16px 26px 22px;
+    border-top: 1px solid #e8eef6;
+}
+
+.my-reimbursement-create-dialog .MuiDialogActions-root .MuiButton-root {
+    min-height: 42px;
+    border-radius: 10px;
+    text-transform: none;
+    font-weight: 600;
+}
+
+.my-reimbursement-create-dialog .MuiDialogActions-root .MuiButton-contained {
+    background: linear-gradient(135deg, #3675ee, #5144d8);
+    box-shadow: 0 7px 18px rgba(54, 117, 238, .2);
+}
+
+@media (max-width: 650px) {
+    .my-reimbursements-page {
+        padding: 22px 16px 32px;
+    }
+
+    .my-reimbursements-toolbar {
+        padding: 16px;
+    }
+
+    .my-reimbursements-toolbar-heading {
+        align-items: flex-start;
+    }
+
+    .my-reimbursements-toolbar-controls {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .my-reimbursements-search,
+    .my-reimbursements-filter {
+        width: 100%;
+    }
+
+    .my-reimbursements-reset {
+        align-self: flex-start;
+    }
+
+    .my-reimbursement-create-dialog .MuiDialogContent-root {
+        padding: 20px 18px !important;
+    }
+
+    .my-reimbursement-form {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .my-reimbursement-form > .MuiTextField-root:nth-of-type(4),
+    .my-reimbursement-upload-button {
+        grid-column: 1;
+    }
+
+    .my-reimbursement-create-title {
+        padding: 18px !important;
+    }
+
+    .my-reimbursement-create-dialog .MuiDialogActions-root {
+        padding: 14px 18px 18px;
+    }
+}

@@ -10,6 +10,28 @@ import {
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ProfileDetails({ profile }) {
+    const joinDateValue =
+        profile.joinDate ||
+        profile.JoinDate ||
+        profile.joiningDate ||
+        profile.JoiningDate ||
+        profile.dateOfJoining ||
+        profile.DateOfJoining ||
+        profile.hireDate ||
+        profile.HireDate;
+
+    const formattedJoinDate = (() => {
+        if (!joinDateValue) return "-";
+
+        const date = new Date(joinDateValue);
+        if (Number.isNaN(date.getTime())) return String(joinDateValue);
+
+        return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
+    })();
 
     return (
 
@@ -123,8 +145,9 @@ function ProfileDetails({ profile }) {
 
                         <MuiText component="span" variant="inherit">Join Date</MuiText>
 
-                        <MuiText component="strong" variant="inherit">{profile.joinDate
-                            }</MuiText>
+                        <MuiText component="strong" variant="inherit">
+                            {formattedJoinDate}
+                        </MuiText>
 
                     </MuiLayoutBox>
 

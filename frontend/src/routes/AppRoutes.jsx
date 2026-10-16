@@ -339,7 +339,7 @@ export const PERMISSION_PAGES = [
 
     {
         module: "Settings",
-        pageName: "Settings",
+        pageName: "Profile",
         route: "/settings",
     },
 

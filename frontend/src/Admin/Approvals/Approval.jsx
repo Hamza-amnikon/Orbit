@@ -1,4 +1,4 @@
-import { MuiButtonMigration, MuiInputMigration, MuiSelectMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../components/ui/MuiCompat.jsx";
+import { MuiButtonMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../components/ui/MuiCompat.jsx";
 import React, {
     useEffect,
     useMemo,
@@ -17,6 +17,7 @@ import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 
 
 import {
@@ -24,10 +25,16 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
+    Alert,
     IconButton,
     Typography,
     Box,
-    Button
+    Button,
+    FormControl,
+    InputAdornment,
+    MenuItem,
+    Select,
+    TextField
 } from "@mui/material";
 
 import axios from "axios";
@@ -109,6 +116,13 @@ const Approval = () => {
 
     const [hasLeaveDocument, setHasLeaveDocument] =
         useState(null);
+
+    const [messagePrompt, setMessagePrompt] =
+        useState(null);
+
+    const showMessagePrompt = (message, severity = "info", title = "Notice") => {
+        setMessagePrompt({ message, severity, title });
+    };
 
     // EmployeeService lookup
     const [employeeMap, setEmployeeMap] =
@@ -1047,8 +1061,10 @@ const Approval = () => {
                 !canApprove
             ) {
 
-                alert(
-                    "You do not have permission to approve this request."
+                showMessagePrompt(
+                    "You do not have permission to approve this request.",
+                    "error",
+                    "Approval unavailable"
                 );
 
                 return;
@@ -1060,8 +1076,10 @@ const Approval = () => {
 
             if (!approvalRequestId) {
 
-                alert(
-                    "Approval Request ID was not found."
+                showMessagePrompt(
+                    "Approval Request ID was not found.",
+                    "warning",
+                    "Request unavailable"
                 );
 
                 return;
@@ -1072,8 +1090,10 @@ const Approval = () => {
 
             if (!loggedInEmployeeId) {
 
-                alert(
-                    "Logged-in employee ID was not found. Please log in again."
+                showMessagePrompt(
+                    "Logged-in employee ID was not found. Please log in again.",
+                    "error",
+                    "Sign-in required"
                 );
 
                 return;
@@ -1091,8 +1111,10 @@ const Approval = () => {
                 currentApproverId <= 0
             ) {
 
-                alert(
-                    "Current approver ID was not found for this request."
+                showMessagePrompt(
+                    "Current approver ID was not found for this request.",
+                    "warning",
+                    "Approver unavailable"
                 );
 
                 return;
@@ -1103,10 +1125,12 @@ const Approval = () => {
                 currentApproverId
             ) {
 
-                alert(
+                showMessagePrompt(
                     `You are not the current approver for this request.\n\n` +
                     `Current Approver ID: ${currentApproverId}\n` +
-                    `Your Employee ID: ${loggedInEmployeeId}`
+                    `Your Employee ID: ${loggedInEmployeeId}`,
+                    "warning",
+                    "Approval not assigned to you"
                 );
 
                 return;
@@ -1180,18 +1204,22 @@ const Approval = () => {
 
                 else {
 
-                    alert(
-                        "Invalid approval status."
+                    showMessagePrompt(
+                        "Invalid approval status.",
+                        "error",
+                        "Unable to update request"
                     );
 
                     return;
                 }
 
-                alert(
+                showMessagePrompt(
                     selectedStatus ===
                         "Approved"
                         ? "Request approved successfully."
-                        : "Request rejected successfully."
+                        : "Request rejected successfully.",
+                    "success",
+                    "Request updated"
                 );
 
                 setSelectedRequest(
@@ -1222,7 +1250,7 @@ const Approval = () => {
                     error?.message ||
                     "Unable to update approval status.";
 
-                alert(message);
+                showMessagePrompt(message, "error", "Update failed");
             }
         };
 
@@ -1458,8 +1486,10 @@ const response =
                 filteredRequests.length === 0
             ) {
 
-                alert(
-                    "No approval requests available to export."
+                showMessagePrompt(
+                    "There are no approval requests available to export.",
+                    "info",
+                    "Nothing to export"
                 );
 
                 return;
@@ -1697,16 +1727,36 @@ const response =
             {/* HEADER */}
 
             <MuiLayoutBox className="approval-header" component="div">
+                <MuiLayoutBox className="approval-header-main" component="div">
+                    <IconButton
+                        className="approval-back-button"
+                        aria-label="Go back"
+                        title="Go back"
+                        onClick={() => navigate(-1)}
+                    >
+                        <ArrowBackRoundedIcon />
+                    </IconButton>
+                    <MuiLayoutBox component="div">
+                        <MuiText component="h1" variant="h4">
+                            Approvals
+                        </MuiText>
+                        <MuiText component="p" variant="body1">
+                            Review and manage requests that require your approval.
+                        </MuiText>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
-                <MuiText component="h1" variant="h4">
-                    Approvals
-                </MuiText>
-
-                <MuiText component="p" variant="body1">
-                    Review and manage requests
-                    that require your approval.
-                </MuiText>
-
+                {canExport && (
+                    <MuiButtonMigration
+                        type="button"
+                        variant="outlined"
+                        startIcon={<FileDownloadRoundedIcon />}
+                        className="approval-export-btn approval-header-export-btn"
+                        onClick={handleExport}
+                    >
+                        Export
+                    </MuiButtonMigration>
+                )}
             </MuiLayoutBox>
 
             {/* SUMMARY CARDS */}
@@ -1852,146 +1902,78 @@ const response =
                 <MuiLayoutBox className="approval-filter-bar" component="div">
 
                     <MuiLayoutBox className="approval-search" component="div">
-
-                        <SearchRoundedIcon />
-
-                        <MuiInputMigration
-                            type="text"
+                        <TextField
+                            fullWidth
+                            size="small"
                             placeholder="Search requests..."
                             value={search}
-                            onChange={
-                                event =>
-                                    setSearch(
-                                        event.target.value
-                                    )
-                            }
-                        />
-
-                    </MuiLayoutBox>
-
-                    <MuiLayoutBox className="approval-select" component="div">
-
-                        <MuiLayoutBox component="label">
-                            Request Type
-                        </MuiLayoutBox>
-
-                        <MuiSelectMigration
-                            value={requestType}
-                            onChange={
-                                event =>
-                                    setRequestType(
-                                        event.target.value
-                                    )
-                            }
-                        >
-
-                            <option value="All">
-                                All
-                            </option>
-
-                            {requestTypes.map(
-                                type => (
-
-                                    <option
-                                        key={type}
-                                        value={type}
-                                    >
-                                        {type}
-                                    </option>
-
+                            onChange={(event) => setSearch(event.target.value)}
+                            inputProps={{ "aria-label": "Search approval requests" }}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchRoundedIcon />
+                                    </InputAdornment>
                                 )
-                            )}
-
-                        </MuiSelectMigration>
-
+                            }}
+                        />
                     </MuiLayoutBox>
 
-                    <MuiLayoutBox className="approval-select" component="div">
+                    <MuiLayoutBox className="approval-filter-control" component="div">
+                        <MuiText className="approval-filter-label" component="label" htmlFor="approval-request-type" variant="caption">
+                            Request Type
+                        </MuiText>
+                        <FormControl className="approval-select" size="small" fullWidth>
+                            <Select
+                                id="approval-request-type"
+                                value={requestType}
+                                onChange={(event) => setRequestType(event.target.value)}
+                            >
+                                <MenuItem value="All">All types</MenuItem>
+                                {requestTypes.map((type) => (
+                                    <MenuItem key={type} value={type}>{type}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </MuiLayoutBox>
 
-                        <MuiLayoutBox component="label">
+                    <MuiLayoutBox className="approval-filter-control" component="div">
+                        <MuiText className="approval-filter-label" component="label" htmlFor="approval-status" variant="caption">
                             Status
-                        </MuiLayoutBox>
-
-                        <MuiSelectMigration
-                            value={status}
-                            onChange={
-                                event => {
-
-                                    const selectedStatus =
-                                        event.target.value;
-
-                                    setStatus(
-                                        selectedStatus
-                                    );
-
-                                    navigate(
-                                        `/approvals?status=${selectedStatus}`
-                                    );
-
-                                }
-                            }
-                        >
-
-                            <option value="All">
-                                All
-                            </option>
-
-                            <option value="Pending">
-                                Pending
-                            </option>
-
-                            <option value="Approved">
-                                Approved
-                            </option>
-
-                            <option value="Rejected">
-                                Rejected
-                            </option>
-
-                        </MuiSelectMigration>
-
+                        </MuiText>
+                        <FormControl className="approval-select" size="small" fullWidth>
+                            <Select
+                                id="approval-status"
+                                value={status}
+                                onChange={(event) => {
+                                    const selectedStatus = event.target.value;
+                                    setStatus(selectedStatus);
+                                    navigate(`/approvals?status=${selectedStatus}`);
+                                }}
+                            >
+                                <MenuItem value="All">All statuses</MenuItem>
+                                <MenuItem value="Pending">Pending</MenuItem>
+                                <MenuItem value="Approved">Approved</MenuItem>
+                                <MenuItem value="Rejected">Rejected</MenuItem>
+                            </Select>
+                        </FormControl>
                     </MuiLayoutBox>
 
-                    <MuiLayoutBox className="approval-date" component="div">
-
-                        <MuiLayoutBox component="label">
+                    <MuiLayoutBox className="approval-filter-control" component="div">
+                        <MuiText className="approval-filter-label" component="label" htmlFor="approval-date-input" variant="caption">
                             Date Range
-                        </MuiLayoutBox>
-
-                        <MuiLayoutBox component="div">
-
-                            <MuiInputMigration
-                                type="date"
-                                value={date}
-                                onChange={
-                                    event =>
-                                        setDate(
-                                            event.target.value
-                                        )
-                                }
-                            />
-
-                        </MuiLayoutBox>
-
+                        </MuiText>
+                        <TextField
+                            id="approval-date-input"
+                            className="approval-date"
+                            type="date"
+                            size="small"
+                            fullWidth
+                            value={date}
+                            onChange={(event) => setDate(event.target.value)}
+                            inputProps={{ "aria-label": "Filter by request date" }}
+                        />
                     </MuiLayoutBox>
-
-                    {canExport && (
-
-                        <MuiButtonMigration
-                            type="button"
-                            className="approval-export-btn"
-                            onClick={
-                                handleExport
-                            }
-                        >
-
-                            <FileDownloadRoundedIcon />
-
-                            Export
-
-                        </MuiButtonMigration>
-
-                    )}
 
                 </MuiLayoutBox>
 
@@ -3007,6 +2989,35 @@ const response =
                     </Dialog>
 
                 )}
+
+            <Dialog
+                open={Boolean(messagePrompt)}
+                onClose={() => setMessagePrompt(null)}
+                maxWidth="xs"
+                fullWidth
+                aria-labelledby="approval-feedback-title"
+                PaperProps={{ className: "approval-feedback-dialog-paper" }}
+            >
+                <DialogTitle id="approval-feedback-title" className="approval-feedback-dialog-title">
+                    {messagePrompt?.title || "Notice"}
+                </DialogTitle>
+                <DialogContent className="approval-feedback-dialog-content">
+                    {messagePrompt && (
+                        <Alert severity={messagePrompt.severity} variant="outlined">
+                            {messagePrompt.message}
+                        </Alert>
+                    )}
+                </DialogContent>
+                <DialogActions className="approval-feedback-dialog-actions">
+                    <Button
+                        autoFocus
+                        variant="contained"
+                        onClick={() => setMessagePrompt(null)}
+                    >
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
         </MuiLayoutBox>
 

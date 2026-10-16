@@ -41,6 +41,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import DescriptionIcon from "@mui/icons-material/Description";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import ErrorIcon from "@mui/icons-material/Error";
 import EventIcon from "@mui/icons-material/Event";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
@@ -51,8 +52,10 @@ import TableViewIcon from "@mui/icons-material/TableView";
 import { loadPdf, loadXlsx } from "../../../utils/exportLibraries";
 
 import "./PayrollHistory.css";
+import "./PayrollHistory.refinement.css";
 import { useAuth } from "../../../context/AuthContext";
 import { Typography as MuiText } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 /* =========================================================
    API CONFIGURATION
@@ -1100,7 +1103,17 @@ const extractEmployeeRows = (
 const PayrollHistory = ({
     onBack,
 }) => {
+    const navigate = useNavigate();
     const { hasPermission } = useAuth();
+
+    const handleBack = () => {
+        if (typeof onBack === "function") {
+            onBack();
+            return;
+        }
+
+        navigate("/payroll");
+    };
 
     const permissionRoute = "/payroll/history";
 
@@ -1150,6 +1163,11 @@ const PayrollHistory = ({
     const [
         refreshing,
         setRefreshing,
+    ] = useState(false);
+
+    const [
+        exportingHistory,
+        setExportingHistory,
     ] = useState(false);
 
     const [
@@ -1405,6 +1423,84 @@ const PayrollHistory = ({
                 monthFilter,
             ]
         );
+
+    const handleExportHistory = async () => {
+        if (!canExport || exportingHistory) return;
+        setExportingHistory(true);
+        try {
+            const XLSX = await loadXlsx();
+            const rows = filteredPayrolls.map((payroll) => ({
+                "Payroll Run ID": payroll.id,
+                "Payroll Month": payroll.month,
+                "Processing Period": payroll.period,
+                Employees: payroll.employees,
+                "Gross Salary": toNumber(payroll.grossSalary),
+                Deductions: toNumber(payroll.totalDeductions),
+                "Net Salary": toNumber(payroll.netSalary),
+                "Processed Date": formatDate(payroll.processedDate),
+                "Processed By": payroll.processedBy || "PayrollService",
+                Status: payroll.status,
+            }));
+            const headers = [
+                "Payroll Run ID", "Payroll Month", "Processing Period", "Employees",
+                "Gross Salary", "Deductions", "Net Salary", "Processed Date",
+                "Processed By", "Status",
+            ];
+            const workbook = XLSX.utils.book_new();
+            const runsSheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+            runsSheet["!cols"] = [
+                { wch: 18 }, { wch: 24 }, { wch: 32 }, { wch: 14 },
+                { wch: 20 }, { wch: 18 }, { wch: 18 }, { wch: 20 },
+                { wch: 24 }, { wch: 16 },
+            ];
+            XLSX.utils.book_append_sheet(workbook, runsSheet, "Payroll Runs");
+
+            const summarySheet = XLSX.utils.json_to_sheet([
+                {
+                    "Month Filter": monthFilter === "All" ? "All Months" : monthFilter,
+                    "Status Filter": statusFilter === "All" ? "All Statuses" : statusFilter,
+                    "Payroll Runs": filteredPayrolls.length,
+                    "Employees Processed": filteredPayrolls.reduce(
+                        (total, payroll) => total + toNumber(payroll.employees),
+                        0
+                    ),
+                    "Gross Salary Total": filteredPayrolls.reduce(
+                        (total, payroll) => total + toNumber(payroll.grossSalary),
+                        0
+                    ),
+                    "Deductions Total": filteredPayrolls.reduce(
+                        (total, payroll) => total + toNumber(payroll.totalDeductions),
+                        0
+                    ),
+                    "Net Salary Total": filteredPayrolls.reduce(
+                        (total, payroll) => total + toNumber(payroll.netSalary),
+                        0
+                    ),
+                },
+            ]);
+            XLSX.utils.book_append_sheet(workbook, summarySheet, "Summary");
+            const filterSuffix = monthFilter === "All"
+                ? "All_Months"
+                : String(monthFilter).replace(/\s+/g, "_");
+            XLSX.writeFile(workbook, `Payroll_History_${filterSuffix}.xlsx`);
+            setSnackbar({
+                open: true,
+                message: filteredPayrolls.length
+                    ? `Exported ${filteredPayrolls.length} filtered payroll run${filteredPayrolls.length === 1 ? "" : "s"}.`
+                    : "Exported the payroll history summary. No payroll runs match the current filters.",
+                severity: "success",
+            });
+        } catch (exportError) {
+            console.error("Payroll history export failed:", exportError);
+            setSnackbar({
+                open: true,
+                message: "Unable to export payroll history. Please try again.",
+                severity: "error",
+            });
+        } finally {
+            setExportingHistory(false);
+        }
+    };
 
     /* =====================================================
        SUMMARY VALUES
@@ -2804,7 +2900,8 @@ const PayrollHistory = ({
 
                     <IconButton
                         className="ph-payroll-history-back-button"
-                        onClick={onBack}
+                        aria-label="Back to Payroll Management"
+                        onClick={handleBack}
                     >
                         <ArrowBackIcon />
                     </IconButton>
@@ -2823,32 +2920,34 @@ const PayrollHistory = ({
 
                 </Box>
 
-                <Button
-                    variant="outlined"
-                    startIcon={
-                        refreshing ? (
-                            <CircularProgress
-                                size={16}
-                            />
-                        ) : (
-                            <RefreshIcon />
-                        )
-                    }
-                    className="ph-history-refresh-button"
-                    disabled={
-                        loading ||
-                        refreshing
-                    }
-                    onClick={() =>
-                        loadPayrollHistory(
-                            true
-                        )
-                    }
-                >
-                    {refreshing
-                        ? "Refreshing..."
-                        : "Refresh"}
-                </Button>
+                <Box className="ph-history-header-actions">
+                    {canExport && (
+                        <Button
+                            variant="outlined"
+                            startIcon={exportingHistory ? <CircularProgress size={16} /> : <FileDownloadOutlinedIcon />}
+                            className="ph-history-export-button"
+                            disabled={exportingHistory}
+                            onClick={handleExportHistory}
+                        >
+                            {exportingHistory ? "Exporting..." : "Export Excel"}
+                        </Button>
+                    )}
+                    <Button
+                        variant="outlined"
+                        startIcon={
+                            refreshing ? (
+                                <CircularProgress size={16} />
+                            ) : (
+                                <RefreshIcon />
+                            )
+                        }
+                        className="ph-history-refresh-button"
+                        disabled={loading || refreshing}
+                        onClick={() => loadPayrollHistory(true)}
+                    >
+                        {refreshing ? "Refreshing..." : "Refresh"}
+                    </Button>
+                </Box>
 
             </Box>
 
@@ -3081,14 +3180,6 @@ const PayrollHistory = ({
                         </Box>
 
                         <Box className="ph-history-header-meta">
-
-                            {!error && (
-                                <Box className="ph-history-live-indicator">
-                                    <MuiText  component="span" variant="inherit"/>
-                                    API Connected
-                                </Box>
-                            )}
-
                             <Typography className="ph-history-count">
                                 {filteredPayrolls.length} Records
                             </Typography>

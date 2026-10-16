@@ -1,5 +1,6 @@
 import { MuiButtonMigration, MuiInputMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   getPermissions,
@@ -777,6 +778,25 @@ const SearchIcon = () => (
   </svg>
 );
 
+const BackIcon = () => (
+  <svg viewBox="0 0 24 24" className="permission-small-icon" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="m14 18-6-6 6-6M8 12h12" />
+  </svg>
+);
+
+const SaveIcon = () => (
+  <svg viewBox="0 0 24 24" className="permission-small-icon" fill="none" stroke="currentColor" strokeWidth="1.9">
+    <path d="M5 3h12l4 4v14H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" />
+    <path d="M7 3v6h10V3M8 21v-8h9v8" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg viewBox="0 0 24 24" className="permission-clear-icon" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="m18 6-12 12M6 6l12 12" />
+  </svg>
+);
+
 const RefreshIcon = () => (
   <svg
     viewBox="0 0 24 24"
@@ -807,6 +827,7 @@ const ChevronIcon = ({ open }) => (
 ========================================================================== */
 
 export default function Permissions() {
+  const navigate = useNavigate();
   const [roles, setRoles] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [permissions, setPermissions] = useState([]);
@@ -2607,6 +2628,15 @@ const selectLoginPage = (permission) => {
     await loadData();
   };
 
+  const goBack = () => {
+    const historyIndex = window.history.state?.idx;
+    if (Number.isInteger(historyIndex) && historyIndex > 0) {
+      navigate(-1);
+      return;
+    }
+    navigate("/");
+  };
+
   /* ========================================================================
      Render permission checkbox
   ======================================================================== */
@@ -2684,6 +2714,16 @@ const selectLoginPage = (permission) => {
 
         <MuiLayoutBox className="permissions-title-section" component="div">
 
+          <MuiButtonMigration
+            type="button"
+            className="permission-back-button"
+            onClick={goBack}
+            aria-label="Go back"
+            title="Go back"
+          >
+            <BackIcon />
+          </MuiButtonMigration>
+
           <MuiLayoutBox className="permissions-title-icon" component="div">
             <ShieldIcon />
           </MuiLayoutBox>
@@ -2735,6 +2775,7 @@ const selectLoginPage = (permission) => {
             onClick={refreshPage}
             disabled={loading}
             title="Refresh"
+            aria-label="Refresh permissions"
           >
             <RefreshIcon />
           </MuiButtonMigration>
@@ -2743,14 +2784,13 @@ const selectLoginPage = (permission) => {
             type="button"
             className="permission-save-top"
             onClick={savePermissions}
+            aria-label={saving ? "Saving permissions" : "Save permissions"}
             disabled={
               !selectedRole ||
               saving
             }
           >
-            <MuiText component="span" variant="inherit">
-              ▣
-            </MuiText>
+            <SaveIcon />
 
             {saving
               ? "Saving..."
@@ -2926,6 +2966,7 @@ const selectLoginPage = (permission) => {
                 value={userSearch}
                 onChange={(event) => setUserSearch(event.target.value)}
               />
+              {userSearch && <button type="button" className="permission-search-clear" aria-label="Clear user search" onClick={() => setUserSearch("")}><CloseIcon /></button>}
             </MuiLayoutBox>
 
             <MuiLayoutBox className="permission-user-list" component="div">
@@ -3176,6 +3217,7 @@ const selectLoginPage = (permission) => {
                   )
                 }
               />
+              {roleSearch && <button type="button" className="permission-search-clear" aria-label="Clear role search" onClick={() => setRoleSearch("")}><CloseIcon /></button>}
 
             </MuiLayoutBox>
 
@@ -3341,6 +3383,7 @@ const selectLoginPage = (permission) => {
                   )
                 }
               />
+              {pageSearch && <button type="button" className="permission-search-clear" aria-label="Clear page search" onClick={() => setPageSearch("")}><CloseIcon /></button>}
 
             </MuiLayoutBox>
 

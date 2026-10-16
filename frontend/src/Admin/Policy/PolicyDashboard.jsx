@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -11,6 +11,7 @@ import {
     IconButton,
     TextField,
     FormControl,
+    InputLabel,
     Select,
     MenuItem,
     InputAdornment,
@@ -29,6 +30,8 @@ import {
 
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import ArchiveRoundedIcon from "@mui/icons-material/ArchiveRounded";
@@ -46,6 +49,7 @@ import "./PolicyDashboard.css";
 const PolicyDashboard = () => {
     const navigate = useNavigate();
     const { hasPermission } = useAuth();
+    const searchInputRef = useRef(null);
 
     // ============================================================
     // STATE
@@ -90,6 +94,18 @@ const PolicyDashboard = () => {
 
     useEffect(() => {
         loadPolicies();
+    }, []);
+
+    useEffect(() => {
+        const handleSearchShortcut = (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+                event.preventDefault();
+                searchInputRef.current?.focus();
+            }
+        };
+
+        window.addEventListener("keydown", handleSearchShortcut);
+        return () => window.removeEventListener("keydown", handleSearchShortcut);
     }, []);
 
     // ============================================================
@@ -545,70 +561,70 @@ const PolicyDashboard = () => {
             <Box className="policy-stat-grid">
 
                 <Card
-                    className="policy-stat-card"
+                    component="button"
+                    type="button"
+                    aria-pressed={status === "All"}
+                    onClick={() => setStatus("All")}
+                    className={`policy-stat-card${status === "All" ? " is-active" : ""}`}
                     elevation={0}
                 >
                     <CardContent>
-
-                        <Typography component="span">
-                            Total Policies
-                        </Typography>
-
-                        <Typography component="strong">
-                            {totalPolicies}
-                        </Typography>
-
+                        <Box className="policy-stat-copy">
+                            <Typography component="span">Total Policies</Typography>
+                            <Typography component="strong">{totalPolicies}</Typography>
+                        </Box>
+                        <Box className="policy-stat-icon"><DescriptionRoundedIcon /></Box>
                     </CardContent>
                 </Card>
 
                 <Card
-                    className="policy-stat-card green"
+                    component="button"
+                    type="button"
+                    aria-pressed={status === "Published"}
+                    onClick={() => setStatus("Published")}
+                    className={`policy-stat-card green${status === "Published" ? " is-active" : ""}`}
                     elevation={0}
                 >
                     <CardContent>
-
-                        <Typography component="span">
-                            Published
-                        </Typography>
-
-                        <Typography component="strong">
-                            {publishedPolicies}
-                        </Typography>
-
+                        <Box className="policy-stat-copy">
+                            <Typography component="span">Published</Typography>
+                            <Typography component="strong">{publishedPolicies}</Typography>
+                        </Box>
+                        <Box className="policy-stat-icon"><PublishRoundedIcon /></Box>
                     </CardContent>
                 </Card>
 
                 <Card
-                    className="policy-stat-card orange"
+                    component="button"
+                    type="button"
+                    aria-pressed={status === "Draft"}
+                    onClick={() => setStatus("Draft")}
+                    className={`policy-stat-card orange${status === "Draft" ? " is-active" : ""}`}
                     elevation={0}
                 >
                     <CardContent>
-
-                        <Typography component="span">
-                            Draft
-                        </Typography>
-
-                        <Typography component="strong">
-                            {draftPolicies}
-                        </Typography>
-
+                        <Box className="policy-stat-copy">
+                            <Typography component="span">Draft</Typography>
+                            <Typography component="strong">{draftPolicies}</Typography>
+                        </Box>
+                        <Box className="policy-stat-icon"><EditRoundedIcon /></Box>
                     </CardContent>
                 </Card>
 
                 <Card
-                    className="policy-stat-card gray"
+                    component="button"
+                    type="button"
+                    aria-pressed={status === "Archived"}
+                    onClick={() => setStatus("Archived")}
+                    className={`policy-stat-card gray${status === "Archived" ? " is-active" : ""}`}
                     elevation={0}
                 >
                     <CardContent>
-
-                        <Typography component="span">
-                            Archived
-                        </Typography>
-
-                        <Typography component="strong">
-                            {archivedPolicies}
-                        </Typography>
-
+                        <Box className="policy-stat-copy">
+                            <Typography component="span">Archived</Typography>
+                            <Typography component="strong">{archivedPolicies}</Typography>
+                        </Box>
+                        <Box className="policy-stat-icon"><ArchiveRoundedIcon /></Box>
                     </CardContent>
                 </Card>
 
@@ -624,6 +640,7 @@ const PolicyDashboard = () => {
             >
 
                 <TextField
+                    inputRef={searchInputRef}
                     className="policy-search"
                     value={search}
                     onChange={(e) =>
@@ -632,6 +649,7 @@ const PolicyDashboard = () => {
                         )
                     }
                     placeholder="Search policies..."
+                    aria-label="Search policies by name or code"
                     variant="outlined"
                     size="small"
                     fullWidth
@@ -641,6 +659,22 @@ const PolicyDashboard = () => {
                                 <SearchRoundedIcon />
                             </InputAdornment>
                         ),
+                        endAdornment: search ? (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    size="small"
+                                    aria-label="Clear policy search"
+                                    onClick={() => setSearch("")}
+                                >
+                                    <CloseRoundedIcon fontSize="small" />
+                                </IconButton>
+                                <Chip label="Ctrl K" size="small" className="policy-search-shortcut" />
+                            </InputAdornment>
+                        ) : (
+                            <InputAdornment position="end">
+                                <Chip label="Ctrl K" size="small" className="policy-search-shortcut" />
+                            </InputAdornment>
+                        ),
                     } }}
                 />
 
@@ -648,7 +682,10 @@ const PolicyDashboard = () => {
                     className="policy-filter-control"
                     size="small"
                 >
+                    <InputLabel id="policy-category-label">Category</InputLabel>
                     <Select
+                        labelId="policy-category-label"
+                        label="Category"
                         value={category}
                         onChange={(e) =>
                             setCategory(
@@ -677,7 +714,10 @@ const PolicyDashboard = () => {
                     className="policy-filter-control"
                     size="small"
                 >
+                    <InputLabel id="policy-status-label">Status</InputLabel>
                     <Select
+                        labelId="policy-status-label"
+                        label="Status"
                         value={status}
                         onChange={(e) =>
                             setStatus(
@@ -703,6 +743,20 @@ const PolicyDashboard = () => {
                         </MenuItem>
                     </Select>
                 </FormControl>
+
+                <Button
+                    variant="outlined"
+                    className="policy-reset-button"
+                    startIcon={<RestartAltRoundedIcon />}
+                    onClick={() => {
+                        setSearch("");
+                        setCategory("All");
+                        setStatus("All");
+                    }}
+                    disabled={!search && category === "All" && status === "All"}
+                >
+                    Reset
+                </Button>
 
             </Paper>
 

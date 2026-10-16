@@ -10,6 +10,10 @@ import {
     CardContent,
     Chip,
     CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     Divider,
     FormControl,
     IconButton,
@@ -25,6 +29,7 @@ import {
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -58,6 +63,8 @@ function PayslipTemplates() {
 
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const [deleting, setDeleting] = useState(false);
 
     const menuOpen = Boolean(menuAnchor);
 
@@ -289,23 +296,21 @@ function PayslipTemplates() {
             return;
         }
 
-        const confirmed = window.confirm(
-            `Are you sure you want to deactivate "${template.name}"?`
-        );
+        setDeleteTarget(template);
+    };
 
-        if (!confirmed) {
-            return;
-        }
+    const confirmDelete = async () => {
+        if (!deleteTarget || deleting) return;
 
         try {
+            setDeleting(true);
             setError("");
 
             await PayrollService.deleteTemplate(
-                template.id
+                deleteTarget.id
             );
 
-            handleMenuClose();
-
+            setDeleteTarget(null);
             await loadTemplates();
         } catch (err) {
             console.error(
@@ -317,6 +322,8 @@ function PayslipTemplates() {
                 err?.message ||
                     "Unable to deactivate payroll template."
             );
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -377,20 +384,29 @@ function PayslipTemplates() {
             ====================================================== */}
 
             <Box className="pt-payslip-templates-header">
-                <Box>
-                    <Typography
-                        className="pt-payslip-templates-title"
-                        variant="h4"
+                <Box className="pt-payslip-templates-heading">
+                    <IconButton
+                        aria-label="Back to payroll"
+                        className="pt-payslip-templates-back"
+                        onClick={() => navigate("/payroll")}
                     >
-                        Payslip Templates
-                    </Typography>
+                        <ArrowBackIcon />
+                    </IconButton>
+                    <Box>
+                        <Typography
+                            className="pt-payslip-templates-title"
+                            variant="h4"
+                        >
+                            Payslip Templates
+                        </Typography>
 
-                    <Typography
-                        className="pt-payslip-templates-subtitle"
-                    >
-                        Create and manage payslip templates
-                        and salary calculation rules.
-                    </Typography>
+                        <Typography
+                            className="pt-payslip-templates-subtitle"
+                        >
+                            Create and manage payslip templates
+                            and salary calculation rules.
+                        </Typography>
+                    </Box>
                 </Box>
 
                 {canCreate && (
@@ -434,6 +450,9 @@ function PayslipTemplates() {
         setSearch(event.target.value)
     }
     slotProps={{
+        htmlInput: {
+            "aria-label": "Search payslip templates",
+        },
         input: {
             startAdornment: (
                 <InputAdornment position="start">
@@ -525,26 +544,41 @@ function PayslipTemplates() {
                         variant="h6"
                         className="pt-empty-template-title"
                     >
-                        No templates found
+                        {templates.length === 0
+                            ? "No payslip templates yet"
+                            : "No matching templates"}
                     </Typography>
 
                     <Typography
                         variant="body2"
                         className="pt-empty-template-text"
                     >
-                        Create a payslip template to define
-                        salary calculation rules.
+                        {templates.length === 0
+                            ? "Create a template to define salary calculation rules for your employees."
+                            : "Try a different search or status filter to find a template."}
                     </Typography>
 
-                    {canCreate && (
+                    {templates.length === 0 && canCreate ? (
                         <Button
                             variant="contained"
                             startIcon={<AddIcon />}
                             onClick={handleCreate}
+                            className="pt-create-template-button"
                         >
                             Create Template
                         </Button>
-                    )}
+                    ) : templates.length > 0 ? (
+                        <Button
+                            variant="outlined"
+                            onClick={() => {
+                                setSearch("");
+                                setStatusFilter("All Status");
+                            }}
+                            className="pt-clear-template-filters"
+                        >
+                            Clear filters
+                        </Button>
+                    ) : null}
                 </Card>
             ) : (
                 /* =================================================
@@ -769,6 +803,43 @@ function PayslipTemplates() {
                     </MenuItem>
                 )}
             </Menu>
+
+            <Dialog
+                open={Boolean(deleteTarget)}
+                onClose={() => !deleting && setDeleteTarget(null)}
+                maxWidth="xs"
+                fullWidth
+                PaperProps={{ className: "pt-template-delete-dialog" }}
+            >
+                <DialogTitle className="pt-template-delete-title">
+                    Deactivate template?
+                </DialogTitle>
+                <DialogContent className="pt-template-delete-content">
+                    <Typography>
+                        {deleteTarget
+                            ? `“${deleteTarget.name}” will be deactivated and won’t be available for new payroll assignments.`
+                            : "This template will be deactivated."}
+                    </Typography>
+                </DialogContent>
+                <DialogActions className="pt-template-delete-actions">
+                    <Button
+                        onClick={() => setDeleteTarget(null)}
+                        disabled={deleting}
+                        className="pt-template-delete-cancel"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={confirmDelete}
+                        disabled={deleting}
+                        className="pt-template-delete-confirm"
+                    >
+                        {deleting ? "Deactivating..." : "Deactivate"}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

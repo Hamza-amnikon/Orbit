@@ -465,7 +465,7 @@
 }
 
 .cpt-create-payslip-page .cpt-component-select-placeholder {
-    color: #9aa8ba;
+    color: #7387a2;
     font-size: 13px;
 }
 
@@ -952,6 +952,95 @@
     }
 }
 
+/* Component rows: clean, aligned MUI controls */
+.cpt-create-payslip-page .cpt-component-section {
+    position: relative;
+}
+
+.cpt-create-payslip-page .cpt-component-section::before {
+    display: none;
+}
+
+.cpt-create-payslip-page .cpt-component-card-header {
+    align-items: center;
+    gap: 16px;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card {
+    background: #ffffff;
+    border-color: #dce5f1;
+    box-shadow: none;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card:hover {
+    border-color: #c3d2e7;
+    box-shadow: 0 3px 10px rgba(29, 55, 88, 0.045);
+}
+
+.cpt-create-payslip-page .cpt-component-drag-handle {
+    align-self: center;
+    width: 28px;
+    height: 32px;
+    min-width: 28px;
+    min-height: 32px;
+    background: transparent;
+    color: #8a9bb2;
+}
+
+.cpt-create-payslip-page .cpt-component-fields {
+    align-items: stretch;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card .cpt-component-control .MuiOutlinedInput-root {
+    min-height: 58px;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card .cpt-component-control .MuiSelect-select {
+    min-height: 58px !important;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card .cpt-component-control .MuiOutlinedInput-input {
+    box-sizing: border-box;
+    padding-top: 17px;
+    padding-bottom: 17px;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card .cpt-based-on-control .MuiOutlinedInput-root {
+    min-height: 46px;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card .cpt-based-on-control .MuiSelect-select {
+    min-height: 46px !important;
+}
+
+.cpt-create-payslip-page .cpt-delete-component-button.MuiIconButton-root {
+    align-self: center;
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    padding: 8px;
+    border: 1px solid #e2e8f1;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #7185a2;
+}
+
+.cpt-create-payslip-page .cpt-delete-component-button.MuiIconButton-root:hover {
+    border-color: #f2c5c5;
+    background: #fff5f5;
+    color: #d32f2f;
+}
+
+@media (max-width: 760px) {
+    .cpt-create-payslip-page .cpt-salary-component-card .cpt-component-control .MuiOutlinedInput-root {
+        min-height: 50px;
+    }
+
+    .cpt-create-payslip-page .cpt-salary-component-card .cpt-component-control .MuiSelect-select {
+        min-height: 50px !important;
+    }
+}
+
 /* ============================================================
    VERY SMALL MOBILE
    ============================================================ */
@@ -994,5 +1083,372 @@
 
     .cpt-create-payslip-page .cpt-based-on-control {
         grid-row: 4;
+    }
+}
+
+/* Payroll UI refinement */
+.cpt-create-payslip-page {
+    padding: 28px clamp(18px, 2.4vw, 36px) 44px;
+    background: #f4f7fc;
+    color: #172b4d;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-header {
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-header-left {
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+}
+
+.cpt-create-payslip-page .cpt-back-to-templates-button.MuiIconButton-root {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    border: 1px solid #d7e2f0;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #415977;
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.cpt-create-payslip-page .cpt-back-to-templates-button.MuiIconButton-root:hover {
+    border-color: #b8cbed;
+    background: #edf4ff;
+    color: #2f67ed;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-title {
+    color: #102a56;
+    font-size: clamp(25px, 2vw, 30px);
+    letter-spacing: -0.025em;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-subtitle {
+    max-width: 620px;
+    color: #647a9a;
+    font-size: 14px;
+}
+
+.cpt-create-payslip-page .cpt-header-save-button,
+.cpt-create-payslip-page .cpt-footer-save-button {
+    min-height: 44px;
+    border-radius: 10px;
+    background: #2f67ed;
+    box-shadow: 0 4px 12px rgba(47, 103, 237, 0.2);
+    text-transform: none;
+}
+
+.cpt-create-payslip-page .cpt-header-save-button:hover,
+.cpt-create-payslip-page .cpt-footer-save-button:hover {
+    background: #2457d2;
+}
+
+.cpt-create-payslip-page .cpt-template-message.MuiAlert-root {
+    margin-bottom: 16px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.cpt-create-payslip-page .cpt-loading-template {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border: 1px solid #d9e5f5;
+    border-radius: 10px;
+    background: #f8fbff;
+    color: #567092;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-layout {
+    grid-template-columns: minmax(0, 1fr) 350px;
+    gap: 20px;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-main {
+    gap: 18px;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-card,
+.cpt-create-payslip-page .cpt-payslip-preview-card {
+    border-color: #dce5f1;
+    border-radius: 15px;
+    box-shadow: 0 4px 14px rgba(29, 57, 92, 0.045);
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-card {
+    padding: 22px;
+}
+
+.cpt-create-payslip-page .cpt-payslip-preview-card {
+    top: 18px;
+    padding: 20px;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-card .MuiDivider-root {
+    border-color: #e6edf6;
+}
+
+.cpt-create-payslip-page .cpt-create-card-title {
+    color: #17345f;
+    font-size: 16px;
+}
+
+.cpt-create-payslip-page .cpt-create-card-description {
+    color: #7185a2;
+    font-size: 13px;
+}
+
+.cpt-create-payslip-page .cpt-template-form-grid {
+    gap: 18px;
+    padding-top: 20px;
+}
+
+.cpt-create-payslip-page .MuiOutlinedInput-root {
+    min-height: 46px;
+    border-radius: 10px;
+    color: #263d5d;
+    font-size: 13px;
+}
+
+.cpt-create-payslip-page .MuiOutlinedInput-notchedOutline {
+    border-color: #d4dfed;
+}
+
+.cpt-create-payslip-page .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #aebfda;
+}
+
+.cpt-create-payslip-page .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #3b70ee;
+    border-width: 1.5px;
+    box-shadow: none;
+}
+
+.dashboard-content.workspace-ui .cpt-create-payslip-page .MuiInputBase-input:focus-visible {
+    outline: none;
+    outline-offset: 0;
+}
+
+.cpt-create-payslip-page .cpt-description-field .MuiInputBase-inputMultiline {
+    height: 88px !important;
+    min-height: 68px;
+    padding: 10px 13px;
+    resize: vertical;
+}
+
+.cpt-create-payslip-page .cpt-add-component-button {
+    min-height: 40px;
+    padding: 5px 14px;
+    border-color: #c9d8ef;
+    border-radius: 9px;
+    color: #2f67ed;
+    font-size: 13px;
+}
+
+.cpt-create-payslip-page .cpt-salary-components-list {
+    gap: 18px;
+    padding-top: 20px;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card {
+    padding: 18px 18px 18px 14px;
+    grid-template-columns: 42px minmax(0, 1fr);
+    column-gap: 12px;
+    border-color: #e0e8f2;
+    border-radius: 11px;
+    background: #fbfcfe;
+    box-shadow: none;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card:focus-within {
+    border-color: #a9c2ee;
+    box-shadow: 0 0 0 3px rgba(47, 103, 237, 0.08);
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card .cpt-component-fields {
+    column-gap: 14px;
+    row-gap: 12px;
+}
+
+.cpt-create-payslip-page .cpt-component-drag-handle {
+    align-self: center;
+    width: 36px;
+    min-width: 36px;
+    height: 42px;
+    min-height: 42px;
+    border: 1px solid #dce7f6;
+    border-radius: 9px;
+    background: #f2f6fd;
+    color: #7188a8;
+    cursor: grab;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.cpt-create-payslip-page .cpt-component-drag-handle:hover {
+    border-color: #b9cbed;
+    background: #e9f1ff;
+    color: #2f67ed;
+}
+
+.cpt-create-payslip-page .cpt-component-drag-handle:active {
+    cursor: grabbing;
+}
+
+.cpt-create-payslip-page .cpt-component-drag-handle[draggable="false"] {
+    cursor: default;
+}
+
+@media (max-width: 760px) {
+    .cpt-create-payslip-page .cpt-salary-component-card {
+        grid-template-columns: 34px minmax(0, 1fr);
+        column-gap: 8px;
+        padding: 14px 12px;
+    }
+
+    .cpt-create-payslip-page .cpt-component-drag-handle {
+        width: 30px;
+        min-width: 30px;
+        height: 38px;
+        min-height: 38px;
+    }
+}
+
+.cpt-create-payslip-page .cpt-component-empty-state {
+    min-height: 96px;
+    border-color: #d9e3f0;
+    border-radius: 11px;
+    background: #f9fbfe;
+}
+
+.cpt-create-payslip-page .cpt-payslip-preview-card {
+    border-color: #dce5f1;
+}
+
+.cpt-create-payslip-page .cpt-preview-title {
+    color: #17345f;
+}
+
+.cpt-create-payslip-page .cpt-payslip-preview-document {
+    border-color: #e0e8f2;
+    border-radius: 11px;
+    box-shadow: none;
+}
+
+.cpt-create-payslip-page .cpt-create-payslip-actions {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-color: #dce5f1;
+}
+
+.cpt-create-payslip-page .cpt-delete-component-button.MuiIconButton-root {
+    min-width: 38px;
+    width: 38px;
+    height: 42px;
+    padding: 8px;
+    border-radius: 9px;
+    color: #7185a2;
+}
+
+.cpt-create-payslip-page .cpt-delete-component-button.MuiIconButton-root:hover {
+    background: #fff1f2;
+    color: #d32f2f;
+}
+
+.cpt-create-payslip-page .cpt-delete-component-button.MuiIconButton-root:focus-visible {
+    outline: 2px solid #f19a9a;
+    outline-offset: 2px;
+}
+
+.cpt-create-payslip-page .cpt-cancel-payslip-button {
+    min-height: 42px;
+    border-radius: 9px;
+    color: #526983;
+}
+
+@media (max-width: 1250px) {
+    .cpt-create-payslip-page .cpt-create-payslip-layout {
+        grid-template-columns: minmax(0, 1fr) 320px;
+    }
+}
+
+@media (max-width: 1050px) {
+    .cpt-create-payslip-page .cpt-create-payslip-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cpt-create-payslip-page .cpt-payslip-preview-card {
+        position: static;
+    }
+}
+
+@media (max-width: 760px) {
+    .cpt-create-payslip-page {
+        padding: 20px 15px 34px;
+    }
+
+    .cpt-create-payslip-page .cpt-create-payslip-header {
+        align-items: stretch;
+    }
+
+    .cpt-create-payslip-page .cpt-create-payslip-header-left {
+        align-items: flex-start;
+    }
+
+    .cpt-create-payslip-page .cpt-back-to-templates-button.MuiIconButton-root {
+        margin-top: 1px;
+    }
+}
+
+/* Extra breathing room for earning and deduction rows */
+.cpt-create-payslip-page .cpt-component-section {
+    padding: 30px 28px;
+    border-radius: 16px;
+}
+
+.cpt-create-payslip-page .cpt-salary-components-list {
+    gap: 26px;
+    padding-top: 28px;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card {
+    padding: 24px 24px 24px 18px;
+    border-color: #dce6f3;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    box-shadow: 0 3px 10px rgba(33, 67, 112, 0.035);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card:hover {
+    border-color: #bfd1eb;
+    box-shadow: 0 7px 18px rgba(33, 67, 112, 0.075);
+    transform: translateY(-1px);
+}
+
+.cpt-create-payslip-page .cpt-salary-component-card .cpt-component-fields {
+    column-gap: 20px;
+    row-gap: 18px;
+}
+
+@media (max-width: 760px) {
+    .cpt-create-payslip-page .cpt-component-section {
+        padding: 22px 16px;
+    }
+
+    .cpt-create-payslip-page .cpt-salary-components-list {
+        gap: 16px;
+        padding-top: 18px;
+    }
+
+    .cpt-create-payslip-page .cpt-salary-component-card {
+        padding: 16px 14px;
+    }
+
+    .cpt-create-payslip-page .cpt-salary-component-card .cpt-component-fields {
+        row-gap: 14px;
+        column-gap: 12px;
     }
 }

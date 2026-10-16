@@ -4,6 +4,10 @@ import React, {
     useMemo,
     useState,
 } from "react";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import {
     Alert,
@@ -19,6 +23,7 @@ import {
     DialogTitle,
     FormControl,
     IconButton,
+    InputLabel,
     InputAdornment,
     MenuItem,
     Select,
@@ -27,6 +32,8 @@ import {
 } from "@mui/material";
 
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
@@ -36,6 +43,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
 
 import { useAuth } from "../../context/AuthContext";
 
@@ -53,6 +61,16 @@ import {
 // ============================================================
 
 const MyReimbursements = () => {
+
+    const expenseCategories = [
+        "Travel",
+        "Meals",
+        "Medical",
+        "Accommodation",
+        "Office Expense",
+        "Communication",
+        "Other",
+    ];
 
     const { user, profile, hasPermission } = useAuth();
 
@@ -1246,6 +1264,8 @@ if (form.receipt.size > maxSize) {
                         <ReceiptLongRoundedIcon />
                     }
                     type="total"
+                    active={statusFilter === "All"}
+                    onClick={() => setStatusFilter("All")}
                 />
 
                 <SummaryCard
@@ -1255,6 +1275,8 @@ if (form.receipt.size > maxSize) {
                         <PendingActionsRoundedIcon />
                     }
                     type="pending"
+                    active={statusFilter === "Pending"}
+                    onClick={() => setStatusFilter("Pending")}
                 />
 
                 <SummaryCard
@@ -1264,6 +1286,8 @@ if (form.receipt.size > maxSize) {
                         <CheckCircleRoundedIcon />
                     }
                     type="approved"
+                    active={statusFilter === "Approved"}
+                    onClick={() => setStatusFilter("Approved")}
                 />
 
                 <SummaryCard
@@ -1273,6 +1297,8 @@ if (form.receipt.size > maxSize) {
                         <CancelRoundedIcon />
                     }
                     type="rejected"
+                    active={statusFilter === "Rejected"}
+                    onClick={() => setStatusFilter("Rejected")}
                 />
 
                 <SummaryCard
@@ -1305,9 +1331,30 @@ if (form.receipt.size > maxSize) {
                     className="my-reimbursements-toolbar"
                 >
 
+                    <Box className="my-reimbursements-toolbar-heading">
+                        <Box>
+                            <Typography className="my-reimbursements-toolbar-title">Claim history</Typography>
+                            <Typography className="my-reimbursements-toolbar-caption">
+                                Search and track the status of your expense requests.
+                            </Typography>
+                        </Box>
+                        <Button
+                            variant="outlined"
+                            startIcon={<RefreshRoundedIcon />}
+                            onClick={loadMyReimbursements}
+                            disabled={loading}
+                            className="my-reimbursements-refresh"
+                        >
+                            Refresh
+                        </Button>
+                    </Box>
+
+                    <Box className="my-reimbursements-toolbar-controls">
+
                     <TextField
                         size="small"
-                        placeholder="Search claims..."
+                        placeholder="Search claim ID, category, or details"
+                        aria-label="Search reimbursement claims"
                         value={search}
                         onChange={(event) =>
                             setSearch(
@@ -1323,6 +1370,17 @@ if (form.receipt.size > maxSize) {
                                     <SearchRoundedIcon />
                                 </InputAdornment>
                             ),
+                            endAdornment: search ? (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        size="small"
+                                        aria-label="Clear search"
+                                        onClick={() => setSearch("")}
+                                    >
+                                        <CloseRoundedIcon fontSize="small" />
+                                    </IconButton>
+                                </InputAdornment>
+                            ) : null,
                         } }}
                     />
 
@@ -1331,8 +1389,12 @@ if (form.receipt.size > maxSize) {
                         className="my-reimbursements-filter"
                     >
 
+                        <InputLabel id="my-reimbursements-status-label">Status</InputLabel>
+
                         <Select
+                            labelId="my-reimbursements-status-label"
                             value={statusFilter}
+                            label="Status"
                             onChange={(event) =>
                                 setStatusFilter(
                                     event.target.value
@@ -1359,6 +1421,21 @@ if (form.receipt.size > maxSize) {
                         </Select>
 
                     </FormControl>
+
+                    <Button
+                        variant="outlined"
+                        startIcon={<RestartAltRoundedIcon />}
+                        onClick={() => {
+                            setSearch("");
+                            setStatusFilter("All");
+                        }}
+                        disabled={!search && statusFilter === "All"}
+                        className="my-reimbursements-reset"
+                    >
+                        Reset filters
+                    </Button>
+
+                    </Box>
 
                 </Box>
 
@@ -1573,11 +1650,32 @@ if (form.receipt.size > maxSize) {
                 }}
                 fullWidth
                 maxWidth="sm"
+                className="my-reimbursement-create-dialog"
+                PaperProps={{ className: "my-reimbursement-create-paper" }}
             >
 
-                <DialogTitle>
-                    New Reimbursement
+                <DialogTitle className="my-reimbursement-create-title">
+                    <Box>
+                        <Typography variant="h6">New Reimbursement</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Submit an expense claim for approval.
+                        </Typography>
+                    </Box>
+                    <IconButton
+                        aria-label="Close reimbursement form"
+                        onClick={() => {
+                            if (!submitting) {
+                                setFormError("");
+                                setOpenDialog(false);
+                            }
+                        }}
+                        disabled={submitting}
+                    >
+                        <CloseRoundedIcon />
+                    </IconButton>
                 </DialogTitle>
+
+                <Box className="my-reimbursement-dialog-divider" />
 
                 <DialogContent>
 
@@ -1601,14 +1699,19 @@ if (form.receipt.size > maxSize) {
                         <TextField
                             required
                             fullWidth
+                            select
                             label="Category"
                             name="category"
                             value={form.category}
                             onChange={
                                 handleFormChange
                             }
-                            placeholder="Travel, Food, Medical..."
-                        />
+                        >
+                            <MenuItem value="">Select a category</MenuItem>
+                            {expenseCategories.map((category) => (
+                                <MenuItem key={category} value={category}>{category}</MenuItem>
+                            ))}
+                        </TextField>
 
                         <TextField
                             required
@@ -1631,20 +1734,21 @@ if (form.receipt.size > maxSize) {
                             } }}
                         />
 
-                        <TextField
-                            required
-                            fullWidth
-                            label="Expense Date"
-                            name="expenseDate"
-                            type="date"
-                            value={form.expenseDate}
-                            onChange={
-                                handleFormChange
-                            }
-                            slotProps={{ inputLabel: {
-                                shrink: true,
-                            } }}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                label="Expense Date"
+                                value={form.expenseDate ? dayjs(form.expenseDate) : null}
+                                onChange={(date) => setForm((previous) => ({
+                                    ...previous,
+                                    expenseDate: date?.isValid() ? date.format("YYYY-MM-DD") : "",
+                                }))}
+                                format="DD-MM-YYYY"
+                                slotProps={{
+                                    textField: { fullWidth: true, required: true, name: "expenseDate", className: "my-reimbursement-date" },
+                                    calendarHeader: { format: "MMMM YYYY" },
+                                }}
+                            />
+                        </LocalizationProvider>
 
                         <TextField
                             fullWidth
@@ -1661,20 +1765,26 @@ if (form.receipt.size > maxSize) {
                         <Button
                             component="label"
                             variant="outlined"
-                            startIcon={
-                                <ReceiptLongRoundedIcon />
-                            }
+                            className="my-reimbursement-upload-button"
+                            aria-label="Upload reimbursement receipt PDF"
                         >
 
-                            {form.receipt
-                                ? form.receipt.name
-                                : "Upload Receipt *"}
+                            <CloudUploadRoundedIcon className="my-reimbursement-upload-icon" />
+                            <Box className="my-reimbursement-upload-copy">
+                                <Typography component="span" className="my-reimbursement-upload-title">
+                                    {form.receipt ? form.receipt.name : "Upload receipt"}
+                                    <span className="my-reimbursement-required"> *</span>
+                                </Typography>
+                                <Typography component="span" className="my-reimbursement-upload-hint">
+                                    PDF only · up to 10 MB
+                                </Typography>
+                            </Box>
 
                             <MuiInputMigration
-                                hidden
                                 required
                                 type="file"
                                 name="receipt"
+                                className="my-reimbursement-file-input"
                                 accept=".pdf,application/pdf"
                                 onChange={
                                     handleFormChange
@@ -1710,7 +1820,7 @@ if (form.receipt.size > maxSize) {
                     >
 
                         {submitting
-                            ? "Submitting..."
+                            ? <><CircularProgress size={16} color="inherit" /> Submitting...</>
                             : "Submit Request"}
 
                     </Button>
@@ -2369,13 +2479,18 @@ const SummaryCard = ({
     value,
     icon,
     type,
+    active = false,
+    onClick,
 }) => {
 
     return (
 
         <Card
+            component={onClick ? "button" : "div"}
             elevation={0}
-            className={`my-summary-card my-summary-${type}`}
+            onClick={onClick}
+            aria-pressed={onClick ? active : undefined}
+            className={`my-summary-card my-summary-${type}${active ? " is-active" : ""}${onClick ? " is-clickable" : ""}`}
         >
 
             <CardContent>

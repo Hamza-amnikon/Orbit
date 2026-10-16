@@ -105,7 +105,7 @@ function Navbar({ title }) {
 
 
         if (path.includes("setting")) {
-            return "Settings";
+            return "Profile";
         }
 
 

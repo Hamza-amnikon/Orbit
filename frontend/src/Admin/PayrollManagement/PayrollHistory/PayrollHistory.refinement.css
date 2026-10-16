@@ -1,0 +1,274 @@
+.dashboard-content.workspace-ui > .ph-payroll-history-page {
+    width: 100%;
+    padding: 22px 0 52px;
+    color: #18345c;
+}
+
+.ph-payroll-history-page .ph-payroll-history-header {
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.ph-payroll-history-page .ph-payroll-history-title-section {
+    gap: 16px;
+}
+
+.ph-payroll-history-page .ph-payroll-history-back-button.MuiIconButton-root {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    border-color: #d7e3f2 !important;
+    border-radius: 13px !important;
+    background: #fff !important;
+    color: #47617f !important;
+}
+
+.ph-payroll-history-page .ph-payroll-history-back-button.MuiIconButton-root:hover {
+    border-color: #b7cbed !important;
+    background: #edf4ff !important;
+    color: #2f67ed !important;
+}
+
+.ph-payroll-history-page .ph-payroll-history-title {
+    color: #102a56 !important;
+    letter-spacing: -0.025em;
+}
+
+.ph-payroll-history-page .ph-payroll-history-subtitle {
+    color: #637b9c !important;
+}
+
+.ph-payroll-history-page .ph-history-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.ph-payroll-history-page .ph-history-header-actions .MuiButton-root {
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 650;
+    text-transform: none;
+    white-space: nowrap;
+}
+
+.ph-payroll-history-page .ph-history-export-button.MuiButton-root,
+.ph-payroll-history-page .ph-history-refresh-button.MuiButton-root {
+    border-color: #cddcf0 !important;
+    background: #fff !important;
+    color: #2f67ed !important;
+}
+
+.ph-payroll-history-page .ph-history-export-button.MuiButton-root:hover,
+.ph-payroll-history-page .ph-history-refresh-button.MuiButton-root:hover {
+    border-color: #a9c2ee !important;
+    background: #f1f6ff !important;
+}
+
+.ph-payroll-history-page .ph-payroll-history-summary-grid {
+    margin-bottom: 26px !important;
+}
+
+.ph-payroll-history-page .ph-history-summary-card.MuiCard-root {
+    position: relative;
+    overflow: hidden;
+    border-color: #dce6f3 !important;
+    border-radius: 15px !important;
+    background: linear-gradient(145deg, #fff 0%, #fbfdff 100%) !important;
+    box-shadow: 0 4px 14px rgba(33, 67, 112, 0.045) !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ph-payroll-history-page .ph-history-summary-card.MuiCard-root::before {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--ph-card-accent, #3675ee);
+    content: "";
+}
+
+.ph-payroll-history-page .ph-payroll-history-summary-grid > .MuiGrid-root:nth-child(1) .ph-history-summary-card { --ph-card-accent: #3675ee; }
+.ph-payroll-history-page .ph-payroll-history-summary-grid > .MuiGrid-root:nth-child(2) .ph-history-summary-card { --ph-card-accent: #17a36b; }
+.ph-payroll-history-page .ph-payroll-history-summary-grid > .MuiGrid-root:nth-child(3) .ph-history-summary-card { --ph-card-accent: #ee8a28; }
+.ph-payroll-history-page .ph-payroll-history-summary-grid > .MuiGrid-root:nth-child(4) .ph-history-summary-card { --ph-card-accent: #8056e8; }
+
+.ph-payroll-history-page .ph-history-summary-card.MuiCard-root:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 9px 20px rgba(33, 67, 112, 0.09) !important;
+}
+
+.ph-payroll-history-page .ph-history-summary-card .MuiCardContent-root {
+    padding: 22px !important;
+}
+
+.ph-payroll-history-page .ph-history-summary-top {
+    min-height: 94px;
+    gap: 18px;
+}
+
+.ph-payroll-history-page .ph-history-summary-label {
+    color: #617995 !important;
+}
+
+.ph-payroll-history-page .ph-history-summary-value {
+    margin-top: 8px !important;
+    color: #122e57 !important;
+    font-size: clamp(22px, 1.7vw, 26px) !important;
+}
+
+.ph-payroll-history-page .ph-history-summary-helper {
+    margin-top: 7px !important;
+    color: #8295ae !important;
+}
+
+.ph-payroll-history-page .ph-history-summary-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 13px;
+}
+
+.ph-payroll-history-page .ph-payroll-history-card.MuiCard-root {
+    border-color: #dce6f3 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 14px rgba(33, 67, 112, 0.04) !important;
+}
+
+.ph-payroll-history-page .ph-payroll-history-card .MuiCardContent-root {
+    padding: 26px !important;
+}
+
+.ph-payroll-history-page .ph-history-section-header {
+    margin-bottom: 22px;
+}
+
+.ph-payroll-history-page .ph-history-section-title {
+    color: #17345f !important;
+    letter-spacing: -0.01em;
+}
+
+.ph-payroll-history-page .ph-history-section-subtitle {
+    color: #7185a2 !important;
+}
+
+.ph-payroll-history-page .ph-history-header-meta {
+    gap: 12px;
+}
+
+.ph-payroll-history-page .ph-history-live-indicator,
+.ph-payroll-history-page .ph-history-count {
+    min-height: 30px;
+    padding: 7px 11px;
+    border-radius: 9px;
+}
+
+.ph-payroll-history-page .ph-history-count {
+    background: #f1f5fb;
+    color: #5e7594 !important;
+}
+
+.ph-payroll-history-page .ph-history-filters {
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.ph-payroll-history-page .ph-history-search {
+    max-width: none;
+    min-width: 240px;
+}
+
+.ph-payroll-history-page .ph-history-search .MuiOutlinedInput-root,
+.ph-payroll-history-page .ph-history-filter-select .MuiOutlinedInput-root {
+    min-height: 46px;
+    border-radius: 11px;
+    background: #fff;
+}
+
+.ph-payroll-history-page .ph-history-search .MuiOutlinedInput-root fieldset,
+.ph-payroll-history-page .ph-history-filter-select .MuiOutlinedInput-root fieldset {
+    border-color: #d4e0ef;
+}
+
+.ph-payroll-history-page .ph-history-search .MuiOutlinedInput-root.Mui-focused fieldset,
+.ph-payroll-history-page .ph-history-filter-select .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #3b70ee;
+    border-width: 1.5px;
+}
+
+.ph-payroll-history-page .ph-history-filter-select {
+    min-width: 178px;
+}
+
+.ph-payroll-history-page .ph-payroll-history-table-wrapper {
+    border-color: #dce5f1;
+    border-radius: 12px;
+}
+
+.ph-payroll-history-page .ph-payroll-history-table thead th {
+    padding: 15px 16px;
+    border-bottom-color: #dce5f1;
+    background: #f1f6fc;
+    color: #59769b;
+    font-size: 10px;
+    letter-spacing: 0.045em;
+}
+
+.ph-payroll-history-page .ph-payroll-history-table tbody td {
+    padding: 17px 16px;
+    border-bottom-color: #edf2f8;
+}
+
+.ph-payroll-history-page .ph-payroll-history-table tbody tr:hover {
+    background: #f7faff;
+}
+
+.ph-payroll-history-page .ph-history-view-button.MuiButton-root {
+    min-height: 34px;
+    padding: 0 12px;
+    border-color: #cddcf0;
+    border-radius: 9px;
+    color: #2f67ed;
+    font-size: 12px;
+    text-transform: none;
+}
+
+.ph-payroll-history-page .ph-history-view-button.MuiButton-root:hover {
+    border-color: #a9c2ee;
+    background: #f1f6ff;
+}
+
+.ph-payroll-history-page .ph-history-empty-state {
+    min-height: 280px;
+    padding: 42px 24px;
+}
+
+.ph-payroll-history-page .ph-history-empty-icon {
+    border-radius: 15px;
+    background: #edf4ff;
+    color: #6689c7;
+}
+
+.ph-payroll-history-page .ph-history-empty-title {
+    color: #294565 !important;
+}
+
+.ph-payroll-history-page .ph-history-empty-description {
+    color: #8193aa !important;
+}
+
+@media (max-width: 1000px) {
+    .ph-payroll-history-page .ph-history-filters { gap: 12px; }
+}
+
+@media (max-width: 700px) {
+    .dashboard-content.workspace-ui > .ph-payroll-history-page { padding-top: 16px; }
+    .ph-payroll-history-page .ph-payroll-history-header { align-items: flex-start; }
+    .ph-payroll-history-page .ph-history-header-actions { width: 100%; justify-content: flex-start; }
+    .ph-payroll-history-page .ph-history-header-actions .MuiButton-root { flex: 1 1 140px; }
+    .ph-payroll-history-page .ph-payroll-history-card .MuiCardContent-root { padding: 18px !important; }
+}

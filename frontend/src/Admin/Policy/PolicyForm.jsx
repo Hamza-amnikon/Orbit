@@ -1,5 +1,9 @@
 import { MuiInputMigration } from "../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useRef, useState } from "react";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import {
     Alert,
@@ -422,10 +426,17 @@ const PolicyForm = ({
             onClose={handleClose}
             fullWidth
             maxWidth="md"
+            className="policy-form-dialog"
             PaperProps={{
+                className: "policy-form-paper",
                 sx: {
-                    borderRadius: "16px",
+                    width: "min(900px, calc(100% - 32px))",
+                    maxWidth: "900px",
+                    maxHeight: "calc(100% - 32px)",
+                    margin: "16px",
+                    borderRadius: "18px",
                     overflow: "hidden",
+                    border: "1px solid #e0e8f2",
                 },
             }}
         >
@@ -516,9 +527,11 @@ const PolicyForm = ({
             ================================================== */}
 
             <DialogContent
+                className="policy-form-content"
                 sx={{
                     px: 3,
-                    py: 3,
+                    pt: "28px !important",
+                    pb: 3,
                     background: "#f8faff",
                 }}
             >
@@ -541,7 +554,7 @@ const PolicyForm = ({
                         display: "flex",
                         flexDirection:
                             "column",
-                        gap: 2.2,
+                        gap: 2.6,
                     }}
                 >
 
@@ -582,8 +595,10 @@ const PolicyForm = ({
                     <Box
                         sx={{
                             display: "grid",
-                            gridTemplateColumns:
-                                "1fr 1fr",
+                            gridTemplateColumns: {
+                                xs: "1fr",
+                                sm: "1fr 1fr",
+                            },
                             gap: 2,
                         }}
                     >
@@ -616,6 +631,7 @@ const PolicyForm = ({
                         <FormControl
                             fullWidth
                             required
+                            size="small"
                             error={
                                 Boolean(
                                     errors.Category
@@ -628,6 +644,7 @@ const PolicyForm = ({
                             </InputLabel>
 
                             <Select
+                                size="small"
                                 name="Category"
                                 value={
                                     formData.Category
@@ -701,8 +718,10 @@ const PolicyForm = ({
                     <Box
                         sx={{
                             display: "grid",
-                            gridTemplateColumns:
-                                "1fr 1fr",
+                            gridTemplateColumns: {
+                                xs: "1fr",
+                                sm: "1fr 1fr",
+                            },
                             gap: 2,
                         }}
                     >
@@ -733,32 +752,38 @@ const PolicyForm = ({
                             } }}
                         />
 
-                        <TextField
-                            fullWidth
-                            required
-                            type="date"
-                            label="Effective Date"
-                            name="EffectiveDate"
-                            value={
-                                formData.EffectiveDate
-                            }
-                            onChange={
-                                handleChange
-                            }
-                            error={
-                                Boolean(
-                                    errors.EffectiveDate
-                                )
-                            }
-                            helperText={
-                                errors.EffectiveDate ||
-                                "Date when the policy becomes effective."
-                            }
-                            disabled={saving}
-                            slotProps={{ inputLabel: {
-                                shrink: true,
-                            } }}
-                        />
+                        <Box className="policy-effective-date-field">
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Effective Date"
+                                    value={formData.EffectiveDate ? dayjs(formData.EffectiveDate) : null}
+                                    onChange={(date) => {
+                                        setFormData((current) => ({
+                                            ...current,
+                                            EffectiveDate: date?.isValid() ? date.format("YYYY-MM-DD") : "",
+                                        }));
+                                        setErrors((current) => ({ ...current, EffectiveDate: "" }));
+                                        setSubmitError("");
+                                    }}
+                                    format="DD-MM-YYYY"
+                                    disabled={saving}
+                                    slotProps={{
+                                        textField: {
+                                            fullWidth: true,
+                                            required: true,
+                                            size: "small",
+                                            name: "EffectiveDate",
+                                            error: Boolean(errors.EffectiveDate),
+                                            helperText: errors.EffectiveDate || "Date when the policy becomes effective.",
+                                            slotProps: {
+                                                inputLabel: { shrink: true },
+                                            },
+                                        },
+                                        calendarHeader: { format: "MMMM YYYY" },
+                                    }}
+                                />
+                            </LocalizationProvider>
+                        </Box>
 
                     </Box>
 
@@ -826,16 +851,26 @@ const PolicyForm = ({
                         <MuiInputMigration
                             ref={fileInputRef}
                             type="file"
+                            className="policy-file-input"
                             accept="application/pdf,.pdf"
-                            hidden
                             onChange={
                                 handleFileChange
                             }
                         />
 
                         <Box
+                            className="policy-file-dropzone"
                             onClick={() => {
                                 if (!saving) {
+                                    fileInputRef.current?.click();
+                                }
+                            }}
+                            role="button"
+                            tabIndex={saving ? -1 : 0}
+                            aria-label={formData.File ? `Selected policy PDF: ${formData.File.name}. Click to replace.` : "Upload policy PDF, maximum 10 megabytes."}
+                            onKeyDown={(event) => {
+                                if ((event.key === "Enter" || event.key === " ") && !saving) {
+                                    event.preventDefault();
                                     fileInputRef.current?.click();
                                 }
                             }}
@@ -1096,12 +1131,12 @@ const PolicyForm = ({
                     disabled={saving}
                     sx={{
                         minWidth: 100,
-                        height: 40,
+                        height: 46,
                         px: 2,
                         border:
                             "1px solid #d6e0ec",
                         borderRadius:
-                            "9px",
+                            "11px",
                         color:
                             "#587292",
                         fontSize:
@@ -1134,13 +1169,13 @@ const PolicyForm = ({
                         ) : null
                     }
                     sx={{
-                        minWidth: 125,
-                        height: 40,
+                        minWidth: 150,
+                        height: 46,
                         px: 2.5,
                         borderRadius:
-                            "9px",
+                            "11px",
                         background:
-                            "#2867e8",
+                            "linear-gradient(135deg, #3675ee, #5144d8)",
                         color:
                             "#ffffff",
                         fontSize:
@@ -1153,7 +1188,7 @@ const PolicyForm = ({
                             "0 5px 12px rgba(40, 103, 232, 0.18)",
                         "&:hover": {
                             background:
-                                "#1f5bd1",
+                                "linear-gradient(135deg, #2867de, #4437ca)",
                             boxShadow:
                                 "0 7px 16px rgba(40, 103, 232, 0.24)",
                         },

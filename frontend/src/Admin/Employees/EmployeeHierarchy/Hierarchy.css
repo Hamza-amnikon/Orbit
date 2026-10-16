@@ -83,9 +83,10 @@
 ========================================================= */
 
 .hierarchy-page .toolbar {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     width: 100%;
 }
 
@@ -94,8 +95,14 @@
    EMPLOYEE SELECTOR
 ========================================================= */
 
-.hierarchy-page .toolbar .MuiFormControl-root {
-    flex: 1;
+.hierarchy-page .toolbar .hierarchy-employee-search {
+    width: 100%;
+    min-width: 0;
+}
+
+.hierarchy-page .toolbar .hierarchy-employee-search .MuiFormControl-root {
+    width: 100%;
+    min-width: 0;
 }
 
 .hierarchy-page .toolbar .MuiOutlinedInput-root {
@@ -152,7 +159,8 @@
 ========================================================= */
 
 .hierarchy-page .toolbar .MuiButton-root {
-    min-width: 170px;
+    min-width: 164px;
+    white-space: nowrap;
     height: 56px;
     padding: 0 22px;
     border-radius: 8px;
@@ -170,8 +178,18 @@
 }
 
 .hierarchy-page .toolbar .MuiButton-root:disabled {
-    background: #cbd5e1;
-    color: #64748b;
+    background: #e7eefb;
+    color: #6b7f9e;
+}
+
+@media (max-width: 640px) {
+    .hierarchy-page .toolbar {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hierarchy-page .toolbar .hierarchy-view-button {
+        width: 100%;
+    }
 }
 
 

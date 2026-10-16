@@ -1,14 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
+    Alert,
     Box,
     Button,
     Card,
     Divider,
     FormControl,
+    IconButton,
     InputLabel,
     MenuItem,
     Select,
     TextField,
+    Tooltip,
     Typography,
 } from "@mui/material";
 
@@ -23,7 +26,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext";
 
 import "./CreatePayslipTemplate.css";
-import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { Typography as MuiText } from "@mui/material";
 
 const API_BASE_URL = `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
 
@@ -105,7 +108,7 @@ const ComponentValue = ({ component }) => {
     if (!component) {
         return (
             <Typography className="cpt-component-select-placeholder">
-                Select component
+                Choose a component
             </Typography>
         );
     }
@@ -930,11 +933,46 @@ function CreatePayslipTemplate({ onBack }) {
             );
 
         return (
-            <Box
+            <Card
+                variant="outlined"
+                elevation={0}
                 key={item.id}
-                className="cpt-salary-component-card"
+                className={`cpt-salary-component-card cpt-salary-component-card-${kind.toLowerCase()}`}
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={(event) => {
+                    event.preventDefault();
+                    const draggedId = event.dataTransfer.getData("text/plain");
+                    if (!draggedId || draggedId === String(item.id)) return;
+
+                    setter((current) => {
+                        const fromIndex = current.findIndex(
+                            (component) => String(component.id) === draggedId
+                        );
+                        const toIndex = current.findIndex(
+                            (component) => component.id === item.id
+                        );
+                        if (fromIndex < 0 || toIndex < 0) return current;
+
+                        const reordered = [...current];
+                        const [moved] = reordered.splice(fromIndex, 1);
+                        reordered.splice(toIndex, 0, moved);
+                        return reordered;
+                    });
+                }}
             >
-                <Box className="cpt-component-drag-handle">
+                <Box
+                    className="cpt-component-drag-handle"
+                    draggable={canModify}
+                    title="Drag to reorder"
+                    aria-label={`Reorder ${selectedComponent?.componentName || kind.toLowerCase()}`}
+                    onDragStart={(event) => {
+                        event.dataTransfer.effectAllowed = "move";
+                        event.dataTransfer.setData("text/plain", String(item.id));
+                    }}
+                    onDragEnd={(event) => {
+                        event.currentTarget.blur();
+                    }}
+                >
                     <DragIndicatorIcon />
                 </Box>
 
@@ -945,11 +983,12 @@ function CreatePayslipTemplate({ onBack }) {
                         fullWidth
                         className="cpt-component-control cpt-component-name-control"
                     >
-                        <InputLabel>
+                        <InputLabel shrink>
                             Component Name
                         </InputLabel>
 
                         <Select
+                            displayEmpty
                             value={
                                 item.salaryComponentId ||
                                 ""
@@ -1061,7 +1100,7 @@ function CreatePayslipTemplate({ onBack }) {
                     </FormControl>
 
                     {/* VALUE */}
-                    <TextField
+                        <TextField
                         size="small"
                         fullWidth
                         type="number"
@@ -1084,22 +1123,25 @@ function CreatePayslipTemplate({ onBack }) {
                                     .value
                             )
                         }
-                        slotProps={{ htmlInput: {
-                            min: 0,
-                            max:
-                                item.calculationType ===
-                                "Percentage"
-                                    ? 100
-                                    : undefined,
-                            step: "0.01",
-                        } }}
+                        slotProps={{
+                            htmlInput: {
+                                min: 0,
+                                max:
+                                    item.calculationType === "Percentage"
+                                        ? 100
+                                        : undefined,
+                                step: "0.01",
+                            },
+                        }}
                     />
 
                     {/* DELETE */}
                     {canDelete && !isViewMode && (
-                        <Button
+                        <Tooltip title="Remove component">
+                        <IconButton
+                            size="small"
+                            aria-label={`Remove ${selectedComponent?.componentName || kind.toLowerCase()}`}
                             className="cpt-delete-component-button"
-                            type="button"
                             onClick={() =>
                                 onDelete(
                                     item.id
@@ -1107,7 +1149,8 @@ function CreatePayslipTemplate({ onBack }) {
                             }
                         >
                             <DeleteOutlineOutlinedIcon />
-                        </Button>
+                        </IconButton>
+                        </Tooltip>
                     )}
 
                     {/* BASED ON */}
@@ -1153,7 +1196,7 @@ function CreatePayslipTemplate({ onBack }) {
                         </Select>
                     </FormControl>
                 </Box>
-            </Box>
+            </Card>
         );
     };
 
@@ -1200,15 +1243,13 @@ function CreatePayslipTemplate({ onBack }) {
             {/* HEADER */}
             <Box className="cpt-create-payslip-header">
                 <Box className="cpt-create-payslip-header-left">
-                    <Button
+                    <IconButton
+                        aria-label="Back to payslip templates"
                         className="cpt-back-to-templates-button"
-                        startIcon={
-                            <ArrowBackIcon />
-                        }
                         onClick={handleBack}
                     >
-                        Back
-                    </Button>
+                        <ArrowBackIcon />
+                    </IconButton>
 
                     <Box>
                         <Typography className="cpt-create-payslip-title">
@@ -1258,18 +1299,18 @@ function CreatePayslipTemplate({ onBack }) {
             )}
 
             {error && (
-                <Box className="cpt-template-message cpt-template-message-error">
+                <Alert severity="error" className="cpt-template-message">
                     {error}
-                </Box>
+                </Alert>
             )}
 
             {successMessage && (
-                <Box className="cpt-template-message cpt-template-message-success">
+                <Alert severity="success" className="cpt-template-message">
                     {successMessage}
-                </Box>
+                </Alert>
             )}
 
-            <MuiLayoutBox onSubmit={handleSave} component="form">
+            <Box onSubmit={handleSave} component="form" noValidate>
                 <Box className="cpt-create-payslip-layout">
                     <Box className="cpt-create-payslip-main">
                         {/* TEMPLATE INFORMATION */}
@@ -1432,7 +1473,7 @@ function CreatePayslipTemplate({ onBack }) {
                                         )
                                     }
                                     multiline
-                                    rows={4}
+                                    rows={2}
                                     fullWidth
                                     disabled={
                                         isViewMode
@@ -1442,13 +1483,12 @@ function CreatePayslipTemplate({ onBack }) {
                         </Card>
 
                         {/* EARNINGS */}
-                        <Card className="cpt-create-payslip-card">
+                        <Card className="cpt-create-payslip-card cpt-component-section cpt-earnings-section">
                             <Box className="cpt-component-card-header">
                                 <Box>
                                     <Typography className="cpt-create-card-title">
                                         Earnings
                                     </Typography>
-
                                     <Typography className="cpt-create-card-description">
                                         Salary components that increase employee earnings.
                                     </Typography>
@@ -1502,13 +1542,12 @@ function CreatePayslipTemplate({ onBack }) {
                         </Card>
 
                         {/* DEDUCTIONS */}
-                        <Card className="cpt-create-payslip-card">
+                        <Card className="cpt-create-payslip-card cpt-component-section cpt-deductions-section">
                             <Box className="cpt-component-card-header">
                                 <Box>
                                     <Typography className="cpt-create-card-title">
                                         Deductions
                                     </Typography>
-
                                     <Typography className="cpt-create-card-description">
                                         Salary components that reduce employee earnings.
                                     </Typography>
@@ -1783,7 +1822,7 @@ function CreatePayslipTemplate({ onBack }) {
                         </Button>
                     )}
                 </Box>
-            </MuiLayoutBox>
+            </Box>
         </Box>
     );
 }

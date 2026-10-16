@@ -2,6 +2,7 @@ import "./SettingsDashboard.css";
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
 
 import ProfileHeader from "./Profile/ProfileHeader/ProfileHeader";
 import ProfileStats from "./Profile/ProfileStats";
@@ -14,6 +15,9 @@ import Documents from "./Profile/Docs";
 
 import { getProfile } from "../Services/ProfileService";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import "./SettingsDashboard.refinement.css";
+
+const EMPLOYEE_API_URL = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
 
 export default function SettingsDashboard() {
@@ -164,9 +168,46 @@ export default function SettingsDashboard() {
 
                 const data = await getProfile();
 
+                const employeeId =
+                    data?.employeeId ??
+                    data?.EmployeeId ??
+                    data?.employeeID ??
+                    data?.EmployeeID;
+
+                let employeeRecord = null;
+                if (employeeId !== undefined && employeeId !== null && employeeId !== "") {
+                    try {
+                        const token = localStorage.getItem("token");
+                        const employeeResponse = await axios.get(
+                            `${EMPLOYEE_API_URL}/${encodeURIComponent(employeeId)}`,
+                            {
+                                headers: token ? { Authorization: `Bearer ${token}` } : {},
+                            }
+                        );
+                        employeeRecord = employeeResponse.data;
+                    } catch (employeeError) {
+                        console.warn("Unable to load employee details for Profile:", employeeError);
+                    }
+                }
+
+                const joiningDate =
+                    employeeRecord?.joiningDate ??
+                    employeeRecord?.JoiningDate ??
+                    employeeRecord?.dateOfJoining ??
+                    employeeRecord?.DateOfJoining ??
+                    data?.joiningDate ??
+                    data?.JoiningDate ??
+                    data?.dateOfJoining ??
+                    data?.DateOfJoining;
+
                 if (mounted) {
 
-                    setProfile(data);
+                    setProfile({
+                        ...(employeeRecord || {}),
+                        ...data,
+                        joinDate: joiningDate,
+                        joiningDate,
+                    });
 
                 }
 
@@ -223,7 +264,7 @@ export default function SettingsDashboard() {
                 <MuiLayoutBox className="settings-header" component="div">
 
                     <MuiText component="h1" variant="h4">
-                        Settings
+                        Profile
                     </MuiText>
 
                     <MuiText component="p" variant="body1">
@@ -262,7 +303,7 @@ export default function SettingsDashboard() {
                 <MuiLayoutBox className="settings-header" component="div">
 
                     <MuiText component="h1" variant="h4">
-                        Settings
+                        Profile
                     </MuiText>
 
                     <MuiText component="p" variant="body1">
@@ -299,7 +340,7 @@ export default function SettingsDashboard() {
             <MuiLayoutBox className="settings-header" component="div">
 
                 <MuiText component="h1" variant="h4">
-                    Profile Settings
+                Profile
                 </MuiText>
 
                 <MuiText component="p" variant="body1">
@@ -335,15 +376,16 @@ export default function SettingsDashboard() {
                 PROFILE TABS
             ================================================= */}
 
-            <ProfileTabs
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-            />
+            <MuiLayoutBox className="profile-content-layout" component="div">
+                <ProfileTabs
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                />
+                <MuiLayoutBox className="profile-content-panel" component="div">
 
-
-            {/* =================================================
-                PERSONAL
-            ================================================= */}
+                    {/* =================================================
+                        PERSONAL
+                    ================================================= */}
 
             {activeTab === "personal" && (
 
@@ -462,6 +504,9 @@ export default function SettingsDashboard() {
                 </MuiLayoutBox>
 
             )}
+
+                </MuiLayoutBox>
+            </MuiLayoutBox>
 
         </MuiLayoutBox>
 

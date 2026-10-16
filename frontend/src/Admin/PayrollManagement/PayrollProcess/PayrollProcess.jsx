@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import {
+    Alert,
     Box,
     Button,
     Card,
@@ -39,18 +39,29 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import RefreshOutlinedIcon from "@mui/icons-material/RefreshOutlined";
 
 import "./PayrollProcess.css";
+import "./PayrollProcess.refinement.css";
 import { Typography as MuiText } from "@mui/material";
+import { loadXlsx } from "../../../utils/exportLibraries";
 
 const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 const PAYROLL_API = `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
 
-const MONTHS = [
-    "August 2026",
-    "September 2026",
-    "October 2026",
-];
+const getMonthLabel = (date) =>
+    date.toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+    });
+
+const currentPayrollYear = new Date().getFullYear();
+const MONTHS = Array.from(
+    { length: 12 },
+    (_, monthIndex) => getMonthLabel(new Date(currentPayrollYear, monthIndex, 1))
+);
+const CURRENT_PAYROLL_MONTH = getMonthLabel(new Date());
 
 const getValue = (object, ...keys) => {
     for (const key of keys) {
@@ -269,15 +280,15 @@ const getMonthParts = (value) => {
 };
 
 const PayrollProcess = () => {
-    const location = useLocation();
     const { hasPermission } = useAuth();
 
     const permissionRoute = "/payroll/process";
 
     const canView = hasPermission(permissionRoute, "view");
     const canCreate = hasPermission(permissionRoute, "create");
+    const canExport = hasPermission(permissionRoute, "export");
 
-    const [selectedMonth, setSelectedMonth] = useState("August 2026");
+    const [selectedMonth, setSelectedMonth] = useState(CURRENT_PAYROLL_MONTH);
     const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
     const [employees, setEmployees] = useState([]);
     const [assignments, setAssignments] = useState([]);
@@ -290,8 +301,11 @@ const PayrollProcess = () => {
 
     const [runDialogOpen, setRunDialogOpen] = useState(false);
     const [payrollRunning, setPayrollRunning] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+    const [exporting, setExporting] = useState(false);
     const [payrollRunError, setPayrollRunError] = useState("");
     const [payrollRunResult, setPayrollRunResult] = useState(null);
+    const [exportMessage, setExportMessage] = useState("");
 
     const loadEmployees = async () => {
         const response = await axios.get(EMPLOYEE_API);
@@ -570,6 +584,97 @@ const PayrollProcess = () => {
         }
     };
 
+    const handleRefresh = async () => {
+        if (refreshing) return;
+        setRefreshing(true);
+        setError("");
+        try {
+            const [employeeList, assignmentList, templateList] = await Promise.all([
+                loadEmployees(),
+                loadAssignments(),
+                loadTemplates(),
+            ]);
+            setEmployees(employeeList);
+            setAssignments(assignmentList);
+            setTemplates(templateList);
+            setPayslips({});
+        } catch (err) {
+            setError(
+                err?.response?.data?.message ||
+                    err?.response?.data?.title ||
+                    err?.message ||
+                    "Unable to refresh payroll data."
+            );
+        } finally {
+            setRefreshing(false);
+        }
+    };
+
+    const handleExportPayroll = async () => {
+        if (!canExport || exporting) return;
+        setExporting(true);
+        setExportMessage("");
+        try {
+            const XLSX = await loadXlsx();
+            const headers = [
+                "Employee Name",
+                "Employee ID",
+                "Department",
+                "Designation",
+                "Payslip Template",
+                "Annual CTC",
+                "Monthly CTC",
+                "Gross Salary",
+                "Deductions",
+                "Net Salary",
+                "Status",
+            ];
+            const rows = payrollEmployees.map((employee) => ({
+                "Employee Name": employee.name,
+                "Employee ID": employee.employeeId,
+                Department: employee.department || "",
+                Designation: employee.designation || "",
+                "Payslip Template": employee.templateName,
+                "Annual CTC": employee.annualCtc,
+                "Monthly CTC": employee.monthlyCtc,
+                "Gross Salary": employee.grossSalary,
+                Deductions: employee.totalDeductions,
+                "Net Salary": employee.netSalary,
+                Status: employee.processed ? "Processed" : "Ready",
+            }));
+            const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+            worksheet["!cols"] = [
+                { wch: 26 }, { wch: 18 }, { wch: 22 }, { wch: 24 },
+                { wch: 28 }, { wch: 18 }, { wch: 18 }, { wch: 18 },
+                { wch: 18 }, { wch: 18 }, { wch: 14 },
+            ];
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Payroll Process");
+            const summarySheet = XLSX.utils.json_to_sheet([
+                {
+                    "Payroll Month": selectedMonth,
+                    "Employee Count": payrollEmployees.length,
+                    "Gross Salary Total": totals.grossSalary,
+                    "Deductions Total": totals.totalDeductions,
+                    "Net Salary Total": totals.netSalary,
+                },
+            ]);
+            XLSX.utils.book_append_sheet(workbook, summarySheet, "Summary");
+            const safeMonth = selectedMonth.replace(/\s+/g, "_");
+            XLSX.writeFile(workbook, `Payroll_Process_${safeMonth}.xlsx`);
+            setExportMessage(
+                payrollEmployees.length
+                    ? `Payroll Excel exported for ${selectedMonth}.`
+                    : `A summary workbook for ${selectedMonth} was exported. No employee assignments were available.`
+            );
+        } catch (err) {
+            console.error("Payroll export failed:", err);
+            setError("Unable to export payroll. Please try again.");
+        } finally {
+            setExporting(false);
+        }
+    };
+
     if (!canView) {
         return (
             <Box className="pr-payroll-process-page" sx={{ padding: "60px", textAlign: "center" }}>
@@ -605,7 +710,7 @@ const PayrollProcess = () => {
                     </Box>
                 </Box>
 
-                <Stack className="pr-payroll-header-actions" direction="row" spacing={1.5}>
+                <Stack className="pr-payroll-header-actions" direction="row" spacing={1.25}>
                     <FormControl size="small" className="pr-payroll-month-select">
                         <InputLabel id="payroll-month-label">Payroll Month</InputLabel>
                         <Select
@@ -624,6 +729,26 @@ const PayrollProcess = () => {
                             ))}
                         </Select>
                     </FormControl>
+                    {canExport && (
+                        <Button
+                            className="pr-export-payroll-button"
+                            variant="outlined"
+                            startIcon={<FileDownloadOutlinedIcon />}
+                            onClick={handleExportPayroll}
+                            disabled={exporting}
+                        >
+                            {exporting ? "Exporting…" : "Export Excel"}
+                        </Button>
+                    )}
+                    <Button
+                        className="pr-refresh-payroll-button"
+                        variant="outlined"
+                        startIcon={refreshing ? <CircularProgress size={16} /> : <RefreshOutlinedIcon />}
+                        onClick={handleRefresh}
+                        disabled={refreshing}
+                    >
+                        Refresh
+                    </Button>
                     {canCreate && (
                         <Button
                             className="pr-run-payroll-button"
@@ -638,6 +763,11 @@ const PayrollProcess = () => {
                 </Stack>
             </Box>
 
+            {exportMessage && (
+                <Alert className="pr-export-success" severity="success" variant="outlined">
+                    {exportMessage}
+                </Alert>
+            )}
             {error && <Typography className="pr-payroll-api-error">{error}</Typography>}
 
             <Box className="pr-payroll-summary-grid">
@@ -704,6 +834,19 @@ const PayrollProcess = () => {
                                         <TableCell align="center"><Chip className={employee.processed ? "pr-employee-status-chip pr-completed" : "pr-employee-status-chip"} size="small" icon={employee.processed ? <CheckCircleIcon /> : undefined} label={employee.processed ? "Processed" : "Ready"} /></TableCell>
                                     </TableRow>
                                 ))}
+                                {!payrollEmployees.length && !payslipsLoading && (
+                                    <TableRow>
+                                        <TableCell className="pr-payroll-empty-cell" colSpan={7}>
+                                            <Box className="pr-payroll-empty-state">
+                                                <Box className="pr-payroll-empty-icon"><PeopleIcon /></Box>
+                                                <Typography className="pr-payroll-empty-title">No employee payroll assignments</Typography>
+                                                <Typography className="pr-payroll-empty-description">
+                                                    Assign employees to a payslip template to see payroll calculations here.
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                )}
                             </TableBody>
                         </Table>
                     </TableContainer>

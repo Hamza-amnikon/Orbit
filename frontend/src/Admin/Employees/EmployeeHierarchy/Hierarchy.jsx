@@ -620,7 +620,6 @@ function Hierarchy() {
 
                         <Autocomplete
                             className="hierarchy-employee-search"
-                            fullWidth
                             options={employees}
                             value={employees.find((employee) => String(employee.employeeId) === String(employeeId)) || null}
                             inputValue={employeeSearch}
@@ -660,10 +659,7 @@ function Hierarchy() {
                                 loadingEmployees ||
                                 !employeeId
                             }
-                            sx={{
-                                minWidth: 170,
-                                height: 56
-                            }}
+                            className="hierarchy-view-button"
                         >
 
                             {loading
