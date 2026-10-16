@@ -14,6 +14,18 @@
         0 12px 32px rgba(15,23,42,.06),
         0 2px 8px rgba(15,23,42,.04);
 }
+.employee-type-page .employee-type-table-wrapper { border-radius: 12px; box-shadow: 0 2px 8px rgba(15, 23, 42, .05); }
+.employee-type-page .employee-type-table-header { background: #fff; color: #102a56; border-bottom: 1px solid #e4eaf2; padding: 20px 24px; }
+.employee-type-page .employee-type-table-header h2 { font-size: 1.35rem; }
+.employee-type-page .employee-type-table-header p { color: #60738f; opacity: 1; margin-bottom: 0; }
+.employee-type-page .employee-type-data-table thead { background: #f0f4fa; }
+.employee-type-page .employee-type-data-table thead th { color: #48617e; padding: 14px 16px; }
+.employee-type-page .employee-type-data-table td { padding: 15px 16px; }
+.employee-type-page .employee-type-data-table tbody tr:nth-child(even) { background: #f8faff; }
+.employee-type-page .employee-type-data-table .status-badge.active { background: #dcfce7; color: #15803d; }
+.employee-type-page .employee-type-data-table .status-badge.inactive { background: #fee2e2; color: #dc2626; }
+.employee-type-page .employee-type-data-table .edit-btn { background: #fff2cc !important; color: #bd7000 !important; }
+.employee-type-page .employee-type-data-table .delete-btn { background: #ffebeb !important; color: #d32f2f !important; }
 
 
 /* ===========================================================
@@ -323,4 +335,17 @@
         gap:8px;
     }
 
+}
+.employee-type-page .table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+    .employee-type-page .employee-type-table {
+        min-width: 640px;
+    }
 }

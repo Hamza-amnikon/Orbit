@@ -1,3 +1,4 @@
+import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import React, {
     useCallback,
     useEffect,
@@ -51,6 +52,7 @@ import { loadPdf, loadXlsx } from "../../../utils/exportLibraries";
 
 import "./PayrollHistory.css";
 import { useAuth } from "../../../context/AuthContext";
+import { Typography as MuiText } from "@mui/material";
 
 /* =========================================================
    API CONFIGURATION
@@ -2875,9 +2877,9 @@ const PayrollHistory = ({
                         </Button>
                     }
                 >
-                    <strong>
+                    <MuiText component="strong" variant="inherit">
                         PayrollService connection failed.
-                    </strong>
+                    </MuiText>
 
                     <br />
 
@@ -2898,10 +2900,7 @@ const PayrollHistory = ({
                 {/* PAYROLL RUNS */}
 
                 <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={3}
+                    size={{ xs: 12, sm: 6, md: 3 }}
                 >
                     <Card className="ph-history-summary-card">
                         <CardContent>
@@ -2939,10 +2938,7 @@ const PayrollHistory = ({
                 {/* EMPLOYEES */}
 
                 <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={3}
+                    size={{ xs: 12, sm: 6, md: 3 }}
                 >
                     <Card className="ph-history-summary-card">
                         <CardContent>
@@ -2982,10 +2978,7 @@ const PayrollHistory = ({
                 {/* GROSS */}
 
                 <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={3}
+                    size={{ xs: 12, sm: 6, md: 3 }}
                 >
                     <Card className="ph-history-summary-card">
                         <CardContent>
@@ -3026,10 +3019,7 @@ const PayrollHistory = ({
                 {/* NET */}
 
                 <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={3}
+                    size={{ xs: 12, sm: 6, md: 3 }}
                 >
                     <Card className="ph-history-summary-card">
                         <CardContent>
@@ -3094,7 +3084,7 @@ const PayrollHistory = ({
 
                             {!error && (
                                 <Box className="ph-history-live-indicator">
-                                    <span />
+                                    <MuiText  component="span" variant="inherit"/>
                                     API Connected
                                 </Box>
                             )}
@@ -3123,13 +3113,13 @@ const PayrollHistory = ({
                                 )
                             }
                             size="small"
-                            InputProps={{
+                            slotProps={{ input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
                                         <SearchIcon />
                                     </InputAdornment>
                                 ),
-                            }}
+                            } }}
                         />
 
                         <FormControl
@@ -3237,66 +3227,66 @@ const PayrollHistory = ({
                         ) : filteredPayrolls.length >
                           0 ? (
 
-                            <table className="ph-payroll-history-table">
+                            <MuiTableMigration className="ph-payroll-history-table">
 
-                                <thead>
+                                <MuiTableHeadMigration>
 
-                                    <tr>
+                                    <MuiTableRowMigration>
 
-                                        <th>
+                                        <MuiTableCellMigration>
                                             Payroll Month
-                                        </th>
+                                        </MuiTableCellMigration>
 
-                                        <th>
+                                        <MuiTableCellMigration>
                                             Processing Period
-                                        </th>
+                                        </MuiTableCellMigration>
 
-                                        <th>
+                                        <MuiTableCellMigration>
                                             Employees
-                                        </th>
+                                        </MuiTableCellMigration>
 
-                                        <th>
+                                        <MuiTableCellMigration>
                                             Gross Salary
-                                        </th>
+                                        </MuiTableCellMigration>
 
-                                        <th>
+                                        <MuiTableCellMigration>
                                             Deductions
-                                        </th>
+                                        </MuiTableCellMigration>
 
-                                        <th>
+                                        <MuiTableCellMigration>
                                             Net Salary
-                                        </th>
+                                        </MuiTableCellMigration>
 
-                                        <th>
+                                        <MuiTableCellMigration>
                                             Processed Date
-                                        </th>
+                                        </MuiTableCellMigration>
 
-                                        <th>
+                                        <MuiTableCellMigration>
                                             Status
-                                        </th>
+                                        </MuiTableCellMigration>
 
-                                        <th>
+                                        <MuiTableCellMigration>
                                             Action
-                                        </th>
+                                        </MuiTableCellMigration>
 
-                                    </tr>
+                                    </MuiTableRowMigration>
 
-                                </thead>
+                                </MuiTableHeadMigration>
 
-                                <tbody>
+                                <MuiTableBodyMigration>
 
                                     {filteredPayrolls.map(
                                         (
                                             payroll
                                         ) => (
 
-                                            <tr
+                                            <MuiTableRowMigration
                                                 key={
                                                     payroll.id
                                                 }
                                             >
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     <Box className="ph-history-month-cell">
 
@@ -3320,9 +3310,9 @@ const PayrollHistory = ({
 
                                                     </Box>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     <Typography className="ph-history-body-text">
                                                         {
@@ -3330,9 +3320,9 @@ const PayrollHistory = ({
                                                         }
                                                     </Typography>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     <Typography className="ph-history-body-strong">
                                                         {
@@ -3340,9 +3330,9 @@ const PayrollHistory = ({
                                                         }
                                                     </Typography>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     <Typography className="ph-history-body-strong">
                                                         {formatCurrency(
@@ -3350,9 +3340,9 @@ const PayrollHistory = ({
                                                         )}
                                                     </Typography>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     <Typography className="ph-history-deduction">
                                                         -{formatCurrency(
@@ -3360,9 +3350,9 @@ const PayrollHistory = ({
                                                         )}
                                                     </Typography>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     <Typography className="ph-history-net">
                                                         {formatCurrency(
@@ -3370,9 +3360,9 @@ const PayrollHistory = ({
                                                         )}
                                                     </Typography>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     <Typography className="ph-history-body-text">
                                                         {formatDate(
@@ -3388,17 +3378,17 @@ const PayrollHistory = ({
                                                             : "PayrollService"}
                                                     </Typography>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {renderStatusChip(
                                                         payroll.status
                                                     )}
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {canView && (
                                                         <Button
@@ -3418,16 +3408,16 @@ const PayrollHistory = ({
                                                         </Button>
                                                     )}
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                            </tr>
+                                            </MuiTableRowMigration>
 
                                         )
                                     )}
 
-                                </tbody>
+                                </MuiTableBodyMigration>
 
-                            </table>
+                            </MuiTableMigration>
 
                         ) : (
 
@@ -3577,10 +3567,7 @@ const PayrollHistory = ({
                             >
 
                                 <Grid
-                                    item
-                                    xs={12}
-                                    sm={6}
-                                    md={3}
+                                    size={{ xs: 12, sm: 6, md: 3 }}
                                 >
                                     <Box className="ph-dialog-summary-item">
 
@@ -3594,11 +3581,11 @@ const PayrollHistory = ({
                                                 Employees
                                             </Typography>
 
-                                            <strong>
+                                            <MuiText component="strong" variant="inherit">
                                                 {
                                                     selectedPayroll.employees
                                                 }
-                                            </strong>
+                                            </MuiText>
 
                                         </Box>
 
@@ -3606,10 +3593,7 @@ const PayrollHistory = ({
                                 </Grid>
 
                                 <Grid
-                                    item
-                                    xs={12}
-                                    sm={6}
-                                    md={3}
+                                    size={{ xs: 12, sm: 6, md: 3 }}
                                 >
                                     <Box className="ph-dialog-summary-item">
 
@@ -3623,11 +3607,11 @@ const PayrollHistory = ({
                                                 Gross Salary
                                             </Typography>
 
-                                            <strong>
+                                            <MuiText component="strong" variant="inherit">
                                                 {formatCurrency(
                                                     selectedPayroll.grossSalary
                                                 )}
-                                            </strong>
+                                            </MuiText>
 
                                         </Box>
 
@@ -3635,10 +3619,7 @@ const PayrollHistory = ({
                                 </Grid>
 
                                 <Grid
-                                    item
-                                    xs={12}
-                                    sm={6}
-                                    md={3}
+                                    size={{ xs: 12, sm: 6, md: 3 }}
                                 >
                                     <Box className="ph-dialog-summary-item">
 
@@ -3652,11 +3633,11 @@ const PayrollHistory = ({
                                                 Deductions
                                             </Typography>
 
-                                            <strong className="ph-dialog-deduction">
+                                            <MuiText className="ph-dialog-deduction" component="strong" variant="inherit">
                                                 -{formatCurrency(
                                                     selectedPayroll.totalDeductions
                                                 )}
-                                            </strong>
+                                            </MuiText>
 
                                         </Box>
 
@@ -3664,10 +3645,7 @@ const PayrollHistory = ({
                                 </Grid>
 
                                 <Grid
-                                    item
-                                    xs={12}
-                                    sm={6}
-                                    md={3}
+                                    size={{ xs: 12, sm: 6, md: 3 }}
                                 >
                                     <Box className="ph-dialog-summary-item ph-dialog-net-summary">
 
@@ -3681,11 +3659,11 @@ const PayrollHistory = ({
                                                 Net Salary
                                             </Typography>
 
-                                            <strong className="ph-dialog-net">
+                                            <MuiText className="ph-dialog-net" component="strong" variant="inherit">
                                                 {formatCurrency(
                                                     selectedPayroll.netSalary
                                                 )}
-                                            </strong>
+                                            </MuiText>
 
                                         </Box>
 
@@ -3704,15 +3682,15 @@ const PayrollHistory = ({
 
                                     <Box>
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             Processing Period
-                                        </span>
+                                        </MuiText>
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             {
                                                 selectedPayroll.period
                                             }
-                                        </strong>
+                                        </MuiText>
 
                                     </Box>
 
@@ -3724,15 +3702,15 @@ const PayrollHistory = ({
 
                                     <Box>
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             Processed Date
-                                        </span>
+                                        </MuiText>
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             {formatDate(
                                                 selectedPayroll.processedDate
                                             )}
-                                        </strong>
+                                        </MuiText>
 
                                     </Box>
 
@@ -3744,16 +3722,16 @@ const PayrollHistory = ({
 
                                     <Box>
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             Processed By
-                                        </span>
+                                        </MuiText>
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             {
                                                 selectedPayroll.processedBy ||
                                                 "PayrollService"
                                             }
-                                        </strong>
+                                        </MuiText>
 
                                     </Box>
 
@@ -3792,62 +3770,62 @@ const PayrollHistory = ({
                                 {selectedEmployeeRows.length >
                                 0 ? (
 
-                                    <table className="ph-dialog-employee-table">
+                                    <MuiTableMigration className="ph-dialog-employee-table">
 
-                                        <thead>
+                                        <MuiTableHeadMigration>
 
-                                            <tr>
+                                            <MuiTableRowMigration>
 
-                                                <th>
+                                                <MuiTableCellMigration>
                                                     Employee
-                                                </th>
+                                                </MuiTableCellMigration>
 
-                                                <th>
+                                                <MuiTableCellMigration>
                                                     Employee ID
-                                                </th>
+                                                </MuiTableCellMigration>
 
-                                                <th>
+                                                <MuiTableCellMigration>
                                                     Payslip Template
-                                                </th>
+                                                </MuiTableCellMigration>
 
-                                                <th>
+                                                <MuiTableCellMigration>
                                                     Annual CTC
-                                                </th>
+                                                </MuiTableCellMigration>
 
-                                                <th>
+                                                <MuiTableCellMigration>
                                                     Gross
-                                                </th>
+                                                </MuiTableCellMigration>
 
-                                                <th>
+                                                <MuiTableCellMigration>
                                                     Deductions
-                                                </th>
+                                                </MuiTableCellMigration>
 
-                                                <th>
+                                                <MuiTableCellMigration>
                                                     Net Salary
-                                                </th>
+                                                </MuiTableCellMigration>
 
-                                                <th>
+                                                <MuiTableCellMigration>
                                                     Status
-                                                </th>
+                                                </MuiTableCellMigration>
 
-                                            </tr>
+                                            </MuiTableRowMigration>
 
-                                        </thead>
+                                        </MuiTableHeadMigration>
 
-                                        <tbody>
+                                        <MuiTableBodyMigration>
 
                                             {selectedEmployeeRows.map(
                                                 (
                                                     employee
                                                 ) => (
 
-                                                    <tr
+                                                    <MuiTableRowMigration
                                                         key={
                                                             employee.rowId
                                                         }
                                                     >
 
-                                                        <td>
+                                                        <MuiTableCellMigration>
 
                                                             <Typography className="ph-dialog-employee-name">
                                                                 {
@@ -3862,9 +3840,9 @@ const PayrollHistory = ({
                                                                     : "Employee Payroll"}
                                                             </Typography>
 
-                                                        </td>
+                                                        </MuiTableCellMigration>
 
-                                                        <td>
+                                                        <MuiTableCellMigration>
 
                                                             <Typography className="ph-dialog-employee-name">
                                                                 {
@@ -3872,9 +3850,9 @@ const PayrollHistory = ({
                                                                 }
                                                             </Typography>
 
-                                                        </td>
+                                                        </MuiTableCellMigration>
 
-                                                        <td>
+                                                        <MuiTableCellMigration>
 
                                                             <Box className="ph-dialog-template-badge">
 
@@ -3888,49 +3866,49 @@ const PayrollHistory = ({
 
                                                             </Box>
 
-                                                        </td>
+                                                        </MuiTableCellMigration>
 
-                                                        <td>
+                                                        <MuiTableCellMigration>
 
-                                                            <span className="ph-dialog-money">
+                                                            <MuiText className="ph-dialog-money" component="span" variant="inherit">
                                                                 {formatCurrency(
                                                                     employee.annualCtc
                                                                 )}
-                                                            </span>
+                                                            </MuiText>
 
-                                                        </td>
+                                                        </MuiTableCellMigration>
 
-                                                        <td>
+                                                        <MuiTableCellMigration>
 
-                                                            <span className="ph-dialog-money">
+                                                            <MuiText className="ph-dialog-money" component="span" variant="inherit">
                                                                 {formatCurrency(
                                                                     employee.grossSalary
                                                                 )}
-                                                            </span>
+                                                            </MuiText>
 
-                                                        </td>
+                                                        </MuiTableCellMigration>
 
-                                                        <td>
+                                                        <MuiTableCellMigration>
 
-                                                            <span className="ph-dialog-deduction">
+                                                            <MuiText className="ph-dialog-deduction" component="span" variant="inherit">
                                                                 -{formatCurrency(
                                                                     employee.deductions
                                                                 )}
-                                                            </span>
+                                                            </MuiText>
 
-                                                        </td>
+                                                        </MuiTableCellMigration>
 
-                                                        <td>
+                                                        <MuiTableCellMigration>
 
-                                                            <span className="ph-dialog-net">
+                                                            <MuiText className="ph-dialog-net" component="span" variant="inherit">
                                                                 {formatCurrency(
                                                                     employee.netSalary
                                                                 )}
-                                                            </span>
+                                                            </MuiText>
 
-                                                        </td>
+                                                        </MuiTableCellMigration>
 
-                                                        <td>
+                                                        <MuiTableCellMigration>
 
                                                             <Chip
                                                                 label={
@@ -3940,16 +3918,16 @@ const PayrollHistory = ({
                                                                 className="ph-history-completed-chip"
                                                             />
 
-                                                        </td>
+                                                        </MuiTableCellMigration>
 
-                                                    </tr>
+                                                    </MuiTableRowMigration>
 
                                                 )
                                             )}
 
-                                        </tbody>
+                                        </MuiTableBodyMigration>
 
-                                    </table>
+                                    </MuiTableMigration>
 
                                 ) : (
 

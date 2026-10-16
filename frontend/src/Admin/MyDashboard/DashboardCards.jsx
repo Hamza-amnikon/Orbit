@@ -10,6 +10,7 @@ import AttendanceService from "../Services/AttendanceService";
 import LeaveService from "../Services/LeaveService";
 
 import "./DashboardCards.css";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 /* =========================================================
    HELPERS
@@ -1189,44 +1190,44 @@ function DashboardCards() {
 
     return (
 
-        <div className="dashboard-cards">
+        <MuiLayoutBox className="dashboard-cards" component="div">
 
             {cards.map(
                 (card, index) => (
 
-                    <div
+                    <MuiLayoutBox
                         className={
                             `dashboard-card ${card.className}`
                         }
                         key={index}
-                    >
+                     component="div">
 
-                        <div className="card-icon">
+                        <MuiLayoutBox className="card-icon" component="div">
 
                             {card.icon}
 
-                        </div>
+                        </MuiLayoutBox>
 
 
-                        <div className="card-content">
+                        <MuiLayoutBox className="card-content" component="div">
 
-                            <h4>
+                            <MuiText component="h4" variant="subtitle1">
                                 {card.title}
-                            </h4>
+                            </MuiText>
 
 
-                            <h2>
+                            <MuiText component="h2" variant="h5">
                                 {card.value}
-                            </h2>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
                 )
             )}
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

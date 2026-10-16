@@ -13,6 +13,7 @@ import {
 } from "@mui/icons-material";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
 
 
 // =====================================================
@@ -308,75 +309,75 @@ export default function EmployeeDashboard() {
 
     return (
 
-        <div className="employee-dashboard">
+        <MuiLayoutBox className="employee-dashboard" component="div">
 
 
             {/* =================================================
                 DECORATIVE HEADER BACKGROUND
             ================================================= */}
 
-            <div className="employee-dashboard-decoration">
+            <MuiLayoutBox className="employee-dashboard-decoration" component="div">
 
-                <div className="employee-decoration-circle circle-one" />
+                <MuiLayoutBox className="employee-decoration-circle circle-one"  component="div"/>
 
-                <div className="employee-decoration-circle circle-two" />
+                <MuiLayoutBox className="employee-decoration-circle circle-two"  component="div"/>
 
-                <div className="employee-decoration-circle circle-three" />
+                <MuiLayoutBox className="employee-decoration-circle circle-three"  component="div"/>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 HEADER
             ================================================= */}
 
-            <div className="employee-header">
+            <MuiLayoutBox className="employee-header" component="div">
 
 
                 {/* BREADCRUMB */}
 
-                <div className="employee-breadcrumb">
+                <MuiLayoutBox className="employee-breadcrumb" component="div">
 
                     <HomeRounded />
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         /
-                    </span>
+                    </MuiText>
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Employees
-                    </span>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
 
                 {/* TITLE */}
 
-                <h1>
+                <MuiText component="h1" variant="h4">
                     Employees Management
-                </h1>
+                </MuiText>
 
 
                 {/* SUBTITLE */}
 
-                <p>
+                <MuiText component="p" variant="body1">
                     Manage employees, departments and organizational
                     structure from one place.
-                </p>
+                </MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 MODULE GRID
             ================================================= */}
 
-            <div className="employee-grid">
+            <MuiLayoutBox className="employee-grid" component="div">
 
                 {allowedCards.map(
                     (card, index) => (
 
-                        <div
+                        <MuiActionButton
                             key={card.title}
 
                             className="employee-card"
@@ -398,91 +399,73 @@ export default function EmployeeDashboard() {
                                     card.path
                                 )
                             }
-
-                            onKeyDown={(event) => {
-
-                                if (
-                                    event.key ===
-                                        "Enter" ||
-                                    event.key ===
-                                        " "
-                                ) {
-
-                                    event.preventDefault();
-
-                                    openPage(
-                                        card.path
-                                    );
-                                }
-
-                            }}
-                        >
+                         component="div">
 
 
                             {/* =================================
                                 ICON
                             ================================= */}
 
-                            <div
+                            <MuiLayoutBox
                                 className="employee-icon"
 
                                 style={{
                                     background:
                                         card.color,
                                 }}
-                            >
+                             component="div">
 
                                 {card.icon}
 
-                            </div>
+                            </MuiLayoutBox>
 
 
                             {/* =================================
                                 TITLE
                             ================================= */}
 
-                            <h3>
+                            <MuiText component="h3" variant="h6">
                                 {card.title}
-                            </h3>
+                            </MuiText>
 
 
                             {/* =================================
                                 DESCRIPTION
                             ================================= */}
 
-                            <p>
+                            <MuiText component="p" variant="body1">
                                 {card.description}
-                            </p>
+                            </MuiText>
 
 
                             {/* =================================
                                 FOOTER
                             ================================= */}
 
-                            <div className="card-footer">
+                            <MuiLayoutBox className="card-footer" component="div">
 
-                                <span>
+                                <MuiText component="span" variant="inherit">
                                     Open Module
-                                </span>
+                                </MuiText>
 
 
-                                <div className="card-arrow">
+                                <MuiLayoutBox className="card-arrow" component="div">
 
                                     <ArrowForward />
 
-                                </div>
+                                </MuiLayoutBox>
 
-                            </div>
+                            </MuiLayoutBox>
 
-                        </div>
+                        </MuiActionButton>
 
                     )
                 )}
 
-            </div>
+            </MuiLayoutBox>
 
 
-        </div>
+        </MuiLayoutBox>
 
     );
 }

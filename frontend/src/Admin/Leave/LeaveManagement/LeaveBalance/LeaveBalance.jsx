@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import CompOff from "../../CompOff/CompOff";
 import { useAuth } from "../../../../context/AuthContext";
+import "./LeaveBalance.css";
 
 import {
   Box,
@@ -26,6 +26,10 @@ import {
   TableRow,
   TextField,
   Typography,
+  Snackbar,
+  Alert,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 
 import {
@@ -33,13 +37,15 @@ import {
   Refresh,
   Sync,
   ArrowBack,
-  Clear,
   People,
   EventAvailable,
   TrendingUp,
   EventBusy,
   AccountBalance,
 } from "@mui/icons-material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { loadXlsx } from "../../../../utils/exportLibraries";
+import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
 
 const BALANCE_API =
     `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/EmployeeLeaveBalance`;
@@ -52,13 +58,12 @@ const LEAVE_SYNC_API =
 
 export default function LeaveBalance() {
 
-  const navigate = useNavigate();
-
   const { hasPermission } = useAuth();
 
   const permissionRoute = "/leave/balance";
   const canView = hasPermission(permissionRoute, "view");
   const canCreate = hasPermission(permissionRoute, "create");
+  const canExport = hasPermission(permissionRoute, "export");
 
   const [balances, setBalances] = useState([]);
   const [leaveTypes, setLeaveTypes] = useState([]);
@@ -66,6 +71,7 @@ export default function LeaveBalance() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [syncing, setSyncing] = useState(false);
+  const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
   const [selectedAzureEmployee, setSelectedAzureEmployee] =
     useState("");
@@ -249,6 +255,27 @@ const [compOffOpen, setCompOffOpen] = useState(false);
     setSelectedAzureEmployee("");
   };
 
+  const handleExport = async () => {
+    if (!canExport || filteredBalances.length === 0) return;
+
+    const XLSX = await loadXlsx();
+    const rows = filteredBalances.map((balance) => ({
+      "Azure Employee ID": balance.azureEmployeeId ?? "-",
+      "Employee Name": balance.employeeName ?? "-",
+      "Leave Type": getLeaveTypeName(balance.leaveTypeId),
+      Year: balance.year ?? "-",
+      Entitled: Number(balance.entitledDays || 0),
+      Accrued: Number(balance.accruedDays || 0),
+      Used: Number(balance.usedDays || 0),
+      Balance: Number(balance.balanceDays || 0),
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Leave Balances");
+    XLSX.writeFile(workbook, "Leave_Balance.xlsx");
+    setNotice({ open: true, message: "Leave balances exported successfully.", severity: "success" });
+  };
+
   const handleAddCompOff = () => {
     if (!canCreate) return;
     setCompOffOpen(true);
@@ -267,10 +294,11 @@ const [compOffOpen, setCompOffOpen] = useState(false);
 
       const response = await axios.post(LEAVE_SYNC_API);
 
-      window.alert(
-        response.data?.message ||
-          "Leave Policies synchronized successfully."
-      );
+      setNotice({
+        open: true,
+        message: response.data?.message || "Leave policies synchronized successfully.",
+        severity: "success",
+      });
 
       // Reload balances so the latest synchronized values
       // are immediately reflected in the table and summary cards.
@@ -288,6 +316,7 @@ const [compOffOpen, setCompOffOpen] = useState(false);
           ? apiMessage
           : "Unable to synchronize leave policies."
       );
+      setNotice({ open: true, message: typeof apiMessage === "string" ? apiMessage : "Unable to synchronize leave policies.", severity: "error" });
     } finally {
       setSyncing(false);
     }
@@ -317,7 +346,8 @@ const [compOffOpen, setCompOffOpen] = useState(false);
           },
           border: "1px solid #e2e8f0",
           borderRadius: 2.5,
-          backgroundColor: background,
+          backgroundColor: "#ffffff",
+          boxShadow: "0 4px 14px rgba(15, 23, 42, 0.04)",
         }}
       >
         <CardContent sx={{ p: 2.25 }}>
@@ -371,7 +401,7 @@ const [compOffOpen, setCompOffOpen] = useState(false);
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: "#ffffff",
+                backgroundColor: background,
                 color: iconColor,
                 border: "1px solid rgba(0,0,0,0.05)",
               }}
@@ -390,117 +420,64 @@ const [compOffOpen, setCompOffOpen] = useState(false);
 
   if (!canView) {
     return (
-      <div className="leave-balance-access-denied">
-        <h2>Access Denied</h2>
-        <p>You do not have permission to access this page.</p>
-      </div>
+      <MuiLayoutBox className="leave-balance-access-denied" component="div">
+        <MuiText component="h2" variant="h5">Access Denied</MuiText>
+        <MuiText component="p" variant="body1">You do not have permission to access this page.</MuiText>
+      </MuiLayoutBox>
     );
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "#f5f7fb",
-        p: {
-          xs: 2,
-          sm: 3,
-          md: 4,
-        },
-      }}
-    >
+    <Box className="leave-balance-page">
       {/* ======================================================
           HEADER
       ====================================================== */}
 
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: {
-            xs: "flex-start",
-            md: "center",
-          },
-          flexDirection: {
-            xs: "column",
-            md: "row",
-          },
-          gap: 2,
-          mb: 3,
-        }}
-      >
-        <Box>
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 700,
-              color: "#172033",
-              mb: 0.5,
-            }}
-          >
-            Leave Balance Management
-          </Typography>
-
-          <Typography
-            variant="body2"
-            sx={{
-              color: "#697386",
-            }}
-          >
-            View employee leave entitlements,
-            accruals, usage and remaining balances.
-          </Typography>
-        </Box>
+      <Box component="header" className="leave-balance-header">
+        <Stack direction="row" alignItems="center" spacing={1.5} className="leave-balance-heading">
+          <Tooltip title="Go back">
+            <IconButton className="leave-balance-back" onClick={() => window.history.back()} aria-label="Go back">
+              <ArrowBack />
+            </IconButton>
+          </Tooltip>
+          <Box>
+              <Typography component="h2" variant="h5">Leave Balance Management</Typography>
+            <Typography component="p" variant="body2">
+              View employee leave entitlements, accruals, usage and remaining balances.
+            </Typography>
+          </Box>
+        </Stack>
 
         <Stack
+          className="leave-balance-actions"
           direction="row"
           spacing={1}
         >
           <Button
             variant="outlined"
-            startIcon={<ArrowBack />}
-            onClick={() =>
-              window.history.back()
-            }
-            sx={{
-              height: 40,
-              borderColor: "#2563eb",
-              color: "#2563eb",
-              textTransform: "none",
-              fontWeight: 600,
-              "&:hover": {
-                borderColor: "#1d4ed8",
-                backgroundColor: "#eff6ff",
-              },
-            }}
-          >
-            Previous
-          </Button>
-
-          <Button
-            variant="outlined"
             startIcon={<Refresh />}
             onClick={loadLeaveBalance}
             disabled={loading}
-            sx={{
-              height: 40,
-              borderColor: "#2563eb",
-              color: "#2563eb",
-              textTransform: "none",
-              fontWeight: 600,
-              "&:hover": {
-                borderColor: "#1d4ed8",
-                backgroundColor: "#eff6ff",
-              },
-            }}
+            sx={{ height: 40, borderColor: "#cbd5e1", color: "#334155", textTransform: "none", fontWeight: 600 }}
           >
             Refresh
           </Button>
+
+          {canExport && (
+            <Button
+              variant="outlined"
+              startIcon={<FileDownloadOutlined />}
+              onClick={handleExport}
+              disabled={loading || filteredBalances.length === 0}
+            >
+              Export Excel
+            </Button>
+          )}
           
           {canCreate && (
             <>
               <Button
-                variant="outlined"
+                variant="contained"
                 className="sync-leave-policy-btn"
                 startIcon={<Sync />}
                 onClick={handleSyncLeavePolicies}
@@ -512,8 +489,9 @@ const [compOffOpen, setCompOffOpen] = useState(false);
               <Button
                 variant="contained"
                 onClick={handleAddCompOff}
+                sx={{ textTransform: "none", fontWeight: 600, height: 40, borderColor: "#cbd5e1", color: "#334155" }}
               >
-                + Add Comp-Off
+                <AddCircleOutlineRoundedIcon sx={{ mr: 0.75 }} /> Add Comp-Off
               </Button>
             </>
           )}
@@ -525,6 +503,7 @@ const [compOffOpen, setCompOffOpen] = useState(false);
       ====================================================== */}
 
 <Stack
+  className="leave-balance-summary"
   direction="row"
   spacing={2}
   useFlexGap
@@ -584,6 +563,7 @@ const [compOffOpen, setCompOffOpen] = useState(false);
       ====================================================== */}
 
       <Card
+        className="leave-balance-filter-card"
         elevation={0}
         sx={{
           mb: 2.5,
@@ -594,6 +574,7 @@ const [compOffOpen, setCompOffOpen] = useState(false);
       >
         <CardContent sx={{ p: { xs: 2, md: 2.5 } }}>
 <Stack
+  className="leave-balance-filters"
   direction={{
     xs: "column",
     md: "row",
@@ -609,9 +590,10 @@ const [compOffOpen, setCompOffOpen] = useState(false);
             {/* SEARCH */}
 
             <TextField
+              className="search-filter"
               fullWidth
-              label="Search Employee"
-              placeholder="Employee ID, Azure ID or Name"
+              placeholder="Search by Azure ID or employee name"
+              aria-label="Search by Azure ID or employee name"
               value={searchEmployee}
               onChange={(e) =>
                 setSearchEmployee(
@@ -644,6 +626,7 @@ slotProps={{
             {/* AZURE EMPLOYEE DROPDOWN */}
 
             <FormControl
+              className="azure-filter"
               size="small"
               sx={{
                 minWidth: {
@@ -688,24 +671,19 @@ slotProps={{
             {/* CLEAR */}
 
             <Button
-              variant="outlined"
-              startIcon={<Clear />}
+              className="clear-filter-btn"
+              variant="contained"
+              startIcon={<Refresh />}
               onClick={clearFilters}
               sx={{
                 height: 40,
                 minWidth: 120,
                 textTransform: "none",
-                borderColor: "#cbd5e1",
-                color: "#475569",
                 borderRadius: 1.5,
                 fontWeight: 600,
-                "&:hover": {
-                  borderColor: "#94a3b8",
-                  backgroundColor: "#f8fafc",
-                },
               }}
             >
-              Clear
+              Reset
             </Button>
           </Stack>
         </CardContent>
@@ -822,6 +800,7 @@ slotProps={{
         ==================================================== */
 
         <Card
+          className="leave-balance-card"
           elevation={0}
           sx={{
             border: "1px solid #e2e8f0",
@@ -832,6 +811,7 @@ slotProps={{
           {/* TABLE HEADER */}
 
           <Box
+            className="table-header"
             sx={{
               px: 2.5,
               py: 1.75,
@@ -862,6 +842,11 @@ slotProps={{
                 leave balance records
               </Typography>
             </Box>
+            <Chip
+              className="leave-balance-count"
+              size="small"
+              label={`${filteredBalances.length} ${filteredBalances.length === 1 ? "record" : "records"}`}
+            />
           </Box>
 
           <Divider />
@@ -872,38 +857,55 @@ slotProps={{
             }}
           >
             <Table
+              className="leave-balance-table"
               stickyHeader
               sx={{
-                minWidth: 1100,
+                width: "100%",
+                minWidth: 1000,
+                tableLayout: "fixed",
+                "& .MuiTableCell-root": {
+                  boxSizing: "border-box",
+                  borderLeft: "0 !important",
+                  borderRight: "0 !important",
+                  boxShadow: "none !important",
+                },
+                "& .MuiTableHead-root .MuiTableCell-root:nth-of-type(-n+3), & .MuiTableBody-root .MuiTableCell-root:nth-of-type(-n+3)": {
+                  textAlign: "left !important",
+                },
+                "& .MuiTableHead-root .MuiTableCell-root:nth-of-type(4), & .MuiTableBody-root .MuiTableCell-root:nth-of-type(4)": {
+                  textAlign: "center !important",
+                },
+                "& .MuiTableHead-root .MuiTableCell-root:nth-of-type(n+5), & .MuiTableBody-root .MuiTableCell-root:nth-of-type(n+5)": {
+                  textAlign: "right !important",
+                },
               }}
             >
+              <colgroup>
+                <col style={{ width: "16%" }} />
+                <col style={{ width: "23%" }} />
+                <col style={{ width: "16%" }} />
+                <col style={{ width: "7%" }} />
+                <col style={{ width: "10%" }} />
+                <col style={{ width: "10%" }} />
+                <col style={{ width: "8%" }} />
+                <col style={{ width: "10%" }} />
+              </colgroup>
               <TableHead>
                 <TableRow>
-                  <TableCell
-                    sx={headerCellStyle}
-                  >
-                    Employee ID
-                  </TableCell>
-
-                  <TableCell
-                    sx={headerCellStyle}
-                  >
+                  <TableCell align="left" sx={headerCellStyle}>
                     Azure Employee ID
                   </TableCell>
 
-                  <TableCell
-                    sx={headerCellStyle}
-                  >
+                  <TableCell align="left" sx={headerCellStyle}>
                     Employee Name
                   </TableCell>
 
-                  <TableCell
-                    sx={headerCellStyle}
-                  >
+                  <TableCell align="left" sx={headerCellStyle}>
                     Leave Type
                   </TableCell>
 
                   <TableCell
+                    align="center"
                     sx={headerCellStyle}
                   >
                     Year
@@ -959,25 +961,10 @@ slotProps={{
                           },
                         }}
                       >
-                        {/* EMPLOYEE ID */}
-
-                        <TableCell
-                          sx={bodyCellStyle}
-                        >
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: 600,
-                              color: "#334155",
-                            }}
-                          >
-                            {balance.employeeId}
-                          </Typography>
-                        </TableCell>
-
                         {/* AZURE ID */}
 
                         <TableCell
+                          align="left"
                           sx={bodyCellStyle}
                         >
                           {balance.azureEmployeeId ? (
@@ -1007,6 +994,7 @@ slotProps={{
                         {/* EMPLOYEE NAME */}
 
                         <TableCell
+                          align="left"
                           sx={bodyCellStyle}
                         >
                           <Typography
@@ -1024,6 +1012,7 @@ slotProps={{
                         {/* LEAVE TYPE */}
 
                         <TableCell
+                          align="left"
                           sx={bodyCellStyle}
                         >
                           <Typography
@@ -1042,6 +1031,7 @@ slotProps={{
                         {/* YEAR */}
 
                         <TableCell
+                          align="center"
                           sx={bodyCellStyle}
                         >
                           {balance.year}
@@ -1126,6 +1116,20 @@ slotProps={{
         loadLeaveBalance();
     }}
 />
+
+    <Snackbar
+      open={notice.open}
+      autoHideDuration={4500}
+      onClose={() => setNotice((current) => ({ ...current, open: false }))}
+    >
+      <Alert
+        severity={notice.severity}
+        variant="filled"
+        onClose={() => setNotice((current) => ({ ...current, open: false }))}
+      >
+        {notice.message}
+      </Alert>
+    </Snackbar>
     
     </Box>
   );
@@ -1136,14 +1140,16 @@ slotProps={{
 // ==========================================================
 
 const headerCellStyle = {
-  backgroundColor: "#243f7d",
-  color: "#ffffff",
+  backgroundColor: "#f1f5fb",
+  color: "#47627e",
   fontWeight: 700,
-  fontSize: "12px",
+  fontSize: "11px",
+  letterSpacing: "0.035em",
+  textTransform: "uppercase",
   whiteSpace: "nowrap",
   py: 1.6,
   px: 2,
-  borderBottom: "none",
+  borderBottom: "1px solid #e2e8f0",
 };
 
 const bodyCellStyle = {

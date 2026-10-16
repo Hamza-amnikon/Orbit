@@ -7,131 +7,132 @@ import {
     Phone,
     Verified
 } from "@mui/icons-material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ProfileDetails({ profile }) {
 
     return (
 
-        <div className="profile-details">
+        <MuiLayoutBox className="profile-details" component="div">
 
             {/* ==========================
                 TOP ROW
             =========================== */}
 
-            <div className="profile-top">
+            <MuiLayoutBox className="profile-top" component="div">
 
-                <div>
+                <MuiLayoutBox component="div">
 
-                    <h1 className="employee-name">
+                    <MuiText className="employee-name" component="h1" variant="h4">
 
                         {profile.displayName}
 
-                    </h1>
+                    </MuiText>
 
-                    <div className="employee-title">
+                    <MuiLayoutBox className="employee-title" component="div">
 
                         {profile.jobTitle}
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div className="employee-company">
+                    <MuiLayoutBox className="employee-company" component="div">
 
                         <Apartment fontSize="small" />
 
                         {profile.companyName}
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div className="employee-location">
+                    <MuiLayoutBox className="employee-location" component="div">
 
                         <LocationOn fontSize="small" />
 
                         {profile.city}, {profile.country}
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="employee-status">
+                <MuiLayoutBox className="employee-status" component="div">
 
-                    <span className="status-badge">
+                    <MuiText className="status-badge" component="span" variant="inherit">
 
                         <Verified fontSize="small" />
 
                         {profile.status}
 
-                    </span>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
             {/* ==========================
                 CONTACT BAR
             =========================== */}
 
-            <div className="contact-bar">
+            <MuiLayoutBox className="contact-bar" component="div">
 
-                <div className="contact-item">
+                <MuiLayoutBox className="contact-item" component="div">
 
                     <Email />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>Email</span>
+                        <MuiText component="span" variant="inherit">Email</MuiText>
 
-                        <strong>{profile.email}</strong>
+                        <MuiText component="strong" variant="inherit">{profile.email}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="contact-item">
+                <MuiLayoutBox className="contact-item" component="div">
 
                     <Phone />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>Phone</span>
+                        <MuiText component="span" variant="inherit">Phone</MuiText>
 
-                        <strong>{profile.mobilePhone}</strong>
+                        <MuiText component="strong" variant="inherit">{profile.mobilePhone}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="contact-item">
+                <MuiLayoutBox className="contact-item" component="div">
 
                     <Badge />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>Employee ID</span>
+                        <MuiText component="span" variant="inherit">Employee ID</MuiText>
 
-                        <strong>{profile.azureEmployeeId}</strong>
+                        <MuiText component="strong" variant="inherit">{profile.azureEmployeeId}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="contact-item">
+                <MuiLayoutBox className="contact-item" component="div">
 
                     <CalendarMonth />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>Join Date</span>
+                        <MuiText component="span" variant="inherit">Join Date</MuiText>
 
-                        <strong>{profile.joinDate
-                            }</strong>
+                        <MuiText component="strong" variant="inherit">{profile.joinDate
+                            }</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

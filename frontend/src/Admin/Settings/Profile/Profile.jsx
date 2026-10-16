@@ -11,6 +11,7 @@ import ContactInfo from "./ContactInfo";
 import EmergencyContact from "./EmergencyContact";
 import { getProfile } from "../Services/ProfileService";
 import Documents from "./Documents";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function Profile() {
 
@@ -55,9 +56,9 @@ function Profile() {
     if (loading) {
 
         return (
-            <div className="profile-page">
-                <h2>Loading Profile...</h2>
-            </div>
+            <MuiLayoutBox className="profile-page" component="div">
+                <MuiText component="h2" variant="h5">Loading Profile...</MuiText>
+            </MuiLayoutBox>
         );
 
     }
@@ -65,28 +66,28 @@ function Profile() {
     if (error) {
 
         return (
-            <div className="profile-page">
-                <h2>{error}</h2>
-            </div>
+            <MuiLayoutBox className="profile-page" component="div">
+                <MuiText component="h2" variant="h5">{error}</MuiText>
+            </MuiLayoutBox>
         );
 
     }
 
     return (
 
-        <div className="profile-page">
+        <MuiLayoutBox className="profile-page" component="div">
 
             {/* Page Title */}
 
-            <div className="profile-title">
+            <MuiLayoutBox className="profile-title" component="div">
 
-                <h1>My Profile</h1>
+                <MuiText component="h1" variant="h4">My Profile</MuiText>
 
-                <p>
+                <MuiText component="p" variant="body1">
                     Manage your personal and employment information.
-                </p>
+                </MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
             {/* Banner */}
 
@@ -107,11 +108,11 @@ function Profile() {
 
             {activeTab === "personal" && (
 
-                <div className="profile-grid">
+                <MuiLayoutBox className="profile-grid" component="div">
 
                     <ProfileInfo profile={profile} />
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
@@ -119,11 +120,11 @@ function Profile() {
 
             {activeTab === "employment" && (
 
-                <div className="profile-grid">
+                <MuiLayoutBox className="profile-grid" component="div">
 
                     <EmploymentInfo profile={profile} />
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
@@ -134,11 +135,11 @@ function Profile() {
                 <>
                     <ContactInfo profile={profile} />
 
-                    <div className="profile-grid">
+                    <MuiLayoutBox className="profile-grid" component="div">
 
                         <EmergencyContact profile={profile} />
 
-                    </div>
+                    </MuiLayoutBox>
                 </>
 
             )}
@@ -155,15 +156,15 @@ function Profile() {
 
             {activeTab === "skills" && (
 
-                <div className="coming-soon-card">
+                <MuiLayoutBox className="coming-soon-card" component="div">
 
-                    <h2>Skills</h2>
+                    <MuiText component="h2" variant="h5">Skills</MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Skills and certifications will appear here.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
@@ -171,19 +172,19 @@ function Profile() {
 
             {activeTab === "timeline" && (
 
-                <div className="coming-soon-card">
+                <MuiLayoutBox className="coming-soon-card" component="div">
 
-                    <h2>Timeline</h2>
+                    <MuiText component="h2" variant="h5">Timeline</MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Employee history and activities will appear here.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

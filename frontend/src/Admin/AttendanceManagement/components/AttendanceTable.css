@@ -8,6 +8,8 @@
     background: #fff;
 }
 
+.attendance-table-scroll{width:100%;overflow-x:auto}
+
 /* ============================
    Header
 ============================ */
@@ -113,6 +115,9 @@
     background: #EDE9FE !important;
     color: #6D28D9 !important;
 }
+
+.status-chip.on-leave{background:#EDE9FE!important;color:#6D28D9!important}
+.status-chip.wfh{background:#CFFAFE!important;color:#0E7490!important}
 
 .status-chip.absent {
     background: #FEE2E2 !important;

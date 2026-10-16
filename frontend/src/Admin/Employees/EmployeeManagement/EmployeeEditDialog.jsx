@@ -30,12 +30,14 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function EmployeeEditDialog({
   open,
   employee,
   onClose,
   onUpdated,
+  onNotify,
 }) {
   // =========================================================
   // API URLs
@@ -320,9 +322,7 @@ function EmployeeEditDialog({
         );
       }
 
-      alert(
-        "Unable to load employee details."
-      );
+      onNotify?.("Unable to load employee details.", "error");
     } finally {
       setLoading(false);
     }
@@ -491,9 +491,7 @@ function EmployeeEditDialog({
     // -------------------------------------------------------
 
     if (!employee?.employeeId) {
-      alert(
-        "Employee ID is missing."
-      );
+      onNotify?.("Employee ID is missing.", "error");
 
       return;
     }
@@ -624,9 +622,7 @@ function EmployeeEditDialog({
       // SUCCESS
       // =====================================================
 
-      alert(
-        "Employee updated successfully."
-      );
+      onNotify?.("Employee updated successfully.", "success");
 
       // =====================================================
       // REFRESH EMPLOYEE LIST
@@ -669,13 +665,11 @@ function EmployeeEditDialog({
           error.response.data?.title ||
           "Unable to update employee.";
 
-        alert(message);
+        onNotify?.(message, "error");
 
       } else {
 
-        alert(
-          "Unable to connect to the Employee API."
-        );
+        onNotify?.("Unable to connect to the Employee API.", "error");
       }
 
     } finally {
@@ -758,7 +752,7 @@ function EmployeeEditDialog({
 
         {loading ? (
 
-          <div
+          <MuiLayoutBox
             style={{
               minHeight: 400,
               display: "flex",
@@ -767,13 +761,13 @@ function EmployeeEditDialog({
               flexDirection: "column",
               gap: 15,
             }}
-          >
+           component="div">
             <CircularProgress />
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Loading employee details...
-            </span>
-          </div>
+            </MuiText>
+          </MuiLayoutBox>
 
         ) : (
 

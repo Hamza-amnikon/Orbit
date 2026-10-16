@@ -1,9 +1,10 @@
 import "./Holidays.css";
+import { Box as MuiLayoutBox } from "@mui/material";
 
 export default function Holidays() {
     return (
-        <div>
+        <MuiLayoutBox component="div">
             Holidays
-        </div>
+        </MuiLayoutBox>
     );
 }

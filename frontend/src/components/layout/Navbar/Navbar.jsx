@@ -1,3 +1,4 @@
+import { MuiButtonMigration } from "../../ui/MuiCompat.jsx";
 import { useEffect, useState } from "react";
 import {
     useLocation,
@@ -17,6 +18,7 @@ import LeaveService from "../../../Admin/Services/LeaveService";
 import PolicyService from "../../../Admin/Services/PolicyService";
 
 import "./Navbar.css";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 /* ============================================================
@@ -219,7 +221,7 @@ function Navbar({ title }) {
                 });
                 const mappedPolicies = policies.slice(0, 5).map((policy, index) => ({
                     id: `policy-${policy.id ?? policy.policyId ?? index}`,
-                    route: "/company-policy",
+                    route: "/company-policies",
                     title: "Policy update",
                     message: `${policy.title ?? policy.policyTitle ?? policy.name ?? "A company policy"} was updated.`,
                     date: policy.updatedAt ?? policy.modifiedDate ?? policy.createdAt,
@@ -493,19 +495,19 @@ function Navbar({ title }) {
 
     return (
 
-        <header className="navbar">
+        <MuiLayoutBox className="navbar" component="header">
 
 
             {/* ==================================================
                 LEFT SIDE
             ================================================== */}
 
-            <div className="navbar-left">
+            <MuiLayoutBox className="navbar-left" component="div">
 
 
                 {/* MENU BUTTON */}
 
-                <button
+                <MuiButtonMigration
                     type="button"
                     className="menu-btn"
                     aria-label="Toggle navigation"
@@ -514,40 +516,40 @@ function Navbar({ title }) {
 
                     <MenuRoundedIcon />
 
-                </button>
+                </MuiButtonMigration>
 
 
                 {/* SEPARATOR */}
 
-                <div className="navbar-separator" />
+                <MuiLayoutBox className="navbar-separator"  component="div"/>
 
 
                 {/* PAGE TITLE */}
 
-                <div className="navbar-page-title">
+                <MuiLayoutBox className="navbar-page-title" component="div">
 
-                    <h2>
+                    <MuiText component="h2" variant="h5">
                         {getPageTitle()}
-                    </h2>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* ==================================================
                 RIGHT SIDE
             ================================================== */}
 
-            <div className="navbar-right">
+            <MuiLayoutBox className="navbar-right" component="div">
 
 
                 {/* =================================================
                     NOTIFICATIONS
                 ================================================= */}
 
-                <button
+                <MuiButtonMigration
                     type="button"
                     className="icon-btn notification-btn"
                     aria-label="Notifications"
@@ -557,24 +559,24 @@ function Navbar({ title }) {
 
                     <NotificationsNoneRoundedIcon />
 
-                    {unreadNotifications.length > 0 && <span className="notification-count">{unreadNotifications.length > 99 ? "99+" : unreadNotifications.length}</span>}
+                    {unreadNotifications.length > 0 && <MuiText className="notification-count" component="span" variant="inherit">{unreadNotifications.length > 99 ? "99+" : unreadNotifications.length}</MuiText>}
 
-                </button>
+                </MuiButtonMigration>
 
                 {notificationsOpen && (
-                    <div className="notifications-menu" role="menu">
-                        <div className="notifications-header"><strong>Notifications</strong><span>{unreadNotifications.length} unread</span></div>
+                    <MuiLayoutBox className="notifications-menu" role="menu" component="div">
+                        <MuiLayoutBox className="notifications-header" component="div"><MuiText component="strong" variant="inherit">Notifications</MuiText><MuiText component="span" variant="inherit">{unreadNotifications.length} unread</MuiText></MuiLayoutBox>
                         {visibleNotifications.length === 0 ? (
-                            <div className="notifications-empty">You’re all caught up</div>
+                            <MuiLayoutBox className="notifications-empty" component="div">You’re all caught up</MuiLayoutBox>
                         ) : visibleNotifications.map((notification) => {
                             const isRead = Boolean(readNotificationTimes[String(notification.id)]);
-                            return <button key={notification.id} type="button" className={`notification-item ${isRead ? "notification-read" : ""}`} onClick={() => { markNotificationRead(notification.id); setNotifications((current) => current.filter((item) => String(item.id) !== String(notification.id))); setNotificationsOpen(false); navigate(notification.route || "/leave"); }}>
-                                <span className="notification-item-title">{notification.title}</span>
-                                <span className="notification-item-message">{notification.message}</span>
-                                {notification.date && <span className="notification-item-date">{new Date(notification.date).toLocaleString()}</span>}
-                            </button>;
+                            return <MuiButtonMigration key={notification.id} type="button" className={`notification-item ${isRead ? "notification-read" : ""}`} onClick={() => { markNotificationRead(notification.id); setNotifications((current) => current.filter((item) => String(item.id) !== String(notification.id))); setNotificationsOpen(false); navigate(notification.route || "/leave"); }}>
+                                <MuiText className="notification-item-title" component="span" variant="inherit">{notification.title}</MuiText>
+                                <MuiText className="notification-item-message" component="span" variant="inherit">{notification.message}</MuiText>
+                                {notification.date && <MuiText className="notification-item-date" component="span" variant="inherit">{new Date(notification.date).toLocaleString()}</MuiText>}
+                            </MuiButtonMigration>;
                         })}
-                    </div>
+                    </MuiLayoutBox>
                 )}
 
 
@@ -582,7 +584,7 @@ function Navbar({ title }) {
                     SETTINGS
                 ================================================= */}
 
-                <button
+                <MuiButtonMigration
                     type="button"
                     className="icon-btn settings-btn"
                     aria-label="Settings"
@@ -591,24 +593,24 @@ function Navbar({ title }) {
 
                     <SettingsOutlinedIcon />
 
-                </button>
+                </MuiButtonMigration>
 
 
                 {/* =================================================
                     VERTICAL SEPARATOR
                 ================================================= */}
 
-                <div className="navbar-right-separator" />
+                <MuiLayoutBox className="navbar-right-separator"  component="div"/>
 
 
                 {/* =================================================
                     PROFILE
                 ================================================= */}
 
-                <div className="profile-wrapper">
+                <MuiLayoutBox className="profile-wrapper" component="div">
 
 
-                    <button
+                    <MuiButtonMigration
                         type="button"
                         className={`user-profile ${
                             menuOpen
@@ -630,45 +632,45 @@ function Navbar({ title }) {
                             AVATAR
                         ================================================= */}
 
-                        <div className="avatar">
+                        <MuiLayoutBox className="avatar" component="div">
 
                             {hasProfileImage ? (
 
-                                <img
+                                <MuiLayoutBox
                                     src={profile.photoUrl}
                                     alt=""
                                     className="navbar-avatar-image"
                                     onError={() => {
                                         setProfileImageError(true);
                                     }}
-                                />
+                                 component="img"/>
 
                             ) : (
 
-                                <span className="navbar-avatar-initial">
+                                <MuiText className="navbar-avatar-initial" component="span" variant="inherit">
                                     {getInitial()}
-                                </span>
+                                </MuiText>
 
                             )}
 
-                        </div>
+                        </MuiLayoutBox>
 
 
                         {/* =================================================
                             USER INFORMATION
                         ================================================= */}
 
-                        <div className="user-info">
+                        <MuiLayoutBox className="user-info" component="div">
 
-                            <h4>
+                            <MuiText component="h4" variant="subtitle1">
                                 {getDisplayName()}
-                            </h4>
+                            </MuiText>
 
-                            <p>
+                            <MuiText component="p" variant="body1">
                                 {getJobTitle()}
-                            </p>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
 
                         {/* =================================================
@@ -679,7 +681,7 @@ function Navbar({ title }) {
                             className="profile-arrow"
                         />
 
-                    </button>
+                    </MuiButtonMigration>
 
 
                     {/* =================================================
@@ -688,56 +690,56 @@ function Navbar({ title }) {
 
                     {menuOpen && (
 
-                        <div
+                        <MuiLayoutBox
                             className="profile-menu"
                             role="menu"
-                        >
+                         component="div">
 
 
                             {/* PROFILE HEADER */}
 
-                            <div className="profile-menu-header">
+                            <MuiLayoutBox className="profile-menu-header" component="div">
 
-                                <div className="avatar profile-menu-avatar">
+                                <MuiLayoutBox className="avatar profile-menu-avatar" component="div">
 
                                     {hasProfileImage ? (
 
-                                        <img
+                                        <MuiLayoutBox
                                             src={profile.photoUrl}
                                             alt=""
                                             className="navbar-avatar-image"
                                             onError={() => {
                                                 setProfileImageError(true);
                                             }}
-                                        />
+                                         component="img"/>
 
                                     ) : (
 
-                                        <span className="navbar-avatar-initial">
+                                        <MuiText className="navbar-avatar-initial" component="span" variant="inherit">
                                             {getInitial()}
-                                        </span>
+                                        </MuiText>
 
                                     )}
 
-                                </div>
+                                </MuiLayoutBox>
 
 
-                                <div className="profile-menu-info">
+                                <MuiLayoutBox className="profile-menu-info" component="div">
 
-                                    <h4>
+                                    <MuiText component="h4" variant="subtitle1">
                                         {getDisplayName()}
-                                    </h4>
+                                    </MuiText>
 
-                                    <p>
+                                    <MuiText component="p" variant="body1">
                                         {getJobTitle()}
-                                    </p>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
-                            </div>
+                            </MuiLayoutBox>
 
 
-                            <div className="profile-menu-divider" />
+                            <MuiLayoutBox className="profile-menu-divider"  component="div"/>
 
 
                             {/* PROFILE */}
@@ -747,7 +749,7 @@ function Navbar({ title }) {
 
                             {/* SETTINGS */}
 
-                            <button
+                            <MuiButtonMigration
                                 type="button"
                                 className="profile-menu-item"
                                 onClick={
@@ -757,19 +759,19 @@ function Navbar({ title }) {
 
                                 <SettingsOutlinedIcon />
 
-                                <span>
+                                <MuiText component="span" variant="inherit">
                                     Settings
-                                </span>
+                                </MuiText>
 
-                            </button>
+                            </MuiButtonMigration>
 
 
-                            <div className="profile-menu-divider" />
+                            <MuiLayoutBox className="profile-menu-divider"  component="div"/>
 
 
                             {/* LOGOUT */}
 
-                            <button
+                            <MuiButtonMigration
                                 type="button"
                                 className="profile-menu-item logout-item"
                                 onClick={
@@ -779,24 +781,24 @@ function Navbar({ title }) {
 
                                 <LogoutOutlinedIcon />
 
-                                <span>
+                                <MuiText component="span" variant="inherit">
                                     Logout
-                                </span>
+                                </MuiText>
 
-                            </button>
+                            </MuiButtonMigration>
 
 
-                        </div>
+                        </MuiLayoutBox>
 
                     )}
 
 
-                </div>
+                </MuiLayoutBox>
 
 
-            </div>
+            </MuiLayoutBox>
 
-        </header>
+        </MuiLayoutBox>
 
     );
 

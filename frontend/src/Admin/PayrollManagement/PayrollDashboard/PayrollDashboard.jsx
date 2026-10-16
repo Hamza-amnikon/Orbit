@@ -24,6 +24,7 @@ import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 
 import "./PayrollDashboard.css";
 import { useAuth } from "../../../context/AuthContext";
+import { Typography as MuiText } from "@mui/material";
 
 function PayrollDashboard() {
     const { hasPermission } = useAuth();
@@ -379,7 +380,7 @@ function PayrollDashboard() {
 
                                     <Typography className="pd-status-title">
                                         Payroll Completed
-                                        <span>Done</span>
+                                        <MuiText component="span" variant="inherit">Done</MuiText>
                                     </Typography>
 
                                     <Typography className="pd-status-date">
@@ -403,7 +404,7 @@ function PayrollDashboard() {
 
                                     <Typography className="pd-status-title">
                                         Next Payroll
-                                        <span>Upcoming</span>
+                                        <MuiText component="span" variant="inherit">Upcoming</MuiText>
                                     </Typography>
 
                                     <Typography className="pd-status-date">

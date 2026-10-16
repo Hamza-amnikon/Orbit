@@ -10,6 +10,7 @@ import EventIcon from "@mui/icons-material/Event";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
 
 const menuItems = [
     {
@@ -78,67 +79,67 @@ export default function Attendance() {
     );
 
     return (
-        <div className="attendance-home">
+        <MuiLayoutBox className="attendance-home" component="div">
 
             {/* =====================================================
                 BREADCRUMB
             ===================================================== */}
 
-            <div className="attendance-breadcrumb">
+            <MuiLayoutBox className="attendance-breadcrumb" component="div">
 
                 <HomeRoundedIcon />
 
-                <span>/</span>
+                <MuiText component="span" variant="inherit">/</MuiText>
 
-                <span>Attendance</span>
+                <MuiText component="span" variant="inherit">Attendance</MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =====================================================
                 PAGE HEADER
             ===================================================== */}
 
-            <div className="attendance-page-header">
+            <MuiLayoutBox className="attendance-page-header" component="div">
 
-                <div className="attendance-header-content">
+                <MuiLayoutBox className="attendance-header-content" component="div">
 
-                    <h1>
+                    <MuiText component="h1" variant="h4">
                         Attendance Management
-                    </h1>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Manage attendance logs, shifts, regularization
                         requests, holidays and reports.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
 
                 {/* =================================================
                     RIGHT SIDE DECORATION
                 ================================================= */}
 
-                <div className="attendance-header-decoration">
+                <MuiLayoutBox className="attendance-header-decoration" component="div">
 
-                    <span className="header-decoration-circle circle-one"></span>
+                    <MuiText className="header-decoration-circle circle-one" component="span" variant="inherit"></MuiText>
 
-                    <span className="header-decoration-circle circle-two"></span>
+                    <MuiText className="header-decoration-circle circle-two" component="span" variant="inherit"></MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =====================================================
                 MODULE GRID
             ===================================================== */}
 
-            <div className="attendance-grid">
+            <MuiLayoutBox className="attendance-grid" component="div">
 
                 {allowedItems.map((item) => (
 
-                    <div
+                    <MuiActionButton
                         key={item.title}
                         className="attendance-menu-card"
                         style={{
@@ -147,71 +148,57 @@ export default function Attendance() {
                         onClick={() => navigate(item.path)}
                         role="button"
                         tabIndex={0}
-                        onKeyDown={(e) => {
-
-                            if (
-                                e.key === "Enter" ||
-                                e.key === " "
-                            ) {
-
-                                e.preventDefault();
-
-                                navigate(item.path);
-
-                            }
-
-                        }}
-                    >
+                     component="div">
 
                         {/* =================================================
                             ICON
                         ================================================= */}
 
-                        <div
+                        <MuiLayoutBox
                             className="attendance-icon"
                             style={{
                                 backgroundColor: item.color,
                             }}
-                        >
+                         component="div">
                             {item.icon}
-                        </div>
+                        </MuiLayoutBox>
 
 
                         {/* =================================================
                             CARD CONTENT
                         ================================================= */}
 
-                        <div className="attendance-card-content">
+                        <MuiLayoutBox className="attendance-card-content" component="div">
 
-                            <h3>
+                            <MuiText component="h3" variant="h6">
                                 {item.title}
-                            </h3>
+                            </MuiText>
 
-                            <p>
+                            <MuiText component="p" variant="body1">
                                 {item.description}
-                            </p>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
 
                         {/* =================================================
                             OPEN MODULE
                         ================================================= */}
 
-                        <span className="attendance-open-module">
+                        <MuiText className="attendance-open-module" component="span" variant="inherit">
                             Open Module
-                        </span>
+                        </MuiText>
 
 
                         {/* =================================================
                             ARROW
                         ================================================= */}
 
-                        <div className="attendance-arrow">
+                        <MuiLayoutBox className="attendance-arrow" component="div">
 
                             <ArrowForwardRoundedIcon />
 
-                        </div>
+                        </MuiLayoutBox>
 
 
                         {/* =================================================
@@ -220,70 +207,70 @@ export default function Attendance() {
 
                         {item.decoration === "bars" && (
 
-                            <div className="attendance-decoration decoration-bars">
+                            <MuiLayoutBox className="attendance-decoration decoration-bars" component="div">
 
-                                <span></span>
-                                <span></span>
-                                <span></span>
+                                <MuiText component="span" variant="inherit"></MuiText>
+                                <MuiText component="span" variant="inherit"></MuiText>
+                                <MuiText component="span" variant="inherit"></MuiText>
 
-                            </div>
+                            </MuiLayoutBox>
 
                         )}
 
 
                         {item.decoration === "document" && (
 
-                            <div className="attendance-decoration decoration-document">
+                            <MuiLayoutBox className="attendance-decoration decoration-document" component="div">
 
-                                <span></span>
-                                <span></span>
-                                <span></span>
+                                <MuiText component="span" variant="inherit"></MuiText>
+                                <MuiText component="span" variant="inherit"></MuiText>
+                                <MuiText component="span" variant="inherit"></MuiText>
 
-                            </div>
+                            </MuiLayoutBox>
 
                         )}
 
 
                         {item.decoration === "people" && (
 
-                            <div className="attendance-decoration decoration-people">
+                            <MuiLayoutBox className="attendance-decoration decoration-people" component="div">
 
-                                <span></span>
-                                <span></span>
-                                <span></span>
+                                <MuiText component="span" variant="inherit"></MuiText>
+                                <MuiText component="span" variant="inherit"></MuiText>
+                                <MuiText component="span" variant="inherit"></MuiText>
 
-                            </div>
+                            </MuiLayoutBox>
 
                         )}
 
 
                         {item.decoration === "holiday" && (
 
-                            <div className="attendance-decoration decoration-holiday">
+                            <MuiLayoutBox className="attendance-decoration decoration-holiday" component="div">
                                 ☀
-                            </div>
+                            </MuiLayoutBox>
 
                         )}
 
 
                         {item.decoration === "person" && (
 
-                            <div className="attendance-decoration decoration-person">
+                            <MuiLayoutBox className="attendance-decoration decoration-person" component="div">
 
-                                <span className="person-head"></span>
+                                <MuiText className="person-head" component="span" variant="inherit"></MuiText>
 
-                                <span className="person-body"></span>
+                                <MuiText className="person-body" component="span" variant="inherit"></MuiText>
 
-                            </div>
+                            </MuiLayoutBox>
 
                         )}
 
-                    </div>
+                    </MuiActionButton>
 
                 ))}
 
-            </div>
+            </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
     );
 }

@@ -8,6 +8,7 @@ import {
     Business,
     LocationCity
 } from "@mui/icons-material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ContactInfo({ profile }) {
 
@@ -15,143 +16,143 @@ function ContactInfo({ profile }) {
 
     return (
 
-        <div className="profile-section">
+        <MuiLayoutBox className="profile-section" component="div">
 
-            <div className="section-header">
+            <MuiLayoutBox className="section-header" component="div">
 
-                <div className="section-icon">
+                <MuiLayoutBox className="section-icon" component="div">
 
                     <Phone />
 
-                </div>
+                </MuiLayoutBox>
 
-                <div>
+                <MuiLayoutBox component="div">
 
-                    <h3>Contact Information</h3>
+                    <MuiText component="h3" variant="h6">Contact Information</MuiText>
 
-                    <p>Your official contact and address details</p>
+                    <MuiText component="p" variant="body1">Your official contact and address details</MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
-            <div className="section-body">
+            <MuiLayoutBox className="section-body" component="div">
 
-                <div className="profile-item">
+                <MuiLayoutBox className="profile-item" component="div">
 
                     <Email className="item-icon" />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <label>Email Address</label>
+                        <MuiLayoutBox component="label">Email Address</MuiLayoutBox>
 
-                        <span>{profile.email || "-"}</span>
+                        <MuiText component="span" variant="inherit">{profile.email || "-"}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="profile-item">
+                <MuiLayoutBox className="profile-item" component="div">
 
                     <Phone className="item-icon" />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <label>Mobile Number</label>
+                        <MuiLayoutBox component="label">Mobile Number</MuiLayoutBox>
 
-                        <span>{profile.mobilePhone || "-"}</span>
+                        <MuiText component="span" variant="inherit">{profile.mobilePhone || "-"}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="profile-item">
+                <MuiLayoutBox className="profile-item" component="div">
 
                     <Business className="item-icon" />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <label>Company</label>
+                        <MuiLayoutBox component="label">Company</MuiLayoutBox>
 
-                        <span>{profile.companyName || "-"}</span>
+                        <MuiText component="span" variant="inherit">{profile.companyName || "-"}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="profile-item">
+                <MuiLayoutBox className="profile-item" component="div">
 
                     <Home className="item-icon" />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <label>Street Address</label>
+                        <MuiLayoutBox component="label">Street Address</MuiLayoutBox>
 
-                        <span>{profile.streetAddress || "-"}</span>
+                        <MuiText component="span" variant="inherit">{profile.streetAddress || "-"}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="profile-item">
-
-                    <LocationCity className="item-icon" />
-
-                    <div>
-
-                        <label>City</label>
-
-                        <span>{profile.city || "-"}</span>
-
-                    </div>
-
-                </div>
-
-                <div className="profile-item">
-
-                    <Public className="item-icon" />
-
-                    <div>
-
-                        <label>State</label>
-
-                        <span>{profile.state || "-"}</span>
-
-                    </div>
-
-                </div>
-
-                <div className="profile-item">
-
-                    <Public className="item-icon" />
-
-                    <div>
-
-                        <label>Country</label>
-
-                        <span>{profile.country || "-"}</span>
-
-                    </div>
-
-                </div>
-
-                <div className="profile-item">
+                <MuiLayoutBox className="profile-item" component="div">
 
                     <LocationCity className="item-icon" />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <label>Postal Code</label>
+                        <MuiLayoutBox component="label">City</MuiLayoutBox>
 
-                        <span>{profile.postalCode || "-"}</span>
+                        <MuiText component="span" variant="inherit">{profile.city || "-"}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+                <MuiLayoutBox className="profile-item" component="div">
 
-        </div>
+                    <Public className="item-icon" />
+
+                    <MuiLayoutBox component="div">
+
+                        <MuiLayoutBox component="label">State</MuiLayoutBox>
+
+                        <MuiText component="span" variant="inherit">{profile.state || "-"}</MuiText>
+
+                    </MuiLayoutBox>
+
+                </MuiLayoutBox>
+
+                <MuiLayoutBox className="profile-item" component="div">
+
+                    <Public className="item-icon" />
+
+                    <MuiLayoutBox component="div">
+
+                        <MuiLayoutBox component="label">Country</MuiLayoutBox>
+
+                        <MuiText component="span" variant="inherit">{profile.country || "-"}</MuiText>
+
+                    </MuiLayoutBox>
+
+                </MuiLayoutBox>
+
+                <MuiLayoutBox className="profile-item" component="div">
+
+                    <LocationCity className="item-icon" />
+
+                    <MuiLayoutBox component="div">
+
+                        <MuiLayoutBox component="label">Postal Code</MuiLayoutBox>
+
+                        <MuiText component="span" variant="inherit">{profile.postalCode || "-"}</MuiText>
+
+                    </MuiLayoutBox>
+
+                </MuiLayoutBox>
+
+            </MuiLayoutBox>
+
+        </MuiLayoutBox>
 
     );
 

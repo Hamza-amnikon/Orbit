@@ -60,6 +60,16 @@
 
 }
 
+.shift-header-leading{display:flex;align-items:center;gap:16px;min-width:0}
+.shift-header-leading > div:last-child{min-width:0}
+.attendance-back-button{width:42px;height:42px;flex:0 0 42px;border:1px solid #dce4ee!important;border-radius:10px!important;background:#fff!important;color:#3f5067!important}
+.attendance-back-button:hover{background:#f4f7fc!important;border-color:#b8c9df!important}
+.shift-management .MuiOutlinedInput-root{border-radius:9px;background:#fff}
+.shift-management .MuiOutlinedInput-notchedOutline{border-color:#d7e0ec}
+.shift-management .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline{border-color:#9bb0ca}
+.shift-management .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline{border-color:#2f67ed;border-width:1px}
+.shift-management .MuiInputBase-input:focus-visible{outline:none!important;box-shadow:none!important}
+
 
 /* ===========================================================
    HEADER ACTIONS
@@ -184,6 +194,9 @@
     margin-bottom:32px;
 
 }
+
+.shift-management .dashboard-card{border:1px solid #e0e6ef;border-radius:12px;box-shadow:0 2px 7px rgba(20,40,70,.04)}
+.shift-management .dashboard-card-interactive{min-width:0}
 
 /* ===========================================================
    DASHBOARD CARD
@@ -433,6 +446,47 @@
 
     }
 
+}
+
+/* Keep filter controls aligned with the Attendance Logs filter row. */
+.shift-management .shift-filter-card .MuiInputBase-root{display:flex;align-items:center}
+.shift-management .shift-filter-card .MuiInputAdornment-root{position:static;flex:0 0 auto;transform:none}
+.shift-management .shift-filter-card .shift-search-field .MuiOutlinedInput-root{position:relative}
+.shift-management .shift-filter-card .shift-search-field .MuiInputAdornment-positionStart{
+    position:absolute;
+    left:12px;
+    margin:0;
+    pointer-events:none;
+}
+.shift-management .shift-filter-card .shift-search-field .MuiOutlinedInput-input{padding-left:28px!important}
+.shift-management .shift-filter-card .reset-btn{
+    width:110px;
+    min-width:0;
+    height:48px;
+    min-height:48px;
+    padding:0 12px;
+    border-radius:10px;
+    white-space:nowrap;
+}
+@media(max-width:1400px){
+    .shift-management .shift-filter-card{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .shift-management .shift-filter-card .reset-btn{width:100%}
+}
+@media(max-width:768px){
+    .shift-management .shift-filter-card{grid-template-columns:minmax(0,1fr)}
+}
+
+@media(max-width:768px){
+    .shift-management{padding:18px 14px 30px}
+    .shift-header-card{padding:18px;border-radius:14px;align-items:flex-start}
+    .shift-header-leading{align-items:flex-start}
+    .shift-header-card h2{font-size:26px}
+    .shift-header-actions{width:100%;gap:8px}
+    .shift-header-actions > *{flex:1 1 auto}
+    .shift-summary-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+    .shift-filter-card{grid-template-columns:1fr;padding:16px}
+    .shift-management .table-header{padding:18px}
+    .shift-management .table-header-left h3{font-size:23px}
 }
 
 /* ===========================================================
@@ -952,6 +1006,9 @@
     color:#DC2626;
 
 }
+
+.status-chip.active{background:#dcfce7;color:#15803d}
+.status-chip.inactive{background:#fee2e2;color:#dc2626}
 
 
 /* ===========================================================
@@ -1771,6 +1828,37 @@ grid-template-columns:2.4fr 1.2fr 1.2fr 1.2fr auto;
         0 10px 30px rgba(15,23,42,.06);
 
 }
+
+/* Match the Shift Management filter controls to the Attendance Logs MUI fields. */
+.shift-management .shift-filter-card > .MuiFormControl-root,
+.shift-management .shift-filter-card > .MuiTextField-root{width:100%;min-width:0}
+.shift-management .shift-filter-card .MuiOutlinedInput-root{
+    box-sizing:border-box;
+    height:48px;
+    min-height:48px;
+    padding:0 12px;
+    border-radius:10px;
+    background:#fff;
+}
+.shift-management .shift-filter-card .MuiOutlinedInput-input{
+    box-sizing:border-box;
+    height:auto!important;
+    min-height:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    font:inherit;
+}
+.shift-management .shift-filter-card .MuiSelect-select{
+    display:flex;
+    align-items:center;
+    min-height:0!important;
+    padding:0 28px 0 0!important;
+}
+.shift-management .shift-filter-card .MuiInputAdornment-root{margin-right:8px;color:#7387a2}
+.shift-management .shift-filter-card .reset-btn{height:48px;min-height:48px;border-radius:10px}
 
 /* ===========================================================
    FILTER ITEM

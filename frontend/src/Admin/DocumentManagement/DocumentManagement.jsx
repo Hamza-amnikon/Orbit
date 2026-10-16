@@ -1,3 +1,4 @@
+import { MuiButtonMigration, MuiInputMigration, MuiSelectMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import "./DocumentManagement.css";
@@ -12,6 +13,7 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 const API_URL = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
 const EMPLOYEE_API_URL = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
@@ -370,85 +372,85 @@ function DocumentManagement() {
 
   if (!canView) {
     return (
-      <div style={{ padding: "60px", textAlign: "center" }}>
-        <h2>Access Denied</h2>
-        <p>You do not have permission to access this page.</p>
-      </div>
+      <MuiLayoutBox style={{ padding: "60px", textAlign: "center" }} component="div">
+        <MuiText component="h2" variant="h5">Access Denied</MuiText>
+        <MuiText component="p" variant="body1">You do not have permission to access this page.</MuiText>
+      </MuiLayoutBox>
     );
   }
 
   return (
-    <div className="document-management">
+    <MuiLayoutBox className="document-management" component="div">
 
       {/* ================= HEADER ================= */}
 
-      <div className="document-header">
-        <h1>Document Management</h1>
+      <MuiLayoutBox className="document-header" component="div">
+        <MuiText component="h1" variant="h4">Document Management</MuiText>
 
-        <p>
+        <MuiText component="p" variant="body1">
           Review and manage employee documents submitted for approval
-        </p>
-      </div>
+        </MuiText>
+      </MuiLayoutBox>
 
       {/* ================= STAT CARDS ================= */}
 
-      <div className="document-stats">
+      <MuiLayoutBox className="document-stats" component="div">
 
-        <div className="document-stat-card">
-          <div className="stat-icon blue">
+        <MuiLayoutBox className="document-stat-card" component="div">
+          <MuiLayoutBox className="stat-icon blue" component="div">
             <DescriptionRoundedIcon />
-          </div>
+          </MuiLayoutBox>
 
-          <div>
-            <span>Total Documents</span>
-            <strong>{totalDocuments}</strong>
-          </div>
-        </div>
+          <MuiLayoutBox component="div">
+            <MuiText component="span" variant="inherit">Total Documents</MuiText>
+            <MuiText component="strong" variant="inherit">{totalDocuments}</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="document-stat-card">
-          <div className="stat-icon orange">
+        <MuiLayoutBox className="document-stat-card" component="div">
+          <MuiLayoutBox className="stat-icon orange" component="div">
             <AccessTimeRoundedIcon />
-          </div>
+          </MuiLayoutBox>
 
-          <div>
-            <span>Pending Approval</span>
-            <strong>{pendingDocuments}</strong>
-          </div>
-        </div>
+          <MuiLayoutBox component="div">
+            <MuiText component="span" variant="inherit">Pending Approval</MuiText>
+            <MuiText component="strong" variant="inherit">{pendingDocuments}</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="document-stat-card">
-          <div className="stat-icon green">
+        <MuiLayoutBox className="document-stat-card" component="div">
+          <MuiLayoutBox className="stat-icon green" component="div">
             <CheckRoundedIcon />
-          </div>
+          </MuiLayoutBox>
 
-          <div>
-            <span>Approved</span>
-            <strong>{approvedDocuments}</strong>
-          </div>
-        </div>
+          <MuiLayoutBox component="div">
+            <MuiText component="span" variant="inherit">Approved</MuiText>
+            <MuiText component="strong" variant="inherit">{approvedDocuments}</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="document-stat-card">
-          <div className="stat-icon red">
+        <MuiLayoutBox className="document-stat-card" component="div">
+          <MuiLayoutBox className="stat-icon red" component="div">
             <CloseRoundedIcon />
-          </div>
+          </MuiLayoutBox>
 
-          <div>
-            <span>Rejected</span>
-            <strong>{rejectedDocuments}</strong>
-          </div>
-        </div>
+          <MuiLayoutBox component="div">
+            <MuiText component="span" variant="inherit">Rejected</MuiText>
+            <MuiText component="strong" variant="inherit">{rejectedDocuments}</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
       {/* ================= FILTER ================= */}
 
-      <div className="document-filter">
+      <MuiLayoutBox className="document-filter" component="div">
 
-        <div className="filter-field employee-search">
-          <label>Employee ID / Name</label>
+        <MuiLayoutBox className="filter-field employee-search" component="div">
+          <MuiLayoutBox component="label">Employee ID / Name</MuiLayoutBox>
 
-          <div className="search-input">
-            <input
+          <MuiLayoutBox className="search-input" component="div">
+            <MuiInputMigration
               type="text"
               placeholder="Search by ID or Name"
               value={search}
@@ -456,13 +458,13 @@ function DocumentManagement() {
             />
 
             <SearchRoundedIcon />
-          </div>
-        </div>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="filter-field">
-          <label>Status</label>
+        <MuiLayoutBox className="filter-field" component="div">
+          <MuiLayoutBox component="label">Status</MuiLayoutBox>
 
-          <select
+          <MuiSelectMigration
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
@@ -470,187 +472,187 @@ function DocumentManagement() {
             <option>Submitted</option>
             <option>Approved</option>
             <option>Rejected</option>
-          </select>
-        </div>
+          </MuiSelectMigration>
+        </MuiLayoutBox>
 
-        <div className="filter-field">
-          <label>From Date</label>
+        <MuiLayoutBox className="filter-field" component="div">
+          <MuiLayoutBox component="label">From Date</MuiLayoutBox>
 
-          <input
+          <MuiInputMigration
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
           />
-        </div>
+        </MuiLayoutBox>
 
-        <div className="filter-field">
-          <label>To Date</label>
+        <MuiLayoutBox className="filter-field" component="div">
+          <MuiLayoutBox component="label">To Date</MuiLayoutBox>
 
-          <input
+          <MuiInputMigration
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
           />
-        </div>
+        </MuiLayoutBox>
 
-        <div className="filter-buttons">
+        <MuiLayoutBox className="filter-buttons" component="div">
 
-          <button
+          <MuiButtonMigration
             className="search-button"
             onClick={() => { }}
           >
             <SearchRoundedIcon />
             Search
-          </button>
+          </MuiButtonMigration>
 
-          <button
+          <MuiButtonMigration
             className="reset-button"
             onClick={handleReset}
           >
             <RestartAltRoundedIcon />
             Reset
-          </button>
+          </MuiButtonMigration>
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
       {/* ================= TABLE ================= */}
 
-      <div className="document-table-container">
+      <MuiLayoutBox className="document-table-container" component="div">
 
-        <table className="document-table">
+        <MuiTableMigration className="document-table">
 
-          <thead>
-            <tr>
-              <th>Sr. No.</th>
-              <th>Employee ID</th>
-              <th>Employee Name</th>
-              <th>Document Name</th>
-              <th>Submitted On</th>
-              <th>Rejection Description</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+          <MuiTableHeadMigration>
+            <MuiTableRowMigration>
+              <MuiTableCellMigration>Sr. No.</MuiTableCellMigration>
+              <MuiTableCellMigration>Employee ID</MuiTableCellMigration>
+              <MuiTableCellMigration>Employee Name</MuiTableCellMigration>
+              <MuiTableCellMigration>Document Name</MuiTableCellMigration>
+              <MuiTableCellMigration>Submitted On</MuiTableCellMigration>
+              <MuiTableCellMigration>Rejection Description</MuiTableCellMigration>
+              <MuiTableCellMigration>Status</MuiTableCellMigration>
+              <MuiTableCellMigration>Actions</MuiTableCellMigration>
+            </MuiTableRowMigration>
+          </MuiTableHeadMigration>
 
-          <tbody>
+          <MuiTableBodyMigration>
 
             {loading ? (
-              <tr>
-                <td colSpan="8" className="table-message">
+              <MuiTableRowMigration>
+                <MuiTableCellMigration colSpan="8" className="table-message">
                   Loading documents...
-                </td>
-              </tr>
+                </MuiTableCellMigration>
+              </MuiTableRowMigration>
             ) : filteredDocuments.length === 0 ? (
-              <tr>
-                <td colSpan="8" className="table-message">
+              <MuiTableRowMigration>
+                <MuiTableCellMigration colSpan="8" className="table-message">
                   No documents found
-                </td>
-              </tr>
+                </MuiTableCellMigration>
+              </MuiTableRowMigration>
             ) : (
               filteredDocuments.map((document, index) => (
 
-                <tr key={getDocumentId(document) || index}>
+                <MuiTableRowMigration key={getDocumentId(document) || index}>
 
-                  <td>{index + 1}</td>
+                  <MuiTableCellMigration>{index + 1}</MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
                     {getEmployeeId(document)}
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
                     {getEmployeeName(document)}
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td>
-                    <div className="document-name">
+                  <MuiTableCellMigration>
+                    <MuiLayoutBox className="document-name" component="div">
 
                       <DescriptionRoundedIcon />
 
-                      <span>
+                      <MuiText component="span" variant="inherit">
                         {getDocumentName(document)}
-                      </span>
+                      </MuiText>
 
-                    </div>
-                  </td>
+                    </MuiLayoutBox>
+                  </MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
                     {formatDate(getSubmittedDate(document))}
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
   {getStatus(document).toLowerCase() === "rejected"
     ? (document.rejectionReason || document.RejectionReason || "-")
     : "-"}
-</td>
+</MuiTableCellMigration>
 
-                  <td>
-                    <span className={getStatusClass(getStatus(document))}>
+                  <MuiTableCellMigration>
+                    <MuiText className={getStatusClass(getStatus(document))} component="span" variant="inherit">
                       {getStatus(document)}
-                    </span>
-                  </td>
+                    </MuiText>
+                  </MuiTableCellMigration>
 
-                  <td>
-                    <div className="document-actions">
+                  <MuiTableCellMigration>
+                    <MuiLayoutBox className="document-actions" component="div">
                       {canApprove &&
                         String(
                           document.status || document.Status || ""
                         ).toLowerCase() === "submitted" && (
                           <>
-                            <button
+                            <MuiButtonMigration
                               type="button"
                               className="approve-btn"
                               onClick={() => handleApprove(document)}
                               title="Approve"
                             >
                               <CheckCircleOutlineRoundedIcon />
-                            </button>
+                            </MuiButtonMigration>
 
-                            <button
+                            <MuiButtonMigration
                               type="button"
                               className="reject-btn"
                               onClick={() => handleReject(document)}
                               title="Reject"
                             >
                               <CancelRoundedIcon />
-                            </button>
+                            </MuiButtonMigration>
                           </>
                         )}
 
-                      <button
+                      <MuiButtonMigration
                         type="button"
                         className="view-btn"
                         onClick={() => handleView(document)}
                         title="View"
                       >
                         <VisibilityRoundedIcon />
-                      </button>
-                    </div>
-                  </td>
+                      </MuiButtonMigration>
+                    </MuiLayoutBox>
+                  </MuiTableCellMigration>
 
-                </tr>
+                </MuiTableRowMigration>
 
               ))
             )}
 
-          </tbody>
+          </MuiTableBodyMigration>
 
-        </table>
+        </MuiTableMigration>
 
         {/* ================= FOOTER ================= */}
 
-        <div className="document-table-footer">
+        <MuiLayoutBox className="document-table-footer" component="div">
 
-          <span>
+          <MuiText component="span" variant="inherit">
             Showing {filteredDocuments.length} of {totalDocuments} entries
-          </span>
+          </MuiText>
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
-    </div>
+    </MuiLayoutBox>
   );
 }
 

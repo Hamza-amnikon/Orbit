@@ -1,3 +1,4 @@
+import { MuiButtonMigration } from "../../ui/MuiCompat.jsx";
 import "./Sidebar.css";
 
 import {
@@ -24,6 +25,7 @@ import PolicyRoundedIcon from "@mui/icons-material/PolicyRounded";
 
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, ListItemButton as MuiNavItem, Typography as MuiText } from "@mui/material";
 
 /* ============================================================
    SIDEBAR MENU
@@ -197,28 +199,28 @@ function Sidebar() {
 
     return (
 
-        <aside className="sidebar">
+        <MuiLayoutBox className="sidebar" component="aside">
 
             {/* =================================================
                 LOGO
             ================================================= */}
 
-            <div className="sidebar-logo">
+            <MuiLayoutBox className="sidebar-logo" component="div">
 
-                <img
+                <MuiLayoutBox
                     src={logo}
                     alt="AMNIKON Logo"
                     className="logo-image"
-                />
+                 component="img"/>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 SCROLLABLE MENU
             ================================================= */}
 
-            <nav className="sidebar-menu">
+            <MuiLayoutBox className="sidebar-menu" component="nav">
 
                 {allowedMenu.map(
                     (item) => {
@@ -228,40 +230,51 @@ function Sidebar() {
 
                         return (
 
-                            <NavLink
+                            <MuiNavItem
                                 key={item.title}
+                                component={NavLink}
                                 to={menuRoute}
                                 className={({ isActive }) =>
                                     isActive
                                         ? "menu-item active"
                                         : "menu-item"
                                 }
+                                sx={{
+                                    color: "text.secondary",
+                                    textDecoration: "none",
+                                    borderRadius: 2,
+                                    gap: 1.5,
+                                    "&.active": {
+                                        color: "primary.contrastText",
+                                        backgroundColor: "primary.main",
+                                    },
+                                }}
                             >
 
-                                <span className="menu-icon">
+                                <MuiText className="menu-icon" component="span" variant="inherit">
                                     {item.icon}
-                                </span>
+                                </MuiText>
 
-                                <span className="menu-title">
+                                <MuiText className="menu-title" component="span" variant="inherit">
                                     {item.title}
-                                </span>
+                                </MuiText>
 
-                            </NavLink>
+                            </MuiNavItem>
 
                         );
                     }
                 )}
 
-            </nav>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 FOOTER
             ================================================= */}
 
-            <div className="sidebar-footer">
+            <MuiLayoutBox className="sidebar-footer" component="div">
 
-                <button
+                <MuiButtonMigration
                     type="button"
                     className="logout-btn"
                     onClick={handleLogout}
@@ -269,15 +282,15 @@ function Sidebar() {
 
                     <LogoutRoundedIcon />
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Logout
-                    </span>
+                    </MuiText>
 
-                </button>
+                </MuiButtonMigration>
 
-            </div>
+            </MuiLayoutBox>
 
-        </aside>
+        </MuiLayoutBox>
 
     );
 }

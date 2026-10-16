@@ -1,8 +1,10 @@
+import { MuiButtonMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import "./ShiftManagement.css";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 export default function ShiftTable({
   rows = [],
@@ -11,112 +13,115 @@ export default function ShiftTable({
   onDelete,
 }) {
   return (
-    <div className="shift-table-wrapper">
-      <table className="shift-table">
-        <thead>
-          <tr>
-            <th>Employee</th>
+    <MuiLayoutBox className="shift-table-wrapper" component="div">
+      <MuiTableMigration className="shift-table">
+        <MuiTableHeadMigration>
+          <MuiTableRowMigration>
+            <MuiTableCellMigration>Employee</MuiTableCellMigration>
 
-            <th>Employee ID</th>
+            <MuiTableCellMigration>Employee ID</MuiTableCellMigration>
 
-            <th>Department</th>
+            <MuiTableCellMigration>Department</MuiTableCellMigration>
 
-            <th>Designation</th>
+            <MuiTableCellMigration>Designation</MuiTableCellMigration>
 
-            <th>Shift</th>
+            <MuiTableCellMigration>Shift</MuiTableCellMigration>
 
-            <th>From Date</th>
+            <MuiTableCellMigration>From Date</MuiTableCellMigration>
 
-            <th>To Date</th>
+            <MuiTableCellMigration>To Date</MuiTableCellMigration>
 
-            <th>Weekly Off</th>
+            <MuiTableCellMigration>Weekly Off</MuiTableCellMigration>
 
-            <th>Status</th>
+            <MuiTableCellMigration>Status</MuiTableCellMigration>
 
-            <th>Actions</th>
-          </tr>
-        </thead>
+            <MuiTableCellMigration>Actions</MuiTableCellMigration>
+          </MuiTableRowMigration>
+        </MuiTableHeadMigration>
 
-        <tbody>
+        <MuiTableBodyMigration>
           {rows.length === 0 ? (
-            <tr>
-              <td colSpan={10} className="no-data">
+            <MuiTableRowMigration>
+              <MuiTableCellMigration colSpan={10} className="no-data">
                 No shift assignments found.
-              </td>
-            </tr>
+              </MuiTableCellMigration>
+            </MuiTableRowMigration>
           ) : (
             rows.map((row) => (
-              <tr key={row.shiftId}>
-                <td>
-                  <div className="employee-cell">
-                    <div className="employee-avatar">
+              <MuiTableRowMigration key={row.shiftId}>
+                <MuiTableCellMigration>
+                  <MuiLayoutBox className="employee-cell" component="div">
+                    <MuiLayoutBox className="employee-avatar" component="div">
                       {row.employeeName?.charAt(0)}
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
-                      <strong>{row.employeeName}</strong>
-                    </div>
-                  </div>
-                </td>
+                    <MuiLayoutBox component="div">
+                      <MuiText component="strong" variant="inherit">{row.employeeName}</MuiText>
+                    </MuiLayoutBox>
+                  </MuiLayoutBox>
+                </MuiTableCellMigration>
 
-                <td>{row.azureEmployeeId}</td>
+                <MuiTableCellMigration>{row.azureEmployeeId}</MuiTableCellMigration>
 
-                <td>{row.department}</td>
+                <MuiTableCellMigration>{row.department}</MuiTableCellMigration>
 
-                <td>{row.designation}</td>
+                <MuiTableCellMigration>{row.designation}</MuiTableCellMigration>
 
-                <td>
-                  <span className="shift-chip">
+                <MuiTableCellMigration>
+                  <MuiText className="shift-chip" component="span" variant="inherit">
                     {row.shiftName}
-                  </span>
-                </td>
+                  </MuiText>
+                </MuiTableCellMigration>
 
-                <td>{row.fromDate}</td>
+                <MuiTableCellMigration>{row.fromDate}</MuiTableCellMigration>
 
-                <td>{row.toDate}</td>
+                <MuiTableCellMigration>{row.toDate}</MuiTableCellMigration>
 
-                <td>
+                <MuiTableCellMigration>
                   {row.weeklyOff1}
                   {row.weeklyOff2 ? `, ${row.weeklyOff2}` : ""}
-                </td>
+                </MuiTableCellMigration>
 
-                <td>
-                  <span
-                    className={`status-chip ${row.status.toLowerCase()}`}
-                  >
+                <MuiTableCellMigration>
+                  <MuiText
+                    className={`status-chip ${String(row.status || "").toLowerCase()}`}
+                   component="span" variant="inherit">
                     {row.status}
-                  </span>
-                </td>
+                  </MuiText>
+                </MuiTableCellMigration>
 
-                <td>
-                  <div className="action-buttons">
-                    <button
+                <MuiTableCellMigration>
+                  <MuiLayoutBox className="action-buttons" component="div">
+                    <MuiButtonMigration
                       className="view-btn"
+                      aria-label={`View shift for ${row.employeeName || "employee"}`}
                       onClick={() => onView(row)}
                     >
                       <VisibilityIcon fontSize="small" />
-                    </button>
+                    </MuiButtonMigration>
 
-                    <button
+                    <MuiButtonMigration
                       className="edit-btn"
+                      aria-label={`Edit shift for ${row.employeeName || "employee"}`}
                       onClick={() => onEdit(row)}
                     >
                       <EditIcon fontSize="small" />
-                    </button>
+                    </MuiButtonMigration>
 
-                    <button
+                    <MuiButtonMigration
                       className="delete-btn"
+                      aria-label={`Delete shift for ${row.employeeName || "employee"}`}
                       onClick={() => onDelete(row)}
                     >
                       <DeleteIcon fontSize="small" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+                    </MuiButtonMigration>
+                  </MuiLayoutBox>
+                </MuiTableCellMigration>
+              </MuiTableRowMigration>
             ))
           )}
-        </tbody>
-      </table>
-    </div>
+        </MuiTableBodyMigration>
+      </MuiTableMigration>
+    </MuiLayoutBox>
   );
 }

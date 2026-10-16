@@ -8,6 +8,7 @@ import { getProfile } from "../Services/ProfileService";
 import { getEmployeeAttendance } from "../Services/AttendanceService";
 
 import "./Dashboard.css";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function Dashboard() {
 
@@ -118,23 +119,23 @@ function Dashboard() {
 
     return (
 
-        <div className="employee-dashboard">
+        <MuiLayoutBox className="employee-dashboard" component="div">
 
             {/* =========================
                 WELCOME
             ========================= */}
 
-            <div className="dashboard-welcome">
+            <MuiLayoutBox className="dashboard-welcome" component="div">
 
-                <p>
+                <MuiText component="p" variant="body1">
                     Welcome back,
-                </p>
+                </MuiText>
 
-                <h1>
+                <MuiText component="h1" variant="h4">
                     Good Morning, {employeeName} 👋
-                </h1>
+                </MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =========================
@@ -168,7 +169,7 @@ function Dashboard() {
                 loading={loadingAttendance}
             />
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

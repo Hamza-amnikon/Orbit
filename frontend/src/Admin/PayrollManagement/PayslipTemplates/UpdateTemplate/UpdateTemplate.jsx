@@ -27,6 +27,7 @@ import { useAuth } from "../../../../context/AuthContext";
 
 import PayrollService from ".../Service/PayrollService";
 import "./UpdateTemplate.css";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 // Fallback values keep the dropdown usable if the salary-component
@@ -891,11 +892,11 @@ const renderComponentRow = (
                         }
                     >
                         <MenuItem value="">
-                            <em>
+                            <MuiText component="em" variant="inherit">
                                 {loadingComponents
                                     ? "Loading components..."
                                     : "Select salary component"}
-                            </em>
+                            </MuiText>
                         </MenuItem>
 
                         {availableComponents.map((component) => {
@@ -965,14 +966,14 @@ const renderComponentRow = (
                     type="number"
                     value={item.value ?? ""}
                     disabled={!canEdit}
-                    inputProps={{
+                    slotProps={{ htmlInput: {
                         min: 0,
                         max:
                             item.calculationType === "Percentage"
                                 ? 100
                                 : undefined,
                         step: "0.01",
-                    }}
+                    } }}
                     onChange={(event) =>
                         updateComponent(
                             setter,
@@ -1263,9 +1264,9 @@ const renderComponentRow = (
             )}
 
 
-            <form
+            <MuiLayoutBox
                 onSubmit={handleSave}
-            >
+             component="form">
 
                 <Box className="create-payslip-layout">
 
@@ -1552,27 +1553,27 @@ const renderComponentRow = (
                                 <Box className="preview-period-grid">
 
                                     <Box>
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             EMPLOYEE TYPE
-                                        </span>
+                                        </MuiText>
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             {
                                                 employeeType
                                             }
-                                        </strong>
+                                        </MuiText>
                                     </Box>
 
                                     <Box>
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             FREQUENCY
-                                        </span>
+                                        </MuiText>
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             {
                                                 frequency
                                             }
-                                        </strong>
+                                        </MuiText>
                                     </Box>
 
                                 </Box>
@@ -1602,7 +1603,7 @@ const renderComponentRow = (
                                                         item.id
                                                     }
                                                 >
-                                                    <span>
+                                                    <MuiText component="span" variant="inherit">
                                                         {
                                                             getComponent(
                                                                 item.salaryComponentId
@@ -1610,16 +1611,16 @@ const renderComponentRow = (
                                                                 ?.componentName ||
                                                             "Salary Component"
                                                         }
-                                                    </span>
+                                                    </MuiText>
 
-                                                    <strong>
+                                                    <MuiText component="strong" variant="inherit">
                                                         {item.calculationType ===
                                                         "Percentage"
                                                             ? `${item.value}%`
                                                             : formatCurrency(
                                                                   item.value
                                                               )}
-                                                    </strong>
+                                                    </MuiText>
                                                 </Box>
                                             )
                                         )
@@ -1652,7 +1653,7 @@ const renderComponentRow = (
                                                         item.id
                                                     }
                                                 >
-                                                    <span>
+                                                    <MuiText component="span" variant="inherit">
                                                         {
                                                             getComponent(
                                                                 item.salaryComponentId
@@ -1660,16 +1661,16 @@ const renderComponentRow = (
                                                                 ?.componentName ||
                                                             "Deduction"
                                                         }
-                                                    </span>
+                                                    </MuiText>
 
-                                                    <strong>
+                                                    <MuiText component="strong" variant="inherit">
                                                         {item.calculationType ===
                                                         "Percentage"
                                                             ? `${item.value}%`
                                                             : formatCurrency(
                                                                   item.value
                                                               )}
-                                                    </strong>
+                                                    </MuiText>
                                                 </Box>
                                             )
                                         )
@@ -1682,15 +1683,15 @@ const renderComponentRow = (
 
                                 <Box className="preview-net-salary">
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         NET SALARY
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {formatCurrency(
                                             previewNet
                                         )}
-                                    </strong>
+                                    </MuiText>
 
                                 </Box>
 
@@ -1746,7 +1747,7 @@ const renderComponentRow = (
 
                 </Box>
 
-            </form>
+            </MuiLayoutBox>
 
         </Box>
     );

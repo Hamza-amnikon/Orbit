@@ -99,7 +99,7 @@ export default function ShiftDetailsDialog({
 
         <Grid container spacing={3}>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
 
             <Typography fontWeight={600}>
               Employee Name
@@ -111,7 +111,7 @@ export default function ShiftDetailsDialog({
 
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
 
             <Typography fontWeight={600}>
               Employee ID
@@ -123,7 +123,7 @@ export default function ShiftDetailsDialog({
 
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
 
             <Typography fontWeight={600}>
               Department
@@ -135,7 +135,7 @@ export default function ShiftDetailsDialog({
 
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
 
             <Typography fontWeight={600}>
               Designation
@@ -175,7 +175,7 @@ export default function ShiftDetailsDialog({
 
         <Grid container spacing={3}>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
 
             <Typography fontWeight={600}>
               Shift
@@ -187,7 +187,7 @@ export default function ShiftDetailsDialog({
 
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
 
             <Typography fontWeight={600}>
               Shift Timing
@@ -199,7 +199,7 @@ export default function ShiftDetailsDialog({
 
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
 
             <Typography fontWeight={600}>
               Check In
@@ -211,7 +211,7 @@ export default function ShiftDetailsDialog({
 
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
 
             <Typography fontWeight={600}>
               Status
@@ -261,7 +261,7 @@ export default function ShiftDetailsDialog({
 
         <Grid container spacing={3}>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
 
             <Typography fontWeight={600}>
               Weekly Off
@@ -273,7 +273,7 @@ export default function ShiftDetailsDialog({
 
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid size={6}>
 
             <Typography fontWeight={600}>
               Reporting Manager
@@ -285,7 +285,7 @@ export default function ShiftDetailsDialog({
 
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
 
             <Typography fontWeight={600}>
               Remarks

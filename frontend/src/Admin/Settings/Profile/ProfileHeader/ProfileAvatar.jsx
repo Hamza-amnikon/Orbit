@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ProfileAvatar({ profile }) {
 
@@ -12,13 +13,13 @@ console.log("Profile:", profile);
 console.log("Photo URL:", profile.photoUrl);
     return (
 
-        <div className="profile-avatar-wrapper">
+        <MuiLayoutBox className="profile-avatar-wrapper" component="div">
 
-            <div className="profile-avatar">
+            <MuiLayoutBox className="profile-avatar" component="div">
 
                 {showPhoto ? (
 
-<img
+<MuiLayoutBox
     src={profile.photoUrl}
     alt={profile.displayName}
     className="profile-avatar-image"
@@ -27,23 +28,23 @@ console.log("Photo URL:", profile.photoUrl);
         console.log("Image failed:", e.target.src);
         setImageError(true);
     }}
-/>
+ component="img"/>
 
                 ) : (
 
-                    <div className="profile-avatar-letter">
+                    <MuiLayoutBox className="profile-avatar-letter" component="div">
 
                         {profile.displayName?.charAt(0).toUpperCase()}
 
-                    </div>
+                    </MuiLayoutBox>
 
                 )}
 
-                <span className="profile-online"></span>
+                <MuiText className="profile-online" component="span" variant="inherit"></MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

@@ -1,3 +1,4 @@
+import { MuiInputMigration } from "../../components/ui/MuiCompat.jsx";
 import React, {
     useEffect,
     useMemo,
@@ -1314,7 +1315,7 @@ if (form.receipt.size > maxSize) {
                             )
                         }
                         className="my-reimbursements-search"
-                        InputProps={{
+                        slotProps={{ input: {
                             startAdornment: (
                                 <InputAdornment
                                     position="start"
@@ -1322,7 +1323,7 @@ if (form.receipt.size > maxSize) {
                                     <SearchRoundedIcon />
                                 </InputAdornment>
                             ),
-                        }}
+                        } }}
                     />
 
                     <FormControl
@@ -1619,7 +1620,7 @@ if (form.receipt.size > maxSize) {
                             onChange={
                                 handleFormChange
                             }
-                            InputProps={{
+                            slotProps={{ input: {
                                 startAdornment: (
                                     <InputAdornment
                                         position="start"
@@ -1627,7 +1628,7 @@ if (form.receipt.size > maxSize) {
                                         ₹
                                     </InputAdornment>
                                 ),
-                            }}
+                            } }}
                         />
 
                         <TextField
@@ -1640,9 +1641,9 @@ if (form.receipt.size > maxSize) {
                             onChange={
                                 handleFormChange
                             }
-                            InputLabelProps={{
+                            slotProps={{ inputLabel: {
                                 shrink: true,
-                            }}
+                            } }}
                         />
 
                         <TextField
@@ -1669,7 +1670,7 @@ if (form.receipt.size > maxSize) {
                                 ? form.receipt.name
                                 : "Upload Receipt *"}
 
-                            <input
+                            <MuiInputMigration
                                 hidden
                                 required
                                 type="file"

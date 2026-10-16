@@ -6,6 +6,7 @@ import {
     Phone,
     Home
 } from "@mui/icons-material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function EmergencyContact({ profile }) {
 
@@ -13,87 +14,87 @@ function EmergencyContact({ profile }) {
 
     return (
 
-        <div className="profile-section">
+        <MuiLayoutBox className="profile-section" component="div">
 
-            <div className="section-header">
+            <MuiLayoutBox className="section-header" component="div">
 
-                <div className="section-icon emergency-icon">
+                <MuiLayoutBox className="section-icon emergency-icon" component="div">
 
                     <Favorite />
 
-                </div>
+                </MuiLayoutBox>
 
-                <div>
+                <MuiLayoutBox component="div">
 
-                    <h3>Emergency Contact</h3>
+                    <MuiText component="h3" variant="h6">Emergency Contact</MuiText>
 
-                    <p>Primary emergency contact details</p>
+                    <MuiText component="p" variant="body1">Primary emergency contact details</MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
-            <div className="section-body">
+            <MuiLayoutBox className="section-body" component="div">
 
-                <div className="profile-item">
+                <MuiLayoutBox className="profile-item" component="div">
 
                     <Person className="item-icon" />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <label>Contact Person</label>
+                        <MuiLayoutBox component="label">Contact Person</MuiLayoutBox>
 
-                        <span>{profile.emergencyContactName || "-"}</span>
+                        <MuiText component="span" variant="inherit">{profile.emergencyContactName || "-"}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="profile-item">
+                <MuiLayoutBox className="profile-item" component="div">
 
                     <Favorite className="item-icon" />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <label>Relationship</label>
+                        <MuiLayoutBox component="label">Relationship</MuiLayoutBox>
 
-                        <span>{profile.emergencyRelationship || "-"}</span>
+                        <MuiText component="span" variant="inherit">{profile.emergencyRelationship || "-"}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="profile-item">
+                <MuiLayoutBox className="profile-item" component="div">
 
                     <Phone className="item-icon" />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <label>Phone Number</label>
+                        <MuiLayoutBox component="label">Phone Number</MuiLayoutBox>
 
-                        <span>{profile.emergencyPhone || "-"}</span>
+                        <MuiText component="span" variant="inherit">{profile.emergencyPhone || "-"}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="profile-item">
+                <MuiLayoutBox className="profile-item" component="div">
 
                     <Home className="item-icon" />
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <label>Address</label>
+                        <MuiLayoutBox component="label">Address</MuiLayoutBox>
 
-                        <span>{profile.emergencyAddress || "-"}</span>
+                        <MuiText component="span" variant="inherit">{profile.emergencyAddress || "-"}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

@@ -1,3 +1,4 @@
+import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./LeaveTypes.css";
@@ -16,9 +17,24 @@ import {
     Button,
     IconButton,
     Box,
+    Paper,
+    Stack,
+    Typography,
+    InputAdornment,
+    Snackbar,
+    Alert,
+    Chip,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close";
+import ArrowBackRounded from "@mui/icons-material/ArrowBackRounded";
+import RefreshRounded from "@mui/icons-material/RefreshRounded";
+import AddRounded from "@mui/icons-material/AddRounded";
+import SearchRounded from "@mui/icons-material/SearchRounded";
+import EditOutlined from "@mui/icons-material/EditOutlined";
+import DeleteOutlineRounded from "@mui/icons-material/DeleteOutlineRounded";
+import Tooltip from "@mui/material/Tooltip";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 const LEAVE_TYPE_API =
     `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/LeaveType`;
@@ -34,6 +50,11 @@ export default function LeaveTypes() {
     const canDelete = hasPermission(permissionRoute, "delete");
 
     const [leaveTypes, setLeaveTypes] = useState([]);
+    const [search, setSearch] = useState("");
+    const [statusFilter, setStatusFilter] = useState("All");
+    const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const [showForm, setShowForm] = useState(false);
 
@@ -56,18 +77,16 @@ export default function LeaveTypes() {
 
 
     async function loadLeaveTypes() {
-
+        setLoading(true);
         try {
-
             const response = await axios.get(LEAVE_TYPE_API);
-
-            setLeaveTypes(response.data);
-
+            setLeaveTypes(Array.isArray(response.data) ? response.data : []);
         }
         catch (error) {
-
             console.error("Leave Type Error:", error);
-
+            setNotice({ open: true, message: "Could not load leave types. Please try again.", severity: "error" });
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -83,16 +102,13 @@ export default function LeaveTypes() {
         e.preventDefault();
 
         if (!leaveTypeName.trim()) {
-
-            alert("Please enter Leave Type Name.");
-
+            setNotice({ open: true, message: "Please enter a leave type name.", severity: "warning" });
             return;
         }
 
         if (!leaveCode.trim()) {
 
-            alert("Please enter Leave Code.");
-
+            setNotice({ open: true, message: "Please enter a leave code.", severity: "warning" });
             return;
         }
 
@@ -118,7 +134,7 @@ export default function LeaveTypes() {
                 leaveType
             );
 
-            alert("Leave Type Added Successfully");
+            setNotice({ open: true, message: "Leave type added successfully.", severity: "success" });
 
 
             // Reset form
@@ -146,12 +162,12 @@ export default function LeaveTypes() {
 
             if (error.response) {
 
-                alert("Unable to add Leave Type.");
+                setNotice({ open: true, message: "Unable to add leave type.", severity: "error" });
 
             }
             else {
 
-                alert("Unable to connect to Leave API.");
+                setNotice({ open: true, message: "Unable to connect to the leave service.", severity: "error" });
 
             }
 
@@ -243,9 +259,7 @@ export default function LeaveTypes() {
 
             );
 
-            alert(
-                "Leave Type Updated Successfully"
-            );
+            setNotice({ open: true, message: "Leave type updated successfully.", severity: "success" });
 
 
             setEditingId(null);
@@ -273,9 +287,7 @@ export default function LeaveTypes() {
                 error
             );
 
-            alert(
-                "Unable to update Leave Type."
-            );
+            setNotice({ open: true, message: "Unable to update leave type.", severity: "error" });
 
         }
     }
@@ -285,53 +297,32 @@ export default function LeaveTypes() {
     // Delete Leave Type
     // ==========================================
 
-    async function deleteLeaveType(leaveType) {
-
-        if (!canDelete) return;
-
-        const confirmDelete =
-            window.confirm(
-
-                `Are you sure you want to delete "${leaveType.leaveTypeName}"?`
-
-            );
-
-
-        if (!confirmDelete) {
-
-            return;
-
-        }
-
-
+    async function deleteLeaveType() {
+        if (!canDelete || !deleteTarget) return;
         try {
-
             await axios.delete(
-
-                `${LEAVE_TYPE_API}/${leaveType.leaveTypeId}`
-
+                `${LEAVE_TYPE_API}/${deleteTarget.leaveTypeId}`
             );
-
-            alert(
-                "Leave Type Deleted Successfully"
-            );
-
+            setNotice({ open: true, message: "Leave type deleted successfully.", severity: "success" });
+            setDeleteTarget(null);
             await loadLeaveTypes();
-
         }
         catch (error) {
-
             console.error(
                 "Delete Leave Type Error:",
                 error
             );
-
-            alert(
-                "Unable to delete Leave Type."
-            );
-
+            setNotice({ open: true, message: "Unable to delete leave type.", severity: "error" });
         }
     }
+
+    const filteredLeaveTypes = leaveTypes.filter((item) => {
+        const query = search.trim().toLowerCase();
+        const matchesSearch = !query || [item.leaveTypeName, item.leaveCode, item.description, item.eligibleGender]
+            .some((value) => String(value ?? "").toLowerCase().includes(query));
+        const matchesStatus = statusFilter === "All" || String(item.status).toLowerCase() === statusFilter.toLowerCase();
+        return matchesSearch && matchesStatus;
+    });
 
 
     // ==========================================
@@ -359,89 +350,73 @@ export default function LeaveTypes() {
 
     if (!canView) {
         return (
-            <div
+            <MuiLayoutBox
                 className="leave-types-page"
                 style={{ padding: "60px", textAlign: "center" }}
-            >
-                <h2>Access Denied</h2>
-                <p>You do not have permission to access this page.</p>
-            </div>
+             component="div">
+                <Typography component="h2" variant="h5">Access Denied</Typography>
+                <Typography component="p" variant="body1">You do not have permission to access this page.</Typography>
+            </MuiLayoutBox>
         );
     }
 
     return (
 
-        <div className="leave-types-page">
+        <MuiLayoutBox className="leave-types-page" component="main">
 
-            <div className="leave-types-outer-card">
+            <MuiLayoutBox className="leave-types-outer-card" component="div">
 
-                <div className="leave-types-main-card">
+                <MuiLayoutBox className="leave-types-main-card" component="div">
 
 
                     {/* ==========================================
                         HEADER CARD
                     ========================================== */}
 
-                    <div className="leave-types-header-card">
+                    <Paper className="leave-types-header-card" elevation={0} component="header">
+                        <Stack className="leave-types-heading" direction="row" alignItems="center" spacing={1.5}>
+                            <IconButton className="leave-types-back" onClick={() => window.history.back()} aria-label="Go back">
+                                <ArrowBackRounded />
+                            </IconButton>
+                            <Box>
+                                <Typography component="h1" variant="h4">Leave Types</Typography>
+                                <Typography component="p" variant="body1">Manage the types of leave available to employees.</Typography>
+                            </Box>
+                        </Stack>
+                        <Stack className="leave-type-header-actions" direction="row" spacing={1}>
+                            <Button variant="outlined" startIcon={<RefreshRounded />} onClick={loadLeaveTypes} disabled={loading}>
+                                Refresh
+                            </Button>
+                            {canCreate && (
+                                <Button variant="contained" startIcon={<AddRounded />} onClick={() => { closeForm(); setShowForm(true); }}>
+                                    Add Leave Type
+                                </Button>
+                            )}
+                        </Stack>
+                    </Paper>
 
-                        <div className="leave-types-header">
-
-                            <div>
-
-                                <h1>
-                                    Leave Types
-                                </h1>
-
-                                <p>
-                                    Manage the types of leave available to employees.
-                                </p>
-
-                            </div>
-
-
-                            <div className="leave-type-header-actions">
-
-                                <button
-                                    type="button"
-                                    className="leave-type-action-btn"
-                                    onClick={() =>
-                                        window.history.back()
-                                    }
-                                >
-                                    ← Previous
-                                </button>
-
-
-                                <button
-                                    type="button"
-                                    className="leave-type-action-btn"
-                                    onClick={loadLeaveTypes}
-                                >
-                                    ↻ Refresh
-                                </button>
-
-
-                                {canCreate && (
-                                    <button
-                                        type="button"
-                                        className="add-leave-type-btn"
-                                        onClick={() => {
-
-                                            closeForm();
-
-                                            setShowForm(true);
-
-                                        }}
-                                    >
-                                        + Add Leave Type
-                                    </button>
-                                )}
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    <Paper className="leave-types-toolbar" elevation={0} component="section">
+                        <TextField
+                            className="leave-types-search"
+                            size="small"
+                            value={search}
+                            onChange={(event) => setSearch(event.target.value)}
+                            placeholder="Search by leave type, code or description"
+                            aria-label="Search leave types"
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start"><SearchRounded color="action" /></InputAdornment>,
+                                endAdornment: search ? <InputAdornment position="end"><IconButton size="small" aria-label="Clear search" onClick={() => setSearch("")}><CloseIcon fontSize="small" /></IconButton></InputAdornment> : null,
+                            }}
+                        />
+                        <FormControl className="leave-types-status-filter" size="small">
+                            <InputLabel id="leave-types-status-label">Status</InputLabel>
+                            <Select labelId="leave-types-status-label" label="Status" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+                                <MenuItem value="All">All Status</MenuItem>
+                                <MenuItem value="Active">Active</MenuItem>
+                                <MenuItem value="Inactive">Inactive</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Paper>
 
 
                     {/* ==========================================
@@ -555,14 +530,14 @@ export default function LeaveTypes() {
 
                         >
 
-                            <form
+                            <MuiLayoutBox
                                 id="leave-type-form"
                                 onSubmit={
                                     editingId
                                         ? updateLeaveType
                                         : addLeaveType
                                 }
-                            >
+                             component="form">
 
                                 <Box
 
@@ -748,7 +723,7 @@ export default function LeaveTypes() {
 
                                 </Box>
 
-                            </form>
+                            </MuiLayoutBox>
 
                         </DialogContent>
 
@@ -890,143 +865,139 @@ export default function LeaveTypes() {
                         LEAVE TYPE TABLE
                     ========================================== */}
 
-                    <div className="leave-type-table-card">
+                    <Paper className="leave-type-table-card" elevation={0} component="section">
+                        <Box className="leave-type-table-heading">
+                            <Box>
+                                <Typography component="h2" variant="h6">Leave Types</Typography>
+                                <Typography variant="body2">Manage eligibility and availability.</Typography>
+                            </Box>
+                            <Chip size="small" label={`${filteredLeaveTypes.length} ${filteredLeaveTypes.length === 1 ? "type" : "types"}`} />
+                        </Box>
+                        <Box className="leave-type-table-scroll">
+                        <MuiTableMigration className="leave-type-table">
 
-                        <table className="leave-type-table">
+                            <MuiTableHeadMigration>
 
-                            <thead>
+                                <MuiTableRowMigration>
 
-                                <tr>
-
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Leave Type
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Code
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Description
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Status
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Eligible Gender
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Actions
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                </tr>
+                                </MuiTableRowMigration>
 
-                            </thead>
+                            </MuiTableHeadMigration>
 
 
-                            <tbody>
+                            <MuiTableBodyMigration>
 
-                                {leaveTypes.length === 0 ? (
+                                {filteredLeaveTypes.length === 0 ? (
 
-                                    <tr>
+                                    <MuiTableRowMigration>
 
-                                        <td
-                                            colSpan="7"
+                                        <MuiTableCellMigration
+                                            colSpan="6"
                                             className="no-leave-types"
                                         >
-                                            No leave types found.
-                                        </td>
+                                            {search || statusFilter !== "All" ? "No leave types match your filters." : "No leave types found."}
+                                        </MuiTableCellMigration>
 
-                                    </tr>
+                                    </MuiTableRowMigration>
 
                                 ) : (
 
-                                    leaveTypes.map(
+                                    filteredLeaveTypes.map(
                                         (leaveType) => (
 
-                                            <tr
+                                            <MuiTableRowMigration
                                                 key={
                                                     leaveType.leaveTypeId
                                                 }
                                             >
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
-                                                    <strong>
+                                                    <MuiText component="strong" variant="inherit">
                                                         {
                                                             leaveType.leaveTypeName
                                                         }
-                                                    </strong>
+                                                    </MuiText>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {
                                                         leaveType.leaveCode
                                                     }
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {
                                                         leaveType.description ||
                                                         "-"
                                                     }
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
-                                                    <span
+                                                    <Chip
+                                                        className="leave-status-chip"
+                                                        label={leaveType.status || "Inactive"}
+                                                        color={leaveType.status === "Active" ? "success" : "error"}
+                                                        size="small"
+                                                    />
 
-                                                        className={
-
-                                                            leaveType.status ===
-                                                            "Active"
-
-                                                                ? "leave-status active"
-
-                                                                : "leave-status inactive"
-
-                                                        }
-
-                                                    >
-
-                                                        {
-                                                            leaveType.status
-                                                        }
-
-                                                    </span>
-
-                                                </td>
+                                                </MuiTableCellMigration>
 
 
-                                                <td>
+                                                <MuiTableCellMigration>
                                                     {
                                                         leaveType.eligibleGender ||
                                                         "All"
                                                     }
-                                                </td>
+                                                </MuiTableCellMigration>
 
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
-                                                    <div className="leave-action-buttons">
+                                                    <Stack className="leave-action-buttons" direction="row" spacing={0.75}>
 
                                                         {canEdit && (
-                                                            <button
+                                                            <Tooltip title="Edit leave type">
+                                                            <Button
 
                                                                 type="button"
 
                                                                 className="edit-leave-btn"
+                                                                variant="contained"
+                                                                aria-label={`Edit ${leaveType.leaveTypeName}`}
 
                                                                 onClick={() =>
                                                                     editLeaveType(
@@ -1034,52 +1005,69 @@ export default function LeaveTypes() {
                                                                     )
                                                                 }
 
-                                                            >
-                                                                Edit
-                                                            </button>
+                                                            ><EditOutlined /></Button>
+                                                            </Tooltip>
                                                         )}
 
 
                                                         {canDelete && (
-                                                            <button
+                                                            <Tooltip title="Delete leave type">
+                                                            <Button
 
                                                                 type="button"
 
                                                                 className="delete-leave-btn"
+                                                                variant="contained"
+                                                                aria-label={`Delete ${leaveType.leaveTypeName}`}
 
-                                                                onClick={() =>
-                                                                    deleteLeaveType(
-                                                                        leaveType
-                                                                    )
-                                                                }
+                                                                onClick={() => setDeleteTarget(leaveType)}
 
-                                                            >
-                                                                Delete
-                                                            </button>
+                                                            ><DeleteOutlineRounded /></Button>
+                                                            </Tooltip>
                                                         )}
 
-                                                    </div>
+                                                    </Stack>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                            </tr>
+                                            </MuiTableRowMigration>
 
                                         )
                                     )
 
                                 )}
 
-                            </tbody>
+                            </MuiTableBodyMigration>
 
-                        </table>
+                        </MuiTableMigration>
 
-                    </div>
+                        </Box>
+                    </Paper>
 
-                </div>
+                    <Dialog open={Boolean(deleteTarget)} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
+                        <DialogTitle>Delete leave type?</DialogTitle>
+                        <DialogContent>
+                            <Typography variant="body2" color="text.secondary">
+                                Are you sure you want to delete “{deleteTarget?.leaveTypeName}”? This action cannot be undone.
+                            </Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button variant="outlined" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+                            <Button variant="contained" color="error" onClick={deleteLeaveType}>Delete</Button>
+                        </DialogActions>
+                    </Dialog>
 
-            </div>
+                    <Snackbar open={notice.open} autoHideDuration={4500} onClose={() => setNotice((current) => ({ ...current, open: false }))}>
+                        <Alert severity={notice.severity} variant="filled" onClose={() => setNotice((current) => ({ ...current, open: false }))}>
+                            {notice.message}
+                        </Alert>
+                    </Snackbar>
 
-        </div>
+                </MuiLayoutBox>
+
+            </MuiLayoutBox>
+
+        </MuiLayoutBox>
 
     );
 }

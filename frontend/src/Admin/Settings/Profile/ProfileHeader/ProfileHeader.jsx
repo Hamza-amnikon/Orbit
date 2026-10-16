@@ -3,6 +3,7 @@ import { Edit } from "@mui/icons-material";
 
 import ProfileAvatar from "./ProfileAvatar";
 import ProfileDetails from "./ProfileDetails";
+import { Box as MuiLayoutBox } from "@mui/material";
 
 function ProfileHeader({ profile }) {
 
@@ -10,13 +11,13 @@ function ProfileHeader({ profile }) {
 
     return (
 
-        <section className="profile-header">
+        <MuiLayoutBox className="profile-header" component="section">
 
             {/* Cover Section */}
 
-            <div className="profile-cover">
+            <MuiLayoutBox className="profile-cover" component="div">
 
-                <div className="cover-overlay"></div>
+                <MuiLayoutBox className="cover-overlay" component="div"></MuiLayoutBox>
 
                 {/* <button className="edit-profile-btn">
 
@@ -26,19 +27,19 @@ function ProfileHeader({ profile }) {
 
                 </button> */}
 
-            </div>
+            </MuiLayoutBox>
 
             {/* Main Body */}
 
-            <div className="profile-body">
+            <MuiLayoutBox className="profile-body" component="div">
 
                 <ProfileAvatar profile={profile} />
 
                 <ProfileDetails profile={profile} />
 
-            </div>
+            </MuiLayoutBox>
 
-        </section>
+        </MuiLayoutBox>
 
     );
 

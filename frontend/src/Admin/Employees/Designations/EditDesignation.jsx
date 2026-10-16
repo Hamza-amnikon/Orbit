@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function EditDesignation({
@@ -23,6 +24,7 @@ function EditDesignation({
   designation,
   handleClose,
   handleUpdate,
+  onNotify,
 }) {
 
   // =========================================================
@@ -226,9 +228,7 @@ function EditDesignation({
 
     if (!isAuthenticated) {
 
-      alert(
-        "You are not authenticated. Please sign in again."
-      );
+      onNotify?.("You are not authenticated. Please sign in again.", "error");
 
       return false;
 
@@ -254,9 +254,7 @@ function EditDesignation({
       );
 
 
-      alert(
-        "Your Employee ID could not be determined. Please sign in again."
-      );
+      onNotify?.("Your Employee ID could not be determined. Please sign in again.", "error");
 
       return false;
 
@@ -296,9 +294,7 @@ function EditDesignation({
       Number(formData.designationId) <= 0
     ) {
 
-      alert(
-        "Designation ID is missing."
-      );
+      onNotify?.("Designation ID is missing.", "error");
 
       return;
 
@@ -314,9 +310,7 @@ function EditDesignation({
       !formData.designationName.trim()
     ) {
 
-      alert(
-        "Designation Name is required."
-      );
+      onNotify?.("Designation Name is required.", "error");
 
       return;
 
@@ -572,13 +566,13 @@ function EditDesignation({
             size={{ xs: 12 }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
               >
                 Designation{" "}
-                <span>*</span>
+                <MuiText component="span" variant="inherit">*</MuiText>
               </Typography>
 
 
@@ -596,7 +590,7 @@ function EditDesignation({
                 placeholder="Enter Designation"
               />
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 
@@ -609,7 +603,7 @@ function EditDesignation({
             size={{ xs: 12 }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
@@ -634,7 +628,7 @@ function EditDesignation({
                 placeholder="Enter Description"
               />
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 
@@ -647,7 +641,7 @@ function EditDesignation({
             size={{ xs: 12 }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
@@ -680,7 +674,7 @@ function EditDesignation({
 
               </TextField>
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 

@@ -1,120 +1,64 @@
+import { MuiButtonMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../components/ui/MuiCompat.jsx";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
-import Swal from "sweetalert2";
-
-import { deleteRole } from "./RoleService";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function RoleTable({
   roles,
-  fetchRoles,
   setEditRole,
   setShowForm,
+  setPendingDelete,
   canEdit,
   canDelete,
 }) {
-  const handleDelete = async (id) => {
-    // Permission check
-    if (!canDelete) {
-      return;
-    }
-
-    const result = await Swal.fire({
-      title: "Delete Role?",
-
-      text: "This role will be permanently deleted.",
-
-      icon: "warning",
-
-      showCancelButton: true,
-
-      confirmButtonColor: "#ef4444",
-
-      cancelButtonColor: "#64748b",
-
-      confirmButtonText: "Delete",
-
-      cancelButtonText: "Cancel",
-    });
-
-    if (!result.isConfirmed) return;
-
-    try {
-      await deleteRole(id);
-
-      await fetchRoles();
-
-      Swal.fire({
-        icon: "success",
-
-        title: "Deleted",
-
-        text: "Role deleted successfully.",
-
-        timer: 1800,
-
-        showConfirmButton: false,
-      });
-    } catch (error) {
-      console.error(error);
-
-      Swal.fire({
-        icon: "error",
-
-        title: "Oops...",
-
-        text: "Unable to delete role.",
-      });
-    }
-  };
-
   return (
-    <table className="role-table">
-      <thead>
-        <tr>
-          <th>ID</th>
+    <MuiTableMigration className="role-table">
+      <MuiTableHeadMigration>
+        <MuiTableRowMigration>
+          <MuiTableCellMigration>ID</MuiTableCellMigration>
 
-          <th>Role</th>
+          <MuiTableCellMigration>Role</MuiTableCellMigration>
 
-          <th>Created Date</th>
+          <MuiTableCellMigration>Created Date</MuiTableCellMigration>
 
-          <th>Status</th>
+          <MuiTableCellMigration>Status</MuiTableCellMigration>
 
-          <th style={{ textAlign: "center" }}>Action</th>
-        </tr>
-      </thead>
+          <MuiTableCellMigration style={{ textAlign: "center" }}>Action</MuiTableCellMigration>
+        </MuiTableRowMigration>
+      </MuiTableHeadMigration>
 
-      <tbody>
+      <MuiTableBodyMigration>
         {roles.length > 0 ? (
           roles.map((role, index) => (
-            <tr key={role.roleId}>
-              <td>{index + 1}</td>
+            <MuiTableRowMigration key={role.roleId}>
+              <MuiTableCellMigration>{index + 1}</MuiTableCellMigration>
 
-              <td>
-                <strong>{role.role}</strong>
-              </td>
+              <MuiTableCellMigration>
+                <MuiText component="strong" variant="inherit">{role.role}</MuiText>
+              </MuiTableCellMigration>
 
-              <td>{role.createdDate}</td>
+              <MuiTableCellMigration>{role.createdDate}</MuiTableCellMigration>
 
-              <td>
-                <span
+              <MuiTableCellMigration>
+                <MuiText
                   className={
                     role.status?.toLowerCase() === "active"
                       ? "status-active"
                       : "status-inactive"
                   }
-                >
+                 component="span" variant="inherit">
                   {role.status}
-                </span>
-              </td>
+                </MuiText>
+              </MuiTableCellMigration>
 
-              <td>
-                <div className="role-actions">
+              <MuiTableCellMigration>
+                <MuiLayoutBox className="role-actions" component="div">
 
                   {/* EDIT */}
                   {canEdit && (
-                    <button
+                    <MuiButtonMigration
                       className="edit-btn"
                       title="Edit Role"
                       onClick={() => {
@@ -124,27 +68,27 @@ function RoleTable({
                       }}
                     >
                       <EditRoundedIcon fontSize="small" />
-                    </button>
+                    </MuiButtonMigration>
                   )}
 
                   {/* DELETE */}
                   {canDelete && (
-                    <button
+                    <MuiButtonMigration
                       className="delete-btn"
                       title="Delete Role"
-                      onClick={() => handleDelete(role.roleId)}
+                      onClick={() => setPendingDelete(role)}
                     >
                       <DeleteRoundedIcon fontSize="small" />
-                    </button>
+                    </MuiButtonMigration>
                   )}
 
-                </div>
-              </td>
-            </tr>
+                </MuiLayoutBox>
+              </MuiTableCellMigration>
+            </MuiTableRowMigration>
           ))
         ) : (
-          <tr>
-            <td
+          <MuiTableRowMigration>
+            <MuiTableCellMigration
               colSpan="5"
               style={{
                 textAlign: "center",
@@ -152,20 +96,20 @@ function RoleTable({
                 padding: "50px",
               }}
             >
-              <div className="role-empty">
-                <h3>No Roles Found</h3>
+              <MuiLayoutBox className="role-empty" component="div">
+                <MuiText component="h3" variant="h6">No Roles Found</MuiText>
 
-                <p>
+                <MuiText component="p" variant="body1">
                   Click
-                  <strong> Add Role </strong>
+                  <MuiText component="strong" variant="inherit"> Add Role </MuiText>
                   to create your first role.
-                </p>
-              </div>
-            </td>
-          </tr>
+                </MuiText>
+              </MuiLayoutBox>
+            </MuiTableCellMigration>
+          </MuiTableRowMigration>
         )}
-      </tbody>
-    </table>
+      </MuiTableBodyMigration>
+    </MuiTableMigration>
   );
 }
 

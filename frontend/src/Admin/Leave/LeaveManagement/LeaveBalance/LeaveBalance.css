@@ -250,7 +250,7 @@
 
 .leave-balance-page .leave-balance-filters {
   display: grid;
-  grid-template-columns: minmax(300px, 1.5fr) minmax(230px, 0.8fr);
+  grid-template-columns: minmax(300px, 1.5fr) minmax(230px, 0.8fr) auto;
   gap: 18px;
   align-items: end;
 }
@@ -660,7 +660,7 @@
   }
 
   .leave-balance-page .leave-balance-filters {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(260px, 1.5fr) minmax(220px, 0.8fr) auto;
   }
 }
 
@@ -728,6 +728,7 @@
 
   .leave-balance-page .clear-filter-btn {
     align-self: flex-start;
+    justify-self: start;
   }
 
   .leave-balance-page .leave-balance-table {
@@ -793,4 +794,292 @@
 .leave-balance-page .sync-leave-policy-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Consistent page header, controls, and table styling. */
+.leave-balance-page {
+  padding: 32px;
+  background: #f6f9fe;
+}
+
+.dashboard-content.workspace-ui > .leave-balance-page {
+  padding: 32px !important;
+}
+
+.leave-balance-page .leave-balance-header,
+.dashboard-content.workspace-ui .leave-balance-page .leave-balance-header {
+  position: relative !important;
+  display: block !important;
+  width: 100%;
+  min-height: 64px;
+  margin: 0 0 32px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.leave-balance-page .leave-balance-heading {
+  width: min(620px, calc(100% - 700px));
+  max-width: 100%;
+  min-width: 0;
+  flex-wrap: nowrap;
+  gap: 16px;
+}
+
+.leave-balance-page .leave-balance-heading h2 {
+  margin: 0;
+  color: #111b4b;
+  font-size: clamp(28px, 2.5vw, 36px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.7px;
+}
+
+.leave-balance-page .leave-balance-heading p {
+  margin: 8px 0 0;
+  color: #5b77a1;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.leave-balance-page .leave-balance-back {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  color: #334155;
+  border: 1px solid #dbe3ee;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.leave-balance-page .leave-balance-actions {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: max-content;
+  max-width: 100%;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+
+.leave-balance-page .leave-balance-actions .MuiButton-root {
+  min-height: 48px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+
+.leave-balance-page .leave-balance-back:hover {
+  color: #2563eb;
+  border-color: #93b4ff;
+  background: #f4f8ff;
+}
+
+.leave-balance-page .leave-balance-actions .MuiButton-root {
+  min-height: 40px;
+  padding: 0 13px;
+  border-radius: 9px;
+  text-transform: none;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.leave-balance-page .leave-balance-actions .MuiButton-outlined {
+  border-color: #cbd5e1;
+  color: #2f5fe8;
+  background: #fff;
+}
+
+.leave-balance-page .leave-balance-actions .MuiButton-outlined:hover {
+  border-color: #2563eb;
+  color: #1d4ed8;
+  background: #f8fbff;
+}
+
+.leave-balance-page .leave-balance-actions .sync-leave-policy-btn.MuiButton-contained,
+.leave-balance-page .leave-balance-actions > .MuiButton-contained {
+  color: #fff;
+  background: #2f5fe8;
+  box-shadow: none;
+}
+
+.leave-balance-page .leave-balance-actions .sync-leave-policy-btn.MuiButton-contained:hover,
+.leave-balance-page .leave-balance-actions > .MuiButton-contained:hover {
+  background: #2453d4;
+  box-shadow: none;
+}
+
+.leave-balance-page .leave-balance-summary {
+  margin-bottom: 20px;
+}
+
+.leave-balance-page .leave-balance-summary > .MuiCard-root {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.035);
+}
+
+.leave-balance-page .leave-balance-filter-card,
+.leave-balance-page .leave-balance-card {
+  border-color: #e2e8f0;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+}
+
+.leave-balance-page .leave-balance-filter-card {
+  margin-bottom: 16px;
+}
+
+.leave-balance-page .leave-balance-filter-card .MuiOutlinedInput-root {
+  min-height: 42px;
+  border-radius: 9px;
+  background: #fff;
+}
+
+.leave-balance-page .leave-balance-filter-card .MuiOutlinedInput-notchedOutline {
+  border-color: #d6e0ee;
+}
+
+.leave-balance-page .leave-balance-filter-card .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #3974f6;
+  border-width: 1px;
+}
+
+.leave-balance-page .leave-balance-filter-card input {
+  font-size: 13px;
+}
+
+.leave-balance-page .clear-filter-btn.MuiButton-contained {
+  min-width: 96px;
+  height: 40px;
+  justify-self: end;
+  color: #fff;
+  background: #2f5fe8;
+  border-radius: 9px;
+  text-transform: none;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.18);
+}
+
+.leave-balance-page .clear-filter-btn.MuiButton-contained:hover {
+  background: #2453d4;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
+}
+
+.leave-balance-page .table-header {
+  padding: 16px 20px;
+}
+
+.leave-balance-page .table-header .MuiTypography-subtitle1 {
+  color: #172b4d;
+  font-weight: 700;
+}
+
+.leave-balance-page .table-header .MuiTypography-caption {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.leave-balance-page .leave-balance-count {
+  color: #475569;
+  background: #f1f5f9;
+  font-weight: 600;
+}
+
+.leave-balance-page .leave-balance-table .MuiTableCell-head {
+  background: #f1f5fb;
+  color: #47627e;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.leave-balance-page .leave-balance-table .MuiTableCell-body {
+  height: 54px;
+  color: #334155;
+  font-size: 13px;
+  border-bottom-color: #edf1f5;
+}
+
+.leave-balance-page .leave-balance-table .MuiTableRow-root:hover .MuiTableCell-body {
+  background: #f5f8fe;
+}
+
+@media (max-width: 900px) {
+  .leave-balance-page {
+    padding: 24px 20px 32px;
+  }
+
+  .dashboard-content.workspace-ui > .leave-balance-page {
+    padding: 24px 20px 32px !important;
+  }
+
+  .leave-balance-page .leave-balance-header,
+  .dashboard-content.workspace-ui .leave-balance-page .leave-balance-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 16px !important;
+  }
+
+  .leave-balance-page .leave-balance-heading {
+    width: 100%;
+  }
+
+  .leave-balance-page .leave-balance-actions {
+    position: static;
+    transform: none;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .leave-balance-page .leave-balance-actions .MuiButton-root {
+    flex: 1;
+  }
+}
+
+@media (max-width: 560px) {
+  .leave-balance-page {
+    padding: 16px 12px 24px;
+  }
+
+  .dashboard-content.workspace-ui > .leave-balance-page {
+    padding: 16px 12px 24px !important;
+  }
+
+  .leave-balance-page .leave-balance-header {
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 16px;
+  }
+
+  .leave-balance-page .leave-balance-heading {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .leave-balance-page .leave-balance-heading h2 {
+    font-size: 22px;
+  }
+
+  .leave-balance-page .leave-balance-heading p {
+    font-size: 12px;
+  }
+
+  .leave-balance-page .leave-balance-actions {
+    gap: 7px;
+  }
+
+  .leave-balance-page .leave-balance-actions .MuiButton-root {
+    min-width: 0;
+    padding: 0 8px;
+    font-size: 11px;
+    flex: 1 1 calc(50% - 8px);
+  }
 }

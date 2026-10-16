@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 export default function DeleteAttendanceDialog({
   open,
@@ -30,11 +31,11 @@ export default function DeleteAttendanceDialog({
       </DialogTitle>
 
       <DialogContent className="delete-dialog-content">
-        <div className="delete-icon-wrapper">
+        <MuiLayoutBox className="delete-icon-wrapper" component="div">
           <Avatar>
             <WarningAmberRoundedIcon />
           </Avatar>
-        </div>
+        </MuiLayoutBox>
 
         <Typography className="delete-heading">
           Delete Attendance Record?
@@ -45,60 +46,60 @@ export default function DeleteAttendanceDialog({
           cannot be undone.
         </Typography>
 
-        <div className="delete-card">
-          <h4>Attendance Information</h4>
+        <MuiLayoutBox className="delete-card" component="div">
+          <MuiText component="h4" variant="subtitle1">Attendance Information</MuiText>
 
-          <div className="delete-row">
-            <label>Employee</label>
+          <MuiLayoutBox className="delete-row" component="div">
+            <MuiLayoutBox component="label">Employee</MuiLayoutBox>
 
-            <span>{attendance.employeeName || "-"}</span>
-          </div>
+            <MuiText component="span" variant="inherit">{attendance.employeeName || "-"}</MuiText>
+          </MuiLayoutBox>
 
-          <div className="delete-row">
-            <label>Employee Code</label>
+          <MuiLayoutBox className="delete-row" component="div">
+            <MuiLayoutBox component="label">Employee Code</MuiLayoutBox>
 
-            <span>{attendance.employeeCode || "-"}</span>
-          </div>
+            <MuiText component="span" variant="inherit">{attendance.employeeCode || "-"}</MuiText>
+          </MuiLayoutBox>
 
-          <div className="delete-row">
-            <label>Attendance Date</label>
+          <MuiLayoutBox className="delete-row" component="div">
+            <MuiLayoutBox component="label">Attendance Date</MuiLayoutBox>
 
-            <span>
+            <MuiText component="span" variant="inherit">
               {attendance.attendanceDate
                 ? new Date(attendance.attendanceDate).toLocaleDateString()
                 : "-"}
-            </span>
-          </div>
+            </MuiText>
+          </MuiLayoutBox>
 
-          <div className="delete-row">
-            <label>Shift</label>
+          <MuiLayoutBox className="delete-row" component="div">
+            <MuiLayoutBox component="label">Shift</MuiLayoutBox>
 
-            <span>{attendance.shift || "-"}</span>
-          </div>
+            <MuiText component="span" variant="inherit">{attendance.shift || "-"}</MuiText>
+          </MuiLayoutBox>
 
-          <div className="delete-row">
-            <label>Check In</label>
+          <MuiLayoutBox className="delete-row" component="div">
+            <MuiLayoutBox component="label">Check In</MuiLayoutBox>
 
-            <span>{attendance.checkIn || "-"}</span>
-          </div>
+            <MuiText component="span" variant="inherit">{attendance.checkIn || "-"}</MuiText>
+          </MuiLayoutBox>
 
-          <div className="delete-row">
-            <label>Check Out</label>
+          <MuiLayoutBox className="delete-row" component="div">
+            <MuiLayoutBox component="label">Check Out</MuiLayoutBox>
 
-            <span>{attendance.checkOut || "-"}</span>
-          </div>
+            <MuiText component="span" variant="inherit">{attendance.checkOut || "-"}</MuiText>
+          </MuiLayoutBox>
 
-          <div className="delete-row">
-            <label>Status</label>
+          <MuiLayoutBox className="delete-row" component="div">
+            <MuiLayoutBox component="label">Status</MuiLayoutBox>
 
-            <span>{attendance.status || "-"}</span>
-          </div>
-        </div>
+            <MuiText component="span" variant="inherit">{attendance.status || "-"}</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="delete-warning">
-          <strong>Warning:</strong> Deleting this attendance record is permanent
+        <MuiLayoutBox className="delete-warning" component="div">
+          <MuiText component="strong" variant="inherit">Warning:</MuiText> Deleting this attendance record is permanent
           and cannot be recovered.
-        </div>
+        </MuiLayoutBox>
       </DialogContent>
 
       <DialogActions>

@@ -15,7 +15,20 @@ import {
     TableHead,
     TableRow,
     Chip,
+    IconButton,
+    Tooltip,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Snackbar,
+    Alert,
 } from "@mui/material";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 import LeavePolicyForm from "./LeavePolicyForm";
 import "./LeavePolicyForm.css";
@@ -48,6 +61,9 @@ export default function LeavePolicy() {
     const [showForm, setShowForm] = useState(false);
 
     const [editingPolicy, setEditingPolicy] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const [deleting, setDeleting] = useState(false);
+    const [notice, setNotice] = useState(null);
 
     const [formData, setFormData] = useState({
 
@@ -310,10 +326,12 @@ export default function LeavePolicy() {
                 error
             );
 
-            alert(
-                error.response?.data ||
-                "Unable to create leave policy."
-            );
+            setNotice({
+                severity: "error",
+                message: typeof error.response?.data === "string"
+                    ? error.response.data
+                    : "Unable to save the leave policy.",
+            });
         }
     };
 
@@ -391,32 +409,33 @@ export default function LeavePolicy() {
     };
 
 
-    const handleDelete = async (policy) => {
-
+    const handleDelete = (policy) => {
         if (!canDelete) return;
+        setDeleteTarget(policy);
+    };
 
-        const confirmed = window.confirm(
-            `Are you sure you want to delete the leave policy for ${getLeaveTypeName(policy.leaveTypeId)}?`
-        );
-
-        if (!confirmed) return;
-
+    const confirmDelete = async () => {
+        if (!canDelete || !deleteTarget || deleting) return;
+        setDeleting(true);
         try {
             await axios.delete(
-                `${LEAVE_POLICY_API}/${policy.leavePolicyId}`
+                `${LEAVE_POLICY_API}/${deleteTarget.leavePolicyId}`
             );
-
+            setDeleteTarget(null);
             await fetchData();
         } catch (error) {
             console.error(
                 "Error deleting leave policy:",
                 error
             );
-
-            alert(
-                error.response?.data ||
-                "Unable to delete leave policy."
-            );
+            setNotice({
+                severity: "error",
+                message: typeof error.response?.data === "string"
+                    ? error.response.data
+                    : "Unable to delete the leave policy.",
+            });
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -450,83 +469,47 @@ export default function LeavePolicy() {
                 HEADER CARD
             ================================================== */}
 
-            <Card className="leave-policy-header-card">
+            <Box className="leave-policy-header">
+                <IconButton
+                    className="policy-back-btn"
+                    onClick={() => navigate("/leave")}
+                    aria-label="Back to Leave Management"
+                >
+                    <ArrowBackRoundedIcon />
+                </IconButton>
 
-                <Box className="leave-policy-header">
+                <Box className="leave-policy-heading-group">
+                    <Typography component="h1" className="leave-policy-title">
+                        Leave Policies
+                    </Typography>
 
-                    {/* TITLE */}
-
-                    <Box>
-
-                        <Typography
-                            component="h1"
-                            className="leave-policy-title"
-                        >
-                            Leave Policies
-                        </Typography>
-
-                        <Typography
-                            component="p"
-                            className="leave-policy-description"
-                        >
-                            Configure company leave rules and
-                            policies.
-                        </Typography>
-
-                    </Box>
-
-
-                    {/* ACTION BUTTONS */}
-
-                    <Stack
-                        direction="row"
-                        className="leave-policy-actions"
-                    >
-
-                        {/* PREVIOUS */}
-
-                        <Button
-                            className="policy-previous-btn"
-                            onClick={() =>
-                                navigate("/leave")
-                            }
-                        >
-                            ← Previous
-                        </Button>
-
-
-                        {/* REFRESH */}
-
-                        <Button
-                            className="policy-refresh-btn"
-                            onClick={fetchData}
-                        >
-                            ↻ Refresh
-                        </Button>
-
-
-                        {/* ADD LEAVE POLICY */}
-
-                        {canCreate && (
-                            <Button
-                                className="policy-add-btn"
-                                onClick={() => {
-
-                                    resetForm();
-
-                                    setShowForm(true);
-
-                                }}
-                            >
-                                + Add Leave Policy
-                            </Button>
-                        )}
-
-                    </Stack>
-
+                    <Typography component="p" className="leave-policy-description">
+                        Configure company leave rules and policies.
+                    </Typography>
                 </Box>
 
-            </Card>
+                <Stack direction="row" className="leave-policy-actions">
+                    <Button
+                        className="policy-refresh-btn"
+                        startIcon={<RefreshRoundedIcon />}
+                        onClick={fetchData}
+                    >
+                        Refresh
+                    </Button>
+                    {canCreate && (
+                        <Button
+                            className="policy-add-btn"
+                            startIcon={<AddRoundedIcon />}
+                            onClick={() => {
+                                resetForm();
+                                setShowForm(true);
+                            }}
+                        >
+                            Add Leave Policy
+                        </Button>
+                    )}
+                </Stack>
+            </Box>
 
 
             {/* ==================================================
@@ -566,6 +549,22 @@ export default function LeavePolicy() {
 
             <Card className="leave-policy-table-container">
 
+                <Box className="leave-policy-table-heading">
+                    <Box>
+                        <Typography component="h2" className="leave-policy-table-title">
+                            Leave Policy Rules
+                        </Typography>
+                        <Typography component="p" className="leave-policy-table-subtitle">
+                            Entitlements and conditions configured for each leave type.
+                        </Typography>
+                    </Box>
+                    <Chip
+                        label={`${policies.length} ${policies.length === 1 ? "policy" : "policies"}`}
+                        size="small"
+                        className="leave-policy-count"
+                    />
+                </Box>
+
                 {loading ? (
 
                     <Box className="leave-policy-loading">
@@ -580,7 +579,16 @@ export default function LeavePolicy() {
 
                     <TableContainer>
 
-                        <Table className="leave-policy-table">
+                        <Table className="leave-policy-table" size="medium">
+                            <colgroup>
+                                <col style={{ width: "20%" }} />
+                                <col style={{ width: "14%" }} />
+                                <col style={{ width: "14%" }} />
+                                <col style={{ width: "10%" }} />
+                                <col style={{ width: "18%" }} />
+                                <col style={{ width: "11%" }} />
+                                <col style={{ width: "13%" }} />
+                            </colgroup>
 
                             {/* ==================================================
                                 TABLE HEADER
@@ -594,7 +602,7 @@ export default function LeavePolicy() {
                                         Leave Type
                                     </TableCell>
 
-                                    <TableCell>
+                                    <TableCell align="center">
                                         Entitlement
                                     </TableCell>
 
@@ -602,7 +610,7 @@ export default function LeavePolicy() {
                                         Accrual
                                     </TableCell>
 
-                                    <TableCell>
+                                    <TableCell align="center">
                                         Paid
                                     </TableCell>
 
@@ -610,11 +618,11 @@ export default function LeavePolicy() {
                                         Effective From
                                     </TableCell>
 
-                                    <TableCell>
+                                    <TableCell align="center">
                                         Status
                                     </TableCell>
 
-                                    <TableCell>
+                                    <TableCell align="center">
                                         Actions
                                     </TableCell>
 
@@ -654,7 +662,7 @@ export default function LeavePolicy() {
 
                                             {/* LEAVE TYPE */}
 
-                                            <TableCell>
+                                            <TableCell className="policy-leave-type-cell">
 
                                                 {getLeaveTypeName(
                                                     policy.leaveTypeId
@@ -665,7 +673,7 @@ export default function LeavePolicy() {
 
                                             {/* ENTITLEMENT */}
 
-                                            <TableCell>
+                                            <TableCell align="center">
 
                                                 {
                                                     policy.annualEntitlement
@@ -688,7 +696,7 @@ export default function LeavePolicy() {
 
                                             {/* PAID */}
 
-                                            <TableCell>
+                                            <TableCell align="center">
 
                                                 {
                                                     policy.isPaid
@@ -712,7 +720,7 @@ export default function LeavePolicy() {
 
                                             {/* STATUS */}
 
-                                            <TableCell>
+                                            <TableCell align="center">
 
                                                 <Chip
                                                     label={
@@ -731,32 +739,29 @@ export default function LeavePolicy() {
 
                                             {/* ACTION */}
 
-                                            <TableCell>
-
+                                            <TableCell align="center" className="policy-actions-cell">
                                                 {canEdit && (
-                                                    <Button
-                                                        className="policy-edit-btn"
-                                                        onClick={() =>
-                                                            handleEdit(
-                                                                policy
-                                                            )
-                                                        }
-                                                    >
-                                                        Edit
-                                                    </Button>
+                                                    <Tooltip title="Edit policy">
+                                                        <IconButton
+                                                            className="policy-edit-btn"
+                                                            aria-label="Edit leave policy"
+                                                            onClick={() => handleEdit(policy)}
+                                                        >
+                                                            <EditRoundedIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
                                                 )}
-
                                                 {canDelete && (
-                                                    <Button
-                                                        className="policy-delete-btn"
-                                                        onClick={() =>
-                                                            handleDelete(policy)
-                                                        }
-                                                    >
-                                                        Delete
-                                                    </Button>
+                                                    <Tooltip title="Delete policy">
+                                                        <IconButton
+                                                            className="policy-delete-btn"
+                                                            aria-label="Delete leave policy"
+                                                            onClick={() => handleDelete(policy)}
+                                                        >
+                                                            <DeleteRoundedIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
                                                 )}
-
                                             </TableCell>
 
                                         </TableRow>
@@ -774,6 +779,53 @@ export default function LeavePolicy() {
                 )}
 
             </Card>
+
+            <Dialog
+                open={Boolean(deleteTarget)}
+                onClose={() => !deleting && setDeleteTarget(null)}
+                fullWidth
+                maxWidth="xs"
+                className="leave-policy-delete-dialog"
+            >
+                <DialogTitle>Delete leave policy?</DialogTitle>
+                <DialogContent>
+                    Are you sure you want to delete the policy for{" "}
+                    <strong>{deleteTarget ? getLeaveTypeName(deleteTarget.leaveTypeId) : "this leave type"}</strong>?
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => setDeleteTarget(null)}
+                        disabled={deleting}
+                        className="policy-delete-cancel-btn"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={confirmDelete}
+                        disabled={deleting}
+                        variant="contained"
+                        className="policy-delete-confirm-btn"
+                        startIcon={<DeleteRoundedIcon />}
+                    >
+                        {deleting ? "Deleting…" : "Delete policy"}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Snackbar
+                open={Boolean(notice)}
+                autoHideDuration={4500}
+                onClose={() => setNotice(null)}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            >
+                <Alert
+                    severity={notice?.severity || "error"}
+                    variant="filled"
+                    onClose={() => setNotice(null)}
+                >
+                    {notice?.message}
+                </Alert>
+            </Snackbar>
 
         </Box>
     );

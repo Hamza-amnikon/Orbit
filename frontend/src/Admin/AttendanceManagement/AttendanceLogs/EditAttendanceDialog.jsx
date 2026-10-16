@@ -344,9 +344,9 @@ return (
             fullWidth
             label="Employee Name"
             value={attendance?.employeeName || ""}
-            InputProps={{
+            slotProps={{ input: {
               readOnly: true,
-            }}
+            } }}
           />
         </Grid>
 
@@ -357,9 +357,9 @@ return (
             fullWidth
             label="Employee ID"
             value={attendance?.azureEmployeeId || ""}
-            InputProps={{
+            slotProps={{ input: {
               readOnly: true,
-            }}
+            } }}
           />
         </Grid>
 
@@ -507,9 +507,9 @@ return (
     fullWidth
     label="Total Hours"
     value={form.totalHours}
-    InputProps={{
+    slotProps={{ input: {
       readOnly: true,
-    }}
+    } }}
     disabled={
       form.status === "Absent" ||
       form.status === "Leave" ||

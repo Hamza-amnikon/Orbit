@@ -161,12 +161,58 @@
     display:grid;
 
     grid-template-columns:
-    repeat(4,1fr);
+    repeat(3,minmax(0,1fr));
 
     gap:24px;
 
     margin-bottom:30px;
 
+}
+
+/* Match the clean Employee Management list pages. */
+.role-page { padding: 28px; min-width: 0; max-width: 100%; box-sizing: border-box; }
+.role-page .role-header-card { padding: 0 0 20px; border-radius: 0; background: transparent; box-shadow: none; margin-bottom: 20px; }
+.role-page .role-title-wrap { display:flex; align-items:center; gap:16px; min-width:0; }
+.role-page .role-back-button { width:42px; height:42px; flex:0 0 auto; color:#40536c; background:#fff; border:1px solid #dce4ee; border-radius:10px; }
+.role-page .role-header-card h1 { color:#102a56; }
+.role-page .role-header-card p { color:#60738f; margin-top:6px; }
+.role-page .role-header-buttons { display:flex; gap:10px; flex-wrap:wrap; }
+.role-page .role-header-buttons .MuiButton-root { min-height:42px; border-radius:8px; text-transform:none; font-weight:600; }
+.role-page .role-header-buttons .MuiButton-contained { background:#344256; box-shadow:none; }
+.role-page .role-stat-card { border:1px solid #e0e6ef; border-radius:12px; padding:20px; box-shadow:0 2px 7px rgba(20,40,70,.04); cursor:pointer; }
+.role-page .role-stat-card:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(20,40,70,.08); }
+.role-page .role-stat-card.selected { border-color:#8eafff; box-shadow:0 0 0 2px rgba(47,103,237,.1); }
+.role-page .role-stat-icon { width:40px; height:40px; margin-bottom:12px; border-radius:10px; }
+.role-page .role-stat-card h3 { margin:0; font-size:28px; color:#102a56; }
+.role-page .role-stat-card p { margin:4px 0 0; font-size:14px; }
+.role-page .role-search-card { padding:14px; border:1px solid #e0e6ef; border-radius:12px; box-shadow:0 2px 7px rgba(20,40,70,.04); }
+.role-page .role-search-field { flex:1; min-width:0; }
+.role-page .role-search-field .MuiOutlinedInput-root { min-height:46px; border-radius:10px; background:#fff; }
+.role-page .role-search-field .MuiOutlinedInput-notchedOutline { border-color:#dce4ee; }
+.role-page .role-search-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline { border-color:#9bb0ca; }
+.role-page .role-search-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline { border-color:#2f67ed; border-width:1px; }
+.role-page .role-list-card { border:1px solid #e0e6ef; border-radius:12px; box-shadow:0 2px 8px rgba(15,23,42,.05); }
+.role-page .role-list-header { padding:20px 24px; background:#fff; color:#102a56; border-bottom:1px solid #e4eaf2; }
+.role-page .role-list-header h2 { color:#102a56; font-size:1.35rem; }
+.role-page .role-list-header p { color:#60738f; }
+.role-page .role-table thead { background:#f0f4fa; }
+.role-page .role-table th { background:#f0f4fa; color:#48617e; padding:14px 16px; border-bottom:1px solid #e0e6ef; }
+.role-page .role-table td { padding:15px 16px; }
+.role-page .role-table tbody tr:nth-child(even) { background:#f8faff; }
+.role-page .role-actions .edit-btn { background:#fff2cc; color:#bd7000; border-radius:9px; }
+.role-page .role-actions .edit-btn:hover { background:#ffe6a3; color:#9a5b00; transform:none; }
+.role-page .role-actions .delete-btn { background:#ffebeb; color:#d32f2f; border-radius:9px; }
+.role-page .role-actions .delete-btn:hover { background:#ffd6d6; color:#b71c1c; transform:none; }
+
+@media (max-width: 768px) {
+    .role-page { padding:14px; }
+    .role-page .role-header-card { align-items:flex-start; flex-direction:column; gap:14px; }
+    .role-page .role-header-buttons { width:100%; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .role-page .role-header-buttons .MuiButton-root { min-width:0; padding-inline:8px; }
+    .role-page .role-stats { grid-template-columns:1fr; gap:12px; }
+    .role-page .role-filter-row { flex-direction:column; align-items:stretch; }
+    .role-page .role-status-filter { width:100% !important; flex:none !important; }
+    .role-page .role-search-field { width:100%; }
 }
 
 .role-stat-card{

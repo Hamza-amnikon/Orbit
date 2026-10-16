@@ -1047,3 +1047,143 @@
     }
 
 }
+
+/* Shared management page styling */
+.leave-requests-page{min-height:100vh;padding:28px 30px 40px;background:#f4f7fb;color:#172b4d}
+.leave-requests-page .leave-requests-header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none}
+.leave-requests-page .leave-requests-title-group{display:flex;align-items:center;gap:14px;min-width:0}
+.leave-requests-page .leave-requests-header h1{color:#102a56;font-size:30px;letter-spacing:-.5px}
+.leave-requests-page .leave-requests-header p{margin-top:5px;color:#617895;font-size:14px}
+.leave-requests-page .leave-back-button.MuiIconButton-root{width:42px;height:42px;flex:0 0 42px;border:1px solid #dce4ee;border-radius:10px;background:#fff;color:#3f5067}
+.leave-requests-page .leave-back-button.MuiIconButton-root:hover{background:#f4f7fc;border-color:#b8c9df}
+.leave-requests-page .leave-request-header-actions{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.leave-requests-page .leave-request-refresh-btn.MuiButton-root{min-height:40px;padding:7px 13px;border-color:#d1dbe8;border-radius:8px;color:#263c60;font-size:13px;text-transform:none}
+.leave-requests-page .leave-request-refresh-btn.MuiButton-root:hover{border-color:#2f67ed;background:#f5f8ff}
+.leave-requests-page .leave-filter-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:13px 15px;border:1px solid #e0e6ef;border-radius:12px;background:#fff;box-shadow:0 2px 7px rgba(20,40,70,.04)}
+.leave-requests-page .leave-search-field{flex:1;min-width:200px}
+.leave-requests-page .leave-search-field .MuiOutlinedInput-root,.leave-requests-page .leave-status-field .MuiOutlinedInput-root{min-height:42px;border-radius:8px;background:#fff;font-size:13px}
+.leave-requests-page .leave-search-field .MuiOutlinedInput-notchedOutline,.leave-requests-page .leave-status-field .MuiOutlinedInput-notchedOutline{border-color:#d7e0ec}
+.leave-requests-page .leave-search-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,.leave-requests-page .leave-status-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline{border-color:#9eb3cf}
+.leave-requests-page .leave-search-field .MuiInputAdornment-root{color:#7389a7}
+.leave-requests-page .leave-status-field{width:150px;flex:0 0 150px}
+.leave-requests-page .leave-date-filter-chip.MuiChip-root{max-width:100%;border:1px solid #dce8f8;background:#f4f8ff;color:#3c66a6;font-size:11px;font-weight:600}
+.leave-requests-page .leave-requests-table-card{border:1px solid #e0e6ef;border-radius:12px;background:#fff;box-shadow:0 2px 7px rgba(20,40,70,.04)}
+.leave-requests-page .leave-table-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border-bottom:1px solid #e8edf4}
+.leave-requests-page .leave-table-toolbar h2{margin:0;color:#1e3557;font-size:15px;font-weight:700}
+.leave-requests-page .leave-table-toolbar .MuiChip-root{background:#f1f5f9;color:#61738d;font-size:11px;font-weight:700}
+.leave-requests-page .leave-requests-table{min-width:1050px;border-collapse:collapse}
+.leave-requests-page .leave-requests-table th{height:46px;padding:0 16px;background:#f0f5fb;color:#536d91;border-bottom:1px solid #e1e8f1;text-transform:uppercase;letter-spacing:.04em;font-size:10px;font-weight:700}
+.leave-requests-page .leave-requests-table td{height:54px;padding:8px 16px;background:#fff;border-bottom:1px solid #edf1f6;color:#405570;font-size:12px;white-space:normal}
+.leave-requests-page .leave-requests-table tbody tr:nth-child(even) td{background:#fbfcfe}
+.leave-requests-page .leave-requests-table tbody tr:hover td{background:#f5f8fd}
+.leave-requests-page .employee-id-cell{color:#415a7b;font-weight:700}
+.leave-requests-page .leave-requests-table td strong{color:#263c5b;font-size:12px}
+.leave-requests-page .request-status.MuiChip-root{min-width:78px;height:25px;padding:0 2px;border-radius:999px;font-size:11px;font-weight:700}
+.leave-requests-page .request-status.pending.MuiChip-root{background:#fff4d8;color:#a96b08}
+.leave-requests-page .request-status.approved.MuiChip-root{background:#ddf8e9;color:#12834c}
+.leave-requests-page .request-status.rejected.MuiChip-root{background:#ffe3e3;color:#c93737}
+.leave-requests-page .leave-action-buttons{flex-wrap:wrap;gap:6px}
+.leave-requests-page .leave-action-buttons .MuiButton-root{min-height:30px;padding:4px 10px;border-radius:7px;font-size:11px;text-transform:none}
+.leave-requests-page .view-details-btn.MuiButton-root{background:#eef4ff;color:#2f67ed}
+.leave-requests-page .view-details-btn.MuiButton-root:hover{background:#dce9ff}
+.leave-requests-page .approve-btn.MuiButton-root{background:#e3f8eb;color:#13824b}
+.leave-requests-page .reject-btn.MuiButton-root{background:#ffebeb;color:#c93636}
+.leave-requests-page .leave-modal-overlay{padding:16px;overflow-y:auto}
+.leave-details-dialog .MuiDialog-paper{width:min(620px,calc(100% - 32px));max-width:620px;margin:16px;border:1px solid #e3e9f1;border-radius:16px;background:#fff;box-shadow:0 24px 70px rgba(20,38,67,.22);overflow:hidden}
+.leave-details-dialog-paper{width:100%;background:#fff}
+.leave-details-dialog .leave-modal-header{min-height:78px;padding:16px 22px;border-bottom:1px solid #e4ebf5;background:linear-gradient(115deg,#f3f7ff 0%,#fff 72%)}
+.leave-details-dialog .leave-details-title{display:flex;align-items:center;gap:12px;min-width:0}
+.leave-details-dialog .leave-details-title-icon{display:flex;width:40px;height:40px;flex:0 0 40px;align-items:center;justify-content:center;border:1px solid #dce8ff;border-radius:12px;background:#eaf1ff;color:#3269e8}
+.leave-details-dialog .leave-details-title-icon svg{font-size:21px}
+.leave-details-dialog .leave-modal-header h2{margin:0;color:#17345c;font-size:18px;font-weight:750;letter-spacing:-.2px}
+.leave-details-dialog .leave-modal-header p{margin:4px 0 0;color:#7587a0;font-size:11px}
+.leave-details-dialog .leave-modal-close.MuiIconButton-root{width:34px;height:34px;color:#718198}
+.leave-details-dialog .leave-modal-close.MuiIconButton-root:hover{background:#f1f5fa;color:#304968}
+.leave-details-dialog .leave-modal-body{max-height:min(68vh,650px);overflow-y:auto;padding:20px 22px}
+.leave-details-dialog .leave-details-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+.leave-details-dialog .leave-detail-item{min-width:0;min-height:76px;flex-direction:row;align-items:center;justify-content:flex-start;gap:11px;padding:12px 14px;border:1px solid #e7edf5;border-radius:11px;background:#fbfcfe;transition:border-color .16s ease,background-color .16s ease,box-shadow .16s ease}
+.leave-details-dialog .leave-detail-item:hover{border-color:#c9d9f0;background:#f7faff;box-shadow:0 3px 9px rgba(31,67,120,.05)}
+.leave-details-dialog .leave-detail-icon{display:flex;width:34px;height:34px;flex:0 0 34px;align-items:center;justify-content:center;border-radius:9px;background:#eaf1ff;color:#3269e8}
+.leave-details-dialog .leave-detail-icon svg{font-size:18px}
+.leave-details-dialog .leave-detail-copy{display:flex;min-width:0;flex-direction:column;align-items:flex-start;gap:5px}
+.leave-details-dialog .leave-detail-item>span:first-child{color:#7b899d;font-size:11px;font-weight:600}
+.leave-details-dialog .leave-detail-item strong{overflow-wrap:anywhere;color:#263c5b;font-size:13px;font-weight:650}
+.leave-details-dialog .request-status.MuiChip-root{align-self:flex-start}
+.leave-details-dialog .leave-detail-notes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.leave-details-dialog .leave-detail-section{min-width:0;margin-top:10px;padding:13px 14px;border:1px solid #e8edf4;border-radius:10px;background:#f9fbfd}
+.leave-details-dialog .leave-detail-notes-grid .leave-detail-section{margin:0}
+.leave-details-dialog .leave-note-heading{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.leave-details-dialog .leave-note-icon{display:flex;width:27px;height:27px;align-items:center;justify-content:center;border-radius:8px;background:#eef3fb;color:#607b9f}
+.leave-details-dialog .leave-note-icon svg{font-size:15px}
+.leave-details-dialog .leave-detail-section .leave-note-heading>span{margin:0;color:#526a89;font-size:11px;font-weight:700}
+.leave-details-dialog .leave-detail-section p{color:#334a67;font-size:13px;overflow-wrap:anywhere}
+.leave-details-dialog .leave-detail-section button{font-size:12px}
+.leave-details-dialog .approval-details{margin-top:14px;padding:8px 14px;border:1px solid #e8edf4;border-radius:10px;background:#f8fafc}
+.leave-details-dialog .approval-details .leave-detail-item{border-bottom:0}
+.leave-details-dialog .leave-modal-actions{justify-content:flex-end;padding:14px 22px;border-top:1px solid #e9eef5;background:#fbfcfe}
+.leave-details-dialog .leave-modal-actions .MuiButton-root{min-width:84px;min-height:36px;border-radius:8px;background:#2f67ed;font-size:12px;text-transform:none}
+.leave-details-dialog .leave-modal-actions .MuiButton-root:hover{background:#2456cd}
+.leave-requests-page .leave-table-toolbar{padding:13px 18px}
+.leave-requests-page .leave-requests-table{min-width:1108px;table-layout:fixed}
+.leave-requests-page .leave-requests-table th{height:42px;padding:0 14px;background:#f5f8fc;color:#71829a;border-bottom:1px solid #e8edf4;font-size:10px;letter-spacing:.055em}
+.leave-requests-page .leave-requests-table td{height:52px;padding:9px 14px;border-bottom:1px solid #edf1f5;font-size:12px}
+.leave-requests-page .leave-requests-table th:nth-child(1),.leave-requests-page .leave-requests-table td:nth-child(1){width:13%}
+.leave-requests-page .leave-requests-table th:nth-child(2),.leave-requests-page .leave-requests-table td:nth-child(2){width:12%}
+.leave-requests-page .leave-requests-table th:nth-child(3),.leave-requests-page .leave-requests-table td:nth-child(3){width:18%}
+.leave-requests-page .leave-requests-table th:nth-child(4),.leave-requests-page .leave-requests-table td:nth-child(4){width:6%;text-align:center}
+.leave-requests-page .leave-requests-table th:nth-child(5),.leave-requests-page .leave-requests-table td:nth-child(5){width:20%}
+.leave-requests-page .leave-requests-table th:nth-child(6),.leave-requests-page .leave-requests-table td:nth-child(6){width:12%;text-align:center}
+.leave-requests-page .leave-requests-table th:nth-child(7),.leave-requests-page .leave-requests-table td:nth-child(7){width:19%;text-align:center}
+.leave-requests-page .leave-requests-table td:nth-child(1),.leave-requests-page .leave-requests-table td:nth-child(3){white-space:nowrap}
+.leave-requests-page .leave-period-cell{color:#526781;font-variant-numeric:tabular-nums;font-weight:500;white-space:nowrap}
+.leave-requests-page .leave-reason-cell{display:-webkit-box;overflow:hidden;max-width:220px;color:#718096;line-height:1.45;text-overflow:ellipsis;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.leave-requests-page .leave-action-buttons{width:100%;justify-content:center;flex-wrap:nowrap;gap:7px}
+.leave-requests-page .leave-action-buttons .MuiButton-root{min-width:0;min-height:32px;padding:4px 10px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:.01em;text-transform:none;white-space:nowrap;transition:background-color .16s ease,border-color .16s ease,transform .16s ease}
+.leave-requests-page .leave-action-buttons .MuiButton-root:hover{transform:translateY(-1px)}
+.leave-requests-page .leave-action-buttons .MuiButton-startIcon{margin-left:0;margin-right:5px}
+.leave-requests-page .leave-action-buttons .MuiButton-startIcon svg{font-size:15px}
+.leave-requests-page .view-details-btn.MuiButton-root{border-color:#2f67ed;background:#2f67ed;color:#fff}
+.leave-requests-page .view-details-btn.MuiButton-root:hover{border-color:#2456cd;background:#2456cd}
+.leave-requests-page .approve-btn.MuiButton-root{background:#17834d;color:#fff}
+.leave-requests-page .approve-btn.MuiButton-root:hover{background:#116b3e}
+.leave-requests-page .reject-btn.MuiButton-root{background:#d64545;color:#fff}
+.leave-requests-page .reject-btn.MuiButton-root:hover{background:#b93434}
+.leave-requests-page .request-status.MuiChip-root{height:24px;font-size:10px}
+.leave-requests-page .leave-requests-table tbody tr:last-child td{border-bottom:0}
+@media(max-width:850px){.leave-requests-page{padding:22px 18px 32px}.leave-requests-page .leave-filter-toolbar{flex-wrap:wrap}.leave-requests-page .leave-search-field{flex-basis:100%}}
+@media(max-width:600px){.leave-requests-page{padding:18px 14px 28px}.leave-requests-page .leave-requests-header{align-items:flex-start;flex-direction:column}.leave-requests-page .leave-requests-header h1{font-size:25px}.leave-requests-page .leave-request-header-actions{width:100%}.leave-requests-page .leave-request-refresh-btn.MuiButton-root{flex:1}.leave-requests-page .leave-filter-toolbar{align-items:stretch;flex-direction:column;padding:12px}.leave-requests-page .leave-search-field,.leave-requests-page .leave-status-field{width:100%;min-width:0;flex:auto}.leave-requests-page .leave-date-filter-chip{align-self:flex-start}.leave-requests-page .leave-table-toolbar{padding:13px}.leave-requests-page .leave-requests-table{min-width:1108px}}
+@media(max-width:520px){.leave-details-dialog .MuiDialog-paper{width:calc(100% - 20px);margin:10px;border-radius:13px}.leave-details-dialog .leave-modal-header{padding:14px 16px}.leave-details-dialog .leave-modal-body{padding:14px 16px}.leave-details-dialog .leave-details-grid,.leave-details-dialog .leave-detail-notes-grid{grid-template-columns:1fr 1fr;gap:8px}.leave-details-dialog .leave-detail-item{min-height:62px;padding:10px}.leave-details-dialog .leave-modal-actions{padding:12px 16px}}
+
+/* Leave details dialog: match the approved reference layout */
+.leave-details-dialog .MuiDialog-paper{width:min(820px,calc(100% - 32px));max-width:820px;border-radius:17px}
+.leave-details-dialog .leave-modal-header{min-height:136px;padding:26px 34px;gap:20px;background:linear-gradient(110deg,#eaf3ff 0%,#f3f8ff 100%)}
+.leave-details-dialog .leave-details-title{gap:20px}
+.leave-details-dialog .leave-details-title-icon{width:76px;height:76px;flex-basis:76px;border:0;border-radius:17px;background:#3478f6;color:#fff}
+.leave-details-dialog .leave-details-title-icon svg{font-size:38px}
+.leave-details-dialog .leave-modal-header h2{font-size:27px;line-height:1.2}
+.leave-details-dialog .leave-modal-header p{margin-top:8px;font-size:16px}
+.leave-details-dialog .leave-modal-close.MuiIconButton-root{width:42px;height:42px;color:#627898}
+.leave-details-dialog .leave-modal-body{max-height:72vh;padding:28px 30px 26px}
+.leave-details-dialog .leave-details-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0}
+.leave-details-dialog .leave-detail-item{display:flex;min-height:104px;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;padding:18px 24px;border:1px solid #dce7f5;border-radius:12px;background:linear-gradient(120deg,#f3f7fc 0%,#f8fbff 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.85)}
+.leave-details-dialog .leave-detail-item:hover{border-color:#dce7f5;background:linear-gradient(120deg,#f3f7fc 0%,#f8fbff 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.85)}
+.leave-details-dialog .leave-detail-item>span:first-child{color:#6880a3;font-size:14px;font-weight:600}
+.leave-details-dialog .leave-detail-item strong{color:#11294d;font-size:21px;font-weight:750;line-height:1.25}
+.leave-details-dialog .leave-detail-notes-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:28px}
+.leave-details-dialog .leave-detail-notes-grid .leave-detail-section{min-height:106px;margin:0;padding:17px 24px;border:1px solid #dce7f5;border-radius:12px;background:linear-gradient(120deg,#f3f7fc 0%,#f8fbff 100%)}
+.leave-details-dialog .leave-detail-section .leave-note-heading{margin:0 0 9px}
+.leave-details-dialog .leave-detail-section .leave-note-heading>span{color:#6880a3;font-size:14px;font-weight:600}
+.leave-details-dialog .leave-detail-section p{color:#11294d;font-size:19px;font-weight:700;line-height:1.3}
+.leave-details-dialog .leave-modal-body>.leave-detail-section{margin:24px 0 0;padding:0;border:0;border-radius:0;background:transparent}
+.leave-details-dialog .leave-modal-body>.leave-detail-section>.leave-note-heading>span{color:#6880a3;font-size:14px;font-weight:600}
+.leave-details-dialog .leave-modal-body>.leave-detail-section .MuiButton-root{min-height:48px;padding:8px 18px;border:2px solid #3478f6;border-radius:9px;color:#2367e8;font-size:15px;font-weight:700}
+.leave-details-dialog .leave-modal-actions{min-height:88px;padding:15px 30px;border-top:1px solid #e4ebf5;background:#fff}
+.leave-details-dialog .leave-modal-actions .MuiButton-root{min-width:120px;min-height:54px;border-radius:10px;background:#176be8;font-size:16px;font-weight:700}
+@media(max-width:600px){.leave-details-dialog .MuiDialog-paper{width:calc(100% - 20px);margin:10px;border-radius:14px}.leave-details-dialog .leave-modal-header{min-height:96px;padding:16px 18px;gap:10px}.leave-details-dialog .leave-details-title{gap:12px}.leave-details-dialog .leave-details-title-icon{width:48px;height:48px;flex-basis:48px;border-radius:12px}.leave-details-dialog .leave-details-title-icon svg{font-size:26px}.leave-details-dialog .leave-modal-header h2{font-size:19px}.leave-details-dialog .leave-modal-header p{margin-top:4px;font-size:12px}.leave-details-dialog .leave-modal-body{padding:18px}.leave-details-dialog .leave-details-grid,.leave-details-dialog .leave-detail-notes-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.leave-details-dialog .leave-detail-item,.leave-details-dialog .leave-detail-notes-grid .leave-detail-section{min-height:82px;padding:12px}.leave-details-dialog .leave-detail-item>span:first-child,.leave-details-dialog .leave-detail-section .leave-note-heading>span{font-size:11px}.leave-details-dialog .leave-detail-item strong,.leave-details-dialog .leave-detail-section p{font-size:15px}.leave-details-dialog .leave-detail-notes-grid{margin-top:16px}.leave-details-dialog .leave-modal-actions{min-height:66px;padding:10px 18px}.leave-details-dialog .leave-modal-actions .MuiButton-root{min-width:90px;min-height:42px;font-size:14px}}
+
+.leave-approval-dialog .MuiDialog-paper{width:min(760px,calc(100% - 32px));max-width:760px;margin:16px;border:1px solid #dce5f0;border-radius:16px;background:#fff;box-shadow:0 24px 70px rgba(20,38,67,.25);overflow:hidden}
+.leave-approval-dialog .MuiDialogContent-root{overflow-x:hidden}
+@media(max-width:600px){.leave-approval-dialog .MuiDialog-paper{width:calc(100% - 20px);margin:10px;border-radius:13px}}
+.leave-reject-dialog .MuiDialog-paper{width:min(600px,calc(100% - 32px));max-width:600px;margin:16px;border:1px solid #eadfe0;border-radius:16px;background:#fff;box-shadow:0 24px 70px rgba(45,25,30,.2);overflow:hidden}
+.leave-reject-dialog .MuiDialogContent-root{overflow-x:hidden}
+@media(max-width:600px){.leave-reject-dialog .MuiDialog-paper{width:calc(100% - 20px);margin:10px;border-radius:13px}}

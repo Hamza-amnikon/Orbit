@@ -6,6 +6,7 @@ import {
     WorkHistory,
     AssignmentTurnedIn
 } from "@mui/icons-material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ProfileStats() {
 
@@ -38,32 +39,32 @@ function ProfileStats() {
 
     return (
 
-        <div className="profile-stats">
+        <MuiLayoutBox className="profile-stats" component="div">
 
             {stats.map((item, index) => (
 
-                <div className="stat-card" key={index}>
+                <MuiLayoutBox className="stat-card" key={index} component="div">
 
-                    <div
+                    <MuiLayoutBox
                         className="stat-icon"
                         style={{ background: item.color }}
-                    >
+                     component="div">
                         {item.icon}
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>{item.title}</span>
+                        <MuiText component="span" variant="inherit">{item.title}</MuiText>
 
-                        <h2>{item.value}</h2>
+                        <MuiText component="h2" variant="h5">{item.value}</MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
             ))}
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

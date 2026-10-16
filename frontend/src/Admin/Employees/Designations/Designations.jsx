@@ -5,6 +5,7 @@ import {
 } from "react";
 
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
 
 import "./Designation.css";
 
@@ -30,6 +31,7 @@ import {
   CheckCircle,
   Cancel,
   Search,
+  ArrowBack,
 } from "@mui/icons-material";
 
 
@@ -42,10 +44,20 @@ import {
   MenuItem,
   Typography,
   Box,
+  CardActionArea,
+  IconButton,
+  Tooltip,
+  Alert,
+  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function Designations() {
@@ -163,6 +175,13 @@ function Designations() {
 
   const [selectedDesignation, setSelectedDesignation] =
     useState(null);
+
+  const [toast, setToast] = useState({ open: false, message: "", severity: "info" });
+  const [designationToDelete, setDesignationToDelete] = useState(null);
+
+  const showToast = useCallback((message, severity = "info") => {
+    setToast({ open: true, message, severity });
+  }, []);
 
 
   // =========================================================
@@ -307,25 +326,19 @@ function Designations() {
           error?.response?.status === 401
         ) {
 
-          alert(
-            "Your session has expired. Please sign in again."
-          );
+          showToast("Your session has expired. Please sign in again.", "error");
 
         }
         else if (
           error?.response?.status === 403
         ) {
 
-          alert(
-            "You are not authorized to access Designations."
-          );
+          showToast("You are not authorized to access Designations.", "error");
 
         }
         else {
 
-          console.error(
-            "Unable to load Designations from the server."
-          );
+          showToast("Unable to load Designations from the server.", "error");
 
         }
 
@@ -340,7 +353,7 @@ function Designations() {
       }
 
     },
-    []
+    [showToast]
   );
 
 
@@ -381,9 +394,7 @@ function Designations() {
 
     if (!isAuthenticated) {
 
-      alert(
-        "You are not authenticated. Please sign in again."
-      );
+      showToast("You are not authenticated. Please sign in again.", "error");
 
       return false;
 
@@ -409,9 +420,7 @@ function Designations() {
       );
 
 
-      alert(
-        "Your Employee ID could not be determined. Please sign in again."
-      );
+      showToast("Your Employee ID could not be determined. Please sign in again.", "error");
 
       return false;
 
@@ -503,6 +512,42 @@ function Designations() {
       );
 
     });
+
+  const activeDesignationCount = designations.filter(
+    (item) => String(item.status ?? item.Status ?? "").toLowerCase() === "active"
+  ).length;
+  const inactiveDesignationCount = designations.filter(
+    (item) => String(item.status ?? item.Status ?? "").toLowerCase() === "inactive"
+  ).length;
+
+  const resetDesignationFilters = () => {
+    setSearch("");
+    setStatusFilter("All");
+  };
+
+  const exportDesignationsToExcel = () => {
+    if (!filteredDesignations.length) {
+      showToast("There are no designations to export.", "info");
+      return;
+    }
+
+    const rows = filteredDesignations.map((item, index) => ({
+      "No.": index + 1,
+      Designation: item.designationName ?? item.DesignationName ?? item.designation ?? item.Designation ?? "-",
+      Description: item.description ?? item.Description ?? "-",
+      "Created Date": item.createdDate ?? item.CreatedDate ?? item.createdAt ?? item.CreatedAt
+        ? new Date(item.createdDate ?? item.CreatedDate ?? item.createdAt ?? item.CreatedAt).toLocaleDateString("en-GB")
+        : "-",
+      Status: item.status ?? item.Status ?? "-",
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    worksheet["!cols"] = [
+      { wch: 8 }, { wch: 30 }, { wch: 42 }, { wch: 18 }, { wch: 14 },
+    ];
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Designations");
+    XLSX.writeFile(workbook, `Spark_Designations_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
 
 
   // =========================================================
@@ -597,17 +642,6 @@ function Designations() {
       }
 
 
-      if (
-        !window.confirm(
-          "Are you sure you want to delete this Designation?"
-        )
-      ) {
-
-        return;
-
-      }
-
-
       console.log(
         "=========================================="
       );
@@ -651,9 +685,7 @@ function Designations() {
         await loadDesignations();
 
 
-        alert(
-          "Designation deleted successfully."
-        );
+        showToast("Designation deleted successfully.", "success");
 
       }
       catch (error) {
@@ -668,27 +700,19 @@ function Designations() {
           error?.response?.status === 401
         ) {
 
-          alert(
-            "Your session has expired. Please sign in again."
-          );
+          showToast("Your session has expired. Please sign in again.", "error");
 
         }
         else if (
           error?.response?.status === 403
         ) {
 
-          alert(
-            "You are not authorized to delete this Designation."
-          );
+          showToast("You are not authorized to delete this Designation.", "error");
 
         }
         else {
 
-          alert(
-            error?.response?.data?.message ??
-            error?.response?.data ??
-            "Unable to delete Designation."
-          );
+          showToast(error?.response?.data?.message ?? error?.response?.data ?? "Unable to delete Designation.", "error");
 
         }
 
@@ -769,9 +793,7 @@ function Designations() {
         await loadDesignations();
 
 
-        alert(
-          "Designation added successfully."
-        );
+        showToast("Designation added successfully.", "success");
 
       }
       catch (error) {
@@ -786,27 +808,19 @@ function Designations() {
           error?.response?.status === 401
         ) {
 
-          alert(
-            "Your session has expired. Please sign in again."
-          );
+          showToast("Your session has expired. Please sign in again.", "error");
 
         }
         else if (
           error?.response?.status === 403
         ) {
 
-          alert(
-            "You are not authorized to create a Designation."
-          );
+          showToast("You are not authorized to create a Designation.", "error");
 
         }
         else {
 
-          alert(
-            error?.response?.data?.message ??
-            error?.response?.data ??
-            "Unable to create Designation."
-          );
+          showToast(error?.response?.data?.message ?? error?.response?.data ?? "Unable to create Designation.", "error");
 
         }
 
@@ -837,9 +851,7 @@ function Designations() {
         !data?.designationId
       ) {
 
-        alert(
-          "Designation ID is missing."
-        );
+        showToast("Designation ID is missing.", "error");
 
         return;
 
@@ -910,9 +922,7 @@ function Designations() {
         await loadDesignations();
 
 
-        alert(
-          "Designation updated successfully."
-        );
+        showToast("Designation updated successfully.", "success");
 
       }
       catch (error) {
@@ -927,27 +937,19 @@ function Designations() {
           error?.response?.status === 401
         ) {
 
-          alert(
-            "Your session has expired. Please sign in again."
-          );
+          showToast("Your session has expired. Please sign in again.", "error");
 
         }
         else if (
           error?.response?.status === 403
         ) {
 
-          alert(
-            "You are not authorized to update this Designation."
-          );
+          showToast("You are not authorized to update this Designation.", "error");
 
         }
         else {
 
-          alert(
-            error?.response?.data?.message ??
-            error?.response?.data ??
-            "Unable to update Designation."
-          );
+          showToast(error?.response?.data?.message ?? error?.response?.data ?? "Unable to update Designation.", "error");
 
         }
 
@@ -973,7 +975,7 @@ function Designations() {
 
     return (
 
-      <div
+      <MuiLayoutBox
         className="designation-page"
         style={{
           display: "flex",
@@ -981,7 +983,7 @@ function Designations() {
           alignItems: "center",
           minHeight: "400px",
         }}
-      >
+       component="div">
 
         <Card>
 
@@ -1025,7 +1027,7 @@ function Designations() {
 
         </Card>
 
-      </div>
+      </MuiLayoutBox>
 
     );
 
@@ -1038,39 +1040,42 @@ function Designations() {
 
   return (
 
-    <div className="designation-page">
+    <MuiLayoutBox className="designation-page" component="div">
 
       {/* =====================================================
           HEADER
       ===================================================== */}
 
-      <div className="employee-page-header">
+      <MuiLayoutBox className="employee-page-header" component="div">
 
-        <div>
+        <MuiLayoutBox className="designation-page-title" component="div">
 
-          <h1>
+          <Tooltip title="Back to employee management">
+            <IconButton
+              className="designation-back-button"
+              aria-label="Back to employee management"
+              onClick={() => navigate("/employees")}
+            >
+              <ArrowBack />
+            </IconButton>
+          </Tooltip>
+
+          <MuiLayoutBox className="designation-page-title-copy" component="div">
+
+          <MuiText component="h1" variant="h4">
             Designation Management
-          </h1>
+          </MuiText>
 
-          <p>
+          <MuiText component="p" variant="body1">
             Manage designations across
             your organization.
-          </p>
+          </MuiText>
+          </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
 
 
-        <div className="header-buttons">
-
-          <Button
-            variant="outlined"
-            onClick={() =>
-              navigate("/employees")
-            }
-          >
-            Previous
-          </Button>
-
+        <MuiLayoutBox className="header-buttons" component="div">
 
           <Button
             variant="outlined"
@@ -1090,8 +1095,10 @@ function Designations() {
               startIcon={
                 <Download />
               }
+            onClick={exportDesignationsToExcel}
+            disabled={loading || filteredDesignations.length === 0}
             >
-              Export
+              Export Excel
             </Button>
           )}
 
@@ -1123,9 +1130,9 @@ function Designations() {
             </Button>
           )}
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
 
   
@@ -1134,121 +1141,101 @@ function Designations() {
           STATISTICS
       ===================================================== */}
 
-      <div className="stats-grid">
+      <MuiLayoutBox className="stats-grid" component="div">
 
 
         {/* TOTAL */}
 
         <Card
-          className="stats-card"
+          className={`stats-card ${statusFilter === "All" && !search ? "is-selected" : ""}`}
         >
-
+          <CardActionArea className="stats-card-action-area" onClick={resetDesignationFilters} aria-label={`Show all ${designations.length} designations`}>
           <CardContent>
 
-            <div className="stats-icon blue">
+            <MuiLayoutBox className="stats-icon blue" component="div">
 
               <Category />
 
-            </div>
+            </MuiLayoutBox>
 
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Total Designations
-            </span>
+            </MuiText>
 
 
-            <h2>
+            <MuiText component="h2" variant="h5">
               {designations.length}
-            </h2>
+            </MuiText>
 
           </CardContent>
-
+          </CardActionArea>
         </Card>
 
 
         {/* ACTIVE */}
 
         <Card
-          className="stats-card"
+          className={`stats-card ${statusFilter === "Active" ? "is-selected" : ""}`}
         >
-
+          <CardActionArea className="stats-card-action-area" onClick={() => setStatusFilter(statusFilter === "Active" ? "All" : "Active")} aria-pressed={statusFilter === "Active"}>
           <CardContent>
 
-            <div className="stats-icon green">
+            <MuiLayoutBox className="stats-icon green" component="div">
 
               <CheckCircle />
 
-            </div>
+            </MuiLayoutBox>
 
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Active Designations
-            </span>
+            </MuiText>
 
 
-            <h2>
+            <MuiText component="h2" variant="h5">
 
-              {
-                designations.filter(
-                  (item) =>
-                    String(
-                      item.status ??
-                      item.Status ??
-                      ""
-                    ).toLowerCase() ===
-                    "active"
-                ).length
-              }
+              {activeDesignationCount}
 
-            </h2>
+            </MuiText>
 
           </CardContent>
-
+          </CardActionArea>
         </Card>
 
 
         {/* INACTIVE */}
 
         <Card
-          className="stats-card"
+          className={`stats-card ${statusFilter === "Inactive" ? "is-selected" : ""}`}
         >
-
+          <CardActionArea className="stats-card-action-area" onClick={() => setStatusFilter(statusFilter === "Inactive" ? "All" : "Inactive")} aria-pressed={statusFilter === "Inactive"}>
           <CardContent>
 
-            <div className="stats-icon red">
+            <MuiLayoutBox className="stats-icon red" component="div">
 
               <Cancel />
 
-            </div>
+            </MuiLayoutBox>
 
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Inactive Designations
-            </span>
+            </MuiText>
 
 
-            <h2>
+            <MuiText component="h2" variant="h5">
 
-              {
-                designations.filter(
-                  (item) =>
-                    String(
-                      item.status ??
-                      item.Status ??
-                      ""
-                    ).toLowerCase() ===
-                    "inactive"
-                ).length
-              }
+              {inactiveDesignationCount}
 
-            </h2>
+            </MuiText>
 
           </CardContent>
-
+          </CardActionArea>
         </Card>
 
 
-      </div>
+      </MuiLayoutBox>
 
 
       {/* =====================================================
@@ -1261,9 +1248,9 @@ function Designations() {
 
         <CardContent>
 
-          <div
+          <MuiLayoutBox
             className="designation-filter-row"
-          >
+           component="div">
 
             <TextField
               className="designation-search"
@@ -1275,7 +1262,7 @@ function Designations() {
                   event.target.value
                 )
               }
-              InputProps={{
+              slotProps={{ input: {
                 startAdornment: (
 
                   <InputAdornment
@@ -1287,7 +1274,7 @@ function Designations() {
                   </InputAdornment>
 
                 ),
-              }}
+              } }}
             />
 
 
@@ -1318,7 +1305,7 @@ function Designations() {
 
             </TextField>
 
-          </div>
+          </MuiLayoutBox>
 
         </CardContent>
 
@@ -1337,14 +1324,14 @@ function Designations() {
 
           <CardContent>
 
-            <h3
+            <MuiText
               style={{
                 textAlign: "center",
                 padding: "40px",
               }}
-            >
+             component="h3" variant="h6">
               Loading Designations...
-            </h3>
+            </MuiText>
 
           </CardContent>
 
@@ -1366,8 +1353,16 @@ function Designations() {
                 editDesignation
               }
               deleteDesignation={
-                removeDesignation
+                (id) => {
+                  const designation = designations.find((item) =>
+                    String(item.designationId ?? item.DesignationId ?? item.designationID ?? item.DesignationID) === String(id)
+                  );
+                  setDesignationToDelete(designation || { designationId: id });
+                }
               }
+              canEdit={canEdit}
+              canDelete={canDelete}
+              onNotify={showToast}
             />
 
           </CardContent>
@@ -1390,6 +1385,7 @@ function Designations() {
           handleSave={
             saveDesignation
           }
+          onNotify={showToast}
         />
       )}
 
@@ -1410,10 +1406,52 @@ function Designations() {
           handleUpdate={
             editDesignationSave
           }
+          onNotify={showToast}
         />
       )}
 
-    </div>
+      <Dialog
+        open={Boolean(designationToDelete)}
+        onClose={() => setDesignationToDelete(null)}
+        aria-labelledby="delete-designation-title"
+      >
+        <DialogTitle id="delete-designation-title">Delete designation?</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete {designationToDelete?.designationName || designationToDelete?.DesignationName || designationToDelete?.designation || "this designation"}?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDesignationToDelete(null)}>Cancel</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={async () => {
+              const id = designationToDelete?.designationId ?? designationToDelete?.DesignationId ?? designationToDelete?.designationID ?? designationToDelete?.DesignationID;
+              setDesignationToDelete(null);
+              if (id) await removeDesignation(id);
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={5000}
+        onClose={() => setToast((current) => ({ ...current, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setToast((current) => ({ ...current, open: false }))}
+          severity={toast.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {toast.message}
+        </Alert>
+      </Snackbar>
+
+    </MuiLayoutBox>
 
   );
 

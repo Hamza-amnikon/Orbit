@@ -12,6 +12,7 @@ import {
     MenuItem,
     Typography,
 } from "@mui/material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function EditEmployeeType({
     open,
@@ -27,6 +28,7 @@ function EditEmployeeType({
     };
 
     const [formData, setFormData] = useState(initialState);
+    const [nameError, setNameError] = useState(false);
 
     useEffect(() => {
 
@@ -55,9 +57,10 @@ function EditEmployeeType({
     const update = async () => {
 
         if (!formData.employeeTypeName.trim()) {
-            alert("Employee Type Name is required.");
+            setNameError(true);
             return;
         }
+        setNameError(false);
 
         try {
 
@@ -102,10 +105,10 @@ function EditEmployeeType({
 
                     <Grid size={{ xs: 12 }}>
 
-                        <div className="form-group">
+                        <MuiLayoutBox className="form-group" component="div">
 
                             <Typography className="dialog-label">
-                                Employee Type <span>*</span>
+                                Employee Type <MuiText component="span" variant="inherit">*</MuiText>
                             </Typography>
 
                             <TextField
@@ -113,17 +116,19 @@ function EditEmployeeType({
                                 placeholder="Enter Employee Type"
                                 name="employeeTypeName"
                                 value={formData.employeeTypeName}
-                                onChange={handleChange}
+                                onChange={(event) => { handleChange(event); if (event.target.value.trim()) setNameError(false); }}
                                 className="dialog-input"
+                                error={nameError}
+                                helperText={nameError ? "Employee Type Name is required." : " "}
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
                     </Grid>
 
                     <Grid size={{ xs: 12, md: 8 }}>
 
-                        <div className="form-group">
+                        <MuiLayoutBox className="form-group" component="div">
 
                             <Typography className="dialog-label">
                                 Description
@@ -140,13 +145,13 @@ function EditEmployeeType({
                                 className="dialog-input multiline"
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
                     </Grid>
 
                     <Grid size={{ xs: 12, md: 4 }}>
 
-                        <div className="form-group">
+                        <MuiLayoutBox className="form-group" component="div">
 
                             <Typography className="dialog-label">
                                 Status
@@ -171,7 +176,7 @@ function EditEmployeeType({
 
                             </TextField>
 
-                        </div>
+                        </MuiLayoutBox>
 
                     </Grid>
 

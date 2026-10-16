@@ -1,3 +1,4 @@
+import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useMemo, useState } from "react";
 
 import {
@@ -29,6 +30,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
 import "./EmployeesPayroll.css";
+import { Typography as MuiText } from "@mui/material";
 
 /* =========================================================
    API
@@ -1838,9 +1840,9 @@ await axios.delete(
                                             .value
                                     )
                                 }
-                                inputProps={{
+                                slotProps={{ htmlInput: {
                                     min: 0,
-                                }}
+                                } }}
                                 helperText="The selected template will calculate earnings and deductions automatically."
                             />
 
@@ -2099,11 +2101,11 @@ await axios.delete(
                                                         </Box>
 
 
-                                                        <span className="epr-calculation-badge">
+                                                        <MuiText className="epr-calculation-badge" component="span" variant="inherit">
                                                             {
                                                                 earning.calculationType
                                                             }
-                                                        </span>
+                                                        </MuiText>
 
 
                                                         <Typography className="epr-template-value">
@@ -2238,11 +2240,11 @@ await axios.delete(
                                                             </Box>
 
 
-                                                            <span className="epr-calculation-badge epr-deduction-badge">
+                                                            <MuiText className="epr-calculation-badge epr-deduction-badge" component="span" variant="inherit">
                                                                 {
                                                                     deduction.calculationType
                                                                 }
-                                                            </span>
+                                                            </MuiText>
 
 
                                                             <Typography className="epr-template-value">
@@ -2537,11 +2539,11 @@ await axios.delete(
                                 )
                             }
                             placeholder="Search employee..."
-                            InputProps={{
+                            slotProps={{ input: {
                                 startAdornment: (
                                     <SearchIcon className="epr-table-search-icon" />
                                 ),
-                            }}
+                            } }}
                         />
 
 
@@ -2588,44 +2590,44 @@ await axios.delete(
 
                     <Box className="epr-assigned-payroll-table-wrapper">
 
-                        <table className="epr-assigned-payroll-table">
+                        <MuiTableMigration className="epr-assigned-payroll-table">
 
-                            <thead>
+                            <MuiTableHeadMigration>
 
-                                <tr>
+                                <MuiTableRowMigration>
 
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Employee
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Employee ID
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Payslip
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Annual CTC
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                    <th>
+                                    <MuiTableCellMigration>
                                         Actions
-                                    </th>
+                                    </MuiTableCellMigration>
 
-                                </tr>
+                                </MuiTableRowMigration>
 
-                            </thead>
+                            </MuiTableHeadMigration>
 
 
-                            <tbody>
+                            <MuiTableBodyMigration>
 
                                 {assignmentsLoading ? (
 
-                                    <tr>
+                                    <MuiTableRowMigration>
 
-                                        <td
+                                        <MuiTableCellMigration
                                             colSpan="5"
                                             className="epr-empty-table-state"
                                         >
@@ -2641,16 +2643,16 @@ await axios.delete(
                                                 Loading employee payroll...
                                             </Typography>
 
-                                        </td>
+                                        </MuiTableCellMigration>
 
-                                    </tr>
+                                    </MuiTableRowMigration>
 
                                 ) : filteredAssignments.length ===
                                   0 ? (
 
-                                    <tr>
+                                    <MuiTableRowMigration>
 
-                                        <td
+                                        <MuiTableCellMigration
                                             colSpan="5"
                                             className="epr-empty-table-state"
                                         >
@@ -2663,9 +2665,9 @@ await axios.delete(
                                                 Click "Assign Salary" to assign a payroll template to an employee.
                                             </Typography>
 
-                                        </td>
+                                        </MuiTableCellMigration>
 
-                                    </tr>
+                                    </MuiTableRowMigration>
 
                                 ) : (
 
@@ -2688,7 +2690,7 @@ await axios.delete(
                                                 );
 
                                             return (
-                                                <tr
+                                                <MuiTableRowMigration
                                                     key={
                                                         assignment.employeeSalaryId
                                                     }
@@ -2696,7 +2698,7 @@ await axios.delete(
 
                                                     {/* EMPLOYEE */}
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
 
                                                         <Box className="epr-table-employee">
 
@@ -2734,12 +2736,12 @@ await axios.delete(
 
                                                         </Box>
 
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
 
                                                     {/* EMPLOYEE ID */}
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
 
                                                         <Typography className="epr-table-id">
                                                             {
@@ -2748,25 +2750,25 @@ await axios.delete(
                                                             }
                                                         </Typography>
 
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
 
                                                     {/* TEMPLATE */}
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
 
-                                                        <span className="epr-template-badge">
+                                                        <MuiText className="epr-template-badge" component="span" variant="inherit">
                                                             {
                                                                 assignment.templateName
                                                             }
-                                                        </span>
+                                                        </MuiText>
 
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
 
                                                     {/* CTC */}
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
 
                                                         <Typography className="epr-table-ctc">
                                                             {formatCurrency(
@@ -2774,12 +2776,12 @@ await axios.delete(
                                                             )}
                                                         </Typography>
 
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
 
                                                     {/* ACTIONS */}
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
 
                                                         <Box className="epr-table-actions">
 
@@ -2834,17 +2836,17 @@ await axios.delete(
                                                             )}
                                                         </Box>
 
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
-                                                </tr>
+                                                </MuiTableRowMigration>
                                             );
                                         }
                                     )
                                 )}
 
-                            </tbody>
+                            </MuiTableBodyMigration>
 
-                        </table>
+                        </MuiTableMigration>
 
                     </Box>
 
@@ -2934,11 +2936,11 @@ await axios.delete(
                                         Payslip Template
                                     </Typography>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {
                                             viewAssignment.templateName
                                         }
-                                    </strong>
+                                    </MuiText>
 
                                 </Box>
 
@@ -2949,11 +2951,11 @@ await axios.delete(
                                         Annual CTC
                                     </Typography>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {formatCurrency(
                                             viewAssignment.annualCtc
                                         )}
-                                    </strong>
+                                    </MuiText>
 
                                 </Box>
 
@@ -2964,11 +2966,11 @@ await axios.delete(
                                         Monthly Gross
                                     </Typography>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {formatCurrency(
                                             viewAssignment.monthlyGrossSalary
                                         )}
-                                    </strong>
+                                    </MuiText>
 
                                 </Box>
 
@@ -2979,11 +2981,11 @@ await axios.delete(
                                         Monthly Net
                                     </Typography>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {formatCurrency(
                                             viewAssignment.monthlyNetSalary
                                         )}
-                                    </strong>
+                                    </MuiText>
 
                                 </Box>
 
@@ -3028,11 +3030,11 @@ await axios.delete(
                                                       )}
                                             </Typography>
 
-                                            <strong>
+                                            <MuiText component="strong" variant="inherit">
                                                 {formatCurrency(
                                                     earning.amount
                                                 )}
-                                            </strong>
+                                            </MuiText>
 
                                         </Box>
                                     )
@@ -3088,12 +3090,12 @@ await axios.delete(
                                                           )}
                                                 </Typography>
 
-                                                <strong>
+                                                <MuiText component="strong" variant="inherit">
                                                     -
                                                     {formatCurrency(
                                                         deduction.amount
                                                     )}
-                                                </strong>
+                                                </MuiText>
 
                                             </Box>
                                         )

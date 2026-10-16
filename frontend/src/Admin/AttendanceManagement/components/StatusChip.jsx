@@ -1,4 +1,5 @@
 import "./AttendanceTable.css";
+import { Typography as MuiText } from "@mui/material";
 
 export default function StatusChip({ status }) {
 
@@ -25,9 +26,9 @@ export default function StatusChip({ status }) {
     };
 
     return (
-        <span className={getClass()}>
+        <MuiText className={getClass()} component="span" variant="inherit">
             {status}
-        </span>
+        </MuiText>
     );
 
 }

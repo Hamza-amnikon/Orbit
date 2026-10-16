@@ -1,4 +1,6 @@
+import { MuiButtonMigration } from "../../../components/ui/MuiCompat.jsx";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import HolidayEventForm from "./HolidayEventForm";
 
@@ -6,11 +8,18 @@ import {
     AddRounded,
     EditRounded,
     DeleteOutlineRounded,
+    ArrowBackRounded,
+    FileDownloadOutlined,
+    SearchRounded,
 } from "@mui/icons-material";
+
+import { Alert, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, InputAdornment, MenuItem, Snackbar, TextField } from "@mui/material";
+import { exportRowsToExcel } from "../../../utils/exportExcel";
 
 import "./HolidayEvents.css";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 const API_URL = `${import.meta.env.VITE_EVENT_API_BASE_URL}/api/Event`;
 
@@ -18,6 +27,7 @@ const LOCATION_API =
     `${import.meta.env.VITE_LOCATION_API_BASE_URL}/api/location`;
 
 export default function HolidayEvents() {
+    const navigate = useNavigate();
 
     const { hasPermission } = useAuth();
 
@@ -33,6 +43,10 @@ export default function HolidayEvents() {
     const [locations, setLocations] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [search, setSearch] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
     useEffect(() => {
 
@@ -49,7 +63,7 @@ export default function HolidayEvents() {
         try {
             setLoading(true);
 
-            const response = await axios.get(EVENT_API);
+            const response = await axios.get(API_URL);
 
             setEvents(response.data);
 
@@ -93,22 +107,16 @@ export default function HolidayEvents() {
             return;
         }
 
-        const confirmed = window.confirm(
-            "Are you sure you want to delete this holiday/event?"
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
         try {
 
             await axios.delete(
-                `${EVENT_API}/${eventId}`
+                `${API_URL}/${eventId}`
             );
 
             // Refresh table after delete
             loadEvents();
+            setDeleteTarget(null);
+            setNotice({ open: true, severity: "success", message: "Holiday or event deleted." });
 
         } catch (error) {
 
@@ -116,6 +124,30 @@ export default function HolidayEvents() {
                 "Error deleting holiday/event:",
                 error
             );
+            setNotice({ open: true, severity: "error", message: "Could not delete this holiday or event." });
+        }
+    }
+
+    const normalizedEvents = Array.isArray(events) ? events : [];
+    const filteredEvents = normalizedEvents.filter((event) => {
+        const query = search.trim().toLowerCase();
+        const matchesSearch = !query || [event.eventName, event.eventType, getLocationName(event.locationCode)].some((value) => String(value || "").toLowerCase().includes(query));
+        const matchesStatus = !statusFilter || String(event.status || "").toLowerCase() === statusFilter.toLowerCase();
+        return matchesSearch && matchesStatus;
+    });
+    const activeCount = normalizedEvents.filter((event) => String(event.status || "").toLowerCase() === "active").length;
+    const inactiveCount = normalizedEvents.filter((event) => String(event.status || "").toLowerCase() === "inactive").length;
+
+    async function handleExport() {
+        try {
+            await exportRowsToExcel(filteredEvents.map((event) => ({ ...event, locationName: getLocationName(event.locationCode) })), [
+                ["Event Name", "eventName"], ["Date", (event) => event.eventDate ? new Date(event.eventDate).toLocaleDateString("en-GB") : ""],
+                ["Type", "eventType"], ["Location", "locationName"], ["Status", "status"],
+            ], "Holidays-and-Events.xlsx", "Holidays");
+            setNotice({ open: true, severity: "success", message: `Exported ${filteredEvents.length} holidays and events.` });
+        } catch (error) {
+            console.error("Holiday export error", error);
+            setNotice({ open: true, severity: "error", message: "Could not export holidays and events." });
         }
     }
 
@@ -124,26 +156,32 @@ export default function HolidayEvents() {
     }
 
     return (
-        <div className="holiday-events-page">
+        <MuiLayoutBox className="holiday-events-page" component="div">
 
             {/* Header */}
 
-            <div className="holiday-events-header">
+            <MuiLayoutBox className="holiday-events-header" component="div">
 
-                <div>
+                <MuiLayoutBox className="attendance-header-leading" component="div">
+                    <IconButton aria-label="Back to Attendance" onClick={() => navigate("/attendance")} className="attendance-back-button"><ArrowBackRounded /></IconButton>
 
-                    <h1>
+                <MuiLayoutBox component="div">
+
+                    <MuiText component="h1" variant="h4">
                         Holidays & Events
-                    </h1>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Manage company holidays, events and important dates.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
+                </MuiLayoutBox>
 
+                <MuiLayoutBox className="holiday-events-header-actions" component="div">
+                <Button variant="outlined" startIcon={<FileDownloadOutlined />} onClick={handleExport}>Export Excel</Button>
                 {canCreate && (
-                    <button
+                    <MuiButtonMigration
                         type="button"
                         className="add-event-btn"
                         onClick={() => setShowForm(true)}
@@ -151,129 +189,143 @@ export default function HolidayEvents() {
                         <AddRounded />
 
                         Add Holiday / Event
-                    </button>
+                    </MuiButtonMigration>
                 )}
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
+
+            <Grid container spacing={2} className="holiday-summary-grid">
+                {[
+                    { label: "All Holidays & Events", count: normalizedEvents.length, value: "" },
+                    { label: "Active", count: activeCount, value: "Active" },
+                    { label: "Inactive", count: inactiveCount, value: "Inactive" },
+                ].map((item) => <Grid key={item.label} size={{ xs: 12, sm: 4 }}><Card component="button" type="button" className={`holiday-summary-card ${statusFilter === item.value ? "selected" : ""}`} onClick={() => setStatusFilter((current) => current === item.value ? "" : item.value)} aria-pressed={statusFilter === item.value}><CardContent><span>{item.label}</span><strong>{item.count}</strong></CardContent></Card></Grid>)}
+            </Grid>
+
+            <MuiLayoutBox className="holiday-filter-card" component="div">
+                <TextField fullWidth placeholder="Search holiday, event, type or location..." value={search} onChange={(event) => setSearch(event.target.value)} slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRounded color="action" /></InputAdornment> } }} />
+                <TextField select label="Status" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}><MenuItem value="">All Status</MenuItem><MenuItem value="Active">Active</MenuItem><MenuItem value="Inactive">Inactive</MenuItem></TextField>
+            </MuiLayoutBox>
 
 
             {/* Table */}
 
-            <div className="holiday-events-card">
+            <MuiLayoutBox className="holiday-events-card" component="div">
 
                 {/* Table Header */}
 
-                <div className="holiday-events-table-header">
+                <MuiLayoutBox className="holiday-events-table-header" component="div">
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Event Name
-                    </span>
+                    </MuiText>
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Date
-                    </span>
+                    </MuiText>
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Type
-                    </span>
+                    </MuiText>
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Location
-                    </span>
+                    </MuiText>
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Status
-                    </span>
+                    </MuiText>
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Actions
-                    </span>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
 
                 {/* Loading */}
 
                 {loading ? (
 
-                    <div className="event-table-message">
+                    <MuiLayoutBox className="event-table-message" component="div">
                         Loading...
-                    </div>
+                    </MuiLayoutBox>
 
-                ) : events.length === 0 ? (
+                ) : filteredEvents.length === 0 ? (
 
-                    <div className="event-table-message">
+                    <MuiLayoutBox className="event-table-message" component="div">
                         No holidays or events found.
-                    </div>
+                    </MuiLayoutBox>
 
                 ) : (
 
                     /* Event Rows */
 
-                    events.map((event) => (
+                    filteredEvents.map((event) => (
 
-                        <div
+                        <MuiLayoutBox
                             className="holiday-events-table-row"
                             key={event.eventId}
-                        >
+                         component="div">
 
                             {/* Event Name */}
 
-                            <span className="event-name">
+                            <MuiText className="event-name" component="span" variant="inherit">
                                 {event.eventName}
-                            </span>
+                            </MuiText>
 
 
                             {/* Date */}
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
                                 {new Date(
                                     event.eventDate
                                 ).toLocaleDateString("en-GB")}
-                            </span>
+                            </MuiText>
 
 
                             {/* Type */}
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
                                 {event.eventType}
-                            </span>
+                            </MuiText>
 
 
                             {/* Location */}
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
                                 {getLocationName(
                                     event.locationCode
                                 )}
-                            </span>
+                            </MuiText>
 
 
                             {/* Status */}
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
 
-                                <span
+                                <MuiText
                                     className={`event-status ${
                                         event.status?.toLowerCase() === "active"
                                             ? "active"
                                             : "inactive"
                                     }`}
-                                >
+                                 component="span" variant="inherit">
                                     {event.status}
-                                </span>
+                                </MuiText>
 
-                            </span>
+                            </MuiText>
 
 
                             {/* Actions */}
 
-                            <span className="event-actions">
+                            <MuiText className="event-actions" component="span" variant="inherit">
 
                                 {/* Edit */}
 
                                 {canEdit && (
-                                    <button
+                                    <MuiButtonMigration
                                         type="button"
                                         className="event-edit-btn"
                                         title="Edit"
@@ -283,36 +335,32 @@ export default function HolidayEvents() {
                                         }}
                                     >
                                         <EditRounded />
-                                    </button>
+                                    </MuiButtonMigration>
                                 )}
 
 
                                 {/* Delete */}
 
                                 {canDelete && (
-                                    <button
+                                    <MuiButtonMigration
                                         type="button"
                                         className="event-delete-btn"
                                         title="Delete"
-                                        onClick={() =>
-                                            deleteEvent(
-                                                event.eventId
-                                            )
-                                        }
+                                        onClick={() => setDeleteTarget(event)}
                                     >
                                         <DeleteOutlineRounded />
-                                    </button>
+                                    </MuiButtonMigration>
                                 )}
 
-                            </span>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
                     ))
 
                 )}
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* Add / Edit Form */}
@@ -334,6 +382,16 @@ export default function HolidayEvents() {
 
             )}
 
-        </div>
+            <Dialog open={Boolean(deleteTarget)} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
+                <DialogTitle>Delete holiday or event?</DialogTitle>
+                <DialogContent>Delete “{deleteTarget?.eventName}”? This action cannot be undone.</DialogContent>
+                <DialogActions><Button onClick={() => setDeleteTarget(null)}>Cancel</Button><Button color="error" variant="contained" onClick={() => deleteEvent(deleteTarget?.eventId)}>Delete</Button></DialogActions>
+            </Dialog>
+
+            <Snackbar open={notice.open} autoHideDuration={4500} onClose={() => setNotice((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
+                <Alert severity={notice.severity} variant="filled" onClose={() => setNotice((current) => ({ ...current, open: false }))}>{notice.message}</Alert>
+            </Snackbar>
+
+        </MuiLayoutBox>
     );
 }

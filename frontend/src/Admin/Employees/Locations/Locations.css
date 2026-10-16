@@ -418,3 +418,87 @@
     }
 
 }
+
+/* Responsive touch targets and contained content on small screens. */
+.location-page {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Shared Employee Management header and card treatment. */
+.location-page .employee-page-header {
+    padding: 0 0 20px;
+    border-radius: 0;
+    color: #102a56;
+    margin-bottom: 22px;
+    box-shadow: none;
+    background: transparent;
+}
+.location-page .employee-page-header p { color: #60738f; opacity: 1; }
+.location-title-wrap, .employee-type-title-wrap { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.location-back-button, .employee-type-back-button { width: 42px; height: 42px; flex: 0 0 auto; border: 1px solid #dce4ee !important; border-radius: 10px !important; color: #3f5067 !important; background: #fff !important; }
+.location-page .header-buttons .MuiButton-root { border-radius: 8px; transform: none; }
+.location-page .header-buttons .MuiButton-root:hover { transform: none; }
+.location-page .stats-card { border: 1px solid #e0e6ef !important; border-radius: 12px !important; box-shadow: 0 2px 7px rgba(20, 40, 70, .04); cursor: pointer; }
+.location-page .stats-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(20, 40, 70, .08); }
+.location-page .stats-card.selected { border-color: #8eafff !important; box-shadow: 0 0 0 2px rgba(47, 103, 237, .10); }
+.location-page .stats-card-static { cursor: default; }
+.location-page .stats-card-static:hover { transform: none; }
+.location-page .stats-card .MuiCardContent-root { gap: 10px; padding: 20px !important; }
+.location-page .stats-icon { width: 40px; height: 40px; border-radius: 10px; }
+
+@media (max-width: 480px) {
+    .location-page {
+        padding: 14px;
+    }
+
+    .location-page .employee-page-header {
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    .location-page .employee-page-header h1 {
+        font-size: 1.55rem;
+        line-height: 1.25;
+    }
+
+    .location-page .employee-page-header p {
+        margin: 6px 0 0;
+        font-size: 0.9rem;
+        line-height: 1.45;
+    }
+
+    .location-page .header-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .location-page .header-buttons .MuiButton-root {
+        width: 100%;
+        min-width: 0;
+        height: 42px;
+        padding-inline: 8px;
+        font-size: 0.82rem;
+        white-space: nowrap;
+    }
+
+    .location-page .stats-grid {
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .location-page .stats-card .MuiCardContent-root {
+        min-width: 0;
+        padding: 18px !important;
+    }
+
+    .location-page .toolbar-card .MuiCardContent-root {
+        padding: 12px !important;
+    }
+
+    .location-page .table-card {
+        min-width: 0;
+    }
+}

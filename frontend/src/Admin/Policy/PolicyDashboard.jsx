@@ -635,13 +635,13 @@ const PolicyDashboard = () => {
                     variant="outlined"
                     size="small"
                     fullWidth
-                    InputProps={{
+                    slotProps={{ input: {
                         startAdornment: (
                             <InputAdornment position="start">
                                 <SearchRoundedIcon />
                             </InputAdornment>
                         ),
-                    }}
+                    } }}
                 />
 
                 <FormControl

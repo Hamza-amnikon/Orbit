@@ -1,17 +1,24 @@
+import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { loadXlsx } from "../../../utils/exportLibraries";
 import "./Hierarchy.css";
 import { useAuth } from "../../../context/AuthContext";
 
 import {
     Card,
     CardContent,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Button
+    Autocomplete,
+    TextField,
+    Button,
+    IconButton,
+    Tooltip,
+    Snackbar,
+    Alert
 } from "@mui/material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { ArrowBack, Download } from "@mui/icons-material";
 
 // =========================================================
 // API
@@ -27,6 +34,7 @@ const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee
 function Hierarchy() {
 
     const { hasPermission } = useAuth();
+    const navigate = useNavigate();
 
     const permissionRoute = "/employees/EmployeeHierarchy";
     const canView = hasPermission(permissionRoute, "view");
@@ -39,10 +47,13 @@ function Hierarchy() {
     const [employees, setEmployees] = useState([]);
 
     const [employeeId, setEmployeeId] = useState("");
+    const [employeeSearch, setEmployeeSearch] = useState("");
     const [employeeHierarchy, setEmployeeHierarchy] = useState(null);
 
     const [loading, setLoading] = useState(false);
     const [loadingEmployees, setLoadingEmployees] = useState(false);
+    const [statusFilter, setStatusFilter] = useState("");
+    const [notice, setNotice] = useState({ open: false, message: "", severity: "info" });
 
     // =========================================================
     // LOAD EMPLOYEES
@@ -65,12 +76,24 @@ function Hierarchy() {
             );
 
             const data = Array.isArray(response.data)
-                ? response.data
+                ? response.data.filter(Boolean)
                 : [];
+
+            const uniqueEmployees = Array.from(
+                new Map(
+                    data.map((employee) => {
+                        const employeeId = String(employee.employeeId ?? "").trim();
+                        const email = String(employee.email || employee.emailAddress || employee.employeeEmail || "").trim().toLowerCase();
+                        const name = String(employee.employeeName || `${employee.firstName || ""} ${employee.lastName || ""}`).trim().toLowerCase();
+                        const key = employeeId ? `id:${employeeId}` : email ? `email:${email}` : `name:${name}`;
+                        return [key, employee];
+                    })
+                ).values()
+            );
 
             console.log("Employees:", data);
 
-            setEmployees(data);
+            setEmployees(uniqueEmployees);
 
         } catch (error) {
 
@@ -110,7 +133,7 @@ function Hierarchy() {
             );
 
             const data = Array.isArray(response.data)
-                ? response.data
+                ? response.data.filter(Boolean)
                 : [];
 
             console.log(
@@ -218,6 +241,13 @@ function Hierarchy() {
             `${employee.firstName || ""} ${employee.lastName || ""}`.trim() ||
             "-"
         );
+    };
+
+    const getEmployeeLabel = (employee) => employee?.employeeName || `${employee?.firstName || ""} ${employee?.lastName || ""}`.trim() || String(employee?.employeeId || "");
+    const getEmployeeOptionLabel = (employee) => {
+        const label = getEmployeeLabel(employee);
+        const sameNameCount = employees.filter((candidate) => getEmployeeLabel(candidate).toLowerCase() === label.toLowerCase()).length;
+        return sameNameCount > 1 ? `${label} (${employee.employeeId})` : label;
     };
 
     // =========================================================
@@ -346,9 +376,7 @@ function Hierarchy() {
 
         if (!employeeId) {
 
-            alert(
-                "Select an employee"
-            );
+            setNotice({ open: true, message: "Select an employee first.", severity: "info" });
 
             return;
         }
@@ -375,9 +403,7 @@ function Hierarchy() {
 
                 setEmployeeHierarchy(null);
 
-                alert(
-                    "Hierarchy not found for this employee."
-                );
+                setNotice({ open: true, message: "Hierarchy not found for this employee.", severity: "warning" });
 
                 return;
             }
@@ -414,9 +440,7 @@ function Hierarchy() {
 
             setEmployeeHierarchy(null);
 
-            alert(
-                "Unable to load employee hierarchy."
-            );
+            setNotice({ open: true, message: "Unable to load employee hierarchy.", severity: "error" });
 
         } finally {
 
@@ -464,30 +488,30 @@ function Hierarchy() {
             "Not Assigned";
 
         return (
-            <div
+            <MuiLayoutBox
                 key={`${item.employeeId}-${index}`}
                 className={
                     isFirst
                         ? "hierarchy-box employee"
                         : "hierarchy-box"
                 }
-            >
+             component="div">
 
-                <span>
+                <MuiText component="span" variant="inherit">
                     {roleName}
-                </span>
+                </MuiText>
 
-                <strong>
+                <MuiText component="strong" variant="inherit">
                     {employeeName}
-                </strong>
+                </MuiText>
 
                 {item.department && (
-                    <small>
+                    <MuiText component="small" variant="caption">
                         {item.department}
-                    </small>
+                    </MuiText>
                 )}
 
-            </div>
+            </MuiLayoutBox>
         );
     };
 
@@ -519,38 +543,70 @@ function Hierarchy() {
         );
     };
 
+    const filteredHierarchies = hierarchies.filter((item) => !statusFilter || (item.status || "Active") === statusFilter);
+    const exportHierarchies = async () => {
+        const XLSX = await loadXlsx();
+        const rows = filteredHierarchies.map((item) => {
+            const parent = getTableParent(item);
+            return {
+                Employee: item.employeeName || getEmployeeName(item.employeeId) || "Unknown",
+                Department: item.department || "Unknown",
+                Role: item.roleName || "Unknown",
+                "Reports To": item.reportsToEmployeeName || parent?.employeeName || "Not Assigned",
+                "Parent Role": item.parentRoleName || parent?.roleName || "Not Assigned",
+                Level: item.hierarchyLevel ?? "-",
+                Status: item.status || "Active",
+            };
+        });
+        const sheet = XLSX.utils.json_to_sheet(rows);
+        const book = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(book, sheet, "Hierarchy");
+        XLSX.writeFile(book, `Spark_Employee_Hierarchy_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    };
+
     // =========================================================
     // RENDER
     // =========================================================
 
     if (!canView) {
         return (
-            <div style={{ padding: "60px", textAlign: "center" }}>
-                <h2>Access Denied</h2>
-                <p>You do not have permission to access this page.</p>
-            </div>
+            <MuiLayoutBox style={{ padding: "60px", textAlign: "center" }} component="div">
+                <MuiText component="h2" variant="h5">Access Denied</MuiText>
+                <MuiText component="p" variant="body1">You do not have permission to access this page.</MuiText>
+            </MuiLayoutBox>
         );
     }
 
     return (
 
-        <div className="hierarchy-page">
+        <MuiLayoutBox className="hierarchy-page" component="div">
 
             {/* ================================================= */}
             {/* HEADER */}
             {/* ================================================= */}
 
-            <div className="hierarchy-header">
+            <MuiLayoutBox className="hierarchy-header" component="div">
+                <MuiLayoutBox className="hierarchy-title-wrap" component="div">
+                    <Tooltip title="Back to employee management"><IconButton aria-label="Back to employee management" onClick={() => navigate("/employees")}><ArrowBack /></IconButton></Tooltip>
+                    <MuiLayoutBox component="div">
+                        <MuiText component="h1" variant="h4">Employee Hierarchy</MuiText>
+                        <MuiText component="p" variant="body1">View employee reporting and approval hierarchy.</MuiText>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
+                <Button variant="outlined" startIcon={<Download />} onClick={exportHierarchies}>Export Excel</Button>
+            </MuiLayoutBox>
 
-                <h1>
-                    Employee Hierarchy
-                </h1>
-
-                <p>
-                    View employee reporting and approval hierarchy.
-                </p>
-
-            </div>
+            <MuiLayoutBox className="hierarchy-stats-grid" component="div">
+                {[
+                    { label: "Configured Hierarchies", status: "", count: hierarchies.length },
+                    { label: "Active", status: "Active", count: hierarchies.filter((item) => (item.status || "Active") === "Active").length },
+                    { label: "Inactive", status: "Inactive", count: hierarchies.filter((item) => item.status === "Inactive").length },
+                ].map((stat) => (
+                    <Card key={stat.label} className={`hierarchy-stat-card ${statusFilter === stat.status ? "selected" : ""}`} role="button" tabIndex={0} onClick={() => setStatusFilter((current) => current === stat.status ? "" : stat.status)} onKeyDown={(event) => event.key === "Enter" && setStatusFilter((current) => current === stat.status ? "" : stat.status)}>
+                        <CardContent><MuiText component="span" variant="body2">{stat.label}</MuiText><MuiText component="h2" variant="h5">{stat.count}</MuiText></CardContent>
+                    </Card>
+                ))}
+            </MuiLayoutBox>
 
             {/* ================================================= */}
             {/* EMPLOYEE SELECTOR */}
@@ -560,61 +616,39 @@ function Hierarchy() {
 
                 <CardContent>
 
-                    <div className="toolbar">
+                    <MuiLayoutBox className="toolbar" component="div">
 
-                        <FormControl
+                        <Autocomplete
+                            className="hierarchy-employee-search"
                             fullWidth
-                            sx={{ flex: 1 }}
-                        >
-
-                            <InputLabel>
-                                Employee
-                            </InputLabel>
-
-                            <Select
-                                value={employeeId}
-                                label="Employee"
-                                onChange={(e) =>
-                                    setEmployeeId(
-                                        e.target.value
-                                    )
-                                }
-                                disabled={
-                                    loadingEmployees
-                                }
-                            >
-
-                                <MenuItem value="">
-
-                                    {loadingEmployees
-                                        ? "Loading employees..."
-                                        : "Select Employee"}
-
-                                </MenuItem>
-
-                                {employees.map(
-                                    employee => (
-
-                                        <MenuItem
-                                            key={
-                                                employee.employeeId
-                                            }
-                                            value={
-                                                employee.employeeId
-                                            }
-                                        >
-
-                                            {employee.employeeName ||
-                                                `${employee.firstName || ""} ${employee.lastName || ""}`.trim()}
-
-                                        </MenuItem>
-
-                                    )
-                                )}
-
-                            </Select>
-
-                        </FormControl>
+                            options={employees}
+                            value={employees.find((employee) => String(employee.employeeId) === String(employeeId)) || null}
+                            inputValue={employeeSearch}
+                            loading={loadingEmployees}
+                            disabled={loadingEmployees}
+                            getOptionLabel={getEmployeeOptionLabel}
+                            isOptionEqualToValue={(option, value) => String(option.employeeId) === String(value.employeeId)}
+                            filterOptions={(options, state) => {
+                                const query = state.inputValue.trim().toLowerCase();
+                                if (!query) return options;
+                                return options.filter((employee) => `${getEmployeeLabel(employee)} ${employee.employeeId || ""} ${employee.email || employee.emailAddress || employee.employeeEmail || ""}`.toLowerCase().includes(query));
+                            }}
+                            onInputChange={(_, value, reason) => {
+                                if (reason === "input" || reason === "clear") setEmployeeSearch(value);
+                            }}
+                            onChange={(_, employee) => {
+                                setEmployeeId(employee?.employeeId ?? "");
+                                setEmployeeSearch(employee ? getEmployeeLabel(employee) : "");
+                            }}
+                            noOptionsText={loadingEmployees ? "Loading employees..." : "No matching employees"}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Search employee"
+                                    placeholder="Type a name or employee ID"
+                                />
+                            )}
+                        />
 
                         <Button
                             variant="contained"
@@ -638,7 +672,7 @@ function Hierarchy() {
 
                         </Button>
 
-                    </div>
+                    </MuiLayoutBox>
 
                 </CardContent>
 
@@ -650,26 +684,26 @@ function Hierarchy() {
 
             {employeeHierarchy && (
 
-                <div className="hierarchy-card">
+                <MuiLayoutBox className="hierarchy-card" component="div">
 
-                    <h2>
+                    <MuiText component="h2" variant="h5">
                         Reporting Structure
-                    </h2>
+                    </MuiText>
 
                     {reportingChain.length === 0 ? (
 
-                        <p>
+                        <MuiText component="p" variant="body1">
                             No reporting hierarchy found.
-                        </p>
+                        </MuiText>
 
                     ) : (
 
-                        <div className="hierarchy-flow">
+                        <MuiLayoutBox className="hierarchy-flow" component="div">
 
                             {reportingChain.map(
                                 (item, index) => (
 
-                                    <div
+                                    <MuiLayoutBox
                                         key={
                                             `${item.employeeId}-${index}`
                                         }
@@ -677,7 +711,7 @@ function Hierarchy() {
                                             display: "flex",
                                             alignItems: "center"
                                         }}
-                                    >
+                                     component="div">
 
                                         {renderHierarchyBox(
                                             item,
@@ -687,22 +721,22 @@ function Hierarchy() {
                                         {index <
                                             reportingChain.length - 1 && (
 
-                                            <div className="arrow">
+                                            <MuiLayoutBox className="arrow" component="div">
                                                 →
-                                            </div>
+                                            </MuiLayoutBox>
 
                                         )}
 
-                                    </div>
+                                    </MuiLayoutBox>
 
                                 )
                             )}
 
-                        </div>
+                        </MuiLayoutBox>
 
                     )}
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
@@ -710,57 +744,57 @@ function Hierarchy() {
             {/* ALL CONFIGURED HIERARCHIES */}
             {/* ================================================= */}
 
-            <div className="all-hierarchy-card">
+            <MuiLayoutBox className="all-hierarchy-card" component="div">
 
-                <h2>
+                <MuiText component="h2" variant="h5">
                     Configured Hierarchies
-                </h2>
+                </MuiText>
 
-                <table>
+                <MuiTableMigration>
 
-                    <thead>
+                    <MuiTableHeadMigration>
 
-                        <tr>
+                        <MuiTableRowMigration>
 
-                            <th>
+                            <MuiTableCellMigration>
                                 Employee
-                            </th>
+                            </MuiTableCellMigration>
 
-                            <th>
+                            <MuiTableCellMigration>
                                 Department
-                            </th>
+                            </MuiTableCellMigration>
 
-                            <th>
+                            <MuiTableCellMigration>
                                 Role
-                            </th>
+                            </MuiTableCellMigration>
 
-                            <th>
+                            <MuiTableCellMigration>
                                 Reports To
-                            </th>
+                            </MuiTableCellMigration>
 
-                            <th>
+                            <MuiTableCellMigration>
                                 Parent Role
-                            </th>
+                            </MuiTableCellMigration>
 
-                            <th>
+                            <MuiTableCellMigration>
                                 Level
-                            </th>
+                            </MuiTableCellMigration>
 
-                            <th>
+                            <MuiTableCellMigration>
                                 Status
-                            </th>
+                            </MuiTableCellMigration>
 
-                        </tr>
+                        </MuiTableRowMigration>
 
-                    </thead>
+                    </MuiTableHeadMigration>
 
-                    <tbody>
+                    <MuiTableBodyMigration>
 
-                        {hierarchies.length === 0 ? (
+                        {filteredHierarchies.length === 0 ? (
 
-                            <tr>
+                            <MuiTableRowMigration>
 
-                                <td
+                                <MuiTableCellMigration
                                     colSpan="7"
                                     style={{
                                         textAlign:
@@ -768,13 +802,13 @@ function Hierarchy() {
                                     }}
                                 >
                                     No hierarchies configured.
-                                </td>
+                                </MuiTableCellMigration>
 
-                            </tr>
+                            </MuiTableRowMigration>
 
                         ) : (
 
-                            hierarchies.map(
+                            filteredHierarchies.map(
                                 item => {
 
                                     const parent =
@@ -784,7 +818,7 @@ function Hierarchy() {
 
                                     return (
 
-                                        <tr
+                                        <MuiTableRowMigration
                                             key={
                                                 item.hierarchyId
                                             }
@@ -792,7 +826,7 @@ function Hierarchy() {
 
                                             {/* EMPLOYEE */}
 
-                                            <td>
+                                            <MuiTableCellMigration>
 
                                                 {item.employeeName ||
                                                     getEmployeeName(
@@ -800,69 +834,69 @@ function Hierarchy() {
                                                     ) ||
                                                     "Unknown"}
 
-                                            </td>
+                                            </MuiTableCellMigration>
 
                                             {/* DEPARTMENT */}
 
-                                            <td>
+                                            <MuiTableCellMigration>
 
                                                 {item.department ||
                                                     "Unknown"}
 
-                                            </td>
+                                            </MuiTableCellMigration>
 
                                             {/* ROLE */}
 
-                                            <td>
+                                            <MuiTableCellMigration>
 
                                                 {item.roleName ||
                                                     "Unknown"}
 
-                                            </td>
+                                            </MuiTableCellMigration>
 
                                             {/* REPORTS TO */}
 
-                                            <td>
+                                            <MuiTableCellMigration>
 
                                                 {item.reportsToEmployeeName ||
                                                     parent?.employeeName ||
                                                     "Not Assigned"}
 
-                                            </td>
+                                            </MuiTableCellMigration>
 
                                             {/* PARENT ROLE */}
 
-                                            <td>
+                                            <MuiTableCellMigration>
 
                                                 {item.parentRoleName ||
                                                     parent?.roleName ||
                                                     "Not Assigned"}
 
-                                            </td>
+                                            </MuiTableCellMigration>
 
                                             {/* LEVEL */}
 
-                                            <td>
+                                            <MuiTableCellMigration>
 
                                                 {item.hierarchyLevel ??
                                                     "-"}
 
-                                            </td>
+                                            </MuiTableCellMigration>
 
                                             {/* STATUS */}
 
-                                            <td>
+                                            <MuiTableCellMigration>
 
-                                                <span className="status">
+                                                <MuiText className="status" component="span" variant="inherit">
 
                                                     {item.status ||
                                                         "Active"}
 
-                                                </span>
+                                                </MuiText>
 
-                                            </td>
+                                            </MuiTableCellMigration>
 
-                                        </tr>
+                                        </MuiTableRowMigration>
 
                                     );
 
@@ -871,13 +905,16 @@ function Hierarchy() {
 
                         )}
 
-                    </tbody>
+                    </MuiTableBodyMigration>
 
-                </table>
+                </MuiTableMigration>
 
-            </div>
+            </MuiLayoutBox>
 
-        </div>
+            <Snackbar open={notice.open} autoHideDuration={4000} onClose={() => setNotice((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
+                <Alert severity={notice.severity} variant="filled" onClose={() => setNotice((current) => ({ ...current, open: false }))}>{notice.message}</Alert>
+            </Snackbar>
+        </MuiLayoutBox>
 
     );
 }

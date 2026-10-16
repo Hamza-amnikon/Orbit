@@ -642,3 +642,41 @@
     background: #ffffff;
     font-weight: 500;
 }
+
+/* Shared Spark list-page controls */
+.holiday-events-page .attendance-header-leading{display:flex;align-items:center;gap:16px;min-width:0}
+.holiday-events-page .attendance-back-button{width:42px;height:42px;flex:0 0 42px;border:1px solid #dce4ee!important;border-radius:10px!important;background:#fff!important;color:#3f5067!important}
+.holiday-events-page .attendance-back-button:hover{background:#f4f7fc!important;border-color:#b8c9df!important}
+.holiday-events-header-actions{display:flex;align-items:center;gap:10px}
+.holiday-summary-grid{margin:0 0 16px!important}
+.holiday-summary-card{width:100%;height:100%;appearance:none;text-align:left;color:inherit;font:inherit;border:1px solid #e0e6ef!important;border-radius:12px!important;background:#fff;box-shadow:0 2px 7px rgba(20,40,70,.04)!important;cursor:pointer;transition:.18s ease}
+.holiday-summary-card:hover,.holiday-summary-card.selected{border-color:#9db8f3!important;box-shadow:0 0 0 2px rgba(47,103,237,.1)!important}
+.holiday-summary-card .MuiCardContent-root{display:flex;align-items:center;justify-content:space-between;padding:16px 18px!important}
+.holiday-summary-card span{color:#64748b;font-size:13px}
+.holiday-summary-card strong{color:#102a56;font-size:24px}
+.holiday-filter-card{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:12px;padding:16px;margin-bottom:16px;border:1px solid #e0e6ef;border-radius:12px;background:#fff}
+.holiday-filter-card .MuiOutlinedInput-root{min-height:48px;border-radius:9px;background:#fff}
+.holiday-filter-card .MuiOutlinedInput-notchedOutline{border-color:#d7e0ec}
+.holiday-filter-card .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline{border-color:#2f67ed;border-width:1px}
+.holiday-events-table-header{background:#eff4fb;color:#456186;border-bottom:1px solid #e2e8f0}
+.holiday-events-table-row{background:#fff}
+.holiday-events-table-row:nth-child(odd){background:#f8faff}
+.event-edit-btn{border:0;background:#fff2c7;color:#c77a00}
+.event-edit-btn:hover{background:#ffe8a3}
+.event-delete-btn{border:0;background:#ffe4e4;color:#dc2626}
+.event-delete-btn:hover{background:#fecaca}
+.holiday-event-date .MuiPickersOutlinedInput-root{min-height:40px;height:40px;border-radius:9px;background:#fff}
+.holiday-event-date .MuiPickersOutlinedInput-notchedOutline{border-color:#c4cbd4}
+.holiday-event-date .MuiPickersOutlinedInput-root:hover .MuiPickersOutlinedInput-notchedOutline{border-color:#64748b}
+.holiday-event-date .MuiPickersOutlinedInput-root.Mui-focused .MuiPickersOutlinedInput-notchedOutline{border-color:#2f67ed;border-width:1px}
+.holiday-event-date .MuiPickersInputBase-input{font:inherit}
+
+@media(max-width:768px){
+    .holiday-events-page{padding:18px 14px 30px}
+    .holiday-events-header{align-items:flex-start;flex-direction:column}
+    .holiday-events-header-actions{width:100%}
+    .holiday-events-header-actions .MuiButton-root{flex:1}
+    .holiday-filter-card{grid-template-columns:1fr;padding:12px}
+    .holiday-events-card{overflow-x:auto}
+    .holiday-events-table-header,.holiday-events-table-row{min-width:760px}
+}

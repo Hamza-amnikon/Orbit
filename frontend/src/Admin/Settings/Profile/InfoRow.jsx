@@ -1,19 +1,20 @@
 import "./Profile.css";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function InfoRow({ label, value }) {
     return (
 
-        <div className="info-row">
+        <MuiLayoutBox className="info-row" component="div">
 
-            <span className="info-label">
+            <MuiText className="info-label" component="span" variant="inherit">
                 {label}
-            </span>
+            </MuiText>
 
-            <span className="info-value">
+            <MuiText className="info-value" component="span" variant="inherit">
                 {value}
-            </span>
+            </MuiText>
 
-        </div>
+        </MuiLayoutBox>
 
     );
 }

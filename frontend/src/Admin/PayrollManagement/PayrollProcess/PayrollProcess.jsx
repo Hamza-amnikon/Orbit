@@ -41,6 +41,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import "./PayrollProcess.css";
+import { Typography as MuiText } from "@mui/material";
 
 const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 const PAYROLL_API = `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
@@ -782,12 +783,12 @@ const PayrollProcess = () => {
 
                         {selectedEmployee.processed && (
                             <Box className="pr-payroll-attendance-grid">
-                                <Box><span>Total Days</span><strong>{selectedEmployee.payslip?.totalDays ?? 0}</strong></Box>
-                                <Box><span>Working Days</span><strong>{selectedEmployee.payslip?.workingDays ?? 0}</strong></Box>
-                                <Box><span>Present</span><strong>{selectedEmployee.payslip?.presentDays ?? 0}</strong></Box>
-                                <Box><span>Absent</span><strong>{selectedEmployee.payslip?.absentDays ?? 0}</strong></Box>
-                                <Box><span>Paid Leave</span><strong>{selectedEmployee.payslip?.paidLeaveDays ?? 0}</strong></Box>
-                                <Box><span>Unpaid Leave</span><strong>{selectedEmployee.payslip?.unpaidLeaveDays ?? 0}</strong></Box>
+                                <Box><MuiText component="span" variant="inherit">Total Days</MuiText><MuiText component="strong" variant="inherit">{selectedEmployee.payslip?.totalDays ?? 0}</MuiText></Box>
+                                <Box><MuiText component="span" variant="inherit">Working Days</MuiText><MuiText component="strong" variant="inherit">{selectedEmployee.payslip?.workingDays ?? 0}</MuiText></Box>
+                                <Box><MuiText component="span" variant="inherit">Present</MuiText><MuiText component="strong" variant="inherit">{selectedEmployee.payslip?.presentDays ?? 0}</MuiText></Box>
+                                <Box><MuiText component="span" variant="inherit">Absent</MuiText><MuiText component="strong" variant="inherit">{selectedEmployee.payslip?.absentDays ?? 0}</MuiText></Box>
+                                <Box><MuiText component="span" variant="inherit">Paid Leave</MuiText><MuiText component="strong" variant="inherit">{selectedEmployee.payslip?.paidLeaveDays ?? 0}</MuiText></Box>
+                                <Box><MuiText component="span" variant="inherit">Unpaid Leave</MuiText><MuiText component="strong" variant="inherit">{selectedEmployee.payslip?.unpaidLeaveDays ?? 0}</MuiText></Box>
                             </Box>
                         )}
 

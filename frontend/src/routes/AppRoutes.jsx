@@ -17,6 +17,7 @@ const HolidayEvents = lazy(() => import("../Admin/AttendanceManagement/Holiday/H
 import Login from "../pages/Login/Login";
 import AuthCallback from "./AuthCallback";
 import PrivateRoute from "./PrivateRoute";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 // ================= Admin =================
@@ -60,6 +61,7 @@ const MyDashboard = lazy(() => import("../Admin/MyDashboard/Dashboard"));
 const AttendanceLogs = lazy(() => import("../Admin/AttendanceManagement/AttendanceLogs/AttendanceLogs"));
 const AttendanceDashboard = lazy(() => import("../Admin/AttendanceManagement/Dashboard/AttendanceDashboard"));
 const ShiftManagement = lazy(() => import("../Admin/AttendanceManagement/ShiftManagement/ShiftManagement"));
+const AttendanceReports = lazy(() => import("../Admin/AttendanceManagement/Reports/AttendanceReports"));
 const CompOff = lazy(() => import("../Admin/Leave/CompOff/CompOff"));
 
 const PermissionManagement = lazy(() => import("../Admin/PermissionManagement/Permissions"));
@@ -179,6 +181,11 @@ export const PERMISSION_PAGES = [
         module: "Attendance Management",
         pageName: "Attendance Dashboard",
         route: "/attendance/dashboard",
+    },
+    {
+        module: "Attendance Management",
+        pageName: "Attendance Reports",
+        route: "/attendance/reports",
     },
     {
         module: "Attendance Management",
@@ -407,24 +414,24 @@ function PermissionGuard() {
         profileLoading ||
         sparkAccessLoading
     ) {
-        return <div>Loading...</div>;
+        return <MuiLayoutBox component="div">Loading...</MuiLayoutBox>;
     }
 
     const allowed = hasPermission(location.pathname, "view");
 
     if (!allowed) {
         return (
-            <div
+            <MuiLayoutBox
                 style={{
                     padding: "60px",
                     textAlign: "center"
                 }}
-            >
-                <h2>Access Denied</h2>
-                <p>
+             component="div">
+                <MuiText component="h2" variant="h5">Access Denied</MuiText>
+                <MuiText component="p" variant="body1">
                     You do not have permission to access this page.
-                </p>
-            </div>
+                </MuiText>
+            </MuiLayoutBox>
         );
     }
 
@@ -457,7 +464,7 @@ function OnboardingGuard() {
         profileLoading ||
         sparkAccessLoading
     ) {
-        return <div>Loading...</div>;
+        return <MuiLayoutBox component="div">Loading...</MuiLayoutBox>;
     }
 
     const pathname =
@@ -590,9 +597,9 @@ function AppRoutes() {
     return (
         <Suspense
             fallback={
-                <div className="route-loading" role="status" aria-live="polite">
+                <MuiLayoutBox className="route-loading" role="status" aria-live="polite" component="div">
                     Loading page…
-                </div>
+                </MuiLayoutBox>
             }
         >
         <Routes>
@@ -699,6 +706,11 @@ function AppRoutes() {
                         <Route
                             path="/attendance/dashboard"
                             element={<AttendanceDashboard />}
+                        />
+
+                        <Route
+                            path="/attendance/reports"
+                            element={<AttendanceReports />}
                         />
 
                         <Route

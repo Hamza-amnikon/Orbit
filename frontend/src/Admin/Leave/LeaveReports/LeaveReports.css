@@ -823,3 +823,208 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
+
+/* Leave Reports shared page layout and responsive grids */
+.leave-reports-page {
+  padding: 28px 32px 36px;
+  background: #f4f8fd;
+}
+
+.leave-reports-page .leave-reports-header {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 24px;
+  padding: 0;
+}
+
+.leave-reports-back-button {
+  width: 44px;
+  height: 44px;
+  color: #405774 !important;
+  background: #fff !important;
+  border: 1px solid #d7e2f0 !important;
+  border-radius: 12px !important;
+}
+
+.leave-reports-back-button:hover {
+  color: #2563eb !important;
+  background: #eff6ff !important;
+  border-color: #b9d0f3 !important;
+}
+
+.leave-reports-heading-group { min-width: 0; }
+
+.leave-reports-page .leave-reports-title {
+  color: #10264b !important;
+  font-size: clamp(24px, 2vw, 30px) !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.025em;
+}
+
+.leave-reports-page .leave-reports-subtitle {
+  margin-top: 6px !important;
+  color: #647a98 !important;
+  font-size: 14px !important;
+  line-height: 1.5;
+}
+
+.leave-reports-page .leave-reports-header-actions {
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.leave-reports-page .leave-reports-header-actions .MuiButton-root {
+  min-height: 44px;
+  height: auto;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.leave-reports-page .leave-reports-filter-card,
+.leave-reports-page .leave-report-table-card {
+  border: 1px solid #dce6f2 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 5px 18px rgba(22, 48, 84, 0.055) !important;
+  background: #fff !important;
+}
+
+.leave-reports-page .leave-report-filter-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  align-items: start;
+  gap: 14px !important;
+  width: 100%;
+  margin: 0 !important;
+}
+
+.leave-reports-page .leave-report-filter-grid > .MuiBox-root {
+  min-width: 0;
+  width: 100%;
+}
+
+.leave-reports-page .leave-report-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  width: 100%;
+  margin: 0 0 16px !important;
+}
+
+.leave-reports-page .leave-report-summary-card {
+  min-width: 0;
+  height: 104px;
+  border: 1px solid #dce6f2 !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: 0 4px 14px rgba(22, 48, 84, 0.045) !important;
+}
+
+.leave-reports-page .leave-report-summary-card.total-card::before { background: #2f63e9; }
+.leave-reports-page .leave-report-summary-card.approved-card::before { background: #11a36a; }
+.leave-reports-page .leave-report-summary-card.pending-card::before { background: #e99a18; }
+.leave-reports-page .leave-report-summary-card.rejected-card::before { background: #e24b55; }
+
+.leave-reports-page .leave-report-summary-card .MuiCardContent-root {
+  padding: 18px 20px !important;
+}
+
+.leave-reports-page .leave-report-summary-label {
+  color: #647a98 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.leave-reports-page .leave-report-summary-value {
+  color: #10264b !important;
+  font-size: 28px !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.leave-reports-page .leave-report-table-card .MuiTableCell-head {
+  color: #4a6688;
+  background: #f0f5fc;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.leave-reports-page .leave-report-table-card .MuiTableCell-body {
+  border-bottom-color: #edf1f6;
+}
+
+.leave-reports-page .leave-report-table-card .MuiTableContainer-root {
+  overflow-x: auto;
+}
+
+@media (max-width: 1200px) {
+  .leave-reports-page .leave-report-filter-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .leave-reports-page .leave-report-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .leave-reports-page { padding: 24px 20px 32px; }
+
+  .leave-reports-page .leave-reports-header {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .leave-reports-page .leave-reports-header-actions {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 700px) {
+  .leave-reports-page { padding: 18px 14px 26px; }
+
+  .leave-reports-page .leave-reports-header {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .leave-reports-page .leave-reports-back-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .leave-reports-page .leave-reports-header-actions {
+    grid-column: 1 / -1;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .leave-reports-page .leave-reports-header-actions .MuiButton-root {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 135px;
+  }
+
+  .leave-reports-page .leave-reports-filter-card .MuiCardContent-root {
+    padding: 16px !important;
+  }
+
+  .leave-reports-page .leave-report-filter-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .leave-reports-page .leave-report-filter-actions { flex-wrap: wrap; }
+
+  .leave-reports-page .leave-report-summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .leave-reports-page .leave-report-summary-card {
+    height: 90px;
+    min-height: 90px;
+  }
+}

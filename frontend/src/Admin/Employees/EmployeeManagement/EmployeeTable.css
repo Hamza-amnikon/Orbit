@@ -778,12 +778,224 @@
     }
 
     .employee-table {
-        min-width: 1000px;
+        min-width: 920px;
     }
 
     .employee-table th,
     .employee-table td {
-        padding: 14px 16px;
+        padding: 12px 14px;
     }
 
+    .employee-list-page .table-responsive {
+        max-width: 100%;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+}
+
+/* ==========================================================
+   CLASSIC, MINIMAL TABLE
+========================================================== */
+
+.employee-table-wrapper {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    color: #1f2937;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.employee-table-header {
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #fff;
+}
+
+.employee-table-tag {
+    margin-bottom: 6px;
+    padding: 0;
+    border-radius: 0;
+    color: #6b7280;
+    background: transparent;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+}
+
+.employee-table-title h2 {
+    margin-bottom: 4px;
+    color: #111827;
+    font-size: 21px;
+    font-weight: 650;
+    letter-spacing: -0.2px;
+}
+
+.employee-table-title p {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.employee-table-count {
+    min-width: auto;
+    padding: 7px 11px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    color: #4b5563;
+    background: #fff;
+    gap: 1px;
+}
+
+.employee-table-count span {
+    color: #111827;
+    font-size: 18px;
+    font-weight: 650;
+}
+
+.employee-table-count {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+}
+
+.employee-table thead {
+    position: static;
+}
+
+.employee-table th {
+    padding: 13px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: 0.45px;
+}
+
+.employee-table td {
+    height: 68px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #edf0f2;
+    color: #374151;
+    font-size: 13px;
+    transition: background-color 0.15s ease;
+}
+
+.employee-table tbody tr {
+    background: #fff;
+    transition: background-color 0.15s ease;
+}
+
+.employee-table tbody tr:nth-child(even) {
+    background: #fff;
+}
+
+.employee-table tbody tr:hover {
+    background: #f9fafb;
+    box-shadow: none;
+}
+
+.employee-table td:nth-child(1) {
+    color: #4b5563;
+    font-weight: 600;
+}
+
+.admin-employee-name {
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.employee-email {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.employee-table tbody tr:hover .admin-employee-name {
+    color: #111827;
+}
+
+.status-badge {
+    min-width: 0;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 550;
+    letter-spacing: 0;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.status-badge::before {
+    width: 7px;
+    height: 7px;
+}
+
+.status-badge.active {
+    border-color: #bbf7d0;
+    color: #15803d;
+    background: #dcfce7 !important;
+}
+
+.status-badge.inactive {
+    border-color: #fecaca;
+    color: #b91c1c;
+    background: #fee2e2 !important;
+}
+
+.action-buttons {
+    justify-content: flex-start;
+    gap: 4px;
+}
+
+.action-buttons button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    color: #6b7280;
+    background: transparent;
+    box-shadow: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.action-buttons button:hover {
+    transform: none;
+    color: #1f2937;
+    background: #f3f4f6;
+    box-shadow: none;
+}
+
+.action-buttons .edit-btn {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.action-buttons .edit-btn:hover {
+    color: #92400e;
+    background: #fde68a;
+    border-color: #fcd34d;
+}
+
+.action-buttons .delete-btn {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+.action-buttons .delete-btn:hover {
+    color: #991b1b;
+    background: #fecaca;
+    border-color: #fca5a5;
+}
+
+.action-buttons button:active {
+    transform: none;
+}
+
+@media (max-width: 768px) {
+    .employee-table-header {
+        gap: 12px;
+        padding: 16px;
+    }
 }

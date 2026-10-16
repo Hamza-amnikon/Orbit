@@ -1,3 +1,4 @@
+import { MuiButtonMigration, MuiInputMigration } from "../../components/ui/MuiCompat.jsx";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -10,13 +11,15 @@ import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 const API_URL = `${import.meta.env.VITE_ROLE_API_BASE_URL}/api/Role`;
 
 function RoleForm({
     fetchRoles,
     editRole,
     setEditRole,
-    setShowForm
+    setShowForm,
+    showNotice,
 }) {
 
     const [role, setRole] = useState({
@@ -116,6 +119,7 @@ function RoleForm({
             setShowForm(false);
 
             setEditRole(null);
+            showNotice?.(editRole ? "Role updated successfully." : "Role added successfully.");
 
         }
 
@@ -125,6 +129,7 @@ function RoleForm({
                 error.response?.data ||
                 error.message
             );
+            showNotice?.(error.response?.data?.title || "Unable to save role.", "error");
 
         }
 
@@ -132,37 +137,37 @@ function RoleForm({
 
     return (
 
-        <div className="modal-overlay">
+        <MuiLayoutBox className="modal-overlay" component="div">
 
-            <div className="role-modal">
+            <MuiLayoutBox className="role-modal" component="div">
 
-                <div className="role-modal-header">
+                <MuiLayoutBox className="role-modal-header" component="div">
 
-                    <h2>
+                    <MuiText component="h2" variant="h5">
 
                         {editRole
                             ? "Edit Role"
                             : "Add New Role"}
 
-                    </h2>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-                <form onSubmit={handleSubmit}>
+                <MuiLayoutBox onSubmit={handleSubmit} component="form">
 
-                    <div className="role-form-grid">
+                    <MuiLayoutBox className="role-form-grid" component="div">
 
                         {/* Role */}
 
-                        <div className="form-group full-width">
+                        <MuiLayoutBox className="form-group full-width" component="div">
 
-                            <label>
+                            <MuiLayoutBox component="label">
 
-                                Role <span>*</span>
+                                Role <MuiText component="span" variant="inherit">*</MuiText>
 
-                            </label>
+                            </MuiLayoutBox>
 
-                            <input
+                            <MuiInputMigration
 
                                 type="text"
 
@@ -178,13 +183,13 @@ function RoleForm({
 
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* Created Date */}
 
-                        <div className="form-group">
+                        <MuiLayoutBox className="form-group" component="div">
 
-                            <label>Created Date</label>
+                            <MuiLayoutBox component="label">Created Date</MuiLayoutBox>
 
                             <LocalizationProvider
                                 dateAdapter={AdapterDayjs}
@@ -216,13 +221,13 @@ function RoleForm({
 
                             </LocalizationProvider>
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* Status */}
 
-<div className="form-group">
+<MuiLayoutBox className="form-group" component="div">
 
-    <label>Status</label>
+    <MuiLayoutBox component="label">Status</MuiLayoutBox>
 
     <FormControl fullWidth>
 <Select
@@ -248,12 +253,12 @@ function RoleForm({
 </Select>
 </FormControl>
 
-</div>
-                    </div>
+</MuiLayoutBox>
+                    </MuiLayoutBox>
 
-                    <div className="modal-footer">
+                    <MuiLayoutBox className="modal-footer" component="div">
 
-                        <button
+                        <MuiButtonMigration
 
                             type="button"
 
@@ -271,9 +276,9 @@ function RoleForm({
 
                             Cancel
 
-                        </button>
+                        </MuiButtonMigration>
 
-                        <button
+                        <MuiButtonMigration
 
                             type="submit"
 
@@ -285,15 +290,15 @@ function RoleForm({
                                 ? "Update Role"
                                 : "Save Role"}
 
-                        </button>
+                        </MuiButtonMigration>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </form>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

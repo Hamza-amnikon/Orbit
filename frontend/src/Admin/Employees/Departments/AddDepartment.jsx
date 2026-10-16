@@ -14,12 +14,14 @@ import {
 } from "@mui/material";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function AddDepartment({
   open,
   handleClose,
   handleSave,
+  onNotify,
 }) {
 
   // =====================================================
@@ -131,9 +133,7 @@ function AddDepartment({
 
     if (!isAuthenticated) {
 
-      alert(
-        "You are not authenticated. Please login again."
-      );
+      onNotify?.("You are not authenticated. Please login again.", "error");
 
       return;
 
@@ -142,9 +142,7 @@ function AddDepartment({
 
     if (!currentEmployeeId) {
 
-      alert(
-        "Your Employee ID could not be determined."
-      );
+      onNotify?.("Your Employee ID could not be determined.", "error");
 
       return;
 
@@ -155,9 +153,7 @@ function AddDepartment({
       !formData.departmentName.trim()
     ) {
 
-      alert(
-        "Department Name is required."
-      );
+      onNotify?.("Department Name is required.", "error");
 
       return;
 
@@ -237,10 +233,7 @@ function AddDepartment({
         error
       );
 
-      alert(
-        error?.message ||
-        "Unable to create Department."
-      );
+      onNotify?.(error?.message || "Unable to create Department.", "error");
 
     } finally {
 
@@ -299,38 +292,38 @@ function AddDepartment({
 
         {/* AUTHENTICATED USER */}
 
-        <div
+        <MuiLayoutBox
           style={{
             marginBottom: "20px",
             fontSize: "13px",
             opacity: 0.75,
           }}
-        >
+         component="div">
 
           Logged in as:
 
           {" "}
 
-          <strong>
+          <MuiText component="strong" variant="inherit">
             {currentEmployeeName}
-          </strong>
+          </MuiText>
 
           {" • Employee ID: "}
 
-          <strong>
+          <MuiText component="strong" variant="inherit">
             {currentEmployeeId || "-"}
-          </strong>
+          </MuiText>
 
           {currentEmployeeCode && (
             <>
               {" • "}
-              <strong>
+              <MuiText component="strong" variant="inherit">
                 {currentEmployeeCode}
-              </strong>
+              </MuiText>
             </>
           )}
 
-        </div>
+        </MuiLayoutBox>
 
 
         <Grid
@@ -345,13 +338,13 @@ function AddDepartment({
             size={{ xs: 12 }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
               >
                 Department{" "}
-                <span>*</span>
+                <MuiText component="span" variant="inherit">*</MuiText>
               </Typography>
 
 
@@ -369,7 +362,7 @@ function AddDepartment({
                 disabled={saving}
               />
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 
@@ -383,7 +376,7 @@ function AddDepartment({
             }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
@@ -408,7 +401,7 @@ function AddDepartment({
                 disabled={saving}
               />
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 
@@ -422,7 +415,7 @@ function AddDepartment({
             }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
@@ -455,7 +448,7 @@ function AddDepartment({
 
               </TextField>
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 

@@ -1,18 +1,19 @@
 import "./Profile.css";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function InfoCard({ title, children }) {
     return (
-        <div className="info-card">
+        <MuiLayoutBox className="info-card" component="div">
 
-            <div className="info-card-header">
-                <h3>{title}</h3>
-            </div>
+            <MuiLayoutBox className="info-card-header" component="div">
+                <MuiText component="h3" variant="h6">{title}</MuiText>
+            </MuiLayoutBox>
 
-            <div className="info-card-body">
+            <MuiLayoutBox className="info-card-body" component="div">
                 {children}
-            </div>
+            </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
     );
 }
 

@@ -11,6 +11,22 @@
     color: #111827;
 }
 
+.hierarchy-page .hierarchy-header { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.hierarchy-page .hierarchy-title-wrap { display:flex; align-items:center; gap:14px; }
+.hierarchy-page .hierarchy-title-wrap .MuiIconButton-root { width:42px; height:42px; border:1px solid #dce4ee; border-radius:10px; background:#fff; color:#3f5067; }
+.hierarchy-page .hierarchy-stats-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:0 0 18px; }
+.hierarchy-page .hierarchy-stat-card { border:1px solid #e0e6ef; border-radius:12px; box-shadow:0 2px 7px rgba(20,40,70,.04); cursor:pointer; }
+.hierarchy-page .hierarchy-stat-card .MuiCardContent-root { display:flex; flex-direction:column; gap:8px; padding:18px 20px; }
+.hierarchy-page .hierarchy-stat-card .MuiTypography-body2 { color:#60738f; }
+.hierarchy-page .hierarchy-stat-card .MuiTypography-h5 { color:#102a56; margin:0; }
+.hierarchy-page .hierarchy-stat-card:hover { border-color:#b8c9df; box-shadow:0 5px 14px rgba(20,40,70,.08); }
+.hierarchy-page .hierarchy-stat-card.selected { border-color:#8eafff; box-shadow:0 0 0 2px rgba(47,103,237,.1); }
+
+@media (max-width: 768px) {
+    .hierarchy-page .hierarchy-header { align-items:flex-start; flex-direction:column; }
+    .hierarchy-page .hierarchy-stats-grid { grid-template-columns:1fr; }
+}
+
 
 /* =========================================================
    HEADER
@@ -86,6 +102,13 @@
     background: #ffffff;
     border-radius: 8px;
     min-height: 56px;
+}
+
+/* Keep the browser's native input focus ring from drawing a second box
+   inside MUI's outlined autocomplete field. */
+.hierarchy-page .hierarchy-employee-search input:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .hierarchy-page .toolbar .MuiOutlinedInput-notchedOutline {

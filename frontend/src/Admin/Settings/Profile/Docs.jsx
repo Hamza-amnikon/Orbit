@@ -1,6 +1,8 @@
+import { MuiButtonMigration, MuiInputMigration, MuiSelectMigration } from "../../../components/ui/MuiCompat.jsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Docs.css";
+import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
 
 /* ======================================================
    VALIDATION REGEX
@@ -256,7 +258,7 @@ function Documents({ profile }) {
         const status = getStatus(type);
 
         return (
-            <span
+            <MuiText
                 className={`document-item-status ${getStatusClass(
                     status
                 )}`}
@@ -265,9 +267,9 @@ function Documents({ profile }) {
                         ? getRejectionReason(type)
                         : ""
                 }
-            >
+             component="span" variant="inherit">
                 {status}
-            </span>
+            </MuiText>
         );
     };
 /*==============reject description============*/
@@ -1213,70 +1215,70 @@ const payload = {
     ====================================================== */
 
     return (
-        <div className="documents-container">
+        <MuiLayoutBox className="documents-container" component="div">
 
             {/* ================= Header ================= */}
 
-            <div className="documents-header">
+            <MuiLayoutBox className="documents-header" component="div">
 
-                <div>
-                    <h2>
+                <MuiLayoutBox component="div">
+                    <MuiText component="h2" variant="h5">
                         Documents
-                    </h2>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Provide and upload your identity,
                         employment & bank documents.
                         Submit for HR approval.
-                    </p>
-                </div>
+                    </MuiText>
+                </MuiLayoutBox>
 
-                <div
+                <MuiLayoutBox
                     className={`document-overall-status ${
                         completionPercentage() ===
                         100
                             ? "completed"
                             : ""
                     }`}
-                >
-                    <span>
+                 component="div">
+                    <MuiText component="span" variant="inherit">
                         Document Status:
-                    </span>
+                    </MuiText>
 
-                    <strong>
+                    <MuiText component="strong" variant="inherit">
                         {loading
                             ? "Loading..."
                             : `${overallStatus()} (${completionPercentage()}%)`}
-                    </strong>
-                </div>
+                    </MuiText>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
             {/* ================= Document Cards ================= */}
 
-            <div className="documents-grid">
+            <MuiLayoutBox className="documents-grid" component="div">
 
                 {/* ================= Identity & Tax ================= */}
 
-                <div className="document-card">
+                <MuiLayoutBox className="document-card" component="div">
 
-                    <div className="document-card-header">
-                        <h3>
+                    <MuiLayoutBox className="document-card-header" component="div">
+                        <MuiText component="h3" variant="h6">
                             🪪 Identity & Tax Documents
-                        </h3>
-                    </div>
+                        </MuiText>
+                    </MuiLayoutBox>
 
-                    <div className="document-card-body">
+                    <MuiLayoutBox className="document-card-body" component="div">
 
                         {/* Aadhaar Number */}
 
-                        <div className="document-field">
+                        <MuiLayoutBox className="document-field" component="div">
 
-                            <label>
-                                Aadhaar Card Number <span className="required-star">*</span>
-                            </label>
+                            <MuiLayoutBox component="label">
+                                Aadhaar Card Number <MuiText className="required-star" component="span" variant="inherit">*</MuiText>
+                            </MuiLayoutBox>
 
-                            <input
+                            <MuiInputMigration
                                 type="text"
                                 placeholder="XXXX XXXX 1234"
                                 maxLength="12"
@@ -1291,17 +1293,17 @@ const payload = {
                                 }
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* Aadhaar Document */}
 
-                        <div className="document-field">
+                        <MuiLayoutBox className="document-field" component="div">
 
-                            <label>
+                            <MuiLayoutBox component="label">
                                 Aadhaar Card (Photo/Document)
-                            </label>
+                            </MuiLayoutBox>
 
-                            <div
+                            <MuiActionButton
                                 className="upload-box"
                                 
                                 onClick={() =>
@@ -1311,24 +1313,24 @@ const payload = {
                                         )
                                         ?.click()
                                 }
-                            >
+                             component="div">
 
-                                <span className="upload-icon">
+                                <MuiText className="upload-icon" component="span" variant="inherit">
                                     ☁
-                                </span>
+                                </MuiText>
 
-                                <span>
+                                <MuiText component="span" variant="inherit">
                                     {form.aadhaarFile?.name ||
                                         "Upload Aadhaar Card"}
-                                </span>
+                                </MuiText>
 
-                                <small>
+                                <MuiText component="small" variant="caption">
                                      PDF, DOCS, DOCX (Max. 2MB)
-                                </small>
+                                </MuiText>
 
-                            </div>
+                            </MuiActionButton>
 
-                            <input
+                            <MuiInputMigration
                                 id="aadhaarFile"
                                 type="file"
                                 accept=".docs,.docx,.pdf"
@@ -1341,7 +1343,7 @@ const payload = {
                                 }
                             />
 
-                            <span
+                            <MuiText
     className={`document-item-status ${getStatusClass(
         getStatus("Aadhaar")
     )}`}
@@ -1350,21 +1352,21 @@ const payload = {
             ? getRejectionReason("Aadhaar")
             : ""
     }
->
+ component="span" variant="inherit">
     {getStatus("Aadhaar")}
-</span>
+</MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* PAN Number */}
 
-                        <div className="document-field">
+                        <MuiLayoutBox className="document-field" component="div">
 
-                            <label>
-                                PAN Card Number <span className="required-star">*</span>
-                            </label>
+                            <MuiLayoutBox component="label">
+                                PAN Card Number <MuiText className="required-star" component="span" variant="inherit">*</MuiText>
+                            </MuiLayoutBox>
 
-                            <input
+                            <MuiInputMigration
                                 type="text"
                                 placeholder="ABCDE1234F"
                                 maxLength="10"
@@ -1379,17 +1381,17 @@ const payload = {
                                 }
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* PAN Document */}
 
-                        <div className="document-field">
+                        <MuiLayoutBox className="document-field" component="div">
 
-                            <label>
+                            <MuiLayoutBox component="label">
                                 PAN Card (Photo/Document)
-                            </label>
+                            </MuiLayoutBox>
 
-                            <div
+                            <MuiActionButton
                                 className="upload-box"
                                 
                                 onClick={() =>
@@ -1399,24 +1401,24 @@ const payload = {
                                         )
                                         ?.click()
                                 }
-                            >
+                             component="div">
 
-                                <span className="upload-icon">
+                                <MuiText className="upload-icon" component="span" variant="inherit">
                                     ☁
-                                </span>
+                                </MuiText>
 
-                                <span>
+                                <MuiText component="span" variant="inherit">
                                     {form.panFile?.name ||
                                         "Upload PAN Card"}
-                                </span>
+                                </MuiText>
 
-                                <small>
+                                <MuiText component="small" variant="caption">
                                     PDF, DOCS, DOCX (Max. 2MB)
-                                </small>
+                                </MuiText>
 
-                            </div>
+                            </MuiActionButton>
 
-                            <input
+                            <MuiInputMigration
                                 id="panFile"
                                 type="file"
                                 accept=".docs,.docx,.pdf"
@@ -1429,7 +1431,7 @@ const payload = {
                                 }
                             />
 
-                            <span
+                            <MuiText
     className={`document-item-status ${getStatusClass(
         getStatus("PAN")
     )}`}
@@ -1438,36 +1440,36 @@ const payload = {
             ? getRejectionReason("PAN")
             : ""
     }
->
+ component="span" variant="inherit">
     {getStatus("PAN")}
-</span>
+</MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
-                </div>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
                 {/* ================= PF / Employment ================= */}
 
-                <div className="document-card">
+                <MuiLayoutBox className="document-card" component="div">
 
-                    <div className="document-card-header">
-                        <h3>
+                    <MuiLayoutBox className="document-card-header" component="div">
+                        <MuiText component="h3" variant="h6">
                             💼 PF / Employment Details
-                        </h3>
-                    </div>
+                        </MuiText>
+                    </MuiLayoutBox>
 
-                    <div className="document-card-body">
+                    <MuiLayoutBox className="document-card-body" component="div">
 
                         {/* UAN */}
 
-                        <div className="document-field">
+                        <MuiLayoutBox className="document-field" component="div">
 
-                            <label>
+                            <MuiLayoutBox component="label">
                                 EPFO / UAN Number (optional)
-                            </label>
+                            </MuiLayoutBox>
 
-                            <input
+                            <MuiInputMigration
                                 type="text"
                                 placeholder="100XXXXXXXXXXX"
                                 maxLength="12"
@@ -1482,32 +1484,32 @@ const payload = {
                                 }
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
-                </div>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
                 {/* ================= Bank Details ================= */}
 
-                <div className="document-card">
+                <MuiLayoutBox className="document-card" component="div">
 
-                    <div className="document-card-header">
-                        <h3>
+                    <MuiLayoutBox className="document-card-header" component="div">
+                        <MuiText component="h3" variant="h6">
                             🏦 Bank Details
-                        </h3>
-                    </div>
+                        </MuiText>
+                    </MuiLayoutBox>
 
-                    <div className="document-card-body">
+                    <MuiLayoutBox className="document-card-body" component="div">
 
                         {/* Bank Name */}
 
-                        <div className="document-field">
+                        <MuiLayoutBox className="document-field" component="div">
 
-                            <label>
-                                Bank Name <span className="required-star">*</span>
-                            </label>
+                            <MuiLayoutBox component="label">
+                                Bank Name <MuiText className="required-star" component="span" variant="inherit">*</MuiText>
+                            </MuiLayoutBox>
 
-                            <input
+                            <MuiInputMigration
                                 type="text"
                                 placeholder="Bank Name"
                                 value={
@@ -1521,17 +1523,17 @@ const payload = {
                                 }
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* Account Number */}
 
-                        <div className="document-field">
+                        <MuiLayoutBox className="document-field" component="div">
 
-                            <label>
+                            <MuiLayoutBox component="label">
                                 Account Number
-                            </label>
+                            </MuiLayoutBox>
 
-<input
+<MuiInputMigration
     type="text"
     placeholder="Account Number"
     value={form.accountNumber}
@@ -1546,17 +1548,17 @@ const payload = {
     }}
 />
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* IFSC */}
 
-                        <div className="document-field">
+                        <MuiLayoutBox className="document-field" component="div">
 
-                            <label>
+                            <MuiLayoutBox component="label">
                                 IFSC Code
-                            </label>
+                            </MuiLayoutBox>
 
-                            <input
+                            <MuiInputMigration
                                 type="text"
                                 placeholder="HDFC0001234"
                                 value={
@@ -1570,17 +1572,17 @@ const payload = {
                                 }
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* Account Type */}
 
-                        <div className="document-field">
+                        <MuiLayoutBox className="document-field" component="div">
 
-                            <label>
+                            <MuiLayoutBox component="label">
                                 Account Type
-                            </label>
+                            </MuiLayoutBox>
 
-                            <select
+                            <MuiSelectMigration
                                 value={
                                     form.accountType
                                 }
@@ -1600,19 +1602,19 @@ const payload = {
                                     Current
                                 </option>
 
-                            </select>
+                            </MuiSelectMigration>
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* Cancelled Cheque */}
 
-                        <div className="document-field">
+                        <MuiLayoutBox className="document-field" component="div">
 
-                            <label>
+                            <MuiLayoutBox component="label">
                                 Cancelled Cheque / Passbook
-                            </label>
+                            </MuiLayoutBox>
 
-                            <div
+                            <MuiActionButton
                                 className="upload-box"
                                 
                                 onClick={() =>
@@ -1622,24 +1624,24 @@ const payload = {
                                         )
                                         ?.click()
                                 }
-                            >
+                             component="div">
 
-                                <span className="upload-icon">
+                                <MuiText className="upload-icon" component="span" variant="inherit">
                                     ☁
-                                </span>
+                                </MuiText>
 
-                                <span>
+                                <MuiText component="span" variant="inherit">
                                     {form.bankFile?.name ||
                                         "Upload Document"}
-                                </span>
+                                </MuiText>
 
-                                <small>
+                                <MuiText component="small" variant="caption">
                                     PDF, DOCS, DOCX (Max. 2MB)
-                                </small>
+                                </MuiText>
 
-                            </div>
+                            </MuiActionButton>
 
-                            <input
+                            <MuiInputMigration
                                 id="bankFile"
                                 type="file"
                                 accept=".docx,.docs,.pdf"
@@ -1654,231 +1656,231 @@ const payload = {
 
 <RejectionStatus type="Bank" />
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
-                </div>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
                 {/* ================= Other Documents ================= */}
 
-                <div className="document-card">
+                <MuiLayoutBox className="document-card" component="div">
 
-                    <div className="document-card-header">
-                        <h3>
+                    <MuiLayoutBox className="document-card-header" component="div">
+                        <MuiText component="h3" variant="h6">
                             📁 Other Documents
-                        </h3>
-                    </div>
+                        </MuiText>
+                    </MuiLayoutBox>
 
-                    <div className="other-documents">
+                    <MuiLayoutBox className="other-documents" component="div">
 
                         {/* Passport */}
-                        <div className="other-document-row">
-                            <span>Passport</span>
+                        <MuiLayoutBox className="other-document-row" component="div">
+                            <MuiText component="span" variant="inherit">Passport</MuiText>
 
-                            <div className="other-document-status-area">
+                            <MuiLayoutBox className="other-document-status-area" component="div">
 <RejectionStatus type="Passport" />
 
                                 {getFileInfo("Passport").name && (
-                                    <span
+                                    <MuiText
                                         className="other-document-file-info"
                                         title={getFileInfo("Passport").name}
-                                    >
-                                        <span className="other-document-file-name">
+                                     component="span" variant="inherit">
+                                        <MuiText className="other-document-file-name" component="span" variant="inherit">
                                             {getFileInfo("Passport").name}
-                                        </span>
+                                        </MuiText>
                                         {getFileInfo("Passport").size && (
-                                            <span className="other-document-file-size">
+                                            <MuiText className="other-document-file-size" component="span" variant="inherit">
                                                 {getFileInfo("Passport").size}
-                                            </span>
+                                            </MuiText>
                                         )}
-                                    </span>
+                                    </MuiText>
                                 )}
-                            </div>
+                            </MuiLayoutBox>
 
-                            <label className="upload-button" >
+                            <MuiLayoutBox className="upload-button"  component="label">
                                 ☁ Upload
-                                <input
+                                <MuiInputMigration
                                     type="file"
                                     accept=".docs,.docx,.pdf"
                                     onChange={(e) =>
                                         handleFileChange("passportFile", e)
                                     }
                                 />
-                            </label>
-                        </div>
+                            </MuiLayoutBox>
+                        </MuiLayoutBox>
 
                         {/* Driving License */}
-                        <div className="other-document-row">
-                            <span>Driving License</span>
+                        <MuiLayoutBox className="other-document-row" component="div">
+                            <MuiText component="span" variant="inherit">Driving License</MuiText>
 
-                            <div className="other-document-status-area">
+                            <MuiLayoutBox className="other-document-status-area" component="div">
 <RejectionStatus type="Driving License" />
 
                                 {getFileInfo("Driving License").name && (
-                                    <span
+                                    <MuiText
                                         className="other-document-file-info"
                                         title={getFileInfo("Driving License").name}
-                                    >
-                                        <span className="other-document-file-name">
+                                     component="span" variant="inherit">
+                                        <MuiText className="other-document-file-name" component="span" variant="inherit">
                                             {getFileInfo("Driving License").name}
-                                        </span>
+                                        </MuiText>
                                         {getFileInfo("Driving License").size && (
-                                            <span className="other-document-file-size">
+                                            <MuiText className="other-document-file-size" component="span" variant="inherit">
                                                 {getFileInfo("Driving License").size}
-                                            </span>
+                                            </MuiText>
                                         )}
-                                    </span>
+                                    </MuiText>
                                 )}
-                            </div>
+                            </MuiLayoutBox>
 
-                            <label className="upload-button" >
+                            <MuiLayoutBox className="upload-button"  component="label">
                                 ☁ Upload
-                                <input
+                                <MuiInputMigration
                                     type="file"
                                     accept=".docs,.docx,.pdf"
                                     onChange={(e) =>
                                         handleFileChange("drivingLicenseFile", e)
                                     }
                                 />
-                            </label>
-                        </div>
+                            </MuiLayoutBox>
+                        </MuiLayoutBox>
 
                         {/* Education Certificate */}
-                        <div className="other-document-row">
-                            <span>
-                                Education Certificate <span className="required-star">*</span>
-                            </span>
+                        <MuiLayoutBox className="other-document-row" component="div">
+                            <MuiText component="span" variant="inherit">
+                                Education Certificate <MuiText className="required-star" component="span" variant="inherit">*</MuiText>
+                            </MuiText>
 
-                            <div className="other-document-status-area">
+                            <MuiLayoutBox className="other-document-status-area" component="div">
 <RejectionStatus type="Education Certificate" />
 
                                 {getFileInfo("Education Certificate").name && (
-                                    <span
+                                    <MuiText
                                         className="other-document-file-info"
                                         title={getFileInfo("Education Certificate").name}
-                                    >
-                                        <span className="other-document-file-name">
+                                     component="span" variant="inherit">
+                                        <MuiText className="other-document-file-name" component="span" variant="inherit">
                                             {getFileInfo("Education Certificate").name}
-                                        </span>
+                                        </MuiText>
                                         {getFileInfo("Education Certificate").size && (
-                                            <span className="other-document-file-size">
+                                            <MuiText className="other-document-file-size" component="span" variant="inherit">
                                                 {getFileInfo("Education Certificate").size}
-                                            </span>
+                                            </MuiText>
                                         )}
-                                    </span>
+                                    </MuiText>
                                 )}
-                            </div>
+                            </MuiLayoutBox>
 
-                            <label className="upload-button" >
+                            <MuiLayoutBox className="upload-button"  component="label">
                                 ☁ Upload
-                                <input
+                                <MuiInputMigration
                                     type="file"
                                     accept=".docs,.docx,.pdf"
                                     onChange={(e) =>
                                         handleFileChange("educationFile", e)
                                     }
                                 />
-                            </label>
-                        </div>
+                            </MuiLayoutBox>
+                        </MuiLayoutBox>
 
                         {/* Experience Certificate */}
-                        <div className="other-document-row">
-                            <span>Experience Certificate</span>
+                        <MuiLayoutBox className="other-document-row" component="div">
+                            <MuiText component="span" variant="inherit">Experience Certificate</MuiText>
 
-                            <div className="other-document-status-area">
+                            <MuiLayoutBox className="other-document-status-area" component="div">
 <RejectionStatus type="Experience Certificate" />
 
                                 {getFileInfo("Experience Certificate").name && (
-                                    <span
+                                    <MuiText
                                         className="other-document-file-info"
                                         title={getFileInfo("Experience Certificate").name}
-                                    >
-                                        <span className="other-document-file-name">
+                                     component="span" variant="inherit">
+                                        <MuiText className="other-document-file-name" component="span" variant="inherit">
                                             {getFileInfo("Experience Certificate").name}
-                                        </span>
+                                        </MuiText>
                                         {getFileInfo("Experience Certificate").size && (
-                                            <span className="other-document-file-size">
+                                            <MuiText className="other-document-file-size" component="span" variant="inherit">
                                                 {getFileInfo("Experience Certificate").size}
-                                            </span>
+                                            </MuiText>
                                         )}
-                                    </span>
+                                    </MuiText>
                                 )}
-                            </div>
+                            </MuiLayoutBox>
 
-                            <label className="upload-button" >
+                            <MuiLayoutBox className="upload-button"  component="label">
                                 ☁ Upload
-                                <input
+                                <MuiInputMigration
                                     type="file"
                                     accept=".docs,.docx,.pdf"
                                     onChange={(e) =>
                                         handleFileChange("experienceFile", e)
                                     }
                                 />
-                            </label>
-                        </div>
+                            </MuiLayoutBox>
+                        </MuiLayoutBox>
 
                         {/* Other Document */}
-                        <div className="other-document-row">
-                            <span>Other Document</span>
+                        <MuiLayoutBox className="other-document-row" component="div">
+                            <MuiText component="span" variant="inherit">Other Document</MuiText>
 
-                            <div className="other-document-status-area">
+                            <MuiLayoutBox className="other-document-status-area" component="div">
 <RejectionStatus type="Other Document" />
 
                                 {getFileInfo("Other Document").name && (
-                                    <span
+                                    <MuiText
                                         className="other-document-file-info"
                                         title={getFileInfo("Other Document").name}
-                                    >
-                                        <span className="other-document-file-name">
+                                     component="span" variant="inherit">
+                                        <MuiText className="other-document-file-name" component="span" variant="inherit">
                                             {getFileInfo("Other Document").name}
-                                        </span>
+                                        </MuiText>
                                         {getFileInfo("Other Document").size && (
-                                            <span className="other-document-file-size">
+                                            <MuiText className="other-document-file-size" component="span" variant="inherit">
                                                 {getFileInfo("Other Document").size}
-                                            </span>
+                                            </MuiText>
                                         )}
-                                    </span>
+                                    </MuiText>
                                 )}
-                            </div>
+                            </MuiLayoutBox>
 
-                            <label className="upload-button" >
+                            <MuiLayoutBox className="upload-button"  component="label">
                                 ☁ Upload
-                                <input
+                                <MuiInputMigration
                                     type="file"
                                     accept=".docs,.docx,.pdf"
                                     onChange={(e) =>
                                         handleFileChange("otherFile", e)
                                     }
                                 />
-                            </label>
-                        </div>
+                            </MuiLayoutBox>
+                        </MuiLayoutBox>
 
-                    </div>
-                </div>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
             {/* ================= Important Note ================= */}
 
-            <div className="document-footer">
+            <MuiLayoutBox className="document-footer" component="div">
 
-                <div className="document-note">
+                <MuiLayoutBox className="document-note" component="div">
 
-                    <strong>
+                    <MuiText component="strong" variant="inherit">
                         ⓘ Important Note
-                    </strong>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Please ensure all documents are clear
                         and valid. After submission, your
                         documents will be reviewed by HR.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="document-actions">
+                <MuiLayoutBox className="document-actions" component="div">
 
-                    <button
+                    <MuiButtonMigration
                         type="button"
                         className="save-draft-button"
                         onClick={saveDraft}
@@ -1887,9 +1889,9 @@ const payload = {
                         {saving
                             ? "Saving..."
                             : "Save Draft"}
-                    </button>
+                    </MuiButtonMigration>
 
-                    <button
+                    <MuiButtonMigration
                         type="button"
                         className="submit-document-button"
                         onClick={submitDocuments}
@@ -1898,13 +1900,13 @@ const payload = {
                         {saving
                             ? "Submitting..."
                             : "➤ Submit for HR Approval"}
-                    </button>
+                    </MuiButtonMigration>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
     );
 }
 

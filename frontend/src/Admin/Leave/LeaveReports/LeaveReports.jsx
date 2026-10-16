@@ -6,7 +6,8 @@ import {
     Card,
     CardContent,
     FormControl,
-    Grid,
+    IconButton,
+    Tooltip,
     InputLabel,
     MenuItem,
     Select,
@@ -29,6 +30,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import SearchIcon from "@mui/icons-material/Search";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { useNavigate } from "react-router-dom";
 
 import { loadPdf, loadXlsx } from "../../../utils/exportLibraries";
 
@@ -52,6 +54,7 @@ const EMPTY_FILTERS = {
 
 export default function LeaveReports() {
     const { hasPermission } = useAuth();
+    const navigate = useNavigate();
 
     const permissionRoute = "/leave/reports";
     const canView = hasPermission(permissionRoute, "view");
@@ -443,7 +446,7 @@ export default function LeaveReports() {
     };
 
     const handlePrevious = () => {
-        window.history.back();
+        navigate("/leave");
     };
 
     const handleRefresh = () => {
@@ -648,9 +651,18 @@ export default function LeaveReports() {
 
     return (
         <Box className="leave-reports-page">
-            <Card className="leave-reports-header-card">
-                <Box className="leave-reports-header">
-                    <Box>
+            <Box className="leave-reports-header">
+                    <Tooltip title="Back to Leave Management">
+                        <IconButton
+                            className="leave-reports-back-button"
+                            onClick={handlePrevious}
+                            aria-label="Back to Leave Management"
+                        >
+                            <ArrowBackIcon />
+                        </IconButton>
+                    </Tooltip>
+
+                    <Box className="leave-reports-heading-group">
                         <Typography
                             variant="h4"
                             className="leave-reports-title"
@@ -668,14 +680,6 @@ export default function LeaveReports() {
                         spacing={1}
                         className="leave-reports-header-actions"
                     >
-                        <Button
-                            variant="outlined"
-                            startIcon={<ArrowBackIcon />}
-                            onClick={handlePrevious}
-                        >
-                            Previous
-                        </Button>
-
                         <Button
                             variant="outlined"
                             startIcon={<RefreshIcon />}
@@ -706,8 +710,7 @@ export default function LeaveReports() {
                             </Button>
                         )}
                     </Stack>
-                </Box>
-            </Card>
+            </Box>
 
             <Card className="leave-reports-filter-card">
                 <CardContent>
@@ -741,12 +744,8 @@ export default function LeaveReports() {
 
                     <Box className="leave-report-divider" />
 
-                    <Grid
-                        container
-                        spacing={2}
-                        className="leave-report-filter-grid"
-                    >
-                        <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <Box className="leave-report-filter-grid">
+                        <Box>
                             <FormControl fullWidth>
                                 <InputLabel>
                                     {reportType === "departmentWise"
@@ -794,9 +793,9 @@ export default function LeaveReports() {
                                         ))}
                                 </Select>
                             </FormControl>
-                        </Grid>
+                        </Box>
 
-                        <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                        <Box>
                             <FormControl fullWidth>
                                 <InputLabel>Leave Type</InputLabel>
 
@@ -820,9 +819,9 @@ export default function LeaveReports() {
                                     ))}
                                 </Select>
                             </FormControl>
-                        </Grid>
+                        </Box>
 
-                        <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                        <Box>
                             <FormControl fullWidth>
                                 <InputLabel>Status</InputLabel>
 
@@ -846,9 +845,9 @@ export default function LeaveReports() {
                                     </MenuItem>
                                 </Select>
                             </FormControl>
-                        </Grid>
+                        </Box>
 
-                        <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                        <Box>
                             <TextField
                                 key={`from-date-${resetVersion}`}
                                 fullWidth
@@ -857,12 +856,12 @@ export default function LeaveReports() {
                                 name="fromDate"
                                 value={filters.fromDate}
                                 onChange={handleFilterChange}
-                                InputLabelProps={{ shrink: true }}
+                                slotProps={{ inputLabel: { shrink: true } }}
                                 className="report-date-field"
                             />
-                        </Grid>
+                        </Box>
 
-                        <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                        <Box>
                             <TextField
                                 key={`to-date-${resetVersion}`}
                                 fullWidth
@@ -871,10 +870,10 @@ export default function LeaveReports() {
                                 name="toDate"
                                 value={filters.toDate}
                                 onChange={handleFilterChange}
-                                InputLabelProps={{ shrink: true }}
+                                slotProps={{ inputLabel: { shrink: true } }}
                             />
-                        </Grid>
-                    </Grid>
+                        </Box>
+                    </Box>
 
                     <Stack
                         direction="row"
@@ -900,67 +899,55 @@ export default function LeaveReports() {
                 </CardContent>
             </Card>
 
-            <Grid
-                container
-                spacing={2}
-                className="leave-report-summary-grid"
-            >
-                <Grid item xs={12} sm={6} md={3}>
-                    <Card className="leave-summary-card total-card">
+            <Box className="leave-report-summary-grid">
+                    <Card className="leave-report-summary-card total-card">
                         <CardContent>
-                            <Typography className="summary-label">
+                            <Typography className="leave-report-summary-label">
                                 Total Leave Days
                             </Typography>
 
-                            <Typography className="summary-value">
+                            <Typography className="leave-report-summary-value">
                                 {summary.totalDays}
                             </Typography>
                         </CardContent>
                     </Card>
-                </Grid>
 
-                <Grid item xs={12} sm={6} md={3}>
-                    <Card className="leave-summary-card approved-card">
+                    <Card className="leave-report-summary-card approved-card">
                         <CardContent>
-                            <Typography className="summary-label">
+                            <Typography className="leave-report-summary-label">
                                 Approved
                             </Typography>
 
-                            <Typography className="summary-value">
+                            <Typography className="leave-report-summary-value">
                                 {summary.approvedDays}
                             </Typography>
                         </CardContent>
                     </Card>
-                </Grid>
 
-                <Grid item xs={12} sm={6} md={3}>
-                    <Card className="leave-summary-card pending-card">
+                    <Card className="leave-report-summary-card pending-card">
                         <CardContent>
-                            <Typography className="summary-label">
+                            <Typography className="leave-report-summary-label">
                                 Pending
                             </Typography>
 
-                            <Typography className="summary-value">
+                            <Typography className="leave-report-summary-value">
                                 {summary.pendingDays}
                             </Typography>
                         </CardContent>
                     </Card>
-                </Grid>
 
-                <Grid item xs={12} sm={6} md={3}>
-                    <Card className="leave-summary-card rejected-card">
+                    <Card className="leave-report-summary-card rejected-card">
                         <CardContent>
-                            <Typography className="summary-label">
+                            <Typography className="leave-report-summary-label">
                                 Rejected
                             </Typography>
 
-                            <Typography className="summary-value">
+                            <Typography className="leave-report-summary-value">
                                 {summary.rejectedDays}
                             </Typography>
                         </CardContent>
                     </Card>
-                </Grid>
-            </Grid>
+            </Box>
 
             {reportType === "departmentWise" && (
                 <Card className="leave-report-table-card leave-department-summary-card">

@@ -41,6 +41,8 @@ import {
 } from "@mui/icons-material";
 
 import sparkLogo from "../../../Images/amnikon-logo.png";
+import { Typography as MuiText } from "@mui/material";
+import { Box as MuiLayoutBox } from "@mui/material";
 
 /* =========================================================
    API
@@ -1614,11 +1616,11 @@ function Payslips() {
                         <Box className="company-information">
 
 <Box className="company-logo">
-    <img
+    <MuiLayoutBox
         src={sparkLogo}
         alt="SPARK ERP & HR SYSTEM"
         className="company-logo-image"
-    />
+     component="img"/>
 </Box>
 
                           
@@ -1633,12 +1635,12 @@ function Payslips() {
 
                             <Typography className="payslip-month">
                                 For the Month of{" "}
-                                <strong>
+                                <MuiText component="strong" variant="inherit">
                                     {monthName(
                                         selectedMonth
                                     )}{" "}
                                     {selectedYear}
-                                </strong>
+                                </MuiText>
                             </Typography>
 
                             {payslip.payslipNumber && (
@@ -1790,11 +1792,11 @@ function Payslips() {
                                 TOTAL EARNINGS
                             </Typography>
 
-                            <strong>
+                            <MuiText component="strong" variant="inherit">
                                 {currency(
                                     payslip.totalEarnings
                                 )}
-                            </strong>
+                            </MuiText>
                         </Box>
 
                         <Typography className="net-pay-symbol">
@@ -1806,11 +1808,11 @@ function Payslips() {
                                 TOTAL DEDUCTIONS
                             </Typography>
 
-                            <strong>
+                            <MuiText component="strong" variant="inherit">
                                 {currency(
                                     effectiveTotalDeductions
                                 )}
-                            </strong>
+                            </MuiText>
                         </Box>
 
                         <Typography className="net-pay-symbol">
@@ -1822,11 +1824,11 @@ function Payslips() {
                                 NET PAY
                             </Typography>
 
-                            <strong>
+                            <MuiText component="strong" variant="inherit">
                                 {currency(
                                     effectiveNetSalary
                                 )}
-                            </strong>
+                            </MuiText>
                         </Box>
 
                         <Typography className="amount-in-words">
@@ -1859,11 +1861,11 @@ function Payslips() {
                                     Annual CTC
                                 </Typography>
 
-                                <strong>
+                                <MuiText component="strong" variant="inherit">
                                     {currency(
                                         payslip.annualCtc
                                     )}
-                                </strong>
+                                </MuiText>
                             </Box>
 
                             <Box className="salary-detail-item">
@@ -1871,11 +1873,11 @@ function Payslips() {
                                     Monthly CTC
                                 </Typography>
 
-                                <strong>
+                                <MuiText component="strong" variant="inherit">
                                     {currency(
                                         payslip.monthlyCtc
                                     )}
-                                </strong>
+                                </MuiText>
                             </Box>
 
                             <Box className="salary-detail-item">
@@ -1883,11 +1885,11 @@ function Payslips() {
                                     Gross Salary
                                 </Typography>
 
-                                <strong>
+                                <MuiText component="strong" variant="inherit">
                                     {currency(
                                         payslip.grossSalary
                                     )}
-                                </strong>
+                                </MuiText>
                             </Box>
 
                             <Box className="salary-detail-item">
@@ -1921,7 +1923,7 @@ function Payslips() {
     <Box className="footer-note-section">
 
         <Typography className="footer-note">
-            <strong>Note:</strong>&nbsp;
+            <MuiText component="strong" variant="inherit">Note:</MuiText>&nbsp;
             This is a system generated payslip. Please contact HR for any payroll related queries.
         </Typography>
 

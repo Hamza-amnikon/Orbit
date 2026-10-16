@@ -8,7 +8,6 @@ import dayjs from "dayjs";
 
 import {
   Save,
-  Badge,
   Email,
   Phone,
   Apartment,
@@ -23,9 +22,11 @@ import {
   MenuItem,
   Button,
   InputAdornment,
+  Alert,
 } from "@mui/material";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function EmployeeForm({
@@ -258,114 +259,57 @@ function EmployeeForm({
 
   return (
 
-    <div className="employee-form-card">
+    <MuiLayoutBox className="employee-form-card" component="div">
 
 
       {/* =================================================
           HEADER
       ================================================= */}
 
-      <div className="form-header">
+      <MuiLayoutBox className="form-header" component="div">
 
-        <div>
+        <MuiLayoutBox className="form-title-group" component="div">
 
-          <h2>
+          <MuiLayoutBox className="form-title-icon" component="div" aria-hidden="true">
+            <Person />
+          </MuiLayoutBox>
+
+          <MuiLayoutBox component="div">
+
+          <MuiText component="h2" variant="h5">
             Add Employee
-          </h2>
+          </MuiText>
 
-          <p>
+          <MuiText component="p" variant="body1">
             Create a new employee profile for your organization.
-          </p>
+          </MuiText>
+          <MuiText className="required-fields-note" component="p" variant="caption">
+            Fields marked * are required.
+          </MuiText>
 
-        </div>
+          </MuiLayoutBox>
 
+        </MuiLayoutBox>
 
-        <div className="employee-avatar">
-
-          <div className="avatar-circle">
-
-            <Person
-              sx={{
-                fontSize: 42
-              }}
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      {/* =================================================
-          AUDIT INFORMATION
-      ================================================= */}
-
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-          padding: "12px 16px",
-          marginBottom: "20px",
-          borderRadius: "10px",
-          background: "#f5f8ff",
-          border: "1px solid #e2e8f0",
-          fontSize: "14px",
-        }}
-      >
-
-        <Badge
-          sx={{
-            color: "#2563eb"
-          }}
-        />
-
-        <div>
-
-          <div
-            style={{
-              fontWeight: 600,
-              color: "#1e293b",
-            }}
-          >
-            Logged in as
-          </div>
-
-          <div
-            style={{
-              color: "#64748b",
-            }}
-          >
-
-            {currentEmployeeName}
-
-            {currentEmployeeId && (
-              <>
-                {" "}
-                • Employee ID: {currentEmployeeId}
-              </>
-            )}
-
-          </div>
-
-        </div>
-
-      </div>
+      </MuiLayoutBox>
 
 
       {/* =================================================
           PERSONAL INFORMATION
       ================================================= */}
 
-      <div className="form-section">
+        <MuiLayoutBox className="form-section" component="section" aria-labelledby="add-employee-personal-heading">
 
-        <h3>
-          Personal Information
-        </h3>
+        <MuiLayoutBox className="form-section-heading" component="div">
+          <MuiLayoutBox className="form-section-icon" component="div" aria-hidden="true"><Person /></MuiLayoutBox>
+          <MuiLayoutBox component="div">
+            <MuiText id="add-employee-personal-heading" component="h3" variant="h6">Personal Information</MuiText>
+            <MuiText component="p" variant="body2">Enter the employee’s contact and identity details.</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
 
-        <div className="form-grid">
+        <MuiLayoutBox className="form-grid" component="div">
 
 
           {/* Employee ID */}
@@ -397,13 +341,13 @@ function EmployeeForm({
             onChange={(e) =>
               setFirstName(e.target.value)
             }
-            InputProps={{
+            slotProps={{ input: {
               startAdornment: (
                 <InputAdornment position="start">
                   <Person />
                 </InputAdornment>
               ),
-            }}
+            } }}
           />
 
 
@@ -417,13 +361,13 @@ function EmployeeForm({
             onChange={(e) =>
               setLastName(e.target.value)
             }
-            InputProps={{
+            slotProps={{ input: {
               startAdornment: (
                 <InputAdornment position="start">
                   <Person />
                 </InputAdornment>
               ),
-            }}
+            } }}
           />
 
 
@@ -438,13 +382,13 @@ function EmployeeForm({
             onChange={(e) =>
               setEmail(e.target.value)
             }
-            InputProps={{
+            slotProps={{ input: {
               startAdornment: (
                 <InputAdornment position="start">
                   <Email />
                 </InputAdornment>
               ),
-            }}
+            } }}
           />
 
 
@@ -458,13 +402,13 @@ function EmployeeForm({
             onChange={(e) =>
               setMobile(e.target.value)
             }
-            InputProps={{
+            slotProps={{ input: {
               startAdornment: (
                 <InputAdornment position="start">
                   <Phone />
                 </InputAdornment>
               ),
-            }}
+            } }}
           />
 
 
@@ -505,37 +449,41 @@ function EmployeeForm({
           <TextField
             fullWidth
             required
-            label="Manager Id"
+            label="Manager ID"
             value={managerId}
             onChange={(e) =>
               setManagerId(e.target.value)
             }
-            InputProps={{
+            slotProps={{ input: {
               startAdornment: (
                 <InputAdornment position="start">
                   <Person />
                 </InputAdornment>
               ),
-            }}
+            } }}
           />
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
 
       {/* =================================================
           EMPLOYMENT DETAILS
       ================================================= */}
 
-      <div className="form-section">
+        <MuiLayoutBox className="form-section" component="section" aria-labelledby="add-employee-work-heading">
 
-        <h3>
-          Employment Details
-        </h3>
+        <MuiLayoutBox className="form-section-heading" component="div">
+          <MuiLayoutBox className="form-section-icon" component="div" aria-hidden="true"><BusinessCenter /></MuiLayoutBox>
+          <MuiLayoutBox component="div">
+            <MuiText id="add-employee-work-heading" component="h3" variant="h6">Employment Details</MuiText>
+            <MuiText component="p" variant="body2">Set the employee’s role, team, location, and start date.</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
 
-        <div className="form-grid">
+        <MuiLayoutBox className="form-grid" component="div">
 
 
           {/* Department */}
@@ -543,18 +491,19 @@ function EmployeeForm({
           <TextField
             select
             fullWidth
+            required
             label="Department"
             value={department}
             onChange={(e) =>
               setDepartment(e.target.value)
             }
-            InputProps={{
+            slotProps={{ input: {
               startAdornment: (
                 <InputAdornment position="start">
                   <Apartment />
                 </InputAdornment>
               ),
-            }}
+            } }}
           >
 
             <MenuItem value="">
@@ -617,13 +566,13 @@ function EmployeeForm({
             onChange={(e) =>
               setDesignation(e.target.value)
             }
-            InputProps={{
+            slotProps={{ input: {
               startAdornment: (
                 <InputAdornment position="start">
                   <Work />
                 </InputAdornment>
               ),
-            }}
+            } }}
           >
 
             <MenuItem value="">
@@ -686,13 +635,13 @@ function EmployeeForm({
             onChange={(e) =>
               setLocation(Number(e.target.value))
             }
-            InputProps={{
+            slotProps={{ input: {
               startAdornment: (
                 <InputAdornment position="start">
                   <LocationOn />
                 </InputAdornment>
               ),
-            }}
+            } }}
           >
 
             <MenuItem value="">
@@ -737,6 +686,9 @@ function EmployeeForm({
                 textField: {
                   fullWidth: true,
                   required: true,
+                  size: "small",
+                  variant: "outlined",
+                  className: "employee-date-picker",
                 },
               }}
             />
@@ -767,16 +719,22 @@ function EmployeeForm({
 
           </TextField>
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
 
       {/* =================================================
           ACTIONS
       ================================================= */}
 
-      <div className="form-actions">
+      <MuiLayoutBox className="form-actions" component="div">
+
+        {!isFormValid && (
+          <MuiText className="form-action-hint" component="p" variant="body2" aria-live="polite">
+            Complete the required fields to enable saving.
+          </MuiText>
+        )}
 
 
         {/* CANCEL */}
@@ -804,7 +762,7 @@ function EmployeeForm({
           Save Employee
         </Button>
 
-      </div>
+      </MuiLayoutBox>
 
 
       {/* =================================================
@@ -812,36 +770,18 @@ function EmployeeForm({
       ================================================= */}
 
       {!isAuthenticated && (
-
-        <div
-          style={{
-            marginTop: "12px",
-            textAlign: "right",
-            color: "#dc2626",
-            fontSize: "13px",
-          }}
-        >
-          Authentication required to save an employee.
-        </div>
-
+        <Alert className="employee-form-alert" severity="error">
+          Authentication is required to save an employee. Please sign in again.
+        </Alert>
       )}
 
       {isAuthenticated && !currentEmployeeId && (
-
-        <div
-          style={{
-            marginTop: "12px",
-            textAlign: "right",
-            color: "#dc2626",
-            fontSize: "13px",
-          }}
-        >
-          Employee ID is not available. Please login again.
-        </div>
-
+        <Alert className="employee-form-alert" severity="error">
+          Your employee ID is unavailable. Please sign in again.
+        </Alert>
       )}
 
-    </div>
+    </MuiLayoutBox>
   );
 }
 

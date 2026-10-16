@@ -1,38 +1,12 @@
-.quick-actions{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:20px;
-}
-
-.quick-action-card{
-    background:#fff;
-    border:1px solid #e5e7eb;
-    border-radius:12px;
-    padding:20px;
-    text-align:center;
-    cursor:pointer;
-    transition:.25s;
-}
-
-.quick-action-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 10px 20px rgba(0,0,0,.08);
-}
-
-.quick-action-icon{
-    width:55px;
-    height:55px;
-    border-radius:12px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:#fff;
-    margin:auto;
-    margin-bottom:15px;
-}
-
-.quick-action-card h4{
-    margin:0;
-    font-size:15px;
-    color:#1f2937;
-}
+.quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.quick-action-card.MuiButtonBase-root{position:relative;display:flex;width:100%;min-width:0;min-height:90px;align-items:center;gap:14px;padding:16px;text-align:left;color:inherit;border:1px solid #e2e8f0;border-radius:12px;background:#fff;transition:border-color .18s ease,background .18s ease,box-shadow .18s ease}
+.quick-action-card.MuiButtonBase-root:hover{border-color:#b9cbed;background:#fbfdff;box-shadow:0 4px 14px rgba(32,66,120,.07)}
+.quick-action-card.MuiButtonBase-root:focus-visible{outline:3px solid rgba(47,103,237,.22);outline-offset:2px}
+.quick-action-icon{display:flex;flex:0 0 44px;width:44px;height:44px;align-items:center;justify-content:center;border-radius:11px;background:color-mix(in srgb,var(--quick-action-color) 11%,white);color:var(--quick-action-color)}
+.quick-action-icon svg{font-size:22px}
+.quick-action-copy{flex:1;min-width:0}
+.quick-action-title.MuiTypography-root{margin:0;color:#20334f;font-size:14px;font-weight:650;line-height:1.4}
+.quick-action-description.MuiTypography-root{margin:4px 0 0;color:#718096;font-size:12px;line-height:1.4}
+.quick-action-arrow{flex:0 0 auto;color:#91a0b5;font-size:19px;transition:transform .18s ease,color .18s ease}
+.quick-action-card:hover .quick-action-arrow{transform:translateX(3px);color:#2f67ed}
+@media(max-width:520px){.quick-actions{grid-template-columns:1fr;gap:9px}.quick-action-card.MuiButtonBase-root{min-height:78px;padding:12px}}

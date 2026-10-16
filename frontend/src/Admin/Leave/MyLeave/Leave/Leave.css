@@ -2127,3 +2127,276 @@
     input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
 }
+
+/* Shared Leave page layout and responsive treatment */
+.leave-dashboard {
+    padding: 28px 32px 36px;
+    background: #f4f8fd;
+}
+
+.leave-header {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.leave-back-button {
+    width: 44px;
+    height: 44px;
+    color: #405774 !important;
+    background: #fff !important;
+    border: 1px solid #d7e2f0 !important;
+    border-radius: 12px !important;
+}
+
+.leave-back-button:hover {
+    color: #2563eb !important;
+    background: #eff6ff !important;
+    border-color: #b9d0f3 !important;
+}
+
+.leave-heading-group { min-width: 0; }
+
+.leave-header h1 {
+    color: #10264b;
+    font-size: clamp(24px, 2vw, 30px);
+    letter-spacing: -0.025em;
+}
+
+.leave-header p {
+    margin-top: 6px;
+    color: #647a98;
+    font-size: 14px;
+}
+
+.leave-header-actions {
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.leave-period-control {
+    width: 150px;
+    min-width: 150px;
+    flex: 0 0 150px;
+}
+
+.leave-period-control .MuiOutlinedInput-root {
+    height: 44px;
+    border-radius: 10px;
+    background: #fff;
+    color: #334155;
+    font-size: 13px;
+}
+
+.leave-period-control .MuiSelect-select {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 0 36px 0 13px;
+}
+
+.leave-period-control .MuiOutlinedInput-notchedOutline {
+    border-color: #d3e0f0;
+}
+
+.leave-period-control .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #9db7dc;
+}
+
+.leave-period-control .Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #2f63e9;
+    border-width: 1px;
+}
+
+.leave-header.period-menu-open {
+    margin-bottom: 176px;
+}
+
+.apply-leave-btn {
+    min-height: 44px !important;
+    padding: 0 18px !important;
+    border-radius: 10px !important;
+    background: #2f63e9 !important;
+    box-shadow: 0 4px 10px rgba(47, 99, 233, 0.18) !important;
+}
+
+.leave-stat-card,
+.leave-info-card,
+.leave-panel,
+.leave-calendar-panel {
+    border-color: #dce6f2;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(22, 48, 84, 0.045);
+}
+
+.leave-stat-card { min-height: 104px; }
+
+.leave-stat-card span,
+.leave-info-card span {
+    color: #647a98;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.leave-stat-card h2,
+.leave-info-card h2 {
+    color: #10264b;
+    font-variant-numeric: tabular-nums;
+}
+
+.leave-info-card { min-height: 104px; }
+
+.leave-panel-header {
+    padding: 18px 22px;
+    border-bottom-color: #e5edf6;
+}
+
+.leave-panel-header h2 {
+    color: #152d53;
+    font-size: 16px;
+}
+
+.leave-panel-header p {
+    color: #7285a0;
+    font-size: 13px;
+}
+
+.leave-balance-table th,
+.pending-leave-table th,
+.leave-table th {
+    padding: 14px 16px;
+    color: #4a6688;
+    background: #f0f5fc;
+    border-bottom: 1px solid #dfe8f3;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+}
+
+.leave-balance-table td,
+.pending-leave-table td,
+.leave-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #edf1f6;
+}
+
+.leave-balance-table tbody tr:hover,
+.pending-leave-table tbody tr:hover,
+.leave-table tbody tr:hover {
+    background: #f7faff;
+}
+
+.leave-content-grid { gap: 16px; }
+
+@media (max-width: 1100px) {
+    .leave-dashboard { padding: 24px 20px 32px; }
+
+    .leave-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .leave-content-grid { grid-template-columns: minmax(0, 1fr); }
+
+    .leave-header {
+        grid-template-columns: 44px minmax(0, 1fr);
+    }
+
+    .leave-header-actions {
+        grid-column: 2;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .leave-period-control {
+        width: auto;
+        min-width: 145px;
+        flex: 1 1 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .leave-dashboard { padding: 18px 14px 26px; }
+
+    .leave-header {
+        display: grid;
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .leave-back-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .leave-header-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .leave-period-control,
+    .apply-leave-btn {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .leave-secondary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .leave-panel-header {
+        align-items: center;
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 520px) {
+    .leave-stat-grid,
+    .leave-secondary-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .leave-header-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 150px) minmax(0, 1fr);
+        flex-direction: row;
+        align-items: start;
+        gap: 8px;
+    }
+
+    .leave-period-control {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .apply-leave-btn {
+        width: 100%;
+        min-height: 42px;
+        flex: none;
+    }
+
+    .leave-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .pending-summary {
+        width: auto;
+        max-width: 100%;
+    }
+
+    .leave-balance-table th,
+    .leave-balance-table td,
+    .pending-leave-table th,
+    .pending-leave-table td,
+    .leave-table th,
+    .leave-table td {
+        padding: 11px 12px;
+    }
+}

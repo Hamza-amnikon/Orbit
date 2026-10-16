@@ -1,3 +1,4 @@
+import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import "./LocationTable.css";
 
 import {
@@ -10,6 +11,7 @@ import {
   Delete,
   Visibility,
 } from "@mui/icons-material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function LocationTable({
   locations = [],
@@ -17,124 +19,124 @@ function LocationTable({
   deleteLocation,
 }) {
   return (
-    <div className="location-table-wrapper">
+    <MuiLayoutBox className="location-table-wrapper" component="div">
 
       {/* Header */}
 
-      <div className="location-table-header">
+      <MuiLayoutBox className="location-table-header" component="div">
 
-        <div>
+        <MuiLayoutBox component="div">
 
-          <h2>Location List</h2>
+          <MuiText component="h2" variant="h5">Location List</MuiText>
 
-          <p>
+          <MuiText component="p" variant="body1">
             {locations.length} Locations Found
-          </p>
+          </MuiText>
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
       {/* Table */}
 
-      <div className="table-responsive">
+      <MuiLayoutBox className="table-responsive" component="div">
 
-        <table className="location-table">
+        <MuiTableMigration className="location-table">
 
-          <thead>
+          <MuiTableHeadMigration>
 
-            <tr>
+            <MuiTableRowMigration>
 
-              <th>Location Code</th>
+              <MuiTableCellMigration>Location Code</MuiTableCellMigration>
 
-              <th>Location Name</th>
+              <MuiTableCellMigration>Location Name</MuiTableCellMigration>
 
-              <th>City</th>
+              <MuiTableCellMigration>City</MuiTableCellMigration>
 
-              <th>Country</th>
+              <MuiTableCellMigration>Country</MuiTableCellMigration>
 
-              <th>Currency Code</th>
+              <MuiTableCellMigration>Currency Code</MuiTableCellMigration>
 
-              <th>Timezone</th>
+              <MuiTableCellMigration>Timezone</MuiTableCellMigration>
 
-              <th>Created Date</th>
+              <MuiTableCellMigration>Created Date</MuiTableCellMigration>
 
-              <th>Status</th>
+              <MuiTableCellMigration>Status</MuiTableCellMigration>
 
-              <th>Action</th>
+              <MuiTableCellMigration>Action</MuiTableCellMigration>
 
-            </tr>
+            </MuiTableRowMigration>
 
-          </thead>
+          </MuiTableHeadMigration>
 
-          <tbody>
+          <MuiTableBodyMigration>
 
             {locations.length === 0 ? (
 
-              <tr>
+              <MuiTableRowMigration>
 
-                <td
+                <MuiTableCellMigration
                   colSpan="9"
                   className="no-records"
                 >
                   No Locations Found
-                </td>
+                </MuiTableCellMigration>
 
-              </tr>
+              </MuiTableRowMigration>
 
             ) : (
 
               locations.map((location) => (
 
-                <tr key={location.locationId}>
+                <MuiTableRowMigration key={location.locationId}>
 
-                  <td className="location-code">
+                  <MuiTableCellMigration className="location-code">
                     {location.locationCode}
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td className="location-name">
+                  <MuiTableCellMigration className="location-name">
                     {location.locationName}
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
                     {location.city || "-"}
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
                     {location.country || "-"}
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
                     {location.currencyCode || "-"}
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
                     {location.timeZone || "-"}
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
                     {location.createdDate
                       ? new Date(location.createdDate).toLocaleDateString("en-GB")
                       : "-"}
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
 
-                    <span
+                    <MuiText
                       className={`status-badge ${
                         location.status === "Active"
                           ? "active"
                           : "inactive"
                       }`}
-                    >
+                     component="span" variant="inherit">
                       {location.status}
-                    </span>
+                    </MuiText>
 
-                  </td>
+                  </MuiTableCellMigration>
 
-                  <td>
+                  <MuiTableCellMigration>
 
-                    <div className="action-buttons">
+                    <MuiLayoutBox className="action-buttons" component="div">
 
 
 
@@ -156,7 +158,7 @@ function LocationTable({
                         <IconButton
                           className="delete-btn"
                           onClick={() =>
-                            deleteLocation(location.locationId)
+                            deleteLocation(location)
                           }
                         >
 
@@ -166,23 +168,23 @@ function LocationTable({
 
                       </Tooltip>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                  </td>
+                  </MuiTableCellMigration>
 
-                </tr>
+                </MuiTableRowMigration>
 
               ))
 
             )}
 
-          </tbody>
+          </MuiTableBodyMigration>
 
-        </table>
+        </MuiTableMigration>
 
-      </div>
+      </MuiLayoutBox>
 
-    </div>
+    </MuiLayoutBox>
   );
 }
 

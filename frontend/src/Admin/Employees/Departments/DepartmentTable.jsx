@@ -1,3 +1,4 @@
+import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import "./DepartmentTable.css";
 
 import {
@@ -9,99 +10,102 @@ import {
   Edit,
   Delete,
 } from "@mui/icons-material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function DepartmentTable({
   departments = [],
   editDepartment,
   deleteDepartment,
+  canEdit = true,
+  canDelete = true,
 }) {
 
   return (
 
-    <div className="employee-type-table-wrapper">
+    <MuiLayoutBox className="department-table-wrapper" component="div">
 
 
       {/* ==================================================
           HEADER
       ================================================== */}
 
-      <div className="employee-type-table-header">
+        <MuiLayoutBox className="department-table-header" component="div">
 
-        <div>
+        <MuiLayoutBox component="div">
 
-          <h2>
+          <MuiText component="h2" variant="h5">
             Department List
-          </h2>
+          </MuiText>
 
-          <p>
+          <MuiText component="p" variant="body1">
             {departments.length} Departments Found
-          </p>
+          </MuiText>
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
 
       {/* ==================================================
           TABLE
       ================================================== */}
 
-      <div className="table-responsive">
+      <MuiLayoutBox className="table-responsive" component="div">
 
-        <table className="employee-type-table">
+        <MuiTableMigration className="department-table">
 
 
-          <thead>
+          <MuiTableHeadMigration>
 
-            <tr>
+            <MuiTableRowMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 #
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Department
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Created Date
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Status
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Action
-              </th>
+              </MuiTableCellMigration>
 
-            </tr>
+            </MuiTableRowMigration>
 
-          </thead>
+          </MuiTableHeadMigration>
 
 
-          <tbody>
+          <MuiTableBodyMigration>
 
             {departments.length === 0 ? (
 
-              <tr>
+              <MuiTableRowMigration>
 
-                <td
+                <MuiTableCellMigration
                   colSpan="5"
                   className="no-records"
                 >
                   No Departments Found
-                </td>
+                </MuiTableCellMigration>
 
-              </tr>
+              </MuiTableRowMigration>
 
             ) : (
 
               departments.map(
                 (department, index) => (
 
-                  <tr
+                  <MuiTableRowMigration
                     key={
                       department.departmentId
                     }
@@ -110,26 +114,26 @@ function DepartmentTable({
 
                     {/* SERIAL */}
 
-                    <td>
+                    <MuiTableCellMigration>
                       {index + 1}
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* DEPARTMENT */}
 
-                    <td
+                    <MuiTableCellMigration
                       className="employee-type-name"
                     >
                       {
                         department.departmentName ||
                         "-"
                       }
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* CREATED DATE */}
 
-                    <td>
+                    <MuiTableCellMigration>
 
                       {
                         department.createdDate
@@ -143,14 +147,14 @@ function DepartmentTable({
                           : "-"
                       }
 
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* STATUS */}
 
-                    <td>
+                    <MuiTableCellMigration>
 
-                      <span
+                      <MuiText
                         className={
                           `status-badge ${
                             department.status
@@ -160,30 +164,28 @@ function DepartmentTable({
                               : "inactive"
                           }`
                         }
-                      >
+                       component="span" variant="inherit">
 
                         {
                           department.status ||
                           "-"
                         }
 
-                      </span>
+                      </MuiText>
 
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* ACTIONS */}
 
-                    <td>
+                    <MuiTableCellMigration>
 
-                      <div
+                      <MuiLayoutBox
                         className="action-buttons"
-                      >
+                       component="div">
 
 
-                        <Tooltip
-                          title="Edit"
-                        >
+                        {canEdit && <Tooltip title="Edit">
 
                           <IconButton
                             className="edit-btn"
@@ -200,12 +202,10 @@ function DepartmentTable({
 
                           </IconButton>
 
-                        </Tooltip>
+                        </Tooltip>}
 
 
-                        <Tooltip
-                          title="Delete"
-                        >
+                        {canDelete && <Tooltip title="Delete">
 
                           <IconButton
                             className="delete-btn"
@@ -222,28 +222,28 @@ function DepartmentTable({
 
                           </IconButton>
 
-                        </Tooltip>
+                        </Tooltip>}
 
 
-                      </div>
+                      </MuiLayoutBox>
 
-                    </td>
+                    </MuiTableCellMigration>
 
 
-                  </tr>
+                  </MuiTableRowMigration>
 
                 )
               )
 
             )}
 
-          </tbody>
+          </MuiTableBodyMigration>
 
-        </table>
+        </MuiTableMigration>
 
-      </div>
+      </MuiLayoutBox>
 
-    </div>
+    </MuiLayoutBox>
 
   );
 

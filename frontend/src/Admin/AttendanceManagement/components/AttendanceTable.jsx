@@ -1,3 +1,4 @@
+import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import "./AttendanceTable.css";
 
 import {
@@ -16,6 +17,7 @@ import {
 
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 export default function AttendanceTable({
   rows = [],
@@ -35,27 +37,27 @@ export default function AttendanceTable({
 
   if (loading) {
     return (
-      <div
+      <MuiLayoutBox
         style={{
           padding: "30px",
           textAlign: "center",
         }}
-      >
+       component="div">
         Loading attendance records...
-      </div>
+      </MuiLayoutBox>
     );
   }
 
   if (!rows.length) {
     return (
-      <div
+      <MuiLayoutBox
         style={{
           padding: "30px",
           textAlign: "center",
         }}
-      >
+       component="div">
         No attendance records found.
-      </div>
+      </MuiLayoutBox>
     );
   }
 
@@ -71,91 +73,81 @@ export default function AttendanceTable({
     return time.substring(0, 5);
   };
 
-  return (
-    <table className="attendance-table">
-      <thead>
-        <tr>
-          <th>
+    return (
+    <MuiLayoutBox className="attendance-table-scroll" component="div">
+    <MuiTableMigration className="attendance-table">
+      <MuiTableHeadMigration>
+        <MuiTableRowMigration>
+          <MuiTableCellMigration>
             <Checkbox />
-          </th>
+          </MuiTableCellMigration>
 
-          <th>Employee ID</th>
+          <MuiTableCellMigration>Employee ID</MuiTableCellMigration>
 
-          <th>Employee</th>
+          <MuiTableCellMigration>Employee</MuiTableCellMigration>
 
-          <th>Date</th>
+          <MuiTableCellMigration>Date</MuiTableCellMigration>
 
-          <th>Shift</th>
+          <MuiTableCellMigration>Shift</MuiTableCellMigration>
 
-          <th>Check In</th>
+          <MuiTableCellMigration>Check In</MuiTableCellMigration>
 
-          <th>Check Out</th>
+          <MuiTableCellMigration>Check Out</MuiTableCellMigration>
 
-          <th>Total Hours</th>
+          <MuiTableCellMigration>Total Hours</MuiTableCellMigration>
 
-          <th>Status</th>
+          <MuiTableCellMigration>Status</MuiTableCellMigration>
 
-          <th>Action</th>
-        </tr>
-      </thead>
+          <MuiTableCellMigration>Action</MuiTableCellMigration>
+        </MuiTableRowMigration>
+      </MuiTableHeadMigration>
 
-      <tbody>
+      <MuiTableBodyMigration>
         {rows.map((row) => (
-          <tr key={row.attendanceId}>
-            <td>
+          <MuiTableRowMigration key={row.attendanceId}>
+            <MuiTableCellMigration>
               <Checkbox />
-            </td>
+            </MuiTableCellMigration>
 
-            <td>{row.azureEmployeeId || "-"}</td>
+            <MuiTableCellMigration>{row.azureEmployeeId || "-"}</MuiTableCellMigration>
 
-            <td>
-              <div className="employee-cell">
+            <MuiTableCellMigration>
+              <MuiLayoutBox className="employee-cell" component="div">
                 <Avatar className="employee-avatar">
                   {row.employeeName
                     ? row.employeeName.charAt(0).toUpperCase()
                     : "?"}
                 </Avatar>
 
-                <div>
-                  <strong>{row.employeeName || "-"}</strong>
+                <MuiLayoutBox component="div">
+                  <MuiText component="strong" variant="inherit">{row.employeeName || "-"}</MuiText>
 
-                  <span>{row.azureEmployeeId || "-"}</span>
-                </div>
-              </div>
-            </td>
+                  <MuiText component="span" variant="inherit">{row.azureEmployeeId || "-"}</MuiText>
+                </MuiLayoutBox>
+              </MuiLayoutBox>
+            </MuiTableCellMigration>
 
-            <td>{formatDate(row.attendanceDate)}</td>
+            <MuiTableCellMigration>{formatDate(row.attendanceDate)}</MuiTableCellMigration>
 
-            <td>{row.shift || "-"}</td>
+            <MuiTableCellMigration>{row.shift || "-"}</MuiTableCellMigration>
 
-            <td>{formatTime(row.checkIn)}</td>
+            <MuiTableCellMigration>{formatTime(row.checkIn)}</MuiTableCellMigration>
 
-            <td>{formatTime(row.checkOut)}</td>
+            <MuiTableCellMigration>{formatTime(row.checkOut)}</MuiTableCellMigration>
 
-            <td>{row.totalHours || "-"}</td>
+            <MuiTableCellMigration>{row.totalHours || "-"}</MuiTableCellMigration>
 
-            <td>
+            <MuiTableCellMigration>
               <Chip
                 label={row.status || "-"}
-                color={
-                  row.status === "Present"
-                    ? "success"
-                    : row.status === "Late"
-                    ? "warning"
-                    : row.status === "Absent"
-                    ? "error"
-                    : row.status === "Leave"
-                    ? "secondary"
-                    : row.status === "WFH"
-                    ? "info"
-                    : "default"
-                }
+                className={`status-chip ${String(row.status || "").toLowerCase().replace(/\s+/g, "-")}`}
+                color="default"
                 size="small"
               />
-            </td>
+            </MuiTableCellMigration>
 
-            <td>
-              <div className="attendance-actions">
+            <MuiTableCellMigration>
+              <MuiLayoutBox className="attendance-actions" component="div">
 
                 {canView && (
                   <Tooltip title="View Attendance">
@@ -190,11 +182,12 @@ export default function AttendanceTable({
                   </Tooltip>
                 )}
 
-              </div>
-            </td>
-          </tr>
+              </MuiLayoutBox>
+            </MuiTableCellMigration>
+          </MuiTableRowMigration>
         ))}
-      </tbody>
-    </table>
+      </MuiTableBodyMigration>
+    </MuiTableMigration>
+    </MuiLayoutBox>
   );
 }

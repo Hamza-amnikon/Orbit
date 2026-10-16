@@ -1,6 +1,8 @@
+import { MuiButtonMigration } from "../../../components/ui/MuiCompat.jsx";
 import "./ShiftManagement.css";
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   TextField,
@@ -9,7 +11,10 @@ import {
   MenuItem,
   OutlinedInput,
   InputAdornment,
-  Button
+  Button,
+  IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 
 import ShiftService from "../services/ShiftService";
@@ -36,10 +41,15 @@ import WeekendIcon from "@mui/icons-material/Weekend";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { exportRowsToExcel } from "../../../utils/exportExcel";
 
 export default function ShiftManagement() {
+  const navigate = useNavigate();
   const { hasPermission } = useAuth();
 
   const permissionRoute = "/attendance/shifts";
@@ -64,6 +74,8 @@ export default function ShiftManagement() {
   const [shift, setShift] = useState("");
   const [department, setDepartment] = useState("");
   const [status, setStatus] = useState("");
+  const [summaryFilter, setSummaryFilter] = useState("");
+  const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
   /* ===========================================================
      DIALOG STATES
@@ -85,6 +97,7 @@ export default function ShiftManagement() {
     setShift("");
     setDepartment("");
     setStatus("");
+    setSummaryFilter("");
   };
 
   /* ===========================================================
@@ -130,8 +143,10 @@ export default function ShiftManagement() {
       setAssignOpen(false);
 
       setSelectedEmployee(null);
+      setNotice({ open: true, severity: "success", message: "Shift assigned successfully." });
     } catch (error) {
       console.error("Create Error:", error.response?.data || error);
+      setNotice({ open: true, severity: "error", message: "Could not assign the shift. Please try again." });
     }
   };
 
@@ -153,8 +168,10 @@ export default function ShiftManagement() {
       setEditOpen(false);
 
       setSelectedEmployee(null);
+      setNotice({ open: true, severity: "success", message: "Shift assignment updated." });
     } catch (error) {
       console.error("Update Error:", error.response?.data || error);
+      setNotice({ open: true, severity: "error", message: "Could not update the shift assignment." });
     }
   };
 
@@ -173,8 +190,10 @@ export default function ShiftManagement() {
       setDeleteOpen(false);
 
       setSelectedEmployee(null);
+      setNotice({ open: true, severity: "success", message: "Shift assignment deleted." });
     } catch (error) {
       console.error("Delete Error:", error.response?.data || error);
+      setNotice({ open: true, severity: "error", message: "Could not delete the shift assignment." });
     }
   };
 
@@ -184,6 +203,20 @@ export default function ShiftManagement() {
 
   const handleRefresh = async () => {
     await loadShifts();
+  };
+
+  const handleExport = async () => {
+    try {
+      await exportRowsToExcel(filteredEmployees, [
+        ["Employee ID", (row) => row.azureEmployeeId || row.employeeCode || ""], ["Employee", "employeeName"],
+        ["Department", "department"], ["Designation", "designation"], ["Shift", (row) => row.shiftName || row.shift || ""],
+        ["From Date", "fromDate"], ["To Date", "toDate"], ["Weekly Off 1", "weeklyOff1"], ["Weekly Off 2", "weeklyOff2"], ["Status", "status"],
+      ], "Shift-Assignments.xlsx", "Shift Assignments");
+      setNotice({ open: true, severity: "success", message: `Exported ${filteredEmployees.length} shift assignments.` });
+    } catch (error) {
+      console.error("Shift export error", error);
+      setNotice({ open: true, severity: "error", message: "Could not export shift assignments." });
+    }
   };
 
   /* ===========================================================
@@ -235,14 +268,14 @@ export default function ShiftManagement() {
   =========================================================== */
 
   const filteredEmployees = employees.filter((item) => {
-    const keyword = search.toLowerCase();
+    const keyword = search.toLowerCase().trim();
 
     const searchMatch =
       keyword === "" ||
-      item.employeeName.toLowerCase().includes(keyword) ||
-      item.employeeCode.toLowerCase().includes(keyword) ||
-      item.department.toLowerCase().includes(keyword) ||
-      item.designation.toLowerCase().includes(keyword);
+      String(item.employeeName || "").toLowerCase().includes(keyword) ||
+      String(item.employeeCode || item.azureEmployeeId || "").toLowerCase().includes(keyword) ||
+      String(item.department || "").toLowerCase().includes(keyword) ||
+      String(item.designation || "").toLowerCase().includes(keyword);
 
     const shiftMatch =
       shift === "" ||
@@ -256,11 +289,14 @@ export default function ShiftManagement() {
       status === "" ||
       item.status === status;
 
+    const summaryMatch = summaryFilter !== "off" || item.weeklyOff1 === todayName || item.weeklyOff2 === todayName;
+
     return (
       searchMatch &&
       shiftMatch &&
       departmentMatch &&
-      statusMatch
+      statusMatch &&
+      summaryMatch
     );
   });
 
@@ -285,52 +321,55 @@ export default function ShiftManagement() {
   }
 
   return (
-    <div className="shift-management">
+    <MuiLayoutBox className="shift-management" component="div">
 
       {/* ================= HEADER ================= */}
 
-      <div className="shift-header-card">
-        <div>
-          <h2>Shift Management</h2>
+      <MuiLayoutBox className="shift-header-card" component="div">
+        <MuiLayoutBox className="shift-header-leading" component="div">
+          <IconButton aria-label="Back to Attendance" onClick={() => navigate("/attendance")} className="attendance-back-button"><ArrowBackRoundedIcon /></IconButton>
+          <MuiLayoutBox component="div">
+          <MuiText component="h2" variant="h5">Shift Management</MuiText>
 
-          <p>
+          <MuiText component="p" variant="body1">
             Monitor employee shift assignments and today's workforce.
-          </p>
-        </div>
+          </MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="shift-header-actions">
+        <MuiLayoutBox className="shift-header-actions" component="div">
 
-          <button
+          <MuiButtonMigration
             className="outline-btn"
             onClick={handleRefresh}
           >
             <RefreshIcon />
             Refresh
-          </button>
+          </MuiButtonMigration>
 
           {canExport && (
-            <button className="outline-btn">
+            <MuiButtonMigration className="outline-btn" onClick={handleExport}>
               <FileDownloadIcon />
               Export
-            </button>
+            </MuiButtonMigration>
           )}
 
           {canCreate && (
-            <button
+            <MuiButtonMigration
               className="primary-btn"
               onClick={() => setAssignOpen(true)}
             >
               <AddIcon />
               Assign Shift
-            </button>
+            </MuiButtonMigration>
           )}
 
-        </div>
-      </div>
+        </MuiLayoutBox>
+      </MuiLayoutBox>
 
       {/* ================= DASHBOARD ================= */}
 
-      <div className="shift-summary-grid">
+      <MuiLayoutBox className="shift-summary-grid" component="div">
 
         <DashboardCard
           title="Morning Shift"
@@ -338,6 +377,8 @@ export default function ShiftManagement() {
           subtitle="Employees Assigned"
           color="#F59E0B"
           icon={<WbSunnyIcon />}
+          onClick={() => { setShift((current) => current === "Morning" ? "" : "Morning"); setSummaryFilter(""); }}
+          selected={shift === "Morning" && !summaryFilter}
         />
 
         <DashboardCard
@@ -346,6 +387,8 @@ export default function ShiftManagement() {
           subtitle="Employees Assigned"
           color="#10B981"
           icon={<GroupsIcon />}
+          onClick={() => { setShift((current) => current === "General" ? "" : "General"); setSummaryFilter(""); }}
+          selected={shift === "General" && !summaryFilter}
         />
 
         <DashboardCard
@@ -354,6 +397,8 @@ export default function ShiftManagement() {
           subtitle="Employees Assigned"
           color="#6366F1"
           icon={<ScheduleIcon />}
+          onClick={() => { setShift((current) => current === "Evening" ? "" : "Evening"); setSummaryFilter(""); }}
+          selected={shift === "Evening" && !summaryFilter}
         />
 
         <DashboardCard
@@ -362,6 +407,8 @@ export default function ShiftManagement() {
           subtitle="Employees Assigned"
           color="#8B5CF6"
           icon={<NightsStayIcon />}
+          onClick={() => { setShift((current) => current === "Night" ? "" : "Night"); setSummaryFilter(""); }}
+          selected={shift === "Night" && !summaryFilter}
         />
 
         <DashboardCard
@@ -370,30 +417,34 @@ export default function ShiftManagement() {
           subtitle="Employees Off"
           color="#EF4444"
           icon={<WeekendIcon />}
+          onClick={() => { setShift(""); setSummaryFilter((current) => current === "off" ? "" : "off"); }}
+          selected={summaryFilter === "off"}
         />
 
-      </div>
+      </MuiLayoutBox>
 
       {/* ================= FILTERS ================= */}
 
-      <div className="shift-filter-card">
+      <MuiLayoutBox className="shift-filter-card" component="div">
 
         {/* Search */}
 
         <TextField
+          className="shift-search-field"
           fullWidth
           placeholder="Search by name, employee ID or department..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           variant="outlined"
           size="medium"
-          InputProps={{
+          slotProps={{ input: {
             startAdornment: (
               <InputAdornment position="start">
                 <SearchIcon />
               </InputAdornment>
             ),
-          }}
+            endAdornment: search ? <InputAdornment position="end"><IconButton aria-label="Clear search" size="small" onClick={() => setSearch("")}><CloseRoundedIcon fontSize="small" /></IconButton></InputAdornment> : null,
+          } }}
         />
 
         {/* Shift */}
@@ -506,57 +557,45 @@ export default function ShiftManagement() {
           Reset
         </Button>
 
-      </div>
+      </MuiLayoutBox>
 
       {/* ================= TABLE ================= */}
 
-      <div className="shift-table-card">
+      <MuiLayoutBox className="shift-table-card" component="div">
 
-        <div className="table-header">
+        <MuiLayoutBox className="table-header" component="div">
 
-          <div className="table-header-left">
+          <MuiLayoutBox className="table-header-left" component="div">
 
-            <span className="table-tag">
+            <MuiText className="table-tag" component="span" variant="inherit">
               SHIFT DIRECTORY
-            </span>
+            </MuiText>
 
-            <h3>Today's Shift Employees</h3>
+            <MuiText component="h3" variant="h6">Today's Shift Employees</MuiText>
 
-            <p>
+            <MuiText component="p" variant="body1">
               View and manage employee shift assignments.
-            </p>
+            </MuiText>
 
-          </div>
+          </MuiLayoutBox>
 
-          <div className="table-header-right">
+          <MuiLayoutBox className="table-header-right" component="div">
 
-            <div className="record-count">
+            <MuiLayoutBox className="record-count" component="div">
 
-              <strong>
+              <MuiText component="strong" variant="inherit">
                 {filteredEmployees.length}
-              </strong>
+              </MuiText>
 
-              <span>
+              <MuiText component="span" variant="inherit">
                 Employees
-              </span>
+              </MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
-            {canExport && (
-              <button className="table-btn">
-                Print
-              </button>
-            )}
+          </MuiLayoutBox>
 
-            {canExport && (
-              <button className="table-btn">
-                Export CSV
-              </button>
-            )}
-
-          </div>
-
-        </div>
+        </MuiLayoutBox>
 
         <ShiftTable
           rows={filteredEmployees}
@@ -586,7 +625,7 @@ export default function ShiftManagement() {
           }}
         />
 
-      </div>
+      </MuiLayoutBox>
 
       {/* ================= DIALOGS ================= */}
 
@@ -634,6 +673,10 @@ export default function ShiftManagement() {
         />
       )}
 
-    </div>
+      <Snackbar open={notice.open} autoHideDuration={4500} onClose={() => setNotice((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
+        <Alert severity={notice.severity} variant="filled" onClose={() => setNotice((current) => ({ ...current, open: false }))}>{notice.message}</Alert>
+      </Snackbar>
+
+    </MuiLayoutBox>
   );
 }

@@ -15,7 +15,7 @@
    HEADER
 ========================================================== */
 
-.employee-page-header{
+.employee-type-page .employee-page-header{
 
     display:flex;
     justify-content:space-between;
@@ -34,7 +34,7 @@
         0 18px 40px rgba(37,99,235,.18);
 }
 
-.employee-page-header h1{
+.employee-type-page .employee-page-header h1{
 
     margin:0;
 
@@ -43,7 +43,7 @@
     font-weight:700;
 }
 
-.employee-page-header p{
+.employee-type-page .employee-page-header p{
 
     margin-top:10px;
 
@@ -56,7 +56,7 @@
    BUTTONS
 ========================================================== */
 
-.header-buttons{
+.employee-type-page .header-buttons{
 
     display:flex;
 
@@ -65,7 +65,7 @@
     flex-wrap:wrap;
 }
 
-.header-buttons .MuiButton-root{
+.employee-type-page .header-buttons .MuiButton-root{
 
     height:46px;
 
@@ -80,7 +80,7 @@
     transition:.3s;
 }
 
-.header-buttons .MuiButton-root:hover{
+.employee-type-page .header-buttons .MuiButton-root:hover{
 
     transform:translateY(-3px);
 }
@@ -89,7 +89,7 @@
    STATISTICS
 ========================================================== */
 
-.stats-grid{
+.employee-type-page .stats-grid{
 
     display:grid;
 
@@ -100,7 +100,7 @@
     margin-bottom:30px;
 }
 
-.stats-card{
+.employee-type-page .stats-card{
 
     border-radius:22px !important;
 
@@ -116,7 +116,7 @@
         0 10px 25px rgba(15,23,42,.06);
 }
 
-.stats-card:hover{
+.employee-type-page .stats-card:hover{
 
     transform:translateY(-8px);
 
@@ -124,7 +124,7 @@
         0 20px 40px rgba(15,23,42,.12);
 }
 
-.stats-card .MuiCardContent-root{
+.employee-type-page .stats-card .MuiCardContent-root{
 
     display:flex;
 
@@ -135,7 +135,7 @@
     padding:28px !important;
 }
 
-.stats-icon{
+.employee-type-page .stats-icon{
 
     width:62px;
 
@@ -154,35 +154,35 @@
     font-size:30px;
 }
 
-.stats-icon svg{
+.employee-type-page .stats-icon svg{
 
     font-size:32px;
 }
 
-.stats-icon.blue{
+.employee-type-page .stats-icon.blue{
     background:linear-gradient(135deg,#2563eb,#3b82f6);
 }
 
-.stats-icon.green{
+.employee-type-page .stats-icon.green{
     background:linear-gradient(135deg,#10b981,#34d399);
 }
 
-.stats-icon.red{
+.employee-type-page .stats-icon.red{
     background:linear-gradient(135deg,#ef4444,#f87171);
 }
 
-.stats-icon.purple{
+.employee-type-page .stats-icon.purple{
     background:linear-gradient(135deg,#7c3aed,#a855f7);
 }
 
-.stats-card span{
+.employee-type-page .stats-card span{
 
     color:#64748b;
 
     font-size:.95rem;
 }
 
-.stats-card h2{
+.employee-type-page .stats-card h2{
 
     margin:0;
 
@@ -195,7 +195,7 @@
    SEARCH TOOLBAR
 ========================================================== */
 
-.toolbar-card{
+.employee-type-page .toolbar-card{
 
     border-radius:22px !important;
 
@@ -207,24 +207,24 @@
     border:none !important;
 }
 
-.toolbar-card .MuiCardContent-root{
+.employee-type-page .toolbar-card .MuiCardContent-root{
 
     padding:22px !important;
 }
 
-.toolbar-card .MuiOutlinedInput-root{
+.employee-type-page .toolbar-card .MuiOutlinedInput-root{
 
     border-radius:14px;
 
     background:#f8fafc;
 }
 
-.toolbar-card .MuiOutlinedInput-root:hover{
+.employee-type-page .toolbar-card .MuiOutlinedInput-root:hover{
 
     background:#fff;
 }
 
-.toolbar-card .Mui-focused{
+.employee-type-page .toolbar-card .Mui-focused{
 
     background:#fff;
 }
@@ -233,7 +233,7 @@
    TABLE
 ========================================================== */
 
-.table-card{
+.employee-type-page .table-card{
 
     border-radius:24px !important;
 
@@ -245,7 +245,7 @@
         0 10px 30px rgba(15,23,42,.06);
 }
 
-.table-card .MuiCardContent-root{
+.employee-type-page .table-card .MuiCardContent-root{
 
     padding:0 !important;
 }
@@ -433,19 +433,19 @@
 
 @media(max-width:992px){
 
-.employee-page-header{
+.employee-type-page .employee-page-header{
 
     flex-direction:column;
 
     align-items:flex-start;
 }
 
-.header-buttons{
+.employee-type-page .header-buttons{
 
     width:100%;
 }
 
-.header-buttons .MuiButton-root{
+.employee-type-page .header-buttons .MuiButton-root{
 
     flex:1;
 }
@@ -459,27 +459,27 @@
     padding:20px;
 }
 
-.employee-page-header{
+.employee-type-page .employee-page-header{
 
     padding:24px;
 }
 
-.employee-page-header h1{
+.employee-type-page .employee-page-header h1{
 
     font-size:1.8rem;
 }
 
-.stats-grid{
+.employee-type-page .stats-grid{
 
     grid-template-columns:1fr;
 }
 
-.header-buttons{
+.employee-type-page .header-buttons{
 
     flex-direction:column;
 }
 
-.header-buttons .MuiButton-root{
+.employee-type-page .header-buttons .MuiButton-root{
 
     width:100%;
 }
@@ -547,5 +547,72 @@
     .employee-type-filter-row .employee-type-status-filter {
         width: 100%;
         flex: none;
+    }
+}
+
+/* Keep Employee Types controls and cards comfortable on mobile. */
+.employee-type-page {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Shared Employee Management header and card treatment. */
+.employee-type-page .employee-page-header { padding: 0 0 20px; border-radius: 0; color: #102a56; margin-bottom: 22px; box-shadow: none; background: transparent; }
+.employee-type-page .employee-page-header p { color: #60738f; opacity: 1; }
+.employee-type-back-button { width: 42px; height: 42px; flex: 0 0 auto; border: 1px solid #dce4ee !important; border-radius: 10px !important; color: #3f5067 !important; background: #fff !important; }
+.employee-type-page .header-buttons .MuiButton-root { border-radius: 8px; }
+.employee-type-page .stats-card { border: 1px solid #e0e6ef !important; border-radius: 12px !important; box-shadow: 0 2px 7px rgba(20, 40, 70, .04); cursor: pointer; }
+.employee-type-page .stats-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(20, 40, 70, .08); }
+.employee-type-page .stats-card.selected { border-color: #8eafff !important; box-shadow: 0 0 0 2px rgba(47, 103, 237, .10); }
+.employee-type-page .stats-card .MuiCardContent-root { gap: 10px; padding: 20px !important; }
+.employee-type-page .stats-icon { width: 40px; height: 40px; border-radius: 10px; }
+
+@media (max-width: 480px) {
+    .employee-type-page {
+        padding: 14px;
+    }
+
+    .employee-type-page .employee-page-header {
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    .employee-type-page .employee-page-header h1 {
+        font-size: 1.55rem;
+        line-height: 1.25;
+    }
+
+    .employee-type-page .employee-page-header p {
+        margin: 6px 0 0;
+        font-size: 0.9rem;
+        line-height: 1.45;
+    }
+
+    .employee-type-page .header-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .employee-type-page .header-buttons .MuiButton-root {
+        width: 100%;
+        min-width: 0;
+        height: 42px;
+        padding-inline: 8px;
+        font-size: 0.82rem;
+        white-space: nowrap;
+    }
+
+    .employee-type-page .header-buttons .MuiButton-root:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .employee-type-page .toolbar-card .MuiCardContent-root {
+        padding: 12px !important;
+    }
+
+    .employee-type-page .table-card {
+        min-width: 0;
     }
 }

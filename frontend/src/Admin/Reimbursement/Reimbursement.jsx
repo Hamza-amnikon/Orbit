@@ -1,3 +1,4 @@
+import { MuiInputMigration } from "../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useMemo, useState } from "react";
 import "./Reimbursement.css";
 import { useAuth } from "../../context/AuthContext";
@@ -52,6 +53,7 @@ import {
     createReimbursement,
     updateReimbursementStatus,
 } from "../Services/ReimbursementService";
+import { Typography as MuiText } from "@mui/material";
 
 
 const API_BASE_URL =
@@ -1457,7 +1459,7 @@ function Reimbursement() {
                                 event.target.value
                             )
                         }
-                        InputProps={{
+                        slotProps={{ input: {
                             startAdornment: (
 
                                 <InputAdornment
@@ -1467,7 +1469,7 @@ function Reimbursement() {
                                 </InputAdornment>
 
                             ),
-                        }}
+                        } }}
                     />
 
                     <Box className="reimbursement-toolbar-actions">
@@ -1921,13 +1923,13 @@ function Reimbursement() {
                             <Typography variant="caption">
 
                                 Showing{" "}
-                                <strong>
+                                <MuiText component="strong" variant="inherit">
                                     {filteredReimbursements.length}
-                                </strong>{" "}
+                                </MuiText>{" "}
                                 of{" "}
-                                <strong>
+                                <MuiText component="strong" variant="inherit">
                                     {reimbursements.length}
-                                </strong>{" "}
+                                </MuiText>{" "}
                                 claims
 
                             </Typography>
@@ -2075,9 +2077,9 @@ function Reimbursement() {
                                 onChange={
                                     handleInputChange
                                 }
-                                InputLabelProps={{
+                                slotProps={{ inputLabel: {
                                     shrink: true,
-                                }}
+                                } }}
                             />
 
 
@@ -2095,11 +2097,10 @@ function Reimbursement() {
                                 onChange={
                                     handleInputChange
                                 }
-                                inputProps={{
+                                slotProps={{ htmlInput: {
                                     min: 0,
                                     step: 0.01,
-                                }}
-                                InputProps={{
+                                }, input: {
                                     startAdornment: (
                                         <InputAdornment
                                             position="start"
@@ -2107,7 +2108,7 @@ function Reimbursement() {
                                             ₹
                                         </InputAdornment>
                                     ),
-                                }}
+                                } }}
                             />
 
 
@@ -2191,7 +2192,7 @@ function Reimbursement() {
 
                                         Upload Receipt
 
-                                        <input
+                                        <MuiInputMigration
                                             hidden
                                             type="file"
                                             accept="application/pdf,.pdf"

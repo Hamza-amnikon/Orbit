@@ -1,9 +1,14 @@
+import { MuiButtonMigration, MuiInputMigration, MuiSelectMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import { useEffect, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Checkbox, FormControlLabel, Typography, Box, Chip, Divider, Button, TextField } from "@mui/material";
-import { useSearchParams } from "react-router-dom";
+import { Alert, Dialog, DialogTitle, DialogContent, DialogActions, Checkbox, FormControlLabel, Typography, Box, Chip, Divider, Button, TextField, Snackbar, IconButton, InputAdornment, Tooltip, MenuItem } from "@mui/material";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ArrowBackRounded, AttachFileRounded, BeachAccessRounded, BlockRounded, CheckRounded, CloseRounded, RefreshRounded, SearchRounded, VisibilityOutlined } from "@mui/icons-material";
+import { FileDownloadOutlined } from "@mui/icons-material";
 import axios from "axios";
 import "./LeaveRequests.css";
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { loadXlsx } from "../../../utils/exportLibraries";
 
 
 const LEAVE_API =
@@ -16,7 +21,8 @@ const SHIFT_API =  `${import.meta.env.VITE_SHIFT_API_BASE_URL}/api/Shift`;
 
 
 export default function LeaveRequests() {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const {
         user,
@@ -32,6 +38,7 @@ export default function LeaveRequests() {
     const permissionRoute = "/leave/requests";
     const canView = hasPermission(permissionRoute, "view");
     const canApprove = hasPermission(permissionRoute, "approve");
+    const canExport = hasPermission(permissionRoute, "export");
 
     // The person approving/rejecting the leave is ALWAYS the
     // currently authenticated employee.
@@ -83,7 +90,7 @@ export default function LeaveRequests() {
 
     const validateAuthenticatedEmployee = () => {
         if (!isAuthenticated) {
-            alert("You are not authenticated. Please sign in again.");
+            showFeedback("You are not authenticated. Please sign in again.", "error");
             return false;
         }
 
@@ -99,7 +106,7 @@ export default function LeaveRequests() {
                 employeeId
             });
 
-            alert("Your Employee ID could not be determined. Please sign in again.");
+            showFeedback("Your Employee ID could not be determined. Please sign in again.", "error");
             return false;
         }
 
@@ -132,6 +139,28 @@ export default function LeaveRequests() {
     );
 
     const [employeeSearch, setEmployeeSearch] = useState("");
+    const [feedback, setFeedback] = useState({ open: false, message: "", severity: "info" });
+    const showFeedback = (message, severity = "info") => setFeedback({ open: true, message, severity });
+
+    const exportRequests = async () => {
+        if (!canExport || filteredLeaves.length === 0) return;
+        const XLSX = await loadXlsx();
+        const rows = filteredLeaves.map((leave) => ({
+            "Azure Employee ID": leave.azureEmployeeId ?? leave.AzureEmployeeId ?? leave.azureEmployeeID ?? "-",
+            "Employee ID": leave.employeeId ?? "-",
+            "Leave Type": getLeaveTypeName(leave.leaveTypeId) || "-",
+            "From Date": leave.fromDate ? formatDate(leave.fromDate) : "-",
+            "To Date": leave.toDate ? formatDate(leave.toDate) : "-",
+            Days: calculateDays(leave.fromDate, leave.toDate, leave.employeeId),
+            Reason: leave.reason || "-",
+            Status: leave.status || "-",
+        }));
+        const sheet = XLSX.utils.json_to_sheet(rows);
+        sheet["!cols"] = [{ wch: 20 }, { wch: 15 }, { wch: 24 }, { wch: 14 }, { wch: 14 }, { wch: 10 }, { wch: 42 }, { wch: 14 }];
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, sheet, "Leave Requests");
+        XLSX.writeFile(workbook, `Spark_Leave_Requests_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    };
 
     // ==========================================================
     // LOAD DATA
@@ -389,6 +418,13 @@ async function loadLeaves() {
         setApprovalDateInfo([]);
     }
 
+    function closeRejectDialog() {
+        if (approvalSubmitting) return;
+        setSelectedLeave(null);
+        setSelectedStatus("");
+        setManagerComment("");
+    }
+
     function toggleApprovalDate(dateKey) {
         setApprovalDates(prev => prev.includes(dateKey) ? prev.filter(x => x !== dateKey) : [...prev, dateKey]);
     }
@@ -409,7 +445,7 @@ async function loadLeaves() {
         }
 
         if (!managerComment.trim()) {
-            alert("Please enter a manager comment.");
+            showFeedback("Please enter a manager comment.", "warning");
             return;
         }
 
@@ -433,14 +469,12 @@ async function loadLeaves() {
             );
 
             if (workingDates.length === 0) {
-                alert(
-                    "This leave request contains only Paid Week Off dates. There are no working days available for approval."
-                );
+                showFeedback("This leave request contains only Paid Week Off dates. There are no working days available for approval.", "warning");
                 return;
             }
 
             if (approvalDates.length === 0) {
-                alert("Please select at least one working day to approve.");
+                showFeedback("Please select at least one working day to approve.", "warning");
                 return;
             }
         }
@@ -489,10 +523,11 @@ approvedByEmployeeCode: currentEmployeeCode,
                 getAuthConfig()
             );
 
-            alert(
+            showFeedback(
                 selectedStatus === "Approved"
                     ? "Leave Approved Successfully"
-                    : "Leave Rejected Successfully"
+                    : "Leave Rejected Successfully",
+                "success"
             );
 
             // Close popup.
@@ -553,10 +588,11 @@ approvedByEmployeeCode: currentEmployeeCode,
                             .trim()
                             .toLowerCase()
                     ) {
-                        alert(
+                        showFeedback(
                             selectedStatus === "Approved"
                                 ? "Leave Approved Successfully"
-                                : "Leave Rejected Successfully"
+                                : "Leave Rejected Successfully",
+                            "success"
                         );
 
                         setOpenPartialApprovalDialog(false);
@@ -579,16 +615,12 @@ approvedByEmployeeCode: currentEmployeeCode,
             }
 
             if (error?.response?.status === 401) {
-                alert(
-                    "Your session has expired. Please sign in again."
-                );
+                showFeedback("Your session has expired. Please sign in again.", "error");
                 return;
             }
 
             if (error?.response?.status === 403) {
-                alert(
-                    "You are not authorized to approve or reject leave requests."
-                );
+                showFeedback("You are not authorized to approve or reject leave requests.", "error");
                 return;
             }
 
@@ -598,10 +630,7 @@ approvedByEmployeeCode: currentEmployeeCode,
                     ? error.response.data
                     : null);
 
-            alert(
-                serverMessage ||
-                "Unable to update leave status."
-            );
+            showFeedback(serverMessage || "Unable to update leave status.", "error");
 
         } finally {
             setApprovalSubmitting(false);
@@ -807,6 +836,8 @@ approvedByEmployeeCode: currentEmployeeCode,
 
         const matchesEmployee =
             searchValue === "" ||
+            [leave.employeeName, leave.EmployeeName, leave.name, leave.Name, leave.email, leave.Email]
+                .some((value) => String(value || "").toLowerCase().includes(searchValue.toLowerCase())) ||
             leave.employeeId
                 ?.toString()
                 .includes(searchValue) ||
@@ -814,9 +845,18 @@ approvedByEmployeeCode: currentEmployeeCode,
                 ?.toString()
                 .includes(searchValue);
 
+        const rangeStart = searchParams.get("fromDate");
+        const rangeEnd = searchParams.get("toDate");
+        const leaveStart = new Date(leave.fromDate);
+        const leaveEnd = new Date(leave.toDate || leave.fromDate);
+        const matchesDateRange =
+            (!rangeStart || leaveEnd >= new Date(`${rangeStart}T00:00:00`)) &&
+            (!rangeEnd || leaveStart <= new Date(`${rangeEnd}T23:59:59`));
+
         return (
             matchesStatus &&
-            matchesEmployee
+            matchesEmployee &&
+            matchesDateRange
         );
     });
 
@@ -826,215 +866,166 @@ approvedByEmployeeCode: currentEmployeeCode,
 
     if (!canView) {
         return (
-            <div
+            <MuiLayoutBox
                 className="leave-requests-page"
                 style={{ padding: "60px", textAlign: "center" }}
-            >
-                <h2>Access Denied</h2>
-                <p>You do not have permission to access this page.</p>
-            </div>
+             component="div">
+                <MuiText component="h2" variant="h5">Access Denied</MuiText>
+                <MuiText component="p" variant="body1">You do not have permission to access this page.</MuiText>
+            </MuiLayoutBox>
         );
     }
 
     return (
-        <div className="leave-requests-page">
+        <MuiLayoutBox className="leave-requests-page" component="div">
 
             {/* ==================================================
                 HEADER CARD
             ================================================== */}
 
-            <div className="leave-requests-header">
+            <MuiLayoutBox className="leave-requests-header" component="div">
 
-                <div>
-                    <h1>
-                        Leave Requests
-                    </h1>
-
-                    <p>
-                        Review and manage employee leave requests.
-                    </p>
-
-                    <p className="leave-current-user">
-                        Logged in as: <strong>{profileLoading ? "Loading..." : currentEmployeeName}</strong>
-                        {" "}({currentEmployeeId ?? "ID unavailable"})
-                    </p>
-                </div>
+                <MuiLayoutBox className="leave-requests-title-group" component="div">
+                    <Tooltip title="Back">
+                        <IconButton className="leave-back-button" aria-label="Go back" onClick={() => navigate(-1)}>
+                            <ArrowBackRounded />
+                        </IconButton>
+                    </Tooltip>
+                    <MuiLayoutBox component="div">
+                        <MuiText component="h1" variant="h4">Leave Requests</MuiText>
+                        <MuiText component="p" variant="body1">Review and manage employee leave requests.</MuiText>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
                 {/* Header Actions */}
 
-                <div className="leave-request-header-actions">
+                <MuiLayoutBox className="leave-request-header-actions" component="div">
 
-                    {/* Previous */}
-
-                    <button
-                        type="button"
-                        className="leave-request-action-btn"
-                        onClick={() =>
-                            window.history.back()
-                        }
-                    >
-                        ← Previous
-                    </button>
-
-                    {/* Refresh */}
-
-                    <button
-                        type="button"
-                        className="leave-request-action-btn"
-                        onClick={() => {
+                    <Button className="leave-request-refresh-btn" variant="outlined" startIcon={<RefreshRounded />} onClick={() => {
                             loadLeaves();
                             loadLeaveTypes();
                             loadShifts();
-                        }}
-                    >
-                        ↻ Refresh
-                    </button>
+                        }}>Refresh</Button>
+                    {canExport && <Button className="leave-request-refresh-btn" variant="outlined" startIcon={<FileDownloadOutlined />} onClick={exportRequests} disabled={filteredLeaves.length === 0}>Export Excel</Button>}
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* ==================================================
                 SEARCH + STATUS FILTER CARD
             ================================================== */}
 
-            <div className="leave-filter-toolbar">
+            <MuiLayoutBox className="leave-filter-toolbar" component="div">
 
                 {/* Employee ID Search */}
 
-                <div className="employee-search-box">
-
-                    <input
-                        type="text"
-                        value={employeeSearch}
-                        onChange={(e) =>
-                            setEmployeeSearch(
-                                e.target.value
-                            )
-                        }
-                        placeholder="Search by Employee ID"
-                    />
-
-                    {employeeSearch && (
-                        <button
-                            type="button"
-                            className="clear-search-btn"
-                            onClick={() =>
-                                setEmployeeSearch("")
-                            }
-                        >
-                            ×
-                        </button>
-                    )}
-
-                </div>
+                <TextField
+                    className="leave-search-field"
+                    size="small"
+                    value={employeeSearch}
+                    onChange={(e) => setEmployeeSearch(e.target.value)}
+                    placeholder="Search by employee name, email or ID"
+                    aria-label="Search leave requests"
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start"><SearchRounded /></InputAdornment>,
+                        endAdornment: employeeSearch ? <InputAdornment position="end"><IconButton size="small" aria-label="Clear search" onClick={() => setEmployeeSearch("")}><CloseRounded fontSize="small" /></IconButton></InputAdornment> : null,
+                    }}
+                />
 
 
                 {/* ==================================================
                     STATUS DROPDOWN
                 ================================================== */}
 
-                <div className="leave-status-dropdown">
+                <TextField className="leave-status-field" select size="small" label="Status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                    {statusOptions.map((status) => <MenuItem key={status} value={status}>{status}</MenuItem>)}
+                </TextField>
 
-                    <select
-                        className="leave-status-select"
-                        value={statusFilter}
-                        onChange={(e) =>
-                            setStatusFilter(
-                                e.target.value
-                            )
-                        }
-                    >
+                {(searchParams.get("fromDate") || searchParams.get("toDate")) && (
+                    <Chip
+                        className="leave-date-filter-chip"
+                        label={`${searchParams.get("fromDate") || "Any date"} – ${searchParams.get("toDate") || "Any date"}`}
+                        onDelete={() => {
+                            const next = new URLSearchParams(searchParams);
+                            next.delete("fromDate");
+                            next.delete("toDate");
+                            setSearchParams(next);
+                        }}
+                    />
+                )}
 
-                        {statusOptions.map(
-                            (status) => (
-                                <option
-                                    key={status}
-                                    value={status}
-                                >
-                                    {status}
-                                </option>
-                            )
-                        )}
-
-                    </select>
-
-                </div>
-
-            </div>
+            </MuiLayoutBox>
 
 
             {/* ==================================================
                 TABLE
             ================================================== */}
 
-            <div className="leave-requests-table-card">
+            <MuiLayoutBox className="leave-requests-table-card" component="div">
 
-                <table className="leave-requests-table">
+                <MuiLayoutBox className="leave-table-toolbar" component="div">
+                    <MuiText component="h2" variant="subtitle1">All Requests</MuiText>
+                    <Chip size="small" label={`${filteredLeaves.length} ${filteredLeaves.length === 1 ? "request" : "requests"}`} />
+                </MuiLayoutBox>
 
-                    <thead>
+                <MuiTableMigration className="leave-requests-table">
 
-                        <tr>
+                    <MuiTableHeadMigration>
 
-                            <th>
-                                Employee
-                            </th>
+                        <MuiTableRowMigration>
 
-                            <th>
+                            <MuiTableCellMigration>Azure Employee ID</MuiTableCellMigration>
+
+                            <MuiTableCellMigration>
                                 Leave Type
-                            </th>
+                            </MuiTableCellMigration>
 
-                            <th>
-                                From Date
-                            </th>
+                            <MuiTableCellMigration>Leave Period</MuiTableCellMigration>
 
-                            <th>
-                                To Date
-                            </th>
-
-                            <th>
+                            <MuiTableCellMigration>
                                 Days
-                            </th>
+                            </MuiTableCellMigration>
 
-                            <th>
+                            <MuiTableCellMigration>
                                 Reason
-                            </th>
+                            </MuiTableCellMigration>
 
-                            <th>
+                            <MuiTableCellMigration>
                                 Status
-                            </th>
+                            </MuiTableCellMigration>
 
-                            <th>
+                            <MuiTableCellMigration>
                                 Actions
-                            </th>
+                            </MuiTableCellMigration>
 
-                        </tr>
+                        </MuiTableRowMigration>
 
-                    </thead>
+                    </MuiTableHeadMigration>
 
 
-                    <tbody>
+                    <MuiTableBodyMigration>
 
                         {filteredLeaves.length === 0 ? (
 
-                            <tr>
+                            <MuiTableRowMigration>
 
-                                <td
-                                    colSpan="8"
+                                <MuiTableCellMigration
+                                    colSpan="7"
                                     className="no-leave-requests"
                                 >
                                     No leave requests found.
-                                </td>
+                                </MuiTableCellMigration>
 
-                            </tr>
+                            </MuiTableRowMigration>
 
                         ) : (
 
                             filteredLeaves.map(
                                 (leave) => (
 
-                                    <tr
+                                    <MuiTableRowMigration
                                         key={
                                             leave.leaveId
                                         }
@@ -1042,61 +1033,47 @@ approvedByEmployeeCode: currentEmployeeCode,
 
                                         {/* Employee */}
 
-                                        <td>
+                                        <MuiTableCellMigration>
 
-                                            <div className="employee-id-cell">
+                                            <MuiLayoutBox className="employee-id-cell" component="div">
 
-                                                <span>
+                                                <MuiText component="span" variant="inherit">
                                                     {
-                                                        leave.azureEmployeeId
+                                                        leave.azureEmployeeId ?? leave.AzureEmployeeId ?? leave.azureEmployeeID ?? "—"
                                                     }
-                                                </span>
+                                                </MuiText>
 
-                                            </div>
+                                            </MuiLayoutBox>
 
-                                        </td>
+                                        </MuiTableCellMigration>
 
 
                                         {/* Leave Type */}
 
-                                        <td>
+                                        <MuiTableCellMigration>
 
-                                            <strong>
+                                            <MuiText component="strong" variant="inherit">
                                                 {
                                                     getLeaveTypeName(
                                                         leave.leaveTypeId
                                                     )
                                                 }
-                                            </strong>
+                                            </MuiText>
 
-                                        </td>
-
-
-                                        {/* From Date */}
-
-                                        <td>
-                                            {
-                                                formatDate(
-                                                    leave.fromDate
-                                                )
-                                            }
-                                        </td>
+                                        </MuiTableCellMigration>
 
 
-                                        {/* To Date */}
-
-                                        <td>
-                                            {
-                                                formatDate(
-                                                    leave.toDate
-                                                )
-                                            }
-                                        </td>
+                                        {/* Leave Period */}
+                                        <MuiTableCellMigration>
+                                            <MuiText className="leave-period-cell" component="span" variant="inherit">
+                                                {formatDate(leave.fromDate)} <span aria-hidden="true">–</span> {formatDate(leave.toDate)}
+                                            </MuiText>
+                                        </MuiTableCellMigration>
 
 
                                         {/* Days */}
 
-                                        <td>
+                                        <MuiTableCellMigration>
 
                                             {
                                                 calculateDays(
@@ -1106,55 +1083,43 @@ approvedByEmployeeCode: currentEmployeeCode,
                                                 )
                                             }
 
-                                        </td>
+                                        </MuiTableCellMigration>
 
 
                                         {/* Reason */}
 
-                                        <td>
+                                        <MuiTableCellMigration>
 
-                                            {
-                                                leave.reason ||
-                                                "-"
-                                            }
+                                            <MuiText className="leave-reason-cell" component="span" variant="inherit" title={leave.reason || "No reason provided"}>
+                                                {leave.reason || "—"}
+                                            </MuiText>
 
-                                        </td>
+                                        </MuiTableCellMigration>
 
 
                                         {/* Status */}
 
-                                        <td>
+                                        <MuiTableCellMigration>
 
-                                            <span
-                                                className={`request-status ${leave.status?.toLowerCase()}`}
-                                            >
-                                                {
-                                                    leave.status
-                                                }
-                                            </span>
+                                            <Chip
+                                                size="small"
+                                                className={`request-status ${String(leave.status || "").toLowerCase()}`}
+                                                label={leave.status || "Unknown"}
+                                                color={String(leave.status || "").toLowerCase() === "approved" ? "success" : String(leave.status || "").toLowerCase() === "rejected" ? "error" : "warning"}
+                                            />
 
-                                        </td>
+                                        </MuiTableCellMigration>
 
 
                                         {/* Actions */}
 
-                                        <td>
+                                        <MuiTableCellMigration>
 
-                                            <div className="leave-action-buttons">
+                                            <MuiLayoutBox className="leave-action-buttons" component="div">
 
                                                 {/* View */}
 
-                                                <button
-                                                    type="button"
-                                                    className="view-details-btn"
-                                                    onClick={() =>
-                                                        setViewLeave(
-                                                            leave
-                                                        )
-                                                    }
-                                                >
-                                                    View
-                                                </button>
+                                                <Button size="small" variant="outlined" startIcon={<VisibilityOutlined />} className="view-details-btn" onClick={() => setViewLeave(leave)}>View</Button>
 
 
                                                 {/* Approve / Reject */}
@@ -1163,298 +1128,96 @@ approvedByEmployeeCode: currentEmployeeCode,
                                                     leave.status ===
                                                         "Pending" && (
                                                         <>
-                                                            <button
-                                                                type="button"
-                                                                className="approve-btn"
-                                                                onClick={() =>
-                                                                    openStatusPopup(
-                                                                        leave,
-                                                                        "Approved"
-                                                                    )
-                                                                }
-                                                            >
-                                                                Approve
-                                                            </button>
-
-                                                            <button
-                                                                type="button"
-                                                                className="reject-btn"
-                                                                onClick={() =>
-                                                                    openStatusPopup(
-                                                                        leave,
-                                                                        "Rejected"
-                                                                    )
-                                                                }
-                                                            >
-                                                                Reject
-                                                            </button>
+                                                            <Button size="small" variant="contained" disableElevation startIcon={<CheckRounded />} className="approve-btn" onClick={() => openStatusPopup(leave, "Approved")}>Approve</Button>
+                                                            <Button size="small" variant="contained" disableElevation startIcon={<CloseRounded />} className="reject-btn" onClick={() => openStatusPopup(leave, "Rejected")}>Reject</Button>
                                                         </>
                                                     )}
 
-                                            </div>
+                                            </MuiLayoutBox>
 
-                                        </td>
+                                        </MuiTableCellMigration>
 
-                                    </tr>
+                                    </MuiTableRowMigration>
 
                                 )
                             )
 
                         )}
 
-                    </tbody>
+                    </MuiTableBodyMigration>
 
-                </table>
+                </MuiTableMigration>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* ==================================================
                 APPROVE / REJECT POPUP
             ================================================== */}
 
-            {selectedLeave && selectedStatus === "Rejected" && (
-
-                <div className="leave-modal-overlay">
-
-                    <div className="leave-status-modal">
-
-                        {/* Modal Header */}
-
-                        <div className="leave-modal-header">
-
-                            <h2>
-
-                                {
-                                    selectedStatus ===
-                                    "Approved"
-                                        ? "Approve Leave"
-                                        : "Reject Leave"
-                                }
-
-                            </h2>
-
-
-                            <button
-                                type="button"
-                                className="leave-modal-close"
-                                onClick={() => {
-
-                                    setSelectedLeave(
-                                        null
-                                    );
-
-                                    setSelectedStatus(
-                                        ""
-                                    );
-
-                                    setManagerComment(
-                                        ""
-                                    );
-
-                                }}
-                            >
-                                ×
-                            </button>
-
-                        </div>
-
-
-                        {/* Modal Body */}
-
-                        <div className="leave-modal-body">
-
-                            <div className="leave-review-info">
-
-                                <p>
-
-                                    <strong>
-                                        Employee ID:
-                                    </strong>{" "}
-
-                                    {
-                                        selectedLeave.employeeId
-                                    }
-
-                                </p>
-
-
-                                <p>
-
-                                    <strong>
-                                        Azure Employee ID:
-                                    </strong>{" "}
-
-                                    {
-                                        selectedLeave.azureEmployeeId
-                                    }
-
-                                </p>
-
-
-                                <p>
-
-                                    <strong>
-                                        Leave Type:
-                                    </strong>{" "}
-
-                                    {
-                                        getLeaveTypeName(
-                                            selectedLeave.leaveTypeId
-                                        )
-                                    }
-
-                                </p>
-
-
-                                <p>
-
-                                    <strong>
-                                        From:
-                                    </strong>{" "}
-
-                                    {
-                                        formatDate(
-                                            selectedLeave.fromDate
-                                        )
-                                    }
-
-                                </p>
-
-
-                                <p>
-
-                                    <strong>
-                                        To:
-                                    </strong>{" "}
-
-                                    {
-                                        formatDate(
-                                            selectedLeave.toDate
-                                        )
-                                    }
-
-                                </p>
-
-                            </div>
-
-
-                            {/* Logged-in Approver / Rejector */}
-
-                            <div className="leave-review-info">
-                                <p>
-                                    <strong>
-                                        {selectedStatus === "Approved"
-                                            ? "Approved By:"
-                                            : "Rejected By:"}
-                                    </strong>{" "}
-                                    {profileLoading
-                                        ? "Loading employee..."
-                                        : currentEmployeeName}
-                                </p>
-
-                                <p>
-                                    <strong>Employee ID:</strong>{" "}
-                                    {currentEmployeeId ?? "-"}
-                                </p>
-
-                                {currentEmployeeCode && (
-                                    <p>
-                                        <strong>Employee Code:</strong>{" "}
-                                        {currentEmployeeCode}
-                                    </p>
-                                )}
-                            </div>
-
-
-                            {/* Manager Comment */}
-
-                            <div className="manager-comment-group">
-
-                                <label>
-                                    Manager Comment
-                                </label>
-
-                                <textarea
-                                    value={
-                                        managerComment
-                                    }
-                                    onChange={(e) =>
-                                        setManagerComment(
-                                            e.target.value
-                                        )
-                                    }
-                                    placeholder={
-                                        selectedStatus ===
-                                        "Approved"
-                                            ? "Enter approval comment"
-                                            : "Enter reason for rejection"
-                                    }
-                                />
-
-                            </div>
-
-                        </div>
-
-
-                        {/* Modal Actions */}
-
-                        <div className="leave-modal-actions">
-
-                            <button
-                                type="button"
-                                className="modal-cancel-btn"
-                                onClick={() => {
-
-                                    setSelectedLeave(
-                                        null
-                                    );
-
-                                    setSelectedStatus(
-                                        ""
-                                    );
-
-                                    setManagerComment(
-                                        ""
-                                    );
-
-                                }}
-                            >
-                                Cancel
-                            </button>
-
-
-                            {canApprove && (
-                                <button
-                                    type="button"
-                                    className={
-                                        selectedStatus ===
-                                        "Approved"
-                                            ? "modal-approve-btn"
-                                            : "modal-reject-btn"
-                                    }
-                                    onClick={
-                                        updateStatus
-                                    }
-                                >
-
-                                    {
-                                        selectedStatus ===
-                                        "Approved"
-                                            ? "Confirm Approval"
-                                            : "Confirm Rejection"
-                                    }
-
-                                </button>
-                            )}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            )}
+            <Dialog
+                open={Boolean(selectedLeave && selectedStatus === "Rejected")}
+                onClose={closeRejectDialog}
+                fullWidth
+                maxWidth="sm"
+                className="leave-reject-dialog"
+            >
+                <DialogTitle sx={{ p: 0 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, px: { xs: 2, sm: 3 }, py: 2.5, background: "linear-gradient(110deg, #fff1f1 0%, #fff8f7 100%)", borderBottom: "1px solid #f1dddd" }}>
+                        <Box sx={{ width: 52, height: 52, flex: "0 0 52px", display: "grid", placeItems: "center", borderRadius: "14px", bgcolor: "#d64545", color: "#fff" }}>
+                            <BlockRounded />
+                        </Box>
+                        <Box>
+                            <Typography sx={{ color: "#17345c", fontSize: { xs: 19, sm: 23 }, fontWeight: 750, lineHeight: 1.2 }}>Reject Leave Request</Typography>
+                            <Typography sx={{ mt: 0.5, color: "#71839d", fontSize: 13 }}>Review the request and provide a reason for rejection.</Typography>
+                        </Box>
+                    </Box>
+                </DialogTitle>
+
+                <DialogContent sx={{ px: { xs: 2, sm: 3 }, pt: { xs: 3, sm: 3.5 }, pb: 2.5 }}>
+                    {selectedLeave && (
+                        <>
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr 1fr", sm: "repeat(2, minmax(0, 1fr))" }, gap: 1.25, mt: { xs: 1.5, sm: 2 }, mb: 2 }}>
+                                {[
+                                    ["Azure Employee ID", selectedLeave.azureEmployeeId ?? selectedLeave.AzureEmployeeId ?? selectedLeave.azureEmployeeID ?? "—"],
+                                    ["Leave Type", getLeaveTypeName(selectedLeave.leaveTypeId) || "—"],
+                                    ["From Date", formatDate(selectedLeave.fromDate)],
+                                    ["To Date", formatDate(selectedLeave.toDate)],
+                                ].map(([label, value]) => (
+                                    <Box key={label} sx={{ minWidth: 0, minHeight: 68, display: "flex", flexDirection: "column", justifyContent: "center", gap: 0.5, px: 1.75, py: 1.25, border: "1px solid #eadfe0", borderRadius: "11px", background: "linear-gradient(120deg, #fff7f7, #fffafa)" }}>
+                                        <Typography sx={{ color: "#8b7378", fontSize: 11, fontWeight: 650 }}>{label}</Typography>
+                                        <Typography sx={{ overflowWrap: "anywhere", color: "#11294d", fontSize: 14, fontWeight: 700 }}>{value}</Typography>
+                                    </Box>
+                                ))}
+                            </Box>
+
+                            <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.25, mb: 2, p: 1.5, border: "1px solid #f0dada", borderRadius: "10px", bgcolor: "#fff8f8" }}>
+                                <BlockRounded sx={{ mt: 0.1, color: "#c64a4a", fontSize: 19 }} />
+                                <Typography sx={{ color: "#79565a", fontSize: 12, lineHeight: 1.55 }}>Rejecting this request will notify the employee and record your decision.</Typography>
+                            </Box>
+
+                            <TextField
+                                fullWidth
+                                multiline
+                                minRows={3}
+                                label="Reason for rejection"
+                                required
+                                value={managerComment}
+                                onChange={(event) => setManagerComment(event.target.value)}
+                                placeholder="Explain why this leave request is being rejected"
+                                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "10px", bgcolor: "#fff" }, "& .MuiInputLabel-root": { color: "#687b95" } }}
+                            />
+                        </>
+                    )}
+                </DialogContent>
+
+                <DialogActions sx={{ px: { xs: 2, sm: 3 }, py: 2, borderTop: "1px solid #e8edf4", bgcolor: "#fbfcfe", gap: 1 }}>
+                    <Button variant="outlined" onClick={closeRejectDialog} disabled={approvalSubmitting} sx={{ px: 2, borderColor: "#d6e0ed", borderRadius: "8px", color: "#526781", textTransform: "none" }}>Cancel</Button>
+                    <Button variant="contained" disableElevation color="error" onClick={updateStatus} disabled={approvalSubmitting || !managerComment.trim()} sx={{ px: 2.25, borderRadius: "8px", bgcolor: "#d64545", fontWeight: 700, textTransform: "none", "&:hover": { bgcolor: "#b93434" } }}>
+                        {approvalSubmitting ? "Rejecting..." : "Confirm Rejection"}
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
 
             {/* ==================================================
@@ -1465,65 +1228,85 @@ approvedByEmployeeCode: currentEmployeeCode,
                 open={openPartialApprovalDialog}
                 onClose={closePartialApprovalDialog}
                 fullWidth
-                maxWidth="sm"
+                maxWidth="md"
+                className="leave-approval-dialog"
             >
-                <DialogTitle sx={{ fontWeight: 700 }}>
-                    Approve Leave Request
+                <DialogTitle sx={{ p: 0 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, px: { xs: 2, sm: 3 }, py: 2.5, background: "linear-gradient(110deg, #eaf3ff 0%, #f5f9ff 100%)", borderBottom: "1px solid #e4ebf5" }}>
+                        <Box sx={{ width: 52, height: 52, flex: "0 0 52px", display: "grid", placeItems: "center", borderRadius: "14px", bgcolor: "#3478f6", color: "#fff" }}>
+                            <BeachAccessRounded />
+                        </Box>
+                        <Box>
+                            <Typography sx={{ color: "#17345c", fontSize: { xs: 19, sm: 23 }, fontWeight: 750, lineHeight: 1.2 }}>Approve Leave Request</Typography>
+                            <Typography sx={{ mt: 0.5, color: "#71839d", fontSize: 13 }}>Select the leave days to approve and add a manager comment.</Typography>
+                        </Box>
+                    </Box>
                 </DialogTitle>
 
-                <DialogContent dividers>
+                <DialogContent sx={{ px: { xs: 2, sm: 3 }, pt: { xs: 4, sm: 5 }, pb: 2.5 }}>
                     {selectedLeave && (
                         <>
-                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 1.5, mb: 2 }}>
-                                <Box><Typography variant="caption" color="text.secondary">Employee ID</Typography><Typography fontWeight={600}>{selectedLeave.employeeId}</Typography></Box>
-                                <Box><Typography variant="caption" color="text.secondary">Leave Type</Typography><Typography fontWeight={600}>{getLeaveTypeName(selectedLeave.leaveTypeId)}</Typography></Box>
-                                <Box><Typography variant="caption" color="text.secondary">From</Typography><Typography fontWeight={600}>{formatDate(selectedLeave.fromDate)}</Typography></Box>
-                                <Box><Typography variant="caption" color="text.secondary">To</Typography><Typography fontWeight={600}>{formatDate(selectedLeave.toDate)}</Typography></Box>
+                            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr 1fr", sm: "repeat(2, minmax(0, 1fr))" }, gap: 1.25, mt: { xs: 2, sm: 2.5 }, mb: 2 }}>
+                                {[
+                                    ["Azure Employee ID", selectedLeave.azureEmployeeId ?? selectedLeave.AzureEmployeeId ?? selectedLeave.azureEmployeeID ?? "—"],
+                                    ["Leave Type", getLeaveTypeName(selectedLeave.leaveTypeId) || "—"],
+                                    ["From Date", formatDate(selectedLeave.fromDate)],
+                                    ["To Date", formatDate(selectedLeave.toDate)],
+                                ].map(([label, value]) => (
+                                    <Box key={label} sx={{ minWidth: 0, minHeight: 68, display: "flex", flexDirection: "column", justifyContent: "center", gap: 0.5, px: 1.75, py: 1.25, border: "1px solid #dce7f5", borderRadius: "11px", background: "linear-gradient(120deg, #f3f7fc, #f8fbff)" }}>
+                                        <Typography sx={{ color: "#6880a3", fontSize: 11, fontWeight: 650 }}>{label}</Typography>
+                                        <Typography sx={{ overflowWrap: "anywhere", color: "#11294d", fontSize: 14, fontWeight: 700 }}>{value}</Typography>
+                                    </Box>
+                                ))}
                             </Box>
 
-                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
-                                <Chip size="small" label={`Requested: ${approvalDateInfo.filter(x => !x.weekOff).length} day(s)`} />
-                                <Chip size="small" color="success" variant="outlined" label={`Approved: ${approvalDates.length} day(s)`} />
-                                <Chip size="small" color="warning" variant="outlined" label={`Week Off: ${approvalDateInfo.filter(x => x.weekOff).length}`} />
-                                <Chip size="small" color="error" variant="outlined" label={`Rejected: ${approvalDateInfo.filter(x => !x.weekOff).length - approvalDates.length}`} />
+                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2.25 }}>
+                                <Chip size="small" label={`Working days: ${approvalDateInfo.filter(x => !x.weekOff).length}`} sx={{ bgcolor: "#f1f5fa", color: "#526781", fontWeight: 650 }} />
+                                <Chip size="small" label={`Selected: ${approvalDates.length}`} sx={{ bgcolor: "#e5f6eb", color: "#16804b", fontWeight: 650 }} />
+                                <Chip size="small" label={`Week off: ${approvalDateInfo.filter(x => x.weekOff).length}`} sx={{ bgcolor: "#eef4ff", color: "#42699f", fontWeight: 650 }} />
+                                <Chip size="small" label={`Not approved: ${approvalDateInfo.filter(x => !x.weekOff).length - approvalDates.length}`} sx={{ bgcolor: "#fff3e5", color: "#a75a13", fontWeight: 650 }} />
                             </Box>
 
-                            <Divider sx={{ mb: 1.5 }} />
-                            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>Select days to approve</Typography>
-
-                            <Box sx={{ display: "flex", gap: 1, mb: 1.5 }}>
-                                <Button size="small" variant="outlined" onClick={selectAllWorkingDates}>Select All Working Days</Button>
-                                <Button size="small" variant="text" onClick={clearAllWorkingDates}>Clear</Button>
+                            <Divider sx={{ mb: 2, borderColor: "#e8edf4" }} />
+                            <Box sx={{ display: "flex", alignItems: { xs: "flex-start", sm: "center" }, justifyContent: "space-between", gap: 1, mb: 1.25, flexDirection: { xs: "column", sm: "row" } }}>
+                                <Box>
+                                    <Typography sx={{ color: "#1e3557", fontSize: 14, fontWeight: 700 }}>Select days to approve</Typography>
+                                    <Typography sx={{ mt: 0.25, color: "#7889a0", fontSize: 11 }}>Week-off days are excluded automatically.</Typography>
+                                </Box>
+                                <Box sx={{ display: "flex", gap: 0.5 }}>
+                                    <Button size="small" onClick={selectAllWorkingDates} sx={{ textTransform: "none", fontWeight: 650 }}>Select all</Button>
+                                    <Button size="small" onClick={clearAllWorkingDates} sx={{ textTransform: "none", color: "#687b95" }}>Clear</Button>
+                                </Box>
                             </Box>
 
-                            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", alignItems: "stretch", gap: 1, maxHeight: 260, overflowY: "auto", p: 0.25 }}>
                                 {approvalDateInfo.map(item => (
-                                    <Box key={item.dateKey} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", border: "1px solid #e5e7eb", borderRadius: "8px", px: 1, py: 0.4 }}>
+                                    <Box key={item.dateKey} sx={{ minHeight: 46, display: "flex", alignItems: "center", justifyContent: "space-between", border: item.weekOff ? "1px solid #dce7f5" : approvalDates.includes(item.dateKey) ? "1px solid #a9c5f4" : "1px solid #e5ebf3", borderRadius: "9px", px: 1.25, py: 0.4, bgcolor: item.weekOff ? "#f7f9fc" : approvalDates.includes(item.dateKey) ? "#f1f6ff" : "#fff", transition: "all .15s ease" }}>
                                         {item.weekOff ? (
                                             <>
-                                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: "#16803c" }}>{formatDateKey(item.dateKey)}</Typography>
-                                                <Chip size="small" color="success" label="Week Off" />
+                                                <Typography sx={{ fontSize: 12, fontWeight: 650, color: "#65768d" }}>{formatDateKey(item.dateKey)}</Typography>
+                                                <Chip size="small" label="Week off" sx={{ height: 22, bgcolor: "#edf2f7", color: "#687b92", fontSize: 10, fontWeight: 650 }} />
                                             </>
                                         ) : (
                                             <FormControlLabel
-                                                sx={{ m: 0, width: "100%" }}
-                                                control={<Checkbox checked={approvalDates.includes(item.dateKey)} onChange={() => toggleApprovalDate(item.dateKey)} />}
-                                                label={<Typography sx={{ fontSize: 14, fontWeight: 600 }}>{formatDateKey(item.dateKey)}</Typography>}
+                                                sx={{ m: 0, width: "100%", ".MuiFormControlLabel-label": { flex: 1 } }}
+                                                control={<Checkbox size="small" checked={approvalDates.includes(item.dateKey)} onChange={() => toggleApprovalDate(item.dateKey)} sx={{ color: "#a8b6c9", "&.Mui-checked": { color: "#3478f6" } }} />}
+                                                label={<Typography sx={{ color: "#304866", fontSize: 12, fontWeight: 650 }}>{formatDateKey(item.dateKey)}</Typography>}
                                             />
                                         )}
                                     </Box>
                                 ))}
                             </Box>
 
-                            <TextField fullWidth multiline minRows={3} label="Manager Comment" value={managerComment} onChange={e => setManagerComment(e.target.value)} placeholder="Enter approval comment" sx={{ mt: 2 }} />
+                            <TextField fullWidth multiline minRows={3} label="Manager Comment" required value={managerComment} onChange={e => setManagerComment(e.target.value)} placeholder="Add a note for the employee" sx={{ mt: 2, "& .MuiOutlinedInput-root": { borderRadius: "10px", bgcolor: "#fff" }, "& .MuiInputLabel-root": { color: "#687b95" } }} />
                         </>
                     )}
                 </DialogContent>
 
-                <DialogActions sx={{ px: 3, py: 2 }}>
-                    <Button onClick={closePartialApprovalDialog} disabled={approvalSubmitting}>Cancel</Button>
-                    <Button variant="contained" color="success" onClick={updateStatus} disabled={approvalSubmitting || approvalDates.length === 0}>
-                        {approvalSubmitting ? "Approving..." : "Approve Selected Days"}
+                <DialogActions sx={{ px: { xs: 2, sm: 3 }, py: 2, borderTop: "1px solid #e8edf4", bgcolor: "#fbfcfe", gap: 1 }}>
+                    <Button variant="outlined" onClick={closePartialApprovalDialog} disabled={approvalSubmitting} sx={{ px: 2, borderColor: "#d6e0ed", borderRadius: "8px", color: "#526781", textTransform: "none" }}>Cancel</Button>
+                    <Button variant="contained" disableElevation onClick={updateStatus} disabled={approvalSubmitting || approvalDates.length === 0} sx={{ px: 2.25, borderRadius: "8px", bgcolor: "#16804b", fontWeight: 700, textTransform: "none", "&:hover": { bgcolor: "#116b3e" } }}>
+                        {approvalSubmitting ? "Approving..." : `Approve ${approvalDates.length} day${approvalDates.length === 1 ? "" : "s"}`}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -1533,225 +1316,106 @@ approvedByEmployeeCode: currentEmployeeCode,
             ================================================== */}
 
             {viewLeave && (
-
-                <div className="leave-modal-overlay">
-
-                    <div className="leave-status-modal">
+                <Dialog open onClose={closeViewLeave} fullWidth maxWidth="md" className="leave-details-dialog">
+                    <MuiLayoutBox className="leave-details-dialog-paper" component="div">
 
                         {/* Header */}
 
-                        <div className="leave-modal-header">
+                        <MuiLayoutBox className="leave-modal-header" component="div">
+                            <MuiLayoutBox className="leave-details-title" component="div">
+                                <MuiLayoutBox className="leave-details-title-icon" component="span"><BeachAccessRounded /></MuiLayoutBox>
+                                <MuiLayoutBox component="div">
+                                    <MuiText component="h2" variant="h5">Leave Request Details</MuiText>
+                                    <MuiText component="p" variant="body2">Review the employee’s leave information</MuiText>
+                                </MuiLayoutBox>
+                            </MuiLayoutBox>
 
-                            <h2>
-                                Leave Request Details
-                            </h2>
-
-
-                            <button
-                                type="button"
-                                className="leave-modal-close"
-                                onClick={closeViewLeave}
-                            >
-                                ×
-                            </button>
-
-                        </div>
+                        </MuiLayoutBox>
 
 
                         {/* Body */}
 
-                        <div className="leave-modal-body">
+                        <MuiLayoutBox className="leave-modal-body" component="div">
 
-                            <div className="leave-details-grid">
-
-                                <div className="leave-detail-item">
-
-                                    <span>
-                                        Employee ID
-                                    </span>
-
-                                    <strong>
-                                        {
-                                            viewLeave.employeeId
-                                        }
-                                    </strong>
-
-                                </div>
-
-
-                                <div className="leave-detail-item">
-
-                                    <span>
-                                        Azure Employee ID
-                                    </span>
-
-                                    <strong>
-                                        {
-                                            viewLeave.azureEmployeeId
-                                        }
-                                    </strong>
-
-                                </div>
+                            <MuiLayoutBox className="leave-details-grid" component="div">
+                                <MuiLayoutBox className="leave-detail-item" component="div">
+                                        <MuiText component="span" variant="inherit">Azure Employee ID</MuiText>
+                                        <MuiText component="strong" variant="inherit">{viewLeave.azureEmployeeId ?? viewLeave.AzureEmployeeId ?? viewLeave.azureEmployeeID ?? "—"}</MuiText>
+                                </MuiLayoutBox>
+                                <MuiLayoutBox className="leave-detail-item" component="div">
+                                        <MuiText component="span" variant="inherit">Leave Type</MuiText>
+                                        <MuiText component="strong" variant="inherit">{getLeaveTypeName(viewLeave.leaveTypeId) || "—"}</MuiText>
+                                </MuiLayoutBox>
+                                <MuiLayoutBox className="leave-detail-item" component="div">
+                                        <MuiText component="span" variant="inherit">From Date</MuiText>
+                                        <MuiText component="strong" variant="inherit">{formatDate(viewLeave.fromDate)}</MuiText>
+                                </MuiLayoutBox>
+                                <MuiLayoutBox className="leave-detail-item" component="div">
+                                        <MuiText component="span" variant="inherit">To Date</MuiText>
+                                        <MuiText component="strong" variant="inherit">{formatDate(viewLeave.toDate)}</MuiText>
+                                </MuiLayoutBox>
+                                <MuiLayoutBox className="leave-detail-item" component="div">
+                                        <MuiText component="span" variant="inherit">Number of Days</MuiText>
+                                        <MuiText component="strong" variant="inherit">{calculateDays(viewLeave.fromDate, viewLeave.toDate, viewLeave.employeeId)} {calculateDays(viewLeave.fromDate, viewLeave.toDate, viewLeave.employeeId) === 1 ? "day" : "days"}</MuiText>
+                                </MuiLayoutBox>
+                                <MuiLayoutBox className="leave-detail-item" component="div">
+                                        <MuiText component="span" variant="inherit">Status</MuiText>
+                                        <MuiText component="strong" variant="inherit">{viewLeave.status || "Unknown"}</MuiText>
+                                </MuiLayoutBox>
+                            </MuiLayoutBox>
 
 
-                                <div className="leave-detail-item">
-
-                                    <span>
-                                        Leave Type
-                                    </span>
-
-                                    <strong>
-
-                                        {
-                                            getLeaveTypeName(
-                                                viewLeave.leaveTypeId
-                                            )
-                                        }
-
-                                    </strong>
-
-                                </div>
-
-
-                                <div className="leave-detail-item">
-
-                                    <span>
-                                        From Date
-                                    </span>
-
-                                    <strong>
-
-                                        {
-                                            formatDate(
-                                                viewLeave.fromDate
-                                            )
-                                        }
-
-                                    </strong>
-
-                                </div>
-
-
-                                <div className="leave-detail-item">
-
-                                    <span>
-                                        To Date
-                                    </span>
-
-                                    <strong>
-
-                                        {
-                                            formatDate(
-                                                viewLeave.toDate
-                                            )
-                                        }
-
-                                    </strong>
-
-                                </div>
-
-
-                                <div className="leave-detail-item">
-
-                                    <span>
-                                        Number of Days
-                                    </span>
-
-                                    <strong>
-
-                                        {
-                                            calculateDays(
-                                                viewLeave.fromDate,
-                                                viewLeave.toDate,
-                                                viewLeave.employeeId
-                                            )
-                                        }
-
-                                    </strong>
-
-                                </div>
-
-
-                                <div className="leave-detail-item">
-
-                                    <span>
-                                        Status
-                                    </span>
-
-                                    <span
-                                        className={`request-status ${viewLeave.status?.toLowerCase()}`}
-                                    >
-                                        {
-                                            viewLeave.status
-                                        }
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
+                            <MuiLayoutBox className="leave-detail-notes-grid" component="div">
                             {/* Reason */}
 
-                            <div className="leave-detail-section">
+                            <MuiLayoutBox className="leave-detail-section" component="div">
+                                <MuiLayoutBox className="leave-note-heading" component="div">
+                                    <MuiText component="span" variant="inherit">Reason</MuiText>
+                                </MuiLayoutBox>
 
-                                <span>
-                                    Reason
-                                </span>
-
-                                <p>
+                                <MuiText component="p" variant="body1">
                                     {
                                         viewLeave.reason ||
                                         "-"
                                     }
-                                </p>
+                                </MuiText>
 
-                            </div>
+                            </MuiLayoutBox>
 
 
                             {/* Manager Comment */}
 
-                            <div className="leave-detail-section">
+                            <MuiLayoutBox className="leave-detail-section" component="div">
+                                <MuiLayoutBox className="leave-note-heading" component="div">
+                                    <MuiText component="span" variant="inherit">Manager Comment</MuiText>
+                                </MuiLayoutBox>
 
-                                <span>
-                                    Manager Comment
-                                </span>
-
-                                <p>
+                                <MuiText component="p" variant="body1">
                                     {
                                         viewLeave.managerComment ||
                                         "-"
                                     }
-                                </p>
+                                </MuiText>
 
-                            </div>
+                            </MuiLayoutBox>
+
+                            </MuiLayoutBox>
 
 {/* Supporting Document - show only when a document exists */}
-{(viewDocumentLoading || viewDocumentUrl) && (
-    <div
+{(viewDocumentLoading || viewDocumentUrl || viewDocumentError) && (
+    <MuiLayoutBox
         className="leave-detail-section"
-        style={{
-            marginTop: "16px",
-            paddingTop: "16px",
-            borderTop: "1px solid #e5e7eb"
-        }}
-    >
-        <span
-            style={{
-                display: "block",
-                fontWeight: 600,
-                marginBottom: "10px"
-            }}
-        >
-            Supporting Document
-        </span>
+     component="div">
+        <MuiLayoutBox className="leave-note-heading" component="div">
+            <MuiText component="span" variant="inherit">Supporting Document</MuiText>
+        </MuiLayoutBox>
 
         {viewDocumentLoading ? (
             <Typography
                 variant="body2"
                 color="text.secondary"
             >
-                Loading document...
+                {viewDocumentLoading ? "Loading document..." : viewDocumentError}
             </Typography>
         ) : viewDocumentUrl ? (
             <Button
@@ -1765,28 +1429,29 @@ approvedByEmployeeCode: currentEmployeeCode,
                     borderRadius: "8px",
                     fontWeight: 600
                 }}
+                startIcon={<AttachFileRounded />}
             >
-                View / Open Document
+                View Document
             </Button>
         ) : null}
-    </div>
+    </MuiLayoutBox>
 )}
 
 {/* Approval / Rejection Information */}
 
 {viewLeave.status !== "Pending" && (
 
-    <div className="leave-details-grid approval-details">
+    <MuiLayoutBox className="leave-details-grid approval-details" component="div">
 
-        <div className="leave-detail-item">
+        <MuiLayoutBox className="leave-detail-item" component="div">
 
-            <span>
+            <MuiText component="span" variant="inherit">
                 {viewLeave.status === "Rejected"
                     ? "Rejected By"
                     : "Approved By"}
-            </span>
+            </MuiText>
 
-            <strong>
+            <MuiText component="strong" variant="inherit">
                 {viewLeave.status === "Rejected"
                     ? (
                         viewLeave.rejectedByName ||
@@ -1806,20 +1471,20 @@ approvedByEmployeeCode: currentEmployeeCode,
                         viewLeave.ApprovedBy ||
                         "-"
                     )}
-            </strong>
+            </MuiText>
 
-        </div>
+        </MuiLayoutBox>
 
 
-        <div className="leave-detail-item">
+        <MuiLayoutBox className="leave-detail-item" component="div">
 
-            <span>
+            <MuiText component="span" variant="inherit">
                 {viewLeave.status === "Rejected"
                     ? "Rejected Date"
                     : "Approved Date"}
-            </span>
+            </MuiText>
 
-            <strong>
+            <MuiText component="strong" variant="inherit">
                 {viewLeave.status === "Rejected"
                     ? (
                         viewLeave.rejectedDate
@@ -1831,37 +1496,35 @@ approvedByEmployeeCode: currentEmployeeCode,
                             ? formatDate(viewLeave.approvedDate)
                             : "-"
                     )}
-            </strong>
+            </MuiText>
 
-        </div>
+        </MuiLayoutBox>
 
-    </div>
+    </MuiLayoutBox>
 
 )}
 
-                        </div>
+                        </MuiLayoutBox>
 
 
                         {/* Footer */}
 
-                        <div className="leave-modal-actions">
+                        <MuiLayoutBox className="leave-modal-actions" component="div">
 
-                            <button
-                                type="button"
-                                className="modal-cancel-btn"
-                                onClick={closeViewLeave}
-                            >
-                                Close
-                            </button>
+                            <Button variant="contained" disableElevation onClick={closeViewLeave}>Close</Button>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
-
-                </div>
-
+                    </MuiLayoutBox>
+                </Dialog>
             )}
 
-        </div>
+            <Snackbar open={feedback.open} autoHideDuration={4500} onClose={() => setFeedback((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
+                <Alert severity={feedback.severity} variant="filled" onClose={() => setFeedback((current) => ({ ...current, open: false }))} sx={{ width: "100%" }}>
+                    {feedback.message}
+                </Alert>
+            </Snackbar>
+
+        </MuiLayoutBox>
     );
 }

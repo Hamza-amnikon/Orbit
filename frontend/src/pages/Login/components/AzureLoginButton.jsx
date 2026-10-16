@@ -4,6 +4,7 @@ import { ArrowForward } from "@mui/icons-material";
 import logo from "../../../assets/logo/microsoft.png";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox } from "@mui/material";
 
 function AzureLoginButton() {
 
@@ -17,11 +18,11 @@ function AzureLoginButton() {
             onClick={login}
 
             startIcon={
-                <img
+                <MuiLayoutBox
                     src={logo}
                     alt="Microsoft"
                     className="azure-logo"
-                />
+                 component="img"/>
             }
 
             endIcon={

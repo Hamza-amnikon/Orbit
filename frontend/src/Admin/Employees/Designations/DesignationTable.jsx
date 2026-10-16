@@ -1,3 +1,4 @@
+import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import "./DesignationTable.css";
 
 import {
@@ -9,12 +10,16 @@ import {
   Edit,
   Delete,
 } from "@mui/icons-material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function DesignationTable({
   designations = [],
   editDesignation,
   deleteDesignation,
+  canEdit = true,
+  canDelete = true,
+  onNotify,
 }) {
 
 
@@ -159,9 +164,7 @@ function DesignationTable({
         designation
       );
 
-      alert(
-        "Unable to edit this designation because its ID is missing."
-      );
+      onNotify?.("Unable to edit this designation because its ID is missing.", "error");
 
       return;
 
@@ -203,9 +206,7 @@ function DesignationTable({
         designation
       );
 
-      alert(
-        "Unable to delete this designation because its ID is missing."
-      );
+      onNotify?.("Unable to delete this designation because its ID is missing.", "error");
 
       return;
 
@@ -233,84 +234,84 @@ function DesignationTable({
 
   return (
 
-    <div
+    <MuiLayoutBox
       className="employee-type-table-wrapper"
-    >
+     component="div">
 
       {/* =====================================================
           TABLE HEADER
       ===================================================== */}
 
-      <div
+      <MuiLayoutBox
         className="employee-type-table-header"
-      >
+       component="div">
 
-        <div>
+        <MuiLayoutBox component="div">
 
-          <h2>
+          <MuiText component="h2" variant="h5">
             Designation List
-          </h2>
+          </MuiText>
 
 
-          <p>
+          <MuiText component="p" variant="body1">
             {designations.length}{" "}
             {designations.length === 1
               ? "Designation"
               : "Designations"}{" "}
             Found
-          </p>
+          </MuiText>
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
 
       {/* =====================================================
           TABLE
       ===================================================== */}
 
-      <div
+      <MuiLayoutBox
         className="table-responsive"
-      >
+       component="div">
 
-        <table
+        <MuiTableMigration
           className="employee-type-table"
         >
 
-          <thead>
+          <MuiTableHeadMigration>
 
-            <tr>
+            <MuiTableRowMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 #
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Designation
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Description
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Created Date
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Status
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Action
-              </th>
+              </MuiTableCellMigration>
 
-            </tr>
+            </MuiTableRowMigration>
 
-          </thead>
+          </MuiTableHeadMigration>
 
 
-          <tbody>
+          <MuiTableBodyMigration>
 
             {/* =================================================
                 NO RECORDS
@@ -318,16 +319,16 @@ function DesignationTable({
 
             {designations.length === 0 ? (
 
-              <tr>
+              <MuiTableRowMigration>
 
-                <td
+                <MuiTableCellMigration
                   colSpan="6"
                   className="no-records"
                 >
                   No Designations Found
-                </td>
+                </MuiTableCellMigration>
 
-              </tr>
+              </MuiTableRowMigration>
 
             ) : (
 
@@ -379,7 +380,7 @@ function DesignationTable({
 
                   return (
 
-                    <tr
+                    <MuiTableRowMigration
                       key={
                         designationId ??
                         `designation-${index}`
@@ -390,72 +391,70 @@ function DesignationTable({
                           NUMBER
                       ======================================= */}
 
-                      <td>
+                      <MuiTableCellMigration>
                         {index + 1}
-                      </td>
+                      </MuiTableCellMigration>
 
 
                       {/* =======================================
                           DESIGNATION
                       ======================================= */}
 
-                      <td
+                      <MuiTableCellMigration
                         className="employee-type-name"
                       >
                         {designationName}
-                      </td>
+                      </MuiTableCellMigration>
 
 
                       {/* =======================================
                           DESCRIPTION
                       ======================================= */}
 
-                      <td>
+                      <MuiTableCellMigration>
                         {description}
-                      </td>
+                      </MuiTableCellMigration>
 
 
                       {/* =======================================
                           CREATED DATE
                       ======================================= */}
 
-                      <td>
+                      <MuiTableCellMigration>
                         {createdDate}
-                      </td>
+                      </MuiTableCellMigration>
 
 
                       {/* =======================================
                           STATUS
                       ======================================= */}
 
-                      <td>
+                      <MuiTableCellMigration>
 
-                        <span
+                        <MuiText
                           className={
                             `status-badge ${statusClass}`
                           }
-                        >
+                         component="span" variant="inherit">
                           {status}
-                        </span>
+                        </MuiText>
 
-                      </td>
+                      </MuiTableCellMigration>
 
 
                       {/* =======================================
                           ACTIONS
                       ======================================= */}
 
-                      <td>
+                      <MuiTableCellMigration>
 
-                        <div
+                        <MuiLayoutBox
                           className="action-buttons"
-                        >
+                         component="div">
 
                           {/* EDIT */}
 
-                          <Tooltip
-                            title="Edit"
-                          >
+                          {canEdit && <Tooltip title="Edit">
 
                             <IconButton
                               className="edit-btn"
@@ -475,14 +474,12 @@ function DesignationTable({
 
                             </IconButton>
 
-                          </Tooltip>
+                          </Tooltip>}
 
 
                           {/* DELETE */}
 
-                          <Tooltip
-                            title="Delete"
-                          >
+                          {canDelete && <Tooltip title="Delete">
 
                             <IconButton
                               className="delete-btn"
@@ -502,13 +499,13 @@ function DesignationTable({
 
                             </IconButton>
 
-                          </Tooltip>
+                          </Tooltip>}
 
-                        </div>
+                        </MuiLayoutBox>
 
-                      </td>
+                      </MuiTableCellMigration>
 
-                    </tr>
+                    </MuiTableRowMigration>
 
                   );
 
@@ -517,13 +514,13 @@ function DesignationTable({
 
             )}
 
-          </tbody>
+          </MuiTableBodyMigration>
 
-        </table>
+        </MuiTableMigration>
 
-      </div>
+      </MuiLayoutBox>
 
-    </div>
+    </MuiLayoutBox>
 
   );
 

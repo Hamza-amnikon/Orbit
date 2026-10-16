@@ -17,6 +17,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 
 import "./CompOff.css";
+import { Box as MuiLayoutBox } from "@mui/material";
 
 const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 const COMPOFF_API = `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/CompOff`;
@@ -110,7 +111,7 @@ function CompOff({ open, onClose }) {
             {/* HEADER */}
 
             <DialogTitle className="compoff-header">
-                <div>
+                <MuiLayoutBox component="div">
                     <Typography className="compoff-title">
                         Add Comp-Off
                     </Typography>
@@ -118,7 +119,7 @@ function CompOff({ open, onClose }) {
                     <Typography className="compoff-subtitle">
                         Assign compensatory leave to an employee.
                     </Typography>
-                </div>
+                </MuiLayoutBox>
 
                 <IconButton
                     className="compoff-close"
@@ -133,7 +134,7 @@ function CompOff({ open, onClose }) {
 
             {/* FORM */}
 
-            <form onSubmit={handleSubmit}>
+            <MuiLayoutBox onSubmit={handleSubmit} component="form">
                 <DialogContent className="compoff-content">
 
                     {/* SECTION TITLE */}
@@ -144,11 +145,11 @@ function CompOff({ open, onClose }) {
 
                     {/* FORM GRID */}
 
-                    <div className="compoff-form-grid">
+                    <MuiLayoutBox className="compoff-form-grid" component="div">
 
                         {/* EMPLOYEE ID */}
 
-                        <div className="compoff-field">
+                        <MuiLayoutBox className="compoff-field" component="div">
 
                             <Typography className="compoff-label">
                                 Employee ID *
@@ -178,11 +179,11 @@ function CompOff({ open, onClose }) {
                                 ))}
                             </Select>
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* EMPLOYEE NAME */}
 
-                        <div className="compoff-field">
+                        <MuiLayoutBox className="compoff-field" component="div">
 
                             <Typography className="compoff-label">
                                 Employee Name
@@ -199,11 +200,11 @@ function CompOff({ open, onClose }) {
                                 disabled
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* WORKED DATE */}
 
-                        <div className="compoff-field">
+                        <MuiLayoutBox className="compoff-field" component="div">
 
                             <Typography className="compoff-label">
                                 Worked Date *
@@ -225,11 +226,11 @@ function CompOff({ open, onClose }) {
     }}
 />
 
-                        </div>
+                        </MuiLayoutBox>
 
                         {/* COMPOFF DAYS */}
 
-                        <div className="compoff-field">
+                        <MuiLayoutBox className="compoff-field" component="div">
 
                             <Typography className="compoff-label">
                                 Comp-Off Days *
@@ -249,18 +250,18 @@ function CompOff({ open, onClose }) {
                                 placeholder="Enter days"
                                 fullWidth
                                 size="small"
-                                inputProps={{
+                                slotProps={{ htmlInput: {
                                     inputMode: "decimal",
-                                }}
+                                } }}
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
                     {/* REASON */}
 
-                    <div className="compoff-reason">
+                    <MuiLayoutBox className="compoff-reason" component="div">
 
                         <Typography className="compoff-label">
                             Reason *
@@ -279,7 +280,7 @@ function CompOff({ open, onClose }) {
                             rows={3}
                         />
 
-                    </div>
+                    </MuiLayoutBox>
 
                 </DialogContent>
 
@@ -307,7 +308,7 @@ function CompOff({ open, onClose }) {
                     </Button>
 
                 </DialogActions>
-            </form>
+            </MuiLayoutBox>
         </Dialog>
     );
 }

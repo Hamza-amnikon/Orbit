@@ -1,6 +1,8 @@
+import { MuiButtonMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import "./Attendance.css";
 
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
     Alert,
@@ -9,6 +11,7 @@ import {
     Chip,
     CircularProgress,
     Paper,
+    IconButton,
     Typography,
 } from "@mui/material";
 
@@ -24,16 +27,21 @@ import {
     ChevronLeftOutlined,
     ChevronRightOutlined,
     DownloadOutlined,
+    ArrowBackRounded,
     MoreHorizOutlined,
     WeekendOutlined,
+    HistoryOutlined,
 } from "@mui/icons-material";
 
 import { getProfile } from "../../Services/ProfileService";
 import AttendanceService from "../../Services/AttendanceService";
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { exportRowsToExcel } from "../../../utils/exportExcel";
 
 
 function Attendance() {
+    const navigate = useNavigate();
     const { hasPermission } = useAuth();
 
     const permissionRoute = "/attendance/my-attendance";
@@ -55,6 +63,18 @@ function Attendance() {
 
     const [selectedDate, setSelectedDate] =
         useState(new Date());
+
+    const handleExport = async () => {
+        try {
+            await exportRowsToExcel(attendance, [
+                ["Date", (row) => row.attendanceDate ? new Date(row.attendanceDate).toLocaleDateString("en-GB") : ""],
+                ["Shift", "shift"], ["Check In", "checkIn"], ["Check Out", "checkOut"], ["Total Hours", "totalHours"], ["Status", "status"],
+            ], "My-Attendance.xlsx", "My Attendance");
+        } catch (exportError) {
+            console.error("Attendance export error", exportError);
+            setError("Could not export your attendance records.");
+        }
+    };
 
 
     /* =========================================================
@@ -921,7 +941,9 @@ function Attendance() {
 
             <Box className="attendance-page-header">
 
-                <Box>
+                <Box className="attendance-title-leading">
+                    <IconButton aria-label="Back to Attendance" onClick={() => navigate("/attendance")} className="attendance-back-button"><ArrowBackRounded /></IconButton>
+                    <Box>
 
                     <Typography
                         className="attendance-eyebrow"
@@ -942,6 +964,7 @@ function Attendance() {
                         and working hours
                     </Typography>
 
+                </Box>
                 </Box>
 
 
@@ -967,6 +990,7 @@ function Attendance() {
                                 <DownloadOutlined />
                             }
                             className="attendance-download-button"
+                            onClick={handleExport}
                         >
                             Download
                         </Button>
@@ -1007,17 +1031,17 @@ function Attendance() {
                     </Box>
 
                     <Box>
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Present Days
-                        </span>
+                        </MuiText>
 
-                        <strong>
+                        <MuiText component="strong" variant="inherit">
                             {summary.present}
-                        </strong>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             Attendance records
-                        </small>
+                        </MuiText>
                     </Box>
 
                 </Paper>
@@ -1033,17 +1057,17 @@ function Attendance() {
                     </Box>
 
                     <Box>
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Absent Days
-                        </span>
+                        </MuiText>
 
-                        <strong>
+                        <MuiText component="strong" variant="inherit">
                             {summary.absent}
-                        </strong>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             Attendance records
-                        </small>
+                        </MuiText>
                     </Box>
 
                 </Paper>
@@ -1059,17 +1083,17 @@ function Attendance() {
                     </Box>
 
                     <Box>
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Half Days
-                        </span>
+                        </MuiText>
 
-                        <strong>
+                        <MuiText component="strong" variant="inherit">
                             {summary.halfDay}
-                        </strong>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             Attendance records
-                        </small>
+                        </MuiText>
                     </Box>
 
                 </Paper>
@@ -1085,17 +1109,17 @@ function Attendance() {
                     </Box>
 
                     <Box>
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Total Records
-                        </span>
+                        </MuiText>
 
-                        <strong>
+                        <MuiText component="strong" variant="inherit">
                             {attendance.length}
-                        </strong>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             This month
-                        </small>
+                        </MuiText>
                     </Box>
 
                 </Paper>
@@ -1111,17 +1135,17 @@ function Attendance() {
                     </Box>
 
                     <Box className="weekend-summary-content">
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Weekly Off
-                        </span>
+                        </MuiText>
 
-                        <strong className="weekend-value">
+                        <MuiText className="weekend-value" component="strong" variant="inherit">
                             {getAssignedWeekendLabel()}
-                        </strong>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             Assigned in Shift Management
-                        </small>
+                        </MuiText>
                     </Box>
 
                 </Paper>
@@ -1170,9 +1194,9 @@ function Attendance() {
                             <ChevronLeftOutlined />
                         </Button>
 
-                        <strong>
+                        <MuiText component="strong" variant="inherit">
                             {monthName}
-                        </strong>
+                        </MuiText>
 
                         <Button
                             onClick={
@@ -1198,9 +1222,9 @@ function Attendance() {
                             "Sun",
                         ].map(
                             (day) => (
-                                <div key={day}>
+                                <MuiLayoutBox key={day} component="div">
                                     {day}
-                                </div>
+                                </MuiLayoutBox>
                             )
                         )}
 
@@ -1215,12 +1239,12 @@ function Attendance() {
                                 if (!item.current) {
 
                                     return (
-                                        <div
+                                        <MuiLayoutBox
                                             key={index}
                                             className="calendar-day muted"
-                                        >
+                                         component="div">
                                             {item.day}
-                                        </div>
+                                        </MuiLayoutBox>
                                     );
 
                                 }
@@ -1232,7 +1256,7 @@ function Attendance() {
 
                                 return (
 
-                                    <button
+                                    <MuiButtonMigration
                                         key={index}
                                         className={`
                                             calendar-day
@@ -1259,27 +1283,27 @@ function Attendance() {
                                         }}
                                     >
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             {item.day}
-                                        </span>
+                                        </MuiText>
 
                                         {status === "present" && (
-                                            <i className="calendar-dot present-dot" />
+                                            <MuiLayoutBox className="calendar-dot present-dot"  component="span"/>
                                         )}
 
                                         {status === "absent" && (
-                                            <i className="calendar-dot absent-dot" />
+                                            <MuiLayoutBox className="calendar-dot absent-dot"  component="span"/>
                                         )}
 
                                         {status === "half" && (
-                                            <i className="calendar-dot half-dot" />
+                                            <MuiLayoutBox className="calendar-dot half-dot"  component="span"/>
                                         )}
 
                                         {status === "leave" && (
-                                            <i className="calendar-dot leave-dot" />
+                                            <MuiLayoutBox className="calendar-dot leave-dot"  component="span"/>
                                         )}
 
-                                    </button>
+                                    </MuiButtonMigration>
 
                                 );
 
@@ -1291,25 +1315,25 @@ function Attendance() {
 
                     <Box className="calendar-legend">
 
-                        <span>
-                            <i className="legend-dot present-dot" />
+                        <MuiText component="span" variant="inherit">
+                            <MuiLayoutBox className="legend-dot present-dot"  component="span"/>
                             Present
-                        </span>
+                        </MuiText>
 
-                        <span>
-                            <i className="legend-dot half-dot" />
+                        <MuiText component="span" variant="inherit">
+                            <MuiLayoutBox className="legend-dot half-dot"  component="span"/>
                             Half Day
-                        </span>
+                        </MuiText>
 
-                        <span>
-                            <i className="legend-dot absent-dot" />
+                        <MuiText component="span" variant="inherit">
+                            <MuiLayoutBox className="legend-dot absent-dot"  component="span"/>
                             Absent
-                        </span>
+                        </MuiText>
 
-                        <span>
-                            <i className="legend-dot weekend-dot" />
+                        <MuiText component="span" variant="inherit">
+                            <MuiLayoutBox className="legend-dot weekend-dot"  component="span"/>
                             Weekly Off
-                        </span>
+                        </MuiText>
 
                     </Box>
 
@@ -1331,7 +1355,7 @@ function Attendance() {
                                 Today's Attendance
                             </Typography>
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
                                 {new Date().toLocaleDateString(
                                     "en-IN",
                                     {
@@ -1340,7 +1364,7 @@ function Attendance() {
                                         year: "numeric",
                                     }
                                 )}
-                            </span>
+                            </MuiText>
 
                         </Box>
 
@@ -1377,20 +1401,20 @@ function Attendance() {
                                 </Box>
 
                                 <Box className="timeline-content">
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         Check In
-                                    </strong>
+                                    </MuiText>
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         {getCheckIn(
                                             todayAttendance
                                         )}
-                                    </span>
+                                    </MuiText>
                                 </Box>
 
-                                <span className="timeline-badge green-badge">
+                                <MuiText className="timeline-badge green-badge" component="span" variant="inherit">
                                     On Time
-                                </span>
+                                </MuiText>
 
                             </Box>
 
@@ -1405,15 +1429,15 @@ function Attendance() {
                                 </Box>
 
                                 <Box className="timeline-content">
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         Working Hours
-                                    </strong>
+                                    </MuiText>
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         {getWorkingHours(
                                             todayAttendance
                                         )}
-                                    </span>
+                                    </MuiText>
                                 </Box>
 
                             </Box>
@@ -1429,15 +1453,15 @@ function Attendance() {
                                 </Box>
 
                                 <Box className="timeline-content">
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         Check Out
-                                    </strong>
+                                    </MuiText>
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         {getCheckOut(
                                             todayAttendance
                                         )}
-                                    </span>
+                                    </MuiText>
                                 </Box>
 
                             </Box>
@@ -1452,14 +1476,14 @@ function Attendance() {
                                 <AccessTimeOutlined />
                             </Box>
 
-                            <strong>
+                            <MuiText component="strong" variant="inherit">
                                 Attendance Not Marked
-                            </strong>
+                            </MuiText>
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
                                 Your attendance has not
                                 been recorded for today.
-                            </span>
+                            </MuiText>
 
                         </Box>
 
@@ -1481,15 +1505,18 @@ function Attendance() {
 
                 <Box className="recent-header">
 
-                    <Box>
+                    <Box className="recent-heading">
+                        <Box className="recent-heading-icon"><HistoryOutlined /></Box>
+                        <Box>
 
                         <Typography>
                             Recent Attendance
                         </Typography>
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Your latest attendance records
-                        </span>
+                        </MuiText>
+                        </Box>
 
                     </Box>
 
@@ -1509,14 +1536,14 @@ function Attendance() {
                             <CalendarMonthOutlined />
                         </Box>
 
-                        <strong>
+                        <MuiText component="strong" variant="inherit">
                             No attendance records
-                        </strong>
+                        </MuiText>
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             There are no attendance records
                             available for your account.
-                        </span>
+                        </MuiText>
 
                     </Box>
 
@@ -1524,26 +1551,26 @@ function Attendance() {
 
                     <Box className="attendance-table-wrapper">
 
-                        <table className="attendance-table">
+                        <MuiTableMigration className="attendance-table">
 
-                            <thead>
+                            <MuiTableHeadMigration>
 
-                                <tr>
+                                <MuiTableRowMigration>
 
-                                    <th>Date</th>
-                                    <th>Day</th>
-                                    <th>Status</th>
-                                    <th>Check In</th>
-                                    <th>Check Out</th>
-                                    <th>Working Hours</th>
-                                    <th>Remarks</th>
-                                    <th>Actions</th>
+                                    <MuiTableCellMigration>Date</MuiTableCellMigration>
+                                    <MuiTableCellMigration>Day</MuiTableCellMigration>
+                                    <MuiTableCellMigration>Status</MuiTableCellMigration>
+                                    <MuiTableCellMigration>Check In</MuiTableCellMigration>
+                                    <MuiTableCellMigration>Check Out</MuiTableCellMigration>
+                                    <MuiTableCellMigration>Working Hours</MuiTableCellMigration>
+                                    <MuiTableCellMigration>Remarks</MuiTableCellMigration>
+                                    <MuiTableCellMigration>Actions</MuiTableCellMigration>
 
-                                </tr>
+                                </MuiTableRowMigration>
 
-                            </thead>
+                            </MuiTableHeadMigration>
 
-                            <tbody>
+                            <MuiTableBodyMigration>
 
                                 {attendance
                                     .slice(0, 10)
@@ -1555,7 +1582,7 @@ function Attendance() {
 
                                             return (
 
-                                                <tr
+                                                <MuiTableRowMigration
                                                     key={
                                                         item?.attendanceId ||
                                                         item?.id ||
@@ -1563,82 +1590,82 @@ function Attendance() {
                                                     }
                                                 >
 
-                                                    <td>
-                                                        <strong>
+                                                    <MuiTableCellMigration>
+                                                        <MuiText className="recent-date-value" component="strong" variant="inherit">
                                                             {getDate(
                                                                 item
                                                             )}
-                                                        </strong>
-                                                    </td>
+                                                        </MuiText>
+                                                    </MuiTableCellMigration>
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
                                                         {getDay(
                                                             item
                                                         )}
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
 
-                                                        <span
+                                                        <MuiText
                                                             className={`table-status ${getStatusClass(
                                                                 status
                                                             )}`}
-                                                        >
+                                                         component="span" variant="inherit">
 
                                                             <CheckCircle />
 
                                                             {status}
 
-                                                        </span>
+                                                        </MuiText>
 
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
                                                         {getCheckIn(
                                                             item
                                                         )}
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
                                                         {getCheckOut(
                                                             item
                                                         )}
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
 
-                                                        <strong className="hours-value">
+                                                        <MuiText className="hours-value" component="strong" variant="inherit">
                                                             {getWorkingHours(
                                                                 item
                                                             )}
-                                                        </strong>
+                                                        </MuiText>
 
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
                                                         -
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
-                                                    <td>
+                                                    <MuiTableCellMigration>
 
-                                                        <button
+                                                        <MuiButtonMigration
                                                             className="table-action-button"
                                                         >
                                                             <MoreHorizOutlined />
-                                                        </button>
+                                                        </MuiButtonMigration>
 
-                                                    </td>
+                                                    </MuiTableCellMigration>
 
-                                                </tr>
+                                                </MuiTableRowMigration>
 
                                             );
 
                                         }
                                     )}
 
-                            </tbody>
+                            </MuiTableBodyMigration>
 
-                        </table>
+                        </MuiTableMigration>
 
                     </Box>
 

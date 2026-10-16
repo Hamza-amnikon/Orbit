@@ -35,6 +35,7 @@ import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 
 import PayrollService from "../Service/PayrollService";
 import "./PayslipTemplates.css";
+import { Typography as MuiText } from "@mui/material";
 
 function PayslipTemplates() {
     const navigate = useNavigate();
@@ -472,14 +473,14 @@ function PayslipTemplates() {
                 </FormControl>
 
                 <Tooltip title="Refresh">
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         <IconButton
                             onClick={loadTemplates}
                             disabled={loading}
                         >
                             <RefreshIcon />
                         </IconButton>
-                    </span>
+                    </MuiText>
                 </Tooltip>
             </Card>
 

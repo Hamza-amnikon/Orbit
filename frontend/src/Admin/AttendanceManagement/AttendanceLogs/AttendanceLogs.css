@@ -66,6 +66,18 @@
 
 }
 
+.attendance-header-leading{display:flex;align-items:center;gap:16px;min-width:0}
+.attendance-back-button{width:42px;height:42px;flex:0 0 42px;border:1px solid #dce4ee!important;border-radius:10px!important;background:#fff!important;color:#3f5067!important}
+.attendance-back-button:hover{background:#f4f7fc!important;border-color:#b8c9df!important}
+.attendance-logs .MuiOutlinedInput-root{border-radius:9px;background:#fff}
+.attendance-logs .MuiOutlinedInput-notchedOutline{border-color:#d7e0ec}
+.attendance-logs .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline{border-color:#9bb0ca}
+.attendance-logs .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline{border-color:#2f67ed;border-width:1px}
+.attendance-logs .MuiInputBase-input:focus-visible{outline:none!important;box-shadow:none!important}
+.attendance-logs .attendance-filter-card .MuiInputBase-input{height:auto!important;min-height:unset;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;appearance:auto}
+.attendance-table thead{background:#eff4fb}
+.attendance-table thead th{color:#456186;border-bottom:1px solid #e2e8f0;text-transform:uppercase;font-size:12px;letter-spacing:.03em}
+
 
 /* ===========================================================
    HEADER ACTIONS
@@ -187,9 +199,9 @@
 
 .attendance-summary-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-    gap:24px;
-    margin-bottom:32px;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:14px;
+    margin-bottom:20px;
 }
 /* Optional animation */
 
@@ -204,6 +216,10 @@
     transform:translateY(-6px);
 
 }
+
+.attendance-logs .dashboard-card{border-radius:12px;padding:18px;border-color:#e1e7f0;box-shadow:0 2px 7px rgba(20,40,70,.04)}
+.attendance-logs .dashboard-card-interactive{min-width:0}
+.attendance-logs .dashboard-card-icon{width:42px;height:42px;border-radius:10px}
 /* ===========================================================
    DASHBOARD CARD
 =========================================================== */
@@ -493,12 +509,76 @@
 
 }
 
+/* Keep MUI attendance filters consistent, including the native date field. */
+.attendance-logs .attendance-filter-card .MuiFormControl-root{width:100%;min-width:0}
+.attendance-logs .attendance-filter-card .MuiOutlinedInput-root{
+    box-sizing:border-box;
+    height:48px;
+    min-height:48px;
+    padding:0 12px;
+    border-radius:10px;
+    background:#fff;
+}
+.attendance-logs .attendance-filter-card .MuiPickersOutlinedInput-root{
+    box-sizing:border-box;
+    height:48px;
+    min-height:48px;
+    padding:0 12px;
+    border-radius:10px;
+    background:#fff;
+}
+.attendance-logs .attendance-filter-card .MuiPickersOutlinedInput-notchedOutline{border-color:#d7e0ec}
+.attendance-logs .attendance-filter-card .MuiPickersOutlinedInput-root:hover .MuiPickersOutlinedInput-notchedOutline{border-color:#9bb0ca}
+.attendance-logs .attendance-filter-card .MuiPickersOutlinedInput-root.Mui-focused .MuiPickersOutlinedInput-notchedOutline{border-color:#2f67ed;border-width:1px}
+.attendance-logs .attendance-filter-card .MuiInputBase-root{display:flex;align-items:center}
+.attendance-logs .attendance-filter-card .MuiInputAdornment-root{position:static;flex:0 0 auto;transform:none}
+.attendance-logs .attendance-filter-card .attendance-search-field .MuiOutlinedInput-root{position:relative}
+.attendance-logs .attendance-filter-card .attendance-search-field .MuiInputAdornment-positionStart{
+    position:absolute;
+    left:12px;
+    margin:0;
+    pointer-events:none;
+}
+.attendance-logs .attendance-filter-card .attendance-search-field .MuiOutlinedInput-input{padding-left:28px!important}
+.attendance-logs .attendance-filter-card .MuiOutlinedInput-input{
+    box-sizing:border-box;
+    width:0!important;
+    min-width:0;
+    flex:1 1 auto;
+    height:auto!important;
+    min-height:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    font:inherit;
+}
+.attendance-logs .attendance-filter-card .MuiPickersInputBase-input{box-sizing:border-box;min-width:0;padding:0!important}
+.attendance-logs .attendance-filter-card .MuiInputAdornment-positionStart{margin-left:0;margin-right:8px}
+.attendance-logs .attendance-filter-card .MuiInputAdornment-positionStart svg{display:block;color:#7187a4}
+.attendance-logs .attendance-filter-card .MuiSelect-select{
+    display:flex;
+    align-items:center;
+    min-height:0!important;
+    padding:0 28px 0 0!important;
+}
+.attendance-logs .attendance-filter-card .MuiInputAdornment-root{margin-right:8px;color:#7387a2}
+.attendance-logs .attendance-filter-card input[type="date"]{cursor:pointer;color:#263b58}
+.attendance-logs .attendance-filter-card input[type="date"]::-webkit-calendar-picker-indicator{
+    cursor:pointer;
+    opacity:.7;
+    filter:none;
+}
+
 
 /* ===========================================================
    RESPONSIVE
 =========================================================== */
 
 @media(max-width:1200px){
+
+    .attendance-summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 
     .attendance-filter-card{
 
@@ -509,6 +589,18 @@
 }
 
 @media(max-width:768px){
+
+    .attendance-logs{padding:18px 14px 30px}
+    .attendance-header-card{padding:18px;border-radius:14px;align-items:flex-start}
+    .attendance-header-leading{align-items:flex-start}
+    .attendance-header-card h2{font-size:26px;letter-spacing:-.4px}
+    .attendance-header-actions{width:100%;gap:8px}
+    .attendance-header-actions > *{flex:1 1 auto}
+    .attendance-summary-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+    .attendance-logs .dashboard-card{padding:14px;gap:10px}
+    .attendance-logs .dashboard-card-icon{width:36px;height:36px}
+    .table-header{padding:18px}
+    .table-header-left h3{font-size:23px}
 
     .attendance-filter-card{
 

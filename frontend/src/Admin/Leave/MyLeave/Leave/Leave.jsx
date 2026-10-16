@@ -1,3 +1,4 @@
+import { MuiButtonMigration, MuiInputMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useMemo, useState } from "react";
 import "./Leave.css";
 
@@ -14,6 +15,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 
 import LeaveService from "../../../Services/LeaveService";
 import api from "../../../Services/api";
@@ -23,6 +25,8 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
+    FormControl,
+    Select,
     TextField,
     MenuItem,
     Button,
@@ -38,11 +42,14 @@ import {
 } from "@mui/material";
 
 import { useAuth } from "../../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 
 const Leave = () => {
 
     const { hasPermission } = useAuth();
+    const navigate = useNavigate();
     const permissionRoute = "/leave/my-leave";
     const canView = hasPermission(permissionRoute, "view");
     const canCreate = hasPermission(permissionRoute, "create");
@@ -67,6 +74,7 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
     const [error, setError] = useState("");
 
     const [period, setPeriod] = useState("This Month");
+    const [periodMenuOpen, setPeriodMenuOpen] = useState(false);
 
     // Calendar month
     const [calendarMonth, setCalendarMonth] =
@@ -2491,12 +2499,12 @@ const closeViewLeaveDialog = () => {
 
     if (!canView) {
         return (
-            <div className="leave-dashboard">
-                <div className="leave-error">
-                    <h3>Access Denied</h3>
-                    <p>You do not have permission to access this page.</p>
-                </div>
-            </div>
+            <MuiLayoutBox className="leave-dashboard" component="div">
+                <MuiLayoutBox className="leave-error" component="div">
+                    <MuiText component="h3" variant="h6">Access Denied</MuiText>
+                    <MuiText component="p" variant="body1">You do not have permission to access this page.</MuiText>
+                </MuiLayoutBox>
+            </MuiLayoutBox>
         );
     }
 
@@ -2508,37 +2516,47 @@ const closeViewLeaveDialog = () => {
 
         return (
 
-            <div className="leave-dashboard">
+            <MuiLayoutBox className="leave-dashboard" component="div">
 
-                <div className="leave-header">
+                <MuiLayoutBox className="leave-header" component="div">
 
-                    <div>
+                    <Tooltip title="Back to Leave Management">
+                        <IconButton
+                            className="leave-back-button"
+                            onClick={() => navigate("/leave")}
+                            aria-label="Back to Leave Management"
+                        >
+                            <ArrowBackRoundedIcon />
+                        </IconButton>
+                    </Tooltip>
 
-                        <h1>
+                    <MuiLayoutBox className="leave-heading-group" component="div">
+
+                        <MuiText component="h1" variant="h4">
                             My Leave
-                        </h1>
+                        </MuiText>
 
-                        <p>
+                        <MuiText component="p" variant="body1">
                             Loading your leave
                             information...
-                        </p>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <div className="leave-loading">
+                <MuiLayoutBox className="leave-loading" component="div">
 
                     <CircularProgress />
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Loading leave data...
-                    </span>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
         );
     }
 
@@ -2551,38 +2569,48 @@ const closeViewLeaveDialog = () => {
 
         return (
 
-            <div className="leave-dashboard">
+            <MuiLayoutBox className="leave-dashboard" component="div">
 
-                <div className="leave-header">
+                <MuiLayoutBox className="leave-header" component="div">
 
-                    <div>
+                    <Tooltip title="Back to Leave Management">
+                        <IconButton
+                            className="leave-back-button"
+                            onClick={() => navigate("/leave")}
+                            aria-label="Back to Leave Management"
+                        >
+                            <ArrowBackRoundedIcon />
+                        </IconButton>
+                    </Tooltip>
 
-                        <h1>
+                    <MuiLayoutBox className="leave-heading-group" component="div">
+
+                        <MuiText component="h1" variant="h4">
                             My Leave
-                        </h1>
+                        </MuiText>
 
-                        <p>
+                        <MuiText component="p" variant="body1">
                             View your leave
                             requests, approvals
                             and usage.
-                        </p>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <div className="leave-error">
+                <MuiLayoutBox className="leave-error" component="div">
 
-                    <h3>
+                    <MuiText component="h3" variant="h6">
                         Unable to load leave data
-                    </h3>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         {error}
-                    </p>
+                    </MuiText>
 
-                    <button
+                    <MuiButtonMigration
                         type="button"
                         className="leave-retry-btn"
                         onClick={
@@ -2590,11 +2618,11 @@ const closeViewLeaveDialog = () => {
                         }
                     >
                         Retry
-                    </button>
+                    </MuiButtonMigration>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
         );
     }
 
@@ -2605,54 +2633,77 @@ const closeViewLeaveDialog = () => {
 
     return (
 
-        <div className="leave-dashboard">
+        <MuiLayoutBox className="leave-dashboard" component="div">
 
 
             {/* =================================================
                 HEADER
             ================================================= */}
 
-            <div className="leave-header">
+            <MuiLayoutBox
+                className={`leave-header${periodMenuOpen ? " period-menu-open" : ""}`}
+                component="div"
+            >
 
-                <div>
+                <Tooltip title="Back to Leave Management">
+                    <IconButton
+                        className="leave-back-button"
+                        onClick={() => navigate("/leave")}
+                        aria-label="Back to Leave Management"
+                    >
+                        <ArrowBackRoundedIcon />
+                    </IconButton>
+                </Tooltip>
 
-                    <h1>
+                <MuiLayoutBox className="leave-heading-group" component="div">
+
+                    <MuiText component="h1" variant="h4">
                         My Leave
-                    </h1>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         View your leave requests,
                         approvals and leave usage.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <div className="leave-header-actions">
+                <MuiLayoutBox className="leave-header-actions" component="div">
 
-                    <select
-                        className="leave-period"
-                        value={period}
-                        onChange={(event) =>
-                            setPeriod(
-                                event.target.value
-                            )
-                        }
-                    >
-
-                        <option>
-                            This Month
-                        </option>
-
-                        <option>
-                            Last Month
-                        </option>
-
-                        <option>
-                            This Year
-                        </option>
-
-                    </select>
+                    <FormControl className="leave-period-control" size="small">
+                        <Select
+                            className="leave-period"
+                            value={period}
+                            onChange={(event) => setPeriod(event.target.value)}
+                            onOpen={() => setPeriodMenuOpen(true)}
+                            onClose={() => setPeriodMenuOpen(false)}
+                            inputProps={{ "aria-label": "Reporting period" }}
+                            MenuProps={{
+                                PaperProps: {
+                                    sx: {
+                                        mt: 0.75,
+                                        maxHeight: 220,
+                                        border: "1px solid #dce6f2",
+                                        borderRadius: "10px",
+                                        boxShadow: "0 8px 24px rgba(22, 48, 84, 0.14)",
+                                    },
+                                },
+                                anchorOrigin: {
+                                    vertical: "bottom",
+                                    horizontal: "left",
+                                },
+                                transformOrigin: {
+                                    vertical: "top",
+                                    horizontal: "left",
+                                },
+                            }}
+                        >
+                            <MenuItem value="This Month">This Month</MenuItem>
+                            <MenuItem value="Last Month">Last Month</MenuItem>
+                            <MenuItem value="This Year">This Year</MenuItem>
+                        </Select>
+                    </FormControl>
 
 
                     {canCreate && (
@@ -2670,212 +2721,212 @@ const closeViewLeaveDialog = () => {
                         </Button>
                     )}
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 STAT CARDS
             ================================================= */}
 
-            <div className="leave-stat-grid">
+            <MuiLayoutBox className="leave-stat-grid" component="div">
 
 
-                <div className="leave-stat-card total">
+                <MuiLayoutBox className="leave-stat-card total" component="div">
 
-                    <div className="leave-stat-icon">
+                    <MuiLayoutBox className="leave-stat-icon" component="div">
 
                         <DashboardIcon />
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             My Requests
-                        </span>
+                        </MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {statistics.total}
-                        </h2>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <div className="leave-stat-card pending">
+                <MuiLayoutBox className="leave-stat-card pending" component="div">
 
-                    <div className="leave-stat-icon">
+                    <MuiLayoutBox className="leave-stat-icon" component="div">
 
                         <PendingActionsIcon />
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Pending
-                        </span>
+                        </MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {statistics.pending}
-                        </h2>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <div className="leave-stat-card approved">
+                <MuiLayoutBox className="leave-stat-card approved" component="div">
 
-                    <div className="leave-stat-icon">
+                    <MuiLayoutBox className="leave-stat-icon" component="div">
 
                         <CheckCircleIcon />
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Approved
-                        </span>
+                        </MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {statistics.approved}
-                        </h2>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <div className="leave-stat-card rejected">
+                <MuiLayoutBox className="leave-stat-card rejected" component="div">
 
-                    <div className="leave-stat-icon">
+                    <MuiLayoutBox className="leave-stat-icon" component="div">
 
                         <CancelIcon />
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Rejected
-                        </span>
+                        </MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {statistics.rejected}
-                        </h2>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 SECONDARY STATS
             ================================================= */}
 
-            <div className="leave-secondary-grid">
+            <MuiLayoutBox className="leave-secondary-grid" component="div">
 
 
-                <div className="leave-info-card">
+                <MuiLayoutBox className="leave-info-card" component="div">
 
-                    <div className="leave-info-icon blue">
+                    <MuiLayoutBox className="leave-info-icon blue" component="div">
 
                         <EventAvailableIcon />
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Leave Taken
-                        </span>
+                        </MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {leaveTaken} Days
-                        </h2>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             {period}
-                        </small>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <div className="leave-info-card">
+                <MuiLayoutBox className="leave-info-card" component="div">
 
-                    <div className="leave-info-icon purple">
+                    <MuiLayoutBox className="leave-info-icon purple" component="div">
 
                         <PeopleIcon />
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Currently On Leave
-                        </span>
+                        </MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {employeesOnLeave}
-                        </h2>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             Currently
-                        </small>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 MY LEAVE BALANCE
             ================================================= */}
 
-            <div className="leave-panel leave-balance-panel">
+            <MuiLayoutBox className="leave-panel leave-balance-panel" component="div">
 
-                <div className="leave-panel-header">
+                <MuiLayoutBox className="leave-panel-header" component="div">
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             My Leave Balance
-                        </h2>
+                        </MuiText>
 
-                        <p>
+                        <MuiText component="p" variant="body1">
                             Your current leave balance
                             by leave type
-                        </p>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="pending-summary">
+                    <MuiLayoutBox className="pending-summary" component="div">
 
                         <PendingActionsIcon />
 
-                        <div>
+                        <MuiLayoutBox component="div">
 
-                            <strong>
+                            <MuiText component="strong" variant="inherit">
 
                                 {pendingLeaves.length}
                                 {" "}
                                 Pending Requests
 
-                            </strong>
+                            </MuiText>
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
 
                                 {formatNumber(
                                     totalPendingDays
@@ -2883,91 +2934,98 @@ const closeViewLeaveDialog = () => {
                                 {" "}
                                 pending day(s)
 
-                            </span>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <div className="leave-balance-table-wrapper">
+                <MuiLayoutBox className="leave-balance-table-wrapper" component="div">
 
-                    <table className="leave-balance-table">
+                    <MuiTableMigration className="leave-balance-table">
 
-                        <thead>
+                        <MuiTableHeadMigration>
 
-                            <tr>
+                            <MuiTableRowMigration>
 
-                                <th>
-                                    Employee ID
-                                </th>
+                                <MuiTableCellMigration>
+                                    Azure Employee ID
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Leave Type
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Year
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Entitled
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Accrued
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Used
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Balance
-                                </th>
+                                </MuiTableCellMigration>
 
-                            </tr>
+                            </MuiTableRowMigration>
 
-                        </thead>
+                        </MuiTableHeadMigration>
 
 
-                        <tbody>
+                        <MuiTableBodyMigration>
 
                             {employeeBalanceRows.length === 0 ? (
 
-                                <tr>
+                                <MuiTableRowMigration>
 
-                                    <td
+                                    <MuiTableCellMigration
                                         colSpan="7"
                                         className="empty-table"
                                     >
                                         No leave balance
                                         found for this
                                         employee.
-                                    </td>
+                                    </MuiTableCellMigration>
 
-                                </tr>
+                                </MuiTableRowMigration>
 
                             ) : (
 
                                 employeeBalanceRows.map(
                                     (balance) => (
 
-                                        <tr
+                                        <MuiTableRowMigration
                                             key={
                                                 balance.employeeLeaveBalanceId
                                             }
                                         >
 
-                                            <td>
+                                            <MuiTableCellMigration>
                                                 {
-                                                    balance.employeeId
+                                                    profile?.azureEmployeeId ??
+                                                    profile?.AzureEmployeeId ??
+                                                    profile?.azureEmployeeID ??
+                                                    profile?.azureId ??
+                                                    balance.azureEmployeeId ??
+                                                    balance.AzureEmployeeId ??
+                                                    balance.azureEmployeeID ??
+                                                    "—"
                                                 }
-                                            </td>
+                                            </MuiTableCellMigration>
 
-                                            <td className="leave-type-name">
+                                            <MuiTableCellMigration className="leave-type-name">
 
                                                 {
                                                     getLeaveTypeName(
@@ -2975,41 +3033,41 @@ const closeViewLeaveDialog = () => {
                                                     )
                                                 }
 
-                                            </td>
+                                            </MuiTableCellMigration>
 
-                                            <td>
+                                            <MuiTableCellMigration>
                                                 {
                                                     balance.year
                                                 }
-                                            </td>
+                                            </MuiTableCellMigration>
 
-                                            <td>
+                                            <MuiTableCellMigration>
                                                 {
                                                     formatNumber(
                                                         balance.entitledDays
                                                     )
                                                 }
-                                            </td>
+                                            </MuiTableCellMigration>
 
-                                            <td>
+                                            <MuiTableCellMigration>
                                                 {
                                                     formatNumber(
                                                         balance.accruedDays
                                                     )
                                                 }
-                                            </td>
+                                            </MuiTableCellMigration>
 
-                                            <td>
+                                            <MuiTableCellMigration>
                                                 {
                                                     formatNumber(
                                                         balance.usedDays
                                                     )
                                                 }
-                                            </td>
+                                            </MuiTableCellMigration>
 
-                                            <td>
+                                            <MuiTableCellMigration>
 
-                                                <span className="balance-pill">
+                                                <MuiText className="balance-pill" component="span" variant="inherit">
 
                                                     {
                                                         formatNumber(
@@ -3017,77 +3075,77 @@ const closeViewLeaveDialog = () => {
                                                         )
                                                     }
 
-                                                </span>
+                                                </MuiText>
 
-                                            </td>
+                                            </MuiTableCellMigration>
 
-                                        </tr>
+                                        </MuiTableRowMigration>
 
                                     )
                                 )
 
                             )}
 
-                        </tbody>
+                        </MuiTableBodyMigration>
 
-                    </table>
+                    </MuiTableMigration>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 OVERVIEW + CALENDAR
             ================================================= */}
 
-            <div className="leave-content-grid">
+            <MuiLayoutBox className="leave-content-grid" component="div">
 
 
                 {/* =================================================
                     LEAVE OVERVIEW
                 ================================================= */}
 
-                <div className="leave-panel">
+                <MuiLayoutBox className="leave-panel" component="div">
 
-                    <div className="leave-panel-header">
+                    <MuiLayoutBox className="leave-panel-header" component="div">
 
-                        <div>
+                        <MuiLayoutBox component="div">
 
-                            <h2>
+                            <MuiText component="h2" variant="h5">
                                 My Leave Overview
-                            </h2>
+                            </MuiText>
 
-                            <p>
+                            <MuiText component="p" variant="body1">
                                 Your leave requests
                                 by status
-                            </p>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="leave-overview">
+                    <MuiLayoutBox className="leave-overview" component="div">
 
                         {statistics.total === 0 ? (
 
-                            <div className="chart-empty">
+                            <MuiLayoutBox className="chart-empty" component="div">
 
                                 <DashboardIcon />
 
-                                <h3>
+                                <MuiText component="h3" variant="h6">
                                     No leave data yet
-                                </h3>
+                                </MuiText>
 
-                                <p>
+                                <MuiText component="p" variant="body1">
                                     Your leave statistics
                                     will appear here
                                     once you submit
                                     leave requests.
-                                </p>
+                                </MuiText>
 
-                            </div>
+                            </MuiLayoutBox>
 
                         ) : (
 
@@ -3095,23 +3153,23 @@ const closeViewLeaveDialog = () => {
 
                                 {/* PENDING */}
 
-                                <div className="overview-row">
+                                <MuiLayoutBox className="overview-row" component="div">
 
-                                    <div className="overview-label">
+                                    <MuiLayoutBox className="overview-label" component="div">
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             Pending
-                                        </strong>
+                                        </MuiText>
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             {statistics.pending}
-                                        </span>
+                                        </MuiText>
 
-                                    </div>
+                                    </MuiLayoutBox>
 
-                                    <div className="overview-bar">
+                                    <MuiLayoutBox className="overview-bar" component="div">
 
-                                        <div
+                                        <MuiLayoutBox
                                             className="overview-bar-pending"
                                             style={{
                                                 width: `${
@@ -3123,32 +3181,32 @@ const closeViewLeaveDialog = () => {
                                                         : 0
                                                 }%`,
                                             }}
-                                        />
+                                         component="div"/>
 
-                                    </div>
+                                    </MuiLayoutBox>
 
-                                </div>
+                                </MuiLayoutBox>
 
 
                                 {/* APPROVED */}
 
-                                <div className="overview-row">
+                                <MuiLayoutBox className="overview-row" component="div">
 
-                                    <div className="overview-label">
+                                    <MuiLayoutBox className="overview-label" component="div">
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             Approved
-                                        </strong>
+                                        </MuiText>
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             {statistics.approved}
-                                        </span>
+                                        </MuiText>
 
-                                    </div>
+                                    </MuiLayoutBox>
 
-                                    <div className="overview-bar">
+                                    <MuiLayoutBox className="overview-bar" component="div">
 
-                                        <div
+                                        <MuiLayoutBox
                                             className="overview-bar-approved"
                                             style={{
                                                 width: `${
@@ -3160,32 +3218,32 @@ const closeViewLeaveDialog = () => {
                                                         : 0
                                                 }%`,
                                             }}
-                                        />
+                                         component="div"/>
 
-                                    </div>
+                                    </MuiLayoutBox>
 
-                                </div>
+                                </MuiLayoutBox>
 
 
                                 {/* REJECTED */}
 
-                                <div className="overview-row">
+                                <MuiLayoutBox className="overview-row" component="div">
 
-                                    <div className="overview-label">
+                                    <MuiLayoutBox className="overview-label" component="div">
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             Rejected
-                                        </strong>
+                                        </MuiText>
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             {statistics.rejected}
-                                        </span>
+                                        </MuiText>
 
-                                    </div>
+                                    </MuiLayoutBox>
 
-                                    <div className="overview-bar">
+                                    <MuiLayoutBox className="overview-bar" component="div">
 
-                                        <div
+                                        <MuiLayoutBox
                                             className="overview-bar-rejected"
                                             style={{
                                                 width: `${
@@ -3197,19 +3255,19 @@ const closeViewLeaveDialog = () => {
                                                         : 0
                                                 }%`,
                                             }}
-                                        />
+                                         component="div"/>
 
-                                    </div>
+                                    </MuiLayoutBox>
 
-                                </div>
+                                </MuiLayoutBox>
 
                             </>
 
                         )}
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
                 {/* =================================================
@@ -3217,6 +3275,7 @@ const closeViewLeaveDialog = () => {
                 ================================================= */}
 
                 <Paper
+                    className="leave-calendar-panel"
                     elevation={0}
                     sx={{
                         borderRadius: "14px",
@@ -3782,33 +3841,33 @@ const closeViewLeaveDialog = () => {
 
                 </Paper>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 RECENT REQUESTS
             ================================================= */}
 
-            <div className="leave-panel recent-leave-panel">
+            <MuiLayoutBox className="leave-panel recent-leave-panel" component="div">
 
-                <div className="leave-panel-header">
+                <MuiLayoutBox className="leave-panel-header" component="div">
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             My Recent Leave
                             Requests
-                        </h2>
+                        </MuiText>
 
-                        <p>
+                        <MuiText component="p" variant="body1">
                             Your latest leave
                             applications
-                        </p>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <button
+                    <MuiButtonMigration
                         type="button"
                         className="view-all-btn"
                         onClick={
@@ -3816,62 +3875,62 @@ const closeViewLeaveDialog = () => {
                         }
                     >
                         Refresh
-                    </button>
+                    </MuiButtonMigration>
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <div className="leave-table-wrapper">
+                <MuiLayoutBox className="leave-table-wrapper" component="div">
 
-                    <table className="leave-table">
+                    <MuiTableMigration className="leave-table">
 
-                        <thead>
+                        <MuiTableHeadMigration>
 
-                            <tr>
+                            <MuiTableRowMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Leave Type
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     From
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     To
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Days
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Status
-                                </th>
-<th>
+                                </MuiTableCellMigration>
+<MuiTableCellMigration>
     Action
-</th>
-                            </tr>
+</MuiTableCellMigration>
+                            </MuiTableRowMigration>
 
-                        </thead>
+                        </MuiTableHeadMigration>
 
 
-                        <tbody>
+                        <MuiTableBodyMigration>
 
                             {filteredLeaves.length === 0 ? (
 
-                                <tr>
+                                <MuiTableRowMigration>
 
-                                    <td
+                                    <MuiTableCellMigration
                                         colSpan="6"
                                         className="empty-table"
                                     >
                                         No leave requests
                                         found for this
                                         period.
-                                    </td>
+                                    </MuiTableCellMigration>
 
-                                </tr>
+                                </MuiTableRowMigration>
 
                             ) : (
 
@@ -3880,13 +3939,13 @@ const closeViewLeaveDialog = () => {
                                     .map(
                                         (leave) => (
 
-                                            <tr
+                                            <MuiTableRowMigration
                                                 key={
                                                     leave.leaveId
                                                 }
                                             >
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {
                                                         getLeaveTypeName(
@@ -3894,10 +3953,10 @@ const closeViewLeaveDialog = () => {
                                                         )
                                                     }
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {
                                                         formatDate(
@@ -3905,10 +3964,10 @@ const closeViewLeaveDialog = () => {
                                                         )
                                                     }
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {
                                                         formatDate(
@@ -3916,10 +3975,10 @@ const closeViewLeaveDialog = () => {
                                                         )
                                                     }
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {
                                                         getEffectiveLeaveDays(
@@ -3927,26 +3986,26 @@ const closeViewLeaveDialog = () => {
                                                         )
                                                     }
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
-                                                    <span
+                                                    <MuiText
                                                         className={`leave-status ${getStatusClass(
                                                             leave.status
                                                         )}`}
-                                                    >
+                                                     component="span" variant="inherit">
 
                                                         {
                                                             leave.status
                                                         }
 
-                                                    </span>
+                                                    </MuiText>
 
-                                                </td>
-<td>
-    <button
+                                                </MuiTableCellMigration>
+<MuiTableCellMigration>
+    <MuiButtonMigration
         type="button"
         className="view-leave-btn"
         onClick={() => handleViewLeave(leave)}
@@ -3957,22 +4016,22 @@ const closeViewLeaveDialog = () => {
             }}
         />
         View
-    </button>
-</td>
-                                            </tr>
+    </MuiButtonMigration>
+</MuiTableCellMigration>
+                                            </MuiTableRowMigration>
 
                                         )
                                     )
 
                             )}
 
-                        </tbody>
+                        </MuiTableBodyMigration>
 
-                    </table>
+                    </MuiTableMigration>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
@@ -4132,10 +4191,10 @@ const closeViewLeaveDialog = () => {
     }}
 >
     {/* FROM DATE */}
-    <div className="leave-static-date-field">
-        <label className="leave-static-date-label">
+    <MuiLayoutBox className="leave-static-date-field" component="div">
+        <MuiLayoutBox className="leave-static-date-label" component="label">
             From Date *
-        </label>
+        </MuiLayoutBox>
 
         <TextField
             fullWidth
@@ -4151,13 +4210,13 @@ const closeViewLeaveDialog = () => {
             disabled={submittingLeave}
             required
         />
-    </div>
+    </MuiLayoutBox>
 
     {/* TO DATE */}
-    <div className="leave-static-date-field">
-        <label className="leave-static-date-label">
+    <MuiLayoutBox className="leave-static-date-field" component="div">
+        <MuiLayoutBox className="leave-static-date-label" component="label">
             To Date *
-        </label>
+        </MuiLayoutBox>
 
         <TextField
             fullWidth
@@ -4175,7 +4234,7 @@ const closeViewLeaveDialog = () => {
             disabled={submittingLeave}
             required
         />
-    </div>
+    </MuiLayoutBox>
 </Box>
 
 
@@ -4243,9 +4302,9 @@ const closeViewLeaveDialog = () => {
                             disabled={
                                 submittingLeave
                             }
-                            inputProps={{
+                            slotProps={{ htmlInput: {
                                 maxLength: 500,
-                            }}
+                            } }}
                             helperText={`${leaveForm.reason.length}/500`}
                         />
 
@@ -4302,7 +4361,7 @@ const closeViewLeaveDialog = () => {
 
                                     Choose Document
 
-                                    <input
+                                    <MuiInputMigration
                                         type="file"
                                         hidden
                                         accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
@@ -4326,13 +4385,13 @@ const closeViewLeaveDialog = () => {
 
                                         Selected:
                                         {" "}
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             {
                                                 leaveForm
                                                     .document
                                                     .name
                                             }
-                                        </strong>
+                                        </MuiText>
 
                                     </Typography>
 
@@ -4421,175 +4480,175 @@ const closeViewLeaveDialog = () => {
     <DialogContent dividers>
 
         {selectedLeave && (
-            <div
+            <MuiLayoutBox
                 style={{
                     display: "flex",
                     flexDirection: "column",
                     gap: "18px",
                     paddingTop: "5px",
                 }}
-            >
+             component="div">
 
                 {/* Leave Type */}
-                <div>
-                    <div
+                <MuiLayoutBox component="div">
+                    <MuiLayoutBox
                         style={{
                             fontSize: "12px",
                             color: "#64748b",
                             marginBottom: "5px",
                         }}
-                    >
+                     component="div">
                         Leave Type
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div
+                    <MuiLayoutBox
                         style={{
                             fontSize: "15px",
                             fontWeight: 600,
                             color: "#1e293b",
                         }}
-                    >
+                     component="div">
                         {getLeaveTypeName(
                             selectedLeave.leaveTypeId
                         )}
-                    </div>
-                </div>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
                 {/* Date */}
-                <div
+                <MuiLayoutBox
                     style={{
                         display: "grid",
                         gridTemplateColumns:
                             "1fr 1fr",
                         gap: "20px",
                     }}
-                >
+                 component="div">
 
-                    <div>
-                        <div
+                    <MuiLayoutBox component="div">
+                        <MuiLayoutBox
                             style={{
                                 fontSize: "12px",
                                 color: "#64748b",
                                 marginBottom: "5px",
                             }}
-                        >
+                         component="div">
                             From Date
-                        </div>
+                        </MuiLayoutBox>
 
-                        <div
+                        <MuiLayoutBox
                             style={{
                                 fontSize: "15px",
                                 fontWeight: 600,
                                 color: "#1e293b",
                             }}
-                        >
+                         component="div">
                             {formatDate(
                                 selectedLeave.fromDate
                             )}
-                        </div>
-                    </div>
+                        </MuiLayoutBox>
+                    </MuiLayoutBox>
 
-                    <div>
-                        <div
+                    <MuiLayoutBox component="div">
+                        <MuiLayoutBox
                             style={{
                                 fontSize: "12px",
                                 color: "#64748b",
                                 marginBottom: "5px",
                             }}
-                        >
+                         component="div">
                             To Date
-                        </div>
+                        </MuiLayoutBox>
 
-                        <div
+                        <MuiLayoutBox
                             style={{
                                 fontSize: "15px",
                                 fontWeight: 600,
                                 color: "#1e293b",
                             }}
-                        >
+                         component="div">
                             {formatDate(
                                 selectedLeave.toDate
                             )}
-                        </div>
-                    </div>
+                        </MuiLayoutBox>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
                 {/* Duration */}
-                <div>
-                    <div
+                <MuiLayoutBox component="div">
+                    <MuiLayoutBox
                         style={{
                             fontSize: "12px",
                             color: "#64748b",
                             marginBottom: "5px",
                         }}
-                    >
+                     component="div">
                         Duration
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div
+                    <MuiLayoutBox
                         style={{
                             fontSize: "15px",
                             fontWeight: 600,
                             color: "#1e293b",
                         }}
-                    >
+                     component="div">
                         {getEffectiveLeaveDays(
                             selectedLeave
                         )}{" "}
                         Day(s)
-                    </div>
-                </div>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
                 {/* Status */}
-                <div>
-                    <div
+                <MuiLayoutBox component="div">
+                    <MuiLayoutBox
                         style={{
                             fontSize: "12px",
                             color: "#64748b",
                             marginBottom: "5px",
                         }}
-                    >
+                     component="div">
                         Status
-                    </div>
+                    </MuiLayoutBox>
 
-                    <span
+                    <MuiText
                         className={`leave-status ${getStatusClass(
                             selectedLeave.status
                         )}`}
-                    >
+                     component="span" variant="inherit">
                         {selectedLeave.status}
-                    </span>
-                </div>
+                    </MuiText>
+                </MuiLayoutBox>
 
                 {/* APPROVAL / REJECTION DETAILS */}
 
                 {String(selectedLeave.status || "").toLowerCase() === "approved" && (
-                    <div
+                    <MuiLayoutBox
                         style={{
                             display: "grid",
                             gridTemplateColumns: "1fr 1fr",
                             gap: "20px",
                         }}
-                    >
-                        <div>
-                            <div
+                     component="div">
+                        <MuiLayoutBox component="div">
+                            <MuiLayoutBox
                                 style={{
                                     fontSize: "12px",
                                     color: "#64748b",
                                     marginBottom: "5px",
                                 }}
-                            >
+                             component="div">
                                 Approved By
-                            </div>
+                            </MuiLayoutBox>
 
-                            <div
+                            <MuiLayoutBox
                                 style={{
                                     fontSize: "15px",
                                     fontWeight: 600,
                                     color: "#1e293b",
                                 }}
-                            >
+                             component="div">
                                 {selectedLeave.approvedByName ||
  selectedLeave.ApprovedByName ||
  selectedLeave.approvedByEmployeeName ||
@@ -4597,27 +4656,27 @@ const closeViewLeaveDialog = () => {
  selectedLeave.approvedBy ||
  selectedLeave.ApprovedBy ||
  "-"}
-                            </div>
-                        </div>
+                            </MuiLayoutBox>
+                        </MuiLayoutBox>
 
-                        <div>
-                            <div
+                        <MuiLayoutBox component="div">
+                            <MuiLayoutBox
                                 style={{
                                     fontSize: "12px",
                                     color: "#64748b",
                                     marginBottom: "5px",
                                 }}
-                            >
+                             component="div">
                                 Approved Date
-                            </div>
+                            </MuiLayoutBox>
 
-                            <div
+                            <MuiLayoutBox
                                 style={{
                                     fontSize: "15px",
                                     fontWeight: 600,
                                     color: "#1e293b",
                                 }}
-                            >
+                             component="div">
                                 {selectedLeave.approvedDate
                                     ? new Date(
                                           selectedLeave.approvedDate
@@ -4630,63 +4689,63 @@ const closeViewLeaveDialog = () => {
                                           hour12: true,
                                       })
                                     : "-"}
-                            </div>
-                        </div>
-                    </div>
+                            </MuiLayoutBox>
+                        </MuiLayoutBox>
+                    </MuiLayoutBox>
                 )}
 
                 {String(selectedLeave.status || "").toLowerCase() === "rejected" && (
-                    <div
+                    <MuiLayoutBox
                         style={{
                             display: "grid",
                             gridTemplateColumns: "1fr 1fr",
                             gap: "20px",
                         }}
-                    >
-                        <div>
-                            <div
+                     component="div">
+                        <MuiLayoutBox component="div">
+                            <MuiLayoutBox
                                 style={{
                                     fontSize: "12px",
                                     color: "#64748b",
                                     marginBottom: "5px",
                                 }}
-                            >
+                             component="div">
                                 Rejected By
-                            </div>
+                            </MuiLayoutBox>
 
-                            <div
+                            <MuiLayoutBox
                                 style={{
                                     fontSize: "15px",
                                     fontWeight: 600,
                                     color: "#1e293b",
                                 }}
-                            >
+                             component="div">
                                 {selectedLeave.rejectedByName ||
  selectedLeave.RejectedByName ||
  selectedLeave.rejectedByEmployeeName ||
  selectedLeave.RejectedByEmployeeName ||
  "-"}
-                            </div>
-                        </div>
+                            </MuiLayoutBox>
+                        </MuiLayoutBox>
 
-                        <div>
-                            <div
+                        <MuiLayoutBox component="div">
+                            <MuiLayoutBox
                                 style={{
                                     fontSize: "12px",
                                     color: "#64748b",
                                     marginBottom: "5px",
                                 }}
-                            >
+                             component="div">
                                 Rejected Date
-                            </div>
+                            </MuiLayoutBox>
 
-                            <div
+                            <MuiLayoutBox
                                 style={{
                                     fontSize: "15px",
                                     fontWeight: 600,
                                     color: "#1e293b",
                                 }}
-                            >
+                             component="div">
                                 {selectedLeave.rejectedDate
                                     ? new Date(
                                           selectedLeave.rejectedDate
@@ -4699,24 +4758,24 @@ const closeViewLeaveDialog = () => {
                                           hour12: true,
                                       })
                                     : "-"}
-                            </div>
-                        </div>
-                    </div>
+                            </MuiLayoutBox>
+                        </MuiLayoutBox>
+                    </MuiLayoutBox>
                 )}
 
                 {/* Reason */}
-                <div>
-                    <div
+                <MuiLayoutBox component="div">
+                    <MuiLayoutBox
                         style={{
                             fontSize: "12px",
                             color: "#64748b",
                             marginBottom: "5px",
                         }}
-                    >
+                     component="div">
                         Reason
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div
+                    <MuiLayoutBox
                         style={{
                             background: "#f8fafc",
                             border: "1px solid #e2e8f0",
@@ -4726,26 +4785,26 @@ const closeViewLeaveDialog = () => {
                             color: "#334155",
                             minHeight: "60px",
                         }}
-                    >
+                     component="div">
                         {selectedLeave.reason ||
                             "No reason provided."}
-                    </div>
-                </div>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
                 {/* Supporting Document */}
                 {selectedLeave.documentPath && (
-                    <div>
-                        <div
+                    <MuiLayoutBox component="div">
+                        <MuiLayoutBox
                             style={{
                                 fontSize: "12px",
                                 color: "#64748b",
                                 marginBottom: "8px",
                             }}
-                        >
+                         component="div">
                             Supporting Document
-                        </div>
+                        </MuiLayoutBox>
 
-                        <div
+                        <MuiLayoutBox
                             style={{
                                 display: "flex",
                                 alignItems: "center",
@@ -4756,7 +4815,7 @@ const closeViewLeaveDialog = () => {
                                 borderRadius: "8px",
                                 background: "#f8fafc",
                             }}
-                        >
+                         component="div">
                             <Typography
                                 sx={{
                                     fontSize: "14px",
@@ -4787,7 +4846,7 @@ const closeViewLeaveDialog = () => {
                                     ? "Opening..."
                                     : "View Document"}
                             </Button>
-                        </div>
+                        </MuiLayoutBox>
 
                         {documentError && (
                             <Alert
@@ -4797,10 +4856,10 @@ const closeViewLeaveDialog = () => {
                                 {documentError}
                             </Alert>
                         )}
-                    </div>
+                    </MuiLayoutBox>
                 )}
 
-            </div>
+            </MuiLayoutBox>
         )}
 
     </DialogContent>
@@ -4844,7 +4903,7 @@ const closeViewLeaveDialog = () => {
     </DialogActions>
 
 </Dialog>
-        </div>
+        </MuiLayoutBox>
     );
 };
 

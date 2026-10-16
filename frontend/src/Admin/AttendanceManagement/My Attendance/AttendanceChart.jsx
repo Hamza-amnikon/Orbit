@@ -31,6 +31,7 @@ import { getProfile } from "../../Services/ProfileService";
  * because it sits in the same folder as LeaveService.js.
  */
 import LeaveService from "../../Services/LeaveService";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 /* =========================================================
@@ -1745,74 +1746,74 @@ function AttendanceChart({
 
         return (
 
-            <div className="attendance-tooltip">
+            <MuiLayoutBox className="attendance-tooltip" component="div">
 
-                <div className="attendance-tooltip-title">
+                <MuiLayoutBox className="attendance-tooltip-title" component="div">
 
                     {months[month]} {data.day}
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <div className="attendance-tooltip-row">
+                <MuiLayoutBox className="attendance-tooltip-row" component="div">
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Status  :
-                    </span>
+                    </MuiText>
 
-                    <strong
+                    <MuiText
                         className={
                              statusClass
                         }
-                    >
+                     component="strong" variant="inherit">
                         {data.status}
-                    </strong>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
 
                 {data.hours > 0 && (
 
-                    <div className="attendance-tooltip-row">
+                    <MuiLayoutBox className="attendance-tooltip-row" component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Working Hours  :
-                        </span>
+                        </MuiText>
 
-                        <strong>
+                        <MuiText component="strong" variant="inherit">
                             {data.hours.toFixed(2)} hrs
-                        </strong>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
                 )}
 
 
                 {data.isAbsent && (
 
-                    <div className="attendance-tooltip-message">
+                    <MuiLayoutBox className="attendance-tooltip-message" component="div">
 
                          Absent 
 
-                    </div>
+                    </MuiLayoutBox>
 
                 )}
 
 
                 {data.isWeekend && (
 
-                    <div className="attendance-tooltip-message">
+                    <MuiLayoutBox className="attendance-tooltip-message" component="div">
 
                         Weekly off 
 
-                    </div>
+                    </MuiLayoutBox>
 
                 )}
 
 
                 {data.isLeave && (
 
-                    <div className="attendance-tooltip-message">
+                    <MuiLayoutBox className="attendance-tooltip-message" component="div">
 
                         {
                             data.leave?.reason
@@ -1820,11 +1821,11 @@ function AttendanceChart({
                                 : "Approved leave"
                         }
 
-                    </div>
+                    </MuiLayoutBox>
 
                 )}
 
-            </div>
+            </MuiLayoutBox>
 
         );
 
@@ -1837,35 +1838,35 @@ function AttendanceChart({
 
     return (
 
-        <div className="attendance-card">
+        <MuiLayoutBox className="attendance-card" component="div">
 
 
             {/* =================================================
                 HEADER
             ================================================= */}
 
-            <div className="attendance-header">
+            <MuiLayoutBox className="attendance-header" component="div">
 
-                <div className="attendance-heading">
+                <MuiLayoutBox className="attendance-heading" component="div">
 
-                    <div className="attendance-heading-icon">
+                    <MuiLayoutBox className="attendance-heading-icon" component="div">
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             Attendance Overview
-                        </h2>
+                        </MuiText>
 
-                        <p>
+                        <MuiText component="p" variant="body1">
                             Track your daily attendance and working hours
-                        </p>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
                 <FormControl
@@ -1904,75 +1905,75 @@ function AttendanceChart({
 
                 </FormControl>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 LEGEND
             ================================================= */}
 
-            <div className="attendance-legend">
+            <MuiLayoutBox className="attendance-legend" component="div">
 
-                <span>
+                <MuiText component="span" variant="inherit">
 
-                    <i className="legend-dot present-dot" />
+                    <MuiLayoutBox className="legend-dot present-dot"  component="span"/>
 
                     Present
 
-                </span>
+                </MuiText>
 
 
-                <span>
+                <MuiText component="span" variant="inherit">
 
-                    <i className="legend-dot absent-dot" />
+                    <MuiLayoutBox className="legend-dot absent-dot"  component="span"/>
 
                     Absent
 
-                </span>
+                </MuiText>
 
 
-                <span>
+                <MuiText component="span" variant="inherit">
 
-                    <i className="legend-dot leave-dot" />
+                    <MuiLayoutBox className="legend-dot leave-dot"  component="span"/>
 
                     Leave
 
-                </span>
+                </MuiText>
 
 
-                <span>
+                <MuiText component="span" variant="inherit">
 
-                    <i className="legend-dot wfh-dot" />
+                    <MuiLayoutBox className="legend-dot wfh-dot"  component="span"/>
 
                     WFH
 
-                </span>
+                </MuiText>
 
 
-                <span>
+                <MuiText component="span" variant="inherit">
 
-                    <i className="legend-dot weekend-dot" />
+                    <MuiLayoutBox className="legend-dot weekend-dot"  component="span"/>
 
                     Weekend
 
-                </span>
+                </MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 CHART
             ================================================= */}
 
-            <div className="attendance-chart-container">
+            <MuiLayoutBox className="attendance-chart-container" component="div">
 
                 {loading || shiftLoading || leavesLoading ? (
 
-                    <div className="attendance-loading">
+                    <MuiLayoutBox className="attendance-loading" component="div">
 
                         Loading attendance...
 
-                    </div>
+                    </MuiLayoutBox>
 
                 ) : (
 
@@ -2187,152 +2188,152 @@ function AttendanceChart({
 
                 )}
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 SUMMARY
             ================================================= */}
 
-            <div className="attendance-summary">
+            <MuiLayoutBox className="attendance-summary" component="div">
 
 
                 {/* PRESENT */}
 
-                <div className="attendance-summary-card present">
+                <MuiLayoutBox className="attendance-summary-card present" component="div">
 
-                    <div className="summary-icon">
+                    <MuiLayoutBox className="summary-icon" component="div">
                         ✓
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="summary-content">
+                    <MuiLayoutBox className="summary-content" component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Present
-                        </span>
+                        </MuiText>
 
 
-                        <div>
+                        <MuiLayoutBox component="div">
 
-                            <h3>
+                            <MuiText component="h3" variant="h6">
                                 {summary.present}
-                            </h3>
+                            </MuiText>
 
-                            <small>
+                            <MuiText component="small" variant="caption">
                                 Days attended
-                            </small>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
                 {/* ABSENT */}
 
-                <div className="attendance-summary-card absent">
+                <MuiLayoutBox className="attendance-summary-card absent" component="div">
 
-                    <div className="summary-icon">
+                    <MuiLayoutBox className="summary-icon" component="div">
                         !
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="summary-content">
+                    <MuiLayoutBox className="summary-content" component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Absent
-                        </span>
+                        </MuiText>
 
 
-                        <div>
+                        <MuiLayoutBox component="div">
 
-                            <h3>
+                            <MuiText component="h3" variant="h6">
                                 {summary.absent}
-                            </h3>
+                            </MuiText>
 
-                            <small>
+                            <MuiText component="small" variant="caption">
                                 Days absent
-                            </small>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
                 {/* LEAVE */}
 
-                <div className="attendance-summary-card leave">
+                <MuiLayoutBox className="attendance-summary-card leave" component="div">
 
-                    <div className="summary-icon">
+                    <MuiLayoutBox className="summary-icon" component="div">
                         L
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="summary-content">
+                    <MuiLayoutBox className="summary-content" component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Leave
-                        </span>
+                        </MuiText>
 
 
-                        <div>
+                        <MuiLayoutBox component="div">
 
-                            <h3>
+                            <MuiText component="h3" variant="h6">
                                 {summary.leave}
-                            </h3>
+                            </MuiText>
 
-                            <small>
+                            <MuiText component="small" variant="caption">
                                 Approved leave
-                            </small>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
 
                 {/* WEEKEND */}
 
-                <div className="attendance-summary-card weekend">
+                <MuiLayoutBox className="attendance-summary-card weekend" component="div">
 
-                    <div className="summary-icon">
+                    <MuiLayoutBox className="summary-icon" component="div">
                         S
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="summary-content">
+                    <MuiLayoutBox className="summary-content" component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Weekend
-                        </span>
+                        </MuiText>
 
 
-                        <div>
+                        <MuiLayoutBox component="div">
 
-                            <h3>
+                            <MuiText component="h3" variant="h6">
                                 {summary.weekend}
-                            </h3>
+                            </MuiText>
 
-                            <small>
+                            <MuiText component="small" variant="caption">
                                 Non-working days
-                            </small>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
-
-
-            </div>
+                </MuiLayoutBox>
 
 
-        </div>
+            </MuiLayoutBox>
+
+
+        </MuiLayoutBox>
 
     );
 

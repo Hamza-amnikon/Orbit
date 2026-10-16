@@ -1405,3 +1405,22 @@ p {
             none;
     }
 }
+
+/* Keep all module card content aligned to one clear left edge. */
+.employee-dashboard .employee-card {
+    align-items: flex-start;
+    text-align: left;
+}
+
+.employee-dashboard .employee-card h3,
+.employee-dashboard .employee-card p {
+    width: 100%;
+    max-width: 100%;
+    text-align: left;
+}
+
+.employee-dashboard .employee-card .card-footer {
+    align-self: stretch;
+    width: 100%;
+    text-align: left;
+}

@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem, Button, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert, TextField, InputAdornment } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { ArrowBack, Refresh, Download, PeopleAlt, CheckCircle, Cancel, Search } from "@mui/icons-material";
 import RoleForm from "./RoleForm";
 import RoleTable from "./RoleTable";
-import { getRoles } from "./RoleService";
+import { getRoles, deleteRole } from "./RoleService";
 import "./Role.css";
 import { useAuth } from "../../context/AuthContext";
 import { loadXlsx } from "../../utils/exportLibraries";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function Role() {
   const navigate = useNavigate();
@@ -31,6 +33,8 @@ function Role() {
   const [editRole, setEditRole] = useState(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [pendingDelete, setPendingDelete] = useState(null);
+  const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
   // Fetch Roles
   const fetchRoles = async () => {
@@ -111,8 +115,24 @@ function Role() {
 
     XLSX.utils.book_append_sheet(workbook, worksheet, "Roles");
 
-    XLSX.writeFile(workbook, "Roles.xlsx");
+    XLSX.writeFile(workbook, `Spark_Roles_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
+
+  const confirmDeleteRole = async () => {
+    if (!canDelete || !pendingDelete) return;
+    try {
+      await deleteRole(pendingDelete.roleId);
+      await fetchRoles();
+      setNotice({ open: true, message: "Role deleted successfully.", severity: "success" });
+    } catch (error) {
+      console.error("Error deleting role:", error);
+      setNotice({ open: true, message: error.response?.data?.title || "Unable to delete role.", severity: "error" });
+    } finally {
+      setPendingDelete(null);
+    }
+  };
+
+  const showRoleNotice = (message, severity = "success") => setNotice({ open: true, message, severity });
 
   // =========================================================
   // VIEW PERMISSION
@@ -120,121 +140,118 @@ function Role() {
 
   if (!canView) {
     return (
-      <div style={{ padding: "60px", textAlign: "center" }}>
-        <h2>Access Denied</h2>
-        <p>You do not have permission to access this page.</p>
-      </div>
+      <MuiLayoutBox style={{ padding: "60px", textAlign: "center" }} component="div">
+        <MuiText component="h2" variant="h5">Access Denied</MuiText>
+        <MuiText component="p" variant="body1">You do not have permission to access this page.</MuiText>
+      </MuiLayoutBox>
     );
   }
 
   return (
-    <div className="role-page">
+    <MuiLayoutBox className="role-page" component="div">
       {/* Header */}
 
-      <div className="role-header-card">
-        <div>
-          <h1>Role Management</h1>
+      <MuiLayoutBox className="role-header-card" component="div">
+        <MuiLayoutBox className="role-title-wrap" component="div">
+          <Tooltip title="Back to employee management">
+            <IconButton className="role-back-button" aria-label="Back to employee management" onClick={() => navigate("/employees")}><ArrowBack /></IconButton>
+          </Tooltip>
+          <MuiLayoutBox component="div">
+          <MuiText component="h1" variant="h4">Role Management</MuiText>
 
-          <p>Manage user roles and permissions.</p>
-        </div>
+          <MuiText component="p" variant="body1">Manage user roles and permissions.</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="role-header-buttons">
-          <button
-            className="previous-btn"
-            onClick={() => navigate("/employees")}
-          >
-            ← Previous
-          </button>
-
-          <button className="refresh-btn" onClick={handleRefresh}>
-            ↻ Refresh
-          </button>
+        <MuiLayoutBox className="role-header-buttons" component="div">
+          <Button variant="outlined" startIcon={<Refresh />} onClick={handleRefresh}>Refresh</Button>
 
           {canExport && (
-            <button className="export-btn" onClick={exportToExcel}>
-              ⬇ Export
-            </button>
+            <Button variant="outlined" startIcon={<Download />} onClick={exportToExcel}>Export Excel</Button>
           )}
 
           {canCreate && (
-            <button
-              className="add-role-btn"
+            <Button
+              variant="contained"
+              startIcon={<AddRoundedIcon />}
               onClick={() => {
                 setEditRole(null);
                 setShowForm(true);
               }}
             >
-              <AddRoundedIcon fontSize="small" />
-              <span>Add Role</span>
-            </button>
+              Add Role
+            </Button>
           )}
-        </div>
-      </div>
+        </MuiLayoutBox>
+      </MuiLayoutBox>
 
       {/* Statistics */}
 
-      <div className="role-stats">
-        <div className="role-stat-card">
-          <div className="role-stat-icon blue">👥</div>
+      <MuiLayoutBox className="role-stats" component="div">
+        <MuiLayoutBox className={`role-stat-card ${statusFilter === "" ? "selected" : ""}`} component="div" role="button" tabIndex={0} onClick={() => setStatusFilter("")} onKeyDown={(event) => event.key === "Enter" && setStatusFilter("")}>
+          <MuiLayoutBox className="role-stat-icon blue" component="div"><PeopleAlt /></MuiLayoutBox>
 
-          <div>
-            <h3>{totalRoles}</h3>
+          <MuiLayoutBox component="div">
+            <MuiText component="h3" variant="h6">{totalRoles}</MuiText>
 
-            <p>Total Roles</p>
-          </div>
-        </div>
+            <MuiText component="p" variant="body1">Total Roles</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="role-stat-card">
-          <div className="role-stat-icon green">✔</div>
+        <MuiLayoutBox className={`role-stat-card ${statusFilter === "Active" ? "selected" : ""}`} component="div" role="button" tabIndex={0} onClick={() => setStatusFilter((current) => current === "Active" ? "" : "Active")} onKeyDown={(event) => event.key === "Enter" && setStatusFilter((current) => current === "Active" ? "" : "Active")}>
+          <MuiLayoutBox className="role-stat-icon green" component="div"><CheckCircle /></MuiLayoutBox>
 
-          <div>
-            <h3>{activeRoles}</h3>
+          <MuiLayoutBox component="div">
+            <MuiText component="h3" variant="h6">{activeRoles}</MuiText>
 
-            <p>Active Roles</p>
-          </div>
-        </div>
+            <MuiText component="p" variant="body1">Active Roles</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="role-stat-card">
-          <div className="role-stat-icon red">✖</div>
+        <MuiLayoutBox className={`role-stat-card ${statusFilter === "Inactive" ? "selected" : ""}`} component="div" role="button" tabIndex={0} onClick={() => setStatusFilter((current) => current === "Inactive" ? "" : "Inactive")} onKeyDown={(event) => event.key === "Enter" && setStatusFilter((current) => current === "Inactive" ? "" : "Inactive")}>
+          <MuiLayoutBox className="role-stat-icon red" component="div"><Cancel /></MuiLayoutBox>
 
-          <div>
-            <h3>{inactiveRoles}</h3>
+          <MuiLayoutBox component="div">
+            <MuiText component="h3" variant="h6">{inactiveRoles}</MuiText>
 
-            <p>Inactive Roles</p>
-          </div>
-        </div>
-      </div>
+            <MuiText component="p" variant="body1">Inactive Roles</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
+      </MuiLayoutBox>
 
       {/* Form */}
 
       {showForm && (canCreate || canEdit) && (
         <RoleForm
           fetchRoles={fetchRoles}
+          showNotice={showRoleNotice}
           editRole={editRole}
           setEditRole={setEditRole}
           setShowForm={setShowForm}
+          setPendingDelete={setPendingDelete}
         />
       )}
 
       {/* Search */}
 
-      <div className="role-search-card">
+      <MuiLayoutBox className="role-search-card" component="div">
 
-        <div className="role-filter-row">
+        <MuiLayoutBox className="role-filter-row" component="div">
 
-          <div className="role-search-box">
-
-            <span className="search-icon">🔍</span>
-
-            <input
-              type="text"
-              className="role-search"
-              placeholder="Search role..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-
-          </div>
+          <TextField
+            className="role-search-field"
+            fullWidth
+            placeholder="Search roles..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            slotProps={{ input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            } }}
+          />
 
           <FormControl className="role-status-filter">
 
@@ -262,33 +279,40 @@ function Role() {
 
           </FormControl>
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
       {/* Table */}
 
-      <div className="role-list-card">
-        <div className="role-list-header">
-          <div>
-            <h2>Role List</h2>
+      <MuiLayoutBox className="role-list-card" component="div">
+        <MuiLayoutBox className="role-list-header" component="div">
+          <MuiLayoutBox component="div">
+            <MuiText component="h2" variant="h5">Role List</MuiText>
 
-            <p>
+            <MuiText component="p" variant="body1">
               Showing {filteredRoles.length} of {roles.length} roles
-            </p>
-          </div>
-        </div>
+            </MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
         <RoleTable
           roles={filteredRoles}
-          fetchRoles={fetchRoles}
           setEditRole={setEditRole}
           setShowForm={setShowForm}
           canEdit={canEdit}
           canDelete={canDelete}
         />
-      </div>
-    </div>
+      </MuiLayoutBox>
+      <Dialog open={Boolean(pendingDelete)} onClose={() => setPendingDelete(null)}>
+        <DialogTitle>Delete role?</DialogTitle>
+        <DialogContent>Are you sure you want to delete {pendingDelete?.role || "this role"}?</DialogContent>
+        <DialogActions><Button onClick={() => setPendingDelete(null)}>Cancel</Button><Button color="error" variant="contained" onClick={confirmDeleteRole}>Delete</Button></DialogActions>
+      </Dialog>
+      <Snackbar open={notice.open} autoHideDuration={4000} onClose={() => setNotice((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
+        <Alert severity={notice.severity} variant="filled" onClose={() => setNotice((current) => ({ ...current, open: false }))}>{notice.message}</Alert>
+      </Snackbar>
+    </MuiLayoutBox>
   );
 }
 

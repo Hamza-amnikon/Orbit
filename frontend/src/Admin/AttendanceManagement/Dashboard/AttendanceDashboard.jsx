@@ -1,6 +1,7 @@
 import "./AttendanceDashboard.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import DashboardCard from "./DashboardCard";
 
@@ -21,8 +22,12 @@ import EditAttendanceDialog from "../AttendanceLogs/EditAttendanceDialog";
 import DeleteAttendanceDialog from "../AttendanceLogs/DeleteAttendanceDialog";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Alert, Box as MuiLayoutBox, Typography as MuiText, Button, IconButton, Snackbar } from "@mui/material";
+import { ArrowBackRounded, RefreshRounded, FileDownloadOutlined, CalendarMonthRounded } from "@mui/icons-material";
+import { exportRowsToExcel } from "../../../utils/exportExcel";
 
 export default function AttendanceDashboard() {
+  const navigate = useNavigate();
   const { hasPermission } = useAuth();
 
   const permissionRoute = "/attendance/dashboard";
@@ -42,6 +47,8 @@ export default function AttendanceDashboard() {
   const [todayAttendance, setTodayAttendance] = useState([]);
 
   const [loading, setLoading] = useState(false);
+  const [summaryFilter, setSummaryFilter] = useState("");
+  const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
   const [selectedAttendance, setSelectedAttendance] = useState(null);
 
@@ -50,6 +57,24 @@ export default function AttendanceDashboard() {
   const [editOpen, setEditOpen] = useState(false);
 
   const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const displayedAttendance = useMemo(() => !summaryFilter ? todayAttendance : todayAttendance.filter((item) => {
+    if (summaryFilter === "Leave") return item.status === "Leave" || item.status === "On Leave";
+    return item.status === summaryFilter;
+  }), [todayAttendance, summaryFilter]);
+
+  const handleExport = async () => {
+    try {
+      await exportRowsToExcel(displayedAttendance, [
+        ["Employee ID", (row) => row.azureEmployeeId || row.employeeCode || ""], ["Employee", "employeeName"], ["Date", (row) => row.attendanceDate ? new Date(row.attendanceDate).toLocaleDateString("en-GB") : ""],
+        ["Shift", "shift"], ["Check In", "checkIn"], ["Check Out", "checkOut"], ["Total Hours", "totalHours"], ["Status", "status"],
+      ], "Todays-Attendance.xlsx", "Attendance");
+      setNotice({ open: true, severity: "success", message: `Exported ${displayedAttendance.length} attendance records.` });
+    } catch (error) {
+      console.error("Attendance export error", error);
+      setNotice({ open: true, severity: "error", message: "Could not export today's attendance." });
+    }
+  };
 
   useEffect(() => {
     refreshData();
@@ -112,25 +137,35 @@ export default function AttendanceDashboard() {
   }
 
   return (
-    <div className="attendance-dashboard">
+    <MuiLayoutBox className="attendance-dashboard" component="div">
 
       {/* Header */}
 
-      <div className="attendance-dashboard-header">
-        <div>
-          <h2>Attendance Dashboard</h2>
-          <p>Overview of today's attendance across the organization.</p>
-        </div>
+      <MuiLayoutBox className="attendance-dashboard-header" component="div">
+        <MuiLayoutBox className="attendance-header-leading" component="div">
+          <IconButton aria-label="Back to Attendance" onClick={() => navigate("/attendance")} className="attendance-back-button"><ArrowBackRounded /></IconButton>
+          <MuiLayoutBox component="div">
+          <MuiText component="h2" variant="h5">Attendance Dashboard</MuiText>
+          <MuiText component="p" variant="body1">Overview of today's attendance across the organization.</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="dashboard-date">
-          <span>Today</span>
-          <h4>{new Date().toLocaleDateString()}</h4>
-        </div>
-      </div>
+        <MuiLayoutBox className="attendance-dashboard-actions" component="div">
+          <Button variant="outlined" startIcon={<RefreshRounded />} onClick={refreshData}>Refresh</Button>
+          {hasPermission(permissionRoute, "export") && <Button variant="outlined" startIcon={<FileDownloadOutlined />} onClick={handleExport}>Export Excel</Button>}
+          <MuiLayoutBox className="dashboard-date-card" component="div" aria-label={`Today, ${new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}`}>
+            <CalendarMonthRounded />
+            <MuiLayoutBox className="dashboard-date-copy" component="div">
+              <MuiText component="span" variant="inherit">TODAY’S</MuiText>
+              <MuiText component="strong" variant="inherit">{new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</MuiText>
+            </MuiLayoutBox>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
+      </MuiLayoutBox>
 
       {/* Dashboard Cards */}
 
-      <div className="dashboard-card-grid">
+      <MuiLayoutBox className="dashboard-card-grid" component="div">
 
         <DashboardCard
           title="Present"
@@ -138,6 +173,8 @@ export default function AttendanceDashboard() {
           subtitle="Employees Present"
           color="#10B981"
           icon={<GroupsIcon />}
+          onClick={() => setSummaryFilter((current) => current === "Present" ? "" : "Present")}
+          selected={summaryFilter === "Present"}
         />
 
         <DashboardCard
@@ -146,6 +183,8 @@ export default function AttendanceDashboard() {
           subtitle="Employees Absent"
           color="#EF4444"
           icon={<PersonOffIcon />}
+          onClick={() => setSummaryFilter((current) => current === "Absent" ? "" : "Absent")}
+          selected={summaryFilter === "Absent"}
         />
 
         <DashboardCard
@@ -154,6 +193,8 @@ export default function AttendanceDashboard() {
           subtitle="Late Check-ins"
           color="#F59E0B"
           icon={<TimerIcon />}
+          onClick={() => setSummaryFilter((current) => current === "Late" ? "" : "Late")}
+          selected={summaryFilter === "Late"}
         />
 
         <DashboardCard
@@ -162,6 +203,8 @@ export default function AttendanceDashboard() {
           subtitle="Approved Leave"
           color="#8B5CF6"
           icon={<BeachAccessIcon />}
+          onClick={() => setSummaryFilter((current) => current === "Leave" ? "" : "Leave")}
+          selected={summaryFilter === "Leave"}
         />
 
         <DashboardCard
@@ -170,18 +213,20 @@ export default function AttendanceDashboard() {
           subtitle="Work From Home"
           color="#06B6D4"
           icon={<HomeWorkIcon />}
+          onClick={() => setSummaryFilter((current) => current === "WFH" ? "" : "WFH")}
+          selected={summaryFilter === "WFH"}
         />
 
-      </div>
+      </MuiLayoutBox>
 
       {/* Today's Attendance */}
 
-      <div className="dashboard-panel attendance-table-panel">
+      <MuiLayoutBox className="dashboard-panel attendance-table-panel" component="div">
 
-        <h3>Today's Attendance</h3>
+        <MuiText component="h3" variant="h6">Today's Attendance</MuiText>
 
         <AttendanceTable
-          rows={todayAttendance}
+          rows={displayedAttendance}
           loading={loading}
           onView={(row) => {
             setSelectedAttendance(row);
@@ -201,21 +246,21 @@ export default function AttendanceDashboard() {
           }}
         />
 
-      </div>
+      </MuiLayoutBox>
 
       {/* Upcoming Holidays */}
 
-      <div className="dashboard-panel attendance-table-panel">
-        <h3>Upcoming Holidays</h3>
+      <MuiLayoutBox className="dashboard-panel attendance-table-panel" component="div">
+        <MuiText component="h3" variant="h6">Upcoming Holidays</MuiText>
         <CalendarWidget />
-      </div>
+      </MuiLayoutBox>
 
       {/* Quick Actions */}
 
-      <div className="dashboard-panel attendance-table-panel">
-        <h3>Quick Actions</h3>
+      <MuiLayoutBox className="dashboard-panel attendance-table-panel" component="div">
+        <MuiText component="h3" variant="h6">Quick Actions</MuiText>
         <QuickActions />
-      </div>
+      </MuiLayoutBox>
 
       {/* Dialogs */}
 
@@ -252,6 +297,10 @@ export default function AttendanceDashboard() {
         onDelete={handleDelete}
       />
 
-    </div>
+      <Snackbar open={notice.open} autoHideDuration={4500} onClose={() => setNotice((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
+        <Alert severity={notice.severity} variant="filled" onClose={() => setNotice((current) => ({ ...current, open: false }))}>{notice.message}</Alert>
+      </Snackbar>
+
+    </MuiLayoutBox>
   );
 }

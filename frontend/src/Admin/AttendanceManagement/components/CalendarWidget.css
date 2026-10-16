@@ -1,42 +1,15 @@
-.holiday-list{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-}
-
-.holiday-card{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    padding:15px;
-    border:1px solid #e5e7eb;
-    border-radius:10px;
-    transition:.2s;
-}
-
-.holiday-card:hover{
-    background:#f8fafc;
-}
-
-.holiday-icon{
-    width:48px;
-    height:48px;
-    border-radius:10px;
-    background:#2563eb;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.holiday-details h4{
-    margin:0;
-    font-size:16px;
-    color:#1f2937;
-}
-
-.holiday-details p{
-    margin-top:4px;
-    color:#6b7280;
-    font-size:14px;
-}
+.holiday-list{display:flex;flex-direction:column;gap:10px}
+.holiday-card{display:flex;align-items:center;gap:14px;min-width:0;padding:12px 14px;border:1px solid #e3eaf3;border-radius:12px;background:#fff;transition:border-color .18s ease,background .18s ease}
+.holiday-card:hover{border-color:#b9cbed;background:#f9fbff}
+.holiday-date-badge{display:flex;flex:0 0 54px;flex-direction:column;align-items:center;justify-content:center;min-height:62px;border:1px solid #e2eaf8;border-radius:10px;background:#f3f7ff;color:#49658c;line-height:1.15}
+.holiday-date-badge span:first-child{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.holiday-date-badge strong{margin:3px 0;font-size:21px;color:#244b8e}
+.holiday-date-badge span:last-child{font-size:10px}
+.holiday-details{flex:1;min-width:0}
+.holiday-details h4{overflow:hidden;margin:0;color:#1c2f4d;font-size:14px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}
+.holiday-details p{margin:4px 0 0;color:#74839a;font-size:12px}
+.holiday-card .MuiChip-root{height:24px;background:#edf4ff;color:#41669e;font-size:11px;font-weight:600}
+.holiday-widget-state{display:flex;align-items:center;justify-content:center;gap:10px;min-height:105px;color:#718096;font-size:14px}
+.holiday-widget-state p{margin:0;font-size:13px}
+.holiday-widget-link.MuiButton-root{align-self:flex-start;margin-top:2px;padding:5px 8px;color:#2f67ed;font-size:13px;font-weight:600;text-transform:none}
+@media(max-width:520px){.holiday-card{gap:10px;padding:10px}.holiday-card .MuiChip-root{max-width:78px}.holiday-details h4{font-size:13px}}

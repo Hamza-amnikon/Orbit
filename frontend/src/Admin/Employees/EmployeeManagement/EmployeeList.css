@@ -37,6 +37,35 @@
     font-size:15px;
 }
 
+.employee-page-title{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    min-width:0;
+}
+
+.employee-page-title > .MuiBox-root:last-child{
+    min-width:0;
+}
+
+.employee-back-button.MuiIconButton-root{
+    flex:0 0 48px;
+    width:48px;
+    height:48px;
+    color:#405b7e;
+    background:#fff;
+    border:1px solid #dce5f1;
+    border-radius:12px;
+    transition:background-color .18s ease,border-color .18s ease,transform .18s ease;
+}
+
+.employee-back-button.MuiIconButton-root:hover{
+    color:#2f66e9;
+    background:#f1f6ff;
+    border-color:#b9cdf0;
+    transform:translateX(-2px);
+}
+
 /* ==========================================================
    HEADER BUTTONS
 ========================================================== */
@@ -117,7 +146,7 @@
 
     overflow:hidden;
 
-    transition:.35s;
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background-color .22s ease;
 
     border:1px solid #edf2f7;
 
@@ -133,6 +162,31 @@
     box-shadow:
         0 25px 50px rgba(37,99,235,.12);
 
+}
+
+.stats-card-action-area.MuiCardActionArea-root{
+    height:100%;
+    text-align:left;
+}
+
+.stats-card-action-area .MuiCardContent-root{
+    display:flex;
+    min-height:188px;
+    flex-direction:column;
+    align-items:flex-start;
+    padding:24px !important;
+}
+
+.stats-card.is-selected{
+    border-color:#7ea5f2;
+    background:#f9fbff;
+    box-shadow:0 0 0 3px rgba(47,102,233,.09),0 12px 32px rgba(15,23,42,.06);
+}
+
+.stats-card-action-area.MuiCardActionArea-root.Mui-focusVisible{
+    outline:3px solid rgba(47,102,233,.3);
+    outline-offset:-3px;
+    border-radius:inherit;
 }
 
 .stats-card .MuiCardContent-root{
@@ -209,6 +263,25 @@
 
     color:#0f172a;
 
+}
+
+.stats-card .stats-card-hint.MuiTypography-root{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    margin-top:14px;
+    color:#2f66e9;
+    font-size:13px;
+    font-weight:600;
+    transition:gap .18s ease;
+}
+
+.stats-card:hover .stats-card-hint.MuiTypography-root{
+    gap:9px;
+}
+
+.stats-card .stats-card-hint svg{
+    font-size:16px;
 }
 
 /* ==========================================================
@@ -472,9 +545,8 @@
     }
 
     .stats-grid{
-
-        grid-template-columns:1fr;
-
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:14px;
     }
 
     .header-buttons{
@@ -487,6 +559,21 @@
 
         width:100%;
 
+    }
+
+    .employee-page-title{
+        align-items:flex-start;
+    }
+
+    .employee-back-button.MuiIconButton-root{
+        flex-basis:44px;
+        width:44px;
+        height:44px;
+    }
+
+    .stats-card-action-area .MuiCardContent-root{
+        min-height:164px;
+        padding:20px !important;
     }
 
 }
@@ -511,4 +598,65 @@
 
     }
 
+    .employee-list-page .employee-page-header{
+        gap:16px;
+        margin-bottom:22px;
+    }
+
+    .employee-list-page .employee-page-title{
+        gap:10px;
+    }
+
+    .employee-list-page .employee-page-header p{
+        margin-bottom:0;
+        font-size:14px;
+        line-height:1.45;
+    }
+
+    .employee-list-page .header-buttons{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:8px;
+    }
+
+    .employee-list-page .header-buttons .MuiButton-root{
+        min-width:0;
+        height:42px;
+        padding-inline:8px;
+        font-size:.8rem;
+        white-space:nowrap;
+    }
+
+    .employee-list-page .stats-grid{
+        gap:10px;
+        margin-bottom:18px;
+    }
+
+    .employee-list-page .stats-card-action-area .MuiCardContent-root{
+        min-height:138px;
+        padding:14px !important;
+        gap:8px;
+    }
+
+    .employee-list-page .stats-card h2{
+        font-size:24px;
+    }
+
+    .employee-list-page .toolbar-card .MuiCardContent-root{
+        padding:12px !important;
+    }
+
+    .employee-list-page .toolbar{
+        gap:10px;
+    }
+
+    .employee-list-page .employee-table-header{
+        padding:14px;
+    }
+
+    .employee-list-page .employee-table-title h2{
+        font-size:20px;
+    }
+
 }
+

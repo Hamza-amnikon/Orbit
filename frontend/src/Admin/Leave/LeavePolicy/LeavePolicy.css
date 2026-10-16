@@ -385,3 +385,393 @@
     background: #2563eb !important;
     color: #ffffff !important;
 }
+
+/* =========================================================
+   STANDARD LEAVE PAGE LAYOUT
+========================================================= */
+
+.leave-policy-page {
+    width: 100%;
+    min-height: calc(100vh - 72px);
+    padding: 28px 32px 36px;
+    background: #f4f8fd;
+}
+
+.leave-policy-page .leave-policy-header {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    margin: 0 0 24px;
+}
+
+.leave-policy-page .policy-back-btn {
+    width: 44px;
+    height: 44px;
+    color: #405774;
+    background: #fff;
+    border: 1px solid #d7e2f0;
+    border-radius: 12px;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.leave-policy-page .policy-back-btn:hover {
+    color: #2563eb;
+    background: #eff6ff;
+    border-color: #b9d0f3;
+}
+
+.leave-policy-page .leave-policy-heading-group {
+    min-width: 0;
+}
+
+.leave-policy-page .leave-policy-title {
+    color: #10264b !important;
+    font-size: clamp(24px, 2vw, 30px) !important;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+}
+
+.leave-policy-page .leave-policy-description {
+    margin-top: 6px !important;
+    color: #647a98 !important;
+    font-size: 14px !important;
+    line-height: 1.5;
+}
+
+.leave-policy-page .leave-policy-actions {
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.leave-policy-page .policy-refresh-btn,
+.leave-policy-page .policy-add-btn {
+    min-height: 44px !important;
+    padding: 0 18px !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    font-weight: 650 !important;
+}
+
+.leave-policy-page .policy-refresh-btn {
+    border-color: #d3e0f0 !important;
+    color: #2858bd !important;
+    background: #fff !important;
+}
+
+.leave-policy-page .policy-refresh-btn:hover {
+    border-color: #a9c4ee !important;
+    background: #f1f6ff !important;
+}
+
+.leave-policy-page .policy-add-btn {
+    background: #2f63e9 !important;
+    box-shadow: 0 4px 10px rgba(47, 99, 233, 0.18) !important;
+}
+
+.leave-policy-page .policy-add-btn:hover {
+    background: #2452ce !important;
+    box-shadow: 0 6px 14px rgba(47, 99, 233, 0.22) !important;
+}
+
+/* =========================================================
+   POLICY TABLE CARD AND HEADING
+========================================================= */
+
+.leave-policy-page .leave-policy-table-container {
+    overflow: hidden !important;
+    border: 1px solid #dce6f2 !important;
+    border-radius: 16px !important;
+    background: #fff !important;
+    box-shadow: 0 5px 18px rgba(22, 48, 84, 0.055) !important;
+}
+
+.leave-policy-page .leave-policy-table-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 19px 22px;
+    border-bottom: 1px solid #e5edf6;
+}
+
+.leave-policy-page .leave-policy-table-title {
+    color: #152d53;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.leave-policy-page .leave-policy-table-subtitle {
+    margin-top: 4px;
+    color: #7285a0;
+    font-size: 13px;
+}
+
+.leave-policy-page .leave-policy-count {
+    height: 28px;
+    color: #47627e;
+    background: #f0f5fb;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+/* =========================================================
+   TABLE ALIGNMENT AND ROWS
+========================================================= */
+
+.leave-policy-page .leave-policy-table {
+    width: 100%;
+    min-width: 900px;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.leave-policy-page .leave-policy-table .MuiTableCell-root {
+    box-sizing: border-box;
+    border-left: 0 !important;
+    border-right: 0 !important;
+}
+
+.leave-policy-page .leave-policy-table .MuiTableCell-head {
+    height: 48px;
+    padding: 0 18px !important;
+    color: #4a6688 !important;
+    background: #f0f5fc !important;
+    border-bottom: 1px solid #dfe8f3 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.leave-policy-page .leave-policy-table .MuiTableCell-body {
+    height: 58px;
+    padding: 12px 18px !important;
+    color: #344a66 !important;
+    background: #fff;
+    border-bottom: 1px solid #edf1f6 !important;
+    font-size: 13px !important;
+    white-space: nowrap;
+}
+
+.leave-policy-page .leave-policy-table .MuiTableRow-root:last-child .MuiTableCell-body {
+    border-bottom: 0 !important;
+}
+
+.leave-policy-page .leave-policy-table .MuiTableBody-root .MuiTableRow-root:hover .MuiTableCell-body {
+    background: #f7faff;
+}
+
+.leave-policy-page .leave-policy-table .MuiTableCell-head:nth-of-type(2),
+.leave-policy-page .leave-policy-table .MuiTableCell-head:nth-of-type(4),
+.leave-policy-page .leave-policy-table .MuiTableCell-head:nth-of-type(6),
+.leave-policy-page .leave-policy-table .MuiTableCell-head:nth-of-type(7),
+.leave-policy-page .leave-policy-table .MuiTableCell-body:nth-of-type(2),
+.leave-policy-page .leave-policy-table .MuiTableCell-body:nth-of-type(4),
+.leave-policy-page .leave-policy-table .MuiTableCell-body:nth-of-type(6),
+.leave-policy-page .leave-policy-table .MuiTableCell-body:nth-of-type(7) {
+    text-align: center !important;
+}
+
+.leave-policy-page .policy-leave-type-cell {
+    color: #1d3b68 !important;
+    font-weight: 650 !important;
+}
+
+.leave-policy-page .policy-actions-cell {
+    white-space: nowrap;
+}
+
+.leave-policy-page .policy-actions-cell .MuiIconButton-root {
+    width: 36px;
+    height: 36px;
+    margin: 0 3px;
+    border-radius: 10px;
+}
+
+.leave-policy-page .policy-actions-cell .MuiSvgIcon-root {
+    font-size: 19px;
+}
+
+.leave-policy-page .policy-actions-cell .policy-edit-btn {
+    color: #b45309 !important;
+    background: #fff3cd !important;
+}
+
+.leave-policy-page .policy-actions-cell .policy-edit-btn:hover {
+    color: #92400e !important;
+    background: #ffe8a3 !important;
+}
+
+.leave-policy-page .policy-actions-cell .policy-delete-btn {
+    color: #dc2626 !important;
+    background: #fee2e2 !important;
+}
+
+.leave-policy-page .policy-actions-cell .policy-delete-btn:hover {
+    color: #b91c1c !important;
+    background: #fecaca !important;
+}
+
+.leave-policy-page .policy-status {
+    min-width: 74px;
+    height: 27px !important;
+    padding: 0 12px !important;
+    border: 1px solid transparent;
+    font-size: 12px !important;
+    font-weight: 650 !important;
+}
+
+.leave-policy-page .policy-status.active {
+    color: #087443 !important;
+    background: #e6f7ee !important;
+    border-color: #c8ebd7;
+}
+
+.leave-policy-page .policy-status.inactive {
+    color: #b42318 !important;
+    background: #fff0ef !important;
+    border-color: #f3d0cd;
+}
+
+.leave-policy-page .leave-policy-loading {
+    color: #647a98;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+    .leave-policy-page {
+        padding: 24px 20px 32px;
+    }
+
+    .leave-policy-page .leave-policy-header {
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .leave-policy-page .leave-policy-actions {
+        grid-column: 2;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 600px) {
+    .leave-policy-page {
+        padding: 18px 14px 26px;
+    }
+
+    .leave-policy-page .leave-policy-header {
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .leave-policy-page .policy-back-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+    }
+
+    .leave-policy-page .leave-policy-title {
+        font-size: 23px !important;
+    }
+
+    .leave-policy-page .leave-policy-description {
+        font-size: 13px !important;
+    }
+
+    .leave-policy-page .leave-policy-actions {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .leave-policy-page .leave-policy-actions .MuiButton-root {
+        flex: 1 1 auto;
+        padding: 0 12px !important;
+    }
+
+    .leave-policy-page .leave-policy-table-heading {
+        padding: 16px;
+    }
+
+    .leave-policy-page .leave-policy-table-title {
+        font-size: 15px;
+    }
+
+    .leave-policy-page .leave-policy-table-subtitle {
+        max-width: 240px;
+        font-size: 12px;
+    }
+
+    .leave-policy-page .leave-policy-table {
+        min-width: 860px;
+    }
+}
+
+.leave-policy-delete-dialog .MuiDialog-paper {
+    overflow: hidden;
+    border: 1px solid #dce6f2;
+    border-radius: 16px;
+    box-shadow: 0 20px 56px rgba(24, 44, 78, 0.2);
+}
+
+.leave-policy-delete-dialog .MuiDialogTitle-root {
+    padding: 22px 24px 12px;
+    color: #152d53;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.leave-policy-delete-dialog .MuiDialogContent-root {
+    padding: 8px 24px 20px;
+    color: #60738e;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.leave-policy-delete-dialog .MuiDialogContent-root strong {
+    color: #263d5f;
+}
+
+.leave-policy-delete-dialog .MuiDialogActions-root {
+    gap: 10px;
+    padding: 14px 24px 20px;
+    border-top: 1px solid #e5edf6;
+    background: #f8fafc;
+}
+
+.leave-policy-delete-dialog .policy-delete-cancel-btn,
+.leave-policy-delete-dialog .policy-delete-confirm-btn {
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 9px;
+    font-weight: 650;
+    text-transform: none;
+}
+
+.leave-policy-delete-dialog .policy-delete-cancel-btn {
+    color: #536985;
+    border: 1px solid #d3e0ef;
+    background: #fff;
+}
+
+.leave-policy-delete-dialog .policy-delete-cancel-btn:hover {
+    background: #f1f6fc;
+}
+
+.leave-policy-delete-dialog .policy-delete-confirm-btn {
+    background: #dc3d45;
+    box-shadow: none;
+}
+
+.leave-policy-delete-dialog .policy-delete-confirm-btn:hover {
+    background: #c52f37;
+    box-shadow: none;
+}

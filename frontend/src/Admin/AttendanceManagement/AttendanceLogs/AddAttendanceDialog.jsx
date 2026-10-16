@@ -455,9 +455,9 @@ const handleChange = (e) => {
     fullWidth
     label="Total Hours"
     value={form.totalHours}
-    InputProps={{
+    slotProps={{ input: {
       readOnly: true,
-    }}
+    } }}
     disabled={
       form.status === "Absent" ||
       form.status === "Leave" ||

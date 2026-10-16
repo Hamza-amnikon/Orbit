@@ -152,9 +152,9 @@ function AddLocation({ open, handleClose, handleSave }) {
               label="Location Code"
               name="locationCode"
               value={location.locationCode}
-              InputProps={{
+              slotProps={{ input: {
                 readOnly: true,
-              }}
+              } }}
             />
           </Grid>
 

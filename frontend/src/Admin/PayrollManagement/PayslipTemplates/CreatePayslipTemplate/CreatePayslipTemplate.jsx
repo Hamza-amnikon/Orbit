@@ -23,6 +23,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext";
 
 import "./CreatePayslipTemplate.css";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 const API_BASE_URL = `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
 
@@ -1083,7 +1084,7 @@ function CreatePayslipTemplate({ onBack }) {
                                     .value
                             )
                         }
-                        inputProps={{
+                        slotProps={{ htmlInput: {
                             min: 0,
                             max:
                                 item.calculationType ===
@@ -1091,7 +1092,7 @@ function CreatePayslipTemplate({ onBack }) {
                                     ? 100
                                     : undefined,
                             step: "0.01",
-                        }}
+                        } }}
                     />
 
                     {/* DELETE */}
@@ -1268,7 +1269,7 @@ function CreatePayslipTemplate({ onBack }) {
                 </Box>
             )}
 
-            <form onSubmit={handleSave}>
+            <MuiLayoutBox onSubmit={handleSave} component="form">
                 <Box className="cpt-create-payslip-layout">
                     <Box className="cpt-create-payslip-main">
                         {/* TEMPLATE INFORMATION */}
@@ -1605,27 +1606,27 @@ function CreatePayslipTemplate({ onBack }) {
 
                                 <Box className="cpt-preview-period-grid">
                                     <Box>
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             EMPLOYEE TYPE
-                                        </span>
+                                        </MuiText>
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             {
                                                 employeeType
                                             }
-                                        </strong>
+                                        </MuiText>
                                     </Box>
 
                                     <Box>
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             FREQUENCY
-                                        </span>
+                                        </MuiText>
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             {
                                                 frequency
                                             }
-                                        </strong>
+                                        </MuiText>
                                     </Box>
                                 </Box>
 
@@ -1650,7 +1651,7 @@ function CreatePayslipTemplate({ onBack }) {
                                                         earning.id
                                                     }
                                                 >
-                                                    <span>
+                                                    <MuiText component="span" variant="inherit">
                                                         {
                                                             getComponent(
                                                                 earning.salaryComponentId
@@ -1658,16 +1659,16 @@ function CreatePayslipTemplate({ onBack }) {
                                                                 ?.componentName ||
                                                             "Salary Component"
                                                         }
-                                                    </span>
+                                                    </MuiText>
 
-                                                    <strong>
+                                                    <MuiText component="strong" variant="inherit">
                                                         {earning.calculationType ===
                                                         "Percentage"
                                                             ? `${earning.value}%`
                                                             : formatCurrency(
                                                                   earning.value
                                                               )}
-                                                    </strong>
+                                                    </MuiText>
                                                 </Box>
                                             )
                                         )
@@ -1695,7 +1696,7 @@ function CreatePayslipTemplate({ onBack }) {
                                                         deduction.id
                                                     }
                                                 >
-                                                    <span>
+                                                    <MuiText component="span" variant="inherit">
                                                         {
                                                             getComponent(
                                                                 deduction.salaryComponentId
@@ -1703,16 +1704,16 @@ function CreatePayslipTemplate({ onBack }) {
                                                                 ?.componentName ||
                                                             "Deduction"
                                                         }
-                                                    </span>
+                                                    </MuiText>
 
-                                                    <strong>
+                                                    <MuiText component="strong" variant="inherit">
                                                         {deduction.calculationType ===
                                                         "Percentage"
                                                             ? `${deduction.value}%`
                                                             : formatCurrency(
                                                                   deduction.value
                                                               )}
-                                                    </strong>
+                                                    </MuiText>
                                                 </Box>
                                             )
                                         )
@@ -1720,28 +1721,28 @@ function CreatePayslipTemplate({ onBack }) {
                                 </Box>
 
                                 <Box className="cpt-preview-net-salary">
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         GROSS SALARY
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {formatCurrency(
                                             previewGross
                                         )}
-                                    </strong>
+                                    </MuiText>
                                 </Box>
 
                                 <Box className="cpt-preview-net-salary cpt-preview-net-final">
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         NET SALARY
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {formatCurrency(
                                             previewGross -
                                                 previewDeductions
                                         )}
-                                    </strong>
+                                    </MuiText>
                                 </Box>
 
                                 <Typography className="cpt-preview-calculation-note">
@@ -1782,7 +1783,7 @@ function CreatePayslipTemplate({ onBack }) {
                         </Button>
                     )}
                 </Box>
-            </form>
+            </MuiLayoutBox>
         </Box>
     );
 }

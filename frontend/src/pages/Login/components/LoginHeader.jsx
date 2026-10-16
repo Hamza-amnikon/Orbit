@@ -1,24 +1,25 @@
 import "../styles/Login.css";
 
 import logo from "../../../assets/logo/test.png";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function LoginHeader() {
     return (
-        <div className="login-header">
+        <MuiLayoutBox className="login-header" component="div">
 
-            <img
+            <MuiLayoutBox
                 src={logo}
                 alt="SPARK Logo"
                 className="login-header-logo"
-            />
+             component="img"/>
 
-            <h2>Welcome Back</h2>
+            <MuiText component="h2" variant="h5">Welcome Back</MuiText>
 
-            <p>
+            <MuiText component="p" variant="body1">
                 Sign in to continue to SPARK HRMS
-            </p>
+            </MuiText>
 
-        </div>
+        </MuiLayoutBox>
     );
 }
 

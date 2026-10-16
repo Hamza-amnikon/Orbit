@@ -2,6 +2,20 @@
     padding: 30px;
 }
 
+.attendance-header-leading{display:flex;align-items:center;gap:16px;min-width:0}
+.attendance-back-button{width:42px;height:42px;flex:0 0 42px;border:1px solid #dce4ee!important;border-radius:10px!important;background:#fff!important;color:#3f5067!important}
+.attendance-back-button:hover{background:#f4f7fc!important;border-color:#b8c9df!important}
+.attendance-dashboard-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.attendance-dashboard-actions .MuiButton-root{min-height:40px;border-color:#d1dbe8;color:#263c60;text-transform:none;border-radius:8px}
+.attendance-dashboard-actions .MuiButton-root:hover{border-color:#2f67ed;background:#f5f8ff}
+.attendance-dashboard-actions .dashboard-date-card{display:flex;align-items:center;gap:10px;min-height:48px;padding:5px 13px;border:1px solid #dce6f3;border-radius:10px;background:linear-gradient(135deg,#fff 0%,#f3f7ff 100%);color:#315fa8}
+.attendance-dashboard-actions .dashboard-date-card > svg{font-size:21px;color:#2f67ed}
+.dashboard-date-copy{display:flex;flex-direction:column;gap:2px;line-height:1.15}
+.dashboard-date-copy span{font-size:9px;font-weight:700;letter-spacing:.11em;color:#7b8da8}
+.dashboard-date-copy strong{font-size:13px;font-weight:650;color:#203653;white-space:nowrap}
+.attendance-dashboard .dashboard-card{border:1px solid #e0e6ef;border-radius:12px;box-shadow:0 2px 7px rgba(20,40,70,.04)}
+.attendance-dashboard .dashboard-card-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+
 /* ================= Header ================= */
 
 .attendance-dashboard-header {
@@ -64,14 +78,21 @@
         gap: 15px;
     }
 
+    .attendance-header-leading{align-items:flex-start}
+    .attendance-dashboard-actions{width:100%;justify-content:flex-start}
+    .attendance-dashboard-actions .dashboard-date{text-align:left}
+
     .dashboard-date {
         text-align: left;
     }
 
     .dashboard-card-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2,minmax(0,1fr));
     }
 }
+
+@media(max-width:1100px){.attendance-dashboard .dashboard-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:520px){.attendance-dashboard .dashboard-card-grid{grid-template-columns:1fr}}
 
 
 

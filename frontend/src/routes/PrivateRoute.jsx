@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Box as MuiLayoutBox } from "@mui/material";
 
 function PrivateRoute() {
     const { isAuthenticated, loading } = useAuth();
@@ -7,9 +8,9 @@ function PrivateRoute() {
 
     if (loading) {
         return (
-            <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <div>Loading authentication...</div>
-            </div>
+            <MuiLayoutBox style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }} component="div">
+                <MuiLayoutBox component="div">Loading authentication...</MuiLayoutBox>
+            </MuiLayoutBox>
         );
     }
 

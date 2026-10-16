@@ -3,19 +3,15 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { loadXlsx } from "../../../utils/exportLibraries";
 
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    Legend
-} from "recharts";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from "chart.js";
 
 import "./LeaveOverview.css";
 import { useAuth } from "../../../context/AuthContext";
+import { Alert, Box as MuiLayoutBox, Button, ButtonBase as MuiActionButton, IconButton, MenuItem, TextField, Typography as MuiText } from "@mui/material";
+import { ArrowBackRounded, BeachAccessRounded, BlockRounded, CalendarMonthRounded, FileDownloadOutlined, MedicalServicesRounded, PendingActionsRounded, RefreshRounded } from "@mui/icons-material";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 
 // ==========================================
@@ -70,12 +66,14 @@ export default function LeaveOverview() {
             ] = await Promise.all([
                 axios.get(LEAVE_API),
                 axios.get(LEAVE_TYPE_API),
-                axios.get(EVENT_API)
+                axios.get(API_URL)
             ]);
 
 
-            setLeaves(leaveResponse.data);
-            setLeaveTypes(leaveTypeResponse.data);
+            const leaveData = Array.isArray(leaveResponse.data) ? leaveResponse.data : leaveResponse.data?.data || [];
+            const leaveTypeData = Array.isArray(leaveTypeResponse.data) ? leaveTypeResponse.data : leaveTypeResponse.data?.data || [];
+            setLeaves(leaveData);
+            setLeaveTypes(leaveTypeData);
 
 
             // ==========================================
@@ -90,7 +88,8 @@ export default function LeaveOverview() {
             const eventToday = new Date();
             eventToday.setHours(0, 0, 0, 0);
 
-            const events = eventResponse.data
+            const eventData = Array.isArray(eventResponse.data) ? eventResponse.data : eventResponse.data?.data || eventResponse.data?.events || [];
+            const events = eventData
                 .filter((event) => {
 
                     const eventDate = new Date(event.eventDate);
@@ -318,102 +317,109 @@ const rejectedLeaveCount =
 
 
 
-    // ==========================================
-    // Monthly Leave Trend - Grouped By Week
-    // ==========================================
+    // Leave trend counts approved leave days, grouped by leave type.
+    const weeklyTrendData = Array.from({ length: 5 }, (_, index) => ({
+        label: `Week ${index + 1}`,
+        start: new Date(currentYear, currentMonth, index * 7 + 1),
+        end: new Date(currentYear, currentMonth, Math.min((index + 1) * 7, new Date(currentYear, currentMonth + 1, 0).getDate())),
+        values: {},
+    }));
+    const monthlyTrendData = Array.from({ length: 12 }, (_, index) => ({
+        label: new Date(currentYear, index, 1).toLocaleString("en", { month: "short" }),
+        start: new Date(currentYear, index, 1),
+        end: new Date(currentYear, index + 1, 0),
+        values: {},
+    }));
+    const leaveTypeNames = [...new Set(leaves
+        .filter((leave) => leave.status?.toLowerCase() === "approved")
+        .map((leave) => getLeaveTypeName(leave.leaveTypeId) || "Other Leave"))];
 
-    const weeklyTrendData = [
-        { week: "Week 1", annual: 0, other: 0 },
-        { week: "Week 2", annual: 0, other: 0 },
-        { week: "Week 3", annual: 0, other: 0 },
-        { week: "Week 4", annual: 0, other: 0 },
-        { week: "Week 5", annual: 0, other: 0 }
-    ];
-
-
-    thisMonthLeaves.forEach((leave) => {
-
-        const leaveDate = new Date(leave.fromDate);
-
-        const dayOfMonth = leaveDate.getDate();
-
-        const weekIndex = Math.min(
-            Math.floor((dayOfMonth - 1) / 7),
-            4
-        );
-
-
-        const typeName = getLeaveTypeName(
-            leave.leaveTypeId
-        ).toLowerCase();
-
-
-        if (typeName === "annual leave") {
-
-            weeklyTrendData[weekIndex].annual++;
-
-        } else {
-
-            weeklyTrendData[weekIndex].other++;
-
+    const parseApprovedDates = (leave) => {
+        let dates = leave.approvedDates ?? leave.ApprovedDates;
+        if (typeof dates === "string") {
+            try { dates = JSON.parse(dates); } catch { dates = []; }
         }
-
+        return Array.isArray(dates) ? dates : [];
+    };
+    const eachApprovedDate = (leave) => {
+        const approvedDates = parseApprovedDates(leave);
+        if (approvedDates.length) return approvedDates.map((date) => new Date(date));
+        const from = new Date(leave.fromDate);
+        const to = new Date(leave.toDate || leave.fromDate);
+        if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) return [];
+        const dates = [];
+        for (const date = new Date(from); date <= to && dates.length < 366; date.setDate(date.getDate() + 1)) {
+            dates.push(new Date(date));
+        }
+        const approvedDays = Number(leave.approvedDays ?? leave.noOfDays);
+        return Number.isFinite(approvedDays) && approvedDays > 0 ? dates.slice(0, Math.ceil(approvedDays)) : dates;
+    };
+    const trendBuckets = trendView === "weekly" ? weeklyTrendData : monthlyTrendData;
+    leaves.filter((leave) => leave.status?.toLowerCase() === "approved").forEach((leave) => {
+        const typeName = getLeaveTypeName(leave.leaveTypeId) || "Other Leave";
+        eachApprovedDate(leave).forEach((date) => {
+            const bucket = trendBuckets.find((item) => date >= item.start && date <= item.end);
+            if (bucket) bucket.values[typeName] = (bucket.values[typeName] || 0) + 1;
+        });
     });
 
-    // ==========================================
-    // Monthly Leave Trend
-    // ==========================================
+    const trendData = trendBuckets;
+    const leaveColors = ["#3478e5", "#34a879", "#e5a23b", "#8b6bd6", "#e36c79", "#43a6b8", "#7e8da5"];
+    const leaveTrendTotal = trendData.reduce((total, bucket) => total + Object.values(bucket.values).reduce((sum, value) => sum + value, 0), 0);
+    const leaveTrendChartData = {
+        labels: trendData.map((item) => item.label),
+        datasets: leaveTypeNames.map((name, index) => ({
+            label: name,
+            data: trendData.map((item) => item.values[name] || 0),
+            backgroundColor: leaveColors[index % leaveColors.length],
+            borderRadius: 5,
+            borderSkipped: false,
+            maxBarThickness: 34,
+            stack: "leave",
+        })),
+    };
 
-    const monthlyTrendData = [
-        { month: "Jan", annual: 0, other: 0 },
-        { month: "Feb", annual: 0, other: 0 },
-        { month: "Mar", annual: 0, other: 0 },
-        { month: "Apr", annual: 0, other: 0 },
-        { month: "May", annual: 0, other: 0 },
-        { month: "Jun", annual: 0, other: 0 },
-        { month: "Jul", annual: 0, other: 0 },
-        { month: "Aug", annual: 0, other: 0 },
-        { month: "Sep", annual: 0, other: 0 },
-        { month: "Oct", annual: 0, other: 0 },
-        { month: "Nov", annual: 0, other: 0 },
-        { month: "Dec", annual: 0, other: 0 }
-    ];
-
-    leaves.forEach((leave) => {
-
-        const leaveDate = new Date(leave.fromDate);
-
-        // Only current year's leaves
-        if (leaveDate.getFullYear() !== currentYear) {
-            return;
-        }
-
-        const monthIndex = leaveDate.getMonth();
-
-        const typeName = getLeaveTypeName(
-            leave.leaveTypeId
-        ).toLowerCase();
-
-        if (typeName === "annual leave") {
-            monthlyTrendData[monthIndex].annual++;
-        } else {
-            monthlyTrendData[monthIndex].other++;
-        }
-
-    });
-
-    // Select Weekly or Monthly Trend
-    // ==========================================
-
-    const trendData =
-        trendView === "weekly"
-            ? weeklyTrendData
-            : monthlyTrendData;
-
-    const trendXAxisKey =
-        trendView === "weekly"
-            ? "week"
-            : "month";
+    const leaveTrendChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        onClick: (_event, elements) => {
+            const index = elements?.[0]?.index;
+            if (index === undefined || !trendData[index]) return;
+            const bucket = trendData[index];
+            const days = Object.values(bucket.values).reduce((sum, value) => sum + value, 0);
+            if (!days) return;
+            const dateOnly = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+            navigate(`/leave/requests?status=Approved&fromDate=${dateOnly(bucket.start)}&toDate=${dateOnly(bucket.end)}`);
+        },
+        plugins: {
+            legend: {
+                position: "bottom",
+                labels: { usePointStyle: true, pointStyle: "circle", boxWidth: 7, boxHeight: 7, padding: 18, color: "#526783", font: { size: 11 } },
+            },
+            tooltip: {
+                backgroundColor: "#172b4d",
+                padding: 10,
+                cornerRadius: 8,
+                usePointStyle: true,
+            },
+        },
+        scales: {
+            x: {
+                stacked: true,
+                grid: { display: false },
+                border: { display: false },
+                ticks: { color: "#718198", font: { size: 10 } },
+            },
+            y: {
+                stacked: true,
+                beginAtZero: true,
+                ticks: { precision: 0, stepSize: 1, color: "#8a98aa", font: { size: 10 } },
+                grid: { color: "#edf1f6", drawTicks: false },
+                border: { display: false, dash: [3, 4] },
+            },
+        },
+    };
 
 
     // ==========================================
@@ -432,68 +438,53 @@ const rejectedLeaveCount =
 
     if (!canView) {
         return (
-            <div
+            <MuiLayoutBox
                 className="leave-overview"
                 style={{ padding: "60px", textAlign: "center" }}
-            >
-                <h2>Access Denied</h2>
-                <p>You do not have permission to access this page.</p>
-            </div>
+             component="div">
+                <MuiText component="h2" variant="h5">Access Denied</MuiText>
+                <MuiText component="p" variant="body1">You do not have permission to access this page.</MuiText>
+            </MuiLayoutBox>
         );
     }
 
     return (
 
-        <div className="leave-overview">
+        <MuiLayoutBox className="leave-overview" component="div">
 
 
             {/* ==========================================
                 Header
             ========================================== */}
 
-            <div className="leave-overview-header">
+            <MuiLayoutBox className="leave-overview-header" component="div">
 
-                <div>
-                    <h1>
+                <MuiLayoutBox className="leave-header-leading" component="div">
+                    <IconButton aria-label="Back to Leave Management" className="leave-back-button" onClick={() => navigate("/leave")}>
+                        <ArrowBackRounded />
+                    </IconButton>
+                    <MuiLayoutBox component="div">
+                    <MuiText component="h1" variant="h4">
                         Leave Dashboard
-                    </h1>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Overview of employee leave activity.
-                    </p>
-                </div>
+                    </MuiText>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
-                <div className="leave-header-actions">
+                <MuiLayoutBox className="leave-header-actions" component="div">
 
-                    <button
-                        type="button"
-                        className="leave-action-btn"
-                        onClick={() => window.history.back()}
-                    >
-                        ← Previous
-                    </button>
-
-                    <button
-                        type="button"
-                        className="leave-action-btn"
-                        onClick={loadDashboardData}
-                    >
-                        ↻ Refresh
-                    </button>
+                    <Button variant="outlined" startIcon={<RefreshRounded />} onClick={loadDashboardData}>Refresh</Button>
 
                     {canExport && (
-                        <button
-                            type="button"
-                            className="leave-action-btn"
-                            onClick={handleExport}
-                        >
-                            ⇩ Export
-                        </button>
+                        <Button variant="outlined" startIcon={<FileDownloadOutlined />} onClick={handleExport}>Export Excel</Button>
                     )}
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
 
@@ -501,306 +492,217 @@ const rejectedLeaveCount =
                 Summary Cards
             ========================================== */}
 
-            <div className="leave-summary-grid">
+            <MuiLayoutBox className="leave-summary-grid" component="div">
 
 
                 {/* Annual Leave */}
 
-                <div
+                <MuiActionButton
     className="leave-summary-card"
     onClick={() => navigate("/leave/requests")}
-    role="button"
-    tabIndex={0}
-    onKeyDown={(e) => {
-        if (e.key === "Enter") {
-            navigate("/leave/requests");
-        }
-    }}
->
+    type="button"
+ component="button">
 
-                    <div className="summary-card-top">
+                    <MuiLayoutBox className="summary-card-top" component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Annual Leave
-                        </span>
+                        </MuiText>
+                        <MuiLayoutBox className="summary-icon annual" component="span"><CalendarMonthRounded /></MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="summary-card-bottom">
+                    <MuiLayoutBox className="summary-card-bottom" component="div">
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {annualLeaveCount}
-                        </h2>
+                        </MuiText>
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             This month
-                        </span>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiActionButton>
 
 
 
                 {/* Sick Leave */}
 
-                <div
+                <MuiActionButton
     className="leave-summary-card"
     onClick={() => navigate("/leave/requests")}
-    role="button"
-    tabIndex={0}
-    onKeyDown={(e) => {
-        if (e.key === "Enter") {
-            navigate("/leave/requests");
-        }
-    }}
->
+    type="button"
+ component="button">
 
-                    <div className="summary-card-top">
+                    <MuiLayoutBox className="summary-card-top" component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Sick Leave
-                        </span>
+                        </MuiText>
+                        <MuiLayoutBox className="summary-icon sick" component="span"><MedicalServicesRounded /></MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="summary-card-bottom">
+                    <MuiLayoutBox className="summary-card-bottom" component="div">
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {sickLeaveCount}
-                        </h2>
+                        </MuiText>
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             This month
-                        </span>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiActionButton>
 
 
 
                 {/* Other Leave */}
 
-                <div
+                <MuiActionButton
     className="leave-summary-card"
     onClick={() => navigate("/leave/requests")}
-    role="button"
-    tabIndex={0}
-    onKeyDown={(e) => {
-        if (e.key === "Enter") {
-            navigate("/leave/requests");
-        }
-    }}
->
+    type="button"
+ component="button">
 
-                    <div className="summary-card-top">
+                    <MuiLayoutBox className="summary-card-top" component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Other Leave
-                        </span>
+                        </MuiText>
+                        <MuiLayoutBox className="summary-icon other" component="span"><BeachAccessRounded /></MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="summary-card-bottom">
+                    <MuiLayoutBox className="summary-card-bottom" component="div">
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {otherLeaveCount}
-                        </h2>
+                        </MuiText>
                     
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             This month
-                        </span>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiActionButton>
 
 
 
                 {/* Pending Request */}
 
-<div
+<MuiActionButton
     className="leave-summary-card"
     onClick={() => navigate("/leave/requests?status=Pending")}
-    role="button"
-    tabIndex={0}
-    onKeyDown={(e) => {
-        if (e.key === "Enter") {
-            navigate("/leave/requests?status=Pending");
-        }
-    }}
->
+    type="button"
+ component="button">
 
-                    <div className="summary-card-top">
+                    <MuiLayoutBox className="summary-card-top" component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Pending Request
-                        </span>
+                        </MuiText>
+                        <MuiLayoutBox className="summary-icon pending" component="span"><PendingActionsRounded /></MuiLayoutBox>
 
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="summary-card-bottom">
+                    <MuiLayoutBox className="summary-card-bottom" component="div">
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {pendingRequestCount}
-                        </h2>
+                        </MuiText>
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             This month
-                        </span>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    </div>
+                    </MuiActionButton>
 
 
     {/* Rejected Leave */}
 
-    <div
+    <MuiActionButton
     className="leave-summary-card rejected-leave"
         onClick={() => navigate("/leave/requests?status=Rejected")}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-            if (e.key === "Enter") {
-                navigate("/leave/requests?status=Rejected");
-            }
-        }}
-    >
-        <div className="summary-card-top">
-            <span>
+        type="button"
+     component="button">
+        <MuiLayoutBox className="summary-card-top" component="div">
+            <MuiText component="span" variant="inherit">
                 Rejected Leave
-            </span>
-        </div>
+            </MuiText>
+            <MuiLayoutBox className="summary-icon rejected" component="span"><BlockRounded /></MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="summary-card-bottom">
-            <h2>
+        <MuiLayoutBox className="summary-card-bottom" component="div">
+            <MuiText component="h2" variant="h5">
                 {rejectedLeaveCount}
-            </h2>
+            </MuiText>
 
-            <span>
+            <MuiText component="span" variant="inherit">
                 This month
-            </span>
-        </div>
-    </div>
+            </MuiText>
+        </MuiLayoutBox>
+    </MuiActionButton>
 
 
-</div>
+</MuiLayoutBox>
 
 {/* Dashboard Middle Section */}
 
 
-            <div className="leave-dashboard-content">
+            <MuiLayoutBox className="leave-dashboard-content" component="div">
 
 
                 {/* ==========================================
                     Leave Trend
                 ========================================== */}
 
-                <div className="leave-trend-panel">
+                <MuiLayoutBox className="leave-trend-panel" component="div">
 
 
-                    <div className="dashboard-panel-header">
+                    <MuiLayoutBox className="dashboard-panel-header" component="div">
 
-                        <h2>
-                            Leave Trend
-                        </h2>
-
-
-                        <select
-                            className="view-filter-btn"
-                            value={trendView}
-                            onChange={(e) => setTrendView(e.target.value)}
-                        >
-                            <option value="weekly">
-                                Weekly View
-                            </option>
-
-                            <option value="monthly">
-                                Monthly View
-                            </option>
-                        </select>
-
-                    </div>
+                        <MuiLayoutBox className="leave-trend-heading" component="div">
+                            <MuiText component="h2" variant="h5">Leave Trend</MuiText>
+                            <MuiText component="span" className="leave-trend-total" variant="inherit">
+                                {leaveTrendTotal} approved {leaveTrendTotal === 1 ? "day" : "days"}
+                            </MuiText>
+                        </MuiLayoutBox>
 
 
-                    <div className="leave-trend-chart">
+                        <TextField select size="small" className="leave-view-select" value={trendView} onChange={(e) => setTrendView(e.target.value)} aria-label="Leave trend period">
+                            <MenuItem value="weekly">Weekly View</MenuItem>
+                            <MenuItem value="monthly">Monthly View</MenuItem>
+                        </TextField>
+
+                    </MuiLayoutBox>
 
 
-                        <ResponsiveContainer
-                            width="100%"
-                            height={220}
-                        >
+                    <MuiLayoutBox className={`leave-trend-chart${leaveTrendTotal ? " has-data" : ""}`} component="div">
+                        {leaveTrendTotal ? (
+                            <Bar data={leaveTrendChartData} options={leaveTrendChartOptions} />
+                        ) : (
+                            <MuiLayoutBox className="leave-trend-empty" component="div">
+                                <CalendarMonthRounded />
+                                <MuiText component="p" variant="body2">No approved leave days for this period.</MuiText>
+                            </MuiLayoutBox>
+                        )}
+                    </MuiLayoutBox>
 
-                            <BarChart
-                                data={trendData}
-                                margin={{
-                                    top: 10,
-                                    right: 10,
-                                    left: -20,
-                                    bottom: 0
-                                }}
-                            >
-
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    vertical={false}
-                                />
-
-
-                                <XAxis
-                                    dataKey={trendXAxisKey}
-                                    axisLine={false}
-                                    tickLine={false}
-                                />
-
-
-                                <YAxis
-                                    allowDecimals={false}
-                                    axisLine={false}
-                                    tickLine={false}
-                                />
-
-
-                                <Tooltip />
-
-
-                                <Legend />
-
-
-                                <Bar
-                                    dataKey="annual"
-                                    name="Annual Leave"
-                                    stackId="leave"
-                                    fill="#249ee8"
-                                    radius={[2, 2, 0, 0]}
-                                />
-
-
-                                <Bar
-                                    dataKey="other"
-                                    name="Other Leave"
-                                    stackId="leave"
-                                    fill="#b9dcf8"
-                                    radius={[2, 2, 0, 0]}
-                                />
-
-
-                            </BarChart>
-
-                        </ResponsiveContainer>
-
-
-                    </div>
-
-                </div>
+                </MuiLayoutBox>
 
 
 
@@ -808,53 +710,49 @@ const rejectedLeaveCount =
                     Upcoming Leaves
                 ========================================== */}
 
-                <div className="upcoming-leaves-panel">
+                <MuiLayoutBox className="upcoming-leaves-panel" component="div">
 
 
-                    <div className="dashboard-panel-header">
+                    <MuiLayoutBox className="dashboard-panel-header" component="div">
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             Upcoming Leaves
-                        </h2>
+                        </MuiText>
 
 
-                        <select
-                            className="view-filter-btn"
-                            value={upcomingView}
-                            onChange={(e) => setUpcomingView(e.target.value)}
-                        >
-                            <option value="weekly">Weekly View</option>
-                            <option value="monthly">Monthly View</option>
-                            <option value="all">All Upcoming</option>
-                        </select>
+                        <TextField select size="small" className="leave-view-select" value={upcomingView} onChange={(e) => setUpcomingView(e.target.value)} aria-label="Upcoming leave period">
+                            <MenuItem value="weekly">Weekly View</MenuItem>
+                            <MenuItem value="monthly">Monthly View</MenuItem>
+                            <MenuItem value="all">All Upcoming</MenuItem>
+                        </TextField>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="upcoming-leaves-table">
+                    <MuiLayoutBox className="upcoming-leaves-table" component="div">
 
 
                         {/* Table Header */}
 
-                        <div className="upcoming-table-header">
+                        <MuiLayoutBox className="upcoming-table-header" component="div">
 
-                            <span>
-                                Employee
-                            </span>
+                            <MuiText component="span" variant="inherit">
+                                Azure Employee ID
+                            </MuiText>
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
                                 Leave Type
-                            </span>
+                            </MuiText>
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
                                 From & To
-                            </span>
+                            </MuiText>
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
                                 No Of Days
-                            </span>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
 
 
@@ -865,26 +763,26 @@ const rejectedLeaveCount =
                             upcomingLeaves.map(
                                 (leave) => (
 
-                                    <div
+                                    <MuiLayoutBox
                                         className="upcoming-table-row"
                                         key={leave.leaveId}
-                                    >
+                                     component="div">
 
-                                        <span>
-                                            {leave.employeeId}
-                                        </span>
+                                        <MuiText component="span" variant="inherit">
+                                            {leave.azureEmployeeId ?? leave.AzureEmployeeId ?? leave.azureEmployeeID ?? "-"}
+                                        </MuiText>
 
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
 
                                             {getLeaveTypeName(
                                                 leave.leaveTypeId
                                             )}
 
-                                        </span>
+                                        </MuiText>
 
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
 
                                             {new Date(
                                                 leave.fromDate
@@ -900,10 +798,10 @@ const rejectedLeaveCount =
                                                 "en-GB"
                                             )}
 
-                                        </span>
+                                        </MuiText>
 
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
 
                                             {
                                                 Math.ceil(
@@ -924,29 +822,29 @@ const rejectedLeaveCount =
                                                 ) + 1
                                             } Days
 
-                                        </span>
+                                        </MuiText>
 
-                                    </div>
+                                    </MuiLayoutBox>
 
                                 )
                             )
 
                         ) : (
 
-                            <div className="no-upcoming-leaves">
+                            <MuiLayoutBox className="no-upcoming-leaves" component="div">
 
                                 No upcoming leaves
 
-                            </div>
+                            </MuiLayoutBox>
 
                         )}
 
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
 
@@ -954,29 +852,30 @@ const rejectedLeaveCount =
                 Upcoming Events
             ========================================== */}
 
-            <div className="upcoming-events-panel">
+            <MuiLayoutBox className="upcoming-events-panel" component="div">
 
 
-                <div className="dashboard-panel-header">
+                <MuiLayoutBox className="dashboard-panel-header" component="div">
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             Upcoming Events
-                        </h2>
+                        </MuiText>
 
-                        <p>
+                        <MuiText component="p" variant="body1">
                             Holidays and company events
-                        </p>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
                     {upcomingEvents.length > 3 && (
 
-                        <button
+                        <Button
                             type="button"
-                            className="view-filter-btn"
+                            variant="outlined"
+                            size="small"
                             onClick={() =>
                                 setShowAllEvents(
                                     !showAllEvents
@@ -986,15 +885,15 @@ const rejectedLeaveCount =
                             {showAllEvents
                                 ? "Show Less"
                                 : "View All"}
-                        </button>
+                        </Button>
 
                     )}
 
-                </div>
+                </MuiLayoutBox>
 
 
 
-                <div className="upcoming-events-list">
+                <MuiLayoutBox className="upcoming-events-list" component="div">
 
 
                     {displayedEvents.length > 0 ? (
@@ -1023,37 +922,37 @@ const rejectedLeaveCount =
 
                             return (
 
-                                <div
+                                <MuiLayoutBox
                                     className="upcoming-event-item"
                                     key={event.eventId}
-                                >
+                                 component="div">
 
-                                    <div className="event-date-box">
+                                    <MuiLayoutBox className="event-date-box" component="div">
 
-                                        <strong>
+                                        <MuiText component="strong" variant="inherit">
                                             {day}
-                                        </strong>
+                                        </MuiText>
 
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                             {month}
-                                        </span>
+                                        </MuiText>
 
-                                    </div>
+                                    </MuiLayoutBox>
 
 
-                                    <div className="event-details">
+                                    <MuiLayoutBox className="event-details" component="div">
 
-                                        <h3>
+                                        <MuiText component="h3" variant="h6">
                                             {event.eventName}
-                                        </h3>
+                                        </MuiText>
 
-                                        <p>
+                                        <MuiText component="p" variant="body1">
                                             {event.eventType}
-                                        </p>
+                                        </MuiText>
 
-                                    </div>
+                                    </MuiLayoutBox>
 
-                                </div>
+                                </MuiLayoutBox>
 
                             );
 
@@ -1061,18 +960,18 @@ const rejectedLeaveCount =
 
                     ) : (
 
-                        <div className="no-upcoming-events">
+                        <MuiLayoutBox className="no-upcoming-events" component="div">
                             No upcoming events
-                        </div>
+                        </MuiLayoutBox>
 
                     )}
 
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
-        </div>
+        </MuiLayoutBox>
     );
 }

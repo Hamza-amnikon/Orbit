@@ -1,3 +1,4 @@
+import { MuiButtonMigration } from "../../ui/MuiCompat.jsx";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
@@ -8,6 +9,7 @@ import { useAuth } from "../../../context/AuthContext";
 
 import "./DashboardLayout.css";
 import "../../../theme/workspace.css";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function DashboardLayout() {
 
@@ -120,7 +122,7 @@ function DashboardLayout() {
 
     return (
 
-        <div className="dashboard-layout">
+        <MuiLayoutBox className="dashboard-layout" component="div">
 
 
             {/* ==================================================
@@ -134,7 +136,7 @@ function DashboardLayout() {
                 MAIN AREA
             ================================================== */}
 
-            <div className="dashboard-main">
+            <MuiLayoutBox className="dashboard-main" component="div">
 
 
                 {/* ==================================================
@@ -148,14 +150,14 @@ function DashboardLayout() {
                     PAGE CONTENT
                 ================================================== */}
 
-                <main className="dashboard-content workspace-ui">
+                <MuiLayoutBox className="dashboard-content workspace-ui" component="main">
 
                     <Outlet />
 
-                </main>
+                </MuiLayoutBox>
 
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* ==================================================
@@ -164,91 +166,91 @@ function DashboardLayout() {
 
             {showOnboardingPrompt && (
 
-                <div className="onboarding-prompt-overlay">
+                <MuiLayoutBox className="onboarding-prompt-overlay" component="div">
 
 
-                    <div className="onboarding-prompt">
+                    <MuiLayoutBox className="onboarding-prompt" component="div">
 
 
                         {/* ==================================================
                             WARNING ICON
                         ================================================== */}
 
-                        <div className="onboarding-prompt-icon">
+                        <MuiLayoutBox className="onboarding-prompt-icon" component="div">
 
                             !
 
-                        </div>
+                        </MuiLayoutBox>
 
 
                         {/* ==================================================
                             TITLE
                         ================================================== */}
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
 
                             Complete Your Onboarding
 
-                        </h2>
+                        </MuiText>
 
 
                         {/* ==================================================
                             DESCRIPTION
                         ================================================== */}
 
-                        <p>
+                        <MuiText component="p" variant="body1">
 
                             Your required onboarding documents
                             have not been fully approved yet.
 
-                        </p>
+                        </MuiText>
 
 
-                        <p>
+                        <MuiText component="p" variant="body1">
 
                             Please upload and submit all required
                             documents to get full access to Spark.
 
-                        </p>
+                        </MuiText>
 
 
                         {/* ==================================================
                             REQUIRED DOCUMENTS
                         ================================================== */}
 
-                        <p className="onboarding-required-text">
+                        <MuiText className="onboarding-required-text" component="p" variant="body1">
 
                             Required documents:
 
-                        </p>
+                        </MuiText>
 
 
-                        <ul className="onboarding-document-list">
+                        <MuiLayoutBox className="onboarding-document-list" component="ul">
 
-                            <li>
+                            <MuiLayoutBox component="li">
                                 Aadhaar
-                            </li>
+                            </MuiLayoutBox>
 
-                            <li>
+                            <MuiLayoutBox component="li">
                                 PAN
-                            </li>
+                            </MuiLayoutBox>
 
-                            <li>
+                            <MuiLayoutBox component="li">
                                 Bank
-                            </li>
+                            </MuiLayoutBox>
 
-                            <li>
+                            <MuiLayoutBox component="li">
                                 Education Certificate
-                            </li>
+                            </MuiLayoutBox>
 
-                        </ul>
+                        </MuiLayoutBox>
 
 
                         {/* ==================================================
                             SUBMIT DOCUMENTS BUTTON
                         ================================================== */}
 
-                        <button
+                        <MuiButtonMigration
                             type="button"
                             onClick={handleCompleteDocuments}
                             className="onboarding-prompt-button"
@@ -256,16 +258,16 @@ function DashboardLayout() {
 
                             Submit Documents
 
-                        </button>
+                        </MuiButtonMigration>
 
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
-        </div>
+        </MuiLayoutBox>
 
     );
 }

@@ -14,6 +14,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import { useAuth } from "../../context/AuthContext";
 
 import "./Dashboard.css";
+import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
 
 
 /* ============================================================
@@ -313,25 +314,25 @@ function Dashboard() {
 
         return (
 
-            <div className="dashboard-auth-required">
+            <MuiLayoutBox className="dashboard-auth-required" component="div">
 
-                <div className="dashboard-auth-card">
+                <MuiLayoutBox className="dashboard-auth-card" component="div">
 
-                    <div className="dashboard-auth-icon">
+                    <MuiLayoutBox className="dashboard-auth-icon" component="div">
                         🔐
-                    </div>
+                    </MuiLayoutBox>
 
-                    <h2>
+                    <MuiText component="h2" variant="h5">
                         Authentication Required
-                    </h2>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Please sign in to access your dashboard.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
         );
 
@@ -391,58 +392,58 @@ function Dashboard() {
 
     return (
 
-        <div className="spark-dashboard-page">
+        <MuiLayoutBox className="spark-dashboard-page" component="div">
 
 
             {/* ==================================================
                 WELCOME
             ================================================== */}
 
-            <section className="dashboard-welcome">
+            <MuiLayoutBox className="dashboard-welcome" component="section">
 
-                <div className="welcome-content">
+                <MuiLayoutBox className="welcome-content" component="div">
 
 
-                    <div className="welcome-main">
+                    <MuiLayoutBox className="welcome-main" component="div">
 
-                        <h1>
+                        <MuiText component="h1" variant="h4">
                             {greeting}, {firstName} 👋
-                        </h1>
+                        </MuiText>
 
-                        <p>
+                        <MuiText component="p" variant="body1">
                             Here is what is happening across your workspace today.
-                        </p>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                    <div className="welcome-date">
+                    <MuiLayoutBox className="welcome-date" component="div">
 
-                        <strong>
+                        <MuiText component="strong" variant="inherit">
                             {today}
-                        </strong>
+                        </MuiText>
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Stay focused. Great things happen here!
-                        </span>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
-                </div>
+                </MuiLayoutBox>
 
-            </section>
+            </MuiLayoutBox>
 
 
             {/* ==================================================
                 STATISTICS
             ================================================== */}
 
-            <section className="dashboard-stats-grid">
+            <MuiLayoutBox className="dashboard-stats-grid" component="section">
 
                 {visibleStats.map((stat) => (
 
-                    <div
+                    <MuiActionButton
                         key={stat.title}
                         className="dashboard-stat-card"
                         role="button"
@@ -450,84 +451,70 @@ function Dashboard() {
                         onClick={() =>
                             openModule(stat.route)
                         }
-                        onKeyDown={(event) => {
+                     component="div">
 
-                            if (
-                                event.key === "Enter" ||
-                                event.key === " "
-                            ) {
-
-                                event.preventDefault();
-
-                                openModule(stat.route);
-
-                            }
-
-                        }}
-                    >
-
-                        <div
+                        <MuiLayoutBox
                             className="dashboard-stat-icon"
                             style={{
                                 background: stat.color
                             }}
-                        >
+                         component="div">
                             {stat.icon}
-                        </div>
+                        </MuiLayoutBox>
 
 
-                        <div className="dashboard-stat-content">
+                        <MuiLayoutBox className="dashboard-stat-content" component="div">
 
-                            <p>
+                            <MuiText component="p" variant="body1">
                                 {stat.title}
-                            </p>
+                            </MuiText>
 
-                            <h2>
+                            <MuiText component="h2" variant="h5">
                                 {stat.value}
-                            </h2>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiActionButton>
 
                 ))}
 
-            </section>
+            </MuiLayoutBox>
 
 
             {/* ==================================================
                 MODULE HEADER
             ================================================== */}
 
-            <section className="dashboard-module-heading">
+            <MuiLayoutBox className="dashboard-module-heading" component="section">
 
-                <div className="dashboard-module-title">
+                <MuiLayoutBox className="dashboard-module-title" component="div">
 
-                    <h2>
+                    <MuiText component="h2" variant="h5">
                         Modules
-                    </h2>
+                    </MuiText>
 
-                    <span></span>
+                    <MuiText component="span" variant="inherit"></MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
 
-                <p>
+                <MuiText component="p" variant="body1">
                     Quick access to all features
-                </p>
+                </MuiText>
 
-            </section>
+            </MuiLayoutBox>
 
 
             {/* ==================================================
                 MODULE GRID
             ================================================== */}
 
-            <section className="dashboard-modules-grid">
+            <MuiLayoutBox className="dashboard-modules-grid" component="section">
 
                 {visibleModules.map((module, index) => (
 
-                    <div
+                    <MuiActionButton
                         key={module.title}
                         className="dashboard-module-card"
                         role={module.route ? "button" : undefined}
@@ -535,69 +522,52 @@ function Dashboard() {
                         onClick={() =>
                             openModule(module.route)
                         }
-                        onKeyDown={(event) => {
-
-                            if (
-                                module.route &&
-                                (
-                                    event.key === "Enter" ||
-                                    event.key === " "
-                                )
-                            ) {
-
-                                event.preventDefault();
-
-                                openModule(module.route);
-
-                            }
-
-                        }}
-                    >
+                     component="div">
 
 
                         {/* ======================================
                             DECORATIVE CIRCLE
                         ====================================== */}
 
-                        <div
+                        <MuiLayoutBox
                             className="module-decoration"
                             style={{
                                 background: module.color
                             }}
-                        ></div>
+                         component="div"></MuiLayoutBox>
 
 
                         {/* ======================================
                             ICON
                         ====================================== */}
 
-                        <div
+                        <MuiLayoutBox
                             className="dashboard-module-icon"
                             style={{
                                 background: module.color
                             }}
-                        >
+                         component="div">
 
                             {module.icon}
 
-                        </div>
+                        </MuiLayoutBox>
 
 
                         {/* ======================================
                             CONTENT
                         ====================================== */}
 
-                        <div className="dashboard-module-content">
+                        <MuiLayoutBox className="dashboard-module-content" component="div">
 
-                            <h3>
+                            <MuiText component="h3" variant="h6">
                                 {module.title}
-                            </h3>
+                            </MuiText>
 
-                            <p>
+                            <MuiText component="p" variant="body1">
                                 {module.description}
-                            </p>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
 
 
                         {/* ======================================
@@ -606,25 +576,25 @@ function Dashboard() {
 
                         {module.route && (
 
-                            <div
+                            <MuiLayoutBox
                                 className="dashboard-module-arrow"
                                 aria-hidden="true"
-                            >
+                             component="div">
 
                                 <ArrowForwardRoundedIcon />
 
-                            </div>
+                            </MuiLayoutBox>
 
                         )}
 
-                    </div>
+                    </MuiActionButton>
 
                 ))}
 
-            </section>
+            </MuiLayoutBox>
 
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

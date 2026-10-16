@@ -1,345 +1,358 @@
-/* ==========================================================
-   EMPLOYEE FORM
-========================================================== */
-
 .employee-form-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 40px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
-    margin-bottom: 35px;
-    animation: employeeFormFadeUp .4s ease;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto 28px;
+  padding: clamp(20px, 3vw, 34px);
+  color: #172b4d;
+  background: #fff;
+  border: 1px solid #e1e8f2;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(24, 54, 94, 0.06);
 }
 
-
-/* ==========================================================
-   Header
-========================================================== */
-
 .employee-form-card .form-header {
-    margin-bottom: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.employee-form-card .form-title-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.employee-form-card .form-title-icon,
+.employee-form-card .form-section-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  color: #2f66e9;
+  background: #edf3ff;
+}
+
+.employee-form-card .form-title-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+}
+
+.employee-form-card .form-title-icon svg {
+  font-size: 27px;
 }
 
 .employee-form-card .form-header h2 {
-    font-size: 30px;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 8px;
+  margin: 0 0 4px;
+  color: #172b4d;
+  font-size: clamp(23px, 2.2vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-.employee-form-card .form-header p {
-    color: #64748b;
-    font-size: 15px;
+.employee-form-card .form-header p,
+.employee-form-card .form-section-heading p {
+  margin: 0;
+  color: #667891;
 }
 
+.employee-form-card .form-header .required-fields-note {
+  margin-top: 5px;
+  color: #7b8ca5;
+  font-size: 12px;
+}
 
-/* ==========================================================
-   Section
-========================================================== */
+.employee-form-card .employee-audit-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  color: #4b6381;
+  background: #f5f8ff;
+  border: 1px solid #e1e9f7;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.employee-form-card .employee-audit-card > svg {
+  flex: 0 0 auto;
+  color: #2f66e9;
+}
 
 .employee-form-card .form-section {
-    margin-top: 35px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 18px;
+  padding: 22px;
+  background: #fbfcfe;
+  border: 1px solid #e6ebf3;
+  border-radius: 14px;
 }
 
-.employee-form-card .form-section h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #1e293b;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #e5e7eb;
+.employee-form-card .form-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e6ebf3;
 }
 
+.employee-form-card .form-section-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+}
 
-/* ==========================================================
-   Grid
-========================================================== */
+.employee-form-card .form-section-icon svg {
+  font-size: 21px;
+}
 
-.employee-form-card .form-row,
+.employee-form-card .form-section-heading h3 {
+  margin: 0 0 3px;
+  color: #223956;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.employee-form-card .form-section-heading p {
+  font-size: 13px;
+}
+
 .employee-form-card .form-grid {
-
-    display: grid;
-
-    grid-template-columns: repeat(2, 1fr);
-
-    gap: 24px;
-
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 20px;
 }
 
-
-/* ==========================================================
-   Form Group
-========================================================== */
-
-.employee-form-card .form-group {
-
-    display: flex;
-
-    flex-direction: column;
-
+.employee-form-card .MuiFormControl-root {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-.employee-form-card .form-group label {
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    color: #334155;
-
-    margin-bottom: 8px;
-
+.employee-form-card .form-grid > * {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-
-/* Required */
-
-.employee-form-card .required {
-
-    color: #ef4444;
-
-    margin-left: 3px;
-
+.employee-form-card .MuiOutlinedInput-root {
+  min-height: 48px;
+  background: #fff;
+  border-radius: 10px;
 }
 
-
-/* ==========================================================
-   Inputs
-========================================================== */
-
-.employee-form-card .form-group input,
-.employee-form-card .form-group select {
-
-    height: 52px;
-
-    border: 1px solid #d1d5db;
-
-    border-radius: 12px;
-
-    padding: 0 16px;
-
-    font-size: 15px;
-
-    background: #fff;
-
-    transition: all .25s ease;
-
+.employee-form-card .MuiOutlinedInput-notchedOutline {
+  border-color: #d7e0ed;
 }
 
-.employee-form-card .form-group input::placeholder {
-
-    color: #94a3b8;
-
+.employee-form-card .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #9fb4d1;
 }
 
-.employee-form-card .form-group input:hover,
-.employee-form-card .form-group select:hover {
-
-    border-color: #94a3b8;
-
+.employee-form-card .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-width: 1px;
+  border-color: #2f66e9;
 }
 
-.employee-form-card .form-group input:focus,
-.employee-form-card .form-group select:focus {
-
-    outline: none;
-
-    border-color: #2563eb;
-
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
-
+.employee-form-card .MuiOutlinedInput-input,
+.employee-form-card .MuiOutlinedInput-input:focus,
+.employee-form-card .MuiInputBase-input,
+.employee-form-card .MuiInputBase-input:focus {
+  min-width: 0;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
 }
 
-
-/* ==========================================================
-   Select Arrow
-========================================================== */
-
-.employee-form-card .form-group select {
-
-    cursor: pointer;
-
+.employee-form-card .employee-date-picker .MuiOutlinedInput-root {
+  min-height: 48px;
 }
 
+.employee-form-card .employee-date-picker .MuiPickersOutlinedInput-root {
+  box-sizing: border-box;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 12px;
+  background: #fff;
+  border-radius: 10px;
+}
 
-/* ==========================================================
-   Buttons
-========================================================== */
+.employee-form-card .employee-date-picker .MuiPickersOutlinedInput-notchedOutline {
+  border: 1px solid #d7e0ed !important;
+}
+
+.employee-form-card .employee-date-picker .MuiPickersOutlinedInput-root:hover .MuiPickersOutlinedInput-notchedOutline {
+  border-color: #9fb4d1 !important;
+}
+
+.employee-form-card .employee-date-picker .MuiPickersOutlinedInput-root.Mui-focused .MuiPickersOutlinedInput-notchedOutline {
+  border-width: 1px !important;
+  border-color: #2f66e9 !important;
+}
+
+.employee-form-card .employee-date-picker .MuiPickersOutlinedInput-root.Mui-focused {
+  box-shadow: none;
+}
+
+.employee-form-card .employee-date-picker .MuiPickersInputBase-sectionsContainer {
+  padding-top: 8.5px;
+  padding-bottom: 8.5px;
+}
+
+.employee-form-card .MuiInputLabel-root {
+  color: #526987;
+}
+
+.employee-form-card .MuiInputAdornment-root {
+  color: #7388a4;
+}
 
 .employee-form-card .form-actions {
-
-    display: flex;
-
-    justify-content: flex-end;
-
-    gap: 15px;
-
-    margin-top: 40px;
-
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #e8edf4;
 }
 
-.employee-form-card .cancel-btn {
-
-    height: 48px;
-
-    min-width: 140px;
-
-    border-radius: 12px;
-
-    border: 1px solid #cbd5e1;
-
-    background: #fff;
-
-    color: #334155;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: .25s;
-
+.employee-form-card .form-action-hint {
+  margin: 0 auto 0 0;
+  color: #71839c;
+  font-size: 13px;
 }
 
-.employee-form-card .cancel-btn:hover {
-
-    background: #f8fafc;
-
-    transform: translateY(-2px);
-
+.employee-form-card .form-actions .MuiButton-root {
+  min-width: 132px;
+  min-height: 44px;
+  border-radius: 10px;
+  font-weight: 650;
 }
 
-.employee-form-card .save-btn {
-
-    height: 48px;
-
-    min-width: 180px;
-
-    border: none;
-
-    border-radius: 12px;
-
-    background: #2563eb;
-
-    color: #fff;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: .25s;
-
+.employee-form-card .form-actions .MuiButton-contained {
+  min-width: 172px;
+  box-shadow: 0 4px 10px rgba(47, 102, 233, 0.18);
 }
 
-.employee-form-card .save-btn:hover {
-
-    background: #1d4ed8;
-
-    transform: translateY(-2px);
-
-    box-shadow: 0 10px 25px rgba(37,99,235,.30);
-
+.employee-form-card .employee-form-alert {
+  margin-top: 14px;
+  border-radius: 10px;
 }
-
-.employee-form-card .save-btn:disabled {
-
-    background: #94a3b8;
-
-    cursor: not-allowed;
-
-    box-shadow: none;
-
-    transform: none;
-
-    opacity: .7;
-
-}
-
-
-/* ==========================================================
-   Disabled Inputs
-========================================================== */
 
 .employee-form-card input:disabled,
 .employee-form-card select:disabled {
-
-    background: #f8fafc;
-
-    cursor: not-allowed;
-
+  background: #f4f6f9;
+  cursor: not-allowed;
 }
 
+@media (max-width: 700px) {
+  .employee-form-card {
+    padding: 18px;
+    border-radius: 14px;
+  }
 
-/* ==========================================================
-   Animation
-========================================================== */
+  .employee-form-card .form-header {
+    align-items: flex-start;
+  }
 
-@keyframes employeeFormFadeUp {
+  .employee-form-card .form-title-icon {
+    width: 44px;
+    height: 44px;
+  }
 
-    from {
+  .employee-form-card .form-section {
+    padding: 16px;
+  }
 
-        opacity: 0;
+  .employee-form-card .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
 
-        transform: translateY(20px);
+  .employee-form-card .form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
 
-    }
+  .employee-form-card .form-actions .form-action-hint {
+    margin: 0 0 2px;
+    text-align: center;
+  }
 
-    to {
-
-        opacity: 1;
-
-        transform: translateY(0);
-
-    }
-
+  .employee-form-card .form-actions .MuiButton-root,
+  .employee-form-card .form-actions .MuiButton-contained {
+    width: 100%;
+  }
 }
 
+@media (max-width: 480px) {
+  .employee-form-card {
+    width: 100%;
+    min-width: 0;
+    padding: 14px;
+    border-radius: 12px;
+  }
 
-/* ==========================================================
-   Responsive
-========================================================== */
+  .employee-form-card .form-header h2 {
+    font-size: 1.35rem;
+    line-height: 1.25;
+  }
 
-@media (max-width: 992px) {
+  .employee-form-card .form-header p,
+  .employee-form-card .form-section-heading p {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
 
-    .employee-form-card {
+  .employee-form-card .form-section {
+    padding: 14px 12px;
+    margin-bottom: 14px;
+  }
 
-        padding: 25px;
+  .employee-form-card .form-section-heading {
+    align-items: flex-start;
+    gap: 10px;
+  }
 
-    }
+  .employee-form-card .form-section-heading h3 {
+    font-size: 1rem;
+  }
 
-    .employee-form-card .form-row,
-    .employee-form-card .form-grid {
+  .employee-form-card .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
 
-        grid-template-columns: 1fr;
+  .employee-form-card .MuiOutlinedInput-input,
+  .employee-form-card .MuiInputBase-input {
+    min-width: 0;
+    font-size: 16px;
+  }
 
-    }
-
+  .employee-form-card .form-actions {
+    gap: 10px;
+  }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .employee-form-card {
+    animation: employeeFormFadeIn 180ms ease-out;
+  }
+}
 
-@media (max-width: 768px) {
-
-    .employee-form-card .form-header h2 {
-
-        font-size: 24px;
-
-    }
-
-    .employee-form-card .form-actions {
-
-        flex-direction: column;
-
-    }
-
-    .employee-form-card .cancel-btn,
-    .employee-form-card .save-btn {
-
-        width: 100%;
-
-    }
-
+@keyframes employeeFormFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }

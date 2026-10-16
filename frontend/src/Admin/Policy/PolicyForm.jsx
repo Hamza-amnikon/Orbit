@@ -1,3 +1,4 @@
+import { MuiInputMigration } from "../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useRef, useState } from "react";
 
 import {
@@ -569,9 +570,9 @@ const PolicyForm = ({
                             "Enter the name of the company policy."
                         }
                         disabled={saving}
-                        inputProps={{
+                        slotProps={{ htmlInput: {
                             maxLength: 200,
-                        }}
+                        } }}
                     />
 
                     {/* =========================================
@@ -607,9 +608,9 @@ const PolicyForm = ({
                                 "Optional. Example: POL-00001"
                             }
                             disabled={saving}
-                            inputProps={{
+                            slotProps={{ htmlInput: {
                                 maxLength: 50,
-                            }}
+                            } }}
                         />
 
                         <FormControl
@@ -727,9 +728,9 @@ const PolicyForm = ({
                                 "Example: 1.0"
                             }
                             disabled={saving}
-                            inputProps={{
+                            slotProps={{ htmlInput: {
                                 maxLength: 20,
-                            }}
+                            } }}
                         />
 
                         <TextField
@@ -754,9 +755,9 @@ const PolicyForm = ({
                                 "Date when the policy becomes effective."
                             }
                             disabled={saving}
-                            InputLabelProps={{
+                            slotProps={{ inputLabel: {
                                 shrink: true,
-                            }}
+                            } }}
                         />
 
                     </Box>
@@ -787,9 +788,9 @@ const PolicyForm = ({
                             `${formData.Description.length}/2000 characters`
                         }
                         disabled={saving}
-                        inputProps={{
+                        slotProps={{ htmlInput: {
                             maxLength: 2000,
-                        }}
+                        } }}
                     />
 
                     {/* =========================================
@@ -822,7 +823,7 @@ const PolicyForm = ({
                             </Box>
                         </Typography>
 
-                        <input
+                        <MuiInputMigration
                             ref={fileInputRef}
                             type="file"
                             accept="application/pdf,.pdf"

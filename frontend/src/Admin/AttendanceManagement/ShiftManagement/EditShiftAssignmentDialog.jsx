@@ -13,6 +13,7 @@ import {
   Divider,
   Alert,
 } from "@mui/material";
+import { Typography as MuiText } from "@mui/material";
 
 export default function EditShiftAssignmentDialog({
   open,
@@ -81,6 +82,7 @@ export default function EditShiftAssignmentDialog({
 
     remarks: "",
   });
+  const [validationError, setValidationError] = useState("");
 
   // =========================================================
   // NORMALIZE TIME
@@ -215,6 +217,7 @@ export default function EditShiftAssignmentDialog({
       name,
       value,
     } = e.target;
+    setValidationError("");
 
     // =======================================================
     // SHIFT CHANGE
@@ -296,42 +299,19 @@ export default function EditShiftAssignmentDialog({
     // VALIDATION
     // =======================================================
 
-    if (!form.shiftName) {
-      alert("Please select a shift.");
+    const validationMessage = !form.shiftName ? "Please select a shift."
+      : !form.startTime ? "Please select a start time."
+      : !form.endTime ? "Please select an end time."
+      : !form.fromDate ? "Please select From Date."
+      : !form.toDate ? "Please select To Date."
+      : form.fromDate > form.toDate ? "From Date cannot be greater than To Date."
+      : "";
+
+    if (validationMessage) {
+      setValidationError(validationMessage);
       return;
     }
-
-    if (!form.startTime) {
-      alert("Please select a start time.");
-      return;
-    }
-
-    if (!form.endTime) {
-      alert("Please select an end time.");
-      return;
-    }
-
-    if (!form.fromDate) {
-      alert("Please select From Date.");
-      return;
-    }
-
-    if (!form.toDate) {
-      alert("Please select To Date.");
-      return;
-    }
-
-    // =======================================================
-    // DATE VALIDATION
-    // =======================================================
-
-    if (form.fromDate > form.toDate) {
-      alert(
-        "From Date cannot be greater than To Date."
-      );
-
-      return;
-    }
+    setValidationError("");
 
     // =======================================================
     // PAYLOAD
@@ -420,6 +400,8 @@ export default function EditShiftAssignmentDialog({
       </DialogTitle>
 
       <DialogContent dividers>
+
+        {validationError && <Alert severity="error" sx={{ mb: 2 }}>{validationError}</Alert>}
 
         {/* ================================================= */}
         {/* EMPLOYEE INFORMATION */}
@@ -618,9 +600,9 @@ export default function EditShiftAssignmentDialog({
           {isNightShift && (
             <Grid size={{ xs: 12 }}>
               <Alert severity="info">
-                <strong>
+                <MuiText component="strong" variant="inherit">
                   Night Shift crosses midnight.
-                </strong>
+                </MuiText>
 
                 <br />
 
@@ -662,9 +644,9 @@ export default function EditShiftAssignmentDialog({
               <Grid size={{ xs: 12 }}>
                 <Alert severity="success">
                   Default timing for{" "}
-                  <strong>
+                  <MuiText component="strong" variant="inherit">
                     {form.shiftName}
-                  </strong>
+                  </MuiText>
                   :
 
                   {" "}

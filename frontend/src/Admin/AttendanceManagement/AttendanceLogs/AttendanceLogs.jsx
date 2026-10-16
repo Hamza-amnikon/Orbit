@@ -1,6 +1,8 @@
+import { MuiButtonMigration } from "../../../components/ui/MuiCompat.jsx";
 import "./AttendanceLogs.css";
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -8,6 +10,9 @@ import {
   MenuItem,
   Button,
   InputAdornment,
+  IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -36,10 +41,19 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { exportRowsToExcel } from "../../../utils/exportExcel";
 
 export default function AttendanceLogs() {
+  const navigate = useNavigate();
   const { hasPermission } = useAuth();
 
   const permissionRoute = "/attendance/logs";
@@ -79,6 +93,7 @@ export default function AttendanceLogs() {
   const [editOpen, setEditOpen] = useState(false);
 
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
   useEffect(() => {
     if (!canView) return;
@@ -124,19 +139,13 @@ export default function AttendanceLogs() {
     try {
       const result = await AttendanceService.generateAttendance();
 
-      alert(
-        `Attendance Generated Successfully
-
-Generated : ${result.generated}
-Skipped : ${result.skipped}
-Weekly Off : ${result.weeklyOff}`,
-      );
+      setNotice({ open: true, severity: "success", message: `Attendance generated. ${result.generated} created, ${result.skipped} skipped, ${result.weeklyOff} weekly off.` });
 
       refreshData();
     } catch (error) {
       console.error(error);
 
-      alert("Failed to generate attendance.");
+      setNotice({ open: true, severity: "error", message: "Could not generate attendance. Please try again." });
     }
   };
 
@@ -147,7 +156,7 @@ Weekly Off : ${result.weeklyOff}`,
     setDate("");
   };
 
-  const filteredAttendance = attendanceList.filter((item) => {
+  const filteredByOtherFilters = attendanceList.filter((item) => {
     const keyword = search.toLowerCase().trim();
 
     const searchMatch =
@@ -159,34 +168,38 @@ Weekly Off : ${result.weeklyOff}`,
 
     const shiftMatch = shift === "" || item.shift === shift;
 
-    const statusMatch = status === "" || item.status === status;
-
     const dateMatch =
       !date || item.attendanceDate?.split("T")[0] === date;
 
-    return searchMatch && shiftMatch && statusMatch && dateMatch;
+    return searchMatch && shiftMatch && dateMatch;
+  });
+
+  const filteredAttendance = filteredByOtherFilters.filter((item) => {
+    if (!status) return true;
+    if (status === "Leave") return item.status === "Leave" || item.status === "On Leave";
+    return item.status === status;
   });
 
   const filteredDashboard = {
-    present: filteredAttendance.filter(
+    present: filteredByOtherFilters.filter(
       x => x.status === "Present"
     ).length,
 
-    absent: filteredAttendance.filter(
+    absent: filteredByOtherFilters.filter(
       x => x.status === "Absent"
     ).length,
 
-    late: filteredAttendance.filter(
+    late: filteredByOtherFilters.filter(
       x => x.status === "Late"
     ).length,
 
-    leave: filteredAttendance.filter(
+    leave: filteredByOtherFilters.filter(
       x =>
         x.status === "Leave" ||
         x.status === "On Leave"
     ).length,
 
-    wfh: filteredAttendance.filter(
+    wfh: filteredByOtherFilters.filter(
       x => x.status === "WFH"
     ).length,
   };
@@ -206,6 +219,22 @@ Weekly Off : ${result.weeklyOff}`,
       refreshData();
     } catch (error) {
       console.error("Delete Error", error);
+      setNotice({ open: true, severity: "error", message: "Could not delete the attendance record. Please try again." });
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      await exportRowsToExcel(filteredAttendance, [
+        ["Employee ID", (row) => row.azureEmployeeId || row.employeeCode || ""],
+        ["Employee", "employeeName"], ["Department", "department"], ["Designation", "designation"],
+        ["Date", (row) => row.attendanceDate ? new Date(row.attendanceDate).toLocaleDateString("en-GB") : ""],
+        ["Shift", "shift"], ["Check In", "checkIn"], ["Check Out", "checkOut"], ["Total Hours", "totalHours"], ["Status", "status"],
+      ], "Attendance-Logs.xlsx", "Attendance Logs");
+      setNotice({ open: true, severity: "success", message: `Exported ${filteredAttendance.length} attendance records.` });
+    } catch (error) {
+      console.error("Attendance export error", error);
+      setNotice({ open: true, severity: "error", message: "Could not export attendance records." });
     }
   };
 
@@ -222,61 +251,64 @@ Weekly Off : ${result.weeklyOff}`,
   }
 
   return (
-    <div className="attendance-logs">
+    <MuiLayoutBox className="attendance-logs" component="div">
       {/* HEADER */}
 
-      <div className="attendance-header-card">
-        <div>
-          <h2>Attendance Logs</h2>
+      <MuiLayoutBox className="attendance-header-card" component="div">
+        <MuiLayoutBox className="attendance-header-leading" component="div">
+          <IconButton aria-label="Back to Attendance" onClick={() => navigate("/attendance")} className="attendance-back-button"><ArrowBackRoundedIcon /></IconButton>
+          <MuiLayoutBox component="div">
+          <MuiText component="h2" variant="h5">Attendance Logs</MuiText>
 
-          <p>
+          <MuiText component="p" variant="body1">
             View, search and manage employee attendance records.
-          </p>
-        </div>
+          </MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="attendance-header-actions">
+        <MuiLayoutBox className="attendance-header-actions" component="div">
 
-          <button
+          <MuiButtonMigration
             className="outline-btn"
             onClick={refreshData}
           >
             <RefreshIcon />
             Refresh
-          </button>
+          </MuiButtonMigration>
 
           {canCreate && (
-            <button
+            <MuiButtonMigration
               className="outline-btn"
               onClick={handleGenerateAttendance}
             >
               <AutorenewIcon />
               Generate Attendance
-            </button>
+            </MuiButtonMigration>
           )}
 
           {canExport && (
-            <button className="outline-btn">
+            <MuiButtonMigration className="outline-btn" onClick={handleExport}>
               <FileDownloadIcon />
-              Export
-            </button>
+              Export Excel
+            </MuiButtonMigration>
           )}
 
           {canCreate && (
-            <button
+            <MuiButtonMigration
               className="primary-btn"
               onClick={() => setAddOpen(true)}
             >
               <AddIcon />
               Add Attendance
-            </button>
+            </MuiButtonMigration>
           )}
 
-        </div>
-      </div>
+        </MuiLayoutBox>
+      </MuiLayoutBox>
 
       {/* DASHBOARD */}
 
-      <div className="attendance-summary-grid">
+      <MuiLayoutBox className="attendance-summary-grid" component="div">
 
         <DashboardCard
           title="Present"
@@ -284,6 +316,8 @@ Weekly Off : ${result.weeklyOff}`,
           subtitle="Employees Logs"
           color="#10B981"
           icon={<GroupsIcon />}
+          onClick={() => setStatus((current) => current === "Present" ? "" : "Present")}
+          selected={status === "Present"}
         />
 
         <DashboardCard
@@ -292,6 +326,8 @@ Weekly Off : ${result.weeklyOff}`,
           subtitle="Employees Absent"
           color="#EF4444"
           icon={<PersonOffIcon />}
+          onClick={() => setStatus((current) => current === "Absent" ? "" : "Absent")}
+          selected={status === "Absent"}
         />
 
         <DashboardCard
@@ -300,6 +336,8 @@ Weekly Off : ${result.weeklyOff}`,
           subtitle="Late Check-ins"
           color="#F59E0B"
           icon={<TimerIcon />}
+          onClick={() => setStatus((current) => current === "Late" ? "" : "Late")}
+          selected={status === "Late"}
         />
 
         <DashboardCard
@@ -308,6 +346,8 @@ Weekly Off : ${result.weeklyOff}`,
           subtitle="Approved Leave"
           color="#8B5CF6"
           icon={<BeachAccessIcon />}
+          onClick={() => setStatus((current) => current === "Leave" || current === "On Leave" ? "" : "Leave")}
+          selected={status === "Leave" || status === "On Leave"}
         />
 
         <DashboardCard
@@ -316,28 +356,32 @@ Weekly Off : ${result.weeklyOff}`,
           subtitle="Work From Home"
           color="#06B6D4"
           icon={<HomeWorkIcon />}
+          onClick={() => setStatus((current) => current === "WFH" ? "" : "WFH")}
+          selected={status === "WFH"}
         />
 
-      </div>
+      </MuiLayoutBox>
 
       {/* FILTERS */}
 
-      <div className="attendance-filter-card">
+      <MuiLayoutBox className="attendance-filter-card" component="div">
         <Grid container spacing={2} alignItems="center">
 
           <Grid size={{ xs: 12, md: 5 }}>
             <TextField
+              className="attendance-search-field"
               fullWidth
               placeholder="Search by name, employee ID or department..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              InputProps={{
+              slotProps={{ input: {
                 startAdornment: (
                   <InputAdornment position="start">
                     <SearchIcon />
                   </InputAdornment>
                 ),
-              }}
+                endAdornment: search ? <InputAdornment position="end"><IconButton aria-label="Clear search" size="small" onClick={() => setSearch("")}><CloseRoundedIcon fontSize="small" /></IconButton></InputAdornment> : null,
+              } }}
             />
           </Grid>
 
@@ -348,13 +392,13 @@ Weekly Off : ${result.weeklyOff}`,
               value={shift}
               label="Shift"
               onChange={(e) => setShift(e.target.value)}
-              InputProps={{
+              slotProps={{ input: {
                 startAdornment: (
                   <InputAdornment position="start">
                     <AccessTimeIcon />
                   </InputAdornment>
                 ),
-              }}
+              } }}
             >
               <MenuItem value="">All Shifts</MenuItem>
 
@@ -379,13 +423,13 @@ Weekly Off : ${result.weeklyOff}`,
               value={status}
               label="Status"
               onChange={(e) => setStatus(e.target.value)}
-              InputProps={{
+              slotProps={{ input: {
                 startAdornment: (
                   <InputAdornment position="start">
                     <TaskAltIcon />
                   </InputAdornment>
                 ),
-              }}
+              } }}
             >
               <MenuItem value="">All Status</MenuItem>
 
@@ -398,13 +442,15 @@ Weekly Off : ${result.weeklyOff}`,
           </Grid>
 
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-            <TextField
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Date"
+                value={date ? dayjs(date) : null}
+                onChange={(value) => setDate(value?.isValid() ? value.format("YYYY-MM-DD") : "")}
+                format="DD-MM-YYYY"
+                slotProps={{ textField: { fullWidth: true, size: "medium" } }}
+              />
+            </LocalizationProvider>
           </Grid>
 
           <Grid size={{ xs: 12, sm: 6, md: 1 }}>
@@ -414,9 +460,12 @@ Weekly Off : ${result.weeklyOff}`,
               startIcon={<RefreshIcon />}
               onClick={resetFilters}
               sx={{
-                height: 56,
-                borderRadius: 3,
+                height: 48,
+                minWidth: 0,
+                px: 1.5,
+                borderRadius: 2.5,
                 textTransform: "none",
+                whiteSpace: "nowrap",
               }}
             >
               Reset
@@ -424,51 +473,39 @@ Weekly Off : ${result.weeklyOff}`,
           </Grid>
 
         </Grid>
-      </div>
+      </MuiLayoutBox>
 
       {/* TABLE */}
 
-      <div className="attendance-table-card">
+      <MuiLayoutBox className="attendance-table-card" component="div">
 
-        <div className="table-header">
+        <MuiLayoutBox className="table-header" component="div">
 
-          <div className="table-header-left">
+          <MuiLayoutBox className="table-header-left" component="div">
 
-            <span className="table-tag">
+            <MuiText className="table-tag" component="span" variant="inherit">
               ATTENDANCE DIRECTORY
-            </span>
+            </MuiText>
 
-            <h3>Attendance Log List</h3>
+            <MuiText component="h3" variant="h6">Attendance Log List</MuiText>
 
-            <p>
+            <MuiText component="p" variant="body1">
               View and manage daily employee attendance records.
-            </p>
+            </MuiText>
 
-          </div>
+          </MuiLayoutBox>
 
-          <div className="table-header-right">
+          <MuiLayoutBox className="table-header-right" component="div">
 
-            <div className="record-count">
-              <strong>{filteredAttendance.length}</strong>
+            <MuiLayoutBox className="record-count" component="div">
+              <MuiText component="strong" variant="inherit">{filteredAttendance.length}</MuiText>
 
-              <span>Records</span>
-            </div>
+              <MuiText component="span" variant="inherit">Records</MuiText>
+            </MuiLayoutBox>
 
-            {canExport && (
-              <button className="table-btn">
-                Print
-              </button>
-            )}
+          </MuiLayoutBox>
 
-            {canExport && (
-              <button className="table-btn">
-                Export CSV
-              </button>
-            )}
-
-          </div>
-
-        </div>
+        </MuiLayoutBox>
 
         <AttendanceTable
           rows={filteredAttendance}
@@ -499,7 +536,7 @@ Weekly Off : ${result.weeklyOff}`,
           }}
         />
 
-      </div>
+      </MuiLayoutBox>
 
       {/* DIALOGS */}
 
@@ -516,6 +553,10 @@ Weekly Off : ${result.weeklyOff}`,
         attendance={selectedAttendance}
         onClose={() => setDetailsOpen(false)}
       />
+
+      <Snackbar open={notice.open} autoHideDuration={4500} onClose={() => setNotice((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
+        <Alert severity={notice.severity} variant="filled" onClose={() => setNotice((current) => ({ ...current, open: false }))}>{notice.message}</Alert>
+      </Snackbar>
 
       {/* EDIT */}
 
@@ -548,6 +589,6 @@ Weekly Off : ${result.weeklyOff}`,
         />
       )}
 
-    </div>
+    </MuiLayoutBox>
   );
 }

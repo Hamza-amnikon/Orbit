@@ -1,3 +1,4 @@
+import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import { useState, useEffect } from "react";
 import "./EmployeeTable.css";
 
@@ -15,12 +16,14 @@ import {
 } from "@mui/icons-material";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function EmployeeTable({
   employees,
   editEmployee,
   deleteEmployee,
+  onNotify,
 }) {
 
   // =====================================================
@@ -229,9 +232,7 @@ function EmployeeTable({
 
     if (!isAuthenticated) {
 
-      alert(
-        "You are not authenticated. Please login again."
-      );
+      onNotify?.("You are not authenticated. Please login again.", "error");
 
       return;
     }
@@ -239,9 +240,7 @@ function EmployeeTable({
 
     if (!currentEmployeeId) {
 
-      alert(
-        "Your Employee ID could not be determined. Please login again."
-      );
+      onNotify?.("Your Employee ID could not be determined. Please login again.", "error");
 
       return;
     }
@@ -306,9 +305,7 @@ function EmployeeTable({
 
     if (!isAuthenticated) {
 
-      alert(
-        "You are not authenticated. Please login again."
-      );
+      onNotify?.("You are not authenticated. Please login again.", "error");
 
       return;
     }
@@ -316,9 +313,7 @@ function EmployeeTable({
 
     if (!currentEmployeeId) {
 
-      alert(
-        "Your Employee ID could not be determined. Please login again."
-      );
+      onNotify?.("Your Employee ID could not be determined. Please login again.", "error");
 
       return;
     }
@@ -379,44 +374,44 @@ function EmployeeTable({
 
   return (
 
-    <div className="employee-table-wrapper">
+    <MuiLayoutBox className="employee-table-wrapper" component="div">
 
 
       {/* =================================================
           HEADER
       ================================================= */}
 
-      <div className="employee-table-header">
+      <MuiLayoutBox className="employee-table-header" component="div">
 
 
-        <div className="employee-table-title">
+        <MuiLayoutBox className="employee-table-title" component="div">
 
-          <span className="employee-table-tag">
+          <MuiText className="employee-table-tag" component="span" variant="inherit">
             Employee Directory
-          </span>
+          </MuiText>
 
-          <h2>
+          <MuiText component="h2" variant="h5">
             Employee List
-          </h2>
+          </MuiText>
 
-          <p>
+          <MuiText component="p" variant="body1">
             Manage all employees across your organization.
-          </p>
+          </MuiText>
 
-        </div>
+        </MuiLayoutBox>
 
 
-        <div className="employee-table-count">
+        <MuiLayoutBox className="employee-table-count" component="div">
 
-          <span>
+          <MuiText component="span" variant="inherit">
             {filteredEmployees.length}
-          </span>
+          </MuiText>
 
           Employees
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
 
      
@@ -426,87 +421,87 @@ function EmployeeTable({
           TABLE
       ================================================= */}
 
-      <div className="table-responsive">
+      <MuiLayoutBox className="table-responsive" component="div">
 
-        <table className="employee-table">
+        <MuiTableMigration className="employee-table">
 
 
           {/* =============================================
               TABLE HEADER
           ============================================= */}
 
-          <thead>
+          <MuiTableHeadMigration>
 
-            <tr>
+            <MuiTableRowMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Employee ID
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Employee
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Mobile
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Gender
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Department
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Designation
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Joining Date
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Status
-              </th>
+              </MuiTableCellMigration>
 
-              <th>
+              <MuiTableCellMigration>
                 Action
-              </th>
+              </MuiTableCellMigration>
 
-            </tr>
+            </MuiTableRowMigration>
 
-          </thead>
+          </MuiTableHeadMigration>
 
 
           {/* =============================================
               TABLE BODY
           ============================================= */}
 
-          <tbody>
+          <MuiTableBodyMigration>
 
             {filteredEmployees.length === 0 ? (
 
-              <tr>
+              <MuiTableRowMigration>
 
-                <td
+                <MuiTableCellMigration
                   colSpan="9"
                   className="no-records"
                 >
 
                   No Employees Found
 
-                </td>
+                </MuiTableCellMigration>
 
-              </tr>
+              </MuiTableRowMigration>
 
             ) : (
 
               filteredEmployees.map(
                 (emp) => (
 
-                  <tr
+                  <MuiTableRowMigration
                     key={
                       emp.employeeId
                     }
@@ -517,82 +512,82 @@ function EmployeeTable({
                         EMPLOYEE ID
                     ================================= */}
 
-                    <td>
+                    <MuiTableCellMigration>
                       {emp.azureEmployeeId || "-"}
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* =================================
                         EMPLOYEE
                     ================================= */}
 
-                    <td>
+                    <MuiTableCellMigration>
 
-                      <div className="employee-info">
+                      <MuiLayoutBox className="employee-info" component="div">
 
-                        <div>
+                        <MuiLayoutBox component="div">
 
-                          <div className="admin-employee-name">
+                          <MuiLayoutBox className="admin-employee-name" component="div">
 
                             {emp.employeeName || "-"}
 
-                          </div>
+                          </MuiLayoutBox>
 
 
-                          <div className="employee-email">
+                          <MuiLayoutBox className="employee-email" component="div">
 
                             {emp.email || "-"}
 
-                          </div>
+                          </MuiLayoutBox>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                      </div>
+                      </MuiLayoutBox>
 
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* =================================
                         MOBILE
                     ================================= */}
 
-                    <td>
+                    <MuiTableCellMigration>
                       {emp.mobile || "-"}
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* =================================
                         GENDER
                     ================================= */}
 
-                    <td>
+                    <MuiTableCellMigration>
                       {emp.gender || "-"}
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* =================================
                         DEPARTMENT
                     ================================= */}
 
-                    <td>
+                    <MuiTableCellMigration>
                       {emp.department || "-"}
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* =================================
                         DESIGNATION
                     ================================= */}
 
-                    <td>
+                    <MuiTableCellMigration>
                       {emp.designation || "-"}
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* =================================
                         JOINING DATE
                     ================================= */}
 
-                    <td>
+                    <MuiTableCellMigration>
 
                       {emp.joiningDate
 
@@ -606,16 +601,16 @@ function EmployeeTable({
 
                       }
 
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* =================================
                         STATUS
                     ================================= */}
 
-                    <td>
+                    <MuiTableCellMigration>
 
-                      <span
+                      <MuiText
                         className={
                           `status-badge ${
                             emp.status === "Active"
@@ -623,22 +618,22 @@ function EmployeeTable({
                               : "inactive"
                           }`
                         }
-                      >
+                       component="span" variant="inherit">
 
                         {emp.status || "-"}
 
-                      </span>
+                      </MuiText>
 
-                    </td>
+                    </MuiTableCellMigration>
 
 
                     {/* =================================
                         ACTIONS
                     ================================= */}
 
-                    <td>
+                    <MuiTableCellMigration>
 
-                      <div className="action-buttons">
+                      <MuiLayoutBox className="action-buttons" component="div">
 
 
                         {/* EDIT */}
@@ -649,7 +644,7 @@ function EmployeeTable({
                             title="Edit"
                           >
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
 
                               <IconButton
                                 className="edit-btn"
@@ -668,7 +663,7 @@ function EmployeeTable({
 
                               </IconButton>
 
-                            </span>
+                            </MuiText>
 
                           </Tooltip>
 
@@ -683,7 +678,7 @@ function EmployeeTable({
                             title="Delete"
                           >
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
 
                               <IconButton
                                 className="delete-btn"
@@ -702,31 +697,31 @@ function EmployeeTable({
 
                               </IconButton>
 
-                            </span>
+                            </MuiText>
 
                           </Tooltip>
 
                         )}
 
 
-                      </div>
+                      </MuiLayoutBox>
 
-                    </td>
+                    </MuiTableCellMigration>
 
-                  </tr>
+                  </MuiTableRowMigration>
 
                 )
               )
 
             )}
 
-          </tbody>
+          </MuiTableBodyMigration>
 
-        </table>
+        </MuiTableMigration>
 
-      </div>
+      </MuiLayoutBox>
 
-    </div>
+    </MuiLayoutBox>
 
   );
 

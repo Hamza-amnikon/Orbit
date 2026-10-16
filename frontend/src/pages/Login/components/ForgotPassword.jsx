@@ -20,6 +20,7 @@ import {
   Close,
   ArrowForward,
 } from "@mui/icons-material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ForgotPassword({ open, onClose }) {
   const [email, setEmail] = useState("");
@@ -92,13 +93,13 @@ function ForgotPassword({ open, onClose }) {
             py: 3,
           }}
         >
-          <div
+          <MuiLayoutBox
             style={{
               display: "flex",
               alignItems: "center",
               gap: 12,
             }}
-          >
+           component="div">
             <LockReset
               sx={{
                 color: "#2563eb",
@@ -114,7 +115,7 @@ function ForgotPassword({ open, onClose }) {
             >
               Password Recovery
             </Typography>
-          </div>
+          </MuiLayoutBox>
 
           <IconButton onClick={onClose}>
             <Close />
@@ -164,13 +165,13 @@ function ForgotPassword({ open, onClose }) {
                 setError(validateEmail(e.target.value));
               }
             }}
-            InputProps={{
+            slotProps={{ input: {
               startAdornment: (
                 <InputAdornment position="start">
                   <EmailOutlined color="primary" />
                 </InputAdornment>
               ),
-            }}
+            } }}
           />
 
           <Alert
@@ -181,7 +182,7 @@ function ForgotPassword({ open, onClose }) {
               borderRadius: 3,
             }}
           >
-            Reset links are valid for <strong>15 minutes</strong>. If you don't
+            Reset links are valid for <MuiText component="strong" variant="inherit">15 minutes</MuiText>. If you don't
             receive an email, please check your spam folder.
           </Alert>
         </DialogContent>

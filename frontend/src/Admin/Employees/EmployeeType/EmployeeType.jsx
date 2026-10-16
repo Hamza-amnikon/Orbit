@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
 import { useAuth } from "../../../context/AuthContext";
 import "./EmployeeType.css";
 
@@ -22,6 +23,7 @@ import {
     CheckCircle,
     Cancel,
     Search,
+    ArrowBack,
 } from "@mui/icons-material";
 
 import {
@@ -34,7 +36,16 @@ import {
     InputLabel,
     Select,
     MenuItem,
+    IconButton,
+    Tooltip,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Snackbar,
+    Alert,
 } from "@mui/material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function EmployeeType() {
 
@@ -58,6 +69,8 @@ function EmployeeType() {
     const [openEditDialog, setOpenEditDialog] = useState(false);
 
     const [selectedEmployeeType, setSelectedEmployeeType] = useState(null);
+    const [pendingDelete, setPendingDelete] = useState(null);
+    const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
     useEffect(() => {
         if (canView) {
@@ -121,12 +134,12 @@ function EmployeeType() {
     };
 
 
-    const deleteEmployeeType = async (id) => {
+    const deleteEmployeeType = async () => {
 
         if (!canDelete) return;
 
-        if (!window.confirm("Delete this Employee Type?"))
-            return;
+        const id = pendingDelete?.employeeTypeId;
+        if (!id) return;
 
         try {
 
@@ -134,16 +147,15 @@ function EmployeeType() {
 
             await loadEmployeeTypes();
 
-            alert("Employee Type deleted successfully.");
+            setNotice({ open: true, message: "Employee Type deleted successfully.", severity: "success" });
 
         } catch (error) {
 
             console.error(error);
 
-            alert(
-                error.response?.data ||
-                "Unable to delete Employee Type."
-            );
+            setNotice({ open: true, message: error.response?.data?.title || "Unable to delete Employee Type.", severity: "error" });
+        } finally {
+            setPendingDelete(null);
         }
     };
 
@@ -160,16 +172,13 @@ function EmployeeType() {
 
             setOpenAddDialog(false);
 
-            alert("Employee Type added successfully.");
+            setNotice({ open: true, message: "Employee Type added successfully.", severity: "success" });
 
         } catch (error) {
 
             console.error(error);
 
-            alert(
-                error.response?.data ||
-                "Unable to create Employee Type."
-            );
+            setNotice({ open: true, message: error.response?.data?.title || "Unable to create Employee Type.", severity: "error" });
         }
     };
 
@@ -191,55 +200,62 @@ function EmployeeType() {
 
             setOpenEditDialog(false);
 
-            alert("Employee Type updated successfully.");
+            setNotice({ open: true, message: "Employee Type updated successfully.", severity: "success" });
 
         } catch (error) {
 
             console.error(error);
 
-            alert(
-                error.response?.data ||
-                "Unable to update Employee Type."
-            );
+            setNotice({ open: true, message: error.response?.data?.title || "Unable to update Employee Type.", severity: "error" });
         }
     };
+
+    const exportEmployeeTypes = () => {
+        const rows = filteredEmployeeTypes.map((item) => ({
+            "Employee Type": item.employeeTypeName,
+            Description: item.description || "",
+            "Created Date": item.createdDate ? new Date(item.createdDate).toLocaleDateString("en-GB") : "",
+            Status: item.status || "",
+        }));
+        const sheet = XLSX.utils.json_to_sheet(rows);
+        const book = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(book, sheet, "Employee Types");
+        XLSX.writeFile(book, `Spark_Employee_Types_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    };
+    const selectStatusCard = (status) => setStatusFilter((current) => current === status ? "" : status);
 
 
     if (!canView) {
         return (
-            <div style={{ padding: "60px", textAlign: "center" }}>
-                <h2>Access Denied</h2>
-                <p>You do not have permission to access this page.</p>
-            </div>
+            <MuiLayoutBox style={{ padding: "60px", textAlign: "center" }} component="div">
+                <MuiText component="h2" variant="h5">Access Denied</MuiText>
+                <MuiText component="p" variant="body1">You do not have permission to access this page.</MuiText>
+            </MuiLayoutBox>
         );
     }
 
     return (
 
-        <div className="employee-type-page">
+        <MuiLayoutBox className="employee-type-page" component="div">
 
-            <div className="employee-page-header">
+            <MuiLayoutBox className="employee-page-header" component="div">
 
-                <div>
+                <MuiLayoutBox className="employee-type-title-wrap" component="div">
+                    <Tooltip title="Back to employee management">
+                        <IconButton className="employee-type-back-button" aria-label="Back to employee management" onClick={() => navigate("/employees")}><ArrowBack /></IconButton>
+                    </Tooltip>
+                    <MuiLayoutBox component="div">
 
-                    <h1>Employee Type Management</h1>
+                    <MuiText component="h1" variant="h4">Employee Type Management</MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Manage employee types across your organization.
-                    </p>
+                    </MuiText>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
-                </div>
 
-
-                <div className="header-buttons">
-
-                    <Button
-                        variant="outlined"
-                        onClick={() => navigate("/employees")}
-                    >
-                        Previous
-                    </Button>
-
+                <MuiLayoutBox className="header-buttons" component="div">
 
                     <Button
                         variant="outlined"
@@ -254,8 +270,9 @@ function EmployeeType() {
                         <Button
                             variant="outlined"
                             startIcon={<Download />}
+                            onClick={exportEmployeeTypes}
                         >
-                            Export
+                            Export Excel
                         </Button>
                     )}
 
@@ -270,84 +287,84 @@ function EmployeeType() {
                         </Button>
                     )}
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
-            <div className="stats-grid">
+            <MuiLayoutBox className="stats-grid" component="div">
 
-                <Card className="stats-card">
+                <Card className={`stats-card ${statusFilter === "" ? "selected" : ""}`} role="button" tabIndex={0} onClick={() => selectStatusCard("")} onKeyDown={(e) => e.key === "Enter" && selectStatusCard("")}>
 
                     <CardContent>
 
-                        <div className="stats-icon blue">
+                        <MuiLayoutBox className="stats-icon blue" component="div">
 
                             <Category />
 
-                        </div>
+                        </MuiLayoutBox>
 
-                        <span>Total Employee Types</span>
+                        <MuiText component="span" variant="inherit">Total Employee Types</MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {employeeTypes.length}
-                        </h2>
+                        </MuiText>
 
                     </CardContent>
 
                 </Card>
 
 
-                <Card className="stats-card">
+                <Card className={`stats-card ${statusFilter === "Active" ? "selected" : ""}`} role="button" tabIndex={0} onClick={() => selectStatusCard("Active")} onKeyDown={(e) => e.key === "Enter" && selectStatusCard("Active")}>
 
                     <CardContent>
 
-                        <div className="stats-icon green">
+                        <MuiLayoutBox className="stats-icon green" component="div">
 
                             <CheckCircle />
 
-                        </div>
+                        </MuiLayoutBox>
 
-                        <span>Active Employee Types</span>
+                        <MuiText component="span" variant="inherit">Active Employee Types</MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {
                                 employeeTypes.filter(
                                     x => x.status === "Active"
                                 ).length
                             }
-                        </h2>
+                        </MuiText>
 
                     </CardContent>
 
                 </Card>
 
 
-                <Card className="stats-card">
+                <Card className={`stats-card ${statusFilter === "Inactive" ? "selected" : ""}`} role="button" tabIndex={0} onClick={() => selectStatusCard("Inactive")} onKeyDown={(e) => e.key === "Enter" && selectStatusCard("Inactive")}>
 
                     <CardContent>
 
-                        <div className="stats-icon red">
+                        <MuiLayoutBox className="stats-icon red" component="div">
 
                             <Cancel />
 
-                        </div>
+                        </MuiLayoutBox>
 
-                        <span>Inactive Employee Types</span>
+                        <MuiText component="span" variant="inherit">Inactive Employee Types</MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {
                                 employeeTypes.filter(
                                     x => x.status === "Inactive"
                                 ).length
                             }
-                        </h2>
+                        </MuiText>
 
                     </CardContent>
 
                 </Card>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* SEARCH + STATUS FILTER */}
@@ -356,7 +373,7 @@ function EmployeeType() {
 
                 <CardContent>
 
-                    <div className="employee-type-filter-row">
+                    <MuiLayoutBox className="employee-type-filter-row" component="div">
 
                         <TextField
                             className="employee-type-search"
@@ -366,13 +383,13 @@ function EmployeeType() {
                             onChange={(e) =>
                                 setSearch(e.target.value)
                             }
-                            InputProps={{
+                            slotProps={{ input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
                                         <Search />
                                     </InputAdornment>
                                 ),
-                            }}
+                            } }}
                         />
 
 
@@ -404,7 +421,7 @@ function EmployeeType() {
 
                         </FormControl>
 
-                    </div>
+                    </MuiLayoutBox>
 
                 </CardContent>
 
@@ -418,14 +435,14 @@ function EmployeeType() {
 
                         <CardContent>
 
-                            <h3
+                            <MuiText
                                 style={{
                                     textAlign: "center",
                                     padding: "40px",
                                 }}
-                            >
+                             component="h3" variant="h6">
                                 Loading Employee Types...
-                            </h3>
+                            </MuiText>
 
                         </CardContent>
 
@@ -440,7 +457,7 @@ function EmployeeType() {
                             <EmployeeTypeTable
                                 employeeTypes={filteredEmployeeTypes}
                                 editEmployeeType={editEmployeeType}
-                                deleteEmployeeType={deleteEmployeeType}
+                                deleteEmployeeType={(item) => setPendingDelete(item)}
                                 canEdit={canEdit}
                                 canDelete={canDelete}
                             />
@@ -472,8 +489,16 @@ function EmployeeType() {
                 handleUpdate={updateEmployeeType}
                 />
             )}
+            <Dialog open={Boolean(pendingDelete)} onClose={() => setPendingDelete(null)}>
+                <DialogTitle>Delete employee type?</DialogTitle>
+                <DialogContent>Are you sure you want to delete {pendingDelete?.employeeTypeName || "this employee type"}?</DialogContent>
+                <DialogActions><Button onClick={() => setPendingDelete(null)}>Cancel</Button><Button color="error" variant="contained" onClick={deleteEmployeeType}>Delete</Button></DialogActions>
+            </Dialog>
+            <Snackbar open={notice.open} autoHideDuration={4000} onClose={() => setNotice((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
+                <Alert severity={notice.severity} variant="filled" onClose={() => setNotice((current) => ({ ...current, open: false }))}>{notice.message}</Alert>
+            </Snackbar>
 
-        </div>
+        </MuiLayoutBox>
 
     );
 }

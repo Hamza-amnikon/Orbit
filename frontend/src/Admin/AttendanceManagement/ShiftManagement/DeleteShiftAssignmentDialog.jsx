@@ -11,6 +11,7 @@ import {
 
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Typography as MuiText } from "@mui/material";
 
 export default function DeleteShiftAssignmentDialog({
   open,
@@ -54,23 +55,23 @@ export default function DeleteShiftAssignmentDialog({
           }}
         >
           <Typography>
-            <strong>Employee :</strong> {employee.employeeName}
+            <MuiText component="strong" variant="inherit">Employee :</MuiText> {employee.employeeName}
           </Typography>
 
           <Typography sx={{ mt: 1 }}>
-            <strong>Employee ID :</strong> {employee.employeeCode}
+            <MuiText component="strong" variant="inherit">Employee ID :</MuiText> {employee.employeeCode}
           </Typography>
 
           <Typography sx={{ mt: 1 }}>
-            <strong>Department :</strong> {employee.department}
+            <MuiText component="strong" variant="inherit">Department :</MuiText> {employee.department}
           </Typography>
 
           <Typography sx={{ mt: 1 }}>
-            <strong>Current Shift :</strong> {employee.shift}
+            <MuiText component="strong" variant="inherit">Current Shift :</MuiText> {employee.shift}
           </Typography>
 
           <Typography sx={{ mt: 1 }}>
-            <strong>Shift Time :</strong> {employee.shiftTime}
+            <MuiText component="strong" variant="inherit">Shift Time :</MuiText> {employee.shiftTime}
           </Typography>
         </Box>
 

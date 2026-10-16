@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import * as XLSX from "xlsx";
 
 import EmployeeEditDialog from "./EmployeeEditDialog";
 import EmployeeTable from "./EmployeeTable";
@@ -16,10 +17,19 @@ import {
   Business,
   Person,
   PersonOff,
+  ArrowBack,
+  ArrowForward,
 } from "@mui/icons-material";
 
 import {
   Button,
+  Alert,
+  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CircularProgress,
   TextField,
   InputAdornment,
   Card,
@@ -27,9 +37,13 @@ import {
   MenuItem,
   Select,
   FormControl,
+  CardActionArea,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function EmployeeList() {
@@ -224,6 +238,14 @@ function EmployeeList() {
   const [selectedEmployee, setSelectedEmployee] =
     useState(null);
 
+  const [toast, setToast] = useState({ open: false, message: "", severity: "info" });
+  const [employeeToDelete, setEmployeeToDelete] = useState(null);
+  const [syncInProgress, setSyncInProgress] = useState(false);
+  const [syncDialog, setSyncDialog] = useState({ open: false, message: "", severity: "success" });
+
+  const showToast = (message, severity = "info") =>
+    setToast({ open: true, message, severity });
+
 
   // ==========================================
   // INITIAL LOAD
@@ -308,9 +330,7 @@ function EmployeeList() {
         error.response?.status === 401
       ) {
 
-        alert(
-          "Your login session has expired. Please login again."
-        );
+        showToast("Your login session has expired. Please login again.", "error");
 
         localStorage.removeItem("token");
 
@@ -324,9 +344,7 @@ function EmployeeList() {
         error.response?.status === 403
       ) {
 
-        alert(
-          "You are not authorized to view employees."
-        );
+        showToast("You are not authorized to view employees.", "error");
 
         return;
       }
@@ -417,26 +435,13 @@ function EmployeeList() {
       return;
     }
 
-    const confirmDelete =
-      window.confirm(
-        "Are you sure you want to delete this employee?"
-      );
-
-
-    if (!confirmDelete) {
-      return;
-    }
-
-
     // ------------------------------------------
     // AUTH CHECK
     // ------------------------------------------
 
     if (!isAuthenticated) {
 
-      alert(
-        "You are not authenticated. Please login again."
-      );
+      showToast("You are not authenticated. Please login again.", "error");
 
       navigate("/login");
 
@@ -450,9 +455,7 @@ function EmployeeList() {
 
     if (!token) {
 
-      alert(
-        "Authentication token is missing. Please login again."
-      );
+      showToast("Authentication token is missing. Please login again.", "error");
 
       navigate("/login");
 
@@ -520,9 +523,7 @@ function EmployeeList() {
       await fetchEmployees();
 
 
-      alert(
-        "Employee deleted successfully."
-      );
+      showToast("Employee deleted successfully.", "success");
 
     }
     catch (error) {
@@ -541,9 +542,7 @@ function EmployeeList() {
         error.response?.status === 401
       ) {
 
-        alert(
-          "Your login session has expired. Please login again."
-        );
+        showToast("Your login session has expired. Please login again.", "error");
 
         localStorage.removeItem("token");
 
@@ -562,9 +561,7 @@ function EmployeeList() {
         error.response?.status === 403
       ) {
 
-        alert(
-          "You are not authorized to delete this employee."
-        );
+        showToast("You are not authorized to delete this employee.", "error");
 
         return;
 
@@ -577,17 +574,12 @@ function EmployeeList() {
 
       if (error.response) {
 
-        alert(
-          error.response.data?.message ||
-          "Unable to delete employee."
-        );
+        showToast(error.response.data?.message || "Unable to delete employee.", "error");
 
       }
       else {
 
-        alert(
-          "Unable to connect to the server."
-        );
+        showToast("Unable to connect to the server.", "error");
 
       }
 
@@ -739,6 +731,43 @@ function EmployeeList() {
     ).size;
 
 
+  const exportEmployeesToExcel = () => {
+    if (filteredEmployees.length === 0) return;
+
+    const exportData = filteredEmployees.map((employee) => ({
+      "Employee ID": employee.azureEmployeeId || "-",
+      "Employee Name": employee.employeeName || "-",
+      Email: employee.email || "-",
+      Mobile: employee.mobile || "-",
+      Gender: employee.gender || "-",
+      Department: employee.department || "-",
+      Designation: employee.designation || "-",
+      "Joining Date": employee.joiningDate
+        ? new Date(employee.joiningDate).toLocaleDateString("en-GB")
+        : "-",
+      Status: employee.status || "-",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    worksheet["!cols"] = [
+      { wch: 16 }, { wch: 30 }, { wch: 38 }, { wch: 18 },
+      { wch: 14 }, { wch: 22 }, { wch: 28 }, { wch: 16 }, { wch: 14 },
+    ];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Employees");
+    const date = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `Spark_Employees_${date}.xlsx`);
+  };
+
+
+  const resetEmployeeFilters = () => {
+    setSearch("");
+    setDepartmentFilter("All");
+    setStatusFilter("All");
+  };
+
+
   // ==========================================
   // SYNC AZURE AD
   // ==========================================
@@ -747,9 +776,7 @@ function EmployeeList() {
 
     if (!isAuthenticated) {
 
-      alert(
-        "You are not authenticated. Please login again."
-      );
+      showToast("You are not authenticated. Please login again.", "error");
 
       navigate("/login");
 
@@ -763,9 +790,7 @@ function EmployeeList() {
 
     if (!token) {
 
-      alert(
-        "Authentication token is missing. Please login again."
-      );
+      showToast("Authentication token is missing. Please login again.", "error");
 
       navigate("/login");
 
@@ -775,7 +800,8 @@ function EmployeeList() {
 
     try {
 
-      setLoading(true);
+      setSyncInProgress(true);
+      setSyncDialog({ open: true, message: "Contacting the employee directory and updating the list…", severity: "info" });
 
 
       console.log(
@@ -818,10 +844,7 @@ function EmployeeList() {
       await fetchEmployees();
 
 
-      alert(
-        response.data?.message ||
-        "Employees synchronized successfully."
-      );
+      setSyncDialog({ open: true, message: response.data?.message || "Employees synchronized successfully.", severity: "success" });
 
     }
     catch (error) {
@@ -836,9 +859,7 @@ function EmployeeList() {
         error.response?.status === 401
       ) {
 
-        alert(
-          "Your login session has expired. Please login again."
-        );
+        showToast("Your login session has expired. Please login again.", "error");
 
         localStorage.removeItem("token");
 
@@ -853,9 +874,7 @@ function EmployeeList() {
         error.response?.status === 403
       ) {
 
-        alert(
-          "You are not authorized to synchronize employees."
-        );
+        setSyncDialog({ open: true, message: "You are not authorized to synchronize employees.", severity: "error" });
 
         return;
 
@@ -864,24 +883,19 @@ function EmployeeList() {
 
       if (error.response) {
 
-        alert(
-          error.response.data?.message ||
-          "Synchronization failed."
-        );
+        setSyncDialog({ open: true, message: error.response.data?.message || "Synchronization failed.", severity: "error" });
 
       }
       else {
 
-        alert(
-          "Unable to connect to the Sync Service."
-        );
+        setSyncDialog({ open: true, message: "Unable to connect to the Sync Service.", severity: "error" });
 
       }
 
     }
     finally {
 
-      setLoading(false);
+      setSyncInProgress(false);
 
     }
 
@@ -898,42 +912,44 @@ function EmployeeList() {
 
   return (
 
-    <div className="employee-list-page">
+    <MuiLayoutBox className="employee-list-page" component="div">
 
 
       {/* ======================================
           HEADER
       ====================================== */}
 
-      <div className="employee-page-header">
+      <MuiLayoutBox className="employee-page-header" component="div">
 
-        <div>
+        <MuiLayoutBox className="employee-page-title" component="div">
 
-          <h1>
+          <Tooltip title="Back to employee management">
+            <IconButton
+              className="employee-back-button"
+              aria-label="Back to employee management"
+              onClick={() => navigate("/employees")}
+            >
+              <ArrowBack />
+            </IconButton>
+          </Tooltip>
+
+          <MuiLayoutBox component="div">
+
+          <MuiText component="h1" variant="h4">
             Employee Management
-          </h1>
+          </MuiText>
 
-          <p>
+          <MuiText component="p" variant="body1">
             Manage, search and organize
             employees across your organization.
-          </p>
+          </MuiText>
 
-        </div>
+          </MuiLayoutBox>
+
+        </MuiLayoutBox>
 
 
-        <div className="header-buttons">
-
-
-          {/* Previous */}
-
-          <Button
-            variant="outlined"
-            onClick={() =>
-              navigate("/employees")
-            }
-          >
-            Previous
-          </Button>
+        <MuiLayoutBox className="header-buttons" component="div">
 
 
           {/* Refresh */}
@@ -954,8 +970,11 @@ function EmployeeList() {
             <Button
               variant="outlined"
               startIcon={<Download />}
+              onClick={exportEmployeesToExcel}
+              disabled={loading || filteredEmployees.length === 0}
+              aria-label={`Export ${filteredEmployees.length} displayed employees to Excel`}
             >
-              Export
+              Export Excel
             </Button>
           )}
 
@@ -965,11 +984,11 @@ function EmployeeList() {
           <Button
             variant="contained"
             color="success"
-            startIcon={<Sync />}
+            startIcon={syncInProgress ? <CircularProgress size={17} color="inherit" /> : <Sync />}
             onClick={syncEmployees}
-            disabled={loading}
+            disabled={loading || syncInProgress}
           >
-            Sync Azure AD
+            {syncInProgress ? "Syncing employees…" : "Sync Azure AD"}
           </Button>
 
 
@@ -987,97 +1006,129 @@ function EmployeeList() {
             </Button>
           )}
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
 
       {/* ======================================
           AUTHENTICATED USER
       ====================================== */}
 
-      <div
+      <MuiLayoutBox
         style={{
           display: "none",
         }}
-      >
+       component="div">
         Logged In EmployeeId:
         {currentEmployeeId}
-      </div>
+      </MuiLayoutBox>
 
 
       {/* ======================================
           STATISTICS
       ====================================== */}
 
-      <div className="stats-grid">
+      <MuiLayoutBox className="stats-grid" component="div">
 
 
         {/* Total */}
 
-        <Card className="stats-card">
+        <Card className={`stats-card ${statusFilter === "All" && (search || departmentFilter !== "All") ? "is-selected" : ""}`}>
 
+          <CardActionArea
+            className="stats-card-action-area"
+            onClick={resetEmployeeFilters}
+            aria-label={`Show all ${totalEmployees} employees`}
+          >
           <CardContent>
 
-            <div className="stats-icon blue">
+            <MuiLayoutBox className="stats-icon blue" component="div">
               <Groups />
-            </div>
+            </MuiLayoutBox>
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Total Employees
-            </span>
+            </MuiText>
 
-            <h2>
+            <MuiText component="h2" variant="h5">
               {totalEmployees}
-            </h2>
+            </MuiText>
+
+            <MuiText className="stats-card-hint" component="span" variant="body2">
+              View all employees <ArrowForward />
+            </MuiText>
 
           </CardContent>
+          </CardActionArea>
 
         </Card>
 
 
         {/* Active */}
 
-        <Card className="stats-card">
+        <Card className={`stats-card ${statusFilter === "Active" ? "is-selected" : ""}`}>
 
+          <CardActionArea
+            className="stats-card-action-area"
+            onClick={() => setStatusFilter(statusFilter === "Active" ? "All" : "Active")}
+            aria-label={`Filter to ${activeEmployees} active employees`}
+            aria-pressed={statusFilter === "Active"}
+          >
           <CardContent>
 
-            <div className="stats-icon green">
+            <MuiLayoutBox className="stats-icon green" component="div">
               <Person />
-            </div>
+            </MuiLayoutBox>
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Active Employees
-            </span>
+            </MuiText>
 
-            <h2>
+            <MuiText component="h2" variant="h5">
               {activeEmployees}
-            </h2>
+            </MuiText>
+
+            <MuiText className="stats-card-hint" component="span" variant="body2">
+              {statusFilter === "Active" ? "Clear active filter" : "Show active employees"} <ArrowForward />
+            </MuiText>
 
           </CardContent>
+          </CardActionArea>
 
         </Card>
 
 
         {/* Inactive */}
 
-        <Card className="stats-card">
+        <Card className={`stats-card ${statusFilter === "Inactive" ? "is-selected" : ""}`}>
 
+          <CardActionArea
+            className="stats-card-action-area"
+            onClick={() => setStatusFilter(statusFilter === "Inactive" ? "All" : "Inactive")}
+            aria-label={`Filter to ${inactiveEmployees} inactive employees`}
+            aria-pressed={statusFilter === "Inactive"}
+          >
           <CardContent>
 
-            <div className="stats-icon red">
+            <MuiLayoutBox className="stats-icon red" component="div">
               <PersonOff />
-            </div>
+            </MuiLayoutBox>
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Inactive Employees
-            </span>
+            </MuiText>
 
-            <h2>
+            <MuiText component="h2" variant="h5">
               {inactiveEmployees}
-            </h2>
+            </MuiText>
+
+            <MuiText className="stats-card-hint" component="span" variant="body2">
+              {statusFilter === "Inactive" ? "Clear inactive filter" : "Show inactive employees"} <ArrowForward />
+            </MuiText>
 
           </CardContent>
+          </CardActionArea>
 
         </Card>
 
@@ -1086,25 +1137,35 @@ function EmployeeList() {
 
         <Card className="stats-card">
 
+          <CardActionArea
+            className="stats-card-action-area"
+            onClick={() => navigate("/employees/departments")}
+            aria-label={`Open departments management for ${totalDepartments} departments`}
+          >
           <CardContent>
 
-            <div className="stats-icon purple">
+            <MuiLayoutBox className="stats-icon purple" component="div">
               <Business />
-            </div>
+            </MuiLayoutBox>
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Departments
-            </span>
+            </MuiText>
 
-            <h2>
+            <MuiText component="h2" variant="h5">
               {totalDepartments}
-            </h2>
+            </MuiText>
+
+            <MuiText className="stats-card-hint" component="span" variant="body2">
+              Manage departments <ArrowForward />
+            </MuiText>
 
           </CardContent>
+          </CardActionArea>
 
         </Card>
 
-      </div>
+      </MuiLayoutBox>
 
 
       {/* ======================================
@@ -1115,7 +1176,7 @@ function EmployeeList() {
 
         <CardContent>
 
-          <div className="toolbar">
+          <MuiLayoutBox className="toolbar" component="div">
 
 
             {/* Search */}
@@ -1213,7 +1274,7 @@ function EmployeeList() {
 
             </FormControl>
 
-          </div>
+          </MuiLayoutBox>
 
         </CardContent>
 
@@ -1226,20 +1287,20 @@ function EmployeeList() {
 
       {loading ? (
 
-        <div className="loading-card">
+        <MuiLayoutBox className="loading-card" component="div">
 
-          <div className="loader"></div>
+          <MuiLayoutBox className="loader" component="div"></MuiLayoutBox>
 
-          <h3>
+          <MuiText component="h3" variant="h6">
             Loading Employees...
-          </h3>
+          </MuiText>
 
-          <p>
+          <MuiText component="p" variant="body1">
             Please wait while we fetch
             employee records.
-          </p>
+          </MuiText>
 
-        </div>
+        </MuiLayoutBox>
 
       ) : filteredEmployees.length === 0 ? (
 
@@ -1255,14 +1316,14 @@ function EmployeeList() {
               }}
             />
 
-            <h2>
+            <MuiText component="h2" variant="h5">
               No Employees Found
-            </h2>
+            </MuiText>
 
-            <p>
+            <MuiText component="p" variant="body1">
               Try changing the search
               text or filters.
-            </p>
+            </MuiText>
 
           </CardContent>
 
@@ -1277,7 +1338,11 @@ function EmployeeList() {
             <EmployeeTable
               employees={filteredEmployees}
               editEmployee={editEmployee}
-              deleteEmployee={deleteEmployee}
+              deleteEmployee={(id) => {
+                const employee = employees.find((item) => item.employeeId === id);
+                setEmployeeToDelete(employee || { employeeId: id });
+              }}
+              onNotify={showToast}
             />
 
           </CardContent>
@@ -1296,9 +1361,84 @@ function EmployeeList() {
         employee={selectedEmployee}
         onClose={closeEditDialog}
         onUpdated={fetchEmployees}
+        onNotify={showToast}
       />
 
-    </div>
+      <Dialog
+        open={Boolean(employeeToDelete)}
+        onClose={() => setEmployeeToDelete(null)}
+        aria-labelledby="delete-employee-title"
+      >
+        <DialogTitle id="delete-employee-title">Delete employee?</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete {employeeToDelete?.employeeName || "this employee"}?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEmployeeToDelete(null)}>Cancel</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={async () => {
+              const id = employeeToDelete?.employeeId;
+              setEmployeeToDelete(null);
+              if (id) await deleteEmployee(id);
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={5000}
+        onClose={() => setToast((current) => ({ ...current, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setToast((current) => ({ ...current, open: false }))}
+          severity={toast.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {toast.message}
+        </Alert>
+      </Snackbar>
+
+      <Dialog
+        open={syncDialog.open}
+        onClose={() => {
+          if (!syncInProgress) setSyncDialog((current) => ({ ...current, open: false }));
+        }}
+        aria-labelledby="employee-sync-title"
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle id="employee-sync-title">
+          {syncInProgress ? "Syncing employees" : "Employee sync"}
+        </DialogTitle>
+        <DialogContent>
+          {syncInProgress ? (
+            <MuiLayoutBox sx={{ display: "flex", alignItems: "center", gap: 2, py: 1 }} component="div">
+              <CircularProgress size={24} />
+              <MuiText component="p" variant="body1">{syncDialog.message}</MuiText>
+            </MuiLayoutBox>
+          ) : (
+            <Alert severity={syncDialog.severity} sx={{ mt: 1 }}>
+              {syncDialog.message}
+            </Alert>
+          )}
+        </DialogContent>
+        {!syncInProgress && (
+          <DialogActions>
+            <Button variant="contained" onClick={() => setSyncDialog((current) => ({ ...current, open: false }))}>
+              OK
+            </Button>
+          </DialogActions>
+        )}
+      </Dialog>
+
+    </MuiLayoutBox>
 
   );
 }

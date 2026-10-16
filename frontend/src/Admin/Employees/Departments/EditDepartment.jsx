@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function EditDepartment({
@@ -21,6 +22,7 @@ function EditDepartment({
   department,
   handleClose,
   handleUpdate,
+  onNotify,
 }) {
 
   // =====================================================
@@ -155,9 +157,7 @@ function EditDepartment({
 
     if (!isAuthenticated) {
 
-      alert(
-        "You are not authenticated. Please login again."
-      );
+      onNotify?.("You are not authenticated. Please login again.", "error");
 
       return;
 
@@ -166,9 +166,7 @@ function EditDepartment({
 
     if (!currentEmployeeId) {
 
-      alert(
-        "Your Employee ID could not be determined."
-      );
+      onNotify?.("Your Employee ID could not be determined.", "error");
 
       return;
 
@@ -177,9 +175,7 @@ function EditDepartment({
 
     if (!department?.departmentId) {
 
-      alert(
-        "Department ID is missing."
-      );
+      onNotify?.("Department ID is missing.", "error");
 
       return;
 
@@ -190,9 +186,7 @@ function EditDepartment({
       !formData.departmentName.trim()
     ) {
 
-      alert(
-        "Department Name is required."
-      );
+      onNotify?.("Department Name is required.", "error");
 
       return;
 
@@ -267,10 +261,7 @@ function EditDepartment({
         error
       );
 
-      alert(
-        error?.message ||
-        "Unable to update Department."
-      );
+      onNotify?.(error?.message || "Unable to update Department.", "error");
 
     } finally {
 
@@ -330,38 +321,38 @@ function EditDepartment({
 
         {/* AUTHENTICATED USER */}
 
-        <div
+        <MuiLayoutBox
           style={{
             marginBottom: "20px",
             fontSize: "13px",
             opacity: 0.75,
           }}
-        >
+         component="div">
 
           Updating as:
 
           {" "}
 
-          <strong>
+          <MuiText component="strong" variant="inherit">
             {currentEmployeeName}
-          </strong>
+          </MuiText>
 
           {" • Employee ID: "}
 
-          <strong>
+          <MuiText component="strong" variant="inherit">
             {currentEmployeeId || "-"}
-          </strong>
+          </MuiText>
 
           {currentEmployeeCode && (
             <>
               {" • "}
-              <strong>
+              <MuiText component="strong" variant="inherit">
                 {currentEmployeeCode}
-              </strong>
+              </MuiText>
             </>
           )}
 
-        </div>
+        </MuiLayoutBox>
 
 
         <Grid
@@ -376,13 +367,13 @@ function EditDepartment({
             size={{ xs: 12 }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
               >
                 Department{" "}
-                <span>*</span>
+                <MuiText component="span" variant="inherit">*</MuiText>
               </Typography>
 
 
@@ -400,7 +391,7 @@ function EditDepartment({
                 disabled={saving}
               />
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 
@@ -414,7 +405,7 @@ function EditDepartment({
             }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
@@ -439,7 +430,7 @@ function EditDepartment({
                 disabled={saving}
               />
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 
@@ -453,7 +444,7 @@ function EditDepartment({
             }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
@@ -486,7 +477,7 @@ function EditDepartment({
 
               </TextField>
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 

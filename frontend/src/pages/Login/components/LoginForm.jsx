@@ -1,3 +1,4 @@
+import { MuiButtonMigration } from "../../../components/ui/MuiCompat.jsx";
 import "../styles/Login.css";
 import ForgotPassword from "./ForgotPassword";
 import { useState } from "react";
@@ -23,6 +24,7 @@ import {
   validateEmail,
   validatePassword,
 } from "../utils/validation";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function LoginForm({ onLogin, loading = false }) {
     const [forgotOpen, setForgotOpen] = useState(false);
@@ -62,11 +64,11 @@ function LoginForm({ onLogin, loading = false }) {
   };
 
   return (
-    <form
+    <MuiLayoutBox
       className="login-form"
       onSubmit={handleSubmit}
       noValidate
-    >
+     component="form">
       {/* Email */}
 
       <TextField
@@ -86,13 +88,13 @@ function LoginForm({ onLogin, loading = false }) {
             email: validateEmail(e.target.value),
           });
         }}
-        InputProps={{
+        slotProps={{ input: {
           startAdornment: (
             <InputAdornment position="start">
               <Email />
             </InputAdornment>
           ),
-        }}
+        } }}
       />
 
       {/* Password */}
@@ -119,7 +121,7 @@ function LoginForm({ onLogin, loading = false }) {
             e.getModifierState("CapsLock")
           );
         }}
-        InputProps={{
+        slotProps={{ input: {
           startAdornment: (
             <InputAdornment position="start">
               <Lock />
@@ -142,15 +144,15 @@ function LoginForm({ onLogin, loading = false }) {
               </IconButton>
             </InputAdornment>
           ),
-        }}
+        } }}
       />
 
       {/* Password Strength */}
 
       {password.length > 0 && (
-        <div className="password-strength">
+        <MuiLayoutBox className="password-strength" component="div">
 
-          <div
+          <MuiLayoutBox
             className={`strength-bar ${
               password.length >= 8
                 ? "strong"
@@ -158,30 +160,30 @@ function LoginForm({ onLogin, loading = false }) {
                 ? "medium"
                 : "weak"
             }`}
-          />
+           component="div"/>
 
-          <span>
+          <MuiText component="span" variant="inherit">
             {password.length < 4
               ? "Weak Password"
               : password.length < 8
               ? "Medium Password"
               : "Strong Password"}
-          </span>
+          </MuiText>
 
-        </div>
+        </MuiLayoutBox>
       )}
 
       {/* Caps Lock */}
 
       {capsLock && (
-        <div className="caps-lock-warning">
+        <MuiLayoutBox className="caps-lock-warning" component="div">
           Caps Lock is ON
-        </div>
+        </MuiLayoutBox>
       )}
 
       {/* Remember */}
 
-      <div className="login-options">
+      <MuiLayoutBox className="login-options" component="div">
 
         <FormControlLabel
           control={
@@ -195,20 +197,20 @@ function LoginForm({ onLogin, loading = false }) {
           label="Remember Me"
         />
 
-<button
+<MuiButtonMigration
     className="forgot-link"
     type="button"
     onClick={() => setForgotOpen(true)}
 >   
 Forgot Password?
-</button>
+</MuiButtonMigration>
 
         <ForgotPassword
           open={forgotOpen}
           onClose={() => setForgotOpen(false)}
         />
 
-      </div>
+      </MuiLayoutBox>
 
       {/* Login Button */}
 
@@ -236,7 +238,7 @@ Forgot Password?
           "Sign In"
         )}
       </Button>
-    </form>
+    </MuiLayoutBox>
   );
 }
 

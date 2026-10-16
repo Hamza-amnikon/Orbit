@@ -13,6 +13,7 @@ import EmergencyContact from "./Profile/EmergencyContact";
 import Documents from "./Profile/Docs";
 
 import { getProfile } from "../Services/ProfileService";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 export default function SettingsDashboard() {
@@ -217,31 +218,31 @@ export default function SettingsDashboard() {
 
         return (
 
-            <div className="settings-dashboard">
+            <MuiLayoutBox className="settings-dashboard" component="div">
 
-                <div className="settings-header">
+                <MuiLayoutBox className="settings-header" component="div">
 
-                    <h1>
+                    <MuiText component="h1" variant="h4">
                         Settings
-                    </h1>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Manage your personal and system settings.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="settings-loading">
+                <MuiLayoutBox className="settings-loading" component="div">
 
-                    <div className="settings-loading-spinner" />
+                    <MuiLayoutBox className="settings-loading-spinner"  component="div"/>
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
                         Loading profile...
-                    </span>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
         );
 
@@ -256,27 +257,27 @@ export default function SettingsDashboard() {
 
         return (
 
-            <div className="settings-dashboard">
+            <MuiLayoutBox className="settings-dashboard" component="div">
 
-                <div className="settings-header">
+                <MuiLayoutBox className="settings-header" component="div">
 
-                    <h1>
+                    <MuiText component="h1" variant="h4">
                         Settings
-                    </h1>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Manage your personal and system settings.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="settings-error">
+                <MuiLayoutBox className="settings-error" component="div">
 
                     {error}
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
         );
 
@@ -289,36 +290,36 @@ export default function SettingsDashboard() {
 
     return (
 
-        <div className="settings-dashboard">
+        <MuiLayoutBox className="settings-dashboard" component="div">
 
             {/* =================================================
                 SETTINGS HEADER
             ================================================= */}
 
-            <div className="settings-header">
+            <MuiLayoutBox className="settings-header" component="div">
 
-                <h1>
+                <MuiText component="h1" variant="h4">
                     Profile Settings
-                </h1>
+                </MuiText>
 
-                <p>
+                <MuiText component="p" variant="body1">
                     Manage your profile and personal information.
-                </p>
+                </MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
                 PROFILE HEADER
             ================================================= */}
 
-            <div className="settings-profile-section">
+            <MuiLayoutBox className="settings-profile-section" component="div">
 
                 <ProfileHeader
                     profile={profile}
                 />
 
-            </div>
+            </MuiLayoutBox>
 
 
             {/* =================================================
@@ -346,13 +347,13 @@ export default function SettingsDashboard() {
 
             {activeTab === "personal" && (
 
-                <div className="profile-grid">
+                <MuiLayoutBox className="profile-grid" component="div">
 
                     <ProfileInfo
                         profile={profile}
                     />
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
@@ -363,13 +364,13 @@ export default function SettingsDashboard() {
 
             {activeTab === "employment" && (
 
-                <div className="profile-grid">
+                <MuiLayoutBox className="profile-grid" component="div">
 
                     <EmploymentInfo
                         profile={profile}
                     />
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
@@ -386,13 +387,13 @@ export default function SettingsDashboard() {
                         profile={profile}
                     />
 
-                    <div className="profile-grid">
+                    <MuiLayoutBox className="profile-grid" component="div">
 
                         <EmergencyContact
                             profile={profile}
                         />
 
-                    </div>
+                    </MuiLayoutBox>
 
                 </>
 
@@ -405,18 +406,18 @@ export default function SettingsDashboard() {
 
             {activeTab === "documents" && (
 
-                <div
+                <MuiLayoutBox
                     id="employee-documents-section"
                     style={{
                         scrollMarginTop: "20px"
                     }}
-                >
+                 component="div">
 
                     <Documents
                         profile={profile}
                     />
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
@@ -427,17 +428,17 @@ export default function SettingsDashboard() {
 
             {activeTab === "skills" && (
 
-                <div className="coming-soon-card">
+                <MuiLayoutBox className="coming-soon-card" component="div">
 
-                    <h2>
+                    <MuiText component="h2" variant="h5">
                         Skills
-                    </h2>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Skills and certifications will appear here.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
@@ -448,21 +449,21 @@ export default function SettingsDashboard() {
 
             {activeTab === "timeline" && (
 
-                <div className="coming-soon-card">
+                <MuiLayoutBox className="coming-soon-card" component="div">
 
-                    <h2>
+                    <MuiText component="h2" variant="h5">
                         Timeline
-                    </h2>
+                    </MuiText>
 
-                    <p>
+                    <MuiText component="p" variant="body1">
                         Employee history and activities will appear here.
-                    </p>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
             )}
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

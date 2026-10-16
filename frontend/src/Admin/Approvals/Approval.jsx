@@ -1,3 +1,4 @@
+import { MuiButtonMigration, MuiInputMigration, MuiSelectMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../components/ui/MuiCompat.jsx";
 import React, {
     useEffect,
     useMemo,
@@ -33,6 +34,7 @@ import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import api from "../Services/api";
+import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
 
 // ============================================================
 // CENTRAL APPROVAL SERVICE
@@ -1690,170 +1692,170 @@ const response =
 
     return (
 
-        <div className="approval-page">
+        <MuiLayoutBox className="approval-page" component="div">
 
             {/* HEADER */}
 
-            <div className="approval-header">
+            <MuiLayoutBox className="approval-header" component="div">
 
-                <h1>
+                <MuiText component="h1" variant="h4">
                     Approvals
-                </h1>
+                </MuiText>
 
-                <p>
+                <MuiText component="p" variant="body1">
                     Review and manage requests
                     that require your approval.
-                </p>
+                </MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
             {/* SUMMARY CARDS */}
 
-            <div className="approval-summary">
+            <MuiLayoutBox className="approval-summary" component="div">
 
-                <div
+                <MuiActionButton
                     className="approval-card approval-card-clickable"
                     onClick={() =>
                         handleCardClick(
                             "Pending"
                         )
                     }
-                >
+                 component="div">
 
-                    <div className="approval-card-icon pending">
+                    <MuiLayoutBox className="approval-card-icon pending" component="div">
                         <AccessTimeRoundedIcon />
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Pending
-                        </span>
+                        </MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {statistics.pending}
-                        </h2>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             Requests waiting for
                             your approval
-                        </small>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiActionButton>
 
-                <div
+                <MuiActionButton
                     className="approval-card approval-card-clickable"
                     onClick={() =>
                         handleCardClick(
                             "Approved"
                         )
                     }
-                >
+                 component="div">
 
-                    <div className="approval-card-icon approved">
+                    <MuiLayoutBox className="approval-card-icon approved" component="div">
                         <CheckCircleRoundedIcon />
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Approved
-                        </span>
+                        </MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {statistics.approved}
-                        </h2>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             Total approved
                             requests
-                        </small>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiActionButton>
 
-                <div
+                <MuiActionButton
                     className="approval-card approval-card-clickable"
                     onClick={() =>
                         handleCardClick(
                             "Rejected"
                         )
                     }
-                >
+                 component="div">
 
-                    <div className="approval-card-icon rejected">
+                    <MuiLayoutBox className="approval-card-icon rejected" component="div">
                         <CancelRoundedIcon />
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Rejected
-                        </span>
+                        </MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {statistics.rejected}
-                        </h2>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             Total rejected
                             requests
-                        </small>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiActionButton>
 
-                <div
+                <MuiActionButton
                     className="approval-card approval-card-clickable"
                     onClick={() =>
                         handleCardClick(
                             "All"
                         )
                     }
-                >
+                 component="div">
 
-                    <div className="approval-card-icon total">
+                    <MuiLayoutBox className="approval-card-icon total" component="div">
                         <FolderRoundedIcon />
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div>
+                    <MuiLayoutBox component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             Total Requests
-                        </span>
+                        </MuiText>
 
-                        <h2>
+                        <MuiText component="h2" variant="h5">
                             {statistics.total}
-                        </h2>
+                        </MuiText>
 
-                        <small>
+                        <MuiText component="small" variant="caption">
                             All requests
                             in the system
-                        </small>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                </div>
+                </MuiActionButton>
 
-            </div>
+            </MuiLayoutBox>
 
             {/* REQUEST PANEL */}
 
-            <div className="approval-panel">
+            <MuiLayoutBox className="approval-panel" component="div">
 
                 {/* FILTER BAR */}
 
-                <div className="approval-filter-bar">
+                <MuiLayoutBox className="approval-filter-bar" component="div">
 
-                    <div className="approval-search">
+                    <MuiLayoutBox className="approval-search" component="div">
 
                         <SearchRoundedIcon />
 
-                        <input
+                        <MuiInputMigration
                             type="text"
                             placeholder="Search requests..."
                             value={search}
@@ -1865,15 +1867,15 @@ const response =
                             }
                         />
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div className="approval-select">
+                    <MuiLayoutBox className="approval-select" component="div">
 
-                        <label>
+                        <MuiLayoutBox component="label">
                             Request Type
-                        </label>
+                        </MuiLayoutBox>
 
-                        <select
+                        <MuiSelectMigration
                             value={requestType}
                             onChange={
                                 event =>
@@ -1900,17 +1902,17 @@ const response =
                                 )
                             )}
 
-                        </select>
+                        </MuiSelectMigration>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div className="approval-select">
+                    <MuiLayoutBox className="approval-select" component="div">
 
-                        <label>
+                        <MuiLayoutBox component="label">
                             Status
-                        </label>
+                        </MuiLayoutBox>
 
-                        <select
+                        <MuiSelectMigration
                             value={status}
                             onChange={
                                 event => {
@@ -1946,19 +1948,19 @@ const response =
                                 Rejected
                             </option>
 
-                        </select>
+                        </MuiSelectMigration>
 
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div className="approval-date">
+                    <MuiLayoutBox className="approval-date" component="div">
 
-                        <label>
+                        <MuiLayoutBox component="label">
                             Date Range
-                        </label>
+                        </MuiLayoutBox>
 
-                        <div>
+                        <MuiLayoutBox component="div">
 
-                            <input
+                            <MuiInputMigration
                                 type="date"
                                 value={date}
                                 onChange={
@@ -1969,13 +1971,13 @@ const response =
                                 }
                             />
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
                     {canExport && (
 
-                        <button
+                        <MuiButtonMigration
                             type="button"
                             className="approval-export-btn"
                             onClick={
@@ -1987,88 +1989,88 @@ const response =
 
                             Export
 
-                        </button>
+                        </MuiButtonMigration>
 
                     )}
 
-                </div>
+                </MuiLayoutBox>
 
                 {/* TABLE */}
 
-                <div className="approval-table-wrapper">
+                <MuiLayoutBox className="approval-table-wrapper" component="div">
 
-                    <table className="approval-table">
+                    <MuiTableMigration className="approval-table">
 
-                        <thead>
+                        <MuiTableHeadMigration>
 
-                            <tr>
+                            <MuiTableRowMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Request ID
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Employee
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Request Type
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     From Date
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     To Date
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Applied On
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Status
-                                </th>
+                                </MuiTableCellMigration>
 
-                                <th>
+                                <MuiTableCellMigration>
                                     Action
-                                </th>
+                                </MuiTableCellMigration>
 
-                            </tr>
+                            </MuiTableRowMigration>
 
-                        </thead>
+                        </MuiTableHeadMigration>
 
-                        <tbody>
+                        <MuiTableBodyMigration>
 
                             {loading && (
 
-                                <tr>
+                                <MuiTableRowMigration>
 
-                                    <td
+                                    <MuiTableCellMigration
                                         colSpan="8"
                                         className="approval-message"
                                     >
                                         Loading approval requests...
-                                    </td>
+                                    </MuiTableCellMigration>
 
-                                </tr>
+                                </MuiTableRowMigration>
 
                             )}
 
                             {!loading &&
                                 error && (
 
-                                    <tr>
+                                    <MuiTableRowMigration>
 
-                                        <td
+                                        <MuiTableCellMigration
                                             colSpan="8"
                                             className="approval-message error"
                                         >
                                             {error}
-                                        </td>
+                                        </MuiTableCellMigration>
 
-                                    </tr>
+                                    </MuiTableRowMigration>
 
                                 )}
 
@@ -2076,16 +2078,16 @@ const response =
                                 !error &&
                                 filteredRequests.length === 0 && (
 
-                                    <tr>
+                                    <MuiTableRowMigration>
 
-                                        <td
+                                        <MuiTableCellMigration
                                             colSpan="8"
                                             className="approval-message"
                                         >
                                             No approval requests found.
-                                        </td>
+                                        </MuiTableCellMigration>
 
-                                    </tr>
+                                    </MuiTableRowMigration>
 
                                 )}
 
@@ -2101,7 +2103,7 @@ const response =
 
                                         return (
 
-                                            <tr
+                                            <MuiTableRowMigration
                                                 key={
                                                     request.approvalRequestId ||
                                                     request.requestId ||
@@ -2123,23 +2125,23 @@ const response =
                                                 }
                                             >
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {request.requestId ||
                                                         request.approvalRequestId ||
                                                         "—"}
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
                                                 {/* =================================================
                                                     EMPLOYEE + AZURE ID
                                                 ================================================= */}
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
-                                                    <div className="approval-employee">
+                                                    <MuiLayoutBox className="approval-employee" component="div">
 
-                                                        <div className="approval-avatar">
+                                                        <MuiLayoutBox className="approval-avatar" component="div">
 
                                                             {String(
                                                                 employeeName
@@ -2149,15 +2151,15 @@ const response =
                                                                 )
                                                                 .toUpperCase()}
 
-                                                        </div>
+                                                        </MuiLayoutBox>
 
-                                                        <div>
+                                                        <MuiLayoutBox component="div">
 
-                                                            <strong>
+                                                            <MuiText component="strong" variant="inherit">
                                                                 {employeeName}
-                                                            </strong>
+                                                            </MuiText>
 
-                                                            <div
+                                                            <MuiLayoutBox
                                                                 style={{
                                                                     fontSize:
                                                                         "11px",
@@ -2166,70 +2168,70 @@ const response =
                                                                     marginTop:
                                                                         "3px"
                                                                 }}
-                                                            >
+                                                             component="div">
                                                                 {/* Azure ID:{" "} */}
                                                                 {getAzureEmployeeId(
                                                                     request
                                                                 )}
-                                                            </div>
+                                                            </MuiLayoutBox>
 
-                                                        </div>
+                                                        </MuiLayoutBox>
 
-                                                    </div>
+                                                    </MuiLayoutBox>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {request.requestType ||
                                                         "—"}
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {formatDate(
                                                         request.fromDate
                                                     )}
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {formatDate(
                                                         request.toDate
                                                     )}
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
                                                     {formatDate(
                                                         request.requestedDate
                                                     )}
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
-                                                    <span
+                                                    <MuiText
                                                         className={
                                                             `approval-status ${getStatusClass(
                                                                 request.status
                                                             )}`
                                                         }
-                                                    >
+                                                     component="span" variant="inherit">
 
                                                         {request.status ||
                                                             "—"}
 
-                                                    </span>
+                                                    </MuiText>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                                <td>
+                                                <MuiTableCellMigration>
 
-                                                    <div className="approval-actions">
+                                                    <MuiLayoutBox className="approval-actions" component="div">
 
                                                         {String(
                                                             request.status ||
@@ -2241,7 +2243,7 @@ const response =
 
                                                                 {canApprove && (
 
-                                                                    <button
+                                                                    <MuiButtonMigration
                                                                         type="button"
                                                                         className="approval-approve-btn"
                                                                         disabled={
@@ -2267,11 +2269,11 @@ const response =
                                                                         }
                                                                     >
                                                                         Approve
-                                                                    </button>
+                                                                    </MuiButtonMigration>
 
                                                                 )}
 
-                                                                <button
+                                                                <MuiButtonMigration
                                                                     type="button"
                                                                     className="approval-reject-btn"
                                                                     disabled={
@@ -2297,13 +2299,13 @@ const response =
                                                                     }
                                                                 >
                                                                     Reject
-                                                                </button>
+                                                                </MuiButtonMigration>
 
                                                             </>
 
                                                         )}
 
-                                                        <button
+                                                        <MuiButtonMigration
                                                             type="button"
                                                             className="approval-view-btn"
                                                             onClick={() =>
@@ -2317,30 +2319,30 @@ const response =
 
                                                             View
 
-                                                        </button>
+                                                        </MuiButtonMigration>
 
-                                                    </div>
+                                                    </MuiLayoutBox>
 
-                                                </td>
+                                                </MuiTableCellMigration>
 
-                                            </tr>
+                                            </MuiTableRowMigration>
 
                                         );
 
                                     }
                                 )}
 
-                        </tbody>
+                        </MuiTableBodyMigration>
 
-                    </table>
+                    </MuiTableMigration>
 
-                </div>
+                </MuiLayoutBox>
 
                 {/* FOOTER */}
 
-                <div className="approval-footer">
+                <MuiLayoutBox className="approval-footer" component="div">
 
-                    <span>
+                    <MuiText component="span" variant="inherit">
 
                         Showing{" "}
 
@@ -2356,11 +2358,11 @@ const response =
 
                         {" "}entries
 
-                    </span>
+                    </MuiText>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
             {/* =================================================
                 GENERIC REQUEST DETAILS
@@ -2369,25 +2371,25 @@ const response =
             {selectedRequest &&
                 !selectedStatus && (
 
-                    <div className="approval-details-overlay">
+                    <MuiLayoutBox className="approval-details-overlay" component="div">
 
-                        <div className="approval-details-modal">
+                        <MuiLayoutBox className="approval-details-modal" component="div">
 
-                            <div className="approval-details-header">
+                            <MuiLayoutBox className="approval-details-header" component="div">
 
-                                <div>
+                                <MuiLayoutBox component="div">
 
-                                    <h2>
+                                    <MuiText component="h2" variant="h5">
                                         {
                                             selectedRequest.requestType ||
                                             "Request"
                                         }{" "}
                                         Details
-                                    </h2>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
-                                <button
+                                <MuiButtonMigration
                                     type="button"
                                     className="approval-details-close"
                                     onClick={
@@ -2395,158 +2397,158 @@ const response =
                                     }
                                 >
                                     ×
-                                </button>
+                                </MuiButtonMigration>
 
-                            </div>
+                            </MuiLayoutBox>
 
-                            <div className="approval-details-body">
+                            <MuiLayoutBox className="approval-details-body" component="div">
 
-                                <div className="approval-detail-item">
+                                <MuiLayoutBox className="approval-detail-item" component="div">
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         Request Type
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {
                                             selectedRequest.requestType ||
                                             "—"
                                         }
-                                    </strong>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
                                 {/* EMPLOYEE ID */}
 
-                                <div className="approval-detail-item">
+                                <MuiLayoutBox className="approval-detail-item" component="div">
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         Employee ID
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {
                                             selectedRequest.employeeId ||
                                             "—"
                                         }
-                                    </strong>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
                                 {/* EMPLOYEE NAME */}
 
-                                <div className="approval-detail-item">
+                                <MuiLayoutBox className="approval-detail-item" component="div">
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         Employee Name
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {
                                             getEmployeeName(
                                                 selectedRequest
                                             )
                                         }
-                                    </strong>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
                                 {/* AZURE ID */}
 
-                                <div className="approval-detail-item">
+                                <MuiLayoutBox className="approval-detail-item" component="div">
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         Azure Employee ID
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {
                                             getAzureEmployeeId(
                                                 selectedRequest
                                             )
                                         }
-                                    </strong>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
-                                <div className="approval-detail-item">
+                                <MuiLayoutBox className="approval-detail-item" component="div">
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         Approval Level
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {
                                             selectedRequest.approvalLevel ||
                                             "—"
                                         }
-                                    </strong>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
-                                <div className="approval-detail-item">
+                                <MuiLayoutBox className="approval-detail-item" component="div">
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         Current Approver ID
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {
                                             selectedRequest.currentApproverId ||
                                             "—"
                                         }
-                                    </strong>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
-                                <div className="approval-detail-item">
+                                <MuiLayoutBox className="approval-detail-item" component="div">
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         Requested On
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {formatDate(
                                             selectedRequest.requestedDate
                                         )}
-                                    </strong>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
-                                <div className="approval-detail-item">
+                                <MuiLayoutBox className="approval-detail-item" component="div">
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         Action Date
-                                    </span>
+                                    </MuiText>
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {formatDate(
                                             selectedRequest.actionDate
                                         )}
-                                    </strong>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
-                                <div className="approval-detail-item">
+                                <MuiLayoutBox className="approval-detail-item" component="div">
 
-                                    <span>
+                                    <MuiText component="span" variant="inherit">
                                         Status
-                                    </span>
+                                    </MuiText>
 
-                                    <span
+                                    <MuiText
                                         className={
                                             `approval-status ${getStatusClass(
                                                 selectedRequest.status
                                             )}`
                                         }
-                                    >
+                                     component="span" variant="inherit">
                                         {
                                             selectedRequest.status ||
                                             "—"
                                         }
-                                    </span>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
                                 {/* LEAVE DOCUMENT */}
 
@@ -2560,7 +2562,7 @@ const response =
                                     hasLeaveDocument ===
                                     true && (
 
-                                        <div
+                                        <MuiLayoutBox
                                             className="approval-detail-item"
                                             style={{
                                                 gridColumn:
@@ -2568,13 +2570,13 @@ const response =
                                                 marginTop:
                                                     "8px"
                                             }}
-                                        >
+                                         component="div">
 
-                                            <span>
+                                            <MuiText component="span" variant="inherit">
                                                 Supporting Document
-                                            </span>
+                                            </MuiText>
 
-                                            <div
+                                            <MuiLayoutBox
                                                 style={{
                                                     display:
                                                         "flex",
@@ -2585,7 +2587,7 @@ const response =
                                                     marginTop:
                                                         "8px"
                                                 }}
-                                            >
+                                             component="div">
 
                                                 <Button
                                                     type="button"
@@ -2600,17 +2602,17 @@ const response =
                                                     View & Open Document
                                                 </Button>
 
-                                            </div>
+                                            </MuiLayoutBox>
 
-                                        </div>
+                                        </MuiLayoutBox>
 
                                     )}
 
-                            </div>
+                            </MuiLayoutBox>
 
-                        </div>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
                 )}
 
@@ -3006,7 +3008,7 @@ const response =
 
                 )}
 
-        </div>
+        </MuiLayoutBox>
 
     );
 };

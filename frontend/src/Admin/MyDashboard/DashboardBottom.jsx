@@ -8,6 +8,7 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import DescriptionIcon from "@mui/icons-material/Description";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 const API_URL = `${import.meta.env.VITE_EVENT_API_BASE_URL}/api/Event`;
 
@@ -173,60 +174,60 @@ function DashboardBottom() {
     };
 
     return (
-        <div className="dashboard-bottom">
+        <MuiLayoutBox className="dashboard-bottom" component="div">
 
             {/* =====================================================
                 UPCOMING HOLIDAYS
             ===================================================== */}
 
-            <section className="holidays-card">
+            <MuiLayoutBox className="holidays-card" component="section">
 
-                <div className="bottom-card-header">
+                <MuiLayoutBox className="bottom-card-header" component="div">
 
-                    <div className="bottom-title-wrapper">
+                    <MuiLayoutBox className="bottom-title-wrapper" component="div">
 
-                        <div className="bottom-title-icon">
+                        <MuiLayoutBox className="bottom-title-icon" component="div">
                             <CalendarMonthIcon />
-                        </div>
+                        </MuiLayoutBox>
 
-                        <div>
-                            <h3>Upcoming Holidays</h3>
+                        <MuiLayoutBox component="div">
+                            <MuiText component="h3" variant="h6">Upcoming Holidays</MuiText>
 
-                            <p>
+                            <MuiText component="p" variant="body1">
                                 Company holidays and events
-                            </p>
-                        </div>
+                            </MuiText>
+                        </MuiLayoutBox>
 
-                    </div>
+                    </MuiLayoutBox>
 
                     
 
-                </div>
+                </MuiLayoutBox>
 
-                <div className="holiday-list">
+                <MuiLayoutBox className="holiday-list" component="div">
 
                     {loadingHolidays ? (
-                        <div className="holiday-loading">
-                            <div className="holiday-skeleton"></div>
-                            <div className="holiday-skeleton"></div>
-                            <div className="holiday-skeleton"></div>
-                        </div>
+                        <MuiLayoutBox className="holiday-loading" component="div">
+                            <MuiLayoutBox className="holiday-skeleton" component="div"></MuiLayoutBox>
+                            <MuiLayoutBox className="holiday-skeleton" component="div"></MuiLayoutBox>
+                            <MuiLayoutBox className="holiday-skeleton" component="div"></MuiLayoutBox>
+                        </MuiLayoutBox>
                     ) : holidays.length > 0 ? (
                         holidays.map((holiday) => (
-                            <div
+                            <MuiLayoutBox
                                 className="holiday-row"
                                 key={holiday.id}
-                            >
+                             component="div">
 
-                                <div className="holiday-date-box">
+                                <MuiLayoutBox className="holiday-date-box" component="div">
 
-                                    <span className="holiday-day">
+                                    <MuiText className="holiday-day" component="span" variant="inherit">
                                         {new Date(
                                             holiday.date
                                         ).getDate()}
-                                    </span>
+                                    </MuiText>
 
-                                    <span className="holiday-month">
+                                    <MuiText className="holiday-month" component="span" variant="inherit">
                                         {new Date(
                                             holiday.date
                                         ).toLocaleDateString(
@@ -235,45 +236,45 @@ function DashboardBottom() {
                                                 month: "short",
                                             }
                                         )}
-                                    </span>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
-                                <div className="holiday-details">
+                                <MuiLayoutBox className="holiday-details" component="div">
 
-                                    <strong>
+                                    <MuiText component="strong" variant="inherit">
                                         {holiday.name}
-                                    </strong>
+                                    </MuiText>
 
-                                    <p>
+                                    <MuiText component="p" variant="body1">
                                         {formatHolidayDate(
                                             holiday.date
                                         )}
-                                    </p>
+                                    </MuiText>
 
-                                </div>
+                                </MuiLayoutBox>
 
-                            </div>
+                            </MuiLayoutBox>
                         ))
                     ) : (
-                        <div className="no-holidays">
+                        <MuiLayoutBox className="no-holidays" component="div">
 
                             <CalendarMonthIcon />
 
-                            <span>
+                            <MuiText component="span" variant="inherit">
                                 No upcoming holidays
-                            </span>
+                            </MuiText>
 
-                        </div>
+                        </MuiLayoutBox>
                     )}
 
-                </div>
+                </MuiLayoutBox>
 
-            </section>
+            </MuiLayoutBox>
 
 
 
-        </div>
+        </MuiLayoutBox>
     );
 }
 

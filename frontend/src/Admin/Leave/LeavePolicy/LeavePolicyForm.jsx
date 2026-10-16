@@ -18,9 +18,11 @@ import {
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close";
+import PolicyRoundedIcon from "@mui/icons-material/PolicyRounded";
 
 import "./LeavePolicyForm.css";
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox } from "@mui/material";
 
 
 export default function LeavePolicyForm({
@@ -89,7 +91,7 @@ export default function LeavePolicyForm({
             open={true}
             onClose={onCancel}
             fullWidth
-            maxWidth="lg"
+            maxWidth="md"
             className="leave-policy-dialog"
         >
 
@@ -98,8 +100,11 @@ export default function LeavePolicyForm({
             ========================================================= */}
 
             <DialogTitle className="policy-dialog-title">
-
-                <Box>
+                <Box className="policy-dialog-title-content">
+                    <Box className="policy-dialog-icon" aria-hidden="true">
+                        <PolicyRoundedIcon />
+                    </Box>
+                    <Box>
 
                     <Typography
                         component="h2"
@@ -119,6 +124,7 @@ export default function LeavePolicyForm({
                             : "Configure entitlement, accrual and leave rules."}
                     </Typography>
 
+                    </Box>
                 </Box>
 
 
@@ -141,7 +147,7 @@ export default function LeavePolicyForm({
                 FORM
             ========================================================= */}
 
-            <form onSubmit={onSubmit}>
+            <MuiLayoutBox onSubmit={onSubmit} component="form">
 
                 <DialogContent className="policy-dialog-content">
 
@@ -211,9 +217,9 @@ export default function LeavePolicyForm({
                                 name="annualEntitlement"
                                 value={formData.annualEntitlement}
                                 onChange={handleChange}
-                                inputProps={{
+                                slotProps={{ htmlInput: {
                                     min: 1,
-                                }}
+                                } }}
                                 placeholder="e.g. 12"
                                 className="policy-form-control"
                             />
@@ -268,14 +274,13 @@ export default function LeavePolicyForm({
                                 name="effectiveFrom"
                                 value={formData.effectiveFrom}
                                 onChange={handleChange}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                slotProps={{
+                                slotProps={{ ...({
                                     inputLabel: {
                                         shrink: true,
                                     },
-                                }}
+                                }), inputLabel: {
+                                    shrink: true,
+                                } }}
                                 className="policy-form-control"
                             />
 
@@ -289,14 +294,13 @@ export default function LeavePolicyForm({
                                 name="effectiveTo"
                                 value={formData.effectiveTo}
                                 onChange={handleChange}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                slotProps={{
+                                slotProps={{ ...({
                                     inputLabel: {
                                         shrink: true,
                                     },
-                                }}
+                                }), inputLabel: {
+                                    shrink: true,
+                                } }}
                                 className="policy-form-control"
                             />
 
@@ -434,9 +438,9 @@ export default function LeavePolicyForm({
                                         formData.maxCarryForwardDays
                                     }
                                     onChange={handleChange}
-                                    inputProps={{
+                                    slotProps={{ htmlInput: {
                                         min: 0,
-                                    }}
+                                    } }}
                                     className="policy-form-control"
                                 />
 
@@ -454,9 +458,9 @@ export default function LeavePolicyForm({
                                     formData.maxConsecutiveDays
                                 }
                                 onChange={handleChange}
-                                inputProps={{
+                                slotProps={{ htmlInput: {
                                     min: 1,
-                                }}
+                                } }}
                                 className="policy-form-control"
                             />
 
@@ -470,9 +474,9 @@ export default function LeavePolicyForm({
                                 name="minNoticeDays"
                                 value={formData.minNoticeDays}
                                 onChange={handleChange}
-                                inputProps={{
+                                slotProps={{ htmlInput: {
                                     min: 0,
-                                }}
+                                } }}
                                 className="policy-form-control"
                             />
 
@@ -550,9 +554,9 @@ export default function LeavePolicyForm({
                                         formData.documentAfterDays
                                     }
                                     onChange={handleChange}
-                                    inputProps={{
+                                    slotProps={{ htmlInput: {
                                         min: 0,
-                                    }}
+                                    } }}
                                     className="policy-form-control"
                                 />
 
@@ -667,7 +671,7 @@ export default function LeavePolicyForm({
 
                 </DialogActions>
 
-            </form>
+            </MuiLayoutBox>
 
         </Dialog>
     );

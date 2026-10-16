@@ -60,6 +60,11 @@
     flex-shrink: 0;
 }
 
+.attendance-title-leading{display:flex;align-items:center;gap:16px;min-width:0}
+.attendance-title-leading > .MuiBox-root:last-child{min-width:0}
+.attendance-back-button{width:42px;height:42px;flex:0 0 42px;border:1px solid #dce4ee!important;border-radius:10px!important;background:#fff!important;color:#3f5067!important}
+.attendance-back-button:hover{background:#f4f7fc!important;border-color:#b8c9df!important}
+
 .attendance-refresh-button,
 .attendance-download-button {
     min-width: 96px !important;
@@ -498,6 +503,26 @@
     font-weight: 500;
 }
 
+/* Keep the attendance month view compact instead of stretching day cells. */
+.attendance-main-grid {
+    grid-template-columns: minmax(320px, 1fr) minmax(360px, 1.25fr);
+}
+.calendar-grid { justify-items: center; }
+.calendar-day { width: min(100%, 46px); height: 42px; }
+.calendar-day.today { width: 34px !important; height: 34px !important; }
+.calendar-day,
+.calendar-day.today {
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    height: 42px !important;
+    aspect-ratio: 1 / 1;
+    border-radius: 50% !important;
+    padding: 0 !important;
+}
+.calendar-day > span { font-size: 14px; line-height: 18px; font-weight: 600; }
+.calendar-day.selected:not(.today) { background:#eaf2ff; box-shadow:inset 0 0 0 1px #a9c7f7; color:#2458a6; }
+
 /* =========================================================
    STATUS DOTS
    ========================================================= */
@@ -633,17 +658,19 @@
     }
 
     .calendar-day.today {
-        width: 32px !important;
-        height: 32px !important;
+        width: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+        height: 36px !important;
     }
+
+    .calendar-day { width:36px!important;min-width:36px!important;max-width:36px!important;height:36px!important }
 
     .calendar-weekdays > div {
         font-size: 9px;
     }
 
-    .calendar-day > span {
-        font-size: 10px;
-    }
+    .calendar-day > span { font-size: 12px; }
 
     .calendar-legend {
         gap: 10px;
@@ -1050,7 +1077,7 @@
     }
 
     .attendance-main-grid {
-        grid-template-columns: minmax(0, 1.25fr) minmax(310px, 1fr);
+        grid-template-columns: minmax(300px, 1fr) minmax(320px, 1.2fr);
     }
 }
 
@@ -1108,5 +1135,26 @@
         gap: 11px;
     }
 }
+
+/* Recent attendance: clearer visual hierarchy and calmer table rows. */
+.recent-attendance-card{border-radius:14px!important;border-color:#dfe7f1!important;box-shadow:0 5px 18px rgba(25,48,82,.045)!important}
+.recent-header{min-height:78px;padding:15px 20px!important;background:linear-gradient(110deg,#fff 0%,#f8faff 100%);border-bottom:1px solid #e6edf6}
+.recent-heading{display:flex;align-items:center;gap:12px;min-width:0}
+.recent-heading-icon{display:flex;width:38px;height:38px;flex:0 0 38px;align-items:center;justify-content:center;border-radius:11px;background:#edf4ff;color:#2f67ed}
+.recent-heading-icon svg{font-size:20px}
+.recent-header .MuiTypography-root{font-size:14px!important;color:#1b2f4e!important}
+.recent-header span{margin-top:3px;color:#7888a0;font-size:11px;line-height:16px}
+.record-count-chip{height:28px!important;padding:0 4px;border:1px solid #e0e8f2!important;border-radius:14px!important;background:#f4f7fb!important;color:#536783!important;font-size:10px!important}
+.attendance-table{min-width:900px;border-collapse:separate;border-spacing:0}
+.attendance-table th{height:42px;padding:0 16px;background:#f1f5fb;color:#526b8e;border-bottom:1px solid #e2eaf4;font-size:10px;letter-spacing:.055em;text-transform:uppercase}
+.attendance-table td{height:58px;padding:0 16px;background:#fff;color:#354762;border-bottom:1px solid #edf1f6;font-size:12px}
+.attendance-table tbody tr:nth-child(even) td{background:#fbfcfe}
+.attendance-table tbody tr:hover td{background:#f5f8ff}
+.attendance-table td strong.recent-date-value{color:#244571;font-size:12px;font-weight:700}
+.table-status{gap:5px;padding:5px 9px;border-radius:999px;font-size:10px;line-height:14px}
+.table-status.status-default{background:#f1f4f8!important;color:#586b83!important}
+.table-action-button{width:32px;height:30px;border-color:#d9e2ee;border-radius:9px;color:#526987;transition:background .15s ease,border-color .15s ease,color .15s ease}
+.table-action-button:hover{background:#edf4ff;border-color:#b8cbed;color:#2f67ed}
+@media(max-width:600px){.recent-header{padding:13px 14px!important}.attendance-table th,.attendance-table td{padding-left:12px;padding-right:12px}}
 
 

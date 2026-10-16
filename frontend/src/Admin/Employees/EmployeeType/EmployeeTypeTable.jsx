@@ -1,3 +1,4 @@
+import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import "./EmployeeTypeTable.css";
 
 import {
@@ -9,6 +10,7 @@ import {
   Edit,
   Delete,
 } from "@mui/icons-material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function EmployeeTypeTable({
   employeeTypes = [],
@@ -16,84 +18,84 @@ function EmployeeTypeTable({
   deleteEmployeeType,
 }) {
   return (
-    <div className="employee-type-table-wrapper">
+    <MuiLayoutBox className="employee-type-table-wrapper" component="div">
 
       {/* Header */}
 
-      <div className="employee-type-table-header">
-        <div>
-          <h2>Employee Type List</h2>
-          <p>{employeeTypes.length} Employee Types Found</p>
-        </div>
-      </div>
+      <MuiLayoutBox className="employee-type-table-header" component="div">
+        <MuiLayoutBox component="div">
+          <MuiText component="h2" variant="h5">Employee Type List</MuiText>
+          <MuiText component="p" variant="body1">{employeeTypes.length} Employee Types Found</MuiText>
+        </MuiLayoutBox>
+      </MuiLayoutBox>
 
       {/* Table */}
 
-      <div className="table-responsive">
-        <table className="employee-type-table">
+      <MuiLayoutBox className="table-responsive" component="div">
+        <MuiTableMigration className="employee-type-table employee-type-data-table">
 
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Employee Type</th>
-              <th>Created Date</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
+          <MuiTableHeadMigration>
+            <MuiTableRowMigration>
+              <MuiTableCellMigration>#</MuiTableCellMigration>
+              <MuiTableCellMigration>Employee Type</MuiTableCellMigration>
+              <MuiTableCellMigration>Created Date</MuiTableCellMigration>
+              <MuiTableCellMigration>Status</MuiTableCellMigration>
+              <MuiTableCellMigration>Action</MuiTableCellMigration>
+            </MuiTableRowMigration>
+          </MuiTableHeadMigration>
 
-          <tbody>
+          <MuiTableBodyMigration>
 
             {employeeTypes.length === 0 ? (
 
-              <tr>
-                <td colSpan="5" className="no-records">
+              <MuiTableRowMigration>
+                <MuiTableCellMigration colSpan="5" className="no-records">
                   No Employee Types Found
-                </td>
-              </tr>
+                </MuiTableCellMigration>
+              </MuiTableRowMigration>
 
             ) : (
 
               employeeTypes.map((employeeType, index) => (
 
-                <tr key={employeeType.employeeTypeId}>
+                <MuiTableRowMigration key={employeeType.employeeTypeId}>
 
                   {/* Serial Number */}
 
-                  <td>{index + 1}</td>
+                  <MuiTableCellMigration>{index + 1}</MuiTableCellMigration>
 
                   {/* Employee Type */}
 
-                  <td className="employee-type-name">
+                  <MuiTableCellMigration className="employee-type-name">
                     {employeeType.employeeTypeName}
-                  </td>
+                  </MuiTableCellMigration>
 
                   {/* Created Date */}
 
-<td>
+<MuiTableCellMigration>
     {employeeType.createdDate
         ? new Date(employeeType.createdDate).toLocaleDateString("en-GB")
         : "-"}
-</td>
+</MuiTableCellMigration>
 
                   {/* Status */}
 
-                  <td>
-                    <span
+                  <MuiTableCellMigration>
+                    <MuiText
                       className={`status-badge ${
                         employeeType.status === "Active"
                           ? "active"
                           : "inactive"
                       }`}
-                    >
+                     component="span" variant="inherit">
                       {employeeType.status}
-                    </span>
-                  </td>
+                    </MuiText>
+                  </MuiTableCellMigration>
 
                   {/* Actions */}
 
-                  <td>
-                    <div className="action-buttons">
+                  <MuiTableCellMigration>
+                    <MuiLayoutBox className="action-buttons" component="div">
 
                       <Tooltip title="Edit">
                         <IconButton
@@ -108,28 +110,28 @@ function EmployeeTypeTable({
                         <IconButton
                           className="delete-btn"
                           onClick={() =>
-                            deleteEmployeeType(employeeType.employeeTypeId)
+                            deleteEmployeeType(employeeType)
                           }
                         >
                           <Delete fontSize="small" />
                         </IconButton>
                       </Tooltip>
 
-                    </div>
-                  </td>
+                    </MuiLayoutBox>
+                  </MuiTableCellMigration>
 
-                </tr>
+                </MuiTableRowMigration>
 
               ))
 
             )}
 
-          </tbody>
+          </MuiTableBodyMigration>
 
-        </table>
-      </div>
+        </MuiTableMigration>
+      </MuiLayoutBox>
 
-    </div>
+    </MuiLayoutBox>
   );
 }
 

@@ -19,12 +19,14 @@ import {
 } from "@mui/material";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function AddDesignation({
   open,
   handleClose,
   handleSave,
+  onNotify,
 }) {
 
   // =========================================================
@@ -200,9 +202,7 @@ function AddDesignation({
 
     if (!isAuthenticated) {
 
-      alert(
-        "You are not authenticated. Please sign in again."
-      );
+      onNotify?.("You are not authenticated. Please sign in again.", "error");
 
       return false;
 
@@ -228,9 +228,7 @@ function AddDesignation({
       );
 
 
-      alert(
-        "Your Employee ID could not be determined. Please sign in again."
-      );
+      onNotify?.("Your Employee ID could not be determined. Please sign in again.", "error");
 
       return false;
 
@@ -270,9 +268,7 @@ function AddDesignation({
       !formData.designationName.trim()
     ) {
 
-      alert(
-        "Designation Name is required."
-      );
+      onNotify?.("Designation Name is required.", "error");
 
       return;
 
@@ -530,13 +526,13 @@ function AddDesignation({
             size={{ xs: 12 }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
               >
                 Designation{" "}
-                <span>*</span>
+                <MuiText component="span" variant="inherit">*</MuiText>
               </Typography>
 
 
@@ -555,7 +551,7 @@ function AddDesignation({
                 autoFocus
               />
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 
@@ -568,7 +564,7 @@ function AddDesignation({
             size={{ xs: 12 }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
@@ -593,7 +589,7 @@ function AddDesignation({
                 disabled={saving}
               />
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 
@@ -606,7 +602,7 @@ function AddDesignation({
             size={{ xs: 12 }}
           >
 
-            <div className="form-group">
+            <MuiLayoutBox className="form-group" component="div">
 
               <Typography
                 className="dialog-label"
@@ -640,7 +636,7 @@ function AddDesignation({
 
               </TextField>
 
-            </div>
+            </MuiLayoutBox>
 
           </Grid>
 

@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
 import "./Department.css";
 
 import {
@@ -21,6 +22,7 @@ import {
   CheckCircle,
   Cancel,
   Search,
+  ArrowBack,
 } from "@mui/icons-material";
 
 import {
@@ -32,9 +34,19 @@ import {
   FormControl,
   Select,
   MenuItem,
+  CardActionArea,
+  IconButton,
+  Tooltip,
+  Alert,
+  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 
 function Department() {
@@ -125,6 +137,13 @@ function Department() {
 
   const [selectedDepartment, setSelectedDepartment] =
     useState(null);
+
+  const [toast, setToast] = useState({ open: false, message: "", severity: "info" });
+  const [departmentToDelete, setDepartmentToDelete] = useState(null);
+
+  const showToast = useCallback((message, severity = "info") => {
+    setToast({ open: true, message, severity });
+  }, []);
 
 
   // =====================================================
@@ -234,9 +253,7 @@ function Department() {
         error?.response?.status === 401
       ) {
 
-        alert(
-          "Your session has expired. Please login again."
-        );
+        showToast("Your session has expired. Please login again.", "error");
 
         localStorage.removeItem("token");
 
@@ -249,16 +266,12 @@ function Department() {
         error?.response?.status === 403
       ) {
 
-        alert(
-          "You are not authorized to access departments."
-        );
+        showToast("You are not authorized to access departments.", "error");
 
         return;
       }
 
-      alert(
-        "Unable to load departments."
-      );
+      showToast("Unable to load departments.", "error");
 
     } finally {
 
@@ -270,6 +283,7 @@ function Department() {
     isAuthenticated,
     navigate,
     canView,
+    showToast,
   ]);
 
 
@@ -350,6 +364,42 @@ function Department() {
 
     });
 
+  const activeDepartmentCount = departments.filter(
+    (item) => item.status?.toLowerCase() === "active"
+  ).length;
+  const inactiveDepartmentCount = departments.filter(
+    (item) => item.status?.toLowerCase() === "inactive"
+  ).length;
+
+  const resetDepartmentFilters = () => {
+    setSearch("");
+    setStatusFilter("All");
+  };
+
+  const exportDepartmentsToExcel = () => {
+    if (!filteredDepartments.length) {
+      showToast("There are no departments to export.", "info");
+      return;
+    }
+
+    const rows = filteredDepartments.map((item, index) => ({
+      "No.": index + 1,
+      Department: item.departmentName || "-",
+      Description: item.description || "-",
+      "Created Date": item.createdDate
+        ? new Date(item.createdDate).toLocaleDateString("en-GB")
+        : "-",
+      Status: item.status || "-",
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    worksheet["!cols"] = [
+      { wch: 8 }, { wch: 28 }, { wch: 42 }, { wch: 18 }, { wch: 14 },
+    ];
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Departments");
+    XLSX.writeFile(workbook, `Spark_Departments_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
 
   // =====================================================
   // OPEN EDIT
@@ -363,9 +413,7 @@ function Department() {
 
     if (!isAuthenticated) {
 
-      alert(
-        "You are not authenticated. Please login again."
-      );
+      showToast("You are not authenticated. Please login again.", "error");
 
       return;
     }
@@ -373,9 +421,7 @@ function Department() {
 
     if (!currentEmployeeId) {
 
-      alert(
-        "Your Employee ID could not be determined."
-      );
+      showToast("Your Employee ID could not be determined.", "error");
 
       return;
     }
@@ -436,9 +482,7 @@ function Department() {
 
       if (!isAuthenticated) {
 
-        alert(
-          "You are not authenticated. Please login again."
-        );
+        showToast("You are not authenticated. Please login again.", "error");
 
         return;
       }
@@ -446,21 +490,8 @@ function Department() {
 
       if (!currentEmployeeId) {
 
-        alert(
-          "Your Employee ID could not be determined."
-        );
+        showToast("Your Employee ID could not be determined.", "error");
 
-        return;
-      }
-
-
-      const confirmed =
-        window.confirm(
-          "Are you sure you want to delete this Department?"
-        );
-
-
-      if (!confirmed) {
         return;
       }
 
@@ -506,9 +537,7 @@ function Department() {
         await loadDepartments();
 
 
-        alert(
-          "Department deleted successfully."
-        );
+        showToast("Department deleted successfully.", "success");
 
       } catch (error) {
 
@@ -522,9 +551,7 @@ function Department() {
           error?.response?.status === 401
         ) {
 
-          alert(
-            "Your session has expired. Please login again."
-          );
+          showToast("Your session has expired. Please login again.", "error");
 
           return;
         }
@@ -534,18 +561,13 @@ function Department() {
           error?.response?.status === 403
         ) {
 
-          alert(
-            "You are not authorized to delete departments."
-          );
+          showToast("You are not authorized to delete departments.", "error");
 
           return;
         }
 
 
-        alert(
-          error?.response?.data ||
-          "Unable to delete Department."
-        );
+        showToast(error?.response?.data?.message || error?.response?.data || "Unable to delete Department.", "error");
 
       }
 
@@ -637,9 +659,7 @@ function Department() {
         await loadDepartments();
 
 
-        alert(
-          "Department added successfully."
-        );
+        showToast("Department added successfully.", "success");
 
       } catch (error) {
 
@@ -776,9 +796,7 @@ function Department() {
         await loadDepartments();
 
 
-        alert(
-          "Department updated successfully."
-        );
+        showToast("Department updated successfully.", "success");
 
       } catch (error) {
 
@@ -837,21 +855,21 @@ function Department() {
 
     return (
 
-      <div
-        className="employee-type-page"
+      <MuiLayoutBox
+        className="department-page"
         style={{
           padding: "40px",
           textAlign: "center",
         }}
-      >
+       component="div">
 
-        <h2>
+        <MuiText component="h2" variant="h5">
           Authentication Required
-        </h2>
+        </MuiText>
 
-        <p>
+        <MuiText component="p" variant="body1">
           Please sign in to access Department Management.
-        </p>
+        </MuiText>
 
         <Button
           variant="contained"
@@ -862,7 +880,7 @@ function Department() {
           Go to Login
         </Button>
 
-      </div>
+      </MuiLayoutBox>
 
     );
 
@@ -875,39 +893,41 @@ function Department() {
 
   return (
 
-    <div className="employee-type-page">
+    <MuiLayoutBox className="department-page" component="div">
 
 
       {/* ==================================================
           HEADER
       ================================================== */}
 
-      <div className="employee-page-header">
+      <MuiLayoutBox className="employee-page-header" component="div">
 
-        <div>
+        <MuiLayoutBox className="department-page-title" component="div">
 
-          <h1>
-            Department Management
-          </h1>
+          <Tooltip title="Back to employee management">
+            <IconButton
+              className="department-back-button"
+              aria-label="Back to employee management"
+              onClick={() => navigate("/employees")}
+            >
+              <ArrowBack />
+            </IconButton>
+          </Tooltip>
 
-          <p>
-            Manage departments across your organization.
-          </p>
+          <MuiLayoutBox className="department-page-title-copy" component="div">
+            <MuiText component="h1" variant="h4">
+              Department Management
+            </MuiText>
 
-        </div>
+            <MuiText component="p" variant="body1">
+              Manage departments across your organization.
+            </MuiText>
+          </MuiLayoutBox>
+
+        </MuiLayoutBox>
 
 
-        <div className="header-buttons">
-
-          <Button
-            variant="outlined"
-            onClick={() =>
-              navigate("/employees")
-            }
-          >
-            Previous
-          </Button>
-
+        <MuiLayoutBox className="header-buttons" component="div">
 
           <Button
             variant="outlined"
@@ -927,8 +947,10 @@ function Department() {
               startIcon={
                 <Download />
               }
+            onClick={exportDepartmentsToExcel}
+            disabled={loading || filteredDepartments.length === 0}
             >
-              Export
+              Export Excel
             </Button>
           )}
 
@@ -950,133 +972,89 @@ function Department() {
             </Button>
           )}
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
 
       {/* ==================================================
           AUTHENTICATED USER
       ================================================== */}
 
-      <div
-        style={{
-          marginBottom: "20px",
-          fontSize: "13px",
-          opacity: 0.75,
-        }}
-      >
-
-        Logged in as:
-
-        {" "}
-
-        <strong>
-          {currentEmployeeName}
-        </strong>
-
-        {" • Employee ID: "}
-
-        <strong>
-          {currentEmployeeId || "-"}
-        </strong>
-
-        {currentEmployeeCode && (
-          <>
-            {" • "}
-            <strong>
-              {currentEmployeeCode}
-            </strong>
-          </>
-        )}
-
-      </div>
-
-
       {/* ==================================================
           STATISTICS
       ================================================== */}
 
-      <div className="stats-grid">
+      <MuiLayoutBox className="stats-grid" component="div">
 
 
-        <Card className="stats-card">
-
+        <Card className={`stats-card ${statusFilter === "All" && !search ? "is-selected" : ""}`}>
+          <CardActionArea className="stats-card-action-area" onClick={resetDepartmentFilters} aria-label={`Show all ${departments.length} departments`}>
           <CardContent>
 
-            <div className="stats-icon blue">
+            <MuiLayoutBox className="stats-icon blue" component="div">
               <Category />
-            </div>
+            </MuiLayoutBox>
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Total Departments
-            </span>
+            </MuiText>
 
-            <h2>
+            <MuiText component="h2" variant="h5">
               {departments.length}
-            </h2>
+            </MuiText>
 
           </CardContent>
-
+          </CardActionArea>
         </Card>
 
 
-        <Card className="stats-card">
-
+        <Card className={`stats-card ${statusFilter === "Active" ? "is-selected" : ""}`}>
+          <CardActionArea className="stats-card-action-area" onClick={() => setStatusFilter(statusFilter === "Active" ? "All" : "Active")} aria-pressed={statusFilter === "Active"}>
           <CardContent>
 
-            <div className="stats-icon green">
+            <MuiLayoutBox className="stats-icon green" component="div">
               <CheckCircle />
-            </div>
+            </MuiLayoutBox>
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Active Departments
-            </span>
+            </MuiText>
 
-            <h2>
+            <MuiText component="h2" variant="h5">
               {
-                departments.filter(
-                  (x) =>
-                    x.status
-                      ?.toLowerCase() ===
-                    "active"
-                ).length
+                activeDepartmentCount
               }
-            </h2>
+            </MuiText>
 
           </CardContent>
-
+          </CardActionArea>
         </Card>
 
 
-        <Card className="stats-card">
-
+        <Card className={`stats-card ${statusFilter === "Inactive" ? "is-selected" : ""}`}>
+          <CardActionArea className="stats-card-action-area" onClick={() => setStatusFilter(statusFilter === "Inactive" ? "All" : "Inactive")} aria-pressed={statusFilter === "Inactive"}>
           <CardContent>
 
-            <div className="stats-icon red">
+            <MuiLayoutBox className="stats-icon red" component="div">
               <Cancel />
-            </div>
+            </MuiLayoutBox>
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Inactive Departments
-            </span>
+            </MuiText>
 
-            <h2>
+            <MuiText component="h2" variant="h5">
               {
-                departments.filter(
-                  (x) =>
-                    x.status
-                      ?.toLowerCase() ===
-                    "inactive"
-                ).length
+                inactiveDepartmentCount
               }
-            </h2>
+            </MuiText>
 
           </CardContent>
-
+          </CardActionArea>
         </Card>
 
-      </div>
+      </MuiLayoutBox>
 
 
       {/* ==================================================
@@ -1087,10 +1065,10 @@ function Department() {
 
         <CardContent>
 
-          <div className="department-filter-row">
+          <MuiLayoutBox className="department-filter-row" component="div">
 
 
-            <div className="department-search">
+            <MuiLayoutBox className="department-search" component="div">
 
               <TextField
                 fullWidth
@@ -1101,7 +1079,7 @@ function Department() {
                     e.target.value
                   )
                 }
-                InputProps={{
+                slotProps={{ input: {
                   startAdornment: (
                     <InputAdornment
                       position="start"
@@ -1109,10 +1087,10 @@ function Department() {
                       <Search />
                     </InputAdornment>
                   ),
-                }}
+                } }}
               />
 
-            </div>
+            </MuiLayoutBox>
 
 
             <FormControl
@@ -1146,7 +1124,7 @@ function Department() {
             </FormControl>
 
 
-          </div>
+          </MuiLayoutBox>
 
         </CardContent>
 
@@ -1163,14 +1141,14 @@ function Department() {
 
           <CardContent>
 
-            <h3
+            <MuiText
               style={{
                 textAlign: "center",
                 padding: "40px",
               }}
-            >
+             component="h3" variant="h6">
               Loading Departments...
-            </h3>
+            </MuiText>
 
           </CardContent>
 
@@ -1190,8 +1168,13 @@ function Department() {
                 editDepartment
               }
               deleteDepartment={
-                deleteDepartment
+                (id) => {
+                  const department = departments.find((item) => item.departmentId === id);
+                  setDepartmentToDelete(department || { departmentId: id });
+                }
               }
+              canEdit={canEdit}
+              canDelete={canDelete}
             />
 
           </CardContent>
@@ -1211,6 +1194,7 @@ function Department() {
         handleClose={() =>
           setOpenAddDialog(false)
         }
+          onNotify={showToast}
           handleSave={
             saveDepartment
           }
@@ -1228,6 +1212,7 @@ function Department() {
         department={
           selectedDepartment
         }
+        onNotify={showToast}
         handleClose={() => {
 
           setOpenEditDialog(false);
@@ -1243,8 +1228,49 @@ function Department() {
         />
       )}
 
+      <Dialog
+        open={Boolean(departmentToDelete)}
+        onClose={() => setDepartmentToDelete(null)}
+        aria-labelledby="delete-department-title"
+      >
+        <DialogTitle id="delete-department-title">Delete department?</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete {departmentToDelete?.departmentName || "this department"}?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDepartmentToDelete(null)}>Cancel</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={async () => {
+              const id = departmentToDelete?.departmentId;
+              setDepartmentToDelete(null);
+              if (id) await deleteDepartment(id);
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-    </div>
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={5000}
+        onClose={() => setToast((current) => ({ ...current, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setToast((current) => ({ ...current, open: false }))}
+          severity={toast.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {toast.message}
+        </Alert>
+      </Snackbar>
+
+
+    </MuiLayoutBox>
 
   );
 

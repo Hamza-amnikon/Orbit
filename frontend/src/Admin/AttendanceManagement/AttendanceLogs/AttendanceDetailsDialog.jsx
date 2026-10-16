@@ -10,6 +10,7 @@ import {
   Chip,
   Divider,
 } from "@mui/material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 export default function AttendanceDetailsDialog({ open, onClose, attendance }) {
   if (!attendance) return null;
@@ -27,31 +28,31 @@ export default function AttendanceDetailsDialog({ open, onClose, attendance }) {
 
         {/* Employee Information */}
 
-        <div className="details-section">
-          <h3>Employee Information</h3>
+        <MuiLayoutBox className="details-section" component="div">
+          <MuiText component="h3" variant="h6">Employee Information</MuiText>
 
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <label>Employee ID</label>
-              <p>{attendance.azureEmployeeId || "-"}</p>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <MuiLayoutBox component="label">Employee ID</MuiLayoutBox>
+              <MuiText component="p" variant="body1">{attendance.azureEmployeeId || "-"}</MuiText>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <label>Employee Name</label>
-              <p>{attendance.employeeName || "-"}</p>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <MuiLayoutBox component="label">Employee Name</MuiLayoutBox>
+              <MuiText component="p" variant="body1">{attendance.employeeName || "-"}</MuiText>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <label>Employee Code</label>
-              <p>{attendance.employeeCode || "-"}</p>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <MuiLayoutBox component="label">Employee Code</MuiLayoutBox>
+              <MuiText component="p" variant="body1">{attendance.employeeCode || "-"}</MuiText>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <label>Shift</label>
-              <p>{attendance.shift || "-"}</p>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <MuiLayoutBox component="label">Shift</MuiLayoutBox>
+              <MuiText component="p" variant="body1">{attendance.shift || "-"}</MuiText>
             </Grid>
           </Grid>
-        </div>
+        </MuiLayoutBox>
 
         <Divider sx={{ my: 3 }} />
 
@@ -59,17 +60,17 @@ export default function AttendanceDetailsDialog({ open, onClose, attendance }) {
 
         {/* Attendance Information */}
 
-        <div className="details-section">
-          <h3>Attendance Information</h3>
+        <MuiLayoutBox className="details-section" component="div">
+          <MuiText component="h3" variant="h6">Attendance Information</MuiText>
 
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <label>Date</label>
-              <p>{attendance.attendanceDate || "-"}</p>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <MuiLayoutBox component="label">Date</MuiLayoutBox>
+              <MuiText component="p" variant="body1">{attendance.attendanceDate || "-"}</MuiText>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <label>Status</label>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <MuiLayoutBox component="label">Status</MuiLayoutBox>
 
               <br />
 
@@ -87,27 +88,27 @@ export default function AttendanceDetailsDialog({ open, onClose, attendance }) {
               />
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <label>Check In</label>
-              <p>{attendance.checkIn || "-"}</p>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <MuiLayoutBox component="label">Check In</MuiLayoutBox>
+              <MuiText component="p" variant="body1">{attendance.checkIn || "-"}</MuiText>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <label>Check Out</label>
-              <p>{attendance.checkOut || "-"}</p>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <MuiLayoutBox component="label">Check Out</MuiLayoutBox>
+              <MuiText component="p" variant="body1">{attendance.checkOut || "-"}</MuiText>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <label>Total Hours</label>
-              <p>{attendance.totalHours || "-"}</p>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <MuiLayoutBox component="label">Total Hours</MuiLayoutBox>
+              <MuiText component="p" variant="body1">{attendance.totalHours || "-"}</MuiText>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <label>Remarks</label>
-              <p>{attendance.remarks || "-"}</p>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <MuiLayoutBox component="label">Remarks</MuiLayoutBox>
+              <MuiText component="p" variant="body1">{attendance.remarks || "-"}</MuiText>
             </Grid>
           </Grid>
-        </div>
+        </MuiLayoutBox>
       </DialogContent>
 
       <Divider />

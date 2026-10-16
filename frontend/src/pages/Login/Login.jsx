@@ -4,14 +4,15 @@ import LoginLeftPanel from "./components/LoginLeftPanel";
 import LoginHeader from "./components/LoginHeader";
 import LoginForm from "./components/LoginForm";
 import AzureLoginButton from "./components/AzureLoginButton";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function Login() {
 
     return (
 
-        <div className="login-page">
+        <MuiLayoutBox className="login-page" component="div">
 
-            <div className="login-container">
+            <MuiLayoutBox className="login-container" component="div">
 
                 {/* =================================================
                     LEFT PANEL
@@ -24,7 +25,7 @@ function Login() {
                     RIGHT PANEL
                 ================================================= */}
 
-                <div className="login-right">
+                <MuiLayoutBox className="login-right" component="div">
 
                     <LoginHeader />
 
@@ -50,13 +51,13 @@ function Login() {
                         DIVIDER
                     ================================================= */}
 
-                    <div className="divider">
+                    <MuiLayoutBox className="divider" component="div">
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             OR
-                        </span>
+                        </MuiText>
 
-                    </div>
+                    </MuiLayoutBox>
 
 
                     {/* =================================================
@@ -65,11 +66,11 @@ function Login() {
 
                     <AzureLoginButton />
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

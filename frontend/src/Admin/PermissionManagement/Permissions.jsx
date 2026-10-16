@@ -1,3 +1,4 @@
+import { MuiButtonMigration, MuiInputMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useMemo, useState } from "react";
 
 import {
@@ -13,6 +14,7 @@ import { getRoles } from "../Roles/roleApi";
 
 import "./Permissions.css";
 import { menu } from "../../components/layout/Sidebar/Sidebar";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 /*
 |--------------------------------------------------------------------------
 | Permissions Page
@@ -2615,9 +2617,9 @@ const selectLoginPage = (permission) => {
   ) => {
     if (!permission?.id) {
       return (
-        <span className="permission-dash">
+        <MuiText className="permission-dash" component="span" variant="inherit">
           —
-        </span>
+        </MuiText>
       );
     }
 
@@ -2628,7 +2630,7 @@ const selectLoginPage = (permission) => {
       getEffectivePermissionActions(permission);
 
     return (
-      <input
+      <MuiInputMigration
         type="checkbox"
         className="permission-checkbox"
         checked={Boolean(
@@ -2650,20 +2652,20 @@ const selectLoginPage = (permission) => {
 
   if (loading) {
     return (
-      <div className="permissions-page">
-        <div className="permissions-loading">
-          <div className="permissions-spinner" />
+      <MuiLayoutBox className="permissions-page" component="div">
+        <MuiLayoutBox className="permissions-loading" component="div">
+          <MuiLayoutBox className="permissions-spinner"  component="div"/>
 
-          <h3>
+          <MuiText component="h3" variant="h6">
             Loading Permissions
-          </h3>
+          </MuiText>
 
-          <p>
+          <MuiText component="p" variant="body1">
             Loading roles, employees and
             permissions...
-          </p>
-        </div>
-      </div>
+          </MuiText>
+        </MuiLayoutBox>
+      </MuiLayoutBox>
     );
   }
 
@@ -2672,62 +2674,62 @@ const selectLoginPage = (permission) => {
   ======================================================================== */
 
   return (
-    <div className="permissions-page">
+    <MuiLayoutBox className="permissions-page" component="div">
 
       {/* ================================================================
           PAGE HEADER
       ================================================================ */}
 
-      <div className="permissions-header">
+      <MuiLayoutBox className="permissions-header" component="div">
 
-        <div className="permissions-title-section">
+        <MuiLayoutBox className="permissions-title-section" component="div">
 
-          <div className="permissions-title-icon">
+          <MuiLayoutBox className="permissions-title-icon" component="div">
             <ShieldIcon />
-          </div>
+          </MuiLayoutBox>
 
-          <div>
+          <MuiLayoutBox component="div">
 
-            <h1>
+            <MuiText component="h1" variant="h4">
               Permissions
-            </h1>
+            </MuiText>
 
-            <p>
+            <MuiText component="p" variant="body1">
               Manage role-based access to
               pages and actions.
-            </p>
+            </MuiText>
 
-            <div className="permissions-breadcrumb">
+            <MuiLayoutBox className="permissions-breadcrumb" component="div">
 
-              <span>
+              <MuiText component="span" variant="inherit">
                 Dashboard
-              </span>
+              </MuiText>
 
-              <span>
+              <MuiText component="span" variant="inherit">
                 ›
-              </span>
+              </MuiText>
 
-              <span>
+              <MuiText component="span" variant="inherit">
                 Access Control
-              </span>
+              </MuiText>
 
-              <span>
+              <MuiText component="span" variant="inherit">
                 ›
-              </span>
+              </MuiText>
 
-              <strong>
+              <MuiText component="strong" variant="inherit">
                 Permissions
-              </strong>
+              </MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
-          </div>
+          </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
 
-        <div className="permissions-header-actions">
+        <MuiLayoutBox className="permissions-header-actions" component="div">
 
-          <button
+          <MuiButtonMigration
             type="button"
             className="permission-refresh-button"
             onClick={refreshPage}
@@ -2735,9 +2737,9 @@ const selectLoginPage = (permission) => {
             title="Refresh"
           >
             <RefreshIcon />
-          </button>
+          </MuiButtonMigration>
 
-          <button
+          <MuiButtonMigration
             type="button"
             className="permission-save-top"
             onClick={savePermissions}
@@ -2746,125 +2748,125 @@ const selectLoginPage = (permission) => {
               saving
             }
           >
-            <span>
+            <MuiText component="span" variant="inherit">
               ▣
-            </span>
+            </MuiText>
 
             {saving
               ? "Saving..."
               : "Save Permissions"}
-          </button>
+          </MuiButtonMigration>
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
       {/* ================================================================
           ERROR / SUCCESS
       ================================================================ */}
 
       {error && (
-        <div className="permission-alert permission-alert-error">
-          <strong>
+        <MuiLayoutBox className="permission-alert permission-alert-error" component="div">
+          <MuiText component="strong" variant="inherit">
             Error:
-          </strong>{" "}
+          </MuiText>{" "}
           {error}
-        </div>
+        </MuiLayoutBox>
       )}
 
       {successMessage && (
-        <div className="permission-alert permission-alert-success">
+        <MuiLayoutBox className="permission-alert permission-alert-success" component="div">
           {successMessage}
-        </div>
+        </MuiLayoutBox>
       )}
 
       {/* ================================================================
           STAT CARDS
       ================================================================ */}
 
-      <div className="permission-stat-grid">
+      <MuiLayoutBox className="permission-stat-grid" component="div">
 
-        <div className="permission-stat-card">
+        <MuiLayoutBox className="permission-stat-card" component="div">
 
-          <div className="permission-stat-icon blue">
+          <MuiLayoutBox className="permission-stat-icon blue" component="div">
             <ShieldIcon />
-          </div>
+          </MuiLayoutBox>
 
-          <div className="permission-stat-content">
+          <MuiLayoutBox className="permission-stat-content" component="div">
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Total Roles
-            </span>
+            </MuiText>
 
-            <strong>
+            <MuiText component="strong" variant="inherit">
               {totalRoles}
-            </strong>
+            </MuiText>
 
-            <small>
+            <MuiText component="small" variant="caption">
               Active roles in system
-            </small>
+            </MuiText>
 
-          </div>
+          </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
 
-        <div className="permission-stat-card">
+        <MuiLayoutBox className="permission-stat-card" component="div">
 
-          <div className="permission-stat-icon green">
+          <MuiLayoutBox className="permission-stat-icon green" component="div">
             <UsersIcon />
-          </div>
+          </MuiLayoutBox>
 
-          <div className="permission-stat-content">
+          <MuiLayoutBox className="permission-stat-content" component="div">
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Total Users
-            </span>
+            </MuiText>
 
-            <strong>
+            <MuiText component="strong" variant="inherit">
               {totalUsers}
-            </strong>
+            </MuiText>
 
-            <small>
+            <MuiText component="small" variant="caption">
               Users with assigned roles
-            </small>
+            </MuiText>
 
-          </div>
+          </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
 
-        <div className="permission-stat-card">
+        <MuiLayoutBox className="permission-stat-card" component="div">
 
-          <div className="permission-stat-icon purple">
+          <MuiLayoutBox className="permission-stat-icon purple" component="div">
             <LockIcon />
-          </div>
+          </MuiLayoutBox>
 
-          <div className="permission-stat-content">
+          <MuiLayoutBox className="permission-stat-content" component="div">
 
-            <span>
+            <MuiText component="span" variant="inherit">
               Total Permissions
-            </span>
+            </MuiText>
 
-            <strong>
+            <MuiText component="strong" variant="inherit">
               {totalPermissions}
-            </strong>
+            </MuiText>
 
-            <small>
+            <MuiText component="small" variant="caption">
               System permissions
-            </small>
+            </MuiText>
 
-          </div>
+          </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
 
-      </div>
+      </MuiLayoutBox>
 
       {/* ================================================================
           TABS
       ================================================================ */}
 
-      <div className="permission-tabs">
+      <MuiLayoutBox className="permission-tabs" component="div">
 
-        <button
+        <MuiButtonMigration
           type="button"
           className={
             activeTab === "roles"
@@ -2878,9 +2880,9 @@ const selectLoginPage = (permission) => {
           <ShieldIcon />
 
           Role Permissions
-        </button>
+        </MuiButtonMigration>
 
-        <button
+        <MuiButtonMigration
           type="button"
           className={
             activeTab === "users"
@@ -2894,43 +2896,43 @@ const selectLoginPage = (permission) => {
           <UsersIcon />
 
           User Permissions
-        </button>
+        </MuiButtonMigration>
 
-      </div>
+      </MuiLayoutBox>
 
       {/* ================================================================
           USER PERMISSIONS TAB
       ================================================================ */}
 
       {activeTab === "users" && (
-        <div className="permission-user-layout">
+        <MuiLayoutBox className="permission-user-layout" component="div">
 
-          <aside className="permission-user-panel">
-            <div className="permission-user-panel-header">
-              <div>
-                <h2>Users</h2>
-                <p>{employees.length} employees</p>
-              </div>
-              <span className="permission-user-count">
+          <MuiLayoutBox className="permission-user-panel" component="aside">
+            <MuiLayoutBox className="permission-user-panel-header" component="div">
+              <MuiLayoutBox component="div">
+                <MuiText component="h2" variant="h5">Users</MuiText>
+                <MuiText component="p" variant="body1">{employees.length} employees</MuiText>
+              </MuiLayoutBox>
+              <MuiText className="permission-user-count" component="span" variant="inherit">
                 {filteredUsers.length}
-              </span>
-            </div>
+              </MuiText>
+            </MuiLayoutBox>
 
-            <div className="permission-user-search">
+            <MuiLayoutBox className="permission-user-search" component="div">
               <SearchIcon />
-              <input
+              <MuiInputMigration
                 type="text"
                 placeholder="Search users..."
                 value={userSearch}
                 onChange={(event) => setUserSearch(event.target.value)}
               />
-            </div>
+            </MuiLayoutBox>
 
-            <div className="permission-user-list">
+            <MuiLayoutBox className="permission-user-list" component="div">
               {filteredUsers.length === 0 ? (
-                <div className="permission-user-no-data">
+                <MuiLayoutBox className="permission-user-no-data" component="div">
                   No employees found.
-                </div>
+                </MuiLayoutBox>
               ) : (
                 filteredUsers.map((employee) => {
                   const role = getRoleForEmployee(employee);
@@ -2940,7 +2942,7 @@ const selectLoginPage = (permission) => {
                     isSameId(getEmployeeId(selectedUser), employeeId);
 
                   return (
-                    <button
+                    <MuiButtonMigration
                       key={employeeId ?? getEmployeeAzureId(employee)}
                       type="button"
                       className={
@@ -2950,193 +2952,193 @@ const selectLoginPage = (permission) => {
                       }
                       onClick={() => selectUser(employee)}
                     >
-                      <div className="permission-user-avatar">
+                      <MuiLayoutBox className="permission-user-avatar" component="div">
                         {getEmployeeName(employee).charAt(0).toUpperCase()}
-                      </div>
+                      </MuiLayoutBox>
 
-                      <div className="permission-user-info">
-                        <strong>{getEmployeeName(employee)}</strong>
-                        <span>
+                      <MuiLayoutBox className="permission-user-info" component="div">
+                        <MuiText component="strong" variant="inherit">{getEmployeeName(employee)}</MuiText>
+                        <MuiText component="span" variant="inherit">
                           Azure ID: {getEmployeeAzureId(employee)}
-                        </span>
-                        <small>{getRoleName(role)}</small>
-                      </div>
-                    </button>
+                        </MuiText>
+                        <MuiText component="small" variant="caption">{getRoleName(role)}</MuiText>
+                      </MuiLayoutBox>
+                    </MuiButtonMigration>
                   );
                 })
               )}
-            </div>
-          </aside>
+            </MuiLayoutBox>
+          </MuiLayoutBox>
 
-          <section className="permission-user-content">
+          <MuiLayoutBox className="permission-user-content" component="section">
             {!selectedUser ? (
-              <div className="permission-user-empty">
-                <div className="permission-user-empty-icon">
+              <MuiLayoutBox className="permission-user-empty" component="div">
+                <MuiLayoutBox className="permission-user-empty-icon" component="div">
                   <UsersIcon />
-                </div>
-                <h3>Select an employee</h3>
-                <p>
+                </MuiLayoutBox>
+                <MuiText component="h3" variant="h6">Select an employee</MuiText>
+                <MuiText component="p" variant="body1">
                   Select an employee from the list to view the permissions
                   inherited from their role.
-                </p>
-              </div>
+                </MuiText>
+              </MuiLayoutBox>
             ) : (
               <>
-                <div className="permission-user-detail-header">
-                  <div className="permission-user-detail-main">
-                    <div className="permission-user-detail-avatar">
+                <MuiLayoutBox className="permission-user-detail-header" component="div">
+                  <MuiLayoutBox className="permission-user-detail-main" component="div">
+                    <MuiLayoutBox className="permission-user-detail-avatar" component="div">
                       {getEmployeeName(selectedUser).charAt(0).toUpperCase()}
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div className="permission-user-detail-info">
-                      <div className="permission-user-detail-title-row">
-                        <h2>{getEmployeeName(selectedUser)}</h2>
-                      </div>
+                    <MuiLayoutBox className="permission-user-detail-info" component="div">
+                      <MuiLayoutBox className="permission-user-detail-title-row" component="div">
+                        <MuiText component="h2" variant="h5">{getEmployeeName(selectedUser)}</MuiText>
+                      </MuiLayoutBox>
 
-                      <div className="permission-user-meta">
-                        <div className="permission-user-meta-item">
-                          <span>Employee ID</span>
-                          <strong>{getEmployeeAzureId(selectedUser)}</strong>
-                        </div>
+                      <MuiLayoutBox className="permission-user-meta" component="div">
+                        <MuiLayoutBox className="permission-user-meta-item" component="div">
+                          <MuiText component="span" variant="inherit">Employee ID</MuiText>
+                          <MuiText component="strong" variant="inherit">{getEmployeeAzureId(selectedUser)}</MuiText>
+                        </MuiLayoutBox>
 
 
-                        <div className="permission-user-meta-item permission-user-meta-email">
-                          <span>Email</span>
-                          <strong>{getEmployeeEmail(selectedUser)}</strong>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                        <MuiLayoutBox className="permission-user-meta-item permission-user-meta-email" component="div">
+                          <MuiText component="span" variant="inherit">Email</MuiText>
+                          <MuiText component="strong" variant="inherit">{getEmployeeEmail(selectedUser)}</MuiText>
+                        </MuiLayoutBox>
+                      </MuiLayoutBox>
+                    </MuiLayoutBox>
+                  </MuiLayoutBox>
 
-                  <div className="permission-user-role-card">
-                    <div className="permission-user-role-icon">
+                  <MuiLayoutBox className="permission-user-role-card" component="div">
+                    <MuiLayoutBox className="permission-user-role-icon" component="div">
                       <UserRoleIcon />
-                    </div>
+                    </MuiLayoutBox>
 
-                    <div className="permission-user-role-content">
-                      <span>ROLE</span>
-                      <strong>
+                    <MuiLayoutBox className="permission-user-role-content" component="div">
+                      <MuiText component="span" variant="inherit">ROLE</MuiText>
+                      <MuiText component="strong" variant="inherit">
                         {getRoleName(getRoleForEmployee(selectedUser))}
-                      </strong>
-                    </div>
-                  </div>
-                </div>
+                      </MuiText>
+                    </MuiLayoutBox>
+                  </MuiLayoutBox>
+                </MuiLayoutBox>
 
-                <div className="permission-user-summary">
-                  <div>
-                    <strong>{userPermissionCount}</strong>
-                    <span>Granted actions</span>
-                  </div>
-                  <div>
-                    <strong>
+                <MuiLayoutBox className="permission-user-summary" component="div">
+                  <MuiLayoutBox component="div">
+                    <MuiText component="strong" variant="inherit">{userPermissionCount}</MuiText>
+                    <MuiText component="span" variant="inherit">Granted actions</MuiText>
+                  </MuiLayoutBox>
+                  <MuiLayoutBox component="div">
+                    <MuiText component="strong" variant="inherit">
                       {
                         userPermissionRows.filter(
                           (permission) => permission.view,
                         ).length
                       }
-                    </strong>
-                    <span>Viewable pages</span>
-                  </div>
-                  <div>
-                    <strong>{userPermissionModules.length}</strong>
-                    <span>Modules</span>
-                  </div>
-                </div>
+                    </MuiText>
+                    <MuiText component="span" variant="inherit">Viewable pages</MuiText>
+                  </MuiLayoutBox>
+                  <MuiLayoutBox component="div">
+                    <MuiText component="strong" variant="inherit">{userPermissionModules.length}</MuiText>
+                    <MuiText component="span" variant="inherit">Modules</MuiText>
+                  </MuiLayoutBox>
+                </MuiLayoutBox>
 
                 {loadingUserPermissions ? (
-                  <div className="permission-user-loading">
+                  <MuiLayoutBox className="permission-user-loading" component="div">
                     Loading permissions...
-                  </div>
+                  </MuiLayoutBox>
                 ) : (
-                  <div className="permission-user-table-section">
-                    <div className="permission-user-table-header">
-                      <div>
-                        <h3>Access Permissions</h3>
-                        <p>Permissions inherited from the selected employee's role.</p>
-                      </div>
-                      <span className="permission-user-table-status">
-                        <span className="permission-user-status-dot"></span>
+                  <MuiLayoutBox className="permission-user-table-section" component="div">
+                    <MuiLayoutBox className="permission-user-table-header" component="div">
+                      <MuiLayoutBox component="div">
+                        <MuiText component="h3" variant="h6">Access Permissions</MuiText>
+                        <MuiText component="p" variant="body1">Permissions inherited from the selected employee's role.</MuiText>
+                      </MuiLayoutBox>
+                      <MuiText className="permission-user-table-status" component="span" variant="inherit">
+                        <MuiText className="permission-user-status-dot" component="span" variant="inherit"></MuiText>
                         Read only
-                      </span>
-                    </div>
+                      </MuiText>
+                    </MuiLayoutBox>
 
-                    <div className="permission-user-table-wrapper">
-                      <table className="permission-user-table">
-                      <thead>
-                        <tr>
-                          <th>PAGE</th>
-                          <th>VIEW</th>
-                          <th>CREATE</th>
-                          <th>EDIT</th>
-                          <th>DELETE</th>
-                          <th>APPROVE</th>
-                          <th>EXPORT</th>
-                        </tr>
-                      </thead>
+                    <MuiLayoutBox className="permission-user-table-wrapper" component="div">
+                      <MuiTableMigration className="permission-user-table">
+                      <MuiTableHeadMigration>
+                        <MuiTableRowMigration>
+                          <MuiTableCellMigration>PAGE</MuiTableCellMigration>
+                          <MuiTableCellMigration>VIEW</MuiTableCellMigration>
+                          <MuiTableCellMigration>CREATE</MuiTableCellMigration>
+                          <MuiTableCellMigration>EDIT</MuiTableCellMigration>
+                          <MuiTableCellMigration>DELETE</MuiTableCellMigration>
+                          <MuiTableCellMigration>APPROVE</MuiTableCellMigration>
+                          <MuiTableCellMigration>EXPORT</MuiTableCellMigration>
+                        </MuiTableRowMigration>
+                      </MuiTableHeadMigration>
 
-                      <tbody>
+                      <MuiTableBodyMigration>
                         {userPermissionModules.map((module) => (
                           <React.Fragment key={module.moduleName}>
-                            <tr className="permission-user-module-row">
-                              <td colSpan="7">
-                                <strong>{module.moduleName}</strong>
-                                <span>{module.pages.length} pages</span>
-                              </td>
-                            </tr>
+                            <MuiTableRowMigration className="permission-user-module-row">
+                              <MuiTableCellMigration colSpan="7">
+                                <MuiText component="strong" variant="inherit">{module.moduleName}</MuiText>
+                                <MuiText component="span" variant="inherit">{module.pages.length} pages</MuiText>
+                              </MuiTableCellMigration>
+                            </MuiTableRowMigration>
 
                             {module.pages.map((permission) => (
-                              <tr
+                              <MuiTableRowMigration
                                 key={normalizeId(permission.id)}
                                 className="permission-user-page-row"
                               >
-                                <td>
-                                  <div>
-                                    <strong>{permission.page}</strong>
+                                <MuiTableCellMigration>
+                                  <MuiLayoutBox component="div">
+                                    <MuiText component="strong" variant="inherit">{permission.page}</MuiText>
                                     {permission.path && (
-                                      <span>{permission.path}</span>
+                                      <MuiText component="span" variant="inherit">{permission.path}</MuiText>
                                     )}
-                                  </div>
-                                </td>
+                                  </MuiLayoutBox>
+                                </MuiTableCellMigration>
 
                                 {ACTIONS.map((action) => (
-                                  <td key={action}>
+                                  <MuiTableCellMigration key={action}>
                                     
 {permission[action] ? (
-  <span className="permission-user-check">
+  <MuiText className="permission-user-check" component="span" variant="inherit">
     ✓
-  </span>
+  </MuiText>
 ) : (
-  <span className="permission-user-cross">
+  <MuiText className="permission-user-cross" component="span" variant="inherit">
     ✕
-  </span>
+  </MuiText>
 )}
 
-                                  </td>
+                                  </MuiTableCellMigration>
                                 ))}
 
-                              </tr>
+                              </MuiTableRowMigration>
                             ))}
                           </React.Fragment>
                         ))}
-                      </tbody>
-                      </table>
-                    </div>
-                  </div>
+                      </MuiTableBodyMigration>
+                      </MuiTableMigration>
+                    </MuiLayoutBox>
+                  </MuiLayoutBox>
                 )}
 
-                <div className="permission-user-readonly-note">
+                <MuiLayoutBox className="permission-user-readonly-note" component="div">
                   <LockIcon />
-                  <span>
+                  <MuiText component="span" variant="inherit">
                     Permissions are inherited from the employee's role and
                     are read-only here. To change access, update the role in{" "}
-                    <strong>Role Permissions</strong>.
-                  </span>
-                </div>
+                    <MuiText component="strong" variant="inherit">Role Permissions</MuiText>.
+                  </MuiText>
+                </MuiLayoutBox>
               </>
             )}
-          </section>
+          </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
       )}
 
       {/* ================================================================
@@ -3144,27 +3146,27 @@ const selectLoginPage = (permission) => {
       ================================================================ */}
 
       {activeTab === "roles" && (
-        <div className="permission-management-layout">
+        <MuiLayoutBox className="permission-management-layout" component="div">
 
           {/* ============================================================
               LEFT ROLE PANEL
           ============================================================ */}
 
-          <aside className="permission-role-panel">
+          <MuiLayoutBox className="permission-role-panel" component="aside">
 
-            <div className="permission-role-panel-header">
+            <MuiLayoutBox className="permission-role-panel-header" component="div">
 
-              <h2>
+              <MuiText component="h2" variant="h5">
                 Roles
-              </h2>
+              </MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
-            <div className="permission-role-search">
+            <MuiLayoutBox className="permission-role-search" component="div">
 
               <SearchIcon />
 
-              <input
+              <MuiInputMigration
                 type="text"
                 placeholder="Search roles..."
                 value={roleSearch}
@@ -3175,14 +3177,14 @@ const selectLoginPage = (permission) => {
                 }
               />
 
-            </div>
+            </MuiLayoutBox>
 
-            <div className="permission-role-list">
+            <MuiLayoutBox className="permission-role-list" component="div">
 
               {filteredRoles.length === 0 && (
-                <div className="permission-no-data">
+                <MuiLayoutBox className="permission-no-data" component="div">
                   No roles found.
-                </div>
+                </MuiLayoutBox>
               )}
 
               {filteredRoles.map(
@@ -3201,7 +3203,7 @@ const selectLoginPage = (permission) => {
                     );
 
                   return (
-                    <button
+                    <MuiButtonMigration
                       type="button"
                       key={
                         roleId ??
@@ -3219,19 +3221,19 @@ const selectLoginPage = (permission) => {
                       }
                     >
 
-                      <div className="permission-role-avatar">
+                      <MuiLayoutBox className="permission-role-avatar" component="div">
                         <UserRoleIcon />
-                      </div>
+                      </MuiLayoutBox>
 
-                      <div className="permission-role-info">
+                      <MuiLayoutBox className="permission-role-info" component="div">
 
-                        <strong>
+                        <MuiText component="strong" variant="inherit">
                           {getRoleName(
                             role,
                           )}
-                        </strong>
+                        </MuiText>
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
 
                           {firstValue(
                             role,
@@ -3259,57 +3261,57 @@ const selectLoginPage = (permission) => {
                               )} Users`
                             : "Role"}
 
-                        </span>
+                        </MuiText>
 
-                      </div>
+                      </MuiLayoutBox>
 
-                    </button>
+                    </MuiButtonMigration>
                   );
                 },
               )}
 
-            </div>
+            </MuiLayoutBox>
 
-          </aside>
+          </MuiLayoutBox>
 
           {/* ============================================================
               RIGHT PERMISSION PANEL
           ============================================================ */}
 
-          <section className="permission-content-panel">
+          <MuiLayoutBox className="permission-content-panel" component="section">
 
-            <div className="permission-content-header">
+            <MuiLayoutBox className="permission-content-header" component="div">
 
-              <div>
+              <MuiLayoutBox component="div">
 
-                <h2>
+                <MuiText component="h2" variant="h5">
 
                   Permissions for{" "}
 
-                  <span>
+                  <MuiText component="span" variant="inherit">
                     {selectedRole
                       ? getRoleName(
                           selectedRole,
                         )
                       : "Select a Role"}
-                  </span>
+                  </MuiText>
 
-                </h2>
+                </MuiText>
 
-                <p>
+                <MuiText component="p" variant="body1">
                   Manage what this role can
                   access and modify.
-                </p>
+                </MuiText>
 
-              </div>
+              </MuiLayoutBox>
 
-              <label className="permission-select-all">
+              <MuiLayoutBox className="permission-select-all" component="label">
 
-                <span>
+                <MuiText component="span" variant="inherit">
                   Select All
-                </span>
+                </MuiText>
 
-                <input
+                <MuiInputMigration
                   type="checkbox"
                   className="permission-checkbox"
                   checked={allSelected}
@@ -3321,15 +3323,15 @@ const selectLoginPage = (permission) => {
                   }
                 />
 
-              </label>
+              </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
-            <div className="permission-page-search">
+            <MuiLayoutBox className="permission-page-search" component="div">
 
               <SearchIcon />
 
-              <input
+              <MuiInputMigration
                 type="text"
                 placeholder="Search pages..."
                 value={pageSearch}
@@ -3340,57 +3342,57 @@ const selectLoginPage = (permission) => {
                 }
               />
 
-            </div>
+            </MuiLayoutBox>
 
             {loadingRolePermissions && (
-              <div className="permission-loading-role">
+              <MuiLayoutBox className="permission-loading-role" component="div">
                 Loading role permissions...
-              </div>
+              </MuiLayoutBox>
             )}
 
             {/* ========================================================
                 PERMISSION LIST
             ======================================================== */}
 
-            <div className="permission-table-wrapper permission-modern-wrapper">
+            <MuiLayoutBox className="permission-table-wrapper permission-modern-wrapper" component="div">
 
-              <table className="permission-table permission-modern-table">
+              <MuiTableMigration className="permission-table permission-modern-table">
 
-                <thead>
+                <MuiTableHeadMigration>
 
-                  <tr>
+                  <MuiTableRowMigration>
 
-                    <th className="permission-page-column">
+                    <MuiTableCellMigration className="permission-page-column">
                       PAGE
-                    </th>
+                    </MuiTableCellMigration>
 
-                    <th className="permission-login-column">
+                    <MuiTableCellMigration className="permission-login-column">
                       LOGIN
-                    </th>
+                    </MuiTableCellMigration>
 
-                    <th className="permission-access-column">
+                    <MuiTableCellMigration className="permission-access-column">
                       ACCESS
-                    </th>
+                    </MuiTableCellMigration>
 
-                    <th className="permission-actions-column">
+                    <MuiTableCellMigration className="permission-actions-column">
                       ACTIONS
-                    </th>
+                    </MuiTableCellMigration>
 
-                  </tr>
+                  </MuiTableRowMigration>
 
-                </thead>
+                </MuiTableHeadMigration>
 
-                <tbody>
+                <MuiTableBodyMigration>
 
                   {filteredModules.length === 0 && (
-                    <tr>
-                      <td
+                    <MuiTableRowMigration>
+                      <MuiTableCellMigration
                         colSpan="4"
                         className="permission-no-pages"
                       >
                         No permissions/pages found.
-                      </td>
-                    </tr>
+                      </MuiTableCellMigration>
+                    </MuiTableRowMigration>
                   )}
 
                   {filteredModules.map((module) => {
@@ -3428,12 +3430,12 @@ const selectLoginPage = (permission) => {
 
                         {/* MODULE */}
 
-                        <tr className="permission-module-row permission-modern-module-row">
+                        <MuiTableRowMigration className="permission-module-row permission-modern-module-row">
 
-                          <td>
-                            <div className="permission-module-name">
+                          <MuiTableCellMigration>
+                            <MuiLayoutBox className="permission-module-name" component="div">
 
-                              <button
+                              <MuiButtonMigration
                                 type="button"
                                 className="permission-module-toggle"
                                 onClick={() =>
@@ -3448,30 +3450,30 @@ const selectLoginPage = (permission) => {
                                 }
                               >
                                 <ChevronIcon open={moduleOpen} />
-                              </button>
+                              </MuiButtonMigration>
 
                               <ShieldIcon />
 
-                              <strong>
+                              <MuiText component="strong" variant="inherit">
                                 {module.moduleName}
-                              </strong>
+                              </MuiText>
 
-                              <span className="permission-count-badge">
+                              <MuiText className="permission-count-badge" component="span" variant="inherit">
                                 {module.pages.length}
-                              </span>
+                              </MuiText>
 
-                            </div>
-                          </td>
+                            </MuiLayoutBox>
+                          </MuiTableCellMigration>
 
-                          <td colSpan="2" />
+                          <MuiTableCellMigration colSpan="2" />
 
-                          <td className="permission-module-all-cell">
-                            <label
+                          <MuiTableCellMigration className="permission-module-all-cell">
+                            <MuiLayoutBox
                               className="permission-all-control"
                               title="Select all permissions for this module"
-                            >
-                              <span>ALL</span>
-                              <input
+                             component="label">
+                              <MuiText component="span" variant="inherit">ALL</MuiText>
+                              <MuiInputMigration
                                 type="checkbox"
                                 className="permission-checkbox"
                                 checked={moduleAllSelected}
@@ -3485,10 +3487,10 @@ const selectLoginPage = (permission) => {
                                   toggleModule(module)
                                 }
                               />
-                            </label>
-                          </td>
+                            </MuiLayoutBox>
+                          </MuiTableCellMigration>
 
-                        </tr>
+                        </MuiTableRowMigration>
 
                         {/* PAGES */}
 
@@ -3522,24 +3524,24 @@ const selectLoginPage = (permission) => {
                                 key={`${permissionId}-${index}`}
                               >
 
-                                <tr className="permission-page-row permission-modern-page-row">
+                                <MuiTableRowMigration className="permission-page-row permission-modern-page-row">
 
-                                  <td>
-                                    <div className="permission-page-name">
-                                      <strong>
+                                  <MuiTableCellMigration>
+                                    <MuiLayoutBox className="permission-page-name" component="div">
+                                      <MuiText component="strong" variant="inherit">
                                         {permission.page}
-                                      </strong>
+                                      </MuiText>
 
                                       {permission.path && (
-                                        <span>
+                                        <MuiText component="span" variant="inherit">
                                           {permission.path}
-                                        </span>
+                                        </MuiText>
                                       )}
-                                    </div>
-                                  </td>
+                                    </MuiLayoutBox>
+                                  </MuiTableCellMigration>
 
-                                  <td className="permission-login-cell">
-                                    <input
+                                  <MuiTableCellMigration className="permission-login-cell">
+                                    <MuiInputMigration
                                       type="radio"
                                       name={`loginPage-${module.moduleName}`}
                                       className="permission-login-radio"
@@ -3552,24 +3554,24 @@ const selectLoginPage = (permission) => {
                                       }
                                       title="Set as login page"
                                     />
-                                  </td>
+                                  </MuiTableCellMigration>
 
-                                  <td>
-                                    <span
+                                  <MuiTableCellMigration>
+                                    <MuiText
                                       className={`permission-access-badge ${
                                         accessEnabled
                                           ? "enabled"
                                           : "disabled"
                                       }`}
-                                    >
+                                     component="span" variant="inherit">
                                       {accessEnabled
                                         ? "Enabled"
                                         : "No access"}
-                                    </span>
-                                  </td>
+                                    </MuiText>
+                                  </MuiTableCellMigration>
 
-                                  <td className="permission-actions-cell">
-                                    <button
+                                  <MuiTableCellMigration className="permission-actions-cell">
+                                    <MuiButtonMigration
                                       type="button"
                                       className={`permission-manage-button ${
                                         isPanelOpen ? "active" : ""
@@ -3580,48 +3582,48 @@ const selectLoginPage = (permission) => {
                                         )
                                       }
                                     >
-                                      <span>
+                                      <MuiText component="span" variant="inherit">
                                         Manage
-                                      </span>
-                                      <span
+                                      </MuiText>
+                                      <MuiText
                                         className={`permission-manage-count ${
                                           pageAllSelected
                                             ? "complete"
                                             : ""
                                         }`}
-                                      >
+                                       component="span" variant="inherit">
                                         {selectedCount}/
                                         {ACTIONS.length}
-                                      </span>
-                                      <span className="permission-manage-chevron">
+                                      </MuiText>
+                                      <MuiText className="permission-manage-chevron" component="span" variant="inherit">
                                         {isPanelOpen ? "▲" : "▼"}
-                                      </span>
-                                    </button>
-                                  </td>
+                                      </MuiText>
+                                    </MuiButtonMigration>
+                                  </MuiTableCellMigration>
 
-                                </tr>
+                                </MuiTableRowMigration>
 
                                 {isPanelOpen && (
-                                  <tr className="permission-manage-row">
-                                    <td colSpan="4">
-                                      <div className="permission-manage-panel">
+                                  <MuiTableRowMigration className="permission-manage-row">
+                                    <MuiTableCellMigration colSpan="4">
+                                      <MuiLayoutBox className="permission-manage-panel" component="div">
 
-                                        <div className="permission-manage-header">
-                                          <div>
-                                            <strong>
+                                        <MuiLayoutBox className="permission-manage-header" component="div">
+                                          <MuiLayoutBox component="div">
+                                            <MuiText component="strong" variant="inherit">
                                               Manage permissions
-                                            </strong>
-                                            <span>
+                                            </MuiText>
+                                            <MuiText component="span" variant="inherit">
                                               {permission.page}
-                                            </span>
-                                          </div>
+                                            </MuiText>
+                                          </MuiLayoutBox>
 
-                                          <label
+                                          <MuiLayoutBox
                                             className="permission-inline-all"
                                             title="Select all permissions for this page"
-                                          >
-                                            <span>ALL</span>
-                                            <input
+                                           component="label">
+                                            <MuiText component="span" variant="inherit">ALL</MuiText>
+                                            <MuiInputMigration
                                               type="checkbox"
                                               className="permission-checkbox"
                                               checked={pageAllSelected}
@@ -3635,41 +3637,41 @@ const selectLoginPage = (permission) => {
                                                 togglePageAll(permission)
                                               }
                                             />
-                                          </label>
-                                        </div>
+                                          </MuiLayoutBox>
+                                        </MuiLayoutBox>
 
-                                        <div className="permission-action-grid">
+                                        <MuiLayoutBox className="permission-action-grid" component="div">
                                           {ACTIONS.map((action) => {
                                             const label =
                                               action.charAt(0).toUpperCase() +
                                               action.slice(1);
 
                                             return (
-                                              <label
+                                              <MuiLayoutBox
                                                 key={action}
                                                 className={`permission-action-option ${
                                                   actions[action]
                                                     ? "selected"
                                                     : ""
                                                 }`}
-                                              >
-                                                <span>
+                                               component="label">
+                                                <MuiText component="span" variant="inherit">
                                                   {label}
-                                                </span>
+                                                </MuiText>
                                                 {renderPermissionCheckbox(
                                                   permission,
                                                   action,
                                                 )}
-                                              </label>
+                                              </MuiLayoutBox>
                                             );
                                           })}
-                                        </div>
+                                        </MuiLayoutBox>
 
-                                        <div className="permission-manage-footer">
-                                          <span>
+                                        <MuiLayoutBox className="permission-manage-footer" component="div">
+                                          <MuiText component="span" variant="inherit">
                                             {selectedCount} of {ACTIONS.length} permissions enabled
-                                          </span>
-                                          <span>
+                                          </MuiText>
+                                          <MuiText component="span" variant="inherit">
                                             Login page: {
                                               isSameId(
                                                 loginPages[module.moduleName],
@@ -3678,12 +3680,12 @@ const selectLoginPage = (permission) => {
                                                 ? "Selected"
                                                 : "Not selected"
                                             }
-                                          </span>
-                                        </div>
+                                          </MuiText>
+                                        </MuiLayoutBox>
 
-                                      </div>
-                                    </td>
-                                  </tr>
+                                      </MuiLayoutBox>
+                                    </MuiTableCellMigration>
+                                  </MuiTableRowMigration>
                                 )}
 
                               </React.Fragment>
@@ -3694,55 +3696,55 @@ const selectLoginPage = (permission) => {
                     );
                   })}
 
-                </tbody>
+                </MuiTableBodyMigration>
 
-              </table>
+              </MuiTableMigration>
 
-            </div>
+            </MuiLayoutBox>
 
             {/* ========================================================
                 FOOTER
             ======================================================== */}
 
-            <div className="permission-footer">
+            <MuiLayoutBox className="permission-footer" component="div">
 
-              <div className="permission-footer-summary">
+              <MuiLayoutBox className="permission-footer-summary" component="div">
 
-                <strong>
+                <MuiText component="strong" variant="inherit">
                   {
                     selectedPermissions.size
                   }
-                </strong>
+                </MuiText>
 
-                <span>
+                <MuiText component="span" variant="inherit">
                   permissions selected
-                </span>
+                </MuiText>
 
-                <i />
+                <MuiLayoutBox  component="span"/>
 
-                <strong>
+                <MuiText component="strong" variant="inherit">
                   {modules.length}
-                </strong>
+                </MuiText>
 
-                <span>
+                <MuiText component="span" variant="inherit">
                   Modules
-                </span>
+                </MuiText>
 
-                <i />
+                <MuiLayoutBox  component="span"/>
 
-                <strong>
+                <MuiText component="strong" variant="inherit">
                   {permissionRows.length}
-                </strong>
+                </MuiText>
 
-                <span>
+                <MuiText component="span" variant="inherit">
                   Pages
-                </span>
+                </MuiText>
 
-              </div>
+              </MuiLayoutBox>
 
-              <div className="permission-footer-actions">
+              <MuiLayoutBox className="permission-footer-actions" component="div">
 
-                <button
+                <MuiButtonMigration
                   type="button"
                   className="permission-cancel-button"
                   onClick={
@@ -3751,9 +3753,9 @@ const selectLoginPage = (permission) => {
                   disabled={saving}
                 >
                   Cancel
-                </button>
+                </MuiButtonMigration>
 
-                <button
+                <MuiButtonMigration
                   type="button"
                   className="permission-save-button"
                   onClick={
@@ -3765,26 +3767,26 @@ const selectLoginPage = (permission) => {
                   }
                 >
 
-                  <span>
+                  <MuiText component="span" variant="inherit">
                     ▣
-                  </span>
+                  </MuiText>
 
                   {saving
                     ? "Saving..."
                     : "Save Changes"}
 
-                </button>
+                </MuiButtonMigration>
 
-              </div>
+              </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
 
-          </section>
+          </MuiLayoutBox>
 
-        </div>
+        </MuiLayoutBox>
       )}
 
-    </div>
+    </MuiLayoutBox>
   );
 }

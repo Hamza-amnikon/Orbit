@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Locations.css";
 import axios from "axios";
+import * as XLSX from "xlsx";
 
 import AddLocation from "./AddLocation";
 import EditLocation from "./EditLocation";
@@ -16,6 +17,7 @@ import {
   Place,
   LocationOn,
   Search,
+  ArrowBack,
 } from "@mui/icons-material";
 
 import {
@@ -27,9 +29,18 @@ import {
   FormControl,
   Select,
   MenuItem,
+  IconButton,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 
 import { useAuth } from "../../../context/AuthContext";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function Locations() {
   const navigate = useNavigate();
@@ -60,6 +71,8 @@ function Locations() {
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [pendingDelete, setPendingDelete] = useState(null);
+  const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
   useEffect(() => {
     if (!canView) {
@@ -108,7 +121,7 @@ function Locations() {
 
       await fetchLocations();
 
-      alert("Location added successfully.");
+      setNotice({ open: true, message: "Location added successfully.", severity: "success" });
 
       setOpenAddDialog(false);
     } catch (error) {
@@ -116,7 +129,7 @@ function Locations() {
       console.log(error.response?.data);
       console.log(error.response?.data?.errors);
 
-      alert("Unable to add location.");
+      setNotice({ open: true, message: error.response?.data?.title || "Unable to add location.", severity: "error" });
     }
   };
 
@@ -168,7 +181,7 @@ function Locations() {
 
       await fetchLocations();
 
-      alert("Location updated successfully.");
+      setNotice({ open: true, message: "Location updated successfully.", severity: "success" });
 
       setOpenEditDialog(false);
 
@@ -191,11 +204,7 @@ function Locations() {
         error.response?.data?.errors
       );
 
-      alert(
-        error.response?.data?.title ||
-        error.response?.data?.message ||
-        "Unable to update location."
-      );
+      setNotice({ open: true, message: error.response?.data?.title || error.response?.data?.message || "Unable to update location.", severity: "error" });
     }
   };
 
@@ -203,29 +212,47 @@ function Locations() {
   // DELETE LOCATION
   // ===============================
 
-  const handleDeleteLocation = async (id) => {
+  const handleDeleteLocation = async () => {
     if (!canDelete) {
       return;
     }
-
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this location?",
-    );
-
-    if (!confirmDelete) return;
+    const id = pendingDelete?.locationId;
+    if (!id) return;
 
     try {
       await axios.delete(`${API}/${id}`);
 
       await fetchLocations();
-
-      alert("Location deleted successfully.");
+      setNotice({ open: true, message: "Location deleted successfully.", severity: "success" });
     } catch (error) {
       console.log(error);
       console.log(error.response?.data);
 
-      alert("Unable to delete location.");
+      setNotice({ open: true, message: "Unable to delete location.", severity: "error" });
+    } finally {
+      setPendingDelete(null);
     }
+  };
+
+  const exportLocations = () => {
+    const rows = filteredLocations.map(({ locationCode, locationName, city, country, currencyCode, timeZone, createdDate, status }) => ({
+      "Location Code": locationCode,
+      "Location Name": locationName,
+      City: city || "",
+      Country: country || "",
+      "Currency Code": currencyCode || "",
+      Timezone: timeZone || "",
+      "Created Date": createdDate ? new Date(createdDate).toLocaleDateString("en-GB") : "",
+      Status: status || "",
+    }));
+    const sheet = XLSX.utils.json_to_sheet(rows);
+    const book = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(book, sheet, "Locations");
+    XLSX.writeFile(book, `Spark_Locations_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
+  const setLocationStatusFilter = (status) => {
+    setStatusFilter((current) => current === status ? "" : status);
   };
 
   // ===============================
@@ -257,28 +284,31 @@ function Locations() {
 
   if (!canView) {
     return (
-      <div style={{ padding: "60px", textAlign: "center" }}>
-        <h2>Access Denied</h2>
-        <p>You do not have permission to access this page.</p>
-      </div>
+      <MuiLayoutBox style={{ padding: "60px", textAlign: "center" }} component="div">
+        <MuiText component="h2" variant="h5">Access Denied</MuiText>
+        <MuiText component="p" variant="body1">You do not have permission to access this page.</MuiText>
+      </MuiLayoutBox>
     );
   }
 
   return (
-    <div className="location-page">
+    <MuiLayoutBox className="location-page" component="div">
       {/* Header */}
 
-      <div className="employee-page-header">
-        <div>
-          <h1>Location Management</h1>
-          <p>Manage office locations across your organization.</p>
-        </div>
+      <MuiLayoutBox className="employee-page-header" component="div">
+        <MuiLayoutBox className="location-title-wrap" component="div">
+          <Tooltip title="Back to employee management">
+            <IconButton className="location-back-button" aria-label="Back to employee management" onClick={() => navigate("/employees")}>
+              <ArrowBack />
+            </IconButton>
+          </Tooltip>
+          <MuiLayoutBox component="div">
+          <MuiText component="h1" variant="h4">Location Management</MuiText>
+          <MuiText component="p" variant="body1">Manage office locations across your organization.</MuiText>
+          </MuiLayoutBox>
+        </MuiLayoutBox>
 
-        <div className="header-buttons">
-          <Button variant="outlined" onClick={() => navigate("/employees")}>
-            Previous
-          </Button>
-
+        <MuiLayoutBox className="header-buttons" component="div">
           <Button
             variant="outlined"
             startIcon={<Refresh />}
@@ -288,8 +318,8 @@ function Locations() {
           </Button>
 
           {canExport && (
-            <Button variant="outlined" startIcon={<Download />}>
-              Export
+            <Button variant="outlined" startIcon={<Download />} onClick={exportLocations}>
+              Export Excel
             </Button>
           )}
 
@@ -302,67 +332,67 @@ function Locations() {
               Add Location
             </Button>
           )}
-        </div>
-      </div>
+        </MuiLayoutBox>
+      </MuiLayoutBox>
 
       {/* Statistics */}
 
-      <div className="stats-grid">
-        <Card className="stats-card">
+      <MuiLayoutBox className="stats-grid" component="div">
+        <Card className={`stats-card ${statusFilter === "" ? "selected" : ""}`} role="button" tabIndex={0} onClick={() => setLocationStatusFilter("")} onKeyDown={(e) => e.key === "Enter" && setLocationStatusFilter("")}>
           <CardContent>
-            <div className="stats-icon blue">
+            <MuiLayoutBox className="stats-icon blue" component="div">
               <LocationOn />
-            </div>
+            </MuiLayoutBox>
 
-            <span>Total Locations</span>
+            <MuiText component="span" variant="inherit">Total Locations</MuiText>
 
-            <h2>{locations.length}</h2>
+            <MuiText component="h2" variant="h5">{locations.length}</MuiText>
           </CardContent>
         </Card>
 
-        <Card className="stats-card">
+        <Card className={`stats-card ${statusFilter === "Active" ? "selected" : ""}`} role="button" tabIndex={0} onClick={() => setLocationStatusFilter("Active")} onKeyDown={(e) => e.key === "Enter" && setLocationStatusFilter("Active")}>
           <CardContent>
-            <div className="stats-icon green">
+            <MuiLayoutBox className="stats-icon green" component="div">
               <Business />
-            </div>
+            </MuiLayoutBox>
 
-            <span>Active Locations</span>
+            <MuiText component="span" variant="inherit">Active Locations</MuiText>
 
-            <h2>{locations.filter((x) => x.status === "Active").length}</h2>
+            <MuiText component="h2" variant="h5">{locations.filter((x) => x.status === "Active").length}</MuiText>
           </CardContent>
         </Card>
 
-        <Card className="stats-card">
+        <Card className={`stats-card ${statusFilter === "Inactive" ? "selected" : ""}`} role="button" tabIndex={0} onClick={() => setLocationStatusFilter("Inactive")} onKeyDown={(e) => e.key === "Enter" && setLocationStatusFilter("Inactive")}>
           <CardContent>
-            <div className="stats-icon red">
+            <MuiLayoutBox className="stats-icon red" component="div">
               <Place />
-            </div>
+            </MuiLayoutBox>
 
-            <span>Inactive Locations</span>
+            <MuiText component="span" variant="inherit">Inactive Locations</MuiText>
 
-            <h2>{locations.filter((x) => x.status === "Inactive").length}</h2>
+            <MuiText component="h2" variant="h5">{locations.filter((x) => x.status === "Inactive").length}</MuiText>
           </CardContent>
         </Card>
 
-        <Card className="stats-card">
+        <Card className="stats-card stats-card-static">
           <CardContent>
-            <div className="stats-icon purple">
+            <MuiLayoutBox className="stats-icon purple" component="div">
               <Public />
-            </div>
+            </MuiLayoutBox>
 
-            <span>Countries</span>
+            <MuiText component="span" variant="inherit">Countries</MuiText>
 
-            <h2>{new Set(locations.map((x) => x.country)).size}</h2>
+            <MuiText component="h2" variant="h5">{new Set(locations.map((x) => x.country)).size}</MuiText>
           </CardContent>
         </Card>
-      </div>
+      </MuiLayoutBox>
 
       {/* Search */}
 
       <Card className="toolbar-card">
         <CardContent>
 
-          <div className="location-filter-row">
+          <MuiLayoutBox className="location-filter-row" component="div">
 
             {/* SEARCH */}
             <TextField
@@ -371,13 +401,13 @@ function Locations() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search Location..."
-              InputProps={{
+              slotProps={{ input: {
                 startAdornment: (
                   <InputAdornment position="start">
                     <Search />
                   </InputAdornment>
                 ),
-              }}
+              } }}
             />
 
             {/* STATUS FILTER */}
@@ -403,7 +433,7 @@ function Locations() {
 
             </FormControl>
 
-          </div>
+          </MuiLayoutBox>
 
         </CardContent>
       </Card>
@@ -413,14 +443,14 @@ function Locations() {
       {loading ? (
         <Card className="table-card">
           <CardContent>
-            <h3
+            <MuiText
               style={{
                 textAlign: "center",
                 padding: "40px",
               }}
-            >
+             component="h3" variant="h6">
               Loading Locations...
-            </h3>
+            </MuiText>
           </CardContent>
         </Card>
       ) : (
@@ -429,7 +459,7 @@ function Locations() {
             <LocationTable
               locations={filteredLocations}
               editLocation={canEdit ? editLocation : undefined}
-              deleteLocation={canDelete ? handleDeleteLocation : undefined}
+              deleteLocation={canDelete ? (location) => setPendingDelete(location) : undefined}
             />
           </CardContent>
         </Card>
@@ -455,7 +485,20 @@ function Locations() {
           handleUpdate={handleUpdateLocation}
         />
       )}
-    </div>
+      <Dialog open={Boolean(pendingDelete)} onClose={() => setPendingDelete(null)}>
+        <DialogTitle>Delete location?</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete {pendingDelete?.locationName || "this location"}?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPendingDelete(null)}>Cancel</Button>
+          <Button color="error" variant="contained" onClick={handleDeleteLocation}>Delete</Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar open={notice.open} autoHideDuration={4000} onClose={() => setNotice((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
+        <Alert severity={notice.severity} variant="filled" onClose={() => setNotice((current) => ({ ...current, open: false }))}>{notice.message}</Alert>
+      </Snackbar>
+    </MuiLayoutBox>
   );
 }
 

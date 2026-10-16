@@ -1,7 +1,9 @@
+import { MuiButtonMigration } from "../components/ui/MuiCompat.jsx";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
+import { Box as MuiLayoutBox, GlobalStyles as MuiGlobalStyles, Typography as MuiText } from "@mui/material";
 
 
 function AuthCallback() {
@@ -129,7 +131,7 @@ function AuthCallback() {
 
         return (
 
-            <div
+            <MuiLayoutBox
                 style={{
                     minHeight: "100vh",
                     display: "flex",
@@ -138,9 +140,9 @@ function AuthCallback() {
                     background: "#f5f7fb",
                     padding: "24px"
                 }}
-            >
+             component="div">
 
-                <div
+                <MuiLayoutBox
                     style={{
                         width: "100%",
                         maxWidth: "500px",
@@ -151,29 +153,29 @@ function AuthCallback() {
                         boxShadow:
                             "0 10px 30px rgba(0,0,0,0.08)"
                     }}
-                >
+                 component="div">
 
-                    <h2
+                    <MuiText
                         style={{
                             marginBottom: "12px",
                             color: "#111827"
                         }}
-                    >
+                     component="h2" variant="h5">
                         Authentication Failed
-                    </h2>
+                    </MuiText>
 
 
-                    <p
+                    <MuiText
                         style={{
                             color: "#6b7280",
                             marginBottom: "24px"
                         }}
-                    >
+                     component="p" variant="body1">
                         {error}
-                    </p>
+                    </MuiText>
 
 
-                    <button
+                    <MuiButtonMigration
                         type="button"
                         onClick={() => {
                             window.location.href = "/login";
@@ -189,11 +191,11 @@ function AuthCallback() {
                         }}
                     >
                         Back to Login
-                    </button>
+                    </MuiButtonMigration>
 
-                </div>
+                </MuiLayoutBox>
 
-            </div>
+            </MuiLayoutBox>
 
         );
 
@@ -208,7 +210,7 @@ function AuthCallback() {
 
     return (
 
-        <div
+        <MuiLayoutBox
             style={{
                 minHeight: "100vh",
                 display: "flex",
@@ -216,15 +218,15 @@ function AuthCallback() {
                 justifyContent: "center",
                 background: "#f5f7fb"
             }}
-        >
+         component="div">
 
-            <div
+            <MuiLayoutBox
                 style={{
                     textAlign: "center"
                 }}
-            >
+             component="div">
 
-                <div
+                <MuiLayoutBox
                     style={{
                         width: "38px",
                         height: "38px",
@@ -235,41 +237,39 @@ function AuthCallback() {
                             "auth-callback-spin 0.8s linear infinite",
                         margin: "0 auto 20px"
                     }}
-                />
+                 component="div"/>
 
-                <h2
+                <MuiText
                     style={{
                         margin: 0,
                         color: "#111827"
                     }}
-                >
+                 component="h2" variant="h5">
                     Signing you in...
-                </h2>
+                </MuiText>
 
 
-                <p
+                <MuiText
                     style={{
                         marginTop: "8px",
                         color: "#6b7280"
                     }}
-                >
+                 component="p" variant="body1">
                     Loading your employee profile.
-                </p>
+                </MuiText>
 
-            </div>
+            </MuiLayoutBox>
 
 
-            <style>
-                {`
-                    @keyframes auth-callback-spin {
-                        to {
-                            transform: rotate(360deg);
-                        }
-                    }
-                `}
-            </style>
+            <MuiGlobalStyles
+                styles={{
+                    "@keyframes auth-callback-spin": {
+                        to: { transform: "rotate(360deg)" },
+                    },
+                }}
+            />
 
-        </div>
+        </MuiLayoutBox>
 
     );
 

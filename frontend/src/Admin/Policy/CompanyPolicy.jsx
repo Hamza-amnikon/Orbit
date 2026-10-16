@@ -39,6 +39,8 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import PolicyService from "../Services/PolicyService";
 
 import "./CompanyPolicies.css";
+import { Typography as MuiText } from "@mui/material";
+import { Box as MuiLayoutBox } from "@mui/material";
 
 
 const CompanyPolicy = () => {
@@ -914,13 +916,13 @@ const CompanyPolicy = () => {
                     }
                     placeholder="Search policies..."
                     className="company-policy-search"
-                    InputProps={{
+                    slotProps={{ input: {
                         startAdornment: (
                             <InputAdornment position="start">
                                 <SearchRoundedIcon />
                             </InputAdornment>
                         ),
-                    }}
+                    } }}
                 />
 
 
@@ -967,11 +969,11 @@ const CompanyPolicy = () => {
 
                 <Typography>
 
-                    <strong>
+                    <MuiText component="strong" variant="inherit">
                         {
                             filteredPolicies.length
                         }
-                    </strong>{" "}
+                    </MuiText>{" "}
 
                     {filteredPolicies.length ===
                     1
@@ -1235,19 +1237,19 @@ const CompanyPolicy = () => {
 
                     <Box>
 
-                        <strong>
+                        <MuiText component="strong" variant="inherit">
                             {
                                 selectedPolicy?.policyTitle ||
                                 "Policy"
                             }
-                        </strong>
+                        </MuiText>
 
-                        <span>
+                        <MuiText component="span" variant="inherit">
                             {
                                 selectedPolicy?.policyCode ||
                                 ""
                             }
-                        </span>
+                        </MuiText>
 
                     </Box>
 
@@ -1361,14 +1363,14 @@ const CompanyPolicy = () => {
 
                     ) : pdfUrl ? (
 
-                        <iframe
+                        <MuiLayoutBox
                             src={pdfUrl}
                             title={
                                 selectedPolicy?.policyTitle ||
                                 "Policy PDF"
                             }
                             className="company-policy-pdf-frame"
-                        />
+                         component="iframe"/>
 
                     ) : (
 

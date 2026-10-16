@@ -1,3 +1,4 @@
+import { MuiButtonMigration } from "../../../components/ui/MuiCompat.jsx";
 import {
     Person,
     BusinessCenter,
@@ -8,6 +9,7 @@ import {
 } from "@mui/icons-material";
 
 import "./Profile.css";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ProfileTabs({ activeTab, setActiveTab }) {
 
@@ -46,28 +48,28 @@ function ProfileTabs({ activeTab, setActiveTab }) {
 
     return (
 
-        <div className="profile-tabs">
+        <MuiLayoutBox className="profile-tabs" component="div">
 
             {tabs.map((tab) => (
 
-                <button
+                <MuiButtonMigration
                     key={tab.id}
                     type="button"
                     className={`profile-tab ${activeTab === tab.id ? "active" : ""}`}
                     onClick={() => setActiveTab(tab.id)}
                 >
-                    <span className="tab-icon">
+                    <MuiText className="tab-icon" component="span" variant="inherit">
                         {tab.icon}
-                    </span>
+                    </MuiText>
 
-                    <span className="tab-label">
+                    <MuiText className="tab-label" component="span" variant="inherit">
                         {tab.label}
-                    </span>
-                </button>
+                    </MuiText>
+                </MuiButtonMigration>
 
             ))}
 
-        </div>
+        </MuiLayoutBox>
 
     );
 
