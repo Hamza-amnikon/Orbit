@@ -66,6 +66,11 @@ function Navbar({ title }) {
             location.pathname.toLowerCase();
 
 
+        if (path === "/mydashboard") {
+            return "My Dashboard";
+        }
+
+
         if (
             path === "/" ||
             path === "/dashboard"
@@ -186,8 +191,8 @@ function Navbar({ title }) {
 
     }, []);
 
-    // Notifications are loaded from the signed-in employee's leave records.
-    // No placeholder notifications are shown when the employee has no records.
+    // Notifications are loaded from the signed-in employee's leave records and
+    // all company policies returned by the API. No placeholder items are shown.
     useEffect(() => {
         let mounted = true;
 
@@ -211,7 +216,7 @@ function Navbar({ title }) {
                     if (employeeAzureId && itemAzureId) return String(employeeAzureId).toLowerCase() === String(itemAzureId).toLowerCase();
                     return false;
                 };
-                const employeeLeaves = leaves.filter(sameEmployee).slice(0, 10);
+                const employeeLeaves = leaves.filter(sameEmployee);
                 const mappedLeaves = employeeLeaves.map((leave, index) => {
                     const status = String(leave.status ?? leave.leaveStatus ?? leave.approvalStatus ?? "Submitted");
                     const type = leave.leaveTypeName ?? leave.leaveType ?? "Leave request";
@@ -219,7 +224,7 @@ function Navbar({ title }) {
                     const action = normalized.includes("approv") ? "approved" : normalized.includes("reject") ? "rejected" : "submitted";
                     return { id: leave.id ?? leave.leaveId ?? index, route: "/leave", title: action === "submitted" ? "Leave update" : "Approval update", message: `${type} was ${action}.`, status, date: leave.updatedAt ?? leave.createdAt ?? leave.requestDate };
                 });
-                const mappedPolicies = policies.slice(0, 5).map((policy, index) => ({
+                const mappedPolicies = policies.map((policy, index) => ({
                     id: `policy-${policy.id ?? policy.policyId ?? index}`,
                     route: "/company-policies",
                     title: "Policy update",
@@ -251,12 +256,9 @@ function Navbar({ title }) {
         }
     }, [profile]);
 
-    const visibleNotifications = notifications.filter((notification) => {
-        const readAt = Number(readNotificationTimes[String(notification.id)] || 0);
-        return !readAt;
-    });
-
-    const unreadNotifications = visibleNotifications.filter((notification) => !readNotificationTimes[String(notification.id)]);
+    const pendingNotifications = notifications.filter(
+        (notification) => !readNotificationTimes[String(notification.id)]
+    );
 
     const markNotificationRead = (notificationId) => {
         const id = String(notificationId);
@@ -488,6 +490,33 @@ function Navbar({ title }) {
 
     };
 
+    const renderNotification = (notification) => {
+        return (
+            <MuiButtonMigration
+                key={notification.id}
+                type="button"
+                className="notification-item"
+                onClick={() => {
+                    markNotificationRead(notification.id);
+                    setNotificationsOpen(false);
+                    navigate(notification.route || "/leave");
+                }}
+            >
+                <MuiText className="notification-item-title" component="span" variant="inherit">
+                    {notification.title}
+                </MuiText>
+                <MuiText className="notification-item-message" component="span" variant="inherit">
+                    {notification.message}
+                </MuiText>
+                {notification.date && (
+                    <MuiText className="notification-item-date" component="span" variant="inherit">
+                        {new Date(notification.date).toLocaleString()}
+                    </MuiText>
+                )}
+            </MuiButtonMigration>
+        );
+    };
+
 
     /* ========================================================
        RENDER
@@ -559,23 +588,24 @@ function Navbar({ title }) {
 
                     <NotificationsNoneRoundedIcon />
 
-                    {unreadNotifications.length > 0 && <MuiText className="notification-count" component="span" variant="inherit">{unreadNotifications.length > 99 ? "99+" : unreadNotifications.length}</MuiText>}
+                    {pendingNotifications.length > 0 && <MuiText className="notification-count" component="span" variant="inherit">{pendingNotifications.length > 99 ? "99+" : pendingNotifications.length}</MuiText>}
 
                 </MuiButtonMigration>
 
                 {notificationsOpen && (
                     <MuiLayoutBox className="notifications-menu" role="menu" component="div">
-                        <MuiLayoutBox className="notifications-header" component="div"><MuiText component="strong" variant="inherit">Notifications</MuiText><MuiText component="span" variant="inherit">{unreadNotifications.length} unread</MuiText></MuiLayoutBox>
-                        {visibleNotifications.length === 0 ? (
+                        <MuiLayoutBox className="notifications-header" component="div"><MuiText component="strong" variant="inherit">Notifications</MuiText><MuiText component="span" variant="inherit">{pendingNotifications.length} pending</MuiText></MuiLayoutBox>
+                        {pendingNotifications.length === 0 ? (
                             <MuiLayoutBox className="notifications-empty" component="div">You’re all caught up</MuiLayoutBox>
-                        ) : visibleNotifications.map((notification) => {
-                            const isRead = Boolean(readNotificationTimes[String(notification.id)]);
-                            return <MuiButtonMigration key={notification.id} type="button" className={`notification-item ${isRead ? "notification-read" : ""}`} onClick={() => { markNotificationRead(notification.id); setNotifications((current) => current.filter((item) => String(item.id) !== String(notification.id))); setNotificationsOpen(false); navigate(notification.route || "/leave"); }}>
-                                <MuiText className="notification-item-title" component="span" variant="inherit">{notification.title}</MuiText>
-                                <MuiText className="notification-item-message" component="span" variant="inherit">{notification.message}</MuiText>
-                                {notification.date && <MuiText className="notification-item-date" component="span" variant="inherit">{new Date(notification.date).toLocaleString()}</MuiText>}
-                            </MuiButtonMigration>;
-                        })}
+                        ) : (
+                            <>
+                                <MuiLayoutBox className="notification-group-heading" component="div">
+                                    <MuiText component="span" variant="inherit">Pending</MuiText>
+                                    <MuiText component="span" variant="inherit">{pendingNotifications.length}</MuiText>
+                                </MuiLayoutBox>
+                                {pendingNotifications.map(renderNotification)}
+                            </>
+                        )}
                     </MuiLayoutBox>
                 )}
 

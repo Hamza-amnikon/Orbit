@@ -6,6 +6,7 @@ import DashboardBottom from "./DashboardBottom";
 
 import { getProfile } from "../Services/ProfileService";
 import { getEmployeeAttendance } from "../Services/AttendanceService";
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 
 import "./Dashboard.css";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
@@ -116,24 +117,53 @@ function Dashboard() {
             ? profile.displayName.split(" ")[0]
             : "Employee";
 
+    const currentHour = new Date().getHours();
+    const greeting = currentHour < 12
+        ? "Good morning"
+        : currentHour < 17
+            ? "Good afternoon"
+            : "Good evening";
+    const today = new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+    });
+
 
     return (
 
-        <MuiLayoutBox className="employee-dashboard" component="div">
+        <MuiLayoutBox className="my-dashboard-page" component="div">
 
             {/* =========================
                 WELCOME
             ========================= */}
 
-            <MuiLayoutBox className="dashboard-welcome" component="div">
+            <MuiLayoutBox className="dashboard-welcome" component="header">
 
-                <MuiText component="p" variant="body1">
-                    Welcome back,
-                </MuiText>
+                <MuiLayoutBox className="dashboard-welcome-copy" component="div">
+                    <MuiText className="dashboard-eyebrow" component="p" variant="overline">
+                        Welcome back
+                    </MuiText>
 
-                <MuiText component="h1" variant="h4">
-                    Good Morning, {employeeName} 👋
-                </MuiText>
+                    <MuiText component="h1" variant="h4">
+                        {greeting}, {employeeName} <span aria-hidden="true">👋</span>
+                    </MuiText>
+
+                    <MuiText className="dashboard-welcome-description" component="p" variant="body1">
+                        Your personal attendance, leave and work summary.
+                    </MuiText>
+                </MuiLayoutBox>
+
+                <MuiLayoutBox className="dashboard-date" component="div">
+                    <MuiLayoutBox className="dashboard-date-icon" aria-hidden="true" component="div">
+                        <CalendarMonthRoundedIcon />
+                    </MuiLayoutBox>
+                    <MuiLayoutBox component="div">
+                        <MuiText component="span" variant="caption">Today</MuiText>
+                        <MuiText component="strong" variant="body2">{today}</MuiText>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
 
             </MuiLayoutBox>
 

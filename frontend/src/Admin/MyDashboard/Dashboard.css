@@ -1,22 +1,349 @@
-.employee-dashboard {
+.my-dashboard-page {
+    --my-dashboard-primary: #315fea;
+    --my-dashboard-ink: #17233d;
+    --my-dashboard-muted: #71809a;
+    --my-dashboard-border: #e4eaf3;
+    --my-dashboard-surface: #ffffff;
+
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 22px;
+    width: 100%;
+    min-width: 0;
+    margin: 0 auto;
+    padding: 4px 0 32px;
+    color: var(--my-dashboard-ink);
 }
 
-.dashboard-header {
-    margin-bottom: 5px;
+.my-dashboard-page .dashboard-welcome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    min-width: 0;
 }
 
-.dashboard-header h1 {
-    font-size: 36px;
+.my-dashboard-page .dashboard-welcome-copy {
+    min-width: 0;
+}
+
+.my-dashboard-page .dashboard-eyebrow {
+    margin: 0 0 3px;
+    color: var(--my-dashboard-primary);
+    font-size: 12px;
     font-weight: 700;
-    color: #1f2937;
-    margin: 0;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-transform: uppercase;
 }
 
-.dashboard-header p {
-    margin-top: 8px;
-    color: #6b7280;
-    font-size: 16px;
+.my-dashboard-page .dashboard-welcome h1 {
+    margin: 0;
+    color: var(--my-dashboard-ink);
+    font-size: clamp(25px, 2.2vw, 32px);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.2;
+}
+
+.my-dashboard-page .dashboard-welcome h1 span {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 0.82em;
+    vertical-align: 2px;
+}
+
+.my-dashboard-page .dashboard-welcome-description {
+    margin: 7px 0 0;
+    color: var(--my-dashboard-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.my-dashboard-page .dashboard-date {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 0 0 auto;
+    min-height: 64px;
+    padding: 10px 15px;
+    background: var(--my-dashboard-surface);
+    border: 1px solid var(--my-dashboard-border);
+    border-radius: 15px;
+    box-shadow: 0 4px 14px rgba(25, 46, 83, 0.04);
+}
+
+.my-dashboard-page .dashboard-date-icon {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    place-items: center;
+    color: var(--my-dashboard-primary);
+    background: #edf3ff;
+    border-radius: 12px;
+}
+
+.my-dashboard-page .dashboard-date-icon svg {
+    font-size: 21px;
+}
+
+.my-dashboard-page .dashboard-date > div:last-child {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.my-dashboard-page .dashboard-date span {
+    color: var(--my-dashboard-muted);
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+.my-dashboard-page .dashboard-date strong {
+    color: var(--my-dashboard-ink);
+    font-size: 13px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.my-dashboard-page .attendance-card {
+    width: 100%;
+    min-width: 0;
+    margin-top: 0;
+    padding: 24px;
+    background: var(--my-dashboard-surface);
+    border: 1px solid var(--my-dashboard-border);
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(25, 46, 83, 0.055);
+}
+
+.my-dashboard-page .attendance-header {
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.my-dashboard-page .attendance-header h2 {
+    color: var(--my-dashboard-ink);
+    font-size: 22px;
+    letter-spacing: -0.025em;
+}
+
+.my-dashboard-page .attendance-header p {
+    margin-top: 5px;
+    color: var(--my-dashboard-muted);
+    font-size: 13px;
+}
+
+.my-dashboard-page .attendance-month-select .MuiOutlinedInput-root {
+    min-width: 128px;
+    min-height: 42px;
+    color: var(--my-dashboard-ink);
+    background: #fff;
+    border-radius: 11px;
+}
+
+.my-dashboard-page .attendance-month-select .MuiOutlinedInput-notchedOutline {
+    border-color: var(--my-dashboard-border);
+}
+
+.my-dashboard-page .attendance-month-select .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #b9c8df;
+}
+
+.my-dashboard-page .attendance-month-select .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--my-dashboard-primary);
+    border-width: 1px;
+}
+
+.my-dashboard-page .attendance-legend {
+    gap: 18px;
+    margin: 8px 0 4px;
+}
+
+.my-dashboard-page .attendance-legend > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #596981;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.my-dashboard-page .attendance-legend .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.my-dashboard-page .attendance-chart-container {
+    width: 100%;
+    min-width: 0;
+    padding-top: 4px;
+}
+
+.my-dashboard-page .attendance-summary {
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.my-dashboard-page .attendance-summary > div {
+    min-height: 82px;
+    padding: 14px 16px;
+    border-color: #e8edf5;
+    border-radius: 14px;
+    box-shadow: none;
+}
+
+.my-dashboard-page .attendance-summary > div:hover {
+    box-shadow: 0 6px 16px rgba(25, 46, 83, 0.06);
+}
+
+.my-dashboard-page .attendance-summary .summary-icon {
+    width: 38px;
+    height: 38px;
+    margin-right: 11px;
+    border-radius: 11px;
+    font-size: 15px;
+}
+
+.my-dashboard-page .attendance-summary h3 {
+    font-size: 21px;
+}
+
+.my-dashboard-page .attendance-summary span {
+    color: var(--my-dashboard-muted);
+    font-size: 10px;
+}
+
+.my-dashboard-page .holidays-card {
+    padding: 22px 24px;
+    background: var(--my-dashboard-surface);
+    border: 1px solid var(--my-dashboard-border);
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(25, 46, 83, 0.045);
+}
+
+.my-dashboard-page .bottom-card-header {
+    margin-bottom: 14px;
+}
+
+.my-dashboard-page .bottom-card-header h3 {
+    color: var(--my-dashboard-ink);
+    font-size: 18px;
+    letter-spacing: -0.02em;
+}
+
+.my-dashboard-page .bottom-card-header p,
+.my-dashboard-page .holiday-details p {
+    color: var(--my-dashboard-muted);
+}
+
+.my-dashboard-page .holiday-row {
+    padding: 12px 0;
+    border-bottom-color: #edf1f7;
+}
+
+.my-dashboard-page .holiday-date-box {
+    background: #edf3ff;
+    border-color: #e0e9ff;
+    border-radius: 12px;
+}
+
+.my-dashboard-page .no-holidays {
+    min-height: 112px;
+    color: var(--my-dashboard-muted);
+}
+
+@media (max-width: 1200px) {
+    .my-dashboard-page {
+        gap: 18px;
+    }
+
+    .my-dashboard-page .attendance-card {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 800px) {
+    .my-dashboard-page .dashboard-welcome {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .my-dashboard-page .dashboard-date {
+        min-height: 54px;
+        padding: 7px 11px;
+    }
+
+    .my-dashboard-page .dashboard-date-icon {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+    }
+
+    .my-dashboard-page .attendance-card {
+        padding: 20px;
+    }
+
+    .my-dashboard-page .attendance-header {
+        align-items: flex-start;
+    }
+
+    .my-dashboard-page .holidays-card {
+        padding: 20px;
+    }
+
+    .my-dashboard-page .attendance-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .my-dashboard-page {
+        gap: 16px;
+        padding-bottom: 20px;
+    }
+
+    .my-dashboard-page .dashboard-welcome h1 {
+        font-size: 25px;
+    }
+
+    .my-dashboard-page .dashboard-welcome-description {
+        font-size: 13px;
+    }
+
+    .my-dashboard-page .dashboard-date strong {
+        white-space: normal;
+    }
+
+    .my-dashboard-page .attendance-card {
+        padding: 18px 14px;
+        border-radius: 17px;
+    }
+
+    .my-dashboard-page .holidays-card {
+        padding: 17px 14px;
+        border-radius: 17px;
+    }
+
+    .my-dashboard-page .attendance-header {
+        align-items: flex-start;
+    }
+
+    .my-dashboard-page .attendance-header h2 {
+        font-size: 20px;
+    }
+
+    .my-dashboard-page .attendance-legend {
+        gap: 10px 14px;
+    }
+
+    .my-dashboard-page .attendance-summary {
+        grid-template-columns: 1fr;
+    }
 }
