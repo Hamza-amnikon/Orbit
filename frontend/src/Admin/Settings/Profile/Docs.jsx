@@ -1331,7 +1331,7 @@ const payload = {
 
                             </MuiActionButton>
 
-                            <MuiInputMigration
+                            <input
                                 id="aadhaarFile"
                                 type="file"
                                 accept=".docs,.docx,.pdf"
@@ -1419,7 +1419,7 @@ const payload = {
 
                             </MuiActionButton>
 
-                            <MuiInputMigration
+                            <input
                                 id="panFile"
                                 type="file"
                                 accept=".docs,.docx,.pdf"
@@ -1661,7 +1661,7 @@ const payload = {
 
                             </MuiActionButton>
 
-                            <MuiInputMigration
+                            <input
                                 id="bankFile"
                                 type="file"
                                 accept=".docx,.docs,.pdf"
@@ -1719,7 +1719,7 @@ const payload = {
 
                             <MuiLayoutBox className="upload-button"  component="label">
                                 ☁ Upload
-                                <MuiInputMigration
+                                <input
                                     type="file"
                                     accept=".docs,.docx,.pdf"
                                     onChange={(e) =>
@@ -1755,7 +1755,7 @@ const payload = {
 
                             <MuiLayoutBox className="upload-button"  component="label">
                                 ☁ Upload
-                                <MuiInputMigration
+                                <input
                                     type="file"
                                     accept=".docs,.docx,.pdf"
                                     onChange={(e) =>
@@ -1793,7 +1793,7 @@ const payload = {
 
                             <MuiLayoutBox className="upload-button"  component="label">
                                 ☁ Upload
-                                <MuiInputMigration
+                                <input
                                     type="file"
                                     accept=".docs,.docx,.pdf"
                                     onChange={(e) =>
@@ -1829,7 +1829,7 @@ const payload = {
 
                             <MuiLayoutBox className="upload-button"  component="label">
                                 ☁ Upload
-                                <MuiInputMigration
+                                <input
                                     type="file"
                                     accept=".docs,.docx,.pdf"
                                     onChange={(e) =>
@@ -1865,7 +1865,7 @@ const payload = {
 
                             <MuiLayoutBox className="upload-button"  component="label">
                                 ☁ Upload
-                                <MuiInputMigration
+                                <input
                                     type="file"
                                     accept=".docs,.docx,.pdf"
                                     onChange={(e) =>

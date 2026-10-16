@@ -407,6 +407,10 @@
   content: "";
 }
 
+.settings-dashboard > .settings-header {
+  padding-left: 20px;
+}
+
 .settings-dashboard .profile-header {
   box-shadow: 0 12px 30px rgba(33, 67, 112, .085);
 }

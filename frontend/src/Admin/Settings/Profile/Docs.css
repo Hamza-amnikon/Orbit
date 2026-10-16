@@ -159,6 +159,9 @@
 ====================================================== */
 
 .upload-box {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     min-height: 48px;
     border: 1px solid #dbe2ea;
     border-radius: 6px;
@@ -201,7 +204,7 @@
 /* Hide actual file input */
 
 .file-input {
-    display: none;
+    display: none !important;
 }
 
 
