@@ -1,0 +1,2438 @@
+html[data-color-mode="dark"] {
+  color-scheme: dark;
+  --spark-page: #0d1422;
+  --spark-surface: #121d2e;
+  --spark-surface-raised: #19263a;
+  --spark-border: #2a3a50;
+  --spark-text: #f2f5fb;
+  --spark-muted: #a8b6cb;
+  --spark-table-head: #18263a;
+  --spark-hover: #1d2c43;
+  --spark-primary-soft: rgba(75, 125, 255, .14);
+}
+
+html[data-color-mode="dark"] body,
+html[data-color-mode="dark"] .dashboard-layout,
+html[data-color-mode="dark"] .dashboard-main,
+html[data-color-mode="dark"] .dashboard-content {
+  background: var(--spark-page);
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui {
+  --workspace-heading: var(--spark-text);
+  --workspace-muted: var(--spark-muted);
+  --workspace-border: var(--spark-border);
+  --workspace-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+  background: radial-gradient(ellipse at 50% -25%, #18263b 0%, var(--spark-page) 62%);
+}
+
+/* Holiday & Events: keep the page controls, summary cards, and grid in dark mode. */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-summary-card {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .18) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-summary-card span {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-summary-card strong {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-summary-card:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-summary-card.selected {
+  border-color: #4b7dff !important;
+  box-shadow: 0 0 0 2px rgba(75, 125, 255, .18) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-filter-card {
+  color: var(--spark-text);
+  background: var(--spark-surface-raised);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-filter-card .MuiOutlinedInput-root,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-filter-card .MuiSelect-select {
+  color: var(--spark-text);
+  background: var(--spark-surface);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-filter-card .MuiOutlinedInput-notchedOutline {
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-filter-card .MuiSvgIcon-root {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-filter-card input::placeholder {
+  color: #899ab2;
+  opacity: 1;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-events-card {
+  color: var(--spark-text);
+  background: var(--spark-surface);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-events-table-header {
+  color: #d8e3f3;
+  background: var(--spark-table-head);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-events-table-row,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-events-table-row:nth-child(odd) {
+  color: #e1e9f5;
+  background: var(--spark-surface);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .holiday-events-table-row:hover {
+  background: var(--spark-hover);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .event-name,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .event-table-message {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .event-status.active {
+  color: #7ee0aa;
+  background: rgba(34, 197, 94, .16);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .event-status.inactive {
+  color: #ff9b9b;
+  background: rgba(239, 68, 68, .16);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .event-edit-btn {
+  color: #ffd166;
+  background: rgba(245, 158, 11, .14);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .event-edit-btn:hover {
+  background: rgba(245, 158, 11, .24);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .event-delete-btn {
+  color: #ff9b9b;
+  background: rgba(239, 68, 68, .14);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .event-delete-btn:hover {
+  background: rgba(239, 68, 68, .24);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .holiday-events-page .attendance-back-button {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+/* My Attendance */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page :is(
+  .attendance-title,
+  .section-title-left .MuiTypography-root,
+  .calendar-header strong,
+  .attendance-summary-card strong,
+  .timeline-content strong,
+  .today-empty strong,
+  .attendance-empty strong,
+  .attendance-table td strong,
+  .attendance-table td strong.recent-date-value,
+  .hours-value
+) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page :is(
+  .attendance-eyebrow,
+  .attendance-subtitle,
+  .attendance-summary-card span,
+  .attendance-summary-card small,
+  .calendar-weekdays > div,
+  .calendar-legend span,
+  .today-card-header span,
+  .timeline-content span,
+  .today-empty span,
+  .recent-header span,
+  .attendance-empty span
+) {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page :is(
+  .attendance-summary-card,
+  .attendance-calendar-card,
+  .today-attendance-card,
+  .recent-attendance-card,
+  .attendance-loading
+) {
+  color: var(--spark-text);
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .16) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .attendance-summary-card:hover {
+  background: #1d2d45 !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .24) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page :is(
+  .attendance-back-button,
+  .attendance-refresh-button,
+  .attendance-download-button,
+  .calendar-arrow,
+  .table-action-button
+) {
+  color: #c8d8ef !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page :is(
+  .attendance-back-button,
+  .attendance-refresh-button,
+  .attendance-download-button,
+  .calendar-arrow,
+  .table-action-button
+):hover {
+  color: #fff !important;
+  background: var(--spark-hover) !important;
+  border-color: #49658a !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .attendance-alert {
+  color: #dce8fb;
+  background: var(--spark-surface-raised);
+  border: 1px solid var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day {
+  color: #dce6f4;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day.weekend:hover {
+  background: var(--spark-hover);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day.muted {
+  color: #718198;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day.weekend {
+  color: #a9bad2;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day.selected:not(.today) {
+  color: #cfe0ff;
+  background: rgba(75, 125, 255, .18);
+  box-shadow: inset 0 0 0 1px rgba(117, 157, 255, .45);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .today-card-header,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .recent-header {
+  background: linear-gradient(110deg, var(--spark-surface-raised), var(--spark-surface));
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .record-count-chip {
+  color: #c8d8ef !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .attendance-table th {
+  color: #d8e3f3;
+  background: var(--spark-table-head);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .attendance-table td,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .attendance-table tbody tr:nth-child(even) td {
+  color: #dce6f4;
+  background: var(--spark-surface-raised);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .attendance-table tbody tr:hover td {
+  background: var(--spark-hover);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page :is(
+  .today-empty-icon,
+  .attendance-empty-icon,
+  .recent-heading-icon
+) {
+  color: #a9c5ff;
+  background: rgba(75, 125, 255, .14);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page :is(
+  .status-default,
+  .table-status.status-default
+) {
+  color: #c3d0e3 !important;
+  background: #26364d !important;
+}
+
+/* Attendance Reports */
+html[data-color-mode="dark"] .attendance-reports-page {
+  color: var(--spark-text) !important;
+  background: transparent !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-title :is(h4, p) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-title p,
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-heading .MuiTypography-body2 {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-back-button {
+  color: #c8d8ef !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-back-button:hover {
+  background: var(--spark-hover) !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-actions .MuiButton-outlined {
+  color: #c8d8ef !important;
+  border-color: var(--spark-border) !important;
+  background: var(--spark-surface-raised);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-actions .MuiButton-outlined:hover {
+  background: var(--spark-hover);
+  border-color: #49658a !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-summary .MuiCard-root {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-summary .MuiCard-root:hover,
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-summary .MuiCard-root.selected {
+  border-color: #4b7dff !important;
+  box-shadow: 0 0 0 2px rgba(75, 125, 255, .18) !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-summary .MuiTypography-body2 {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-summary .MuiTypography-h5 {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-filters {
+  color: var(--spark-text);
+  background: var(--spark-surface-raised);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-filters .MuiOutlinedInput-root {
+  color: var(--spark-text);
+  background: var(--spark-surface);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-filters .MuiOutlinedInput-notchedOutline {
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-filters :is(.MuiInputLabel-root, .MuiSvgIcon-root) {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-filters input {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-filters input::placeholder {
+  color: #899ab2;
+  opacity: 1;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-filters .MuiButton-text {
+  color: #9dbaff;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-card {
+  color: var(--spark-text);
+  background: var(--spark-surface);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-heading {
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-heading .MuiTypography-h6 {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-card thead {
+  background: var(--spark-table-head);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-card thead th {
+  color: #d8e3f3;
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-card tbody tr,
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-card tbody tr:nth-child(even) {
+  background: var(--spark-surface-raised);
+}
+
+html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-card tbody td {
+  color: #dce6f4;
+  border-color: var(--spark-border);
+}
+
+/* Leave module pages: shared dark surfaces and readable type. */
+html[data-color-mode="dark"] :is(
+  .leave-overview,
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-policy-page,
+  .leave-reports-page,
+  .leave-dashboard
+) {
+  color: var(--spark-text) !important;
+  background: transparent !important;
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-overview,
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-policy-page,
+  .leave-reports-page,
+  .leave-dashboard
+) :is(h1, h2, h3, h4, h5, .MuiTypography-root) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-overview,
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-policy-page,
+  .leave-reports-page,
+  .leave-dashboard
+) :is(p, small, label, .MuiFormLabel-root, .MuiFormHelperText-root, .MuiTypography-body2) {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-overview,
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-policy-page,
+  .leave-reports-page,
+  .leave-dashboard
+) :is(
+  .leave-summary-card,
+  .leave-trend-panel,
+  .upcoming-leaves-panel,
+  .upcoming-events-panel,
+  .leave-requests-table-card,
+  .leave-history-header,
+  .leave-history-toolbar,
+  .leave-history-table-card,
+  .leave-types-outer-card,
+  .leave-types-main-card,
+  .leave-types-header-card,
+  .leave-types-toolbar,
+  .leave-type-table-card,
+  .leave-balance-filter-card,
+  .leave-balance-card,
+  .leave-policy-header-card,
+  .leave-policy-table-container,
+  .leave-reports-header-card,
+  .leave-reports-filter-card,
+  .leave-report-summary-card,
+  .leave-report-table-card,
+  .leave-panel,
+  .leave-info-card,
+  .leave-error,
+  .leave-loading
+) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .16) !important;
+}
+
+/* Keep leave status colors legible without bright white or saturated red panels. */
+html[data-color-mode="dark"] .leave-overview .rejected-leave {
+  color: var(--spark-text) !important;
+  background: #382536 !important;
+  border-color: #664052 !important;
+}
+
+html[data-color-mode="dark"] .leave-overview .rejected-leave :is(strong, span, small, .MuiTypography-root) {
+  color: #ffd9df !important;
+}
+
+html[data-color-mode="dark"] .leave-overview :is(.dashboard-panel-header, .leave-panel-header, .leave-history-table-heading, .leave-policy-table-heading, .table-header, .leave-report-table-header) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .leave-overview .upcoming-table-header,
+html[data-color-mode="dark"] .leave-overview .upcoming-leaves-table .upcoming-table-header {
+  color: #d8e3f3 !important;
+  background: var(--spark-table-head) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-reports-page
+) :is(.leave-filter-toolbar, .leave-history-toolbar, .leave-types-toolbar, .leave-balance-filter-card, .leave-reports-filter-card, .leave-report-filter-grid) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-reports-page
+) :is(.MuiOutlinedInput-root, .MuiSelect-select, input, textarea) {
+  color: var(--spark-text) !important;
+  background-color: var(--spark-surface) !important;
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-reports-page
+) :is(.MuiOutlinedInput-notchedOutline, fieldset) {
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-reports-page
+) :is(.MuiSvgIcon-root, .MuiInputAdornment-root) {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-reports-page
+) input::placeholder {
+  color: #899ab2 !important;
+  opacity: 1;
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-policy-page,
+  .leave-reports-page
+) :is(
+  .leave-requests-table,
+  .leave-history-table,
+  .leave-type-table,
+  .leave-balance-table,
+  .leave-policy-table,
+  .leave-report-table,
+  .MuiTable-root
+) {
+  color: var(--spark-text);
+  background: var(--spark-surface);
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-policy-page,
+  .leave-reports-page
+) :is(thead, .MuiTableHead-root, .MuiTableCell-head) {
+  color: #d8e3f3 !important;
+  background: var(--spark-table-head) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-policy-page,
+  .leave-reports-page
+) :is(tbody td, .MuiTableCell-body, .no-leave-requests, .no-leave-history, .no-policy-data) {
+  color: #dce6f4 !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-policy-page,
+  .leave-reports-page
+) :is(tbody tr:hover td, .MuiTableRow-root:hover .MuiTableCell-body) {
+  background: var(--spark-hover) !important;
+}
+
+/* My Leave: error, summary, calendar, chart, and table states. */
+html[data-color-mode="dark"] .leave-dashboard :is(.leave-stat-card, .leave-info-card, .leave-panel, .leave-calendar-panel, .leave-error, .leave-loading) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .leave-dashboard :is(.leave-error, .leave-loading) :is(h1, h2, h3, p, span, .MuiTypography-root) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .leave-dashboard :is(.leave-panel-header, .leave-calendar-header, .leave-table-header) {
+  color: var(--spark-text) !important;
+  background: transparent !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .leave-dashboard :is(.leave-balance-table, .leave-table) :is(.MuiTableCell-head, thead th) {
+  color: #d8e3f3 !important;
+  background: var(--spark-table-head) !important;
+}
+
+html[data-color-mode="dark"] .leave-dashboard :is(.leave-balance-table, .leave-table) :is(.MuiTableCell-body, tbody td) {
+  color: #dce6f4 !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .leave-dashboard .empty-table,
+html[data-color-mode="dark"] .leave-dashboard .chart-empty {
+  color: var(--spark-muted) !important;
+}
+
+/* Return/back and neutral action buttons on all Leave screens. */
+html[data-color-mode="dark"] :is(
+  .leave-overview,
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-policy-page,
+  .leave-reports-page,
+  .leave-dashboard
+) :is(.leave-back-button, .leave-back, .leave-history-back, .leave-reports-back-button, .policy-back-btn, .leave-balance-back, .leave-request-refresh-btn, .leave-history-actions .MuiButton-outlined, .leave-types-header-card .MuiButton-outlined, .leave-policy-header .MuiButton-outlined, .leave-balance-actions .MuiButton-outlined, .leave-reports-header-actions .MuiButton-outlined) {
+  color: #c8d8ef !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] :is(
+  .leave-overview,
+  .leave-requests-page,
+  .leave-history-page,
+  .leave-types-page,
+  .leave-balance-page,
+  .leave-policy-page,
+  .leave-reports-page,
+  .leave-dashboard
+) :is(.leave-back-button, .leave-back, .leave-history-back, .leave-reports-back-button, .policy-back-btn, .leave-balance-back, .leave-request-refresh-btn, .leave-history-actions .MuiButton-outlined, .leave-types-header-card .MuiButton-outlined, .leave-policy-header .MuiButton-outlined, .leave-balance-actions .MuiButton-outlined, .leave-reports-header-actions .MuiButton-outlined):hover {
+  color: #fff !important;
+  background: var(--spark-hover) !important;
+  border-color: #49658a !important;
+}
+
+/* Leave page titles sit directly on the page canvas, not inside a card. */
+html[data-color-mode="dark"] .leave-history-page .leave-history-header,
+html[data-color-mode="dark"] .leave-types-page .leave-types-header-card {
+  color: var(--spark-text) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Approvals: override the older page stylesheet with the shared dark surfaces. */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-header h1,
+  .approval-card h2,
+  .approval-employee strong,
+  .approval-details-header h2,
+  .approval-action-dialog-heading,
+  .approval-action-detail-value
+) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-header p,
+  .approval-card > div:last-child > span,
+  .approval-card small,
+  .approval-filter-label,
+  .approval-select .MuiInputLabel-root,
+  .approval-date .MuiInputLabel-root,
+  .approval-employee > div:last-child > div
+) {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-card,
+  .approval-panel,
+  .approval-filter-bar,
+  .approval-footer
+) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .16) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-card-icon.pending {
+  color: #ffd166;
+  background: rgba(245, 158, 11, .16);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-card-icon.approved {
+  color: #70dfa0;
+  background: rgba(34, 197, 94, .16);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-card-icon.rejected {
+  color: #ff9292;
+  background: rgba(239, 68, 68, .16);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-card-icon.total {
+  color: #a9c5ff;
+  background: rgba(75, 125, 255, .16);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-search .MuiOutlinedInput-root,
+  .approval-select .MuiOutlinedInput-root,
+  .approval-date .MuiOutlinedInput-root
+) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-search .MuiOutlinedInput-notchedOutline,
+  .approval-select .MuiOutlinedInput-notchedOutline,
+  .approval-date .MuiOutlinedInput-notchedOutline
+) {
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-search .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+  .approval-select .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+  .approval-date .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline
+) {
+  border-color: #49658a !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-search input,
+  .approval-date input
+) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-search .MuiInputAdornment-root,
+  .approval-search .MuiInputAdornment-root svg,
+  .approval-select .MuiSelect-icon,
+  .approval-date svg
+) {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-export-btn {
+  color: #c8d8ef !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-export-btn:hover {
+  color: #fff !important;
+  background: var(--spark-hover) !important;
+  border-color: #49658a !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-back-button {
+  color: #c8d8ef !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-back-button:hover {
+  background: var(--spark-hover) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-table thead th {
+  color: #d8e3f3 !important;
+  background: var(--spark-table-head) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-table tbody :is(td, tr) {
+  color: #dce6f4 !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-table tbody tr:hover td {
+  background: var(--spark-hover) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-view-btn {
+  color: #b6ceff !important;
+  background: rgba(75, 125, 255, .12) !important;
+  border-color: #354c6c !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-view-btn:hover {
+  background: rgba(75, 125, 255, .22) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-message {
+  color: var(--spark-muted) !important;
+  background: var(--spark-surface-raised) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-message.error {
+  color: #ff9b9b !important;
+}
+
+/* Approval dialogs render in a portal outside the page element. */
+html[data-color-mode="dark"] :is(.approval-details-modal, .approval-action-dialog-paper, .approval-feedback-dialog-paper) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] :is(.approval-details-header, .approval-action-dialog-title, .approval-action-dialog-actions) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] :is(.approval-details-header h2, .approval-action-dialog-heading, .approval-action-detail-value, .approval-detail-item strong) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] :is(.approval-details-header p, .approval-action-dialog-subtitle, .approval-action-detail-label, .approval-detail-item > span:first-child) {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] :is(.approval-detail-item, .approval-action-detail) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] :is(.approval-details-close, .approval-action-dialog-close, .approval-action-cancel-btn) {
+  color: #c8d8ef !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+/* Employees Payroll */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page {
+  color: var(--spark-text) !important;
+  background: transparent !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page :is(
+  .epr-employees-payroll-title,
+  .epr-section-title,
+  .epr-table-employee-name,
+  .epr-table-ctc
+) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page :is(
+  .epr-employees-payroll-subtitle,
+  .epr-section-description,
+  .epr-table-employee-meta,
+  .epr-table-id,
+  .epr-empty-table-helper
+) {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page :is(
+  .epr-employees-payroll-card,
+  .epr-template-info-bar
+) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .16) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employees-payroll-back {
+  color: #c8d8ef !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employees-payroll-back:hover {
+  color: #fff !important;
+  background: var(--spark-hover) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employees-payroll-export-button {
+  color: #c8d8ef !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employees-payroll-export-button:hover:not(.Mui-disabled) {
+  color: #fff !important;
+  background: var(--spark-hover) !important;
+  border-color: #49658a !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employees-payroll-export-button.Mui-disabled {
+  color: #8494aa !important;
+  background: #182438 !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employees-payroll-list-toolbar .MuiOutlinedInput-root {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employees-payroll-list-toolbar .MuiOutlinedInput-notchedOutline {
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-table-search-icon {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-assigned-payroll-table {
+  color: var(--spark-text);
+  background: var(--spark-surface);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-assigned-payroll-table thead {
+  background: var(--spark-table-head) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-assigned-payroll-table th {
+  color: #d8e3f3 !important;
+  background: var(--spark-table-head) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-assigned-payroll-table td {
+  color: #dce6f4 !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-assigned-payroll-table tbody tr:hover td {
+  background: var(--spark-hover) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-empty-table-state {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+}
+
+html[data-color-mode="dark"] .sidebar,
+html[data-color-mode="dark"] .navbar,
+html[data-color-mode="dark"] .notifications-menu,
+html[data-color-mode="dark"] .profile-menu,
+html[data-color-mode="dark"] .user-menu {
+  background: var(--spark-surface);
+  color: var(--spark-text);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .navbar-page-title h2,
+html[data-color-mode="dark"] .sidebar .menu-item,
+html[data-color-mode="dark"] .sidebar .logo-text h2 {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .sidebar .menu-item,
+html[data-color-mode="dark"] .navbar-page-title,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(p, small, label, .MuiFormLabel-root, .MuiFormHelperText-root) {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .menu-btn,
+html[data-color-mode="dark"] .icon-btn {
+  background: var(--spark-surface-raised);
+  color: #93b7ff;
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .menu-btn:hover,
+html[data-color-mode="dark"] .icon-btn:hover,
+html[data-color-mode="dark"] .user-profile:hover,
+html[data-color-mode="dark"] .user-profile.profile-active {
+  background: var(--spark-hover);
+  border-color: #536780;
+}
+
+html[data-color-mode="dark"] .sidebar .menu-item:hover,
+html[data-color-mode="dark"] .sidebar .menu-item.active {
+  color: #dce8ff;
+  background: var(--spark-primary-soft);
+}
+
+html[data-color-mode="dark"] .navbar-separator,
+html[data-color-mode="dark"] .navbar-right-separator {
+  background: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiCard-root,
+  .MuiPaper-root,
+  .MuiTableContainer-root,
+  .document-stat-card,
+  .document-filter,
+  .document-table-container,
+  .permission-stat-card,
+  .permission-table-container,
+  .approval-stat-card,
+  .approval-table-card,
+  .leave-summary-card,
+  .leave-trend-panel,
+  .upcoming-leaves-panel,
+  .leave-balance-card,
+  .form-card,
+  .employee-form-card,
+  .vendor-table-card,
+  .coming-soon-card
+) {
+  background-color: var(--spark-surface);
+  color: var(--spark-text);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiOutlinedInput-root,
+  .MuiInputBase-root,
+  .MuiSelect-select,
+  .MuiAutocomplete-paper,
+  .MuiMenu-paper,
+  .MuiPopover-paper,
+  .MuiPickersPopper-paper,
+  .MuiDateCalendar-root,
+  .MuiPickersCalendarHeader-root,
+  .MuiPickersDay-root,
+  .MuiDialog-paper,
+  .MuiAccordion-root
+) {
+  background-color: var(--spark-surface);
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  input,
+  textarea,
+  select,
+  .MuiInputBase-input,
+  .MuiSelect-select,
+  .MuiAutocomplete-input
+) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  input::placeholder,
+  textarea::placeholder,
+  .MuiInputBase-input::placeholder
+) {
+  color: #8b9bb2;
+  opacity: 1;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiOutlinedInput-notchedOutline {
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+  .MuiPickersDay-root:hover,
+  .MuiMenuItem-root:hover
+) {
+  border-color: #506581;
+  background-color: var(--spark-hover);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #78a2ff;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(.MuiSvgIcon-root, .MuiInputAdornment-root) {
+  color: #a8bddc;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiTableCell-head,
+  thead th
+) {
+  background-color: var(--spark-table-head);
+  color: #c2d0e4;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiTableCell-root,
+  tbody td
+) {
+  color: var(--spark-text);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiTableRow-root:hover {
+  background-color: var(--spark-hover);
+}
+
+/* The dashboard uses custom cards rather than MUI cards, so give those
+   components the same layered surfaces and text contrast as the shared theme. */
+html[data-color-mode="dark"] .spark-dashboard-page {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .spark-dashboard-page .dashboard-stat-card,
+html[data-color-mode="dark"] .spark-dashboard-page .dashboard-module-card,
+html[data-color-mode="dark"] .spark-dashboard-page .dashboard-auth-card {
+  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  border-color: #2a3b53;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+
+html[data-color-mode="dark"] .spark-dashboard-page :is(.dashboard-stat-card, .dashboard-module-card):hover {
+  border-color: #466187;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .32), 0 0 0 1px rgba(96, 145, 255, .08);
+}
+
+html[data-color-mode="dark"] .spark-dashboard-page :is(
+  .welcome-main h1,
+  .welcome-date strong,
+  .dashboard-stat-content h2,
+  .dashboard-module-title h2,
+  .dashboard-module-content h3,
+  .dashboard-auth-card h2
+) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .spark-dashboard-page :is(
+  .welcome-main p,
+  .welcome-date span,
+  .dashboard-stat-content p,
+  .dashboard-module-heading > p,
+  .dashboard-module-content p,
+  .dashboard-auth-card p
+) {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .spark-dashboard-page .dashboard-module-arrow {
+  background: rgba(83, 132, 255, .16);
+  color: #9bb9ff;
+}
+
+html[data-color-mode="dark"] .spark-dashboard-page .dashboard-module-card:hover .dashboard-module-arrow {
+  background: #3978f6;
+  color: #fff;
+}
+
+html[data-color-mode="dark"] .spark-dashboard-page .module-decoration {
+  opacity: .18;
+  filter: saturate(.8);
+}
+
+/* Employee Management page and its custom employee table */
+html[data-color-mode="dark"] .employee-list-page {
+  --employee-page: #0d1422;
+  --employee-surface: #121d2e;
+  --employee-raised: #18263a;
+  --employee-border: #2a3a50;
+  --employee-text: #f2f5fb;
+  --employee-muted: #a8b6cb;
+  background: radial-gradient(ellipse at 48% -18%, #18263b 0%, var(--employee-page) 60%);
+  color: var(--employee-text);
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-page-header {
+  border-bottom-color: var(--employee-border);
+}
+
+html[data-color-mode="dark"] .employee-list-page :is(
+  .employee-page-header h1,
+  .stats-card h2,
+  .employee-table-title h2,
+  .admin-employee-name,
+  .empty-card h2,
+  .loading-card h3
+) {
+  color: var(--employee-text);
+}
+
+html[data-color-mode="dark"] .employee-list-page :is(
+  .employee-page-header p,
+  .stats-card > .MuiCardActionArea-root span,
+  .stats-card-hint,
+  .employee-table-title p,
+  .employee-email,
+  .empty-card p,
+  .loading-card p
+) {
+  color: var(--employee-muted);
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-back-button.MuiIconButton-root {
+  color: #a9c4ff;
+  background: var(--employee-raised);
+  border-color: var(--employee-border);
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-back-button.MuiIconButton-root:hover {
+  background: #22344e;
+  border-color: #526c90;
+}
+
+html[data-color-mode="dark"] .employee-list-page :is(
+  .stats-card,
+  .toolbar-card,
+  .table-card,
+  .empty-card,
+  .loading-card
+) {
+  color: var(--employee-text);
+  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  border-color: var(--employee-border);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+
+html[data-color-mode="dark"] .employee-list-page .stats-card:hover {
+  border-color: #466187;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .32), 0 0 0 1px rgba(96, 145, 255, .08);
+}
+
+html[data-color-mode="dark"] .employee-list-page .stats-card.is-selected {
+  background: linear-gradient(145deg, #1b2d49, #142238);
+  border-color: #5579b3;
+  box-shadow: 0 0 0 3px rgba(75, 125, 255, .12), 0 12px 30px rgba(0, 0, 0, .26);
+}
+
+html[data-color-mode="dark"] .employee-list-page .toolbar .MuiOutlinedInput-root {
+  background: #0f1929;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table-wrapper {
+  --navy-900: #17243a;
+  --navy-800: #1b2b43;
+  --navy-700: #20324d;
+  --accent-soft: rgba(91, 111, 238, .16);
+  --ink: #f2f5fb;
+  --ink-muted: #a8b6cb;
+  --ink-soft: #8495ad;
+  --border: #2a3a50;
+  --surface: #121d2e;
+  --surface-alt: #18263a;
+  color: var(--employee-text);
+  background: #121d2e;
+  border-color: var(--employee-border);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .25);
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table-header {
+  background: linear-gradient(180deg, #17243a, #141f31);
+  border-bottom-color: var(--employee-border);
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table-tag {
+  color: #a9c4ff;
+  background: rgba(75, 125, 255, .13);
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table-count {
+  background: #1b2c45;
+  border-color: #354a66;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table-count span {
+  color: var(--employee-text);
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table :is(th, td) {
+  border-bottom-color: var(--employee-border);
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table th {
+  background: #1a293e;
+  color: #b8c8df;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table tbody tr,
+html[data-color-mode="dark"] .employee-list-page .employee-table tbody tr:nth-child(even) {
+  background: #121d2e;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table tbody tr:hover {
+  background: #1b2a40;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table td,
+html[data-color-mode="dark"] .employee-list-page .employee-table td:nth-child(1) {
+  color: #d8e2f0;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table tbody tr:hover .admin-employee-name {
+  color: #fff;
+}
+
+html[data-color-mode="dark"] .employee-list-page .status-badge.active {
+  color: #8be0b0;
+  background: rgba(16, 185, 129, .14) !important;
+  border-color: rgba(52, 211, 153, .28);
+}
+
+html[data-color-mode="dark"] .employee-list-page .status-badge.inactive {
+  color: #ff9b9b;
+  background: rgba(239, 68, 68, .14) !important;
+  border-color: rgba(248, 113, 113, .28);
+}
+
+html[data-color-mode="dark"] .employee-list-page .action-buttons button {
+  color: #afbed3;
+}
+
+html[data-color-mode="dark"] .employee-list-page .action-buttons button:hover {
+  color: #f2f5fb;
+  background: #26374f;
+}
+
+html[data-color-mode="dark"] .employee-list-page .action-buttons .edit-btn {
+  color: #f4c477;
+  background: rgba(217, 119, 6, .16);
+}
+
+html[data-color-mode="dark"] .employee-list-page .action-buttons .edit-btn:hover {
+  color: #ffe0a6;
+  background: rgba(217, 119, 6, .28);
+}
+
+html[data-color-mode="dark"] .employee-list-page .action-buttons .delete-btn {
+  color: #ff9b9b;
+  background: rgba(239, 68, 68, .14);
+}
+
+html[data-color-mode="dark"] .employee-list-page .action-buttons .delete-btn:hover {
+  color: #ffc1c1;
+  background: rgba(239, 68, 68, .26);
+}
+
+html[data-color-mode="dark"] .employee-list-page .loader {
+  border-color: #273b59;
+  border-top-color: #6d98ff;
+}
+
+/* Employees landing page (/employees) */
+html[data-color-mode="dark"] .employee-dashboard {
+  color: var(--spark-text);
+  background: radial-gradient(ellipse at 52% -18%, #18263b 0%, #0d1422 64%);
+}
+
+html[data-color-mode="dark"] .employee-dashboard .employee-breadcrumb {
+  color: #a9c4ff;
+}
+
+html[data-color-mode="dark"] .employee-dashboard .employee-breadcrumb :is(svg, span:last-child) {
+  color: #a9c4ff;
+}
+
+html[data-color-mode="dark"] .employee-dashboard .employee-breadcrumb span:first-of-type {
+  color: #7386a2;
+}
+
+html[data-color-mode="dark"] .employee-dashboard .employee-header :is(h1, p) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .employee-dashboard .employee-header p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .employee-dashboard .employee-card {
+  color: var(--spark-text);
+  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  border-color: #2a3b53;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+
+html[data-color-mode="dark"] .employee-dashboard .employee-card:hover {
+  border-color: #466187;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .32), 0 0 0 1px rgba(96, 145, 255, .08);
+}
+
+html[data-color-mode="dark"] .employee-dashboard .employee-card h3 {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .employee-dashboard .employee-card p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .employee-dashboard .card-footer {
+  color: #91b2ff;
+}
+
+html[data-color-mode="dark"] .employee-dashboard .card-arrow {
+  color: #a9c4ff;
+  background: rgba(83, 132, 255, .16);
+}
+
+html[data-color-mode="dark"] .employee-dashboard .employee-card:hover .card-arrow {
+  color: #fff;
+  background: #3978f6;
+}
+
+/* The sidebar's legacy layout rules use !important, so these scoped overrides
+   also use it to let the shared mode toggle control the full app shell. */
+html[data-color-mode="dark"] .sidebar {
+  color: var(--spark-text) !important;
+  background: #101a2a !important;
+  border-right-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .sidebar .sidebar-footer {
+  background: #101a2a !important;
+  border-top-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .sidebar .menu-item:not(.active) {
+  color: #aab9ce !important;
+}
+
+html[data-color-mode="dark"] .sidebar .menu-item:not(.active):hover {
+  color: #e1eaff !important;
+  background: #1d2c43 !important;
+}
+
+html[data-color-mode="dark"] .sidebar .menu-item.active {
+  color: #fff !important;
+  background: linear-gradient(110deg, #326df0, #4057d6) !important;
+}
+
+html[data-color-mode="dark"] .sidebar .logout-btn {
+  color: #ffaaaa !important;
+  background: rgba(239, 68, 68, .14) !important;
+}
+
+html[data-color-mode="dark"] .sidebar .logout-btn:hover {
+  color: #ffd0d0 !important;
+  background: rgba(239, 68, 68, .22) !important;
+}
+
+/* Attendance Management landing page (/attendance) */
+html[data-color-mode="dark"] .attendance-home {
+  color: var(--spark-text);
+  background: radial-gradient(ellipse at 52% -18%, #18263b 0%, #0d1422 64%);
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-breadcrumb {
+  color: #a9c4ff;
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-breadcrumb :is(svg, span:last-child) {
+  color: #a9c4ff;
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-breadcrumb span:nth-child(2) {
+  color: #7386a2;
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-header-content :is(h1, p) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-header-content p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .attendance-home .circle-one,
+html[data-color-mode="dark"] .attendance-home .circle-two {
+  background: rgba(83, 132, 255, .16);
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-menu-card {
+  color: var(--spark-text);
+  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  border-color: #2a3b53;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-menu-card:hover {
+  border-color: #466187;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .32), 0 0 0 1px rgba(96, 145, 255, .08);
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-card-content h3 {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-card-content p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-open-module {
+  color: #91b2ff;
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-arrow {
+  color: #a9c4ff;
+  background: rgba(83, 132, 255, .16);
+}
+
+html[data-color-mode="dark"] .attendance-home .attendance-menu-card:hover .attendance-arrow {
+  color: #fff;
+  background: #3978f6;
+}
+
+/* Shared module landing pages, including Leave Management (/leave). */
+html[data-color-mode="dark"] .module-overview {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .module-overview-decoration {
+  opacity: .42;
+  filter: saturate(.65) brightness(.8);
+}
+
+html[data-color-mode="dark"] .module-overview-breadcrumb {
+  color: #a9c4ff;
+}
+
+html[data-color-mode="dark"] .module-overview-breadcrumb :is(a, svg, span:last-child) {
+  color: #a9c4ff;
+}
+
+html[data-color-mode="dark"] .module-overview-breadcrumb > span:first-of-type {
+  color: #7386a2;
+}
+
+html[data-color-mode="dark"] .module-overview-header h1 {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .module-overview-header p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .module-overview-card {
+  color: var(--spark-text);
+  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  border-color: #2a3b53;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+
+html[data-color-mode="dark"] .module-overview-card:hover {
+  color: var(--spark-text);
+  border-color: #466187;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .32), 0 0 0 1px rgba(96, 145, 255, .08);
+}
+
+html[data-color-mode="dark"] .module-overview-card h2 {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .module-overview-card p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .module-overview-footer {
+  color: #91b2ff;
+}
+
+html[data-color-mode="dark"] .module-overview-arrow {
+  color: #a9c4ff;
+  background: rgba(83, 132, 255, .16);
+}
+
+html[data-color-mode="dark"] .module-overview-card:hover .module-overview-arrow {
+  color: #fff;
+  background: #3978f6;
+}
+
+html[data-color-mode="dark"] .module-overview-empty {
+  color: var(--spark-muted);
+  background: var(--spark-surface);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .module-overview-empty h2 {
+  color: var(--spark-text);
+}
+
+/* Shared table styling for the app's 28 table-based screens. Cover both MUI
+   tables and older native-table wrappers while keeping status colors intact. */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiTableContainer-root,
+  [class*="table-wrapper"],
+  [class*="table-container"],
+  [class*="table-card"],
+  [class*="table-panel"]
+) {
+  color: var(--spark-text);
+  background-color: var(--spark-surface);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiTable-root,
+  table
+) {
+  color: var(--spark-text);
+  background-color: var(--spark-surface);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiTableHead-root,
+  thead
+) {
+  background-color: var(--spark-table-head);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiTableCell-head,
+  thead th
+) {
+  color: #c4d2e6;
+  background-color: var(--spark-table-head);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiTableCell-body,
+  tbody td
+) {
+  color: #e1e9f5;
+  background-color: var(--spark-surface);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui tbody tr:nth-of-type(even) {
+  background-color: #142135;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui tbody tr:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui tbody tr:hover td {
+  background-color: #1c2b41;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  [class*="filter-bar"],
+  [class*="filter-panel"],
+  [class*="list-toolbar"],
+  [class*="table-toolbar"],
+  [class*="table-footer"],
+  [class*="pagination"],
+  .MuiTablePagination-root
+) {
+  color: var(--spark-muted);
+  background-color: var(--spark-surface);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  [class*="filter-bar"],
+  [class*="filter-panel"],
+  [class*="list-toolbar"],
+  [class*="table-toolbar"]
+) :is(label, .MuiTypography-root) {
+  color: var(--spark-muted);
+}
+
+/* Approval is representative of older screens that split table, filters and
+   count footer into separate custom surfaces. */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page {
+  color: var(--spark-text);
+  background: transparent;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-header h1,
+  .approval-card h2
+) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-header p,
+  .approval-card > div:last-child > span,
+  .approval-card small
+) {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-card,
+  .approval-panel,
+  .approval-filter-bar,
+  .approval-search,
+  .approval-select .MuiOutlinedInput-root,
+  .approval-date .MuiOutlinedInput-root,
+  .approval-footer
+) {
+  color: var(--spark-text);
+  background: var(--spark-surface);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-search input,
+  .approval-date input
+) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
+  .approval-search input::placeholder,
+  .approval-date input::placeholder
+) {
+  color: #8b9bb2;
+  opacity: 1;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-table-wrapper {
+  background: #0f1929;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-message {
+  color: var(--spark-muted);
+  background: #142135;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-message.error {
+  color: #ff9b9b;
+}
+
+/* Attendance dashboard uses a separate set of legacy cards and action styles. */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-dashboard-header h2 {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-dashboard-header p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-card {
+  color: var(--spark-text);
+  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  border-color: #2a3b53;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-card:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-card-selected {
+  border-color: #5579b3;
+  box-shadow: 0 0 0 2px rgba(75, 125, 255, .12), 0 14px 32px rgba(0, 0, 0, .3);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard :is(
+  .attendance-summary-heading h4,
+  .attendance-summary-heading strong
+) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-summary-subtitle {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-card-icon svg {
+  color: #fff !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-panel {
+  color: var(--spark-text);
+  background: #121d2e;
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-panel > h3 {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-dashboard-actions .MuiButton-outlined {
+  color: #d5e2f4 !important;
+  background: #19263a !important;
+  border-color: #405672 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-dashboard-actions .MuiButton-outlined:hover {
+  color: #fff !important;
+  background: #243650 !important;
+  border-color: #6c8bb6 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-back-button {
+  color: #b8ceff !important;
+  background: #19263a !important;
+  border-color: #405672 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-back-button:hover {
+  color: #fff !important;
+  background: #243650 !important;
+  border-color: #6c8bb6 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-date-card {
+  color: #d9e5f7 !important;
+  background: linear-gradient(145deg, #1b2b43, #152236) !important;
+  border-color: #354a66 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-date-card :is(svg, span, strong) {
+  color: #c4d5ef !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard :is(.holiday-card, .quick-action-card) {
+  color: var(--spark-text);
+  background: #17243a;
+  border-color: #2a3b53;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .holiday-card:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .quick-action-card:hover {
+  background: #1e2e46;
+  border-color: #506c92;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard :is(
+  .holiday-details h4,
+  .quick-action-title.MuiTypography-root
+) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard :is(
+  .holiday-details p,
+  .quick-action-description.MuiTypography-root,
+  .holiday-widget-state
+) {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .holiday-date-badge {
+  color: #c6d5ea;
+  background: #1b2b43;
+  border-color: #354a66;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .holiday-date-badge strong {
+  color: #dce8ff;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .holiday-card .MuiChip-root {
+  color: #c6d5ea;
+  background: #263a56;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .quick-action-icon {
+  background: color-mix(in srgb, var(--quick-action-color) 18%, #17243a);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .holiday-widget-link.MuiButton-root {
+  color: #9dbaff;
+  background: transparent;
+}
+
+/* Attendance Logs page (/attendance/logs) */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs {
+  color: var(--spark-text);
+  background: transparent;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs :is(
+  .attendance-header-card,
+  .attendance-filter-card,
+  .attendance-table-card,
+  .table-header
+) {
+  color: var(--spark-text);
+  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  border-color: var(--spark-border);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-header-card :is(h2, p) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-header-card p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-back-button {
+  color: #b8ceff !important;
+  background: #19263a !important;
+  border-color: #405672 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-back-button:hover {
+  color: #fff !important;
+  background: #243650 !important;
+  border-color: #6c8bb6 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .outline-btn {
+  color: #d5e2f4 !important;
+  background: #19263a !important;
+  border-color: #405672 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .outline-btn:hover {
+  color: #fff !important;
+  background: #243650 !important;
+  border-color: #6c8bb6 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .dashboard-card {
+  color: var(--spark-text);
+  background: linear-gradient(145deg, #1a2940, #121d2e);
+  border-color: #2a3b53;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .dashboard-card:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .dashboard-card-selected {
+  border-color: #5579b3;
+  box-shadow: 0 0 0 2px rgba(75, 125, 255, .12), 0 14px 32px rgba(0, 0, 0, .3);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs :is(
+  .attendance-summary-heading h4,
+  .attendance-summary-heading strong
+) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-summary-subtitle {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .dashboard-card-icon svg {
+  color: #fff !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-filter-card {
+  background: #121d2e;
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-filter-card :is(
+  .MuiOutlinedInput-root,
+  .MuiPickersOutlinedInput-root
+) {
+  color: var(--spark-text);
+  background: #0f1929;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-filter-card :is(
+  .MuiInputBase-input,
+  .MuiSelect-select,
+  .MuiPickersInputBase-input,
+  input[type="date"]
+) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-filter-card :is(
+  .MuiInputLabel-root,
+  .MuiInputAdornment-root,
+  .MuiSvgIcon-root
+) {
+  color: #a8bddc;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-filter-card .MuiOutlinedInput-notchedOutline {
+  border-color: #354a66;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .table-header {
+  border-bottom-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .table-header-left :is(.table-tag, h3, p) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .table-header-left .table-tag {
+  color: #a9c4ff;
+  background: rgba(75, 125, 255, .14);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .table-header-left p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .record-count {
+  color: var(--spark-muted);
+  background: #1b2b43;
+  border-color: #354a66;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .record-count strong {
+  color: #a9c4ff;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .record-count span {
+  color: var(--spark-muted);
+}
+
+/* The employee identity in the global navbar also needs light text on its dark surface. */
+html[data-color-mode="dark"] .navbar .user-info :is(h4, p),
+html[data-color-mode="dark"] .navbar .profile-arrow {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .navbar .user-info p {
+  color: var(--spark-muted);
+}
+
+/* Shift Management page (/attendance/shifts) */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management {
+  color: var(--spark-text);
+  background: transparent;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-header-card {
+  color: var(--spark-text);
+  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  border-color: var(--spark-border);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-header-card :is(h2, p) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-header-card p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .attendance-back-button {
+  color: #b8ceff !important;
+  background: #19263a !important;
+  border-color: #405672 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .attendance-back-button:hover {
+  color: #fff !important;
+  background: #243650 !important;
+  border-color: #6c8bb6 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .outline-btn {
+  color: #d5e2f4 !important;
+  background: #19263a !important;
+  border-color: #405672 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .outline-btn:hover {
+  color: #fff !important;
+  background: #243650 !important;
+  border-color: #6c8bb6 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .dashboard-card {
+  color: var(--spark-text);
+  background: linear-gradient(145deg, #1a2940, #121d2e);
+  border-color: #2a3b53;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .dashboard-card:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .dashboard-card-selected {
+  border-color: #5579b3;
+  box-shadow: 0 0 0 2px rgba(75, 125, 255, .12), 0 14px 32px rgba(0, 0, 0, .3);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management :is(
+  .attendance-summary-heading h4,
+  .attendance-summary-heading strong
+) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .attendance-summary-subtitle {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .dashboard-card-icon svg {
+  color: #fff !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management :is(
+  .shift-filter-card,
+  .shift-table-card,
+  .table-header
+) {
+  color: var(--spark-text);
+  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  border-color: var(--spark-border);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-filter-card {
+  background: #121d2e;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-filter-card .MuiOutlinedInput-root {
+  color: var(--spark-text);
+  background: #0f1929;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-filter-card :is(
+  .MuiInputBase-input,
+  .MuiSelect-select
+) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-filter-card :is(
+  .MuiInputAdornment-root,
+  .MuiSvgIcon-root
+) {
+  color: #a8bddc;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-filter-card .MuiOutlinedInput-notchedOutline {
+  border-color: #354a66;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .table-header {
+  border-bottom-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .table-header-left :is(.table-tag, h3, p) {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .table-header-left .table-tag {
+  color: #a9c4ff;
+  background: rgba(75, 125, 255, .14);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .table-header-left p {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .record-count {
+  color: var(--spark-muted);
+  background: #1b2b43;
+  border-color: #354a66;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .record-count strong {
+  color: #a9c4ff;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .record-count span {
+  color: var(--spark-muted);
+}
+
+/* Shared button system: neutral controls, primary actions, semantic actions,
+   keyboard focus, and disabled states across MUI and legacy page buttons. */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiButton-outlined,
+  .MuiButton-text
+) {
+  color: #c6d5ea;
+  background-color: #19263a;
+  border-color: #354862;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiButton-outlined:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiButton-text:hover {
+  color: #edf3fc;
+  background-color: #243650;
+  border-color: #58749a;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiButton-containedPrimary,
+  .MuiButton-contained:not(.MuiButton-containedSuccess):not(.MuiButton-containedError):not(.MuiButton-containedWarning)
+) {
+  color: #fff;
+  background: linear-gradient(135deg, #3978f6, #5548dc);
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(48, 91, 220, .24);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiButton-containedPrimary,
+  .MuiButton-contained:not(.MuiButton-containedSuccess):not(.MuiButton-containedError):not(.MuiButton-containedWarning)
+):hover {
+  color: #fff;
+  background: linear-gradient(135deg, #4d88ff, #6759eb);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiButton-containedSuccess,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui button[class*="approve"],
+html[data-color-mode="dark"] .dashboard-content.workspace-ui button[class*="success"] {
+  color: #d6ffea;
+  background-color: #087a55;
+  border-color: #15966b;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiButton-containedSuccess,
+  button[class*="approve"],
+  button[class*="success"]
+):hover {
+  color: #fff;
+  background-color: #099466;
+  border-color: #2fc58f;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiButton-containedError,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui button[class*="reject"],
+html[data-color-mode="dark"] .dashboard-content.workspace-ui button[class*="delete"],
+html[data-color-mode="dark"] .dashboard-content.workspace-ui button[class*="remove"],
+html[data-color-mode="dark"] .dashboard-content.workspace-ui button[class*="danger"] {
+  color: #ffe0e0;
+  background-color: #922f3b;
+  border-color: #b34754;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiButton-containedError,
+  button[class*="reject"],
+  button[class*="delete"],
+  button[class*="remove"],
+  button[class*="danger"]
+):hover {
+  color: #fff;
+  background-color: #ad3948;
+  border-color: #dc6874;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiButton-containedWarning,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui button[class*="warning"] {
+  color: #fff0cc;
+  background-color: #805019;
+  border-color: #a7732b;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiIconButton-root:not(.MuiIconButton-colorError):not(.MuiIconButton-colorSuccess) {
+  color: #b9c9e1;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiIconButton-root:not(.MuiIconButton-colorError):not(.MuiIconButton-colorSuccess):hover {
+  color: #edf3fc;
+  background-color: #25364f;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui button:not(.MuiButtonBase-root):not([class*="approve"]):not([class*="success"]):not([class*="reject"]):not([class*="delete"]):not([class*="remove"]):not([class*="danger"]):not([class*="warning"]):not([class*="primary"]):not([class*="contained"]) {
+  color: #c6d5ea;
+  background-color: #19263a;
+  border-color: #354862;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui button:not(.MuiButtonBase-root):not([class*="approve"]):not([class*="success"]):not([class*="reject"]):not([class*="delete"]):not([class*="remove"]):not([class*="danger"]):not([class*="warning"]):not([class*="primary"]):not([class*="contained"]):hover {
+  color: #edf3fc;
+  background-color: #243650;
+  border-color: #58749a;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiButton-root:focus-visible,
+  .MuiIconButton-root:focus-visible,
+  button:focus-visible
+) {
+  outline: 3px solid rgba(126, 166, 255, .72);
+  outline-offset: 2px;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiButton-root:disabled,
+  .MuiIconButton-root:disabled,
+  button:disabled
+) {
+  color: #7889a2;
+  background-color: #1a2434;
+  border-color: #2c394b;
+  box-shadow: none;
+  opacity: .72;
+}
+
+/* MUI dialogs and popovers render in portals outside the workspace wrapper. */
+html[data-color-mode="dark"] .MuiButton-outlined,
+html[data-color-mode="dark"] .MuiButton-text {
+  color: #c6d5ea;
+  background-color: #19263a;
+  border-color: #354862;
+}
+
+html[data-color-mode="dark"] .MuiButton-outlined:hover,
+html[data-color-mode="dark"] .MuiButton-text:hover {
+  color: #edf3fc;
+  background-color: #243650;
+  border-color: #58749a;
+}
+
+html[data-color-mode="dark"] .MuiButton-containedPrimary {
+  color: #fff;
+  background: linear-gradient(135deg, #3978f6, #5548dc);
+}
+
+html[data-color-mode="dark"] .MuiButton-containedPrimary:hover {
+  color: #fff;
+  background: linear-gradient(135deg, #4d88ff, #6759eb);
+}
+
+html[data-color-mode="dark"] .MuiButton-containedSuccess {
+  color: #d6ffea;
+  background-color: #087a55;
+}
+
+html[data-color-mode="dark"] .MuiButton-containedSuccess:hover {
+  color: #fff;
+  background-color: #099466;
+}
+
+html[data-color-mode="dark"] .MuiButton-containedError {
+  color: #ffe0e0;
+  background-color: #922f3b;
+}
+
+html[data-color-mode="dark"] .MuiButton-containedError:hover {
+  color: #fff;
+  background-color: #ad3948;
+}
+
+html[data-color-mode="dark"] .MuiButton-containedWarning {
+  color: #fff0cc;
+  background-color: #805019;
+}
+
+html[data-color-mode="dark"] .MuiIconButton-root:not(.MuiIconButton-colorError):not(.MuiIconButton-colorSuccess) {
+  color: #b9c9e1;
+}
+
+html[data-color-mode="dark"] .MuiIconButton-root:not(.MuiIconButton-colorError):not(.MuiIconButton-colorSuccess):hover {
+  color: #edf3fc;
+  background-color: #25364f;
+}
+
+html[data-color-mode="dark"] :is(
+  .MuiButton-root:disabled,
+  .MuiIconButton-root:disabled
+) {
+  color: #7889a2;
+  background-color: #1a2434;
+  border-color: #2c394b;
+  box-shadow: none;
+  opacity: .72;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .MuiButton-outlined,
+  .MuiIconButton-root,
+  .MuiTab-root
+) {
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiButton-containedPrimary {
+  background: linear-gradient(135deg, #3978f6, #5548dc);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(48, 91, 220, .25);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiButton-containedPrimary:hover {
+  background: linear-gradient(135deg, #4d88ff, #6759eb);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
+  .notification-item,
+  .notification-item.MuiButton-root
+) {
+  background: var(--spark-surface);
+  color: var(--spark-text);
+  border-bottom-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .notification-item-title,
+html[data-color-mode="dark"] .notification-item-message,
+html[data-color-mode="dark"] .notification-item-date {
+  color: var(--spark-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-color-mode="dark"] *,
+  html[data-color-mode="dark"] *::before,
+  html[data-color-mode="dark"] *::after {
+    transition-duration: .01ms !important;
+  }
+}

@@ -2,9 +2,19 @@ import { createTheme } from "@mui/material/styles";
 import colors from "./colors";
 import typography from "./typography";
 
-const theme = createTheme({
+const createAppTheme = (mode = "light") => {
+    const isDark = mode === "dark";
+    const surface = isDark ? "#111c2e" : colors.paper;
+    const surfaceMuted = isDark ? "#17243a" : "#f8faff";
+    const border = isDark ? "#2b3a50" : colors.border;
+    const textPrimary = isDark ? "#edf3fc" : colors.textPrimary;
+    const textSecondary = isDark ? "#a5b4ca" : colors.textSecondary;
+
+    return createTheme({
 
     palette: {
+
+        mode,
 
         primary: {
             main: colors.primary,
@@ -15,9 +25,11 @@ const theme = createTheme({
         },
 
         background: {
-            default: colors.background,
-            paper: colors.paper,
+            default: isDark ? "#0b1220" : colors.background,
+            paper: surface,
         },
+
+        divider: border,
 
         success: {
             main: colors.success,
@@ -32,8 +44,8 @@ const theme = createTheme({
         },
 
         text: {
-            primary: colors.textPrimary,
-            secondary: colors.textSecondary,
+            primary: textPrimary,
+            secondary: textSecondary,
         },
     },
 
@@ -66,8 +78,10 @@ const theme = createTheme({
                 root: {
 
                     borderRadius: 16,
-                    border: `1px solid ${colors.border}`,
-                    boxShadow: "0 3px 12px rgba(30,64,175,.035)",
+                    border: `1px solid ${border}`,
+                    boxShadow: isDark
+                        ? "0 8px 24px rgba(0,0,0,.2)"
+                        : "0 3px 12px rgba(30,64,175,.035)",
 
                 },
 
@@ -79,7 +93,7 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     borderRadius: 10,
-                    backgroundColor: colors.paper,
+                    backgroundColor: surface,
                     '&:has(input[placeholder*="Search"])': {
                         position: "relative",
                         minHeight: 46,
@@ -95,7 +109,7 @@ const theme = createTheme({
                             width: 17,
                             height: 17,
                             transform: "translateY(-50%)",
-                            backgroundColor: colors.textSecondary,
+                            backgroundColor: textSecondary,
                             mask: 'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27black%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Ccircle cx=%2711%27 cy=%2711%27 r=%277%27/%3E%3Cpath d=%27m20 20-4-4%27/%3E%3C/svg%3E") center / contain no-repeat',
                             pointerEvents: "none",
                         },
@@ -106,10 +120,10 @@ const theme = createTheme({
                             top: "50%",
                             transform: "translateY(-50%)",
                             padding: "3px 6px",
-                            border: `1px solid ${colors.border}`,
+                            border: `1px solid ${border}`,
                             borderRadius: 6,
-                            color: colors.textSecondary,
-                            backgroundColor: "#f8faff",
+                            color: textSecondary,
+                            backgroundColor: surfaceMuted,
                             fontSize: 10,
                             fontWeight: 600,
                             lineHeight: 1.3,
@@ -124,7 +138,7 @@ const theme = createTheme({
                             display: "none",
                         },
                         "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#b5c6e0",
+                            borderColor: isDark ? "#536780" : "#b5c6e0",
                         },
                         "&.Mui-focused": {
                             boxShadow: "0 0 0 3px rgba(47, 102, 233, .12)",
@@ -139,7 +153,7 @@ const theme = createTheme({
                         },
                     },
                 },
-                notchedOutline: { borderColor: colors.border },
+                notchedOutline: { borderColor: border },
             },
         },
         MuiInputBase: {
@@ -150,9 +164,9 @@ const theme = createTheme({
                         minHeight: 46,
                         paddingLeft: 34,
                         paddingRight: 54,
-                        border: `1px solid ${colors.border}`,
+                        border: `1px solid ${border}`,
                         borderRadius: 10,
-                        backgroundColor: colors.paper,
+                        backgroundColor: surface,
                         transition: "border-color 160ms ease, box-shadow 160ms ease",
                         "&::before": {
                             content: '""',
@@ -162,7 +176,7 @@ const theme = createTheme({
                             width: 17,
                             height: 17,
                             transform: "translateY(-50%)",
-                            backgroundColor: colors.textSecondary,
+                            backgroundColor: textSecondary,
                             mask: 'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27black%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Ccircle cx=%2711%27 cy=%2711%27 r=%277%27/%3E%3Cpath d=%27m20 20-4-4%27/%3E%3C/svg%3E") center / contain no-repeat',
                             pointerEvents: "none",
                         },
@@ -173,10 +187,10 @@ const theme = createTheme({
                             top: "50%",
                             transform: "translateY(-50%)",
                             padding: "3px 6px",
-                            border: `1px solid ${colors.border}`,
+                            border: `1px solid ${border}`,
                             borderRadius: 6,
-                            color: colors.textSecondary,
-                            backgroundColor: "#f8faff",
+                            color: textSecondary,
+                            backgroundColor: surfaceMuted,
                             fontSize: 10,
                             fontWeight: 600,
                             lineHeight: 1.3,
@@ -203,7 +217,11 @@ const theme = createTheme({
         },
         MuiIconButton: {
             styleOverrides: {
-                root: { borderRadius: 10 },
+                root: {
+                    borderRadius: 10,
+                    color: isDark ? "#b9c9e1" : undefined,
+                    "&:hover": { backgroundColor: isDark ? "#22324a" : undefined },
+                },
             },
         },
         MuiChip: {
@@ -216,29 +234,32 @@ const theme = createTheme({
                 root: { borderRadius: 10 },
             },
         },
-        MuiTooltip: {
-            defaultProps: { arrow: true },
-        },
         MuiPaper: {
             styleOverrides: {
-                root: { backgroundImage: "none" },
+                root: { backgroundImage: "none", color: textPrimary },
             },
         },
         MuiTableRow: {
             styleOverrides: {
                 root: {
-                    "&:hover": { backgroundColor: "#f8fbff" },
+                    "&:hover": { backgroundColor: isDark ? "#1d2a40" : "#f8fbff" },
                 },
             },
         },
         MuiDialog: {
             styleOverrides: {
-                paper: { borderRadius: 16, border: `1px solid ${colors.border}` },
+                paper: {
+                    borderRadius: 16,
+                    border: `1px solid ${border}`,
+                    backgroundColor: surface,
+                    color: textPrimary,
+                    boxShadow: isDark ? "0 24px 70px rgba(0,0,0,.48)" : undefined,
+                },
             },
         },
         MuiDialogTitle: {
             styleOverrides: {
-                root: { fontWeight: 700, color: colors.textPrimary, borderBottom: `1px solid ${colors.border}` },
+                root: { fontWeight: 700, color: textPrimary, borderBottom: `1px solid ${border}` },
             },
         },
         MuiDialogActions: {
@@ -246,13 +267,50 @@ const theme = createTheme({
         },
         MuiTableCell: {
             styleOverrides: {
-                head: { backgroundColor: "#f0f5fc", color: "#4d6f9f", fontWeight: 600, fontSize: 13 },
-                root: { borderColor: colors.border },
+                head: { backgroundColor: isDark ? "#1a293e" : "#f0f5fc", color: isDark ? "#c2d0e4" : "#4d6f9f", fontWeight: 600, fontSize: 13 },
+                root: { borderColor: border },
+            },
+        },
+        MuiMenu: {
+            styleOverrides: {
+                paper: {
+                    backgroundColor: surface,
+                    color: textPrimary,
+                    border: `1px solid ${border}`,
+                    boxShadow: isDark ? "0 12px 32px rgba(0,0,0,.36)" : undefined,
+                },
+            },
+        },
+        MuiMenuItem: {
+            styleOverrides: {
+                root: {
+                    "&:hover": { backgroundColor: isDark ? "#22324a" : undefined },
+                    "&.Mui-selected": {
+                        backgroundColor: isDark ? "rgba(75,125,255,.16)" : undefined,
+                        "&:hover": { backgroundColor: isDark ? "rgba(75,125,255,.24)" : undefined },
+                    },
+                },
+            },
+        },
+        MuiTooltip: {
+            defaultProps: { arrow: true },
+            styleOverrides: {
+                tooltip: { backgroundColor: isDark ? "#26364d" : undefined, color: isDark ? textPrimary : undefined },
+                arrow: { color: isDark ? "#26364d" : undefined },
+            },
+        },
+        MuiFormLabel: {
+            styleOverrides: {
+                root: {
+                    color: textSecondary,
+                    "&.Mui-focused": { color: isDark ? "#8fb0ff" : colors.primary },
+                },
             },
         },
 
     },
 
-});
+    });
+};
 
-export default theme;
+export default createAppTheme;

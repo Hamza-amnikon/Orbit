@@ -9,6 +9,8 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
@@ -16,6 +18,7 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import { getProfile } from "../../../Admin/Services/ProfileService";
 import LeaveService from "../../../Admin/Services/LeaveService";
 import PolicyService from "../../../Admin/Services/PolicyService";
+import { useColorMode } from "../../../context/ColorModeContext";
 
 import "./Navbar.css";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
@@ -30,6 +33,7 @@ function Navbar({ title }) {
     const navigate = useNavigate();
 
     const location = useLocation();
+    const { mode, toggleColorMode } = useColorMode();
 
 
     /* ========================================================
@@ -572,6 +576,17 @@ function Navbar({ title }) {
             ================================================== */}
 
             <MuiLayoutBox className="navbar-right" component="div">
+
+                <MuiButtonMigration
+                    type="button"
+                    className="icon-btn color-mode-btn"
+                    aria-label={`Switch to ${mode === "dark" ? "light" : "dark"} mode`}
+                    aria-pressed={mode === "dark"}
+                    title={`Switch to ${mode === "dark" ? "light" : "dark"} mode`}
+                    onClick={toggleColorMode}
+                >
+                    {mode === "dark" ? <LightModeRoundedIcon /> : <DarkModeRoundedIcon />}
+                </MuiButtonMigration>
 
 
                 {/* =================================================
