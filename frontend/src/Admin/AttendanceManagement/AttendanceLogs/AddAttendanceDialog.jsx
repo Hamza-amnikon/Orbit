@@ -16,6 +16,7 @@ import "./AddAttendanceDialog.css";
 
 import EmployeeService from "../services/EmployeeService";
 import AttendanceService from "../services/AttendanceService";
+import { formatWorkedHours, getAttendanceStatusForDuration } from "./attendanceRules";
 
 export default function AddAttendanceDialog({ open, onClose, onSaved }) {
   const initialForm = {
@@ -85,25 +86,7 @@ export default function AddAttendanceDialog({ open, onClose, onSaved }) {
 
   const calculateTotalHours = (checkIn, checkOut, attendanceDate) => {
     if (!checkIn || !checkOut || !attendanceDate) return "";
-
-    let start = new Date(`${attendanceDate}T${checkIn}`);
-
-    let end = new Date(`${attendanceDate}T${checkOut}`);
-
-    // Night Shift
-    if (end <= start) {
-      end.setDate(end.getDate() + 1);
-    }
-
-    const difference = end - start;
-
-    const hours = Math.floor(difference / (1000 * 60 * 60));
-
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-
-    return `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}`;
+    return formatWorkedHours(checkIn, checkOut);
   };
 
 const handleChange = (e) => {
@@ -182,6 +165,14 @@ const handleChange = (e) => {
       updatedForm.date
     );
 
+    if (updatedForm.checkIn && updatedForm.checkOut) {
+      updatedForm.status = getAttendanceStatusForDuration(
+        updatedForm.status,
+        updatedForm.checkIn,
+        updatedForm.checkOut
+      );
+    }
+
   }
 
   setForm(updatedForm);
@@ -212,7 +203,7 @@ const handleChange = (e) => {
       newErrors.status = "Status is required";
     }
 
-    if (form.status === "Present" || form.status === "Late") {
+    if (["Present", "Late", "Half Day"].includes(form.status)) {
       if (!form.checkIn) {
         newErrors.checkIn = "Check in time is required";
       }
@@ -223,16 +214,8 @@ const handleChange = (e) => {
     }
 
     if (form.checkIn && form.checkOut) {
-      const start = new Date(`1970-01-01T${form.checkIn}`);
-
-      let end = new Date(`1970-01-01T${form.checkOut}`);
-
-      // Overnight shift
-      if (end <= start) {
-        end.setDate(end.getDate() + 1);
-      }
-
-      const diffHours = (end - start) / (1000 * 60 * 60);
+      const [hours, minutes] = form.totalHours.split(":").map(Number);
+      const diffHours = hours + minutes / 60;
 
       // Prevent unrealistic shifts
       if (diffHours > 24) {
@@ -307,7 +290,7 @@ const handleChange = (e) => {
   };
 
   return (
-    <Dialog open={open} onClose={handleCancel} fullWidth maxWidth="md">
+    <Dialog className="attendance-dialog" open={open} onClose={handleCancel} fullWidth maxWidth="md">
       <DialogTitle className="attendance-dialog-title">
         Add Attendance
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
@@ -396,6 +379,8 @@ const handleChange = (e) => {
               <MenuItem value="Present">Present</MenuItem>
 
               <MenuItem value="Late">Late</MenuItem>
+
+              <MenuItem value="Half Day">Half Day</MenuItem>
 
               <MenuItem value="Absent">Absent</MenuItem>
 

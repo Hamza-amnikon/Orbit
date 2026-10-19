@@ -38,6 +38,7 @@ import AttendanceService from "../../Services/AttendanceService";
 import { useAuth } from "../../../context/AuthContext";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import { exportRowsToExcel } from "../../../utils/exportExcel";
+import { getAttendanceStatusForDuration } from "../AttendanceLogs/attendanceRules";
 
 
 function Attendance() {
@@ -381,10 +382,11 @@ function Attendance() {
 
     const getStatus = (item) => {
 
-        return (
-            item?.status ||
-            item?.attendanceStatus ||
-            "Not Marked"
+        const status = item?.status || item?.attendanceStatus || "Not Marked";
+        return getAttendanceStatusForDuration(
+            status,
+            item?.checkIn || item?.checkInTime || item?.inTime,
+            item?.checkOut || item?.checkOutTime || item?.outTime
         );
 
     };
@@ -1368,25 +1370,6 @@ function Attendance() {
 
                         </Box>
 
-                        <Chip
-                            label={
-                                todayAttendance
-                                    ? getStatus(
-                                        todayAttendance
-                                    )
-                                    : "Not Marked"
-                            }
-                            className={
-                                todayAttendance
-                                    ? getStatusClass(
-                                        getStatus(
-                                            todayAttendance
-                                        )
-                                    )
-                                    : "status-default"
-                            }
-                        />
-
                     </Box>
 
 
@@ -1411,10 +1394,6 @@ function Attendance() {
                                         )}
                                     </MuiText>
                                 </Box>
-
-                                <MuiText className="timeline-badge green-badge" component="span" variant="inherit">
-                                    On Time
-                                </MuiText>
 
                             </Box>
 

@@ -51,6 +51,7 @@ import dayjs from "dayjs";
 import { useAuth } from "../../../context/AuthContext";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import { exportRowsToExcel } from "../../../utils/exportExcel";
+import { getAttendanceStatusForDuration } from "./attendanceRules";
 
 export default function AttendanceLogs() {
   const navigate = useNavigate();
@@ -109,7 +110,14 @@ export default function AttendanceLogs() {
 
       const data = await AttendanceService.getAll();
 
-      setAttendanceList(data);
+      setAttendanceList(data.map((item) => ({
+        ...item,
+        status: getAttendanceStatusForDuration(
+          item.status,
+          item.checkIn,
+          item.checkOut
+        ),
+      })));
     } catch (error) {
       console.error("Attendance Load Error", error);
     } finally {
@@ -183,6 +191,10 @@ export default function AttendanceLogs() {
   const filteredDashboard = {
     present: filteredByOtherFilters.filter(
       x => x.status === "Present"
+    ).length,
+
+    halfDay: filteredByOtherFilters.filter(
+      x => x.status === "Half Day"
     ).length,
 
     absent: filteredByOtherFilters.filter(
@@ -321,6 +333,16 @@ export default function AttendanceLogs() {
         />
 
         <DashboardCard
+          title="Half Day"
+          value={filteredDashboard.halfDay}
+          subtitle="Under 8h 15m worked"
+          color="#F59E0B"
+          icon={<AccessTimeIcon />}
+          onClick={() => setStatus((current) => current === "Half Day" ? "" : "Half Day")}
+          selected={status === "Half Day"}
+        />
+
+        <DashboardCard
           title="Absent"
           value={filteredDashboard.absent}
           subtitle="Employees Absent"
@@ -448,7 +470,7 @@ export default function AttendanceLogs() {
                 value={date ? dayjs(date) : null}
                 onChange={(value) => setDate(value?.isValid() ? value.format("YYYY-MM-DD") : "")}
                 format="DD-MM-YYYY"
-                slotProps={{ textField: { fullWidth: true, size: "medium" } }}
+                slotProps={{ textField: { fullWidth: true, size: "medium" }, popper: { className: "attendance-date-popover" } }}
               />
             </LocalizationProvider>
           </Grid>

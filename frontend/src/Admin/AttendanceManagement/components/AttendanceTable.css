@@ -111,6 +111,11 @@
     color: #B45309 !important;
 }
 
+.status-chip.half-day {
+    background: #FEF3C7 !important;
+    color: #B45309 !important;
+}
+
 .status-chip.leave {
     background: #EDE9FE !important;
     color: #6D28D9 !important;

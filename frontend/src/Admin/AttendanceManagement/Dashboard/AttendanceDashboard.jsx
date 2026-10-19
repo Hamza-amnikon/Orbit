@@ -16,6 +16,7 @@ import PersonOffIcon from "@mui/icons-material/PersonOff";
 import TimerIcon from "@mui/icons-material/Timer";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import AttendanceDetailsDialog from "../AttendanceLogs/AttendanceDetailsDialog";
 import EditAttendanceDialog from "../AttendanceLogs/EditAttendanceDialog";
@@ -25,6 +26,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { Alert, Box as MuiLayoutBox, Typography as MuiText, Button, IconButton, Snackbar } from "@mui/material";
 import { ArrowBackRounded, RefreshRounded, FileDownloadOutlined, CalendarMonthRounded } from "@mui/icons-material";
 import { exportRowsToExcel } from "../../../utils/exportExcel";
+import { getAttendanceStatusForDuration } from "../AttendanceLogs/attendanceRules";
 
 export default function AttendanceDashboard() {
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ export default function AttendanceDashboard() {
 
   const [dashboard, setDashboard] = useState({
     present: 0,
+    halfDay: 0,
     absent: 0,
     late: 0,
     leave: 0,
@@ -88,14 +91,19 @@ export default function AttendanceDashboard() {
     try {
       const data = await AttendanceService.getToday();
 
-      setTodayAttendance(data);
+      const normalizedAttendance = data.map((item) => ({
+        ...item,
+        status: getAttendanceStatusForDuration(item.status, item.checkIn, item.checkOut),
+      }));
+      setTodayAttendance(normalizedAttendance);
 
       setDashboard({
-        present: data.filter(x => x.status === "Present").length,
-        absent: data.filter(x => x.status === "Absent").length,
-        late: data.filter(x => x.status === "Late").length,
-        leave: data.filter(x => x.status === "Leave").length,
-        wfh: data.filter(x => x.status === "WFH").length,
+        present: normalizedAttendance.filter(x => x.status === "Present").length,
+        halfDay: normalizedAttendance.filter(x => x.status === "Half Day").length,
+        absent: normalizedAttendance.filter(x => x.status === "Absent").length,
+        late: normalizedAttendance.filter(x => x.status === "Late").length,
+        leave: normalizedAttendance.filter(x => x.status === "Leave").length,
+        wfh: normalizedAttendance.filter(x => x.status === "WFH").length,
       });
     } catch (error) {
       console.error(error);
@@ -175,6 +183,16 @@ export default function AttendanceDashboard() {
           icon={<GroupsIcon />}
           onClick={() => setSummaryFilter((current) => current === "Present" ? "" : "Present")}
           selected={summaryFilter === "Present"}
+        />
+
+        <DashboardCard
+          title="Half Day"
+          value={dashboard.halfDay}
+          subtitle="Under 8h 15m worked"
+          color="#F59E0B"
+          icon={<AccessTimeIcon />}
+          onClick={() => setSummaryFilter((current) => current === "Half Day" ? "" : "Half Day")}
+          selected={summaryFilter === "Half Day"}
         />
 
         <DashboardCard

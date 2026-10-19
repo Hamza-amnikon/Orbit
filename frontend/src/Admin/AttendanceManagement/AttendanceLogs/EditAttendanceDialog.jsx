@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import "./AddAttendanceDialog.css";
 
 import AttendanceService from "../services/AttendanceService";
+import { formatWorkedHours, getAttendanceStatusForDuration } from "./attendanceRules";
 
 export default function EditAttendanceDialog({
   open,
@@ -96,35 +97,7 @@ export default function EditAttendanceDialog({
     if (!checkIn || !checkOut || !attendanceDate)
       return "";
 
-    let start = new Date(
-      `${attendanceDate}T${checkIn}`
-    );
-
-    let end = new Date(
-      `${attendanceDate}T${checkOut}`
-    );
-
-    // Night Shift Support
-    if (end <= start) {
-      end.setDate(end.getDate() + 1);
-    }
-
-    const difference = end - start;
-
-    const hours = Math.floor(
-      difference / (1000 * 60 * 60)
-    );
-
-    const minutes = Math.floor(
-      (difference % (1000 * 60 * 60)) /
-      (1000 * 60)
-    );
-
-    return `${hours
-      .toString()
-      .padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}`;
+    return formatWorkedHours(checkIn, checkOut);
 
   };
   
@@ -165,6 +138,14 @@ export default function EditAttendanceDialog({
       updatedForm.attendanceDate
     );
 
+    if (updatedForm.checkIn && updatedForm.checkOut) {
+      updatedForm.status = getAttendanceStatusForDuration(
+        updatedForm.status,
+        updatedForm.checkIn,
+        updatedForm.checkOut
+      );
+    }
+
   }
 
   setForm(updatedForm);
@@ -198,22 +179,8 @@ const validate = () => {
   }
 
   if (form.checkIn && form.checkOut) {
-    // Night Shift Support
-    let start = new Date(
-      `${form.attendanceDate}T${form.checkIn}`
-    );
-
-    let end = new Date(
-      `${form.attendanceDate}T${form.checkOut}`
-    );
-
-    if (end <= start) {
-      end.setDate(end.getDate() + 1);
-    }
-
-    const diffHours =
-      (end - start) /
-      (1000 * 60 * 60);
+    const [hours, minutes] = form.totalHours.split(":").map(Number);
+    const diffHours = hours + minutes / 60;
 
     if (diffHours > 24) {
 
@@ -311,6 +278,7 @@ const handleCancel = () => {
 };
 return (
   <Dialog
+    className="attendance-dialog"
     open={open}
     onClose={handleCancel}
     fullWidth
@@ -433,6 +401,10 @@ return (
 
             <MenuItem value="Late">
               Late
+            </MenuItem>
+
+            <MenuItem value="Half Day">
+              Half Day
             </MenuItem>
 
             <MenuItem value="Absent">
