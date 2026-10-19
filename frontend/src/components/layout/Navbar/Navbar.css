@@ -363,14 +363,44 @@
 
 .notifications-header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    padding: 15px 16px;
-    color: #172554;
-    border-bottom: 1px solid #eef2f7;
+    min-height: 58px;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    color: #172b4d;
+    background: #f8faff;
+    border-bottom: 1px solid #e5ebf4;
 }
 
-.notifications-header span { color: #64748b; font-size: 12px; }
-.notifications-empty { padding: 28px 16px; color: #64748b; text-align: center; font-size: 13px; }
+.notifications-header strong { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+.notifications-header span { color: #62748f; font-size: 12px; }
+.notifications-empty {
+    display: flex;
+    min-height: 142px;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 22px 16px;
+    color: #526783;
+    text-align: center;
+    font-size: 13px;
+}
+.notifications-empty-icon {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    margin-bottom: 3px;
+    place-items: center;
+    border-radius: 12px;
+    color: #3166d8;
+    background: #eaf1ff;
+}
+.notifications-empty-icon svg { font-size: 21px; }
+.notifications-empty strong { color: #263b59; font-size: 13px; font-weight: 700; }
+.notifications-empty > span:last-child { color: #74849b; font-size: 12px; }
 .notification-group-heading {
     display: flex;
     align-items: center;

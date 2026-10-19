@@ -654,7 +654,13 @@ function Navbar({ title }) {
                     <MuiLayoutBox className="notifications-menu" role="menu" component="div">
                         <MuiLayoutBox className="notifications-header" component="div"><MuiText component="strong" variant="inherit">Notifications</MuiText><MuiText component="span" variant="inherit">{pendingNotifications.length} pending</MuiText></MuiLayoutBox>
                         {pendingNotifications.length === 0 ? (
-                            <MuiLayoutBox className="notifications-empty" component="div">You’re all caught up</MuiLayoutBox>
+                            <MuiLayoutBox className="notifications-empty" component="div">
+                                <MuiLayoutBox className="notifications-empty-icon" component="span">
+                                    <NotificationsNoneRoundedIcon />
+                                </MuiLayoutBox>
+                                <MuiText component="strong" variant="inherit">You’re all caught up</MuiText>
+                                <MuiText component="span" variant="inherit">New updates will appear here.</MuiText>
+                            </MuiLayoutBox>
                         ) : (
                             <>
                                 <MuiLayoutBox className="notification-group-heading" component="div">

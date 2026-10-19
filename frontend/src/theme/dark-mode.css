@@ -2052,6 +2052,34 @@ html[data-color-mode="dark"] .user-menu {
   border-color: var(--spark-border);
 }
 
+html[data-color-mode="dark"] .notifications-menu .notifications-header {
+  color: #edf3fc !important;
+  background: var(--spark-surface-raised) !important;
+  border-bottom-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .notifications-menu .notifications-header span {
+  color: #a5b4ca !important;
+}
+
+html[data-color-mode="dark"] .notifications-menu .notifications-empty {
+  color: #c5d1e2 !important;
+  background: var(--spark-surface) !important;
+}
+
+html[data-color-mode="dark"] .notifications-menu .notifications-empty-icon {
+  color: #9bb9ff !important;
+  background: #203758 !important;
+}
+
+html[data-color-mode="dark"] .notifications-menu .notifications-empty strong {
+  color: #e7eefb !important;
+}
+
+html[data-color-mode="dark"] .notifications-menu .notifications-empty > span:last-child {
+  color: #9eacc1 !important;
+}
+
 html[data-color-mode="dark"] .navbar-page-title h2,
 html[data-color-mode="dark"] .sidebar .menu-item,
 html[data-color-mode="dark"] .sidebar .logo-text h2 {
