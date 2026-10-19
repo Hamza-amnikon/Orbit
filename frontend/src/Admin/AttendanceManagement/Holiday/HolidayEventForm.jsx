@@ -79,6 +79,7 @@ export default function HolidayEventForm({ onClose, onSaved, selectedEvent }) {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Dialog
+                className="holiday-event-dialog"
                 open
                 onClose={saving ? undefined : onClose}
                 fullWidth
@@ -103,7 +104,7 @@ export default function HolidayEventForm({ onClose, onSaved, selectedEvent }) {
                                 value={formData.eventDate ? dayjs(formData.eventDate) : null}
                                 onChange={(value) => setFormData((current) => ({ ...current, eventDate: value?.isValid() ? value.format("YYYY-MM-DD") : "" }))}
                                 format="DD-MM-YYYY"
-                                slotProps={{ textField: { required: true, fullWidth: true, size: "small", className: "holiday-event-date" } }}
+                                slotProps={{ textField: { required: true, fullWidth: true, size: "small", className: "holiday-event-date" }, popper: { className: "holiday-event-date-popover" } }}
                             />
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>

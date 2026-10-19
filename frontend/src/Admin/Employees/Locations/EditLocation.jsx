@@ -138,6 +138,7 @@ function EditLocation({
     return (
 
         <Dialog
+            className="employee-type-dialog"
             open={open}
             onClose={handleClose}
             fullWidth

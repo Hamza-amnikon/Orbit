@@ -38,6 +38,7 @@ export default function AttendanceTable({
   if (loading) {
     return (
       <MuiLayoutBox
+        className="attendance-table-state attendance-table-loading"
         style={{
           padding: "30px",
           textAlign: "center",
@@ -51,6 +52,7 @@ export default function AttendanceTable({
   if (!rows.length) {
     return (
       <MuiLayoutBox
+        className="attendance-table-state attendance-table-empty"
         style={{
           padding: "30px",
           textAlign: "center",

@@ -6,7 +6,8 @@ import {
     useNavigate,
 } from "react-router-dom";
 
-import logo from "../../../assets/logo/test.png";
+import darkLogo from "../../../assets/logo/spark-logo-sidebar.png";
+import lightLogo from "../../../assets/logo/spark-logo-sidebar-light.png";
 
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
@@ -26,6 +27,7 @@ import PolicyRoundedIcon from "@mui/icons-material/PolicyRounded";
 
 
 import { useAuth } from "../../../context/AuthContext";
+import { useColorMode } from "../../../context/ColorModeContext";
 import { Box as MuiLayoutBox, ListItemButton as MuiNavItem, Typography as MuiText } from "@mui/material";
 
 /* ============================================================
@@ -122,6 +124,7 @@ export const menu = [
 function Sidebar() {
 
     const navigate = useNavigate();
+    const { mode } = useColorMode();
 
     const {
         hasPermission,
@@ -209,8 +212,8 @@ function Sidebar() {
             <MuiLayoutBox className="sidebar-logo" component="div">
 
                 <MuiLayoutBox
-                    src={logo}
-                    alt="AMNIKON Logo"
+                    src={mode === "dark" ? darkLogo : lightLogo}
+                    alt="SPARK ERP and CRM System logo"
                     className="logo-image"
                  component="img"/>
 

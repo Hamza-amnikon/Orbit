@@ -1,0 +1,51 @@
+.app-react-dialog-paper {
+  overflow: hidden;
+  border: 1px solid #dce5f1;
+  border-radius: 16px !important;
+  box-shadow: 0 22px 58px rgba(10, 24, 46, 0.28) !important;
+}
+
+.app-react-dialog-title.MuiDialogTitle-root {
+  padding: 22px 24px 8px;
+  color: #102747;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.app-react-dialog-content.MuiDialogContent-root {
+  padding: 8px 24px 20px;
+  color: #627995;
+  font-size: 14px;
+  white-space: pre-line;
+}
+
+.app-react-dialog-actions.MuiDialogActions-root {
+  gap: 10px;
+  padding: 16px 24px 22px;
+  border-top: 1px solid #e5ebf3;
+}
+
+.app-react-dialog-actions .app-react-dialog-cancel {
+  min-width: 92px;
+  border: 1px solid #dce5f1;
+  color: #526985;
+  text-transform: none;
+}
+
+.app-react-dialog-actions .app-react-dialog-submit {
+  min-width: 104px;
+  background: #2867e8;
+  text-transform: none;
+}
+
+.app-react-dialog-actions .app-react-dialog-submit:hover {
+  background: #1f57ce;
+}
+
+.app-react-dialog-actions .app-react-dialog-submit.is-danger {
+  background: #d94343;
+}
+
+.app-react-dialog-actions .app-react-dialog-submit.is-danger:hover {
+  background: #bf3030;
+}

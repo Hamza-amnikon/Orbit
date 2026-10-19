@@ -14,6 +14,7 @@ import {
 
 import { useAuth } from "../../../context/AuthContext";
 import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
+import { showReactAlert } from "../../../components/ui/ReactPromptProvider";
 
 
 // =====================================================
@@ -270,7 +271,7 @@ export default function EmployeeDashboard() {
                 "EmployeeDashboard: EmployeeId is missing."
             );
 
-            alert(
+            showReactAlert(
                 "Your Employee ID could not be determined. Please login again."
             );
 

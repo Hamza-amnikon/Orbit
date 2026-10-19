@@ -8,6 +8,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Lege
 
 import "./LeaveOverview.css";
 import { useAuth } from "../../../context/AuthContext";
+import { useColorMode } from "../../../context/ColorModeContext";
 import { Alert, Box as MuiLayoutBox, Button, ButtonBase as MuiActionButton, IconButton, MenuItem, TextField, Typography as MuiText } from "@mui/material";
 import { ArrowBackRounded, BeachAccessRounded, BlockRounded, CalendarMonthRounded, FileDownloadOutlined, MedicalServicesRounded, PendingActionsRounded, RefreshRounded } from "@mui/icons-material";
 
@@ -27,6 +28,7 @@ export default function LeaveOverview() {
 
         const navigate = useNavigate();
         const { hasPermission } = useAuth();
+        const { mode } = useColorMode();
 
         const permissionRoute = "/leave/overview";
         const canView = hasPermission(permissionRoute, "view");
@@ -379,6 +381,8 @@ const rejectedLeaveCount =
         })),
     };
 
+    const chartTextColor = mode === "dark" ? "#aebed4" : "#526783";
+    const chartGridColor = mode === "dark" ? "rgba(159, 180, 208, .16)" : "#edf1f6";
     const leaveTrendChartOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -395,10 +399,14 @@ const rejectedLeaveCount =
         plugins: {
             legend: {
                 position: "bottom",
-                labels: { usePointStyle: true, pointStyle: "circle", boxWidth: 7, boxHeight: 7, padding: 18, color: "#526783", font: { size: 11 } },
+                labels: { usePointStyle: true, pointStyle: "circle", boxWidth: 7, boxHeight: 7, padding: 18, color: chartTextColor, font: { size: 11 } },
             },
             tooltip: {
-                backgroundColor: "#172b4d",
+                backgroundColor: mode === "dark" ? "#0b1422" : "#172b4d",
+                titleColor: "#f3f7fd",
+                bodyColor: "#dce6f4",
+                borderColor: mode === "dark" ? "#34465f" : "transparent",
+                borderWidth: mode === "dark" ? 1 : 0,
                 padding: 10,
                 cornerRadius: 8,
                 usePointStyle: true,
@@ -409,13 +417,13 @@ const rejectedLeaveCount =
                 stacked: true,
                 grid: { display: false },
                 border: { display: false },
-                ticks: { color: "#718198", font: { size: 10 } },
+                ticks: { color: chartTextColor, font: { size: 10 } },
             },
             y: {
                 stacked: true,
                 beginAtZero: true,
-                ticks: { precision: 0, stepSize: 1, color: "#8a98aa", font: { size: 10 } },
-                grid: { color: "#edf1f6", drawTicks: false },
+                ticks: { precision: 0, stepSize: 1, color: chartTextColor, font: { size: 10 } },
+                grid: { color: chartGridColor, drawTicks: false },
                 border: { display: false, dash: [3, 4] },
             },
         },

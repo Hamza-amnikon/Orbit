@@ -716,6 +716,7 @@ function EmployeeEditDialog({
 
   return (
     <Dialog
+      className="employee-edit-dialog"
       open={open}
       onClose={handleClose}
       fullWidth

@@ -123,7 +123,7 @@ function AddLocation({ open, handleClose, handleSave }) {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+    <Dialog className="employee-type-dialog" open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle
         sx={{
           fontWeight: 700,

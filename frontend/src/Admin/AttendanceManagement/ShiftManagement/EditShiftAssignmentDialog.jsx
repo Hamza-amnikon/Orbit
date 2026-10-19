@@ -381,6 +381,7 @@ export default function EditShiftAssignmentDialog({
 
   return (
     <Dialog
+      className="shift-assignment-dialog"
       open={open}
       onClose={onClose}
       fullWidth

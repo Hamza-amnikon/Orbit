@@ -4,6 +4,7 @@ import axios from "axios";
 import "./Docs.css";
 import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
 import { MenuItem, Select } from "@mui/material";
+import { showReactAlert } from "../../../components/ui/ReactPromptProvider";
 
 /* ======================================================
    VALIDATION REGEX
@@ -178,7 +179,7 @@ function Documents({ profile }) {
 
         /* Maximum 2 MB from UI */
         if (file.size > 2 * 1024 * 1024) {
-            alert("File size must not exceed 2MB.");
+            showReactAlert("File size must not exceed 2MB.");
             event.target.value = "";
             return;
         }
@@ -198,7 +199,7 @@ function Documents({ profile }) {
                 .toLowerCase();
 
         if (!allowedExtensions.includes(extension)) {
-            alert(
+            showReactAlert(
                 "Only PDF, DOCX and DOC files are allowed."
             );
 
@@ -562,7 +563,7 @@ const payload = {
     const saveDraft = async () => {
         try {
             if (!employeeId) {
-                alert(
+                showReactAlert(
                     "Employee ID is not available."
                 );
                 return;
@@ -572,7 +573,7 @@ const payload = {
     form.accountNumber &&
     !/^\d{9,18}$/.test(form.accountNumber)
 ) {
-    alert("Account Number must contain 9 to 18 digits.");
+    showReactAlert("Account Number must contain 9 to 18 digits.");
     return;
 }
 
@@ -681,7 +682,7 @@ const payload = {
 
             await loadDocuments();
 
-            alert(
+            showReactAlert(
                 saved.length
                     ? "Documents saved as Draft successfully."
                     : "No document changes to save."
@@ -692,7 +693,7 @@ const payload = {
                 error
             );
 
-            alert(
+            showReactAlert(
                 error.response?.data?.message ||
                     "Failed to save documents."
             );
@@ -905,7 +906,7 @@ const payload = {
         }
 
         if (errors.length > 0) {
-            alert(
+            showReactAlert(
                 errors.join("\n")
             );
 
@@ -922,7 +923,7 @@ const payload = {
     const submitDocuments = async () => {
         try {
             if (!employeeId) {
-                alert(
+                showReactAlert(
                     "Employee ID is not available."
                 );
                 return;
@@ -1113,7 +1114,7 @@ const payload = {
 
             await loadDocuments();
 
-            alert(
+            showReactAlert(
                 "Documents submitted successfully for HR approval."
             );
         } catch (error) {
@@ -1122,7 +1123,7 @@ const payload = {
                 error
             );
 
-            alert(
+            showReactAlert(
                 error.response?.data?.message ||
                     "Failed to submit documents."
             );

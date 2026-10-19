@@ -970,6 +970,55 @@
   }
 }
 
+/* Compact sizing aligned with the other Leave management pages. */
+.leave-reports-page {
+  padding: 26px 30px 34px;
+}
+
+.leave-reports-page .leave-reports-header {
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.leave-reports-page .leave-reports-back-button {
+  width: 42px;
+  height: 42px;
+}
+
+.leave-reports-page .leave-reports-title {
+  font-size: 30px !important;
+}
+
+.leave-reports-page .leave-reports-header-actions .MuiButton-root {
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+.leave-reports-page .leave-reports-filter-card .MuiCardContent-root {
+  padding: 16px !important;
+}
+
+.leave-reports-page .leave-report-filter-grid {
+  gap: 12px !important;
+}
+
+.leave-reports-page .leave-report-summary-card {
+  height: 96px;
+}
+
+.leave-reports-page .leave-report-summary-card .MuiCardContent-root {
+  padding: 15px 18px !important;
+}
+
+.leave-reports-page .leave-report-table-header {
+  padding: 16px 20px;
+}
+
+.leave-reports-page .leave-report-table-card .MuiTableCell-head,
+.leave-reports-page .leave-report-table-card .MuiTableCell-body {
+  padding: 11px 16px;
+}
+
 @media (max-width: 900px) {
   .leave-reports-page { padding: 24px 20px 32px; }
 
@@ -1027,4 +1076,15 @@
     height: 90px;
     min-height: 90px;
   }
+}
+
+/* Final responsive sizing overrides for the compact Leave Reports layout. */
+@media (max-width: 900px) {
+  .leave-reports-page { padding: 22px 20px 30px; }
+}
+
+@media (max-width: 700px) {
+  .leave-reports-page { padding: 16px 12px 24px; }
+  .leave-reports-page .leave-reports-title { font-size: 23px !important; }
+  .leave-reports-page .leave-report-table-header { padding: 14px 16px; }
 }

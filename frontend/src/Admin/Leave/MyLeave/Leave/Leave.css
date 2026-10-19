@@ -2400,3 +2400,78 @@
         padding: 11px 12px;
     }
 }
+
+/* Match the compact scale used across the refreshed Leave pages. */
+.leave-dashboard {
+    min-height: calc(100vh - 72px);
+    padding: 26px 30px 34px;
+}
+
+.leave-header {
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.leave-header h1 {
+    font-size: 30px;
+}
+
+.leave-back-button {
+    width: 42px;
+    height: 42px;
+}
+
+.leave-period-control .MuiOutlinedInput-root {
+    height: 40px;
+}
+
+.leave-period-control .MuiSelect-select {
+    min-height: 40px;
+}
+
+.apply-leave-btn {
+    min-height: 40px !important;
+    padding: 0 15px !important;
+    font-size: 13px !important;
+}
+
+.leave-header.period-menu-open {
+    margin-bottom: 20px;
+}
+
+.leave-stat-grid,
+.leave-secondary-grid {
+    gap: 14px;
+}
+
+.leave-stat-grid { margin-bottom: 16px; }
+.leave-stat-card { min-height: 96px; padding: 16px; }
+.leave-secondary-grid { margin-bottom: 16px; }
+.leave-info-card { min-height: 96px; padding: 16px; }
+.leave-panel-header { min-height: 64px; padding: 15px 18px; }
+.leave-content-grid { gap: 14px; margin-bottom: 16px; }
+
+.leave-balance-table th,
+.pending-leave-table th,
+.leave-table th {
+    padding: 12px 15px;
+}
+
+.leave-balance-table td,
+.pending-leave-table td,
+.leave-table td {
+    padding: 12px 15px;
+}
+
+.leave-stat-card:hover {
+    transform: none;
+}
+
+@media (max-width: 1100px) {
+    .leave-dashboard { padding: 22px 20px 30px; }
+}
+
+@media (max-width: 768px) {
+    .leave-dashboard { padding: 16px 12px 24px; }
+    .leave-header h1 { font-size: 23px; }
+}

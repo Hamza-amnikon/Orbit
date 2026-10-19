@@ -28,6 +28,7 @@ export default function ShiftDetailsDialog({
   return (
 
     <Dialog
+      className="shift-details-dialog"
 
       open={open}
 

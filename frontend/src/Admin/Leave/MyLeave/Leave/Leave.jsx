@@ -3288,6 +3288,7 @@ const closeViewLeaveDialog = () => {
                     {/* CALENDAR HEADER */}
 
                     <Box
+                        className="my-leave-calendar-header"
                         sx={{
                             px: 2.5,
                             pt: 2.2,
@@ -3313,6 +3314,7 @@ const closeViewLeaveDialog = () => {
                             >
 
                                 <Box
+                                    className="my-leave-calendar-icon"
                                     sx={{
                                         width: 38,
                                         height: 38,
@@ -3333,6 +3335,7 @@ const closeViewLeaveDialog = () => {
                                 <Box>
 
                                     <Typography
+                                        className="my-leave-calendar-title"
                                         sx={{
                                             fontSize: "18px",
                                             fontWeight: 700,
@@ -3344,6 +3347,7 @@ const closeViewLeaveDialog = () => {
                                     </Typography>
 
                                     <Typography
+                                        className="my-leave-calendar-subtitle"
                                         sx={{
                                             mt: 0.4,
                                             fontSize: "12px",
@@ -3360,6 +3364,7 @@ const closeViewLeaveDialog = () => {
 
 
                             <Button
+                                className="my-leave-calendar-today"
                                 size="small"
                                 variant="outlined"
                                 onClick={goToday}
@@ -3377,6 +3382,7 @@ const closeViewLeaveDialog = () => {
 
 
                         <Divider
+                            className="my-leave-calendar-divider"
                             sx={{
                                 mt: 2,
                             }}
@@ -3386,6 +3392,7 @@ const closeViewLeaveDialog = () => {
                         {/* MONTH NAVIGATION */}
 
                         <Box
+                            className="my-leave-calendar-navigation"
                             sx={{
                                 display: "flex",
                                 alignItems: "center",
@@ -3395,6 +3402,7 @@ const closeViewLeaveDialog = () => {
                         >
 
                             <IconButton
+                                className="my-leave-calendar-nav-button"
                                 size="small"
                                 onClick={
                                     goPreviousMonth
@@ -3411,6 +3419,7 @@ const closeViewLeaveDialog = () => {
 
 
                             <Typography
+                                className="my-leave-calendar-month"
                                 sx={{
                                     fontSize: "16px",
                                     fontWeight: 700,
@@ -3428,6 +3437,7 @@ const closeViewLeaveDialog = () => {
 
 
                             <IconButton
+                                className="my-leave-calendar-nav-button"
                                 size="small"
                                 onClick={
                                     goNextMonth
@@ -3459,6 +3469,7 @@ const closeViewLeaveDialog = () => {
                         {/* WEEK DAYS */}
 
                         <Box
+                            className="my-leave-calendar-weekdays"
                             sx={{
                                 display: "grid",
                                 gridTemplateColumns:
@@ -3479,6 +3490,7 @@ const closeViewLeaveDialog = () => {
                                 (day) => (
 
                                     <Box
+                                        className="my-leave-calendar-weekday"
                                         key={day}
                                         sx={{
                                             textAlign:
@@ -3503,6 +3515,7 @@ const closeViewLeaveDialog = () => {
                         {/* DAYS */}
 
                         <Box
+                            className="my-leave-calendar-days"
                             sx={{
                                 display: "grid",
                                 gridTemplateColumns:
@@ -3518,6 +3531,7 @@ const closeViewLeaveDialog = () => {
 
                                         return (
                                             <Box
+                                                className="my-leave-calendar-empty-day"
                                                 key={`empty-${index}`}
                                                 sx={{
                                                     minHeight:
@@ -3627,6 +3641,8 @@ const closeViewLeaveDialog = () => {
                                         >
 
                                             <Box
+                                                className={`my-leave-calendar-day${isToday ? " is-today" : ""}`}
+                                                data-calendar-status={calendarData?.status || "none"}
                                                 sx={{
                                                     minHeight: 52,
                                                     borderRadius:
@@ -3755,6 +3771,7 @@ const closeViewLeaveDialog = () => {
                         {/* LEGEND */}
 
                         <Box
+                            className="my-leave-calendar-legend"
                             sx={{
                                 display: "flex",
                                 flexWrap: "wrap",
@@ -3767,6 +3784,7 @@ const closeViewLeaveDialog = () => {
                         >
 
                             <Chip
+                                className="my-leave-calendar-legend-approved"
                                 size="small"
                                 label="Approved"
                                 sx={{
@@ -3781,6 +3799,7 @@ const closeViewLeaveDialog = () => {
                             />
 
                             <Chip
+                                className="my-leave-calendar-legend-pending"
                                 size="small"
                                 label="Pending"
                                 sx={{
@@ -3795,6 +3814,7 @@ const closeViewLeaveDialog = () => {
                             />
 
                             <Chip
+                                className="my-leave-calendar-legend-rejected"
                                 size="small"
                                 label="Rejected"
                                 sx={{
@@ -3809,6 +3829,7 @@ const closeViewLeaveDialog = () => {
                             />
 
                             <Chip
+                                className="my-leave-calendar-legend-week-off"
                                 size="small"
                                 label="Week Off"
                                 sx={{
@@ -3823,6 +3844,7 @@ const closeViewLeaveDialog = () => {
                             />
 
                             <Chip
+                                className="my-leave-calendar-legend-none"
                                 size="small"
                                 label="No Leave"
                                 variant="outlined"
@@ -4039,6 +4061,7 @@ const closeViewLeaveDialog = () => {
             ================================================= */}
 
             <Dialog
+                className="my-leave-apply-dialog"
                 open={
                     openLeaveDialog
                 }
@@ -4463,6 +4486,7 @@ const closeViewLeaveDialog = () => {
 ========================================================= */}
 
 <Dialog
+    className="my-leave-details-dialog"
     open={openViewLeaveDialog}
     onClose={closeViewLeaveDialog}
     maxWidth="sm"

@@ -16,7 +16,7 @@ export default function AttendanceDetailsDialog({ open, onClose, attendance }) {
   if (!attendance) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+    <Dialog className="attendance-details-dialog" open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle className="attendance-details-title">
         Attendance Details
       </DialogTitle>

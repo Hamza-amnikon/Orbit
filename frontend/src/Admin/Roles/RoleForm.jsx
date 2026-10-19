@@ -212,6 +212,7 @@ function RoleForm({
             size: "medium",
         },
         popper: {
+            className: "role-date-popover",
             sx: {
                 zIndex: 99999,
             },

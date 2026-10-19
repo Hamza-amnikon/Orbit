@@ -329,44 +329,54 @@
 
 .employee-table th:nth-child(2),
 .employee-table td:nth-child(2) {
-    width: 27%;
+    width: 25%;
 }
 
 .employee-table th:nth-child(3),
 .employee-table td:nth-child(3) {
-    width: 11%;
+    width: 10%;
 }
 
 .employee-table th:nth-child(4),
 .employee-table td:nth-child(4) {
-    width: 7%;
+    width: 6%;
 }
 
 .employee-table th:nth-child(5),
 .employee-table td:nth-child(5) {
-    width: 12%;
+    width: 11%;
 }
 
 .employee-table th:nth-child(6),
 .employee-table td:nth-child(6) {
-    width: 13%;
+    width: 11%;
 }
 
 .employee-table th:nth-child(7),
 .employee-table td:nth-child(7) {
-    width: 10%;
+    width: 11%;
 }
 
 .employee-table th:nth-child(8),
 .employee-table td:nth-child(8) {
-    width: 8%;
+    width: 9%;
 }
 
 .employee-table th:nth-child(9),
 .employee-table td:nth-child(9) {
-    width: 7%;
+    width: 9%;
 
     text-align: left;
+}
+
+.employee-table td:nth-child(8),
+.employee-table td:nth-child(9) {
+    overflow: visible;
+    text-overflow: clip;
+}
+
+.employee-table td:nth-child(8) {
+    white-space: nowrap;
 }
 
 
@@ -998,4 +1008,98 @@
         gap: 12px;
         padding: 16px;
     }
+}
+
+/* Employee directory table dark mode. */
+html[data-color-mode="dark"] .employee-list-page .employee-table-wrapper {
+    color: var(--spark-text, #f2f5fb) !important;
+    background: var(--spark-surface-raised, #19263a) !important;
+    border: 1px solid var(--spark-border, #2a3a50) !important;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .2) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table-header {
+    color: var(--spark-text, #f2f5fb) !important;
+    background: var(--spark-surface-raised, #19263a) !important;
+    border-color: var(--spark-border, #2a3a50) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table :is(th, td) {
+    border-color: var(--spark-border, #2a3a50) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table th {
+    color: #d8e3f3 !important;
+    background: var(--spark-table-head, #18263a) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table td {
+    color: #dce6f4 !important;
+    background: var(--spark-surface-raised, #19263a) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table tbody tr:nth-child(even) td {
+    background: #172439 !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table tbody tr:hover td {
+    background: var(--spark-hover, #1d2c43) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table :is(
+    .admin-employee-name,
+    .employee-email
+) {
+    color: var(--spark-text, #f2f5fb) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table-wrapper .employee-table-tag {
+    color: #a9c4ff !important;
+    background: rgba(75, 125, 255, .14) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table .employee-email {
+    color: var(--spark-muted, #a8b6cb) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table-count {
+    color: var(--spark-muted, #a8b6cb) !important;
+    background: var(--spark-surface, #121d2e) !important;
+    border-color: var(--spark-border, #2a3a50) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table-count span {
+    color: var(--spark-text, #f2f5fb) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table .status-badge.active {
+    color: #a7f3d0 !important;
+    background: rgba(16, 185, 129, .16) !important;
+    border-color: rgba(52, 211, 153, .28) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table .status-badge.inactive {
+    color: #fecaca !important;
+    background: rgba(239, 68, 68, .16) !important;
+    border-color: rgba(248, 113, 113, .28) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table .action-buttons .view-btn {
+    color: #a9c4ff !important;
+    background: rgba(75, 125, 255, .14) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table .action-buttons .edit-btn {
+    color: #fcd58a !important;
+    background: rgba(245, 158, 11, .15) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table .action-buttons .delete-btn {
+    color: #fecaca !important;
+    background: rgba(239, 68, 68, .15) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-table .action-buttons button:focus-visible {
+    outline: 2px solid #8fb0ff !important;
+    outline-offset: 2px;
 }

@@ -146,7 +146,7 @@
 
     overflow:hidden;
 
-    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background-color .22s ease;
+    transition:box-shadow .22s ease,border-color .22s ease,background-color .22s ease;
 
     border:1px solid #edf2f7;
 
@@ -156,9 +156,6 @@
 }
 
 .stats-card:hover{
-
-    transform:translateY(-8px);
-
     box-shadow:
         0 25px 50px rgba(37,99,235,.12);
 
@@ -658,5 +655,65 @@
         font-size:20px;
     }
 
+}
+
+/* Employee directory dark mode: override page-local light surfaces. */
+html[data-color-mode="dark"] .employee-list-page {
+    color: var(--spark-text, #f2f5fb) !important;
+    background: transparent !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-page-header {
+    border-color: var(--spark-border, #2a3a50) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-page-header :is(h1, p) {
+    color: var(--spark-text, #f2f5fb) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-page-header p,
+html[data-color-mode="dark"] .employee-list-page .stats-card span,
+html[data-color-mode="dark"] .employee-list-page .stats-card-hint {
+    color: var(--spark-muted, #a8b6cb) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page :is(.stats-card, .toolbar-card, .table-card, .loading-card, .empty-card) {
+    color: var(--spark-text, #f2f5fb) !important;
+    background: var(--spark-surface-raised, #19263a) !important;
+    border-color: var(--spark-border, #2a3a50) !important;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .2) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page :is(.stats-card h2, .loading-card h3, .empty-card h2) {
+    color: var(--spark-text, #f2f5fb) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .stats-card.is-selected {
+    background: var(--spark-hover, #1d2c43) !important;
+    border-color: #5579b3 !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .employee-back-button {
+    color: #c8d8ef !important;
+    background: var(--spark-surface, #121d2e) !important;
+    border-color: var(--spark-border, #2a3a50) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .toolbar :is(.MuiOutlinedInput-root, .MuiSelect-select) {
+    color: var(--spark-text, #f2f5fb) !important;
+    background: var(--spark-surface, #121d2e) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .toolbar :is(.MuiOutlinedInput-notchedOutline, fieldset) {
+    border-color: var(--spark-border, #2a3a50) !important;
+}
+
+html[data-color-mode="dark"] .employee-list-page .toolbar :is(input, .MuiSelect-select)::placeholder {
+    color: #899ab2 !important;
+    opacity: 1;
+}
+
+html[data-color-mode="dark"] .employee-list-page .empty-card p {
+    color: var(--spark-muted, #a8b6cb) !important;
 }
 

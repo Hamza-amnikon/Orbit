@@ -356,3 +356,89 @@
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Add Employee: keep the full form hierarchy dark, including nested sections. */
+html[data-color-mode="dark"] .employee-form-card {
+  color: var(--spark-text, #f2f5fb) !important;
+  background: var(--spark-surface-raised, #19263a) !important;
+  border-color: var(--spark-border, #2a3a50) !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .22) !important;
+}
+
+html[data-color-mode="dark"] .employee-form-card :is(h2, h3, .MuiTypography-root) {
+  color: var(--spark-text, #f2f5fb) !important;
+}
+
+html[data-color-mode="dark"] .employee-form-card :is(
+  .form-header p,
+  .form-section-heading p,
+  .required-fields-note,
+  .form-action-hint,
+  .MuiInputLabel-root,
+  .MuiFormHelperText-root
+) {
+  color: var(--spark-muted, #a8b6cb) !important;
+}
+
+html[data-color-mode="dark"] .employee-form-card :is(.form-section, .employee-audit-card) {
+  color: var(--spark-text, #f2f5fb) !important;
+  background: var(--spark-surface, #121d2e) !important;
+  border-color: var(--spark-border, #2a3a50) !important;
+}
+
+html[data-color-mode="dark"] .employee-form-card :is(.form-section-heading, .form-actions) {
+  border-color: var(--spark-border, #2a3a50) !important;
+}
+
+html[data-color-mode="dark"] .employee-form-card :is(.MuiOutlinedInput-root, .MuiPickersOutlinedInput-root) {
+  color: var(--spark-text, #f2f5fb) !important;
+  background: var(--spark-surface-raised, #19263a) !important;
+}
+
+html[data-color-mode="dark"] .employee-form-card :is(
+  .MuiInputBase-input,
+  .MuiSelect-select,
+  .MuiPickersInputBase-input,
+  input,
+  textarea
+) {
+  color: var(--spark-text, #f2f5fb) !important;
+  caret-color: var(--spark-text, #f2f5fb);
+}
+
+html[data-color-mode="dark"] .employee-form-card :is(input, textarea, .MuiInputBase-input)::placeholder {
+  color: #899ab2 !important;
+  opacity: 1;
+}
+
+html[data-color-mode="dark"] .employee-form-card :is(
+  .MuiOutlinedInput-notchedOutline,
+  .MuiPickersOutlinedInput-notchedOutline
+) {
+  border-color: var(--spark-border, #2a3a50) !important;
+}
+
+html[data-color-mode="dark"] .employee-form-card :is(.MuiInputAdornment-root, .MuiSvgIcon-root) {
+  color: #a8bddc;
+}
+
+html[data-color-mode="dark"] .employee-form-card :is(input:disabled, select:disabled, .Mui-disabled) {
+  color: #899ab2 !important;
+  background: #182438 !important;
+}
+
+html[data-color-mode="dark"] .employee-form-card .form-title-icon,
+html[data-color-mode="dark"] .employee-form-card .form-section-icon {
+  color: #a9c4ff;
+  background: rgba(75, 125, 255, .14);
+}
+
+html[data-color-mode="dark"] .MuiPickersPopper-root .MuiPaper-root {
+  color: var(--spark-text, #f2f5fb);
+  background: var(--spark-surface-raised, #19263a);
+  border: 1px solid var(--spark-border, #2a3a50);
+}
+
+html[data-color-mode="dark"] .MuiPickersPopper-root :is(.MuiPickersCalendarHeader-label, .MuiDayCalendar-weekDayLabel, .MuiPickersDay-root) {
+  color: var(--spark-text, #f2f5fb);
+}

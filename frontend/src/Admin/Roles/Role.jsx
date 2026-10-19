@@ -305,7 +305,7 @@ function Role() {
           canDelete={canDelete}
         />
       </MuiLayoutBox>
-      <Dialog open={Boolean(pendingDelete)} onClose={() => setPendingDelete(null)}>
+      <Dialog className="employee-type-dialog" open={Boolean(pendingDelete)} onClose={() => setPendingDelete(null)}>
         <DialogTitle>Delete role?</DialogTitle>
         <DialogContent>Are you sure you want to delete {pendingDelete?.role || "this role"}?</DialogContent>
         <DialogActions><Button onClick={() => setPendingDelete(null)}>Cancel</Button><Button color="error" variant="contained" onClick={confirmDeleteRole}>Delete</Button></DialogActions>

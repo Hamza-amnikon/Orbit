@@ -379,6 +379,7 @@ export default function AssignShiftDialog({
 
   return (
     <Dialog
+      className="shift-assignment-dialog"
       open={open}
       onClose={handleCancel}
       fullWidth

@@ -36,6 +36,29 @@
     margin-bottom: 24px;
 }
 
+.sc-salary-components-page .sc-salary-components-heading {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.sc-salary-components-page .sc-salary-components-back {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    color: #526983;
+    border: 1px solid #d5dfed;
+    border-radius: 11px;
+    background: #fff;
+}
+
+.sc-salary-components-page .sc-salary-components-back:hover {
+    color: #2457d2;
+    border-color: #a9c1e8;
+    background: #edf4ff;
+}
+
 .sc-salary-components-page .sc-salary-components-title {
     margin: 0 !important;
     color: #09234d !important;

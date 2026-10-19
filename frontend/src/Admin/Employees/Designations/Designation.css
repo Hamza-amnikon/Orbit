@@ -195,6 +195,15 @@
 }
 
 /* Match the Employee List page interactions */
+.designation-page .employee-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-width: 0;
+    margin-bottom: 28px;
+}
+
 .designation-page .designation-page-title {
     display: flex;
     align-items: center;
@@ -204,6 +213,115 @@
 
 .designation-page-title-copy {
     min-width: 0;
+}
+
+.designation-page .header-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.designation-page .header-buttons .MuiButton-root {
+    min-width: 0;
+    min-height: 44px;
+    white-space: nowrap;
+}
+
+.designation-page .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 22px;
+}
+
+.designation-page .stats-grid > .stats-card {
+    min-width: 0;
+}
+
+/* Keep the statistic icon and copy independent from the shared employee
+   dashboard styles, which otherwise stretch the semantic color onto a bar. */
+.designation-page .stats-card-action-area .MuiCardContent-root {
+    display: flex !important;
+    min-height: 136px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 20px !important;
+}
+
+.designation-page .stats-icon {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    height: 42px !important;
+    min-height: 42px;
+    flex: 0 0 42px !important;
+    margin: 0 0 2px;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.designation-page .stats-icon svg {
+    font-size: 22px;
+}
+
+.designation-page .stats-icon.blue {
+    color: #2563eb;
+    background: #eaf1ff !important;
+}
+
+.designation-page .stats-icon.green {
+    color: #16844d;
+    background: #e8f7ef !important;
+}
+
+.designation-page .stats-icon.red {
+    color: #dc3e4b;
+    background: #fff0f0 !important;
+}
+
+.designation-page .stats-card span {
+    color: #64748b;
+    font-size: 0.875rem;
+    line-height: 1.35;
+}
+
+.designation-page .stats-card h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 1.75rem;
+    line-height: 1.15;
+}
+
+html[data-color-mode="dark"] .designation-page .stats-icon.blue {
+    color: #8fb4ff;
+    background: #263e65 !important;
+}
+
+html[data-color-mode="dark"] .designation-page .stats-icon.green {
+    color: #79d5a5;
+    background: #1e4438 !important;
+}
+
+html[data-color-mode="dark"] .designation-page .stats-icon.red {
+    color: #ff9a9f;
+    background: #4b2d38 !important;
+}
+
+html[data-color-mode="dark"] .designation-page .stats-card span {
+    color: #aebdd1;
+}
+
+html[data-color-mode="dark"] .designation-page .stats-card h2 {
+    color: #f3f6fb;
 }
 
 .designation-back-button.MuiIconButton-root {
@@ -235,6 +353,23 @@
 @media (max-width: 768px) {
     .designation-page .designation-page-title {
         align-items: flex-start;
+    }
+
+    .designation-page .employee-page-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .designation-page .header-buttons {
+        width: 100%;
+        flex: 1 1 100%;
+        justify-content: flex-start;
+    }
+
+    .designation-page .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
     }
 
     .designation-back-button.MuiIconButton-root {
@@ -348,6 +483,11 @@
 
     .designation-page .stats-grid {
         gap: 9px;
+    }
+
+    .designation-page .header-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .designation-page .stats-card .MuiCardContent-root {

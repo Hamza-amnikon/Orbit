@@ -25,7 +25,7 @@ export default function DeleteShiftAssignmentDialog({
   if (!employee) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog className="shift-delete-dialog" open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle
         sx={{
           display: "flex",

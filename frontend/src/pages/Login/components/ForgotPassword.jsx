@@ -74,6 +74,7 @@ function ForgotPassword({ open, onClose }) {
         fullWidth
         maxWidth="sm"
         PaperProps={{
+          className: "login-recovery-dialog",
           sx: {
             borderRadius: 5,
             overflow: "hidden",

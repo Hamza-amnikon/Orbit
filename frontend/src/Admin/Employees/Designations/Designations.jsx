@@ -1411,6 +1411,7 @@ function Designations() {
       )}
 
       <Dialog
+        className="employee-type-dialog"
         open={Boolean(designationToDelete)}
         onClose={() => setDesignationToDelete(null)}
         aria-labelledby="delete-designation-title"

@@ -1083,3 +1083,121 @@
     flex: 1 1 calc(50% - 8px);
   }
 }
+
+/* Match the compact page scale used by the other Leave screens. */
+.leave-balance-page {
+  padding: 26px 30px 36px;
+}
+
+.dashboard-content.workspace-ui > .leave-balance-page {
+  padding: 26px 30px 36px !important;
+}
+
+.leave-balance-page .leave-balance-header,
+.dashboard-content.workspace-ui .leave-balance-page .leave-balance-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  min-height: 0;
+  margin: 0 0 22px !important;
+  padding: 0 !important;
+}
+
+.leave-balance-page .leave-balance-heading {
+  width: auto;
+  max-width: none;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.leave-balance-page .leave-balance-heading h2 {
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.leave-balance-page .leave-balance-heading p {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.leave-balance-page .leave-balance-actions {
+  position: static;
+  width: auto;
+  max-width: 100%;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+  transform: none;
+}
+
+.leave-balance-page .leave-balance-actions .MuiButton-root {
+  min-height: 40px;
+  height: 40px;
+  padding: 0 13px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.leave-balance-page .leave-balance-summary {
+  margin-bottom: 16px;
+}
+
+.leave-balance-page .leave-balance-summary .MuiCardContent-root {
+  padding: 16px !important;
+}
+
+.leave-balance-page .leave-balance-filter-card {
+  margin-bottom: 16px;
+}
+
+.leave-balance-page .leave-balance-filter-card .MuiCardContent-root {
+  padding: 16px !important;
+}
+
+.leave-balance-page .leave-balance-table .MuiTableCell-body {
+  height: 50px;
+}
+
+@media (max-width: 900px) {
+  .leave-balance-page,
+  .dashboard-content.workspace-ui > .leave-balance-page {
+    padding: 22px 20px 32px !important;
+  }
+
+  .leave-balance-page .leave-balance-header,
+  .dashboard-content.workspace-ui .leave-balance-page .leave-balance-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+  }
+
+  .leave-balance-page .leave-balance-heading {
+    width: 100%;
+  }
+
+  .leave-balance-page .leave-balance-actions {
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .leave-balance-page,
+  .dashboard-content.workspace-ui > .leave-balance-page {
+    padding: 16px 12px 24px !important;
+  }
+
+  .leave-balance-page .leave-balance-heading h2 {
+    font-size: 23px;
+  }
+
+  .leave-balance-page .leave-balance-actions {
+    gap: 7px;
+  }
+}

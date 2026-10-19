@@ -1229,6 +1229,7 @@ function Department() {
       )}
 
       <Dialog
+        className="employee-type-dialog"
         open={Boolean(departmentToDelete)}
         onClose={() => setDepartmentToDelete(null)}
         aria-labelledby="delete-department-title"

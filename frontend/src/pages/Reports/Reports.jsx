@@ -10,7 +10,7 @@ function Reports() {
 
     if (!canView) {
         return (
-            <MuiLayoutBox style={{ padding: "60px", textAlign: "center" }} component="div">
+            <MuiLayoutBox className="reports-access-denied" style={{ padding: "60px", textAlign: "center" }} component="div">
                 <MuiText component="h2" variant="h5">Access Denied</MuiText>
                 <MuiText component="p" variant="body1">You do not have permission to access this page.</MuiText>
             </MuiLayoutBox>

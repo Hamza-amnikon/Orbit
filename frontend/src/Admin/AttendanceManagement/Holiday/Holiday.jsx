@@ -382,7 +382,7 @@ export default function HolidayEvents() {
 
             )}
 
-            <Dialog open={Boolean(deleteTarget)} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
+            <Dialog className="holiday-delete-dialog" open={Boolean(deleteTarget)} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
                 <DialogTitle>Delete holiday or event?</DialogTitle>
                 <DialogContent>Delete “{deleteTarget?.eventName}”? This action cannot be undone.</DialogContent>
                 <DialogActions><Button onClick={() => setDeleteTarget(null)}>Cancel</Button><Button color="error" variant="contained" onClick={() => deleteEvent(deleteTarget?.eventId)}>Delete</Button></DialogActions>

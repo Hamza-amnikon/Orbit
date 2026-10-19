@@ -1249,11 +1249,20 @@
 
 @media (max-width: 850px) {
     .policy-dashboard-toolbar {
+        display: flex;
+        flex-wrap: wrap;
         align-items: stretch;
     }
 
     .policy-search {
-        flex-basis: 100%;
+        flex: 1 1 100%;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .policy-filter-control {
+        flex: 1 1 175px;
+        min-width: 0;
     }
 
     .policy-reset-button {
@@ -1262,6 +1271,10 @@
 }
 
 @media (max-width: 650px) {
+    .policy-dashboard-toolbar {
+        gap: 10px;
+    }
+
     .policy-stat-card,
     .policy-stat-card .MuiCardContent-root {
         min-height: 86px;
@@ -1283,5 +1296,10 @@
     .policy-reset-button {
         width: 100%;
         flex-basis: 100%;
+    }
+
+    .policy-filter-control {
+        flex: 1 1 100%;
+        width: 100%;
     }
 }

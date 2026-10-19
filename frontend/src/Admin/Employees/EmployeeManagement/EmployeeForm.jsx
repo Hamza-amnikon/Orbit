@@ -27,6 +27,7 @@ import {
 
 import { useAuth } from "../../../context/AuthContext";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { showReactAlert } from "../../../components/ui/ReactPromptProvider";
 
 
 function EmployeeForm({
@@ -180,11 +181,11 @@ function EmployeeForm({
   // SAVE HANDLER
   // =====================================================
 
-  const handleSave = () => {
+  const handleSave = async () => {
 
     if (!isAuthenticated) {
 
-      alert(
+      await showReactAlert(
         "You are not authenticated. Please login again."
       );
 
@@ -198,7 +199,7 @@ function EmployeeForm({
         "EmployeeForm: Logged-in EmployeeId is missing."
       );
 
-      alert(
+      await showReactAlert(
         "Your Employee ID could not be determined. Please login again."
       );
 

@@ -883,7 +883,7 @@ function Hierarchy() {
 
                                             <MuiTableCellMigration>
 
-                                                <MuiText className="status" component="span" variant="inherit">
+                                                <MuiText className={`status ${(item.status || "Active").toLowerCase()}`} component="span" variant="inherit">
 
                                                     {item.status ||
                                                         "Active"}

@@ -695,6 +695,7 @@ slotProps={{
 
       {error && (
         <Card
+          className="leave-balance-error"
           elevation={0}
           sx={{
             mb: 2,

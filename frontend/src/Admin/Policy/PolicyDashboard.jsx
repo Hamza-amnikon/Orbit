@@ -43,6 +43,7 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 
 import PolicyService from "../Services/PolicyService";
 import PolicyForm from "./PolicyForm";
+import { showReactConfirm } from "../../components/ui/ReactPromptProvider";
 
 import "./PolicyDashboard.css";
 
@@ -227,8 +228,9 @@ const PolicyDashboard = () => {
             return;
         }
 
-        const confirmed = window.confirm(
-            `Are you sure you want to delete "${policy.policyTitle}"?`
+        const confirmed = await showReactConfirm(
+            `Are you sure you want to delete "${policy.policyTitle}"?`,
+            { title: "Delete policy?", confirmText: "Delete", danger: true }
         );
 
         if (!confirmed) {
@@ -275,8 +277,9 @@ const PolicyDashboard = () => {
             return;
         }
 
-        const confirmed = window.confirm(
-            `Are you sure you want to archive "${policy.policyTitle}"?`
+        const confirmed = await showReactConfirm(
+            `Are you sure you want to archive "${policy.policyTitle}"?`,
+            { title: "Archive policy?", confirmText: "Archive" }
         );
 
         if (!confirmed) {
@@ -332,13 +335,12 @@ const PolicyDashboard = () => {
             return;
         }
 
-        const confirmed = window.confirm(
-            `Are you sure you want to publish "${policy.policyTitle}"?`
+        const confirmed = await showReactConfirm(
+            `Are you sure you want to publish "${policy.policyTitle}"?`,
+            { title: "Publish policy?", confirmText: "Publish" }
         );
 
-        if (!confirmed) {
-            return;
-        }
+        if (!confirmed) return;
 
         try {
             setActionLoading(true);
@@ -983,11 +985,7 @@ const PolicyDashboard = () => {
                                                         <Tooltip title="Publish">
 
                                                             <IconButton
-                                                                onClick={() =>
-                                                                    handlePublish(
-                                                                        policy.policyId
-                                                                    )
-                                                                }
+                                                                onClick={() => handlePublish(policy.policyId)}
                                                                 disabled={
                                                                     actionLoading
                                                                 }

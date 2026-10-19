@@ -1738,8 +1738,8 @@ const confirmDelete = async () => {
 
                             <TextField
                                 fullWidth
-                                label="Search Employee"
                                 placeholder="Search by name, ID or department"
+                                aria-label="Search employees by name, ID, or department"
                                 value={search}
                                 onChange={(
                                     event
@@ -3168,7 +3168,7 @@ const confirmDelete = async () => {
                 </DialogContent>
 
 
-                <DialogActions>
+                <DialogActions className="epr-view-dialog-actions">
 
                     <Button
                         onClick={() =>

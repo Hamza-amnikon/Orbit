@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 
 import Add from "@mui/icons-material/Add";
+import ArrowBack from "@mui/icons-material/ArrowBack";
 import Close from "@mui/icons-material/Close";
 import Delete from "@mui/icons-material/Delete";
 import EditOutlined from "@mui/icons-material/EditOutlined";
@@ -32,6 +33,7 @@ import AccountBalanceWalletOutlined from "@mui/icons-material/AccountBalanceWall
 
 import "./SalaryComponents.css";
 import { useAuth } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 /*
 |--------------------------------------------------------------------------
@@ -125,6 +127,7 @@ const getResponseBody = async (response) => {
 */
 
 export default function SalaryComponents() {
+    const navigate = useNavigate();
     const { hasPermission } = useAuth();
 
     const permissionRoute = "/payroll/salary-components";
@@ -736,21 +739,31 @@ const confirmDelete = async () => {
 
             <Box className="sc-salary-components-header">
 
-                <Box>
-                    <Typography
-                        className="sc-salary-components-title"
-                        component="h1"
+                <Box className="sc-salary-components-heading">
+                    <IconButton
+                        className="sc-salary-components-back"
+                        aria-label="Back to Payroll Management"
+                        onClick={() => navigate("/payroll")}
                     >
-                        Salary Components
-                    </Typography>
+                        <ArrowBack />
+                    </IconButton>
 
-                    <Typography
-                        className="sc-salary-components-subtitle"
-                    >
-                        Manage earnings, allowances,
-                        bonuses, deductions and
-                        other salary components.
-                    </Typography>
+                    <Box>
+                        <Typography
+                            className="sc-salary-components-title"
+                            component="h1"
+                        >
+                            Salary Components
+                        </Typography>
+
+                        <Typography
+                            className="sc-salary-components-subtitle"
+                        >
+                            Manage earnings, allowances,
+                            bonuses, deductions and
+                            other salary components.
+                        </Typography>
+                    </Box>
                 </Box>
 
                 {canCreate && (
@@ -1098,7 +1111,9 @@ const confirmDelete = async () => {
                 onClose={closeDialog}
                 fullWidth
                 maxWidth="sm"
-                PaperProps={{ className: "sc-salary-component-dialog-paper" }}
+                slotProps={{
+                    paper: { className: "sc-salary-component-dialog-paper" },
+                }}
             >
 
                 <DialogTitle className="sc-salary-component-dialog-title">
@@ -1329,7 +1344,7 @@ const confirmDelete = async () => {
 
                 </DialogContent>
 
-                <DialogActions>
+                <DialogActions className="sc-salary-component-delete-actions">
 
                     <Button
                         onClick={() =>

@@ -996,6 +996,7 @@ function EmployeeList() {
 
           {canCreate && (
             <Button
+              className="employee-add-button"
               variant="contained"
               startIcon={<Add />}
               onClick={() =>

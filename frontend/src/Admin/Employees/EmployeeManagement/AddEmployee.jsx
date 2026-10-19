@@ -4,6 +4,7 @@ import axios from "axios";
 
 import EmployeeForm from "./EmployeeForm";
 import { useAuth } from "../../../context/AuthContext";
+import { showReactAlert } from "../../../components/ui/ReactPromptProvider";
 
 function AddEmployee() {
 
@@ -357,7 +358,7 @@ function AddEmployee() {
 
     if (!isAuthenticated) {
 
-      alert(
+      await showReactAlert(
         "You are not authenticated. Please login again."
       );
 
@@ -374,7 +375,7 @@ function AddEmployee() {
 
     if (!currentToken) {
 
-      alert(
+      await showReactAlert(
         "Authentication token is missing. Please login again."
       );
 
@@ -392,7 +393,7 @@ function AddEmployee() {
         "Authenticated EmployeeId is missing."
       );
 
-      alert(
+      await showReactAlert(
         "Your Employee ID could not be determined. Please login again."
       );
 
@@ -548,7 +549,7 @@ function AddEmployee() {
       // SUCCESS
       // ----------------------------------------
 
-      alert(
+      await showReactAlert(
         "Employee Added Successfully"
       );
 
@@ -589,7 +590,7 @@ function AddEmployee() {
         error.response?.status === 401
       ) {
 
-        alert(
+        await showReactAlert(
           "Your login session has expired. Please login again."
         );
 
@@ -609,7 +610,7 @@ function AddEmployee() {
         error.response?.status === 403
       ) {
 
-        alert(
+        await showReactAlert(
           "You are not authorized to perform this operation."
         );
 
@@ -633,7 +634,7 @@ function AddEmployee() {
           error.response.data
         );
 
-        alert(
+        await showReactAlert(
           JSON.stringify(
             error.response.data,
             null,
@@ -644,7 +645,7 @@ function AddEmployee() {
       }
       else {
 
-        alert(
+        await showReactAlert(
           "Unable to connect to API."
         );
 

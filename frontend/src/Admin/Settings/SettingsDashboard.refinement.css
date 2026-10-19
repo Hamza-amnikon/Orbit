@@ -720,3 +720,159 @@
   .settings-dashboard .documents-grid > .document-card:nth-child(1) .document-card-body,
   .settings-dashboard .documents-grid > .document-card:nth-child(3) .document-card-body { grid-template-columns: 1fr; }
 }
+
+/* Responsive refinements for the full profile workspace. */
+@media (max-width: 900px) {
+  .settings-dashboard,
+  .settings-dashboard .profile-content-layout,
+  .settings-dashboard .profile-content-panel {
+    min-width: 0;
+  }
+
+  .settings-dashboard .profile-content-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-dashboard .profile-content-layout .profile-tabs {
+    position: static;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    margin: 0;
+  }
+
+  .settings-dashboard .profile-content-layout .profile-tab {
+    width: auto;
+    min-width: max-content;
+    flex: 0 0 auto;
+  }
+
+  .settings-dashboard .documents-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-dashboard .documents-grid > .document-card:nth-child(n) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .settings-dashboard .documents-grid > .document-card:nth-child(2) .document-card-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-dashboard .documents-grid > .document-card:nth-child(2) .document-field {
+    max-width: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .settings-dashboard { padding: 14px 12px 28px; }
+  .settings-dashboard .settings-header { margin-bottom: 18px; }
+  .settings-dashboard .profile-body {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+  .settings-dashboard .profile-top { width: 100%; min-width: 0; }
+  .settings-dashboard .employee-name {
+    max-width: 100%;
+    font-size: clamp(21px, 6vw, 26px);
+    overflow-wrap: anywhere;
+  }
+  .settings-dashboard .contact-bar,
+  .settings-dashboard .profile-content-panel .info-card-body,
+  .settings-dashboard .section-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .settings-dashboard .contact-item,
+  .settings-dashboard .profile-item,
+  .settings-dashboard .info-row { min-width: 0; }
+  .settings-dashboard .contact-item strong,
+  .settings-dashboard .info-value,
+  .settings-dashboard .profile-item span,
+  .settings-dashboard .other-document-file-name {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .settings-dashboard .documents-container,
+  .settings-dashboard .profile-section { padding: 14px; }
+  .settings-dashboard .document-card-body { padding: 12px; }
+  .settings-dashboard .document-footer {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 12px;
+  }
+  .settings-dashboard .document-actions { width: 100%; flex-wrap: wrap; }
+  .settings-dashboard .save-draft-button,
+  .settings-dashboard .submit-document-button { min-width: 0; flex: 1 1 130px; }
+  .settings-dashboard .other-document-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px 8px;
+    padding: 10px 0;
+  }
+  .settings-dashboard .other-document-row > span:first-child {
+    grid-column: 1;
+    font-size: 11px;
+  }
+  .settings-dashboard .other-document-status-area {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+  .settings-dashboard .other-document-row .upload-button {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    justify-self: end;
+    min-width: 72px;
+  }
+}
+
+@media (max-width: 400px) {
+  .settings-dashboard { padding-right: 10px; padding-left: 10px; }
+  .settings-dashboard .profile-stats { grid-template-columns: minmax(0, 1fr); }
+  .settings-dashboard .stat-card { min-height: 76px; padding: 12px 14px; }
+  .settings-dashboard .profile-content-layout .profile-tabs { gap: 4px; padding: 6px; }
+  .settings-dashboard .profile-content-layout .profile-tab { min-height: 40px; padding: 0 11px; }
+  .settings-dashboard .profile-content-panel .info-card-body { padding-right: 14px; padding-left: 14px; }
+  .settings-dashboard .documents-container { padding: 12px; }
+  .settings-dashboard .document-card-header { padding-right: 12px; padding-left: 12px; }
+  .settings-dashboard .documents-header h2 { font-size: 18px; }
+}
+
+/* Keep each Other Documents status and upload action in separate grid areas. */
+.settings-dashboard .other-document-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 6px 10px;
+  min-height: 78px;
+  padding: 10px;
+}
+
+.settings-dashboard .other-document-row > span:first-child {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.settings-dashboard .other-document-row .other-document-status-area {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.settings-dashboard .other-document-row .upload-button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: end;
+  min-width: 78px;
+}

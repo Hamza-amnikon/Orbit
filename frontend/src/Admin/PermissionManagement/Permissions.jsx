@@ -2629,12 +2629,10 @@ const selectLoginPage = (permission) => {
   };
 
   const goBack = () => {
-    const historyIndex = window.history.state?.idx;
-    if (Number.isInteger(historyIndex) && historyIndex > 0) {
-      navigate(-1);
-      return;
-    }
-    navigate("/");
+    // Permissions belongs to Access Control and can also be opened directly
+    // from the sidebar. Use its parent management page consistently instead
+    // of browser history, which may point back to the dashboard.
+    navigate("/employees/roles");
   };
 
   /* ========================================================================

@@ -9,6 +9,7 @@ import {
     Select,
     MenuItem,
     LinearProgress,
+    IconButton,
 } from "@mui/material";
 
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
@@ -21,6 +22,8 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate } from "react-router-dom";
 
 import "./PayrollDashboard.css";
 import { useAuth } from "../../../context/AuthContext";
@@ -28,6 +31,7 @@ import { Typography as MuiText } from "@mui/material";
 
 function PayrollDashboard() {
     const { hasPermission } = useAuth();
+    const navigate = useNavigate();
 
     const permissionRoute = "/payroll/dashboard";
     const canView = hasPermission(permissionRoute, "view");
@@ -165,14 +169,24 @@ function PayrollDashboard() {
 
             <Box className="pd-payroll-dashboard-header">
 
-                <Box>
-                    <Typography className="pd-payroll-dashboard-title">
-                        Payroll Dashboard
-                    </Typography>
+                <Box className="pd-payroll-dashboard-heading">
+                    <IconButton
+                        className="pd-dashboard-back-button"
+                        aria-label="Back to Payroll Management"
+                        onClick={() => navigate("/payroll")}
+                    >
+                        <ArrowBackIcon />
+                    </IconButton>
 
-                    <Typography className="pd-payroll-dashboard-subtitle">
-                        Monitor payroll, salaries, deductions and employee payments.
-                    </Typography>
+                    <Box>
+                        <Typography className="pd-payroll-dashboard-title">
+                            Payroll Dashboard
+                        </Typography>
+
+                        <Typography className="pd-payroll-dashboard-subtitle">
+                            Monitor payroll, salaries, deductions and employee payments.
+                        </Typography>
+                    </Box>
                 </Box>
 
                 <Box className="pd-payroll-dashboard-header-actions">
@@ -591,4 +605,4 @@ function PayrollDashboard() {
     );
 }
 
-export default PayrollDashboard; 
+export default PayrollDashboard;

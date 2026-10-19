@@ -427,9 +427,10 @@ const PolicyForm = ({
             fullWidth
             maxWidth="md"
             className="policy-form-dialog"
-            PaperProps={{
-                className: "policy-form-paper",
-                sx: {
+            slotProps={{
+                paper: {
+                    className: "policy-form-paper",
+                    sx: {
                     width: "min(900px, calc(100% - 32px))",
                     maxWidth: "900px",
                     maxHeight: "calc(100% - 32px)",
@@ -437,6 +438,7 @@ const PolicyForm = ({
                     borderRadius: "18px",
                     overflow: "hidden",
                     border: "1px solid #e0e8f2",
+                    },
                 },
             }}
         >

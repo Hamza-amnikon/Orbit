@@ -424,6 +424,7 @@ export default function LeaveTypes() {
                     ========================================== */}
 
                     <Dialog
+                        className="leave-type-dialog"
 
                         open={
                             showForm &&
@@ -1044,7 +1045,13 @@ export default function LeaveTypes() {
                         </Box>
                     </Paper>
 
-                    <Dialog open={Boolean(deleteTarget)} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
+                    <Dialog
+                        className="leave-type-delete-dialog"
+                        open={Boolean(deleteTarget)}
+                        onClose={() => setDeleteTarget(null)}
+                        maxWidth="xs"
+                        fullWidth
+                    >
                         <DialogTitle>Delete leave type?</DialogTitle>
                         <DialogContent>
                             <Typography variant="body2" color="text.secondary">

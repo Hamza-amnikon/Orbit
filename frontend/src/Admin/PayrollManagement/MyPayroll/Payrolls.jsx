@@ -38,6 +38,7 @@ import {
     DownloadOutlined,
     PrintOutlined,
     RefreshOutlined,
+    ReceiptLongOutlined,
 } from "@mui/icons-material";
 
 import sparkLogo from "../../../Images/amnikon-logo.png";
@@ -1933,6 +1934,22 @@ function Payslips() {
 
                     </Paper>
                 </Box>
+            )}
+
+            {!payslip && !loading && !error && !profileLoading && (
+                <Card className="payslip-empty-state no-print" elevation={0}>
+                    <CardContent className="payslip-empty-content">
+                        <Box className="payslip-empty-icon">
+                            <ReceiptLongOutlined />
+                        </Box>
+                        <Typography className="payslip-empty-title">
+                            No payslip for this period
+                        </Typography>
+                        <Typography className="payslip-empty-description">
+                            There isn’t a payslip available for {monthName(selectedMonth)} {selectedYear}. Try another month or refresh later.
+                        </Typography>
+                    </CardContent>
+                </Card>
             )}
 
         </Box>

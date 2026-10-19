@@ -1405,7 +1405,7 @@ body,
 
 .sidebar-logo {
     width: 100% !important;
-    height: 125px !important;
+    height: 108px !important;
 
     display: flex !important;
     align-items: center !important;
@@ -1413,14 +1413,14 @@ body,
 
     flex-shrink: 0 !important;
 
-    padding: 8px 0 0 !important;
+    padding: 4px 0 0 !important;
 
     box-sizing: border-box !important;
 }
 
 .logo-image {
-    width: 178px !important;
-    height: 105px !important;
+    width: 160px !important;
+    height: 94px !important;
 
     max-width: 100% !important;
 

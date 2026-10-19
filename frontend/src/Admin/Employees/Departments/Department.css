@@ -79,12 +79,11 @@
 
     padding-inline:22px;
 
-    transition:.3s;
+    transition:background-color .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 
 .department-page .header-buttons .MuiButton-root:hover{
-
-    transform:translateY(-3px);
+    transform:none;
 }
 
 
@@ -113,16 +112,13 @@
 
     background:#fff !important;
 
-    transition:.35s;
+    transition:box-shadow .22s ease, border-color .22s ease, background-color .22s ease;
 
     box-shadow:
         0 10px 25px rgba(15,23,42,.06);
 }
 
 .department-page .stats-card:hover{
-
-    transform:translateY(-8px);
-
     box-shadow:
         0 20px 40px rgba(15,23,42,.12);
 }
@@ -474,7 +470,6 @@
         #4338ca
     ) !important;
 
-    transform:translateY(-1px);
 }
 
 

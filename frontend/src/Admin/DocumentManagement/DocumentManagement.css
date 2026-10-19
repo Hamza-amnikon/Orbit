@@ -458,3 +458,193 @@
   .document-filter { grid-template-columns: 1fr; }
   .document-search-field, .document-filter .document-reset-button { grid-column: auto; }
 }
+
+/* Keep the document review workspace consistent with SPARK's dark surfaces. */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-management {
+  color: var(--spark-text);
+  background: transparent;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-header h1 {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-header p,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-stat-card span,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-table-footer span {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-back-button.MuiIconButton-root {
+  border-color: var(--spark-border);
+  background: var(--spark-surface-raised);
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-back-button.MuiIconButton-root:hover {
+  border-color: #536780;
+  background: var(--spark-hover);
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-refresh-button.MuiButton-root,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-reset-button.MuiButton-root {
+  border-color: var(--spark-border);
+  background: var(--spark-surface-raised);
+  color: var(--spark-text);
+  box-shadow: none;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-refresh-button.MuiButton-root:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-reset-button.MuiButton-root:hover {
+  border-color: #536780;
+  background: var(--spark-hover);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-stat-card.MuiCard-root,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-filter,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-table-container {
+  border-color: var(--spark-border);
+  background: var(--spark-surface);
+  box-shadow: none;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-stat-card.MuiCard-root {
+  background-image: none;
+  transition: none;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-stat-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-stat-card strong {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .stat-icon.blue {
+  background: #203653;
+  color: #9dbcf2;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .stat-icon.orange {
+  background: #3a3023;
+  color: #f4bd71;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .stat-icon.green {
+  background: #1d382f;
+  color: #78d3a2;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .stat-icon.red {
+  background: #3b2930;
+  color: #f19aa0;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-filter .MuiOutlinedInput-root {
+  background: var(--spark-surface-raised);
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-filter .MuiOutlinedInput-notchedOutline {
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-filter .MuiInputLabel-root,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-date-field > label {
+  color: var(--spark-muted);
+  background: var(--spark-surface);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-filter .MuiInputAdornment-root .MuiSvgIcon-root,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-filter input::-webkit-calendar-picker-indicator {
+  color: var(--spark-muted);
+  filter: invert(0.75);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-table thead {
+  background: var(--spark-table-head);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-table th {
+  border-bottom-color: var(--spark-border);
+  color: #c4d2e5;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-table td {
+  border-bottom-color: var(--spark-border);
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-table tbody tr:hover {
+  background: var(--spark-hover);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-name span {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-status.pending {
+  background: #3a3023;
+  color: #f4bd71;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-status.approved {
+  background: #1d382f;
+  color: #78d3a2;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-status.rejected {
+  background: #3b2930;
+  color: #f19aa0;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approve-btn,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .reject-btn,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .view-btn {
+  border-color: var(--spark-border);
+  background: var(--spark-surface-raised);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approve-btn { color: #78d3a2; }
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .reject-btn { color: #f19aa0; }
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .view-btn { color: #a9c3f3; }
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .approve-btn:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .reject-btn:hover,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .view-btn:hover {
+  border-color: #536780;
+  background: var(--spark-hover);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .document-table-footer {
+  border-top-color: var(--spark-border);
+  background: var(--spark-surface-raised);
+}
+
+html[data-color-mode="dark"] .document-preview-dialog .MuiDialog-paper {
+  border-color: var(--spark-border);
+  background: var(--spark-surface);
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .document-preview-title.MuiDialogTitle-root,
+html[data-color-mode="dark"] .document-preview-actions.MuiDialogActions-root {
+  border-color: var(--spark-border);
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .document-preview-content.MuiDialogContent-root {
+  background: var(--spark-surface-raised);
+}
+
+html[data-color-mode="dark"] .document-preview-state {
+  color: var(--spark-muted);
+}
+
+html[data-color-mode="dark"] .document-preview-actions .MuiButton-root {
+  border-color: var(--spark-border);
+  color: var(--spark-text);
+}

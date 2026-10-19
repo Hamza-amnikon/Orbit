@@ -485,7 +485,7 @@ function Locations() {
           handleUpdate={handleUpdateLocation}
         />
       )}
-      <Dialog open={Boolean(pendingDelete)} onClose={() => setPendingDelete(null)}>
+      <Dialog className="employee-type-dialog" open={Boolean(pendingDelete)} onClose={() => setPendingDelete(null)}>
         <DialogTitle>Delete location?</DialogTitle>
         <DialogContent>
           Are you sure you want to delete {pendingDelete?.locationName || "this location"}?

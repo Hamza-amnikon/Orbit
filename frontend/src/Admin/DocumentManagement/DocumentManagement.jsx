@@ -38,6 +38,7 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import { loadXlsx } from "../../utils/exportLibraries";
+import { showReactPrompt } from "../../components/ui/ReactPromptProvider";
 
 const API_URL = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
 const EMPLOYEE_API_URL = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
@@ -402,7 +403,13 @@ function DocumentManagement() {
       return;
     }
 
-    const reason = window.prompt("Enter rejection reason:");
+    const reason = await showReactPrompt("Enter a reason for rejecting this document.", {
+      title: "Reject document",
+      inputLabel: "Rejection reason",
+      placeholder: "Enter rejection reason...",
+      confirmText: "Reject",
+      multiline: true,
+    });
 
     if (!reason || !reason.trim()) {
       return;

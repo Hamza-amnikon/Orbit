@@ -25,7 +25,7 @@ export default function DeleteAttendanceDialog({
   if (!attendance) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog className="attendance-delete-dialog" open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle className="delete-dialog-title">
         Delete Attendance
       </DialogTitle>

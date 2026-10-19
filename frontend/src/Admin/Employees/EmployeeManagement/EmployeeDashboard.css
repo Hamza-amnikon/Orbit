@@ -277,7 +277,6 @@ p {
         ease both;
 
     transition:
-        transform 0.25s ease,
         box-shadow 0.25s ease,
         border-color 0.25s ease;
 }
@@ -288,9 +287,6 @@ p {
    ============================================================ */
 
 .employee-card:hover {
-    transform:
-        translateY(-5px);
-
     border-color:
         #d3dfef;
 
@@ -336,9 +332,6 @@ p {
 
 
 .employee-card:hover::after {
-    transform:
-        scale(1.2);
-
     opacity:
         0.10;
 }
@@ -517,8 +510,6 @@ p {
     color:
         #ffffff;
 
-    transform:
-        translateX(3px);
 }
 
 
