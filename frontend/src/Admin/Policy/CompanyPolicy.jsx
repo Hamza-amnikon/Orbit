@@ -1,4 +1,5 @@
 import React, {
+    useCallback,
     useEffect,
     useMemo,
     useRef,
@@ -42,10 +43,132 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
 import PolicyService from "../Services/PolicyService";
+import * as pdfjsLib from "pdfjs-dist/build/pdf.mjs";
+import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
 import "./CompanyPolicies.css";
 import { Typography as MuiText } from "@mui/material";
-import { Box as MuiLayoutBox } from "@mui/material";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
+const PolicyPdfViewer = ({ pdfUrl, onReadToEnd, onError }) => {
+    const containerRef = useRef(null);
+    const pagesRef = useRef(null);
+    const readToEndRef = useRef(false);
+    const documentReadyRef = useRef(false);
+    const onReadToEndRef = useRef(onReadToEnd);
+    const [rendering, setRendering] = useState(true);
+
+    useEffect(() => {
+        onReadToEndRef.current = onReadToEnd;
+    }, [onReadToEnd]);
+
+    const checkReadToEnd = useCallback(() => {
+        const container = containerRef.current;
+        if (!container || !documentReadyRef.current || readToEndRef.current) return;
+
+        const hasOverflow = container.scrollHeight > container.clientHeight + 8;
+        const atEnd = !hasOverflow ||
+            container.scrollTop + container.clientHeight >= container.scrollHeight - 12;
+
+        if (atEnd) {
+            readToEndRef.current = true;
+            onReadToEndRef.current?.();
+        }
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+        const renderTasks = [];
+        let loadingTask;
+        const container = containerRef.current;
+        const pagesContainer = pagesRef.current;
+
+        if (!container || !pagesContainer || !pdfUrl) return undefined;
+
+        readToEndRef.current = false;
+        documentReadyRef.current = false;
+        pagesContainer.replaceChildren();
+        setRendering(true);
+
+        const renderDocument = async () => {
+            try {
+                const response = await fetch(pdfUrl);
+                if (!response.ok) throw new Error("Unable to load the policy PDF.");
+
+                const data = new Uint8Array(await response.arrayBuffer());
+                loadingTask = pdfjsLib.getDocument({ data });
+                const pdf = await loadingTask.promise;
+
+                for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+                    if (cancelled) return;
+
+                    const page = await pdf.getPage(pageNumber);
+                    const baseViewport = page.getViewport({ scale: 1 });
+                    const availableWidth = Math.max(280, container.clientWidth - 48);
+                    const scale = Math.min(1.5, availableWidth / baseViewport.width);
+                    const viewport = page.getViewport({ scale });
+                    const pixelRatio = window.devicePixelRatio || 1;
+                    const pageElement = document.createElement("div");
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d", { alpha: false });
+
+                    pageElement.className = "company-policy-pdf-page";
+                    canvas.width = Math.floor(viewport.width * pixelRatio);
+                    canvas.height = Math.floor(viewport.height * pixelRatio);
+                    canvas.style.width = `${Math.floor(viewport.width)}px`;
+                    canvas.style.height = `${Math.floor(viewport.height)}px`;
+                    pageElement.appendChild(canvas);
+                    pagesContainer.appendChild(pageElement);
+
+                    if (!context) throw new Error("This browser could not display the policy PDF.");
+
+                    const renderTask = page.render({
+                        canvasContext: context,
+                        viewport,
+                        transform: pixelRatio === 1 ? null : [pixelRatio, 0, 0, pixelRatio, 0, 0],
+                        background: "#ffffff",
+                    });
+                    renderTasks.push(renderTask);
+                    await renderTask.promise;
+                }
+
+                if (cancelled) return;
+                documentReadyRef.current = true;
+                setRendering(false);
+                requestAnimationFrame(checkReadToEnd);
+            } catch (error) {
+                if (!cancelled && error?.name !== "RenderingCancelledException") {
+                    setRendering(false);
+                    onError?.(error?.message || "Unable to display the policy PDF.");
+                }
+            }
+        };
+
+        renderDocument();
+
+        return () => {
+            cancelled = true;
+            renderTasks.forEach((task) => task.cancel());
+            loadingTask?.destroy();
+        };
+    }, [pdfUrl, checkReadToEnd, onError]);
+
+    return (
+        <div
+            ref={containerRef}
+            className="company-policy-pdf-viewer"
+            onScroll={checkReadToEnd}
+            aria-label="Policy document"
+        >
+            <div ref={pagesRef} />
+            <div className="company-policy-pdf-loading" hidden={!rendering}>
+                    <CircularProgress sx={{ color: "#ffffff" }} />
+                    <Typography sx={{ color: "#ffffff" }}>Loading policy...</Typography>
+            </div>
+        </div>
+    );
+};
 
 
 const CompanyPolicy = () => {
@@ -98,11 +221,22 @@ const CompanyPolicy = () => {
     const [acknowledged, setAcknowledged] =
         useState(false);
 
+    const [policyReadToEnd, setPolicyReadToEnd] =
+        useState(false);
+
     const [ackLoading, setAckLoading] =
         useState(false);
 
     const [ackCheckLoading, setAckCheckLoading] =
         useState(false);
+
+    const markPolicyReadToEnd = useCallback(() => {
+        setPolicyReadToEnd(true);
+    }, []);
+
+    const handlePdfRenderError = useCallback((message) => {
+        setPdfError(message);
+    }, []);
 
 
     // ============================================================
@@ -460,6 +594,7 @@ const CompanyPolicy = () => {
             setAcknowledged(
                 policy?.acknowledged === true
             );
+            setPolicyReadToEnd(false);
 
 
             // ====================================================
@@ -592,6 +727,7 @@ const CompanyPolicy = () => {
         setPdfOpen(false);
 
         setAcknowledged(false);
+        setPolicyReadToEnd(false);
 
         setPdfLoading(false);
 
@@ -692,7 +828,7 @@ const CompanyPolicy = () => {
 
         if (
             selectedPolicy.acknowledgementRequired &&
-            !acknowledged
+            (!acknowledged || !policyReadToEnd)
         ) {
             return;
         }
@@ -1442,14 +1578,11 @@ const CompanyPolicy = () => {
 
                     ) : pdfUrl ? (
 
-                        <MuiLayoutBox
-                            src={pdfUrl}
-                            title={
-                                selectedPolicy?.policyTitle ||
-                                "Policy PDF"
-                            }
-                            className="company-policy-pdf-frame"
-                         component="iframe"/>
+                        <PolicyPdfViewer
+                            pdfUrl={pdfUrl}
+                            onReadToEnd={markPolicyReadToEnd}
+                            onError={handlePdfRenderError}
+                        />
 
                     ) : (
 
@@ -1523,12 +1656,14 @@ const CompanyPolicy = () => {
                                             )
                                         }
                                         disabled={
-                                            ackLoading
+                                            ackLoading || !policyReadToEnd
                                         }
                                         color="primary"
                                     />
                                 }
-                                label="I acknowledge that I have read and understood this policy."
+                                label={policyReadToEnd
+                                    ? "I acknowledge that I have read and understood this policy."
+                                    : "Scroll to the end of the policy to enable acknowledgement."}
                             />
 
                         )}
@@ -1559,6 +1694,7 @@ const CompanyPolicy = () => {
                                         handleAcknowledge
                                     }
                                     disabled={
+                                        !policyReadToEnd ||
                                         !acknowledged ||
                                         ackLoading
                                     }

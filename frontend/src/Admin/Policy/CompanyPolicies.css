@@ -915,18 +915,62 @@ svg {
     min-height: 0 !important;
 }
 
-.company-policy-pdf-frame {
+.company-policy-pdf-viewer {
     width: 100% !important;
 
     height: 100% !important;
 
-    min-height: 400px !important;
+    display: block;
 
-    display: block !important;
+    flex: 1 1 auto;
 
-    border: none !important;
+    min-height: 0 !important;
 
-    background: #ffffff !important;
+    overflow: auto;
+
+    box-sizing: border-box;
+
+    padding: 24px;
+
+    background: #525659;
+}
+
+.company-policy-pdf-page {
+    width: fit-content;
+
+    max-width: 100%;
+
+    margin: 0 auto 20px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    box-shadow: 0 2px 8px rgb(0 0 0 / 32%);
+}
+
+.company-policy-pdf-page canvas {
+    display: block;
+
+    max-width: 100%;
+}
+
+.company-policy-pdf-loading {
+    min-height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 16px;
+}
+
+.company-policy-pdf-loading[hidden] {
+    display: none;
 }
 
 /* =========================================================
