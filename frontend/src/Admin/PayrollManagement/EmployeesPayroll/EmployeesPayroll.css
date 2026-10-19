@@ -386,6 +386,24 @@
     gap: 20px;
 }
 
+.epr-employee-selection-grid .epr-annual-ctc-field {
+    align-self: start;
+}
+
+.epr-employee-selection-grid .epr-annual-ctc-field .MuiOutlinedInput-root {
+    min-height: 48px;
+    box-sizing: border-box;
+}
+
+.epr-employee-selection-grid .epr-annual-ctc-field .MuiInputBase-input {
+    padding: 12px 14px;
+}
+
+.epr-employee-selection-grid .epr-annual-ctc-field .MuiFormHelperText-root {
+    margin: 6px 2px 0;
+    line-height: 1.45;
+}
+
 .epr-employee-details {
     margin-top: 24px;
 

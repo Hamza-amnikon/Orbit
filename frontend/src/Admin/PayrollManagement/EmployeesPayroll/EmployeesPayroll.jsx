@@ -1882,6 +1882,7 @@ const confirmDelete = async () => {
                             {/* ANNUAL CTC */}
 
                             <TextField
+                                className="epr-annual-ctc-field"
                                 fullWidth
                                 type="number"
                                 label="Annual CTC"
