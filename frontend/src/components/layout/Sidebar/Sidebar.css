@@ -1743,3 +1743,46 @@ body,
         display: none !important;
     }
 }
+
+/* Compact desktop mode, toggled from the navbar menu button. */
+@media (min-width: 1001px) {
+    .dashboard-layout.sidebar-collapsed .sidebar {
+        width: 76px !important;
+        padding: 0 9px !important;
+    }
+
+    .dashboard-layout.sidebar-collapsed .dashboard-main {
+        margin-left: 76px !important;
+        width: calc(100% - 76px) !important;
+    }
+
+    .dashboard-layout.sidebar-collapsed .sidebar-logo {
+        height: 100px !important;
+    }
+
+    .dashboard-layout.sidebar-collapsed .logo-image {
+        width: 58px !important;
+        height: 70px !important;
+    }
+
+    .dashboard-layout.sidebar-collapsed .menu-item {
+        width: 58px !important;
+        min-height: 48px !important;
+        padding: 10px 0 !important;
+        margin: 0 auto !important;
+        justify-content: center !important;
+        gap: 0 !important;
+    }
+
+    .dashboard-layout.sidebar-collapsed .menu-title,
+    .dashboard-layout.sidebar-collapsed .logout-btn span {
+        display: none !important;
+    }
+
+    .dashboard-layout.sidebar-collapsed .logout-btn {
+        width: 58px !important;
+        height: 46px !important;
+        padding: 10px 0 !important;
+        margin: 0 auto !important;
+    }
+}

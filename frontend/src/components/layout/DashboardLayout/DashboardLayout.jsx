@@ -27,8 +27,18 @@ function DashboardLayout() {
     // ONBOARDING PROMPT STATE
     // ==========================================================
 
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     const [onboardingPromptOpen, setOnboardingPromptOpen] =
         useState(false);
+
+    useEffect(() => {
+        const toggleSidebar = () => {
+            setSidebarCollapsed((collapsed) => !collapsed);
+        };
+
+        window.addEventListener("oya:toggle-sidebar", toggleSidebar);
+        return () => window.removeEventListener("oya:toggle-sidebar", toggleSidebar);
+    }, []);
 
 
     // ==========================================================
@@ -122,7 +132,10 @@ function DashboardLayout() {
 
     return (
 
-        <MuiLayoutBox className="dashboard-layout" component="div">
+        <MuiLayoutBox
+            className={`dashboard-layout${sidebarCollapsed ? " sidebar-collapsed" : ""}`}
+            component="div"
+        >
 
 
             {/* ==================================================
