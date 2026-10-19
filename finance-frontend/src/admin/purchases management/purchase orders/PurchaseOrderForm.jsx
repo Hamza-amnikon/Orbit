@@ -1,396 +1,213 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react";
+import { Alert, Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle,
+    Divider, FormControlLabel, IconButton, MenuItem, Stack, TextField, Typography } from "@mui/material";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import { useLoad } from "../../../live/data";
+import { createPurchaseOrder, getPurchaseChoices, getPurchaseOrder, getPurchaseVendors,
+    previewPurchaseOrder, updatePurchaseOrder } from "./PurchaseOrderService";
+import { money, newOrderLine, orderPayload, orderValues, purchaseUnits, vendorAddress } from "./PurchaseOrderHelpers";
+import "./PurchaseOrderWorkspace.css";
 
-import {
-    Box,
-    Button,
-    Divider,
-    IconButton,
-    MenuItem,
-    TextField,
-    Typography,
-} from "@mui/material";
+const selectedVendor = order => order ? { id: order.vendorId, name: order.vendorName, companyName: order.companyName } : null;
 
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
-import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+export default function PurchaseOrderForm({ order = null, onClose, onSaved }) {
+    const [current, setCurrent] = useState(order);
+    const [value, setValue] = useState(() => orderValues(order));
+    const [vendor, setVendor] = useState(() => selectedVendor(order));
+    const [vendorSearch, setVendorSearch] = useState("");
+    const [vendorResult, setVendorResult] = useState({ key: "", data: [], total: 0, error: "" });
+    const [vendorRevision, setVendorRevision] = useState(0);
+    const choices = useLoad(getPurchaseChoices, []);
+    const [preview, setPreview] = useState(null);
+    const [error, setError] = useState("");
+    const [conflict, setConflict] = useState(false);
+    const [busy, setBusy] = useState(false);
+    const locked = useRef(false);
+    const request = useRef(null);
+    const vendorKey = JSON.stringify([vendorSearch, vendorRevision]);
+    const vendorLoading = vendorResult.key !== vendorKey;
+    const vendorChoices = vendorLoading ? [] : vendorResult.data;
+    const vendorError = vendorLoading ? "" : vendorResult.error;
 
-import "./PurchaseOrderForm.css";
+    useEffect(() => {
+        const controller = new AbortController();
+        const timer = setTimeout(async () => {
+            try {
+                const result = await getPurchaseVendors(vendorSearch, controller.signal);
+                if (!controller.signal.aborted) setVendorResult({ key: vendorKey, ...result, error: "" });
+            } catch (loadError) {
+                if (!controller.signal.aborted) setVendorResult({ key: vendorKey, data: [], total: 0, error: loadError.message });
+            }
+        }, vendorSearch ? 250 : 0);
+        return () => { clearTimeout(timer); controller.abort(); };
+    }, [vendorSearch, vendorRevision, vendorKey]);
 
-const PurchaseOrderForm = ({ onClose }) => {
-    const handleSubmit = (event) => {
-        event.preventDefault();
-    };
-
-    return (
-        <Box
-            component="form"
-            className="purchase-order-form"
-            onSubmit={handleSubmit}
-        >
-            {/* Header */}
-            <Box className="purchase-order-form-header">
-                <Box className="purchase-order-form-heading">
-                    <Box className="purchase-order-form-icon">
-                        <ShoppingCartRoundedIcon />
-                    </Box>
-
-                    <Box>
-                        <Typography className="purchase-order-form-title">
-                            New Purchase Order
-                        </Typography>
-
-                        <Typography className="purchase-order-form-subtitle">
-                            Create a purchase order for your vendor
-                        </Typography>
-                    </Box>
+    function change(name, next) { setValue(previous => ({ ...previous, [name]: next })); setPreview(null); }
+    function changeLine(key, name, next) {
+        setValue(previous => ({ ...previous, items: previous.items.map(item => item.key === key
+            ? { ...item, [name]: next, ...(name === "unit" && next === 3 ? { quantity: "1" } : {}) } : item) }));
+        setPreview(null);
+    }
+    function chooseVendor(next) {
+        setVendor(next);
+        setValue(previous => ({ ...previous, vendorId: next?.id || "", branch: next?.branch || "",
+            currency: next?.currency || "", paymentTerms: next?.paymentTerms || "",
+            billingAddress: next ? vendorAddress(next) : "" }));
+        setPreview(null);
+    }
+    function validate() {
+        if (!value.vendorId) return "Select a vendor.";
+        if (!value.orderDate) return "Order date is required.";
+        if (value.expectedDeliveryDate && value.expectedDeliveryDate < value.orderDate)
+            return "Expected delivery cannot precede the order date.";
+        if (!choices.data?.branches.some(branch => branch.name === value.branch)) return "Select an active managing branch.";
+        if (!choices.data?.currencies.some(currency => currency.currencyCode === value.currency)) return "Select an active currency.";
+        if (!value.items.length || value.items.length > 100) return "Provide between 1 and 100 items.";
+        for (const [index, item] of value.items.entries()) {
+            if (!item.itemName.trim()) return `Enter an item or service name on line ${index + 1}.`;
+            for (const name of ["quantity", "unitPrice", "taxRate", ...(item.discountEnabled ? ["discountAmount"] : [])]) {
+                if (item[name] === "" || !Number.isFinite(Number(item[name])) || Number(item[name]) < 0)
+                    return `Enter a valid ${name} on line ${index + 1}.`;
+            }
+            if (Number(item.quantity) <= 0) return "Quantity must be greater than zero.";
+            if (Number(item.taxRate) > 100) return "Tax cannot exceed 100%.";
+        }
+        return "";
+    }
+    async function submit(event, previewOnly = false) {
+        event?.preventDefault();
+        if (locked.current) return;
+        const validation = validate();
+        setError(validation);
+        if (validation) return;
+        locked.current = true; setBusy(true);
+        try {
+            const body = orderPayload(value);
+            if (previewOnly) setPreview(await previewPurchaseOrder(body));
+            else if (current) onSaved(await updatePurchaseOrder(current.id, { ...body, rowVersion: current.rowVersion }));
+            else {
+                const fingerprint = JSON.stringify(body);
+                if (request.current?.fingerprint !== fingerprint) request.current = { fingerprint, id: crypto.randomUUID() };
+                onSaved(await createPurchaseOrder({ ...body, requestId: request.current.id }));
+            }
+        } catch (saveError) { setError(saveError.message); setConflict(saveError.status === 409); }
+        finally { locked.current = false; setBusy(false); }
+    }
+    async function reload() {
+        if (locked.current || !current) return;
+        locked.current = true; setBusy(true);
+        try {
+            const saved = await getPurchaseOrder(current.id);
+            if (saved.status !== 0) throw new Error("This order is no longer a draft. Close the form and refresh its details.");
+            setCurrent(saved); setValue(orderValues(saved)); setVendor(selectedVendor(saved));
+            setPreview(null); setError(""); setConflict(false);
+        } catch (loadError) { setError(loadError.message); }
+        finally { locked.current = false; setBusy(false); }
+    }
+    const currencies = choices.data?.currencies ?? [];
+    const branches = choices.data?.branches ?? [];
+    return <Dialog open fullWidth maxWidth="md" aria-labelledby="po-form-title" onClose={busy ? undefined : onClose}>
+        <Box component="form" noValidate className="po-form" onSubmit={submit}>
+            <DialogTitle id="po-form-title">{current ? "Edit Purchase Order" : "New Purchase Order"}</DialogTitle>
+            <DialogContent dividers>
+                {(choices.error || vendorError) && <Alert severity="error" sx={{ mb: 2 }}
+                    action={<Button color="inherit" disabled={busy} onClick={() => {
+                        choices.refresh(); setVendorRevision(previous => previous + 1);
+                    }}>Retry choices</Button>}>{choices.error || vendorError}</Alert>}
+                <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>Basic Information</Typography>
+                <Box className="po-form-grid">
+                    <Autocomplete options={vendorChoices} value={vendor} loading={vendorLoading} disabled={busy}
+                        filterOptions={options => options} isOptionEqualToValue={(a, b) => a.id === b.id}
+                        getOptionLabel={option => option.name + (option.companyName ? " · " + option.companyName : "")}
+                        onInputChange={(_, text, reason) => { if (reason === "input" || reason === "clear") setVendorSearch(text); }}
+                        onChange={(_, next) => chooseVendor(next)}
+                        renderInput={params => <TextField {...params} label="Vendor" required
+                            helperText={vendorResult.total > 50 ? "Type to search more vendors." : "Select an active vendor."} />} />
+                    <TextField label="Purchase Order Number" value={current?.purchaseOrderNumber || "Assigned when issued"} disabled />
+                    {[["orderDate", "Order date", true], ["expectedDeliveryDate", "Expected delivery date", false]].map(([name, label, required]) =>
+                        <TextField key={name} label={label} required={required} type="date" value={value[name]} disabled={busy}
+                            slotProps={{ inputLabel: { shrink: true } }} onChange={event => change(name, event.target.value)} />)}
+                    <TextField select label="Managing branch" required value={value.branch} disabled={busy || choices.loading}
+                        onChange={event => change("branch", event.target.value)}>
+                        {value.branch && !branches.some(branch => branch.name === value.branch) &&
+                            <MenuItem value={value.branch} disabled>{value.branch} (unavailable)</MenuItem>}
+                        {branches.map(branch => <MenuItem key={branch.id} value={branch.name}>{branch.name}</MenuItem>)}
+                    </TextField>
+                    <TextField select label="Currency" required value={value.currency} disabled={busy || choices.loading}
+                        onChange={event => change("currency", event.target.value)}>
+                        {value.currency && !currencies.some(currency => currency.currencyCode === value.currency) &&
+                            <MenuItem value={value.currency} disabled>{value.currency} (unavailable)</MenuItem>}
+                        {currencies.map(currency => <MenuItem key={currency.currencyCode} value={currency.currencyCode}>{currency.currencyCode}</MenuItem>)}
+                    </TextField>
+                    {[["reference", "Reference", 200], ["paymentTerms", "Payment terms", 200],
+                        ["billingAddress", "Vendor billing address", 1000], ["shippingAddress", "Delivery address", 1000]].map(([name, label, maxLength]) =>
+                        <TextField key={name} label={label} value={value[name]} disabled={busy}
+                            multiline={name.endsWith("Address")} slotProps={{ htmlInput: { maxLength } }}
+                            onChange={event => change(name, event.target.value)} />)}
                 </Box>
-
-                <IconButton
-                    className="purchase-order-form-close"
-                    onClick={onClose}
-                >
-                    <CloseRoundedIcon />
-                </IconButton>
+                <Divider sx={{ my: 3 }} />
+                <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>Items / Services</Typography>
+                <Stack spacing={2}>
+                    {value.items.map((item, index) => <Box key={item.key} sx={{ border: "1px solid", borderColor: "divider", p: 2, borderRadius: 2 }}>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+                            <Typography fontWeight={600}>Line {index + 1}</Typography>
+                            <IconButton aria-label={`Remove line ${index + 1}`} color="error" disabled={busy || value.items.length === 1}
+                                onClick={() => { change("items", value.items.filter(line => line.key !== item.key)); }}>
+                                <DeleteOutlineRoundedIcon />
+                            </IconButton>
+                        </Stack>
+                        <Box className="po-line-grid">
+                            <TextField label="Item / service" required value={item.itemName} disabled={busy}
+                                slotProps={{ htmlInput: { maxLength: 200 } }} onChange={event => changeLine(item.key, "itemName", event.target.value)} />
+                            <TextField select label="Unit" value={item.unit} disabled={busy}
+                                onChange={event => changeLine(item.key, "unit", Number(event.target.value))}>
+                                {purchaseUnits.map((label, unit) => <MenuItem key={label} value={unit}>{label}</MenuItem>)}
+                            </TextField>
+                            {[["quantity", "Quantity", "0.0001", undefined], ["unitPrice", "Unit price", "0", undefined],
+                                ["taxRate", "Tax %", "0", "100"]].map(([name, label, min, max]) =>
+                                <TextField key={name} label={label} required type="number" value={item[name]}
+                                    disabled={busy || (name === "quantity" && item.unit === 3)}
+                                    slotProps={{ htmlInput: { min, max, step: "0.0001" } }}
+                                    onChange={event => changeLine(item.key, name, event.target.value)} />)}
+                            <TextField label="Description" value={item.description} disabled={busy}
+                                slotProps={{ htmlInput: { maxLength: 1000 } }}
+                                onChange={event => changeLine(item.key, "description", event.target.value)} />
+                            <FormControlLabel label="Apply discount" control={<Checkbox checked={item.discountEnabled} disabled={busy}
+                                onChange={event => changeLine(item.key, "discountEnabled", event.target.checked)} />} />
+                            <TextField label="Discount amount" type="number" value={item.discountAmount} disabled={busy || !item.discountEnabled}
+                                slotProps={{ htmlInput: { min: 0, step: "0.0001" } }}
+                                onChange={event => changeLine(item.key, "discountAmount", event.target.value)} />
+                        </Box>
+                    </Box>)}
+                    <Button variant="outlined" disabled={busy || value.items.length >= 100}
+                        onClick={() => change("items", [...value.items, newOrderLine()])}>Add item</Button>
+                </Stack>
+                <Divider sx={{ my: 3 }} />
+                <Box className="po-form-grid">
+                    {[["notes", "Notes"], ["additionalTerms", "Additional terms"]].map(([name, label]) =>
+                        <TextField key={name} label={label} multiline minRows={2} value={value[name]} disabled={busy}
+                            slotProps={{ htmlInput: { maxLength: 2000 } }} onChange={event => change(name, event.target.value)} />)}
+                </Box>
+                {preview && <Box sx={{ mt: 3, p: 2, border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
+                    <Typography fontWeight={700}>Purchase Order Preview</Typography>
+                    {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].map(([label, name]) =>
+                        <Box key={name} className="po-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
+                            <Typography fontWeight={name === "grandTotal" ? 700 : 400}>
+                                {money(preview[name], preview.currency, preview.currencyDecimalPlaces)}</Typography></Box>)}
+                </Box>}
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                    Totals are calculated by the server. Saving a draft does not create a bill or record a payment.
+                </Typography>
+            </DialogContent>
+            <Box className="po-form-feedback" aria-live="polite">
+                {error && <Alert severity="error">{error}</Alert>}
+                {conflict && current && <Button onClick={reload} disabled={busy}>Reload saved order (replaces unsaved edits)</Button>}
             </Box>
-
-            {/* Form Body */}
-            <Box className="purchase-order-form-body">
-
-                {/* Basic Information */}
-                <Typography className="purchase-order-form-section-title">
-                    Basic Information
-                </Typography>
-
-                <Box className="purchase-order-form-grid">
-
-                    <TextField
-                        label="Vendor"
-                        select
-                        fullWidth
-                        defaultValue=""
-                        required
-                    >
-                        <MenuItem value="ABC Suppliers">
-                            ABC Suppliers
-                        </MenuItem>
-
-                        <MenuItem value="Global Office Solutions">
-                            Global Office Solutions
-                        </MenuItem>
-
-                        <MenuItem value="TechWorld Solutions">
-                            TechWorld Solutions
-                        </MenuItem>
-
-                        <MenuItem value="Bright Office Supplies">
-                            Bright Office Supplies
-                        </MenuItem>
-                    </TextField>
-
-                    <TextField
-                        label="Purchase Order Number"
-                        fullWidth
-                        defaultValue="PO-005"
-                        required
-                    />
-
-                    <TextField
-                        label="Order Date"
-                        type="date"
-                        fullWidth
-                        defaultValue="2026-10-06"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        required
-                    />
-
-                    <TextField
-                        label="Expected Delivery Date"
-                        type="date"
-                        fullWidth
-                        defaultValue="2026-10-15"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-
-                    <TextField
-                        label="Reference"
-                        fullWidth
-                        placeholder="Enter reference number"
-                    />
-
-                    <TextField
-                        label="Payment Terms"
-                        select
-                        fullWidth
-                        defaultValue="Net 30"
-                    >
-                        <MenuItem value="Due on Receipt">
-                            Due on Receipt
-                        </MenuItem>
-
-                        <MenuItem value="Net 15">
-                            Net 15
-                        </MenuItem>
-
-                        <MenuItem value="Net 30">
-                            Net 30
-                        </MenuItem>
-
-                        <MenuItem value="Net 45">
-                            Net 45
-                        </MenuItem>
-
-                        <MenuItem value="Net 60">
-                            Net 60
-                        </MenuItem>
-                    </TextField>
-
-                </Box>
-
-                <Divider className="purchase-order-form-divider" />
-
-                {/* Item Information */}
-                <Typography className="purchase-order-form-section-title">
-                    Item / Service Details
-                </Typography>
-
-                <Box className="purchase-order-form-grid">
-
-                    <TextField
-                        label="Item / Service"
-                        fullWidth
-                        placeholder="Enter item or service"
-                        required
-                    />
-
-                    <TextField
-                        label="Quantity"
-                        type="number"
-                        fullWidth
-                        defaultValue="1"
-                        inputProps={{
-                            min: 1,
-                        }}
-                        required
-                    />
-
-                    <TextField
-                        label="Rate"
-                        type="number"
-                        fullWidth
-                        placeholder="0.00"
-                        inputProps={{
-                            min: 0,
-                        }}
-                        required
-                    />
-
-                    <TextField
-                        label="Tax"
-                        select
-                        fullWidth
-                        defaultValue="18%"
-                    >
-                        <MenuItem value="0%">
-                            0%
-                        </MenuItem>
-
-                        <MenuItem value="5%">
-                            5%
-                        </MenuItem>
-
-                        <MenuItem value="12%">
-                            12%
-                        </MenuItem>
-
-                        <MenuItem value="18%">
-                            18%
-                        </MenuItem>
-
-                        <MenuItem value="28%">
-                            28%
-                        </MenuItem>
-                    </TextField>
-
-                    <TextField
-                        label="Discount"
-                        type="number"
-                        fullWidth
-                        defaultValue="0"
-                        inputProps={{
-                            min: 0,
-                        }}
-                    />
-
-                    <TextField
-                        label="Unit"
-                        select
-                        fullWidth
-                        defaultValue="Nos"
-                    >
-                        <MenuItem value="Nos">
-                            Nos
-                        </MenuItem>
-
-                        <MenuItem value="Hours">
-                            Hours
-                        </MenuItem>
-
-                        <MenuItem value="Days">
-                            Days
-                        </MenuItem>
-
-                        <MenuItem value="Kg">
-                            Kg
-                        </MenuItem>
-
-                        <MenuItem value="Box">
-                            Box
-                        </MenuItem>
-                    </TextField>
-
-                </Box>
-
-                <Box className="purchase-order-description-field">
-                    <TextField
-                        label="Description"
-                        multiline
-                        rows={3}
-                        fullWidth
-                        placeholder="Enter item or service description"
-                    />
-                </Box>
-
-                <Divider className="purchase-order-form-divider" />
-
-                {/* Address */}
-                <Typography className="purchase-order-form-section-title">
-                    Billing & Shipping Address
-                </Typography>
-
-                <Box className="purchase-order-form-grid">
-
-                    <TextField
-                        label="Billing Address"
-                        multiline
-                        rows={3}
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="Shipping Address"
-                        multiline
-                        rows={3}
-                        fullWidth
-                    />
-
-                </Box>
-
-                <Divider className="purchase-order-form-divider" />
-
-                {/* Additional Information */}
-                <Typography className="purchase-order-form-section-title">
-                    Additional Information
-                </Typography>
-
-                <TextField
-                    label="Notes"
-                    multiline
-                    rows={3}
-                    fullWidth
-                    placeholder="Add any additional notes"
-                />
-
-                <TextField
-                    label="Terms & Conditions"
-                    multiline
-                    rows={3}
-                    fullWidth
-                    placeholder="Enter purchase order terms and conditions"
-                    className="purchase-order-terms-field"
-                />
-
-                <Divider className="purchase-order-form-divider" />
-
-                {/* Summary */}
-                <Typography className="purchase-order-form-section-title">
-                    Purchase Order Summary
-                </Typography>
-
-                <Box className="purchase-order-summary-box">
-
-                    <Box className="purchase-order-summary-row">
-                        <Typography>
-                            Sub Total
-                        </Typography>
-
-                        <Typography>
-                            ₹5,00,000
-                        </Typography>
-                    </Box>
-
-                    <Box className="purchase-order-summary-row">
-                        <Typography>
-                            Discount
-                        </Typography>
-
-                        <Typography>
-                            ₹0
-                        </Typography>
-                    </Box>
-
-                    <Box className="purchase-order-summary-row">
-                        <Typography>
-                            Tax
-                        </Typography>
-
-                        <Typography>
-                            ₹90,000
-                        </Typography>
-                    </Box>
-
-                    <Divider />
-
-                    <Box className="purchase-order-summary-total">
-                        <Typography>
-                            Total
-                        </Typography>
-
-                        <Typography>
-                            ₹5,90,000
-                        </Typography>
-                    </Box>
-
-                </Box>
-
-            </Box>
-
-            {/* Footer */}
-            <Box className="purchase-order-form-footer">
-
-                <Button
-                    variant="outlined"
-                    className="purchase-order-cancel-button"
-                    onClick={onClose}
-                >
-                    Cancel
-                </Button>
-
-                <Button
-                    type="submit"
-                    variant="contained"
-                    startIcon={<SaveRoundedIcon />}
-                    className="purchase-order-save-button"
-                >
-                    Save Purchase Order
-                </Button>
-
-            </Box>
+            <DialogActions sx={{ p: 2, flexWrap: "wrap", gap: 1 }}>
+                <Button disabled={busy} onClick={onClose}>Cancel</Button>
+                <Button variant="outlined" disabled={busy || choices.loading} onClick={() => submit(null, true)}>Preview Totals</Button>
+                <Button type="submit" variant="contained" disabled={busy || choices.loading || conflict}>{busy ? "Saving..." : "Save Draft"}</Button>
+            </DialogActions>
         </Box>
-    );
-};
-
-export default PurchaseOrderForm;
+    </Dialog>;
+}

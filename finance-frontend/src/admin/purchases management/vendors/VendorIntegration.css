@@ -1,0 +1,50 @@
+/* Scoped integration styles retain the existing vendor layout and finance theme. */
+.vendors-page, .vendor-details-page { min-width: 0; box-sizing: border-box; }
+.vendor-connected-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.vendors-page .vendors-header, .vendor-details-page .vendor-details-header { gap: 18px; flex-wrap: wrap; }
+.vendors-page .vendor-list-actions, .vendor-details-page .vendor-details-actions { flex-wrap: wrap; }
+.vendor-feedback { padding: 40px 20px; text-align: center; }
+.vendor-row-actions { display: flex; flex-wrap: wrap; gap: 4px; }
+.vendor-pagination { display: flex; justify-content: flex-end; padding: 20px; }
+.vendor-form-dialog .vendor-form { display: flex; flex-direction: column; max-height: inherit; }
+.vendor-form-dialog .vendor-form-header, .vendor-form-dialog .vendor-form-footer { flex-shrink: 0; }
+.vendor-form-dialog .vendor-form-body { min-height: 0; overflow-y: auto; }
+.vendor-form-dialog .vendor-form-feedback { padding: 0 24px; }
+.vendor-form-dialog .vendor-form-feedback:has(.MuiAlert-root) { padding-block: 12px; }
+.vendor-form-dialog .vendor-form-grid > * { min-width: 0; }
+
+@media screen {
+    .vendors-page :is(.vendors-title, .vendor-summary-value, .vendor-list-title, .vendor-name),
+    .vendor-details-page :is(.vendor-details-title, .vendor-company-name, .vendor-section-title, .vendor-info-value) {
+        color: var(--text-dark) !important;
+    }
+    .vendors-page :is(.vendors-subtitle, .vendor-summary-label, .vendor-list-subtitle, .vendor-email),
+    .vendor-details-page :is(.vendor-details-subtitle, .vendor-company-info, .vendor-info-label) {
+        color: var(--text-light) !important;
+    }
+    .vendors-page :is(.vendor-summary-card, .vendor-list-card, .vendor-list-header),
+    .vendor-details-page .vendor-details-card { border-color: var(--border); }
+    .vendor-form-dialog .vendor-form,
+    .vendor-form-dialog .vendor-form-body { background: var(--surface); color: var(--text-dark); }
+    .vendor-form-dialog .vendor-form-section-title { color: var(--text-dark) !important; }
+    .vendor-form-dialog .vendor-form-footer { background: var(--table-bg); border-color: var(--border); }
+    .vendor-form-dialog .vendor-form-divider { border-color: var(--border) !important; }
+    .vendor-form-dialog .MuiInputLabel-root { color: var(--text-light); }
+    .vendor-form-dialog .MuiInputLabel-root.Mui-focused { color: var(--finance-focus); }
+    .vendor-form-dialog .MuiOutlinedInput-root { background: var(--finance-control); }
+    .vendor-form-dialog .MuiOutlinedInput-input { color: var(--text-dark); }
+    .vendor-form-dialog .MuiInputBase-input::placeholder { color: var(--text-light); }
+    .vendor-form-dialog .MuiOutlinedInput-notchedOutline { border-color: var(--border); background: transparent; }
+    .vendor-form-dialog .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline { border-color: var(--finance-focus); }
+    .vendor-form-dialog .MuiInputLabel-root.Mui-error { color: var(--mui-palette-error-main, #d32f2f); }
+}
+@media (max-width: 700px) {
+    .vendors-page .vendor-connected-summary { grid-template-columns: 1fr; }
+    .vendors-page .vendor-list-header { padding: 18px; }
+    .vendors-page .vendor-list-actions { width: 100%; align-items: stretch; flex-direction: row; }
+    .vendors-page .vendor-list-actions > * { flex: 1 1 140px; }
+    .vendor-details-page .vendor-info-grid { grid-template-columns: 1fr; }
+    .vendor-details-page .vendor-details-card .MuiCardContent-root { padding: 20px !important; }
+    .vendor-pagination { justify-content: center; padding-inline: 4px; }
+    .vendor-form-dialog .vendor-form-feedback { padding-inline: 18px; }
+}

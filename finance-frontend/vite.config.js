@@ -1,7 +1,45 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
-// https://vite.dev/config/
+const invoiceProxy = {
+    target: "https://localhost:7173",
+    changeOrigin: true,
+    secure: false,
+};
+
 export default defineConfig({
-  plugins: [react()],
-})
+    plugins: [react()],
+    server: {
+        proxy: {
+            "/api/clients": {
+                target: "http://localhost:5080",
+                changeOrigin: true,
+            },
+            "/api/vendors": {
+                target: "https://localhost:7179",
+                changeOrigin: true,
+                secure: false,
+            },
+            "/api/bills": {
+                target: "https://localhost:7193",
+                changeOrigin: true,
+                secure: false,
+            },
+            "/api/purchase-orders": {
+                target: "https://localhost:7191",
+                changeOrigin: true,
+                secure: false,
+            },
+            "/api/currencies": { ...invoiceProxy },
+            "/api/payment-modes": { ...invoiceProxy },
+            "/api/branches": { ...invoiceProxy },
+            "/api/sales-invoices": { ...invoiceProxy },
+            "/api/sales-credit-notes": { ...invoiceProxy },
+            "/api/sales-estimates": {
+                target: "https://localhost:7280",
+                changeOrigin: true,
+                secure: false,
+            },
+        },
+    },
+});

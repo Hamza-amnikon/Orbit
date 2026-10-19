@@ -1,326 +1,67 @@
-import React, { useState } from "react";
-
-import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Typography,
-} from "@mui/material";
-
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Alert, Box, Button, Card, CardContent, Chip, MenuItem, TextField, Typography } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import FilterListRoundedIcon from "@mui/icons-material/FilterListRounded";
-
+import { useAuth } from "../../../context/AuthContext";
+import { Page, Records } from "../../../live/shared";
+import { useLoad } from "../../../live/data";
+import { getBills, getBillSummary } from "./BillService";
+import { formatDate, money, orderStatus, billStatuses } from "./BillHelpers";
 import BillForm from "./BillForm";
-import BillDetails from "./BillDetails";
-
-import "./Bills.css";
-
-const Bills = () => {
-    const [showBillForm, setShowBillForm] = useState(false);
-    const [showBillDetails, setShowBillDetails] = useState(false);
-
-    if (showBillDetails) {
-        return (
-            <BillDetails
-                onBack={() => setShowBillDetails(false)}
-            />
-        );
-    }
-
-    return (
-        <Box className="bills-page">
-
-            {/* Header */}
-            <Box className="bills-header">
-                <Box>
-                    <Typography className="bills-title">
-                        Bills
-                    </Typography>
-
-                    <Typography className="bills-subtitle">
-                        Manage vendor bills and outstanding payables
-                    </Typography>
-                </Box>
-
-                <Button
-                    variant="contained"
-                    startIcon={<AddRoundedIcon />}
-                    className="add-bill-button"
-                    onClick={() => setShowBillForm(true)}
-                >
-                    New Bill
-                </Button>
-            </Box>
-
-            {/* Summary Cards */}
-            <Box className="bill-summary-grid">
-
-                <Card className="bill-summary-card">
-                    <CardContent>
-                        <Typography className="bill-summary-label">
-                            Total Bills
-                        </Typography>
-
-                        <Typography className="bill-summary-value">
-                            58
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="bill-summary-card">
-                    <CardContent>
-                        <Typography className="bill-summary-label">
-                            Pending
-                        </Typography>
-
-                        <Typography className="bill-summary-value">
-                            18
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="bill-summary-card">
-                    <CardContent>
-                        <Typography className="bill-summary-label">
-                            Overdue
-                        </Typography>
-
-                        <Typography className="bill-summary-value">
-                            7
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="bill-summary-card">
-                    <CardContent>
-                        <Typography className="bill-summary-label">
-                            Total Payable
-                        </Typography>
-
-                        <Typography className="bill-summary-value">
-                            ₹8,42,500
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-            </Box>
-
-            {/* Bill List */}
-            <Card className="bill-list-card">
-                <CardContent className="bill-list-content">
-
-                    <Box className="bill-list-header">
-
-                        <Box>
-                            <Typography className="bill-list-title">
-                                Bill List
-                            </Typography>
-
-                            <Typography className="bill-list-subtitle">
-                                View and manage vendor bills
-                            </Typography>
-                        </Box>
-
-                        <Box className="bill-list-actions">
-
-                            <Box className="bill-search-box">
-                                <SearchRoundedIcon />
-
-                                <input
-                                    type="text"
-                                    placeholder="Search bills..."
-                                />
-                            </Box>
-
-                            <Button
-                                variant="outlined"
-                                startIcon={<FilterListRoundedIcon />}
-                                className="bill-filter-button"
-                            >
-                                Filter
-                            </Button>
-
-                        </Box>
-
-                    </Box>
-
-                    {/* Table Header */}
-                    <Box className="bill-table-header">
-                        <Typography>Bill Number</Typography>
-                        <Typography>Vendor</Typography>
-                        <Typography>Bill Date</Typography>
-                        <Typography>Due Date</Typography>
-                        <Typography>Amount</Typography>
-                        <Typography>Status</Typography>
-                        <Typography>Action</Typography>
-                    </Box>
-
-                    {/* Row 1 */}
-                    <Box className="bill-table-row">
-
-                        <Typography className="bill-number">
-                            BILL-001
-                        </Typography>
-
-                        <Typography>
-                            ABC Suppliers
-                        </Typography>
-
-                        <Typography>
-                            06 Oct 2026
-                        </Typography>
-
-                        <Typography>
-                            05 Nov 2026
-                        </Typography>
-
-                        <Typography className="bill-amount">
-                            ₹2,95,000
-                        </Typography>
-
-                        <Box className="bill-status pending">
-                            Pending
-                        </Box>
-
-                        <Button
-                            className="bill-view-button"
-                            onClick={() => setShowBillDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                    {/* Row 2 */}
-                    <Box className="bill-table-row">
-
-                        <Typography className="bill-number">
-                            BILL-002
-                        </Typography>
-
-                        <Typography>
-                            Global Office Solutions
-                        </Typography>
-
-                        <Typography>
-                            04 Oct 2026
-                        </Typography>
-
-                        <Typography>
-                            03 Nov 2026
-                        </Typography>
-
-                        <Typography className="bill-amount">
-                            ₹1,41,600
-                        </Typography>
-
-                        <Box className="bill-status paid">
-                            Paid
-                        </Box>
-
-                        <Button
-                            className="bill-view-button"
-                            onClick={() => setShowBillDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                    {/* Row 3 */}
-                    <Box className="bill-table-row">
-
-                        <Typography className="bill-number">
-                            BILL-003
-                        </Typography>
-
-                        <Typography>
-                            TechWorld Solutions
-                        </Typography>
-
-                        <Typography>
-                            02 Oct 2026
-                        </Typography>
-
-                        <Typography>
-                            17 Oct 2026
-                        </Typography>
-
-                        <Typography className="bill-amount">
-                            ₹72,250
-                        </Typography>
-
-                        <Box className="bill-status overdue">
-                            Overdue
-                        </Box>
-
-                        <Button
-                            className="bill-view-button"
-                            onClick={() => setShowBillDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                    {/* Row 4 */}
-                    <Box className="bill-table-row">
-
-                        <Typography className="bill-number">
-                            BILL-004
-                        </Typography>
-
-                        <Typography>
-                            Bright Office Supplies
-                        </Typography>
-
-                        <Typography>
-                            29 Sep 2026
-                        </Typography>
-
-                        <Typography>
-                            29 Oct 2026
-                        </Typography>
-
-                        <Typography className="bill-amount">
-                            ₹1,08,560
-                        </Typography>
-
-                        <Box className="bill-status draft">
-                            Draft
-                        </Box>
-
-                        <Button
-                            className="bill-view-button"
-                            onClick={() => setShowBillDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                </CardContent>
-            </Card>
-
-            {/* New Bill Modal */}
-            {showBillForm && (
-                <Box className="bill-modal-overlay">
-
-                    <Box className="bill-modal">
-
-                        <BillForm
-                            onClose={() => setShowBillForm(false)}
-                        />
-
-                    </Box>
-
-                </Box>
-            )}
-
+import "./BillWorkspace.css";
+
+export default function Bills() {
+    const navigate = useNavigate();
+    const { canWrite } = useAuth();
+    const [search, setSearch] = useState("");
+    const [status, setStatus] = useState("");
+    const [page, setPage] = useState(1);
+    const [adding, setAdding] = useState(false);
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedSearch(search), 250);
+        return () => clearTimeout(timer);
+    }, [search]);
+    const list = useLoad(async signal => {
+        const result = await getBills({ page, search: debouncedSearch, status }, signal);
+        const lastPage = Math.max(1, Math.ceil(result.total / 25));
+        if (!signal.aborted && page > lastPage) setPage(lastPage);
+        return result;
+    }, [page, debouncedSearch, status]);
+    const summary = useLoad(getBillSummary, []);
+    const total = list.data?.total ?? 0;
+
+
+    function refresh() { list.refresh(); summary.refresh(); }
+    return <Page title="Bills" subtitle="Record vendor invoices and manage bills"
+        action={canWrite && <Button variant="contained" startIcon={<AddRoundedIcon />}
+            onClick={() => setAdding(true)}>New Bill</Button>}>
+        <Box className="bill-summary-grid">
+            {[["Total Bills", "total"], ["Draft", "draft"], ["Issued", "issued"], ["Cancelled", "cancelled"]].map(([label, key]) =>
+                <Card key={key}><CardContent><Typography color="text.secondary" variant="body2">{label}</Typography>
+                    <Typography variant="h5" fontWeight={700} sx={{ mt: 1 }}>{summary.data?.[key] ?? "—"}</Typography>
+                </CardContent></Card>)}
         </Box>
-    );
-};
-
-export default Bills;
+        {summary.error && <Alert severity="warning" sx={{ mb: 2 }}>Bill counts could not be loaded.</Alert>}
+        <Records {...list} rows={list.data?.data ?? []} total={total} page={page} setPage={setPage}
+            search={search} setSearch={setSearch} refresh={refresh}
+            extra={<TextField select label="Status" size="small" value={status} sx={{ minWidth: 160 }}
+                onChange={event => { setStatus(event.target.value); setPage(1); }}>
+                <MenuItem value="">All statuses</MenuItem>
+                {billStatuses.map((label, index) => <MenuItem key={label} value={String(index)}>{label}</MenuItem>)}
+            </TextField>}
+            columns={[
+                { label: "Bill", render: row => row.billNumber || `Draft #${row.id}` },
+                { label: "Vendor", render: row => row.vendorName },
+                { label: "Bill Date", render: row => formatDate(row.billDate) },
+                { label: "Due Date", render: row => formatDate(row.dueDate) },
+                { label: "Branch / Currency", render: row => `${row.branch} · ${row.currency}` },
+                { label: "Amount", render: row => money(row.grandTotal, row.currency, row.currencyDecimalPlaces) },
+                { label: "Status", render: row => <Chip size="small" label={orderStatus(row.status)}
+                    color={row.status === 1 ? "success" : row.status === 2 ? "error" : "default"} /> },
+                { label: "Action", render: row => <Button onClick={() => navigate(`/purchases/bills/${row.id}`)}>View</Button> },
+            ]} />
+        {canWrite && adding && <BillForm onClose={() => setAdding(false)}
+            onSaved={order => { setAdding(false); navigate(`/purchases/bills/${order.id}`); }} />}
+    </Page>;
+}

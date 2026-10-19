@@ -2,7 +2,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 28px;
-    background-color: #f5f7fb;
+    background-color: var(--page-bg);
 }
 
 .estimate-details-container {
@@ -35,26 +35,26 @@
     height: 40px;
     padding: 0 !important;
 
-    color: #2563eb !important;
-    background-color: #ffffff !important;
+    color: var(--primary-blue) !important;
+    background-color: var(--surface) !important;
 
-    border: 1px solid #e5eaf1 !important;
+    border: 1px solid var(--border) !important;
     border-radius: 10px !important;
 }
 
 .estimate-details-back-button:hover {
-    background-color: #eaf3ff !important;
+    background-color: var(--accent-bg) !important;
 }
 
 .estimate-details-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 22px !important;
     font-weight: 700 !important;
 }
 
 .estimate-details-subtitle {
     margin-top: 3px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 12px !important;
 }
 
@@ -72,19 +72,19 @@
 
 .estimate-print-button,
 .estimate-edit-button {
-    border-color: #2563eb !important;
-    color: #2563eb !important;
-    background-color: #ffffff !important;
+    border-color: var(--primary-blue) !important;
+    color: var(--primary-blue) !important;
+    background-color: var(--surface) !important;
 }
 
 .estimate-print-button:hover,
 .estimate-edit-button:hover {
-    background-color: #eaf3ff !important;
+    background-color: var(--accent-bg) !important;
 }
 
 .estimate-send-button {
-    background-color: #2563eb !important;
-    color: #ffffff !important;
+    background-color: var(--primary-blue) !important;
+    color: var(--surface) !important;
 }
 
 .estimate-send-button:hover {
@@ -99,10 +99,10 @@
 .estimate-preview-card {
     width: 100%;
 
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px !important;
 
-    background-color: #ffffff;
+    background-color: var(--surface);
 
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.07) !important;
 }
@@ -123,14 +123,14 @@
 }
 
 .estimate-company-name {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 24px !important;
     font-weight: 700 !important;
 }
 
 .estimate-company-details {
     margin-top: 4px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 12px !important;
 }
 
@@ -139,7 +139,7 @@
 }
 
 .estimate-preview-label {
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 11px !important;
     font-weight: 600 !important;
     letter-spacing: 1px;
@@ -147,7 +147,7 @@
 
 .estimate-preview-number {
     margin-top: 4px !important;
-    color: #2563eb !important;
+    color: var(--primary-blue) !important;
     font-size: 20px !important;
     font-weight: 700 !important;
 }
@@ -158,8 +158,8 @@
     margin-top: 8px !important;
     padding: 4px 12px;
 
-    color: #2563eb !important;
-    background-color: #eaf3ff;
+    color: var(--primary-blue) !important;
+    background-color: var(--accent-bg);
 
     border-radius: 20px;
 
@@ -169,7 +169,7 @@
 
 .estimate-divider {
     margin: 24px 0 !important;
-    border-color: #e5ebf0 !important;
+    border-color: var(--border) !important;
 }
 
 
@@ -188,7 +188,7 @@
 .estimate-info-label {
     margin-bottom: 7px !important;
 
-    color: #64748b !important;
+    color: var(--text-light) !important;
 
     font-size: 10px !important;
     font-weight: 700 !important;
@@ -196,14 +196,14 @@
 }
 
 .estimate-customer-name {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 15px !important;
     font-weight: 700 !important;
 }
 
 .estimate-info-text {
     margin-top: 4px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 12px !important;
 }
 
@@ -214,7 +214,7 @@
 }
 
 .estimate-info-value {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 13px !important;
     font-weight: 600 !important;
 }
@@ -227,7 +227,7 @@
 .estimate-section-title {
     margin-bottom: 12px !important;
 
-    color: #111827 !important;
+    color: var(--text-dark) !important;
 
     font-size: 15px !important;
     font-weight: 700 !important;
@@ -246,7 +246,7 @@
     width: 100%;
     overflow: hidden;
 
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
 }
 
@@ -265,9 +265,9 @@
     min-height: 44px;
     padding: 0 16px;
 
-    color: #ffffff;
+    color: var(--surface);
 
-    background-color: #111827;
+    background-color: var(--text-dark);
 
     font-size: 11px;
     font-weight: 600;
@@ -277,20 +277,20 @@
     min-height: 62px;
     padding: 0 16px;
 
-    color: #111827;
+    color: var(--text-dark);
 
     font-size: 12px;
 
-    border-top: 1px solid #e5ebf0;
+    border-top: 1px solid var(--border);
 }
 
 .estimate-item-name {
-    color: #2563eb !important;
+    color: var(--primary-blue) !important;
     font-weight: 600 !important;
 }
 
 .estimate-item-amount {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-weight: 600 !important;
 }
 
@@ -311,9 +311,9 @@
 
     padding: 18px;
 
-    background-color: #f8fafc;
+    background-color: var(--table-bg);
 
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
 }
 
@@ -323,7 +323,7 @@
 
     padding: 7px 0;
 
-    color: #64748b;
+    color: var(--text-light);
 
     font-size: 13px;
 }
@@ -335,16 +335,16 @@
     margin-top: 10px;
     padding-top: 14px;
 
-    color: #111827;
+    color: var(--text-dark);
 
-    border-top: 1px solid #e5eaf1;
+    border-top: 1px solid var(--border);
 
     font-size: 16px;
     font-weight: 700;
 }
 
 .estimate-details-grand-total p:last-child {
-    color: #2563eb;
+    color: var(--primary-blue);
 }
 
 
@@ -357,14 +357,14 @@
     margin-top: 24px;
     padding-top: 20px;
 
-    border-top: 1px solid #e5ebf0;
+    border-top: 1px solid var(--border);
 }
 
 .estimate-notes,
 .estimate-terms {
     max-width: 800px;
 
-    color: #64748b !important;
+    color: var(--text-light) !important;
 
     font-size: 12px !important;
     line-height: 1.7 !important;
@@ -460,5 +460,118 @@
     .estimate-date-section {
         flex-direction: column;
         gap: 14px;
+    }
+}
+.estimate-details-actions {
+    flex-wrap: wrap;
+}
+
+.estimate-lines-wrapper {
+    overflow-x: auto;
+}
+
+.estimate-lines {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-dark);
+    font-size: 13px;
+}
+
+.estimate-lines th, .estimate-lines td {
+    padding: 14px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    overflow-wrap: anywhere;
+}
+
+.estimate-lines th {
+    background: var(--table-bg);
+}
+
+.estimate-lines td:first-child {
+    width: 34%;
+}
+
+.estimate-line-description {
+    margin-top: 5px;
+    color: var(--text-light);
+    font-size: 12px;
+    white-space: pre-wrap;
+}
+
+.estimate-conversion-dates {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+    .estimate-conversion-dates {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .estimate-lines {
+        min-width: 660px;
+    }
+
+    .estimate-lines th:not(:first-child), .estimate-lines td:not(:first-child) {
+        white-space: nowrap;
+    }
+}
+
+@media print {
+    .estimate-details-page, .estimate-details-page * {
+        visibility: visible !important;
+    }
+
+    .estimate-details-page {
+        --page-bg: #ffffff;
+        --surface: #ffffff;
+        --text-dark: #111111;
+        --text-light: #444444;
+        --border: #cccccc;
+        --table-bg: #f3f4f6;
+        --accent-bg: #ffffff;
+        position: absolute;
+        inset: 0 auto auto 0;
+        width: 100%;
+        min-height: 0;
+        padding: 0;
+    }
+
+    .estimate-no-print, .estimate-no-print * {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    .estimate-preview-card {
+        border: none;
+        box-shadow: none !important;
+        overflow: visible !important;
+    }
+
+    .estimate-preview-card .MuiCardContent-root {
+        padding: 0 !important;
+    }
+
+    .estimate-lines-wrapper {
+        overflow: visible;
+    }
+
+    .estimate-lines {
+        table-layout: fixed;
+        font-size: 10pt;
+    }
+
+    .estimate-lines thead {
+        display: table-header-group;
+    }
+
+    .estimate-lines tr, .estimate-preview-header, .estimate-customer-section, .estimate-details-totals {
+        break-inside: avoid;
     }
 }

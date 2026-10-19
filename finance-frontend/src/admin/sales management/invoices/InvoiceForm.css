@@ -1,6 +1,7 @@
 .invoice-form-page {
+    color: var(--text-dark);
     width: 100%;
-    background-color: #f5f7fb;
+    background-color: var(--page-bg);
     border-radius: 10px;
 }
 
@@ -15,28 +16,28 @@
 
     padding: 20px 24px;
 
-    background-color: #2563eb;
+    background-color: var(--surface);
     border-radius: 10px 10px 0 0;
 }
 
 .invoice-form-title {
-    color: #ffffff !important;
+    color: var(--text-dark) !important;
     font-size: 20px !important;
     font-weight: 700 !important;
 }
 
 .invoice-form-subtitle {
     margin-top: 4px !important;
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: var(--text-light) !important;
     font-size: 12px !important;
 }
 
 .invoice-form-close {
-    color: #ffffff !important;
+    color: var(--text-light) !important;
 }
 
 .invoice-form-close:hover {
-    background-color: rgba(255, 255, 255, 0.12) !important;
+    background-color: var(--hover-bg) !important;
 }
 
 /* =========================
@@ -47,10 +48,10 @@
 .invoice-summary-form-card {
     margin: 16px 20px;
 
-    border: 1px solid #e5eaf1 !important;
+    border: 1px solid var(--border) !important;
     border-radius: 10px !important;
 
-    background-color: #ffffff !important;
+    background-color: var(--surface) !important;
 
     box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08) !important;
 }
@@ -67,7 +68,7 @@
 .invoice-form-section-title {
     margin-bottom: 18px !important;
 
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 16px !important;
     font-weight: 700 !important;
 }
@@ -91,7 +92,7 @@
 }
 
 .invoice-form-card .MuiInputLabel-root {
-    color: #64748b;
+    color: var(--text-light);
     font-size: 13px;
 }
 
@@ -100,12 +101,12 @@
 }
 
 .invoice-form-card .MuiOutlinedInput-root {
-    background-color: #ffffff;
+    background-color: var(--surface);
     border-radius: 10px;
 }
 
 .invoice-form-card .MuiOutlinedInput-notchedOutline {
-    border-color: #cbd5df;
+    border-color: var(--border);
 }
 
 .invoice-form-card
@@ -122,12 +123,12 @@
 }
 
 .invoice-form-card .MuiInputBase-input {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 13px;
 }
 
 .invoice-form-card .MuiInputBase-input::placeholder {
-    color: #8aa0b5;
+    color: var(--text-light);
     opacity: 1;
 }
 
@@ -158,18 +159,18 @@
 
     padding: 10px 0;
 
-    color: #64748b;
+    color: var(--text-light);
     font-size: 13px;
 }
 
 .invoice-form-summary-row p:last-child {
-    color: #111827;
+    color: var(--text-dark);
     font-weight: 600;
 }
 
 .invoice-form-summary .MuiDivider-root {
     margin: 8px 0;
-    border-color: #e5eaf1;
+    border-color: var(--border);
 }
 
 .invoice-form-grand-total {
@@ -179,7 +180,7 @@
 
     padding-top: 12px;
 
-    color: #111827;
+    color: var(--text-dark);
     font-size: 16px;
     font-weight: 700;
 }
@@ -206,10 +207,10 @@
     min-width: 100px !important;
     min-height: 40px !important;
 
-    border-color: #c5d2df !important;
+    border-color: var(--border) !important;
     border-radius: 10px !important;
 
-    color: #111827 !important;
+    color: var(--text-dark) !important;
 
     font-size: 13px !important;
     font-weight: 600 !important;
@@ -219,7 +220,7 @@
 
 .invoice-cancel-button:hover {
     border-color: #2563eb !important;
-    background-color: #f4f9fe !important;
+    background-color: var(--hover-bg) !important;
 }
 
 .invoice-save-button {

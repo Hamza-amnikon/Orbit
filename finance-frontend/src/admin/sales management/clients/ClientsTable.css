@@ -1,0 +1,7 @@
+.clients-table {
+    min-width: 800px;
+}
+
+.clients-table .MuiTableCell-head {
+    font-weight: 600;
+}

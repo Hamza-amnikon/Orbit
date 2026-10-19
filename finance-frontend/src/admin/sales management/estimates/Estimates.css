@@ -2,7 +2,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 24px 28px;
-    background-color: #f5f7fb;
+    background-color: var(--page-bg);
 }
 
 .estimates-header {
@@ -13,20 +13,20 @@
 }
 
 .estimates-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 24px !important;
     font-weight: 700 !important;
 }
 
 .estimates-subtitle {
     margin-top: 4px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 13px !important;
 }
 
 .new-estimate-button {
-    background-color: #2563eb !important;
-    color: #ffffff !important;
+    background-color: var(--primary-blue) !important;
+    color: var(--surface) !important;
     min-height: 40px;
     padding: 0 18px !important;
 }
@@ -43,24 +43,24 @@
 }
 
 .estimate-summary-card {
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     box-shadow: none !important;
 }
 
 .estimate-summary-label {
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 12px !important;
 }
 
 .estimate-summary-value {
     margin-top: 6px !important;
-    color: #2563eb !important;
+    color: var(--primary-blue) !important;
     font-size: 22px !important;
     font-weight: 700 !important;
 }
 
 .estimates-table-card {
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     box-shadow: none !important;
 }
 
@@ -72,7 +72,7 @@
 }
 
 .estimates-table-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 17px !important;
     font-weight: 700 !important;
 }
@@ -89,13 +89,13 @@
     width: 250px;
     height: 38px;
     padding: 0 10px;
-    border: 1px solid #2563eb;
+    border: 1px solid var(--primary-blue);
     border-radius: 6px;
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 .estimate-search svg {
-    color: #2563eb;
+    color: var(--primary-blue);
     font-size: 20px;
 }
 
@@ -104,18 +104,18 @@
     border: none;
     outline: none;
     padding: 0 8px;
-    color: #111827;
+    color: var(--text-dark);
     font-size: 13px;
 }
 
 .estimate-search input::placeholder {
-    color: #7a8fa3;
+    color: var(--text-light);
 }
 
 .estimate-filter-button {
     min-height: 38px !important;
-    border-color: #2563eb !important;
-    color: #2563eb !important;
+    border-color: var(--primary-blue) !important;
+    color: var(--primary-blue) !important;
 }
 
 .estimate-row {
@@ -123,33 +123,33 @@
     grid-template-columns: 1.3fr 1.5fr 1fr 1fr 1fr 0.8fr;
     align-items: center;
     min-height: 64px;
-    border-top: 1px solid #e5ebf0;
-    color: #111827;
+    border-top: 1px solid var(--border);
+    color: var(--text-dark);
     font-size: 13px;
 }
 
 .estimate-header-row {
     min-height: 44px;
     border-top: none;
-    color: #64748b;
+    color: var(--text-light);
     font-size: 11px;
     font-weight: 600;
 }
 
 .estimate-number {
-    color: #2563eb !important;
+    color: var(--primary-blue) !important;
     font-size: 13px !important;
     font-weight: 700 !important;
 }
 
 .estimate-secondary {
     margin-top: 3px !important;
-    color: #7a8fa3 !important;
+    color: var(--text-light) !important;
     font-size: 11px !important;
 }
 
 .estimate-amount {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-weight: 600 !important;
 }
 
@@ -159,7 +159,7 @@
 }
 
 .status-sent {
-    color: #2563eb !important;
+    color: var(--primary-blue) !important;
 }
 
 .status-accepted {
@@ -167,7 +167,7 @@
 }
 
 .status-draft {
-    color: #64748b !important;
+    color: var(--text-light) !important;
 }
 
 .status-rejected {
@@ -179,12 +179,12 @@
     min-width: 58px !important;
     min-height: 32px !important;
     padding: 3px 12px !important;
-    border: 1px solid #2563eb !important;
-    color: #2563eb !important;
+    border: 1px solid var(--primary-blue) !important;
+    color: var(--primary-blue) !important;
 }
 
 .estimate-view-button:hover {
-    background-color: #eaf3ff !important;
+    background-color: var(--accent-bg) !important;
 }
 
 @media (max-width: 1100px) {
@@ -320,4 +320,24 @@
         max-height: calc(100vh - 20px);
     }
 
+}
+.estimate-actions {
+    flex-wrap: wrap;
+}
+
+.estimate-list-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.status-declined, .status-cancelled {
+    color: #c62828 !important;
+}
+
+.status-converted {
+    color: #2e7d32 !important;
 }
