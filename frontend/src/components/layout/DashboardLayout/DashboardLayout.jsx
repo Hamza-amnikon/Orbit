@@ -1,5 +1,5 @@
 import { MuiButtonMigration } from "../../ui/MuiCompat.jsx";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import Sidebar from "../Sidebar/Sidebar";
@@ -28,13 +28,8 @@ function DashboardLayout() {
     // ==========================================================
 
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-    const [sidebarRoomy, setSidebarRoomy] = useState(false);
     const [onboardingPromptOpen, setOnboardingPromptOpen] =
         useState(false);
-
-    const handleSidebarMenuCountChange = useCallback((count) => {
-        setSidebarRoomy(count <= 10);
-    }, []);
 
     useEffect(() => {
         const toggleSidebar = () => {
@@ -138,7 +133,7 @@ function DashboardLayout() {
     return (
 
         <MuiLayoutBox
-            className={`dashboard-layout${sidebarCollapsed ? " sidebar-collapsed" : ""}${sidebarRoomy ? " sidebar-roomy" : ""}`}
+            className={`dashboard-layout${sidebarCollapsed ? " sidebar-collapsed" : ""}`}
             component="div"
         >
 
@@ -147,7 +142,7 @@ function DashboardLayout() {
                 SIDEBAR
             ================================================== */}
 
-            <Sidebar onMenuCountChange={handleSidebarMenuCountChange} />
+            <Sidebar />
 
 
             {/* ==================================================

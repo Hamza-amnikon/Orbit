@@ -1376,11 +1376,11 @@ body,
     top: 0 !important;
     left: 0 !important;
 
-    width: 228px !important;
+    width: 270px !important;
     height: 100vh !important;
 
     margin: 0 !important;
-    padding: 0 16px !important;
+    padding: 0 12px !important;
 
     box-sizing: border-box !important;
 
@@ -1440,6 +1440,7 @@ body,
     min-height: 0 !important;
 
     width: 100% !important;
+    align-self: stretch !important;
 
     display: flex !important;
     flex-direction: column !important;
@@ -1469,6 +1470,7 @@ body,
 
 .menu-item {
     width: 100% !important;
+    max-width: 100% !important;
 
     min-height: 43px !important;
 
@@ -1639,9 +1641,9 @@ body,
    ============================================================ */
 
 .main-content {
-    margin-left: 228px !important;
+    margin-left: 270px !important;
 
-    width: calc(100% - 228px) !important;
+    width: calc(100% - 270px) !important;
 
     min-height: 100vh !important;
 
@@ -1658,14 +1660,14 @@ body,
 @media (min-width: 1001px) {
 
     .sidebar {
-        width: 228px !important;
+        width: 270px !important;
         left: 0 !important;
         transform: none !important;
     }
 
     .main-content {
-        margin-left: 228px !important;
-        width: calc(100% - 228px) !important;
+        margin-left: 270px !important;
+        width: calc(100% - 270px) !important;
     }
 
     .menu-title {
@@ -1748,14 +1750,13 @@ body,
 
 /* Compact desktop mode, toggled from the navbar menu button. */
 @media (min-width: 1001px) {
-    /* Give users with a short navigation list the roomier sidebar shown in the reference. */
-    .dashboard-layout.sidebar-roomy:not(.sidebar-collapsed) .sidebar {
-        width: 244px !important;
+    .dashboard-layout:not(.sidebar-collapsed) .sidebar {
+        width: 270px !important;
     }
 
-    .dashboard-layout.sidebar-roomy:not(.sidebar-collapsed) .dashboard-main {
-        margin-left: 244px !important;
-        width: calc(100% - 244px) !important;
+    .dashboard-layout:not(.sidebar-collapsed) .dashboard-main {
+        margin-left: 270px !important;
+        width: calc(100% - 270px) !important;
     }
 
     .dashboard-layout.sidebar-collapsed .sidebar {

@@ -1,5 +1,4 @@
 import { MuiButtonMigration } from "../../ui/MuiCompat.jsx";
-import { useEffect } from "react";
 import "./Sidebar.css";
 
 import {
@@ -122,7 +121,7 @@ export const menu = [
    SIDEBAR
    ============================================================ */
 
-function Sidebar({ onMenuCountChange }) {
+function Sidebar() {
 
     const navigate = useNavigate();
     const { mode } = useColorMode();
@@ -196,11 +195,6 @@ function Sidebar({ onMenuCountChange }) {
       "view"
     )
   );
-
-  useEffect(() => {
-    onMenuCountChange?.(allowedMenu.length);
-  }, [allowedMenu.length, onMenuCountChange]);
-
 
     /* ========================================================
        RENDER
