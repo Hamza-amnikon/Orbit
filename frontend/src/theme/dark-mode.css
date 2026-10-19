@@ -7458,6 +7458,19 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .reimbursement-page
   color: var(--spark-text);
 }
 
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .reimbursement-page .reimbursement-back-button.MuiIconButton-root {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+  box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .reimbursement-page .reimbursement-back-button.MuiIconButton-root:hover {
+  color: #fff !important;
+  background: var(--spark-hover) !important;
+  border-color: #536780 !important;
+}
+
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .reimbursement-page :is(
   .reimbursement-title,
   .summary-value,
