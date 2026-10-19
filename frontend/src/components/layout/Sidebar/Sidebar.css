@@ -1748,6 +1748,16 @@ body,
 
 /* Compact desktop mode, toggled from the navbar menu button. */
 @media (min-width: 1001px) {
+    /* Give users with a short navigation list the roomier sidebar shown in the reference. */
+    .dashboard-layout.sidebar-roomy:not(.sidebar-collapsed) .sidebar {
+        width: 244px !important;
+    }
+
+    .dashboard-layout.sidebar-roomy:not(.sidebar-collapsed) .dashboard-main {
+        margin-left: 244px !important;
+        width: calc(100% - 244px) !important;
+    }
+
     .dashboard-layout.sidebar-collapsed .sidebar {
         width: 76px !important;
         padding: 0 9px !important;

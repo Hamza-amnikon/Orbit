@@ -50,9 +50,11 @@
 
     display: flex;
 
-    flex-direction: column;
+    flex-direction: row;
 
     align-items: flex-start;
+
+    justify-content: space-between;
 
     gap: 12px;
 }
@@ -102,7 +104,7 @@
 
     flex-direction: column;
 
-    align-items: flex-start;
+    align-items: flex-end;
 
     gap: 5px;
 
@@ -286,6 +288,20 @@
     line-height: 1;
 
     font-weight: 700;
+}
+
+.dashboard-stat-detail {
+    display: block;
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.25;
+}
+
+.dashboard-live-update {
+    margin: 8px 0 22px;
+    color: #64748b;
+    text-align: right;
 }
 
 
@@ -777,6 +793,11 @@
    ============================================================ */
 
 @media (max-width: 1024px) {
+
+    .welcome-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
     .welcome-date {
 

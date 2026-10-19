@@ -1,17 +1,16 @@
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import EmployeeService from "../../Admin/AttendanceManagement/services/EmployeeService";
+import LeaveService from "../../Admin/Services/LeaveService";
 
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import EventBusyRoundedIcon from "@mui/icons-material/EventBusyRounded";
-import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import ConfirmationNumberRoundedIcon from "@mui/icons-material/ConfirmationNumberRounded";
-import AdminPanelSettingsRoundedIcon from "@mui/icons-material/AdminPanelSettingsRounded";
 import PaidRoundedIcon from "@mui/icons-material/PaidRounded";
-import PercentRoundedIcon from "@mui/icons-material/PercentRounded";
-import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import { useAuth } from "../../context/AuthContext";
+import { menu as sidebarMenu } from "../../components/layout/Sidebar/Sidebar";
 
 import "./Dashboard.css";
 import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
@@ -24,6 +23,12 @@ import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButt
 function Dashboard() {
 
     const navigate = useNavigate();
+    const [dashboardCounts, setDashboardCounts] = useState({
+        employees: null,
+        onLeave: null,
+    });
+    const [countsLoading, setCountsLoading] = useState(true);
+    const [countsUpdatedAt, setCountsUpdatedAt] = useState({});
 
     const {
         user,
@@ -41,8 +46,64 @@ function Dashboard() {
         role,
 
         isAuthenticated,
-        hasPermission
+        hasPermission,
+        getModuleLoginRoute
     } = useAuth();
+
+    const refreshDashboardCounts = useCallback(async () => {
+        const [employeesResult, leavesResult] = await Promise.allSettled([
+            EmployeeService.getAllEmployees(),
+            LeaveService.getLeaves(),
+        ]);
+        let employeesCount;
+        let onLeaveCount;
+
+        if (employeesResult.status === "fulfilled") {
+            const response = employeesResult.value;
+            const employees = Array.isArray(response)
+                ? response
+                : response?.data ?? response?.items ?? response?.value;
+            if (Array.isArray(employees)) employeesCount = employees.length;
+        }
+
+        if (leavesResult.status === "fulfilled" && Array.isArray(leavesResult.value)) {
+            const now = new Date();
+            const today = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-");
+            onLeaveCount = leavesResult.value.filter((leave) => {
+                const status = String(leave.status ?? leave.Status ?? "").trim().toLowerCase();
+                const from = String(leave.fromDate ?? leave.FromDate ?? "").slice(0, 10);
+                const to = String(leave.toDate ?? leave.ToDate ?? leave.fromDate ?? leave.FromDate ?? "").slice(0, 10);
+                return status === "approved" && from && to && from <= today && today <= to;
+            }).length;
+        }
+
+        setDashboardCounts((current) => ({
+            employees: employeesCount ?? current.employees,
+            onLeave: onLeaveCount ?? current.onLeave,
+        }));
+        const updatedAt = new Date();
+        setCountsUpdatedAt((current) => ({
+            ...current,
+            ...(employeesCount !== undefined ? { employees: updatedAt } : {}),
+            ...(onLeaveCount !== undefined ? { onLeave: updatedAt } : {}),
+        }));
+        setCountsLoading(false);
+    }, []);
+
+    useEffect(() => {
+        refreshDashboardCounts();
+        const timer = window.setInterval(() => {
+            if (document.visibilityState === "visible") refreshDashboardCounts();
+        }, 30_000);
+        const refreshOnReturn = () => {
+            if (document.visibilityState === "visible") refreshDashboardCounts();
+        };
+        document.addEventListener("visibilitychange", refreshOnReturn);
+        return () => {
+            window.clearInterval(timer);
+            document.removeEventListener("visibilitychange", refreshOnReturn);
+        };
+    }, [refreshDashboardCounts]);
 
 
     /* ========================================================
@@ -186,7 +247,11 @@ function Dashboard() {
 
         {
             title: "Employees",
-            value: "256",
+            value: dashboardCounts.employees,
+            loading: countsLoading,
+            detail: countsUpdatedAt.employees
+                ? `Updated ${countsUpdatedAt.employees.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`
+                : countsLoading ? "Loading live data" : "Live data unavailable",
             color: "#2563eb",
             icon: <GroupsRoundedIcon />,
             route: "/employees"
@@ -194,7 +259,11 @@ function Dashboard() {
 
         {
             title: "On Leave",
-            value: "18",
+            value: dashboardCounts.onLeave,
+            loading: countsLoading,
+            detail: countsUpdatedAt.onLeave
+                ? `Updated ${countsUpdatedAt.onLeave.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`
+                : countsLoading ? "Loading live data" : "Live data unavailable",
             color: "#16a34a",
             icon: <EventBusyRoundedIcon />,
             route: "/leave"
@@ -202,7 +271,8 @@ function Dashboard() {
 
         {
             title: "Open Tickets",
-            value: "32",
+            value: null,
+            detail: "Not connected to live ticket data",
             color: "#ea580c",
             icon: <ConfirmationNumberRoundedIcon />,
             route: "/tickets"
@@ -210,7 +280,8 @@ function Dashboard() {
 
         {
             title: "Pending Salaries",
-            value: "5",
+            value: null,
+            detail: "Not connected to live payroll status",
             color: "#9333ea",
             icon: <PaidRoundedIcon />,
             route: "/payroll"
@@ -223,87 +294,44 @@ function Dashboard() {
        MODULES
        ======================================================== */
 
-    const modules = [
-
-        {
-            title: "HRMS",
-            description:
-                "Manage employees, attendance and organization.",
-            icon: <GroupsRoundedIcon />,
-            color: "#2563eb"
-        },
-
-        {
-            title: "Leave Management",
-            description:
-                "Approve and manage employee leave requests.",
-            icon: <EventBusyRoundedIcon />,
-            color: "#16a34a",
-            route: "/leave"
-        },
-
-        {
-            title: "Employee Management",
-            description:
-                "Manage employee profiles and departments.",
-            icon: <PersonOutlineRoundedIcon />,
-            color: "#9333ea",
-            route: "/employees"
-        },
-
-        {
-            title: "Ticketing",
-            description:
-                "Raise and track support tickets.",
-            icon: <ConfirmationNumberRoundedIcon />,
-            color: "#ea580c",
-            route: "/tickets"
-        },
-
-        {
-            title: "Administration",
-            description:
-                "Manage company settings and permissions.",
-            icon: <AdminPanelSettingsRoundedIcon />,
-            color: "#0f766e"
-        },
-
-        {
-            title: "Salary Management",
-            description:
-                "Process employee salaries and payroll.",
-            icon: <PaidRoundedIcon />,
-            color: "#dc2626",
-            route: "/payroll"
-        },
-
-        {
-            title: "Deductions",
-            description:
-                "PF, ESI, Tax and other deductions.",
-            icon: <PercentRoundedIcon />,
-            color: "#ca8a04"
-        },
-
-        {
-            title: "Reports",
-            description:
-                "Generate HR and payroll reports.",
-            icon: <AssessmentRoundedIcon />,
-            color: "#2563eb",
-            route: "/reports"
-        },
-
-        {
-            title: "My Dashboard",
-            description:
-                "View your personal dashboard and analytics.",
-            icon: <AssessmentRoundedIcon />,
-            color: "#2563eb",
-            route: "/MyDashboard"
-        }
-
-    ];
+    const moduleDescriptions = {
+        "/dashboard": "Your workspace overview and key updates.",
+        "/employees": "Manage employee records and organization.",
+        "/attendance": "Review attendance, shifts and time records.",
+        "/leave": "Manage leave requests, balances and policies.",
+        "/approvals": "Review requests assigned for approval.",
+        "/payroll": "Manage salaries, payroll runs and payslips.",
+        "/reports": "View and export HR reports.",
+        "/tickets": "Open and manage support tickets.",
+        "/documents": "Access employee and company documents.",
+        "/settings": "Manage your profile and account settings.",
+        "/permission-management": "Manage roles and access permissions.",
+        "/reimbursements": "Submit and manage expense claims.",
+        "/policy": "View and manage company policies.",
+    };
+    const moduleColors = {
+        "/dashboard": "#2563eb",
+        "/employees": "#2563eb",
+        "/attendance": "#0ea5e9",
+        "/leave": "#16a34a",
+        "/approvals": "#8b5cf6",
+        "/payroll": "#dc2626",
+        "/reports": "#2563eb",
+        "/tickets": "#ea580c",
+        "/documents": "#0891b2",
+        "/settings": "#9333ea",
+        "/permission-management": "#64748b",
+        "/reimbursements": "#14b8a6",
+        "/policy": "#ca8a04",
+    };
+    const modules = sidebarMenu.filter((item) => item.permissionPath !== "/dashboard").map((item) => ({
+        title: item.title.trim(),
+        description: moduleDescriptions[item.permissionPath] || "Open this SPARK module.",
+        icon: item.icon,
+        color: moduleColors[item.permissionPath] || "#2563eb",
+        route: getModuleLoginRoute?.(item.permissionPath) || item.path,
+        permissionPath: item.permissionPath,
+    }));
 
 
     /* ========================================================
@@ -364,10 +392,7 @@ function Dashboard() {
             return true;
         }
 
-        return hasPermission(
-            item.route,
-            "view"
-        );
+        return hasPermission(item.route, "view");
 
     });
 
@@ -378,10 +403,7 @@ function Dashboard() {
             return true;
         }
 
-        return hasPermission(
-            item.route,
-            "view"
-        );
+        return hasPermission(item.permissionPath, "view");
 
     });
 
@@ -470,8 +492,14 @@ function Dashboard() {
                             </MuiText>
 
                             <MuiText component="h2" variant="h5">
-                                {stat.value}
+                                {stat.loading ? "…" : stat.value ?? "—"}
                             </MuiText>
+
+                            {stat.detail && (
+                                <MuiText className="dashboard-stat-detail" component="span" variant="caption">
+                                    {stat.detail}
+                                </MuiText>
+                            )}
 
                         </MuiLayoutBox>
 
@@ -480,6 +508,10 @@ function Dashboard() {
                 ))}
 
             </MuiLayoutBox>
+
+            <MuiText className="dashboard-live-update" component="p" variant="caption" aria-live="polite">
+                Connected dashboard data refreshes every 30 seconds while this tab is open.
+            </MuiText>
 
 
             {/* ==================================================
@@ -515,7 +547,7 @@ function Dashboard() {
                 {visibleModules.map((module, index) => (
 
                     <MuiActionButton
-                        key={module.title}
+                        key={module.permissionPath}
                         className="dashboard-module-card"
                         role={module.route ? "button" : undefined}
                         tabIndex={module.route ? 0 : undefined}

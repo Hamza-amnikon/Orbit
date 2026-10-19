@@ -2241,6 +2241,10 @@ html[data-color-mode="dark"] .spark-dashboard-page :is(
   color: var(--spark-muted);
 }
 
+html[data-color-mode="dark"] .spark-dashboard-page :is(.dashboard-stat-detail, .dashboard-live-update) {
+  color: var(--spark-muted);
+}
+
 html[data-color-mode="dark"] .spark-dashboard-page .dashboard-module-arrow {
   background: rgba(83, 132, 255, .16);
   color: #9bb9ff;
