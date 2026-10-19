@@ -792,20 +792,20 @@ function Navbar({ title }) {
                           
 
 
-                            {/* SETTINGS */}
+                            {/* PROFILE */}
 
                             <MuiButtonMigration
                                 type="button"
                                 className="profile-menu-item"
                                 onClick={
-                                    handleSettings
+                                    handleProfile
                                 }
                             >
 
-                                <SettingsOutlinedIcon />
+                                <PersonOutlineRoundedIcon />
 
                                 <MuiText component="span" variant="inherit">
-                                    Settings
+                                    Profile
                                 </MuiText>
 
                             </MuiButtonMigration>

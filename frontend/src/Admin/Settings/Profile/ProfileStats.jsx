@@ -81,7 +81,7 @@ function ProfileStats({ profile }) {
         },
         {
             icon: <WorkHistory />,
-            title: "Experience",
+            title: "Experience In Amnikon",
             value: experience,
             color: "#f59e0b"
         },

@@ -1443,8 +1443,10 @@ body,
 
     display: flex !important;
     flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-content: flex-start !important;
 
-    gap: 3px !important;
+    gap: 8px !important;
 
     overflow-x: hidden !important;
     overflow-y: auto !important;

@@ -27,7 +27,7 @@ function DashboardLayout() {
     // ONBOARDING PROMPT STATE
     // ==========================================================
 
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [onboardingPromptOpen, setOnboardingPromptOpen] =
         useState(false);
 

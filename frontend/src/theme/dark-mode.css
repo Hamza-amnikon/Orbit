@@ -3619,6 +3619,14 @@ html[data-color-mode="dark"] .navbar .user-info p {
   color: var(--spark-muted);
 }
 
+html[data-color-mode="dark"] .navbar .profile-menu-info h4 {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .navbar .profile-menu-info p {
+  color: var(--spark-muted) !important;
+}
+
 /* Employee management pages: dashboard, employee directory, and admin catalogs. */
 html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
   .employee-dashboard,
@@ -7367,6 +7375,32 @@ html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-title .Mui
   color: var(--spark-text) !important;
 }
 
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-title {
+  background: var(--spark-surface-raised) !important;
+  border-bottom: 1px solid var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-title .MuiIconButton-root {
+  color: var(--spark-muted) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-dialog-divider {
+  background: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-paper .MuiDialogContent-root {
+  background: var(--spark-surface) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-paper .MuiInputLabel-root {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-paper .MuiFormHelperText-root {
+  color: var(--spark-muted) !important;
+}
+
 html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-form :is(
   .MuiOutlinedInput-root,
   .MuiInputBase-root,
@@ -7380,10 +7414,42 @@ html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-form .MuiOutlined
   border-color: var(--spark-border) !important;
 }
 
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #536780 !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-form .MuiSelect-icon,
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-form .MuiInputAdornment-root,
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-form .MuiSvgIcon-root {
+  color: var(--spark-muted) !important;
+}
+
 html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-upload-button {
   background: var(--spark-surface-raised) !important;
   color: var(--spark-text) !important;
   border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-upload-copy :is(.my-reimbursement-upload-title, .my-reimbursement-upload-hint) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-paper .MuiDialogActions-root {
+  background: var(--spark-surface-raised) !important;
+  border-top: 1px solid var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-paper .MuiDialogActions-root .MuiButton-root:not(.MuiButton-contained) {
+  color: var(--spark-text) !important;
+  background: var(--spark-hover) !important;
+  border: 1px solid var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-paper .MuiDialogActions-root .MuiButton-contained {
+  color: var(--spark-text) !important;
+  background: #26364c !important;
+  border: 1px solid #3a4d66 !important;
+  box-shadow: none !important;
 }
 
 /* Reimbursement request management */
@@ -7525,13 +7591,13 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .reimbursement-page
   color: #8298b7;
 }
 
-html[data-color-mode="dark"] .MuiDialog-paper.new-reimbursement-dialog {
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiDialog-paper {
   background: var(--spark-surface) !important;
   color: var(--spark-text) !important;
   border: 1px solid var(--spark-border);
 }
 
-html[data-color-mode="dark"] .MuiDialog-paper.new-reimbursement-dialog :is(
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiDialog-paper :is(
   .MuiDialogTitle-root,
   .MuiDialogContent-root,
   .MuiDialogActions-root,
@@ -7541,7 +7607,52 @@ html[data-color-mode="dark"] .MuiDialog-paper.new-reimbursement-dialog :is(
   color: var(--spark-text) !important;
 }
 
-html[data-color-mode="dark"] .MuiDialog-paper.new-reimbursement-dialog :is(
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .new-reimbursement-titlebar {
+  background: var(--spark-surface-raised) !important;
+  border-bottom: 1px solid var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .new-reimbursement-titlebar .MuiTypography-body2,
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiFormHelperText-root {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .new-reimbursement-close {
+  color: var(--spark-muted) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiDialogContent-root {
+  background: var(--spark-surface) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiDialogActions-root {
+  background: var(--spark-surface-raised) !important;
+  border-top: 1px solid var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiDialogActions-root .MuiButton-root:not(.MuiButton-contained) {
+  color: var(--spark-text) !important;
+  background: var(--spark-hover) !important;
+  border: 1px solid var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiDialogActions-root .MuiButton-contained {
+  color: var(--spark-text) !important;
+  background: #26364c !important;
+  border: 1px solid #3a4d66 !important;
+  box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiDialogActions-root .MuiButton-contained:hover {
+  background: #31445e !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .new-reimbursement-form .MuiInputLabel-root {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog :is(
   .MuiOutlinedInput-root,
   .MuiInputBase-root,
   .MuiSelect-select
@@ -7550,13 +7661,23 @@ html[data-color-mode="dark"] .MuiDialog-paper.new-reimbursement-dialog :is(
   color: var(--spark-text) !important;
 }
 
-html[data-color-mode="dark"] .MuiDialog-paper.new-reimbursement-dialog .MuiOutlinedInput-notchedOutline {
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiOutlinedInput-notchedOutline {
   border-color: var(--spark-border) !important;
 }
 
-html[data-color-mode="dark"] .MuiDialog-paper.new-reimbursement-dialog .receipt-upload-button {
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .receipt-upload-button {
   background: var(--spark-surface-raised) !important;
   color: var(--spark-text) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .receipt-upload-copy :is(.MuiTypography-root, small),
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .uploaded-receipt {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .uploaded-receipt {
+  background: var(--spark-surface-raised) !important;
   border-color: var(--spark-border) !important;
 }
 
