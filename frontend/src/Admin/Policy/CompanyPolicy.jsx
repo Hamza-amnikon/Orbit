@@ -44,12 +44,17 @@ import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
 import PolicyService from "../Services/PolicyService";
 import * as pdfjsLib from "pdfjs-dist/build/pdf.mjs";
-import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+import PdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?worker";
 
 import "./CompanyPolicies.css";
 import { Typography as MuiText } from "@mui/material";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+// Bundle the PDF.js worker as a JavaScript worker chunk so IIS serves it
+// with a JavaScript MIME type. Serving the raw .mjs asset fails on the
+// production IIS host and makes PDF.js fall back to an unloadable fake worker.
+if (typeof window !== "undefined" && "Worker" in window) {
+    pdfjsLib.GlobalWorkerOptions.workerPort = new PdfWorker();
+}
 
 const PolicyPdfViewer = ({ pdfUrl, onReadToEnd, onError }) => {
     const containerRef = useRef(null);
