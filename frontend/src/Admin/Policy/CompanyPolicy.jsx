@@ -4,6 +4,8 @@ import React, {
     useRef,
     useState,
 } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 import {
     Box,
@@ -47,6 +49,13 @@ import { Box as MuiLayoutBox } from "@mui/material";
 
 
 const CompanyPolicy = () => {
+    const navigate = useNavigate();
+    const {
+        profile,
+        onboardingStep,
+        pendingPolicyIds,
+        checkSparkAccess,
+    } = useAuth();
     const searchInputRef = useRef(null);
 
     // ============================================================
@@ -117,11 +126,11 @@ const CompanyPolicy = () => {
             // CHECK ACKNOWLEDGEMENT STATUS FOR EVERY POLICY
             // ========================================================
             //
-            // The backend GET acknowledgement endpoint is now
-            // anonymous and checks the PolicyAcknowledgements table.
+            // The backend checks each policy for the signed-in
+            // employee using the current JWT.
             //
-            // If an acknowledgement record exists for the policy,
-            // the policy card shows "Acknowledged".
+            // Only that employee's acknowledgement marks the card
+            // as acknowledged.
             //
             // ========================================================
 
@@ -298,8 +307,8 @@ const CompanyPolicy = () => {
     // CHECK ACKNOWLEDGEMENT
     // ============================================================
     //
-    // The backend GET endpoint checks the
-    // PolicyAcknowledgements table directly.
+    // The backend GET endpoint checks the current employee's
+    // PolicyAcknowledgements record.
     //
     // This method is also available for refreshing the status of
     // an individual policy when needed.
@@ -769,6 +778,16 @@ const CompanyPolicy = () => {
                 true
             );
 
+            const employeeId =
+                profile?.employeeId ??
+                profile?.EmployeeId ??
+                profile?.employeeID ??
+                profile?.EmployeeID ??
+                null;
+            const accessGranted = employeeId
+                ? await checkSparkAccess(employeeId, false)
+                : false;
+
 
             // ====================================================
             // CLOSE DIALOG
@@ -800,6 +819,10 @@ const CompanyPolicy = () => {
                 setPdfError("");
 
             }, 200);
+
+            if (accessGranted) {
+                navigate("/dashboard", { replace: true });
+            }
 
         } catch (err) {
 
@@ -897,6 +920,14 @@ const CompanyPolicy = () => {
 
             </Box>
 
+            {onboardingStep === "policies" && (
+                <Alert severity="warning" className="company-policy-alert">
+                    {pendingPolicyIds.length > 0
+                        ? `Review and acknowledge all ${pendingPolicyIds.length} required ${pendingPolicyIds.length === 1 ? "policy" : "policies"} to unlock the rest of Spark.`
+                        : "We are checking your required policy acknowledgements. Access will remain limited until they are confirmed."}
+                </Alert>
+            )}
+
 
             {/* ==================================================
                 ERROR
@@ -941,8 +972,8 @@ const CompanyPolicy = () => {
                             </InputAdornment>
                         ),
                         endAdornment: (
-                            <InputAdornment position="end" className="company-policy-search-actions">
-                                {search && (
+                            search ? (
+                                <InputAdornment position="end" className="company-policy-search-actions">
                                     <IconButton
                                         size="small"
                                         aria-label="Clear policy search"
@@ -950,9 +981,8 @@ const CompanyPolicy = () => {
                                     >
                                         <CloseRoundedIcon fontSize="small" />
                                     </IconButton>
-                                )}
-                                <Chip label="Ctrl K" size="small" className="company-policy-search-shortcut" />
-                            </InputAdornment>
+                                </InputAdornment>
+                            ) : null
                         ),
                     } }}
                 />

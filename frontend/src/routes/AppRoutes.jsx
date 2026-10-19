@@ -402,6 +402,7 @@ export const PERMISSION_PAGES = [
 function PermissionGuard() {
     const {
         hasPermission,
+        onboardingStep,
         loading,
         profileLoading,
         sparkAccessLoading,
@@ -417,7 +418,12 @@ function PermissionGuard() {
         return <MuiLayoutBox component="div">Loading...</MuiLayoutBox>;
     }
 
-    const allowed = hasPermission(location.pathname, "view");
+    const isRequiredPolicyPage =
+        location.pathname.toLowerCase().replace(/\/$/, "") === "/company-policies" &&
+        onboardingStep === "policies";
+    const allowed =
+        isRequiredPolicyPage ||
+        hasPermission(location.pathname, "view");
 
     if (!allowed) {
         return (
@@ -442,6 +448,7 @@ function OnboardingGuard() {
     const {
         sparkAccessGranted,
         sparkAccessLoading,
+        onboardingStep,
         loading,
         profileLoading,
         hasPermission,
@@ -487,6 +494,9 @@ function OnboardingGuard() {
         pathname === "/settings" ||
         pathname.startsWith("/settings/");
 
+    const isCompanyPolicies =
+        pathname === "/company-policies";
+
 
     /*
     =========================================================
@@ -516,14 +526,22 @@ function OnboardingGuard() {
     FULL SPARK ACCESS
     =========================================================
 
-    Backend has confirmed all required documents are approved.
-    Normal role/permission checks continue through
-    PermissionGuard.
+    Required documents are approved and every published policy
+    requiring acknowledgement is acknowledged. Normal role and
+    permission checks continue through PermissionGuard.
     =========================================================
     */
 
     if (sparkAccessGranted === true) {
         return <Outlet />;
+    }
+
+    if (onboardingStep === "policies") {
+        if (isCompanyPolicies) {
+            return <Outlet />;
+        }
+
+        return <Navigate to="/company-policies" replace />;
     }
 
 
@@ -532,7 +550,7 @@ function OnboardingGuard() {
     INCOMPLETE ONBOARDING
     =========================================================
 
-    If accessGranted is false, the employee can only use
+    If documents are not approved yet, the employee can use
     Settings (plus HR Document Management when their normal
     role explicitly has that permission).
     =========================================================

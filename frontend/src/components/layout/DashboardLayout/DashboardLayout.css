@@ -530,6 +530,142 @@
 }
 
 
+/* Policy review prompt uses the SPARK dark workspace palette. */
+.onboarding-prompt-overlay--policies {
+    background: rgba(3, 9, 20, 0.78);
+    backdrop-filter: blur(5px);
+}
+
+.onboarding-prompt-overlay--light {
+    background: rgba(15, 23, 42, 0.48);
+}
+
+.onboarding-prompt--policies {
+    max-width: 540px;
+    padding: 32px;
+    background: #111d30;
+    border: 1px solid #2b3e59;
+    border-radius: 18px;
+    color: #e7eefb;
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48);
+}
+
+.onboarding-prompt--policies .onboarding-prompt-icon {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 16px;
+    background: rgba(49, 102, 235, 0.16);
+    color: #76a5ff;
+    font-size: 24px;
+}
+
+.onboarding-prompt--policies h2 {
+    margin-bottom: 10px;
+    color: #f5f8ff;
+    font-size: 25px;
+}
+
+.onboarding-prompt--policies p {
+    color: #aebbd0;
+    font-size: 14px;
+}
+
+.onboarding-prompt--policies .onboarding-required-text {
+    margin-top: 20px !important;
+    color: #d9e5f8 !important;
+    font-size: 14px;
+}
+
+.onboarding-prompt--policies .onboarding-document-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin: 10px 0 24px;
+    text-align: left;
+    counter-reset: policy-step;
+}
+
+.onboarding-prompt--policies .onboarding-document-list li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 9px 12px 9px 48px;
+    border: 1px solid #293d59;
+    border-radius: 10px;
+    background: #17263d;
+    color: #d4deed;
+    font-size: 13px;
+    line-height: 1.45;
+    counter-increment: policy-step;
+}
+
+.onboarding-prompt--policies .onboarding-document-list li::before {
+    content: counter(policy-step);
+    position: absolute;
+    left: 12px;
+    display: grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    border-radius: 50%;
+    background: #263d62;
+    color: #9fc0ff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.onboarding-prompt--policies .onboarding-prompt-button {
+    min-height: 48px;
+    border: 1px solid #4e7df4;
+    border-radius: 10px;
+    background: #3166eb;
+    color: #ffffff !important;
+    text-transform: none;
+    box-shadow: 0 8px 20px rgba(49, 102, 235, 0.24);
+}
+
+.onboarding-prompt--policies .onboarding-prompt-button:hover {
+    background: #2558d7;
+}
+
+.onboarding-prompt--light {
+    background: #ffffff;
+    border-color: #dbe5f2;
+    color: #182744;
+    box-shadow: 0 28px 80px rgba(20, 37, 65, 0.24);
+}
+
+.onboarding-prompt--light h2 {
+    color: #172b4d;
+}
+
+.onboarding-prompt--light p {
+    color: #61738f;
+}
+
+.onboarding-prompt--light .onboarding-required-text {
+    color: #334967 !important;
+}
+
+.onboarding-prompt--light .onboarding-document-list li {
+    border-color: #e1e9f3;
+    background: #f6f8fc;
+    color: #405572;
+}
+
+.onboarding-prompt--light .onboarding-document-list li::before {
+    background: #e7efff;
+    color: #3166c9;
+}
+
+.onboarding-prompt--light .onboarding-prompt-icon {
+    background: #edf3ff;
+    color: #3166c9;
+}
+
+
 /* ============================================================
    ANIMATIONS
    ============================================================ */
@@ -593,6 +729,10 @@
         height: 48px;
 
         font-size: 24px;
+    }
+
+    .onboarding-prompt--policies {
+        padding: 25px 20px;
     }
 
     .onboarding-document-list {

@@ -10,6 +10,7 @@ import {
 import authService from "../Admin/Services/authService";
 
 import { getProfile } from "../Admin/Services/ProfileService";
+import PolicyService from "../Admin/Services/PolicyService";
 
 import {
     getRolePermissions,
@@ -90,13 +91,21 @@ export function AuthProvider({ children }) {
     const [sparkAccessLoading, setSparkAccessLoading] =
         useState(true);
 
+    const [onboardingStep, setOnboardingStep] =
+        useState("documents");
+
+    const [pendingPolicyIds, setPendingPolicyIds] =
+        useState([]);
+
 
     /*
     =========================================================
     CHECK SPARK ACCESS
     =========================================================
 
-    Required documents are checked by the backend.
+    Required documents are checked by the onboarding backend.
+    Once approved, every published policy that requires
+    acknowledgement must also be acknowledged by this employee.
 
     The backend must return:
 
@@ -106,8 +115,8 @@ export function AuthProvider({ children }) {
         accessGranted: true
     }
 
-    Only when all required documents are approved
-    should accessGranted be true.
+    Full access is granted only after the documents and all
+    required published policy acknowledgements are complete.
     =========================================================
     */
 
@@ -124,6 +133,8 @@ export function AuthProvider({ children }) {
                 );
 
                 setSparkAccessGranted(false);
+                setOnboardingStep("documents");
+                setPendingPolicyIds([]);
 
                 if (showLoading) {
                     setSparkAccessLoading(false);
@@ -132,6 +143,8 @@ export function AuthProvider({ children }) {
                 return false;
             }
 
+
+            let documentsApproved = false;
 
             try {
 
@@ -163,15 +176,69 @@ export function AuthProvider({ children }) {
                 const data = await response.json();
 
 
-                const accessGranted =
+                documentsApproved =
                     data?.accessGranted === true;
 
-
                 console.log(
-                    "AuthContext: Spark Access:",
-                    accessGranted
+                    "AuthContext: Required documents approved:",
+                    documentsApproved
                 );
 
+                if (!documentsApproved) {
+                    setSparkAccessGranted(false);
+                    setOnboardingStep("documents");
+                    setPendingPolicyIds([]);
+                    return false;
+                }
+
+                const policyResponse = await PolicyService.getPolicies({
+                    status: "Published",
+                });
+                if (policyResponse?.success === false) {
+                    throw new Error("Unable to confirm published company policies.");
+                }
+                const policies = Array.isArray(policyResponse?.data)
+                    ? policyResponse.data
+                    : Array.isArray(policyResponse)
+                        ? policyResponse
+                        : null;
+                if (!policies) {
+                    throw new Error("Published company policies could not be verified.");
+                }
+                const acknowledgementRequiredPolicies = policies.filter(
+                    (policy) =>
+                        String(policy.status ?? policy.Status ?? "Published").toLowerCase() === "published" &&
+                        (policy.acknowledgementRequired === true ||
+                            policy.acknowledgementRequired === "true" ||
+                            policy.AcknowledgementRequired === true ||
+                            policy.AcknowledgementRequired === "true")
+                );
+                const acknowledgements = await Promise.all(
+                    acknowledgementRequiredPolicies.map(async (policy) => {
+                        const policyId = policy.policyId ?? policy.PolicyId ?? policy.id;
+                        if (!policyId) {
+                            throw new Error("A published policy is missing its ID.");
+                        }
+
+                        const acknowledgement =
+                            await PolicyService.getAcknowledgement(policyId);
+                        if (acknowledgement?.success === false) {
+                            throw new Error(`Unable to verify acknowledgement for policy ${policyId}.`);
+                        }
+                        return {
+                            policyId,
+                            acknowledged: acknowledgement?.acknowledged === true,
+                        };
+                    })
+                );
+
+                const pending = acknowledgements
+                    .filter((item) => !item.acknowledged)
+                    .map((item) => item.policyId);
+                const accessGranted = pending.length === 0;
+
+                setPendingPolicyIds(pending);
+                setOnboardingStep(accessGranted ? "complete" : "policies");
 
                 setSparkAccessGranted(
                     accessGranted
@@ -192,14 +259,16 @@ export function AuthProvider({ children }) {
                 /*
                 IMPORTANT:
 
-                If the onboarding API fails, do NOT give
-                full Spark access.
-
-                The employee can still login and reach
-                Settings to complete documents.
+                If the onboarding or policy API fails, do NOT
+                give full Spark access. Keep the employee on the
+                step that still needs to be confirmed.
                 */
 
                 setSparkAccessGranted(false);
+                // Do not redirect to Company Policies unless we confirmed
+                // at least one published policy requiring acknowledgement.
+                setOnboardingStep(documentsApproved ? "verification" : "documents");
+                setPendingPolicyIds([]);
 
                 return false;
 
@@ -245,6 +314,8 @@ export function AuthProvider({ children }) {
                 setPermissionCatalog([]);
 
                 setSparkAccessGranted(false);
+                setOnboardingStep("documents");
+                setPendingPolicyIds([]);
 
                 setSparkAccessLoading(false);
 
@@ -412,6 +483,8 @@ export function AuthProvider({ children }) {
                 setPermissionCatalog([]);
 
                 setSparkAccessGranted(false);
+                setOnboardingStep("documents");
+                setPendingPolicyIds([]);
 
 
                 /*
@@ -475,6 +548,8 @@ export function AuthProvider({ children }) {
                 setProfile(null);
 
                 setSparkAccessGranted(false);
+                setOnboardingStep("documents");
+                setPendingPolicyIds([]);
 
                 setSparkAccessLoading(false);
 
@@ -813,6 +888,8 @@ export function AuthProvider({ children }) {
                     setProfile(null);
 
                     setSparkAccessGranted(false);
+                    setOnboardingStep("documents");
+                    setPendingPolicyIds([]);
 
                     throw error;
 
@@ -867,6 +944,8 @@ export function AuthProvider({ children }) {
         setPermissionCatalog([]);
 
         setSparkAccessGranted(false);
+        setOnboardingStep("documents");
+        setPendingPolicyIds([]);
 
         setSparkAccessLoading(false);
 
@@ -1865,6 +1944,10 @@ export function AuthProvider({ children }) {
                 sparkAccessGranted,
 
                 sparkAccessLoading,
+
+                onboardingStep,
+
+                pendingPolicyIds,
 
                 checkSparkAccess,
 

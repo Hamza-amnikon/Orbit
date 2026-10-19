@@ -6,6 +6,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import Navbar from "../Navbar/Navbar";
 
 import { useAuth } from "../../../context/AuthContext";
+import { useColorMode } from "../../../context/ColorModeContext";
 
 import "./DashboardLayout.css";
 import "../../../theme/workspace.css";
@@ -15,11 +16,14 @@ function DashboardLayout() {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const { mode } = useColorMode();
 
     const {
         sparkAccessGranted,
         sparkAccessLoading,
-        profileLoading
+        profileLoading,
+        onboardingStep,
+        pendingPolicyIds = [],
     } = useAuth();
 
 
@@ -29,6 +33,8 @@ function DashboardLayout() {
 
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [onboardingPromptOpen, setOnboardingPromptOpen] =
+        useState(false);
+    const [policyPromptDismissed, setPolicyPromptDismissed] =
         useState(false);
 
     useEffect(() => {
@@ -56,16 +62,6 @@ function DashboardLayout() {
 
     useEffect(() => {
 
-        // If access has already been granted,
-        // close the prompt.
-        if (sparkAccessGranted) {
-
-            setOnboardingPromptOpen(false);
-
-            return;
-        }
-
-
         // Wait until authentication/profile/access
         // information has finished loading.
         if (
@@ -73,6 +69,22 @@ function DashboardLayout() {
             profileLoading
         ) {
 
+            return;
+        }
+
+        // Once access is granted, there is nothing left to prompt.
+        if (sparkAccessGranted || onboardingStep === "complete") {
+            setOnboardingPromptOpen(false);
+            setPolicyPromptDismissed(false);
+            return;
+        }
+
+        // Show the policy prompt once on entry. Keep it dismissed while the
+        // employee reads and acknowledges policies, even as the pending list updates.
+        if (onboardingStep === "policies") {
+            if (!policyPromptDismissed) {
+                setOnboardingPromptOpen(true);
+            }
             return;
         }
 
@@ -88,13 +100,16 @@ function DashboardLayout() {
 
 
         // Employee does not have full access.
+        setPolicyPromptDismissed(false);
         setOnboardingPromptOpen(true);
 
     }, [
         sparkAccessGranted,
+        onboardingStep,
         sparkAccessLoading,
         profileLoading,
-        isDocumentsPage
+        isDocumentsPage,
+        policyPromptDismissed
     ]);
 
 
@@ -113,17 +128,25 @@ function DashboardLayout() {
 
     };
 
+    const handleReviewPolicies = () => {
+        setPolicyPromptDismissed(true);
+        setOnboardingPromptOpen(false);
+        navigate("/company-policies");
+    };
+
 
     // ==========================================================
     // ONBOARDING PROMPT VISIBILITY
     // ==========================================================
+
+    const isPolicyAcknowledgementStage = onboardingStep === "policies";
 
     const showOnboardingPrompt =
         onboardingPromptOpen &&
         !sparkAccessLoading &&
         !profileLoading &&
         !sparkAccessGranted &&
-        !isDocumentsPage;
+        (isPolicyAcknowledgementStage || (onboardingStep === "documents" && !isDocumentsPage));
 
 
     // ==========================================================
@@ -179,10 +202,16 @@ function DashboardLayout() {
 
             {showOnboardingPrompt && (
 
-                <MuiLayoutBox className="onboarding-prompt-overlay" component="div">
+                <MuiLayoutBox
+                    className={`onboarding-prompt-overlay${isPolicyAcknowledgementStage ? ` onboarding-prompt-overlay--policies onboarding-prompt-overlay--${mode}` : ""}`}
+                    component="div"
+                >
 
 
-                    <MuiLayoutBox className="onboarding-prompt" component="div">
+                    <MuiLayoutBox
+                        className={`onboarding-prompt${isPolicyAcknowledgementStage ? ` onboarding-prompt--policies onboarding-prompt--${mode}` : ""}`}
+                        component="div"
+                    >
 
 
                         {/* ==================================================
@@ -202,7 +231,7 @@ function DashboardLayout() {
 
                         <MuiText component="h2" variant="h5">
 
-                            Complete Your Onboarding
+                            {isPolicyAcknowledgementStage ? "Review Company Policies" : "Complete Your Onboarding"}
 
                         </MuiText>
 
@@ -213,18 +242,18 @@ function DashboardLayout() {
 
                         <MuiText component="p" variant="body1">
 
-                            Your required onboarding documents
-                            have not been fully approved yet.
+                            {isPolicyAcknowledgementStage
+                                ? "Your onboarding documents are approved. Please read and acknowledge every required company policy before continuing to Spark."
+                                : "Your required onboarding documents have not been fully approved yet."}
 
                         </MuiText>
 
 
-                        <MuiText component="p" variant="body1">
-
-                            Please upload and submit all required
-                            documents to get full access to Spark.
-
-                        </MuiText>
+                        {!isPolicyAcknowledgementStage && (
+                            <MuiText component="p" variant="body1">
+                                Please upload and submit all required documents to get full access to Spark.
+                            </MuiText>
+                        )}
 
 
                         {/* ==================================================
@@ -232,13 +261,21 @@ function DashboardLayout() {
                         ================================================== */}
 
                         <MuiText className="onboarding-required-text" component="p" variant="body1">
-
-                            Required documents:
-
+                            {isPolicyAcknowledgementStage
+                                ? `Policies awaiting your acknowledgement: ${pendingPolicyIds.length}`
+                                : "Required documents:"}
                         </MuiText>
 
 
                         <MuiLayoutBox className="onboarding-document-list" component="ul">
+
+                            {isPolicyAcknowledgementStage ? (
+                                <>
+                                    <MuiLayoutBox component="li">Open and read each required policy in full.</MuiLayoutBox>
+                                    <MuiLayoutBox component="li">Acknowledge each policy after reviewing it.</MuiLayoutBox>
+                                    <MuiLayoutBox component="li">Access unlocks as soon as every required policy is acknowledged.</MuiLayoutBox>
+                                </>
+                            ) : <>
 
                             <MuiLayoutBox component="li">
                                 Aadhaar
@@ -256,6 +293,8 @@ function DashboardLayout() {
                                 Education Certificate
                             </MuiLayoutBox>
 
+                            </>}
+
                         </MuiLayoutBox>
 
 
@@ -265,11 +304,11 @@ function DashboardLayout() {
 
                         <MuiButtonMigration
                             type="button"
-                            onClick={handleCompleteDocuments}
+                            onClick={isPolicyAcknowledgementStage ? handleReviewPolicies : handleCompleteDocuments}
                             className="onboarding-prompt-button"
                         >
 
-                            Submit Documents
+                            {isPolicyAcknowledgementStage ? "Review Policies" : "Submit Documents"}
 
                         </MuiButtonMigration>
 

@@ -599,25 +599,15 @@ const PolicyService = {
     //
     // IMPORTANT:
     //
-    // The backend GET endpoint is now anonymous.
-    //
-    // It checks PolicyAcknowledgements directly.
+    // The authenticated backend GET checks the acknowledgement
+    // for the current employee from the JWT.
     //
     // Example:
     //
     // GET /api/Policy/5/acknowledgement
     //
-    // Database:
-    //
-    // PolicyId = 5
-    //
-    // Record exists:
-    //     acknowledged = true
-    //
-    // Record doesn't exist:
-    //     acknowledged = false
-    //
-    // No JWT is required.
+    // Employee 2022 can be acknowledged while employee 2033
+    // remains pending for the same policy.
     //
     // ========================================================
 
@@ -634,10 +624,8 @@ const PolicyService = {
                     {
                         method: "GET",
 
-                        // Keep credentials enabled.
-                        // It does not hurt the anonymous
-                        // endpoint and keeps this compatible
-                        // with the application environment.
+                        // Keep credentials enabled for the
+                        // authenticated current-employee check.
                         credentials:
                             "include",
 

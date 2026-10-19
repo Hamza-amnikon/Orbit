@@ -195,16 +195,19 @@ function Navbar({ title }) {
 
     }, []);
 
-    // Notifications are loaded from the signed-in employee's leave records and
-    // all company policies returned by the API. No placeholder items are shown.
+    // Refresh approval updates and required policy acknowledgements while the
+    // employee is signed in so newly published policies surface promptly.
     useEffect(() => {
         let mounted = true;
+        let loadingNotifications = false;
 
         const loadNotifications = async () => {
+            if (loadingNotifications) return;
+            loadingNotifications = true;
             try {
                 const [leaveResult, policyResult] = await Promise.allSettled([
                     LeaveService.getLeaves(),
-                    PolicyService.getPolicies(),
+                    PolicyService.getPolicies({ status: "Published" }),
                 ]);
                 const leaves = leaveResult.status === "fulfilled" ? leaveResult.value : [];
                 const policies = policyResult.status === "fulfilled"
@@ -228,21 +231,61 @@ function Navbar({ title }) {
                     const action = normalized.includes("approv") ? "approved" : normalized.includes("reject") ? "rejected" : "submitted";
                     return { id: leave.id ?? leave.leaveId ?? index, route: "/leave", title: action === "submitted" ? "Leave update" : "Approval update", message: `${type} was ${action}.`, status, date: leave.updatedAt ?? leave.createdAt ?? leave.requestDate };
                 });
-                const mappedPolicies = policies.map((policy, index) => ({
-                    id: `policy-${policy.id ?? policy.policyId ?? index}`,
-                    route: "/company-policies",
-                    title: "Policy update",
-                    message: `${policy.title ?? policy.policyTitle ?? policy.name ?? "A company policy"} was updated.`,
-                    date: policy.updatedAt ?? policy.modifiedDate ?? policy.createdAt,
-                }));
+                const requiredPolicies = policies.filter((policy) =>
+                    String(policy.status ?? policy.Status ?? "Published").toLowerCase() === "published" &&
+                    (policy.acknowledgementRequired === true ||
+                        policy.acknowledgementRequired === "true" ||
+                        policy.AcknowledgementRequired === true ||
+                        policy.AcknowledgementRequired === "true")
+                );
+                const policyAcknowledgements = await Promise.all(
+                    requiredPolicies.map(async (policy, index) => {
+                        const policyId = policy.policyId ?? policy.PolicyId ?? policy.id;
+                        try {
+                            const acknowledgement = await PolicyService.getAcknowledgement(policyId);
+                            return { policy, policyId, index, acknowledged: acknowledgement?.acknowledged === true };
+                        } catch {
+                            return { policy, policyId, index, acknowledged: false };
+                        }
+                    })
+                );
+                const mappedPolicies = policyAcknowledgements
+                    .filter(({ acknowledged }) => !acknowledged)
+                    .map(({ policy, policyId, index }) => {
+                        const revision = policy.version ?? policy.Version ?? policy.policyVersion ?? policy.PolicyVersion ?? policy.updatedAt ?? policy.UpdatedAt ?? policy.modifiedDate ?? policy.ModifiedDate ?? policy.createdAt ?? "current";
+                        return {
+                            id: `policy-${policyId ?? index}-${revision}`,
+                            route: "/company-policies",
+                            title: "Policy acknowledgement required",
+                            message: `${policy.policyTitle ?? policy.PolicyTitle ?? policy.title ?? policy.name ?? "A company policy"} needs your acknowledgement.`,
+                            date: policy.updatedAt ?? policy.UpdatedAt ?? policy.modifiedDate ?? policy.ModifiedDate ?? policy.createdAt ?? policy.CreatedAt,
+                        };
+                    });
                 if (mounted) setNotifications([...mappedLeaves, ...mappedPolicies]);
             } catch (error) {
                 if (mounted) setNotifications([]);
                 console.warn("Navbar notifications unavailable:", error);
+            } finally {
+                loadingNotifications = false;
             }
         };
 
-        if (profile) loadNotifications();
+        if (profile) {
+            loadNotifications();
+            const interval = setInterval(() => {
+                if (document.visibilityState !== "hidden") loadNotifications();
+            }, 30000);
+            const refreshOnVisible = () => {
+                if (document.visibilityState !== "hidden") loadNotifications();
+            };
+            document.addEventListener("visibilitychange", refreshOnVisible);
+            return () => {
+                mounted = false;
+                clearInterval(interval);
+                document.removeEventListener("visibilitychange", refreshOnVisible);
+            };
+        }
+
         return () => { mounted = false; };
     }, [profile]);
 

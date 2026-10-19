@@ -5263,6 +5263,81 @@ html[data-color-mode="dark"] .leave-policy-delete-dialog .policy-delete-confirm-
   background: #b93845 !important;
 }
 
+/* Keep the leave-policy editor legible across its fields, labels, and rule cards. */
+html[data-color-mode="dark"] .leave-policy-dialog .policy-form-section {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-section-title {
+  color: var(--spark-text) !important;
+  font-size: 1rem !important;
+  letter-spacing: 0.01em;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-section-divider {
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-form-control .MuiInputLabel-root {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-form-control .MuiInputLabel-root.MuiInputLabel-shrink {
+  color: var(--spark-muted) !important;
+  background: var(--spark-surface) !important;
+  padding-inline: 5px !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-form-control .MuiOutlinedInput-root {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface) !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-form-control .MuiOutlinedInput-notchedOutline {
+  border-color: var(--spark-border) !important;
+  background: transparent !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-form-control .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #5878a4 !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-form-control .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #6d91ff !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-form-control .MuiSelect-icon {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-checkbox-item {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-checkbox-item:hover {
+  background: var(--spark-hover) !important;
+  border-color: #5878a4 !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-checkbox-item .MuiFormControlLabel-label {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-checkbox-item .MuiCheckbox-root {
+  color: #8ea5c4 !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-checkbox-item .MuiCheckbox-root.Mui-checked {
+  color: #6d91ff !important;
+}
+
+html[data-color-mode="dark"] .leave-policy-dialog .policy-dialog-actions {
+  border-top-color: var(--spark-border) !important;
+  background: var(--spark-surface-raised) !important;
+}
+
 html[data-color-mode="dark"] :is(.my-leave-apply-dialog, .my-leave-details-dialog, .leave-type-dialog) .MuiDialogActions-root .MuiButton-outlined,
 html[data-color-mode="dark"] :is(.my-leave-apply-dialog, .my-leave-details-dialog, .leave-type-dialog) .MuiDialogActions-root .MuiButton-text {
   color: #c8d8ef !important;
@@ -7818,11 +7893,6 @@ html[data-color-mode="dark"] .MuiDialog-paper.company-policy-dialog :is(
   .MuiTypography-root
 ) {
   color: var(--spark-text) !important;
-}
-
-html[data-color-mode="dark"] .dashboard-content.workspace-ui .company-policies-page .company-policy-search .MuiOutlinedInput-root:has(input[placeholder*="Search"])::after {
-  display: none !important;
-  content: none !important;
 }
 
 /* Policy Dashboard */
