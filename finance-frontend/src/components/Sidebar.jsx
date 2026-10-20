@@ -162,6 +162,7 @@ const Sidebar = ({ desktop, open, onClose }) => {
                 <ListItemButton
                     component={NavLink}
                     to="/expenses"
+                    end
                     onClick={onClose}
                     className="sidebar-item"
                 >

@@ -5,12 +5,14 @@ import { FinanceAuth } from "../live/Auth";
 import Dashboard from "../live/Dashboard";
 import Vendors from "../admin/purchases management/vendors/Vendors";
 import VendorDetails from "../admin/purchases management/vendors/VendorDetails";
+import VendorCredits from "../admin/purchases management/vendor credits/VendorCredits";
 import Bills from "../admin/purchases management/bills/Bills";
 import BillDetails from "../admin/purchases management/bills/BillDetails";
 import PurchaseOrders from "../admin/purchases management/purchase orders/PurchaseOrders";
 import PurchaseOrderDetails from "../admin/purchases management/purchase orders/PurchaseOrderDetails";
 import Documents from "../live/Documents";
-import Payments from "../live/Payments";
+import PaymentsMade from "../admin/purchases management/Payments Made/PaymentsMade";
+import PaymentMadeDetails from "../admin/purchases management/Payments Made/PaymentMadeDetails";
 
 import Clients from "../admin/sales management/clients/Clients";
 import ClientDetails from "../admin/sales management/clients/ClientDetails";
@@ -23,7 +25,6 @@ import { adminModuleRoutes } from "../admin/moduleRoutes";
 
 const documentRoutes = [
     ["/sales/orders", "SalesOrder"],
-    ["/purchases/vendor-credits", "VendorCredit"],
 ];
 
 function AppRoutes() {
@@ -85,6 +86,11 @@ function AppRoutes() {
                         <Route path="/purchases/orders" element={<PurchaseOrders />} />
                         <Route path="/purchases/orders/:id" element={<PurchaseOrderDetails />} />
 
+                        <Route
+                            path="/purchases/vendor-credits"
+                            element={<VendorCredits />}
+                        />
+
                         {documentRoutes.map(([path, kind]) => (
                             <Route
                                 key={path}
@@ -102,12 +108,12 @@ function AppRoutes() {
 
                         <Route
                             path="/purchases/payments"
-                            element={
-                                <Payments
-                                    key="Made"
-                                    direction="Made"
-                                />
-                            }
+                            element={<PaymentsMade />}
+                        />
+
+                        <Route
+                            path="/purchases/payments/:id"
+                            element={<PaymentMadeDetails />}
                         />
 
                         {adminModuleRoutes

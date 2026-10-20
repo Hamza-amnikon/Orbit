@@ -1,299 +1,417 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+    Alert,
+    Autocomplete,
     Box,
     Button,
-    FormControl,
-    InputLabel,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     MenuItem,
-    Select,
     TextField,
     Typography,
 } from "@mui/material";
-import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
-import "./PaymentMadeForm.css";
+import { useLoad } from "../../../live/data";
+import {
+    createPaymentMade,
+    getBillPaymentBalance,
+    getPaymentMadeBills,
+    getPaymentMadeModes,
+    getPaymentMadeVendors,
+    money,
+} from "./PaymentMadeService";
 
-const PaymentMadeForm = ({ onCancel }) => {
-    const vendors = [
-        "ABC Suppliers",
-        "Global Office Solutions",
-        "TechWorld Solutions",
-        "Bright Office Supplies",
-    ];
+function today() {
+    const date = new Date();
 
-    const bills = [
-        "BILL-001",
-        "BILL-002",
-        "BILL-003",
-        "BILL-004",
-    ];
+    return date.getFullYear() + "-" +
+        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+        String(date.getDate()).padStart(2, "0");
+}
 
-    const handleSubmit = (event) => {
+export default function PaymentMadeForm({
+    billId = null,
+    onClose,
+    onSaved,
+}) {
+    const [vendor, setVendor] = useState(null);
+    const [bill, setBill] = useState(null);
+    const [vendorSearch, setVendorSearch] = useState("");
+    const [billSearch, setBillSearch] = useState("");
+    const [date, setDate] = useState(today);
+    const [amount, setAmount] = useState("");
+    const [modeId, setModeId] = useState("");
+    const [reference, setReference] = useState("");
+    const [notes, setNotes] = useState("");
+    const [busy, setBusy] = useState(false);
+    const [error, setError] = useState("");
+    const [conflict, setConflict] = useState(false);
+    const locked = useRef(false);
+    const submission = useRef(null);
+    const initialised = useRef(false);
+
+    const modes = useLoad(getPaymentMadeModes, []);
+
+    const vendors = useLoad(
+        signal => getPaymentMadeVendors(vendorSearch, signal),
+        [vendorSearch]
+    );
+
+    const bills = useLoad(
+        signal => {
+            if (!vendor) {
+                return Promise.resolve({ data: [], total: 0 });
+            }
+
+            return getPaymentMadeBills(vendor.id, billSearch, signal);
+        },
+        [vendor?.id, billSearch]
+    );
+
+    const source = useLoad(
+        signal => {
+            return billId
+                ? getBillPaymentBalance(billId, signal)
+                : Promise.resolve(null);
+        },
+        [billId]
+    );
+
+    useEffect(() => {
+        if (!source.data || initialised.current) {
+            return;
+        }
+
+        initialised.current = true;
+
+        setVendor({
+            id: source.data.vendorId,
+            name: source.data.vendorName,
+        });
+
+        setBill(source.data);
+        setAmount(String(source.data.outstandingAmount));
+    }, [source.data]);
+
+    function chooseVendor(next) {
+        setVendor(next);
+        setBill(null);
+        setAmount("");
+        setBillSearch("");
+        setConflict(false);
+    }
+
+    function chooseBill(next) {
+        setBill(next);
+        setAmount(next ? String(next.outstandingAmount) : "");
+        setConflict(false);
+    }
+
+    async function refreshBalance() {
+        if (locked.current || !bill) {
+            return;
+        }
+
+        locked.current = true;
+        setBusy(true);
+
+        try {
+            setBill(await getBillPaymentBalance(bill.id));
+            setConflict(false);
+            setError("");
+            bills.refresh();
+        } catch (loadError) {
+            setError(loadError.message);
+        } finally {
+            locked.current = false;
+            setBusy(false);
+        }
+    }
+
+    async function submit(event) {
         event.preventDefault();
-    };
+
+        if (locked.current || conflict) {
+            return;
+        }
+
+        setError("");
+
+        if (!vendor || !bill || bill.status !== "Issued") {
+            setError("Select a vendor and an issued bill.");
+            return;
+        }
+
+        if (!date || !modeId) {
+            setError("Select a payment date and payment mode.");
+            return;
+        }
+
+        const paymentAmount = Number(amount);
+
+        if (
+            amount === "" ||
+            !Number.isFinite(paymentAmount) ||
+            paymentAmount <= 0 ||
+            paymentAmount > bill.outstandingAmount
+        ) {
+            setError("Enter a positive amount within the outstanding balance.");
+            return;
+        }
+
+        const factor = 10 ** bill.currencyDecimalPlaces;
+
+        if (Math.abs(Math.round(paymentAmount * factor) / factor - paymentAmount) > 1e-9) {
+            setError("Use the bill currency's decimal precision.");
+            return;
+        }
+
+        locked.current = true;
+        setBusy(true);
+
+        try {
+            const body = {
+                vendorId: vendor.id,
+                billId: bill.id,
+                billRowVersion: bill.rowVersion,
+                paymentDate: date,
+                amount: paymentAmount,
+                paymentModeId: Number(modeId),
+                reference: reference.trim(),
+                notes: notes.trim(),
+            };
+
+            const fingerprint = JSON.stringify(body);
+
+            if (submission.current?.fingerprint !== fingerprint) {
+                submission.current = {
+                    fingerprint,
+                    id: crypto.randomUUID(),
+                };
+            }
+
+            const saved = await createPaymentMade({
+                ...body,
+                requestId: submission.current.id,
+            });
+
+            onSaved(saved);
+        } catch (saveError) {
+            setError(saveError.message);
+            setConflict(saveError.status === 409);
+        } finally {
+            locked.current = false;
+            setBusy(false);
+        }
+    }
+
+    function retryChoices() {
+        modes.refresh();
+        vendors.refresh();
+        bills.refresh();
+        source.refresh();
+    }
 
     return (
-        <Box className="payment-form-overlay">
-            <Box
-                component="form"
-                className="payment-form-modal"
-                onSubmit={handleSubmit}
-            >
-                {/* HEADER */}
-                <Box className="payment-form-header">
-                    <Box className="payment-form-header-icon">
-                        <PaymentsRoundedIcon />
-                    </Box>
+        <Dialog
+            open
+            fullWidth
+            maxWidth="md"
+            onClose={busy ? undefined : onClose}
+            aria-labelledby="payment-made-form-title"
+        >
+            <Box component="form" noValidate onSubmit={submit}>
+                <DialogTitle id="payment-made-form-title">
+                    Record Payment Made
+                </DialogTitle>
 
-                    <Box>
-                        <Typography className="payment-form-title">
-                            New Payment
-                        </Typography>
+                <DialogContent dividers>
+                    {(modes.error || vendors.error || bills.error || source.error) && (
+                        <Alert
+                            severity="error"
+                            sx={{ mb: 2 }}
+                            action={
+                                <Button onClick={retryChoices} disabled={busy}>
+                                    Retry choices
+                                </Button>
+                            }
+                        >
+                            {modes.error || vendors.error || bills.error || source.error}
+                        </Alert>
+                    )}
 
-                        <Typography className="payment-form-subtitle">
-                            Record a payment made to a vendor
-                        </Typography>
-                    </Box>
-                </Box>
-
-                {/* PAYMENT INFORMATION */}
-                <Box className="payment-form-section">
-                    <Typography className="payment-section-title">
-                        Payment Information
-                    </Typography>
-
-                    <Box className="payment-form-grid">
-
-                        {/* Vendor */}
-                        <FormControl fullWidth size="small">
-                            <InputLabel>Vendor</InputLabel>
-                            <Select
-                                label="Vendor"
-                                defaultValue=""
-                            >
-                                <MenuItem value="">
-                                    Select Vendor
-                                </MenuItem>
-
-                                {vendors.map((vendor) => (
-                                    <MenuItem
-                                        key={vendor}
-                                        value={vendor}
-                                    >
-                                        {vendor}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-
-                        <TextField
-                            label="Payment ID"
-                            defaultValue="PAY-005"
-                            size="small"
-                            fullWidth
-                        />
-
-                        <TextField
-                            label="Payment Date"
-                            type="date"
-                            defaultValue="2026-10-06"
-                            size="small"
-                            fullWidth
-                            InputLabelProps={{
-                                shrink: true,
+                    <Box
+                        sx={{
+                            display: "grid",
+                            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                            gap: 2,
+                        }}
+                    >
+                        <Autocomplete
+                            value={vendor}
+                            options={vendors.data?.data ?? []}
+                            loading={vendors.loading}
+                            disabled={busy}
+                            filterOptions={options => options}
+                            isOptionEqualToValue={(a, b) => a.id === b.id}
+                            getOptionLabel={option => option.name}
+                            onInputChange={(_, text, reason) => {
+                                if (reason === "input" || reason === "clear") {
+                                    setVendorSearch(text);
+                                }
                             }}
+                            onChange={(_, next) => chooseVendor(next)}
+                            renderInput={params => (
+                                <TextField {...params} label="Vendor" required />
+                            )}
+                        />
+
+                        <Autocomplete
+                            value={bill}
+                            options={bills.data?.data ?? []}
+                            loading={bills.loading}
+                            disabled={busy || !vendor}
+                            filterOptions={options => options}
+                            isOptionEqualToValue={(a, b) => a.id === b.id}
+                            getOptionLabel={option => {
+                                return option.billNumber +
+                                    (option.vendorInvoiceNumber
+                                        ? " · " + option.vendorInvoiceNumber
+                                        : "");
+                            }}
+                            onInputChange={(_, text, reason) => {
+                                if (reason === "input" || reason === "clear") {
+                                    setBillSearch(text);
+                                }
+                            }}
+                            onChange={(_, next) => chooseBill(next)}
+                            renderInput={params => (
+                                <TextField
+                                    {...params}
+                                    label="Bill"
+                                    required
+                                    helperText="Search issued bills with an outstanding balance."
+                                />
+                            )}
                         />
 
                         <TextField
-                            label="Amount"
-                            placeholder="Enter amount"
+                            label="Payment date"
+                            type="date"
+                            required
+                            value={date}
+                            disabled={busy}
+                            slotProps={{ inputLabel: { shrink: true } }}
+                            onChange={event => setDate(event.target.value)}
+                        />
+
+                        <TextField
+                            select
+                            label="Payment mode"
+                            required
+                            value={modeId}
+                            disabled={busy || modes.loading}
+                            onChange={event => setModeId(event.target.value)}
+                        >
+                            {(modes.data ?? []).map(mode => (
+                                <MenuItem key={mode.id} value={mode.id}>
+                                    {mode.name}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+
+                        <TextField
+                            label="Currency"
+                            value={bill?.currency || ""}
+                            slotProps={{ input: { readOnly: true } }}
+                            helperText="Taken from the selected bill."
+                        />
+
+                        <TextField
+                            label="Managing branch"
+                            value={bill?.branch || ""}
+                            slotProps={{ input: { readOnly: true } }}
+                        />
+
+                        <TextField
+                            label="Amount paid"
                             type="number"
-                            size="small"
-                            fullWidth
+                            required
+                            value={amount}
+                            disabled={busy || !bill}
+                            slotProps={{
+                                htmlInput: {
+                                    min: 0,
+                                    max: bill?.outstandingAmount,
+                                    step: 1 / (10 ** (bill?.currencyDecimalPlaces ?? 2)),
+                                },
+                            }}
+                            onChange={event => setAmount(event.target.value)}
                         />
-
-                        {/* Payment Method */}
-                        <FormControl fullWidth size="small">
-                            <InputLabel>Payment Method</InputLabel>
-                            <Select
-                                label="Payment Method"
-                                defaultValue=""
-                            >
-                                <MenuItem value="">
-                                    Select Method
-                                </MenuItem>
-                                <MenuItem value="Bank Transfer">
-                                    Bank Transfer
-                                </MenuItem>
-                                <MenuItem value="Cash">
-                                    Cash
-                                </MenuItem>
-                                <MenuItem value="Cheque">
-                                    Cheque
-                                </MenuItem>
-                                <MenuItem value="UPI">
-                                    UPI
-                                </MenuItem>
-                                <MenuItem value="Credit Card">
-                                    Credit Card
-                                </MenuItem>
-                            </Select>
-                        </FormControl>
 
                         <TextField
-                            label="Reference Number"
-                            placeholder="Enter reference number"
-                            size="small"
-                            fullWidth
+                            label="Reference"
+                            value={reference}
+                            disabled={busy}
+                            slotProps={{ htmlInput: { maxLength: 200 } }}
+                            onChange={event => setReference(event.target.value)}
                         />
-
-                        {/* Bill Number */}
-                        <FormControl fullWidth size="small">
-                            <InputLabel>Bill Number</InputLabel>
-                            <Select
-                                label="Bill Number"
-                                defaultValue=""
-                            >
-                                <MenuItem value="">
-                                    Select Bill
-                                </MenuItem>
-
-                                {bills.map((bill) => (
-                                    <MenuItem
-                                        key={bill}
-                                        value={bill}
-                                    >
-                                        {bill}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-
-                        {/* Status */}
-                        <FormControl fullWidth size="small">
-                            <InputLabel>Status</InputLabel>
-                            <Select
-                                label="Status"
-                                defaultValue="Pending"
-                            >
-                                <MenuItem value="Pending">
-                                    Pending
-                                </MenuItem>
-
-                                <MenuItem value="Paid">
-                                    Paid
-                                </MenuItem>
-
-                                <MenuItem value="Cancelled">
-                                    Cancelled
-                                </MenuItem>
-                            </Select>
-                        </FormControl>
-
                     </Box>
-                </Box>
 
-                {/* PAYMENT DETAILS */}
-                <Box className="payment-form-section">
-                    <Typography className="payment-section-title">
-                        Payment Details
-                    </Typography>
-
-                    <Box className="payment-form-grid">
-
-                        <TextField
-                            label="Bank Name"
-                            placeholder="Enter bank name"
-                            size="small"
-                            fullWidth
-                        />
-
-                        <TextField
-                            label="Transaction ID"
-                            placeholder="Enter transaction ID"
-                            size="small"
-                            fullWidth
-                        />
-
-                        <TextField
-                            label="Account Number"
-                            placeholder="Enter account number"
-                            size="small"
-                            fullWidth
-                        />
-
-                        <TextField
-                            label="Payment Terms"
-                            placeholder="e.g. Net 30"
-                            size="small"
-                            fullWidth
-                        />
-
-                    </Box>
-                </Box>
-
-                {/* ADDITIONAL INFORMATION */}
-                <Box className="payment-form-section">
-                    <Typography className="payment-section-title">
-                        Additional Information
-                    </Typography>
+                    {bill && (
+                        <Alert severity="info" sx={{ mt: 2 }}>
+                            Bill total: {money(bill.grandTotal, bill.currency, bill.currencyDecimalPlaces)}
+                            {" · "}Already paid: {money(bill.paidAmount, bill.currency, bill.currencyDecimalPlaces)}
+                            {" · "}Credits applied: {money(bill.appliedCreditAmount ?? 0, bill.currency, bill.currencyDecimalPlaces)}
+                            {" · "}Outstanding: {money(bill.outstandingAmount, bill.currency, bill.currencyDecimalPlaces)}
+                        </Alert>
+                    )}
 
                     <TextField
                         label="Notes"
-                        placeholder="Enter payment notes"
                         multiline
-                        rows={3}
+                        minRows={2}
                         fullWidth
-                        size="small"
+                        value={notes}
+                        disabled={busy}
+                        sx={{ mt: 2 }}
+                        slotProps={{ htmlInput: { maxLength: 2000 } }}
+                        onChange={event => setNotes(event.target.value)}
                     />
-                </Box>
 
-                {/* SUMMARY */}
-                <Box className="payment-summary">
-                    <Box>
-                        <Typography className="payment-summary-label">
-                            Payment Amount
-                        </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                        Record a payment you have already made. This does not
+                        initiate a bank transfer.
+                    </Typography>
 
-                        <Typography className="payment-summary-label">
-                            Payment Status
-                        </Typography>
-                    </Box>
+                    {error && (
+                        <Alert severity="error" sx={{ mt: 2 }}>
+                            {error}
+                        </Alert>
+                    )}
 
-                    <Box className="payment-summary-values">
-                        <Typography>
-                            ₹0
-                        </Typography>
+                    {conflict && (
+                        <Button disabled={busy} onClick={refreshBalance}>
+                            Refresh bill balance
+                        </Button>
+                    )}
+                </DialogContent>
 
-                        <Typography>
-                            Pending
-                        </Typography>
-                    </Box>
-                </Box>
-
-                {/* FOOTER */}
-                <Box className="payment-form-footer">
-
-                    <Button
-                        type="button"
-                        variant="outlined"
-                        className="payment-cancel-button"
-                        onClick={onCancel}
-                    >
+                <DialogActions>
+                    <Button disabled={busy} onClick={onClose}>
                         Cancel
                     </Button>
 
                     <Button
                         type="submit"
                         variant="contained"
-                        className="payment-save-button"
+                        disabled={busy || conflict || modes.loading || !bill}
                     >
-                        Save Payment
+                        {busy ? "Recording..." : "Record Payment"}
                     </Button>
-
-                </Box>
+                </DialogActions>
             </Box>
-        </Box>
+        </Dialog>
     );
-};
-
-export default PaymentMadeForm;
+}
