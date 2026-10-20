@@ -117,6 +117,9 @@ const Approval = () => {
     const [hasLeaveDocument, setHasLeaveDocument] =
         useState(null);
 
+    const [attendanceRequestDetails, setAttendanceRequestDetails] =
+        useState(null);
+
     const [messagePrompt, setMessagePrompt] =
         useState(null);
 
@@ -1416,7 +1419,7 @@ const response =
     // ========================================================
 
     const handleView =
-        (request) => {
+        async (request) => {
 
             setSelectedStatus(
                 ""
@@ -1442,6 +1445,21 @@ const response =
             setSelectedRequest(
                 request
             );
+
+            setAttendanceRequestDetails(null);
+
+            if (String(request?.requestType || "").toLowerCase().includes("attendance regularization")) {
+                try {
+                    const attendanceApi = import.meta.env.VITE_ATTENDANCE_API_BASE_URL;
+                    const detailResponse = await axios.get(
+                        `${attendanceApi}/api/Attendance/regularization-requests/${request.requestId}`
+                    );
+                    setAttendanceRequestDetails(detailResponse.data);
+                } catch (detailError) {
+                    console.error("Unable to load attendance regularization details:", detailError);
+                    setAttendanceRequestDetails({ loadError: "Request details could not be loaded." });
+                }
+            }
 
             loadLeaveDocumentForView(
                 request
@@ -1472,6 +1490,8 @@ const response =
             setSelectedRequest(
                 null
             );
+
+            setAttendanceRequestDetails(null);
         };
 
     // ========================================================
@@ -2531,6 +2551,24 @@ const response =
                                     </MuiText>
 
                                 </MuiLayoutBox>
+
+                                {String(selectedRequest.requestType || "").toLowerCase().includes("attendance regularization") && (
+                                    <MuiLayoutBox className="approval-detail-item" style={{ gridColumn: "1 / -1" }} component="div">
+                                        <MuiText component="span" variant="inherit">Attendance correction</MuiText>
+                                        {attendanceRequestDetails?.loadError ? (
+                                            <MuiText component="strong" variant="inherit">{attendanceRequestDetails.loadError}</MuiText>
+                                        ) : attendanceRequestDetails ? (
+                                            <MuiLayoutBox component="div" sx={{ display: "grid", gap: 1, mt: 1 }}>
+                                                <MuiText component="strong" variant="inherit">
+                                                    Requested times: {String(attendanceRequestDetails.requestedCheckIn || "").slice(0, 5)} – {String(attendanceRequestDetails.requestedCheckOut || "").slice(0, 5)}
+                                                </MuiText>
+                                                <MuiText component="span" variant="inherit">Reason: {attendanceRequestDetails.reason || "—"}</MuiText>
+                                            </MuiLayoutBox>
+                                        ) : (
+                                            <MuiText component="span" variant="inherit">Loading request details…</MuiText>
+                                        )}
+                                    </MuiLayoutBox>
+                                )}
 
                                 {/* LEAVE DOCUMENT */}
 

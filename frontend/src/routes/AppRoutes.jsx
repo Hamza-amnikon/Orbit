@@ -59,6 +59,7 @@ const MyPayroll = lazy(() => import("../Admin/PayrollManagement/MyPayroll/Payrol
 const MyDashboard = lazy(() => import("../Admin/MyDashboard/Dashboard"));
 
 const AttendanceLogs = lazy(() => import("../Admin/AttendanceManagement/AttendanceLogs/AttendanceLogs"));
+const TeamAttendance = lazy(() => import("../Admin/AttendanceManagement/TeamAttendance/TeamAttendance"));
 const AttendanceDashboard = lazy(() => import("../Admin/AttendanceManagement/Dashboard/AttendanceDashboard"));
 const ShiftManagement = lazy(() => import("../Admin/AttendanceManagement/ShiftManagement/ShiftManagement"));
 const AttendanceReports = lazy(() => import("../Admin/AttendanceManagement/Reports/AttendanceReports"));
@@ -176,6 +177,11 @@ export const PERMISSION_PAGES = [
         module: "Attendance Management",
         pageName: "Attendance Logs",
         route: "/attendance/logs",
+    },
+    {
+        module: "Attendance Management",
+        pageName: "Team Attendance",
+        route: "/attendance/team-logs",
     },
     {
         module: "Attendance Management",
@@ -719,6 +725,11 @@ function AppRoutes() {
                         <Route
                             path="/attendance/logs"
                             element={<AttendanceLogs />}
+                        />
+
+                        <Route
+                            path="/attendance/team-logs"
+                            element={<TeamAttendance />}
                         />
 
                         <Route

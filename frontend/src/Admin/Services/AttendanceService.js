@@ -92,6 +92,34 @@ export async function checkOut(attendanceId) {
     return await response.json();
 }
 
+export async function getEmployeeRegularizationRequests(employeeId) {
+    if (!employeeId) return [];
+    const response = await fetch(
+        `${API_BASE_URL}/api/Attendance/employee/${employeeId}/regularization-requests`,
+        { headers: { Accept: "application/json" } }
+    );
+    if (!response.ok) {
+        throw new Error(`Failed to load regularization requests. Status: ${response.status}`);
+    }
+    return response.json();
+}
+
+export async function createRegularizationRequest(payload) {
+    const response = await fetch(
+        `${API_BASE_URL}/api/Attendance/regularization-requests`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify(payload),
+        }
+    );
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(result?.message || `Could not submit regularization request. Status: ${response.status}`);
+    }
+    return result;
+}
+
 
 // =====================================================
 // DEFAULT SERVICE
@@ -105,7 +133,9 @@ const AttendanceService = {
 
     checkIn,
 
-    checkOut
+    checkOut,
+    getEmployeeRegularizationRequests,
+    createRegularizationRequest,
 
 };
 

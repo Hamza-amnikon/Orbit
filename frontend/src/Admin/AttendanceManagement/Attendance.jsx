@@ -8,6 +8,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import EventIcon from "@mui/icons-material/Event";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import Groups2Icon from "@mui/icons-material/Groups2";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
@@ -29,6 +30,16 @@ const menuItems = [
         color: "#10B981",
         path: "/attendance/logs",
         decoration: "document",
+    },
+
+    {
+        title: "Team Attendance",
+        description: "Review attendance across your reporting hierarchy",
+        icon: <Groups2Icon />,
+        color: "#0EA5A4",
+        path: "/attendance/team-logs",
+        permissionPath: "/attendance/logs",
+        decoration: "people",
     },
 
     {
@@ -75,7 +86,8 @@ export default function Attendance() {
     const { hasPermission } = useAuth();
 
     const allowedItems = menuItems.filter((item) =>
-        hasPermission(item.path, "view")
+        hasPermission(item.path, "view") ||
+        (item.permissionPath && hasPermission(item.permissionPath, "view"))
     );
 
     return (

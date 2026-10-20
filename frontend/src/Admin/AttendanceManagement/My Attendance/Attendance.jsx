@@ -13,6 +13,13 @@ import {
     Paper,
     IconButton,
     Typography,
+    Menu,
+    MenuItem,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
 } from "@mui/material";
 
 import {
@@ -64,6 +71,13 @@ function Attendance() {
 
     const [selectedDate, setSelectedDate] =
         useState(new Date());
+    const [regularizationRequests, setRegularizationRequests] = useState([]);
+    const [actionAnchor, setActionAnchor] = useState(null);
+    const [actionRecord, setActionRecord] = useState(null);
+    const [regularizationRecord, setRegularizationRecord] = useState(null);
+    const [regularizationForm, setRegularizationForm] = useState({ checkIn: "", checkOut: "", reason: "" });
+    const [submittingRegularization, setSubmittingRegularization] = useState(false);
+    const [regularizationMessage, setRegularizationMessage] = useState("");
 
     const handleExport = async () => {
         try {
@@ -280,6 +294,14 @@ function Attendance() {
 
             setAttendance(attendanceData);
 
+            try {
+                const requests = await AttendanceService.getEmployeeRegularizationRequests(employeeId);
+                setRegularizationRequests(Array.isArray(requests) ? requests : []);
+            } catch (requestError) {
+                console.warn("Unable to load regularization requests:", requestError);
+                setRegularizationRequests([]);
+            }
+
 
             /* =================================================
                TODAY
@@ -366,6 +388,86 @@ function Attendance() {
 
         }
 
+    };
+
+    const attendanceDateKey = (value) =>
+        String(value ?? "").match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? null;
+
+    const requestForAttendance = (item) => {
+        const attendanceId = Number(item?.attendanceId ?? item?.id);
+        const attendanceDate = attendanceDateKey(item?.attendanceDate ?? item?.date);
+
+        return regularizationRequests.find((request) =>
+            (attendanceId > 0 && Number(request.attendanceId) === attendanceId) ||
+            (attendanceDate && attendanceDateKey(request.attendanceDate) === attendanceDate)
+        );
+    };
+
+    const openRowActions = (event, item) => {
+        setActionAnchor(event.currentTarget);
+        setActionRecord(item);
+    };
+
+    const closeRowActions = () => {
+        setActionAnchor(null);
+        setActionRecord(null);
+    };
+
+    const openRegularizationForm = () => {
+        const item = actionRecord;
+        closeRowActions();
+        if (!item) return;
+        const normalizeTime = (value) => {
+            if (!value || value === "-") return "";
+            const match = String(value).match(/(\d{1,2}:\d{2})/);
+            return match ? match[1].padStart(5, "0") : "";
+        };
+        const currentCheckIn = normalizeTime(getCheckIn(item));
+        const currentCheckOut = normalizeTime(getCheckOut(item));
+        setRegularizationRecord(item);
+        setRegularizationForm({
+            checkIn: currentCheckIn,
+            // If the recorded punches resolve to the same minute, ask the
+            // employee to enter the corrected checkout instead of suggesting
+            // an invalid zero-length workday.
+            checkOut: currentCheckIn && currentCheckIn === currentCheckOut ? "" : currentCheckOut,
+            reason: "",
+        });
+        setRegularizationMessage("");
+    };
+
+    const submitRegularization = async () => {
+        const attendanceId = regularizationRecord?.attendanceId ?? regularizationRecord?.id;
+        const employeeId = profile?.employeeId ?? profile?.employeeID ?? profile?.id;
+        if (!attendanceId || !employeeId) {
+            setRegularizationMessage("Could not identify this attendance record. Refresh and try again.");
+            return;
+        }
+        if (!regularizationForm.checkIn || !regularizationForm.checkOut || !regularizationForm.reason.trim()) {
+            setRegularizationMessage("Enter the corrected check-in and check-out times and explain the reason.");
+            return;
+        }
+        if (regularizationForm.checkIn === regularizationForm.checkOut) {
+            setRegularizationMessage("Check-in and check-out must be different times.");
+            return;
+        }
+        try {
+            setSubmittingRegularization(true);
+            setRegularizationMessage("");
+            await AttendanceService.createRegularizationRequest({
+                attendanceId: Number(attendanceId),
+                employeeId: Number(employeeId),
+                requestedCheckIn: regularizationForm.checkIn,
+                requestedCheckOut: regularizationForm.checkOut,
+                reason: regularizationForm.reason.trim(),
+            });
+            setRegularizationRecord(null);
+            await loadAttendance();
+        } catch (submitError) {
+            setRegularizationMessage(submitError?.message || "Could not submit the request.");
+        } finally {
+            setSubmittingRegularization(false);
+        }
     };
 
 
@@ -1558,6 +1660,12 @@ function Attendance() {
 
                                             const status =
                                                 getStatus(item);
+                                            const regularizationRequest =
+                                                requestForAttendance(item);
+                                            const regularizationStatus =
+                                                String(regularizationRequest?.status || "").trim().toLowerCase();
+                                            const hasPendingRegularization =
+                                                regularizationStatus === "pending";
 
                                             return (
 
@@ -1622,16 +1730,30 @@ function Attendance() {
                                                     </MuiTableCellMigration>
 
                                                     <MuiTableCellMigration>
-                                                        -
+                                                        {hasPendingRegularization ? (
+                                                            <Chip size="small" label="Approval Pending" color="warning" variant="outlined" />
+                                                        ) : regularizationStatus === "approved" ? (
+                                                            <Chip size="small" label="Approved" color="success" variant="outlined" />
+                                                        ) : regularizationStatus === "rejected" ? (
+                                                            <Chip size="small" label="Rejected" color="error" variant="outlined" />
+                                                        ) : item?.remarks || "-"}
                                                     </MuiTableCellMigration>
 
                                                     <MuiTableCellMigration>
 
-                                                        <MuiButtonMigration
-                                                            className="table-action-button"
-                                                        >
-                                                            <MoreHorizOutlined />
-                                                        </MuiButtonMigration>
+                                                        {hasPendingRegularization ? (
+                                                            <Chip size="small" label="Awaiting approval" color="warning" variant="outlined" />
+                                                        ) : item?.isRegularized ? (
+                                                            <Chip size="small" label="Regularized" color="success" variant="outlined" />
+                                                        ) : (
+                                                            <MuiButtonMigration
+                                                                className="table-action-button"
+                                                                aria-label={`Attendance actions for ${getDate(item)}`}
+                                                                onClick={(event) => openRowActions(event, item)}
+                                                            >
+                                                                <MoreHorizOutlined />
+                                                            </MuiButtonMigration>
+                                                        )}
 
                                                     </MuiTableCellMigration>
 
@@ -1651,6 +1773,73 @@ function Attendance() {
                 )}
 
             </Paper>
+
+            <Menu anchorEl={actionAnchor} open={Boolean(actionAnchor)} onClose={closeRowActions}>
+                <MenuItem onClick={openRegularizationForm}>
+                    <HistoryOutlined fontSize="small" sx={{ mr: 1 }} /> Request attendance regularization
+                </MenuItem>
+            </Menu>
+
+            <Dialog
+                className="attendance-regularization-dialog"
+                open={Boolean(regularizationRecord)}
+                onClose={() => !submittingRegularization && setRegularizationRecord(null)}
+                fullWidth
+                maxWidth="sm"
+                PaperProps={{
+                    sx: { borderRadius: 3, overflow: "hidden" },
+                }}
+            >
+                <DialogTitle className="attendance-regularization-title">
+                    <Box className="attendance-regularization-heading">
+                        <Box className="attendance-regularization-heading-icon"><HistoryOutlined /></Box>
+                        <Box>
+                            <Typography component="h2" className="attendance-regularization-heading-text">Request attendance correction</Typography>
+                            <Typography component="p" className="attendance-regularization-heading-caption">Update a missed or incorrect punch</Typography>
+                        </Box>
+                    </Box>
+                    <IconButton
+                        aria-label="Close attendance correction form"
+                        onClick={() => setRegularizationRecord(null)}
+                        disabled={submittingRegularization}
+                        className="attendance-regularization-close"
+                    >
+                        <span aria-hidden="true">×</span>
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent className="attendance-regularization-content">
+                    <Box className="attendance-regularization-date">
+                        <CalendarMonthOutlined />
+                        <span>{regularizationRecord ? `${getDate(regularizationRecord)} · ${getDay(regularizationRecord)}` : ""}</span>
+                    </Box>
+                    <Box className="attendance-regularization-note">
+                        Your request will go to your reporting approver. Attendance updates after approval.
+                    </Box>
+                    {regularizationMessage && <Alert severity="error" sx={{ mb: 2 }}>{regularizationMessage}</Alert>}
+                    <Box className="attendance-regularization-fields">
+                        <Box className="attendance-regularization-field">
+                            <Typography component="label" htmlFor="regularization-check-in">Correct check-in <span>*</span></Typography>
+                            <TextField id="regularization-check-in" aria-label="Correct check-in" type="time" value={regularizationForm.checkIn} onChange={(event) => setRegularizationForm((form) => ({ ...form, checkIn: event.target.value }))} inputProps={{ step: 60 }} size="small" fullWidth required />
+                            <Typography component="small">Recorded: {getCheckIn(regularizationRecord || {}) === "-" ? "No punch" : getCheckIn(regularizationRecord || {})}</Typography>
+                        </Box>
+                        <Box className="attendance-regularization-field">
+                            <Typography component="label" htmlFor="regularization-check-out">Correct check-out <span>*</span></Typography>
+                            <TextField id="regularization-check-out" aria-label="Correct check-out" type="time" value={regularizationForm.checkOut} onChange={(event) => setRegularizationForm((form) => ({ ...form, checkOut: event.target.value }))} inputProps={{ step: 60 }} size="small" fullWidth required />
+                            <Typography component="small">Recorded: {getCheckOut(regularizationRecord || {}) === "-" ? "No punch" : getCheckOut(regularizationRecord || {})}</Typography>
+                        </Box>
+                    </Box>
+                    <Box className="attendance-regularization-field attendance-regularization-reason">
+                        <Typography component="label" htmlFor="regularization-reason">Reason for correction <span>*</span></Typography>
+                        <TextField id="regularization-reason" aria-label="Reason for correction" value={regularizationForm.reason} onChange={(event) => setRegularizationForm((form) => ({ ...form, reason: event.target.value }))} placeholder="Briefly explain what needs to be corrected" multiline minRows={3} fullWidth required />
+                    </Box>
+                </DialogContent>
+                <DialogActions className="attendance-regularization-actions">
+                    <Button onClick={() => setRegularizationRecord(null)} disabled={submittingRegularization}>Cancel</Button>
+                    <Button variant="contained" onClick={submitRegularization} disabled={submittingRegularization}>
+                        {submittingRegularization ? "Submitting…" : "Submit for approval"}
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
         </Box>
 
