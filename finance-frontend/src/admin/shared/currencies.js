@@ -1,0 +1,2 @@
+export const currencies = ["INR", "AED", "USD", "EUR", "GBP", "CAD", "AUD", "SGD", "SAR"];
+export const suggestedCurrency = country => ({ india: "INR", "united arab emirates": "AED", uae: "AED", dubai: "AED", usa: "USD", us: "USD", "united states": "USD", "united states of america": "USD", uk: "GBP", "united kingdom": "GBP", canada: "CAD", australia: "AUD", singapore: "SGD", "saudi arabia": "SAR", germany: "EUR", france: "EUR", italy: "EUR", spain: "EUR", ireland: "EUR" }[String(country).trim().toLowerCase()]);

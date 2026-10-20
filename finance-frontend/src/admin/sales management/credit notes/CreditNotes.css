@@ -559,3 +559,7 @@
         width: 100%;
     }
 }
+.credit-note-service-choice { padding: 16px 0; border-top: 1px solid #e5eaf1; }
+.credit-note-service-choice:first-of-type { border-top: 0; }
+
+.credit-note-form .credit-note-close-button { color: var(--text-dark, #111827) !important; }

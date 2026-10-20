@@ -1,0 +1,33 @@
+.bill-summary-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 18px; margin-bottom: 24px; }
+.bill-form { display: flex; flex-direction: column; min-height: 0; max-height: inherit; }
+.bill-form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.bill-line-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+.bill-form-grid > *, .bill-line-grid > * { min-width: 0; }
+.bill-form-feedback { padding: 0 24px; }
+.bill-form-feedback:has(.MuiAlert-root) { padding-block: 12px; }
+.bill-document { padding: 28px; }
+.bill-document-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.bill-address-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.bill-text { overflow-wrap: anywhere; white-space: pre-wrap; }
+.bill-totals { margin-left: auto; width: min(100%,380px); padding-top: 20px; }
+.bill-total-row { display: flex; justify-content: space-between; gap: 16px; padding-block: 8px; }
+@media (max-width:900px) { .bill-summary-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width:650px) {
+    .bill-form-grid,.bill-line-grid,.bill-address-grid { grid-template-columns: 1fr; }
+    .bill-document { padding: 18px; }
+}
+@media print {
+    body:has(.bill-document) .bill-document,
+    body:has(.bill-document) .bill-document * { visibility: visible !important; }
+    body:has(.bill-document) .bill-address-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    body:has(.bill-document) .finance-main { min-height: 0 !important; overflow: visible !important; }
+
+    body:has(.bill-document) .finance-header, body:has(.bill-document) .finance-sidebar,
+    body:has(.bill-document) .finance-page-header, body:has(.bill-document) .bill-screen-only { display: none !important; }
+    body:has(.bill-document) .finance-main { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+    body:has(.bill-document) .live-page { padding: 0 !important; background: white !important; }
+    .bill-document { color: #111827 !important; background: white !important; box-shadow: none !important; padding: 12px !important; }
+    .bill-document .MuiTypography-root, .bill-document .MuiTableCell-root { color: #111827 !important; }
+    .bill-document .MuiTableContainer-root { overflow: visible !important; }
+    .bill-document .MuiTableRow-root { break-inside: avoid; }
+}

@@ -2,7 +2,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 28px;
-    background-color: #f5f7fb;
+    background-color: var(--page-bg);
 }
 
 .estimate-form-container {
@@ -19,7 +19,7 @@
 .estimate-form-card {
     width: 100%;
     overflow: hidden;
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px !important;
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.08) !important;
 }
@@ -40,11 +40,11 @@
 
     padding: 20px 24px;
 
-    background-color: #2563eb;
+    background-color: var(--primary-blue);
 }
 
 .estimate-form-title {
-    color: #ffffff !important;
+    color: var(--surface) !important;
     font-size: 20px !important;
     font-weight: 700 !important;
 }
@@ -64,7 +64,7 @@
 
     padding: 0 !important;
 
-    color: #ffffff !important;
+    color: var(--surface) !important;
 
     border: 1px solid rgba(255, 255, 255, 0.35) !important;
     border-radius: 6px !important;
@@ -94,12 +94,12 @@
 .estimate-section-title {
     padding-bottom: 10px;
 
-    color: #111827 !important;
+    color: var(--text-dark) !important;
 
     font-size: 15px !important;
     font-weight: 700 !important;
 
-    border-bottom: 1px solid #e5ebf0;
+    border-bottom: 1px solid var(--border);
 }
 
 .estimate-form-row {
@@ -121,20 +121,20 @@
 }
 
 .estimate-form .MuiOutlinedInput-root {
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 .estimate-form .MuiOutlinedInput-root:hover fieldset {
-    border-color: #2563eb;
+    border-color: var(--primary-blue);
 }
 
 .estimate-form .MuiOutlinedInput-root.Mui-focused fieldset {
-    border-color: #2563eb;
+    border-color: var(--primary-blue);
     border-width: 1px;
 }
 
 .estimate-form .MuiInputLabel-root.Mui-focused {
-    color: #2563eb;
+    color: var(--primary-blue);
 }
 
 
@@ -156,9 +156,9 @@
 
     padding: 20px;
 
-    background-color: #f8fafc;
+    background-color: var(--table-bg);
 
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
 }
 
@@ -169,7 +169,7 @@
 
     padding: 7px 0;
 
-    color: #64748b;
+    color: var(--text-light);
 
     font-size: 13px;
 }
@@ -182,18 +182,18 @@
     margin-top: 10px;
     padding-top: 14px;
 
-    border-top: 1px solid #e5eaf1;
+    border-top: 1px solid var(--border);
 }
 
 .estimate-grand-total-label {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
 
     font-size: 16px !important;
     font-weight: 700 !important;
 }
 
 .estimate-grand-total-value {
-    color: #2563eb !important;
+    color: var(--primary-blue) !important;
 
     font-size: 18px !important;
     font-weight: 700 !important;
@@ -225,18 +225,18 @@
 .estimate-cancel-button {
     border-color: #b0bec5 !important;
 
-    color: #111827 !important;
+    color: var(--text-dark) !important;
 }
 
 .estimate-cancel-button:hover {
-    background-color: #f5f7fb !important;
-    border-color: #111827 !important;
+    background-color: var(--page-bg) !important;
+    border-color: var(--text-dark) !important;
 }
 
 .save-estimate-button {
-    background-color: #2563eb !important;
+    background-color: var(--primary-blue) !important;
 
-    color: #ffffff !important;
+    color: var(--surface) !important;
 }
 
 .save-estimate-button:hover {
@@ -294,4 +294,22 @@
     .estimate-form-actions button {
         width: 100%;
     }
+}
+.estimate-form-page {
+    min-height: 0;
+    padding: 0;
+    color: var(--text-dark);
+}
+
+.estimate-form-title, .estimate-close-button {
+    color: #ffffff !important;
+}
+
+.estimate-service-line {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid var(--border);
+    padding: 18px;
+    border-radius: 10px;
 }

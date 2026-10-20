@@ -1,404 +1,402 @@
-import React, { useState } from "react";
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-    Box,
     Button,
-    Card,
-    CardContent,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    MenuItem,
+    Stack,
+    TextField,
     Typography,
 } from "@mui/material";
 
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import FilterListRoundedIcon from "@mui/icons-material/FilterListRounded";
+import { Feedback, Page, Records } from "../../../live/shared";
+import { printPaymentReceipt } from "./PaymentReceipt";
+import { money, useLoad } from "../../../live/data";
+import {
+    getReceivedPayments,
+    getPaymentFilterOptions,
+} from "./PaymentReceivedService";
 
-import PaymentReceivedForm from "./PaymentReceivedForm";
-import PaymentReceivedDetails from "./PaymentReceivedDetails";
+function formatDate(value) {
+    if (!value) return "—";
 
-import "./PaymentReceived.css";
+    return value.slice(0, 10).split("-").reverse().join("/");
+}
 
-const PaymentReceived = () => {
-    const [showPaymentForm, setShowPaymentForm] = useState(false);
-    const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+const emptyFilters = {
+    clientId: "",
+    branch: "",
+    currency: "",
+    paymentMode: "",
+};
 
-    /* =========================================
-       PAYMENT DETAILS
-    ========================================= */
-    if (showPaymentDetails) {
-        return (
-            <PaymentReceivedDetails
-                onBack={() => setShowPaymentDetails(false)}
-            />
+export default function PaymentReceived() {
+    const navigate = useNavigate();
+
+    const [search, setSearch] = useState("");
+    const [page, setPage] = useState(1);
+    const [fromDate, setFromDate] = useState("");
+    const [toDate, setToDate] = useState("");
+    const [filters, setFilters] = useState(emptyFilters);
+    const [selectedPayment, setSelectedPayment] = useState(null);
+
+    const options = useLoad(
+        (signal) => getPaymentFilterOptions(signal),
+        []
+    );
+
+    const list = useLoad(
+        (signal) => {
+            if (fromDate && toDate && fromDate > toDate) {
+                throw new Error(
+                    "From date cannot be after to date."
+                );
+            }
+
+            return getReceivedPayments(
+                {
+                    page,
+                    pageSize: 25,
+                    search,
+                    fromDate,
+                    toDate,
+                    ...filters,
+                },
+                signal
+            );
+        },
+        [
+            page,
+            search,
+            fromDate,
+            toDate,
+            filters.clientId,
+            filters.branch,
+            filters.currency,
+            filters.paymentMode,
+        ]
+    );
+
+    function changeFilter(name, value) {
+        setFilters((previous) => ({
+            ...previous,
+            [name]: value,
+        }));
+
+        setPage(1);
+    }
+
+    function handlePrintReceipt() {
+    try {
+        printPaymentReceipt(selectedPayment);
+    } catch (error) {
+        window.alert(error.message);
+    }
+}
+
+    function clearFilters() {
+        setSearch("");
+        setFromDate("");
+        setToDate("");
+        setFilters({ ...emptyFilters });
+        setPage(1);
+    }
+
+    function openInvoice(payment) {
+        if (!payment) return;
+
+        navigate(
+            `/sales/invoices?invoiceId=${encodeURIComponent(
+                payment.salesInvoiceId
+            )}`
         );
     }
 
+    const dropdowns = [
+        {
+            name: "clientId",
+            label: "Client",
+            items: (options.data?.clients ?? []).map((client) => ({
+                value: client.id,
+                label: client.companyName
+                    ? `${client.name} · ${client.companyName}`
+                    : client.name,
+            })),
+        },
+        {
+            name: "branch",
+            label: "Branch",
+            items: (options.data?.branches ?? []).map((branch) => ({
+                value: branch.name,
+                label: branch.name,
+            })),
+        },
+        {
+            name: "currency",
+            label: "Currency",
+            items: (options.data?.currencies ?? []).map((currency) => ({
+                value: currency.currencyCode,
+                label: currency.currencyCode,
+            })),
+        },
+        {
+            name: "paymentMode",
+            label: "Payment mode",
+            items: (options.data?.paymentModes ?? []).map((mode) => ({
+                value: mode.name,
+                label: mode.name,
+            })),
+        },
+    ];
+
+    const columns = [
+        {
+            label: "Payment",
+            render: (payment) => payment.paymentNumber,
+        },
+        {
+            label: "Client",
+            render: (payment) => payment.clientName,
+        },
+        {
+            label: "Invoice",
+            render: (payment) => payment.invoiceNumber,
+        },
+        {
+            label: "Date",
+            render: (payment) => formatDate(payment.paymentDate),
+        },
+        {
+            label: "Branch",
+            render: (payment) => payment.branch,
+        },
+        {
+            label: "Currency",
+            render: (payment) => payment.currency,
+        },
+        {
+            label: "Amount",
+            render: (payment) =>
+                money(payment.amount, payment.currency),
+        },
+        {
+            label: "Payment mode",
+            render: (payment) => payment.paymentMode,
+        },
+        {
+            label: "Reference",
+            render: (payment) => payment.reference || "—",
+        },
+        {
+            label: "Actions",
+            render: (payment) => (
+                <Stack direction="row" spacing={1}>
+                    <Button
+                        onClick={() => setSelectedPayment(payment)}
+                    >
+                        View
+                    </Button>
+
+                    <Button onClick={() => openInvoice(payment)}>
+                        Invoice
+                    </Button>
+                </Stack>
+            ),
+        },
+    ];
+
+    const detailFields = selectedPayment
+        ? [
+            ["Client", selectedPayment.clientName],
+            ["Invoice", selectedPayment.invoiceNumber],
+            ["Date", formatDate(selectedPayment.paymentDate)],
+            ["Branch", selectedPayment.branch],
+            ["Currency", selectedPayment.currency],
+            [
+                "Amount",
+                money(
+                    selectedPayment.amount,
+                    selectedPayment.currency
+                ),
+            ],
+            ["Payment mode", selectedPayment.paymentMode],
+            ["Reference", selectedPayment.reference],
+            ["Notes", selectedPayment.notes],
+        ]
+        : [];
+
     return (
-        <Box className="payments-received-page">
+        <Page
+            title="Payments Received"
+            subtitle="Payments recorded against your sales invoices"
+        >
+            <Feedback
+                loading={options.loading}
+                error={options.error}
+                retry={options.refresh}
+            />
 
-            {/* =========================================
-                PAGE HEADER
-            ========================================= */}
-            <Box className="payments-received-header">
-
-                <Box>
-                    <Typography className="payments-received-title">
-                        Payments Received
-                    </Typography>
-
-                    <Typography className="payments-received-subtitle">
-                        Record and manage customer payments
-                    </Typography>
-                </Box>
-
-                <Button
-                    variant="contained"
-                    startIcon={<AddRoundedIcon />}
-                    className="add-payment-button"
-                    onClick={() => setShowPaymentForm(true)}
-                >
-                    New Payment
-                </Button>
-
-            </Box>
-
-            {/* =========================================
-                SUMMARY CARDS
-            ========================================= */}
-            <Box className="payment-summary-grid">
-
-                {/* Total Received */}
-                <Card className="payment-summary-card">
-                    <CardContent>
-                        <Typography className="payment-summary-label">
-                            Total Received
-                        </Typography>
-
-                        <Typography className="payment-summary-value">
-                            ₹8,45,000
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                {/* This Month */}
-                <Card className="payment-summary-card">
-                    <CardContent>
-                        <Typography className="payment-summary-label">
-                            This Month
-                        </Typography>
-
-                        <Typography className="payment-summary-value">
-                            ₹2,18,500
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                {/* Pending */}
-                <Card className="payment-summary-card">
-                    <CardContent>
-                        <Typography className="payment-summary-label">
-                            Pending
-                        </Typography>
-
-                        <Typography className="payment-summary-value">
-                            ₹1,35,000
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                {/* Refunded */}
-                <Card className="payment-summary-card">
-                    <CardContent>
-                        <Typography className="payment-summary-label">
-                            Refunded
-                        </Typography>
-
-                        <Typography className="payment-summary-value">
-                            ₹25,000
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-            </Box>
-
-            {/* =========================================
-                PAYMENT LIST
-            ========================================= */}
-            <Card className="payment-list-card">
-
-                <CardContent className="payment-list-content">
-
-                    {/* =========================================
-                        LIST HEADER
-                    ========================================= */}
-                    <Box className="payment-list-header">
-
-                        <Box>
-                            <Typography className="payment-list-title">
-                                Payment List
-                            </Typography>
-
-                            <Typography className="payment-list-subtitle">
-                                View and manage customer payments
-                            </Typography>
-                        </Box>
-
-                        <Box className="payment-list-actions">
-
-                            {/* Search */}
-                            <Box className="payment-search-box">
-
-                                <SearchRoundedIcon />
-
-                                <input
-                                    type="text"
-                                    placeholder="Search payments..."
-                                />
-
-                            </Box>
-
-                            {/* Filter */}
-                            <Button
-                                variant="outlined"
-                                startIcon={<FilterListRoundedIcon />}
-                                className="payment-filter-button"
+            <Records
+                {...list}
+                rows={list.data?.data ?? []}
+                total={list.data?.total ?? 0}
+                page={page}
+                setPage={setPage}
+                search={search}
+                setSearch={setSearch}
+                columns={columns}
+                extra={
+                    <Stack
+                        direction="row"
+                        sx={{
+                            gap: 2,
+                            flexWrap: "wrap",
+                            alignItems: "center",
+                            width: "100%",
+                        }}
+                    >
+                        {dropdowns.map((field) => (
+                            <TextField
+                                key={field.name}
+                                select
+                                size="small"
+                                label={field.label}
+                                value={filters[field.name]}
+                                disabled={
+                                    options.loading ||
+                                    Boolean(options.error)
+                                }
+                                onChange={(event) =>
+                                    changeFilter(
+                                        field.name,
+                                        event.target.value
+                                    )
+                                }
+                                sx={{
+                                    minWidth: 170,
+                                    flexGrow: 1,
+                                }}
                             >
-                                Filter
-                            </Button>
+                                <MenuItem value="">All</MenuItem>
 
-                        </Box>
+                                {filters[field.name] &&
+                                    !field.items.some(
+                                        (item) =>
+                                            item.value ===
+                                            filters[field.name]
+                                    ) && (
+                                        <MenuItem
+                                            value={filters[field.name]}
+                                        >
+                                            {filters[field.name]}
+                                        </MenuItem>
+                                    )}
 
-                    </Box>
+                                {field.items.map((item) => (
+                                    <MenuItem
+                                        key={item.value}
+                                        value={item.value}
+                                    >
+                                        {item.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        ))}
 
-                    {/* =========================================
-                        TABLE HEADER
-                    ========================================= */}
-                    <Box className="payment-table-header">
-
-                        <Typography>
-                            Payment
-                        </Typography>
-
-                        <Typography>
-                            Customer
-                        </Typography>
-
-                        <Typography>
-                            Invoice
-                        </Typography>
-
-                        <Typography>
-                            Payment Date
-                        </Typography>
-
-                        <Typography>
-                            Amount
-                        </Typography>
-
-                        <Typography>
-                            Method
-                        </Typography>
-
-                        <Typography>
-                            Status
-                        </Typography>
-
-                        <Typography>
-                            Action
-                        </Typography>
-
-                    </Box>
-
-                    {/* =========================================
-                        PAYMENT ROW 1
-                    ========================================= */}
-                    <Box className="payment-table-row">
-
-                        <Typography className="payment-number">
-                            PAY-001
-                        </Typography>
-
-                        <Typography>
-                            ABC Technologies
-                        </Typography>
-
-                        <Typography>
-                            INV-001
-                        </Typography>
-
-                        <Typography>
-                            06 Oct 2026
-                        </Typography>
-
-                        <Typography className="payment-amount">
-                            ₹88,500
-                        </Typography>
-
-                        <Typography>
-                            Bank Transfer
-                        </Typography>
-
-                        <Box className="payment-status received">
-                            Received
-                        </Box>
-
-                        <Button
-                            className="payment-view-button"
-                            onClick={() => setShowPaymentDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                    {/* =========================================
-                        PAYMENT ROW 2
-                    ========================================= */}
-                    <Box className="payment-table-row">
-
-                        <Typography className="payment-number">
-                            PAY-002
-                        </Typography>
-
-                        <Typography>
-                            Global Solutions
-                        </Typography>
-
-                        <Typography>
-                            INV-002
-                        </Typography>
-
-                        <Typography>
-                            04 Oct 2026
-                        </Typography>
-
-                        <Typography className="payment-amount">
-                            ₹1,41,600
-                        </Typography>
-
-                        <Typography>
-                            UPI
-                        </Typography>
-
-                        <Box className="payment-status received">
-                            Received
-                        </Box>
-
-                        <Button
-                            className="payment-view-button"
-                            onClick={() => setShowPaymentDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                    {/* =========================================
-                        PAYMENT ROW 3
-                    ========================================= */}
-                    <Box className="payment-table-row">
-
-                        <Typography className="payment-number">
-                            PAY-003
-                        </Typography>
-
-                        <Typography>
-                            TechNova Pvt Ltd
-                        </Typography>
-
-                        <Typography>
-                            INV-003
-                        </Typography>
-
-                        <Typography>
-                            02 Oct 2026
-                        </Typography>
-
-                        <Typography className="payment-amount">
-                            ₹57,230
-                        </Typography>
-
-                        <Typography>
-                            Cash
-                        </Typography>
-
-                        <Box className="payment-status pending">
-                            Pending
-                        </Box>
-
-                        <Button
-                            className="payment-view-button"
-                            onClick={() => setShowPaymentDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                    {/* =========================================
-                        PAYMENT ROW 4
-                    ========================================= */}
-                    <Box className="payment-table-row">
-
-                        <Typography className="payment-number">
-                            PAY-004
-                        </Typography>
-
-                        <Typography>
-                            Bright Enterprises
-                        </Typography>
-
-                        <Typography>
-                            INV-004
-                        </Typography>
-
-                        <Typography>
-                            29 Sep 2026
-                        </Typography>
-
-                        <Typography className="payment-amount">
-                            ₹25,000
-                        </Typography>
-
-                        <Typography>
-                            Bank Transfer
-                        </Typography>
-
-                        <Box className="payment-status refunded">
-                            Refunded
-                        </Box>
-
-                        <Button
-                            className="payment-view-button"
-                            onClick={() => setShowPaymentDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                </CardContent>
-
-            </Card>
-
-            {/* =========================================
-                NEW PAYMENT FORM MODAL
-            ========================================= */}
-            {showPaymentForm && (
-                <Box className="payment-modal-overlay">
-
-                    <Box className="payment-modal">
-
-                        <PaymentReceivedForm
-                            onClose={() => setShowPaymentForm(false)}
+                        <TextField
+                            size="small"
+                            type="date"
+                            label="From date"
+                            value={fromDate}
+                            onChange={(event) => {
+                                setFromDate(event.target.value);
+                                setPage(1);
+                            }}
+                            slotProps={{
+                                inputLabel: { shrink: true },
+                            }}
                         />
 
-                    </Box>
+                        <TextField
+                            size="small"
+                            type="date"
+                            label="To date"
+                            value={toDate}
+                            onChange={(event) => {
+                                setToDate(event.target.value);
+                                setPage(1);
+                            }}
+                            slotProps={{
+                                inputLabel: { shrink: true },
+                            }}
+                        />
 
-                </Box>
-            )}
+                        <Button onClick={clearFilters}>
+                            Clear filters
+                        </Button>
+                    </Stack>
+                }
+            />
 
-        </Box>
+            <Dialog
+                open={Boolean(selectedPayment)}
+                onClose={() => setSelectedPayment(null)}
+                fullWidth
+                maxWidth="sm"
+                aria-labelledby="received-payment-title"
+            >
+                <DialogTitle id="received-payment-title">
+                    Payment Details
+                </DialogTitle>
+
+                <DialogContent dividers>
+                    {selectedPayment && (
+                        <Stack spacing={2}>
+                            <Typography variant="h6">
+                                {selectedPayment.paymentNumber}
+                            </Typography>
+
+                            {detailFields.map(([label, value]) => (
+                                <Typography
+                                    key={label}
+                                    sx={{
+                                        whiteSpace: "pre-wrap",
+                                        overflowWrap: "anywhere",
+                                    }}
+                                >
+                                    <strong>{label}:</strong>{" "}
+                                    {value || "—"}
+                                </Typography>
+                            ))}
+                        </Stack>
+                    )}
+                </DialogContent>
+
+                <DialogActions sx={{ flexWrap: "wrap", gap: 1 }}>
+    <Button onClick={() => setSelectedPayment(null)}>
+        Close
+    </Button>
+
+    <Button
+        variant="outlined"
+        disabled={!selectedPayment}
+        onClick={handlePrintReceipt}
+    >
+        Print Receipt
+    </Button>
+
+    <Button
+        variant="contained"
+        disabled={!selectedPayment}
+        onClick={() => openInvoice(selectedPayment)}
+    >
+        View Invoice
+    </Button>
+</DialogActions>
+            </Dialog>
+        </Page>
     );
-};
-
-export default PaymentReceived;
+}

@@ -407,3 +407,23 @@
         text-align: center;
     }
 }
+/* Live credit note details: retain the existing document layout. */
+.credit-note-details-page .credit-note-info-row { align-items: flex-start; }
+.credit-note-details-page .credit-note-info-row .MuiTypography-root:last-child { overflow-wrap: anywhere; min-width: 0; }
+.credit-note-details-page .credit-note-item-row > * { min-width: 0; overflow-wrap: anywhere; padding-right: 8px; }
+.credit-note-details-status.draft { background-color: #fef3c7; color: #92400e; }
+.credit-note-details-page .credit-note-details-actions { flex-wrap: wrap; }
+@media print {
+    .credit-note-details-page, .credit-note-details-page * { visibility: visible !important; }
+    .credit-note-details-page { position: absolute; top: 0; left: 0; width: 100%; min-height: 0; padding: 0; background: #ffffff; }
+    .credit-note-no-print, .credit-note-no-print * { display: none !important; visibility: hidden !important; }
+    .credit-note-details-card { border: none !important; box-shadow: none !important; overflow: visible !important; }
+    .credit-note-details-card .MuiCardContent-root { padding: 0 !important; }
+    .credit-note-document-header { flex-direction: row; }
+    .credit-note-document-number { text-align: right; }
+    .credit-note-info-grid { grid-template-columns: 1fr 1fr; gap: 25px; }
+    .credit-note-item-table { overflow: visible; }
+    .credit-note-item-header, .credit-note-item-row { min-width: 0; }
+    .credit-note-document-header, .credit-note-info-grid, .credit-note-item-row, .credit-note-details-summary, .credit-note-notes-section { break-inside: avoid; }
+    .credit-note-summary-content { width: 360px; }
+}

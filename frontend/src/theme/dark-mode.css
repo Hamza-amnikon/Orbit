@@ -6985,6 +6985,18 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard
   color: var(--spark-muted);
 }
 
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .upload-box.is-dragging,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .other-document-row.is-dragging {
+  border-color: #7da6ff;
+  background: #1d2c43;
+  color: #dbe8ff;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .other-document-row.is-dragging::after {
+  background: rgba(29, 44, 67, 0.96);
+  color: #dbe8ff;
+}
+
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .upload-icon {
   color: #a9c3f3;
 }

@@ -1,44 +1,168 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import {
+    Alert,
     Box,
     Button,
     Card,
     CardContent,
+    MenuItem,
+    Pagination,
+    TextField,
     Typography,
 } from "@mui/material";
 
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import FilterListRoundedIcon from "@mui/icons-material/FilterListRounded";
+import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 
-import CreditNoteForm from "./CreditNoteForm";
+import { getCreditNotes } from "./SalesCreditNoteService";
 import CreditNoteDetails from "./CreditNoteDetails";
+import CreditNoteForm from "./CreditNoteForm";
+import { useAuth } from "../../../context/AuthContext";
 import "./CreditNotes.css";
 
-const CreditNotes = () => {
-    const [showCreditNoteForm, setShowCreditNoteForm] = useState(false);
-    const [showCreditNoteDetails, setShowCreditNoteDetails] = useState(false);
-    const [isEditingCreditNote, setIsEditingCreditNote] = useState(false);
+function statusName(value) {
+    if (value === 0 || value === "Draft") return "Draft";
+    if (value === 1 || value === "Issued") return "Issued";
+    return "Unknown";
+}
 
-    if (showCreditNoteDetails) {
+function formatDate(value) {
+    if (!value) return "—";
+
+    return value
+        .slice(0, 10)
+        .split("-")
+        .reverse()
+        .join("/");
+}
+
+function formatAmount(amount, currency) {
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency,
+        currencyDisplay: "code",
+    }).format(amount);
+}
+
+const CreditNotes = () => {
+    const { canWrite } = useAuth();
+    const [showForm, setShowForm] = useState(false);
+    const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const requestedId = Number(searchParams.get("creditNoteId"));
+    const selectedId = Number.isSafeInteger(requestedId) && requestedId > 0 ? requestedId : null;
+
+    function selectCreditNote(id) {
+        setSearchParams(previous => {
+            const next = new URLSearchParams(previous);
+            if (id) next.set("creditNoteId", String(id));
+            else next.delete("creditNoteId");
+            return next;
+        });
+    }
+
+    const [records, setRecords] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState("");
+    const [status, setStatus] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [revision, setRevision] = useState(0);
+
+    const pageSize = 25;
+
+    useEffect(() => {
+        if (selectedId) return;
+        const controller = new AbortController();
+
+        setLoading(true);
+        setError("");
+
+        const timer = setTimeout(async () => {
+            try {
+                const result = await getCreditNotes(
+                    {
+                        page,
+                        pageSize,
+                        search,
+                        status,
+                    },
+                    controller.signal
+                );
+
+                if (controller.signal.aborted) return;
+
+                const lastPage = Math.max(
+                    1,
+                    Math.ceil(result.total / pageSize)
+                );
+
+                if (page > lastPage) {
+                    setPage(lastPage);
+                    return;
+                }
+
+                setRecords(result.data);
+                setTotal(result.total);
+            } catch (failure) {
+                if (!controller.signal.aborted) {
+                    setError(failure.message);
+                }
+            } finally {
+                if (!controller.signal.aborted) {
+                    setLoading(false);
+                }
+            }
+        }, 250);
+
+        return () => {
+            clearTimeout(timer);
+            controller.abort();
+        };
+    }, [page, search, status, revision, selectedId]);
+
+    const ready = !loading && !error;
+
+    const draftCount = records.filter(
+        record => statusName(record.status) === "Draft"
+    ).length;
+
+    const issuedCount = records.filter(
+        record => statusName(record.status) === "Issued"
+    ).length;
+
+    const summaryCards = [
+        ["Matching Credit Notes", total],
+        ["Draft on this page", draftCount],
+        ["Issued on this page", issuedCount],
+    ];
+
+    function refresh() {
+        setRevision(previous => previous + 1);
+    }
+
+    if (selectedId) {
         return (
             <CreditNoteDetails
-                onBack={() => setShowCreditNoteDetails(false)}
-                onEdit={() => {
-                    setShowCreditNoteDetails(false);
-                    setIsEditingCreditNote(true);
-                }}
+                key={selectedId}
+                id={selectedId}
+                onBack={() => selectCreditNote(null)}
+                onViewInvoice={id => navigate(`/sales/invoices?invoiceId=${id}`)}
             />
         );
     }
 
     return (
         <Box className="credit-notes-page">
-
-            {/* Page Header */}
+            {showForm && <CreditNoteForm
+                onClose={() => setShowForm(false)}
+                onSaved={record => { setShowForm(false); selectCreditNote(record.id); refresh(); }}
+            />}
             <Box className="credit-notes-header">
-
                 <Box>
                     <Typography className="credit-notes-title">
                         Credit Notes
@@ -53,299 +177,214 @@ const CreditNotes = () => {
                     variant="contained"
                     startIcon={<AddRoundedIcon />}
                     className="add-credit-note-button"
-                    onClick={() => setShowCreditNoteForm(true)}
+                    disabled={!canWrite}
+                    onClick={() => setShowForm(true)}
                 >
                     New Credit Note
                 </Button>
-
             </Box>
 
-            {/* Summary Cards */}
-            <Box className="credit-note-summary-grid">
+            <Box
+                className="credit-note-summary-grid"
+                sx={{
+                    gridTemplateColumns:
+                        "repeat(auto-fit, minmax(180px, 1fr))",
+                }}
+            >
+                {summaryCards.map(([label, value]) => (
+                    <Card
+                        key={label}
+                        className="credit-note-summary-card"
+                    >
+                        <CardContent>
+                            <Typography className="credit-note-summary-label">
+                                {label}
+                            </Typography>
 
-                <Card className="credit-note-summary-card">
-                    <CardContent>
-                        <Typography className="credit-note-summary-label">
-                            Total Credit Notes
-                        </Typography>
-
-                        <Typography className="credit-note-summary-value">
-                            24
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="credit-note-summary-card">
-                    <CardContent>
-                        <Typography className="credit-note-summary-label">
-                            Draft
-                        </Typography>
-
-                        <Typography className="credit-note-summary-value">
-                            5
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="credit-note-summary-card">
-                    <CardContent>
-                        <Typography className="credit-note-summary-label">
-                            Issued
-                        </Typography>
-
-                        <Typography className="credit-note-summary-value">
-                            8
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="credit-note-summary-card">
-                    <CardContent>
-                        <Typography className="credit-note-summary-label">
-                            Applied
-                        </Typography>
-
-                        <Typography className="credit-note-summary-value">
-                            7
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="credit-note-summary-card">
-                    <CardContent>
-                        <Typography className="credit-note-summary-label">
-                            Refunded
-                        </Typography>
-
-                        <Typography className="credit-note-summary-value">
-                            4
-                        </Typography>
-                    </CardContent>
-                </Card>
-
+                            <Typography className="credit-note-summary-value">
+                                {ready ? value : "—"}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                ))}
             </Box>
 
-            {/* Credit Note List */}
             <Card className="credit-note-list-card">
-
                 <CardContent className="credit-note-list-content">
-
                     <Box className="credit-note-list-header">
-
                         <Box>
                             <Typography className="credit-note-list-title">
                                 Credit Note List
                             </Typography>
 
                             <Typography className="credit-note-list-subtitle">
-                                View and manage customer credit notes
+                                Search by credit note, invoice, client, or reason
                             </Typography>
                         </Box>
 
-                        <Box className="credit-note-list-actions">
-
+                        <Box
+                            className="credit-note-list-actions"
+                            sx={{ flexWrap: "wrap" }}
+                        >
                             <Box className="credit-note-search-box">
-
                                 <SearchRoundedIcon />
 
                                 <input
-                                    type="text"
+                                    type="search"
+                                    aria-label="Search credit notes"
                                     placeholder="Search credit notes..."
+                                    value={search}
+                                    maxLength={200}
+                                    onChange={event => {
+                                        setSearch(event.target.value);
+                                        setPage(1);
+                                    }}
                                 />
-
                             </Box>
+
+                            <TextField
+                                select
+                                size="small"
+                                label="Status"
+                                value={status}
+                                sx={{ minWidth: 130 }}
+                                onChange={event => {
+                                    setStatus(event.target.value);
+                                    setPage(1);
+                                }}
+                            >
+                                <MenuItem value="">All</MenuItem>
+                                <MenuItem value="0">Draft</MenuItem>
+                                <MenuItem value="1">Issued</MenuItem>
+                            </TextField>
 
                             <Button
                                 variant="outlined"
-                                startIcon={<FilterListRoundedIcon />}
-                                className="credit-note-filter-button"
+                                startIcon={<RefreshRoundedIcon />}
+                                disabled={loading}
+                                onClick={refresh}
                             >
-                                Filter
+                                Refresh
                             </Button>
-
                         </Box>
-
                     </Box>
 
-                    {/* Table Header */}
-                    <Box className="credit-note-table-header">
+                    {error && (
+                        <Alert
+                            severity="error"
+                            sx={{ mb: 2 }}
+                            action={
+                                <Button color="inherit" onClick={refresh}>
+                                    Retry
+                                </Button>
+                            }
+                        >
+                            {error}
+                        </Alert>
+                    )}
 
-                        <Typography>Credit Note</Typography>
-                        <Typography>Customer</Typography>
-                        <Typography>Invoice</Typography>
-                        <Typography>Credit Date</Typography>
-                        <Typography>Amount</Typography>
-                        <Typography>Status</Typography>
-                        <Typography>Action</Typography>
-
-                    </Box>
-
-                    {/* Row 1 */}
-                    <Box className="credit-note-table-row">
-
-                        <Typography className="credit-note-number">
-                            CN-001
+                    {loading && (
+                        <Typography sx={{ py: 3 }}>
+                            Loading credit notes...
                         </Typography>
+                    )}
 
-                        <Typography>
-                            ABC Technologies
-                        </Typography>
+                    {ready && (
+                        <>
+                            <Box className="credit-note-table-header">
+                                <Typography>Credit Note</Typography>
+                                <Typography>Customer</Typography>
+                                <Typography>Invoice</Typography>
+                                <Typography>Credit Date</Typography>
+                                <Typography>Amount</Typography>
+                                <Typography>Status</Typography>
+                                <Typography>Action</Typography>
+                            </Box>
 
-                        <Typography>
-                            INV-001
-                        </Typography>
+                            {records.length === 0 && (
+                                <Typography sx={{ py: 4 }}>
+                                    No credit notes match your search.
+                                </Typography>
+                            )}
 
-                        <Typography>
-                            06 Oct 2026
-                        </Typography>
+                            {records.map(record => {
+                                const name = statusName(record.status);
 
-                        <Typography className="credit-note-amount">
-                            ₹10,000
-                        </Typography>
+                                return (
+                                    <Box
+                                        key={record.id}
+                                        className="credit-note-table-row"
+                                    >
+                                        <Typography className="credit-note-number">
+                                            {record.creditNoteNumber ||
+                                                `Draft #${record.id}`}
+                                        </Typography>
 
-                        <Box className="credit-note-status issued">
-                            Issued
-                        </Box>
+                                        <Typography>
+                                            {record.clientName}
+                                        </Typography>
 
-<Button
-    className="credit-note-view-button"
-    onClick={() => setShowCreditNoteDetails(true)}
->
-    View
-</Button>
+                                        <Typography>
+                                            {record.invoiceNumber}
+                                        </Typography>
 
-                    </Box>
+                                        <Typography>
+                                            {formatDate(record.creditNoteDate)}
+                                        </Typography>
 
-                    {/* Row 2 */}
-                    <Box className="credit-note-table-row">
+                                        <Typography className="credit-note-amount">
+                                            {formatAmount(
+                                                record.grandTotal,
+                                                record.currency
+                                            )}
+                                        </Typography>
 
-                        <Typography className="credit-note-number">
-                            CN-002
-                        </Typography>
+                                        <Box
+                                            className={
+                                                `credit-note-status ${name.toLowerCase()}`
+                                            }
+                                        >
+                                            {name}
+                                        </Box>
 
-                        <Typography>
-                            Global Solutions
-                        </Typography>
+                                        <Button
+                                            className="credit-note-view-button"
+                                            onClick={() => selectCreditNote(record.id)}
+                                        >
+                                            View
+                                        </Button>
+                                    </Box>
+                                );
+                            })}
 
-                        <Typography>
-                            INV-002
-                        </Typography>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                    gap: 2,
+                                    mt: 3,
+                                }}
+                            >
+                                <Typography variant="body2">
+                                    {total} matching credit notes
+                                </Typography>
 
-                        <Typography>
-                            04 Oct 2026
-                        </Typography>
-
-                        <Typography className="credit-note-amount">
-                            ₹15,500
-                        </Typography>
-
-                        <Box className="credit-note-status applied">
-                            Applied
-                        </Box>
-
-<Button
-    className="credit-note-view-button"
-    onClick={() => setShowCreditNoteDetails(true)}
->
-    View
-</Button>
-
-                    </Box>
-
-                    {/* Row 3 */}
-                    <Box className="credit-note-table-row">
-
-                        <Typography className="credit-note-number">
-                            CN-003
-                        </Typography>
-
-                        <Typography>
-                            TechNova Pvt Ltd
-                        </Typography>
-
-                        <Typography>
-                            INV-003
-                        </Typography>
-
-                        <Typography>
-                            02 Oct 2026
-                        </Typography>
-
-                        <Typography className="credit-note-amount">
-                            ₹8,250
-                        </Typography>
-
-                        <Box className="credit-note-status draft">
-                            Draft
-                        </Box>
-
-<Button
-    className="credit-note-view-button"
-    onClick={() => setShowCreditNoteDetails(true)}
->
-    View
-</Button>
-
-                    </Box>
-
-                    {/* Row 4 */}
-                    <Box className="credit-note-table-row">
-
-                        <Typography className="credit-note-number">
-                            CN-004
-                        </Typography>
-
-                        <Typography>
-                            Bright Enterprises
-                        </Typography>
-
-                        <Typography>
-                            INV-004
-                        </Typography>
-
-                        <Typography>
-                            29 Sep 2026
-                        </Typography>
-
-                        <Typography className="credit-note-amount">
-                            ₹12,000
-                        </Typography>
-
-                        <Box className="credit-note-status refunded">
-                            Refunded
-                        </Box>
-
-<Button
-    className="credit-note-view-button"
-    onClick={() => setShowCreditNoteDetails(true)}
->
-    View
-</Button>
-
-                    </Box>
-
+                                <Pagination
+                                    page={page}
+                                    count={Math.max(
+                                        1,
+                                        Math.ceil(total / pageSize)
+                                    )}
+                                    color="primary"
+                                    onChange={(_, value) => setPage(value)}
+                                />
+                            </Box>
+                        </>
+                    )}
                 </CardContent>
-
             </Card>
-
-            {/* Credit Note Form Modal */}
-{(showCreditNoteForm || isEditingCreditNote) && (
-    <Box className="credit-note-modal-overlay">
-
-        <Box className="credit-note-modal">
-
-            <CreditNoteForm
-                onClose={() => {
-                    setShowCreditNoteForm(false);
-                    setIsEditingCreditNote(false);
-                }}
-            />
-
-        </Box>
-
-    </Box>
-)}
-
         </Box>
     );
 };

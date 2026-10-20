@@ -1,438 +1,213 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react";
+import { Alert, Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle,
+    Divider, FormControlLabel, IconButton, MenuItem, Stack, TextField, Typography } from "@mui/material";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import { useLoad } from "../../../live/data";
+import { createBill, getPurchaseChoices, getBill, getPurchaseVendors,
+    previewBill, updateBill } from "./BillService";
+import { money, newOrderLine, orderPayload, orderValues, purchaseUnits, vendorAddress } from "./BillHelpers";
+import "./BillWorkspace.css";
 
-import {
-    Box,
-    Button,
-    Divider,
-    IconButton,
-    MenuItem,
-    TextField,
-    Typography,
-} from "@mui/material";
+const selectedVendor = order => order ? { id: order.vendorId, name: order.vendorName, companyName: order.companyName } : null;
 
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
-import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
+export default function BillForm({ order = null, onClose, onSaved }) {
+    const [current, setCurrent] = useState(order);
+    const [value, setValue] = useState(() => orderValues(order));
+    const [vendor, setVendor] = useState(() => selectedVendor(order));
+    const [vendorSearch, setVendorSearch] = useState("");
+    const [vendorResult, setVendorResult] = useState({ key: "", data: [], total: 0, error: "" });
+    const [vendorRevision, setVendorRevision] = useState(0);
+    const choices = useLoad(getPurchaseChoices, []);
+    const [preview, setPreview] = useState(null);
+    const [error, setError] = useState("");
+    const [conflict, setConflict] = useState(false);
+    const [busy, setBusy] = useState(false);
+    const locked = useRef(false);
+    const request = useRef(null);
+    const vendorKey = JSON.stringify([vendorSearch, vendorRevision]);
+    const vendorLoading = vendorResult.key !== vendorKey;
+    const vendorChoices = vendorLoading ? [] : vendorResult.data;
+    const vendorError = vendorLoading ? "" : vendorResult.error;
 
-import "./BillForm.css";
+    useEffect(() => {
+        const controller = new AbortController();
+        const timer = setTimeout(async () => {
+            try {
+                const result = await getPurchaseVendors(vendorSearch, controller.signal);
+                if (!controller.signal.aborted) setVendorResult({ key: vendorKey, ...result, error: "" });
+            } catch (loadError) {
+                if (!controller.signal.aborted) setVendorResult({ key: vendorKey, data: [], total: 0, error: loadError.message });
+            }
+        }, vendorSearch ? 250 : 0);
+        return () => { clearTimeout(timer); controller.abort(); };
+    }, [vendorSearch, vendorRevision, vendorKey]);
 
-const BillForm = ({ onClose }) => {
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-    };
-
-    return (
-        <Box
-            component="form"
-            className="bill-form"
-            onSubmit={handleSubmit}
-        >
-
-            {/* Header */}
-            <Box className="bill-form-header">
-
-                <Box className="bill-form-title-section">
-                    <Box className="bill-form-icon">
-                        <ReceiptLongRoundedIcon />
-                    </Box>
-
-                    <Box>
-                        <Typography className="bill-form-title">
-                            New Bill
-                        </Typography>
-
-                        <Typography className="bill-form-subtitle">
-                            Create a bill for a vendor
-                        </Typography>
-                    </Box>
-                </Box>
-
-                <IconButton
-                    className="bill-form-close-button"
-                    onClick={onClose}
-                >
-                    <CloseRoundedIcon />
-                </IconButton>
-
-            </Box>
-
-            {/* Basic Information */}
-            <Box className="bill-form-section">
-
-                <Typography className="bill-form-section-title">
-                    Bill Information
-                </Typography>
-
+    function change(name, next) { setValue(previous => ({ ...previous, [name]: next })); setPreview(null); }
+    function changeLine(key, name, next) {
+        setValue(previous => ({ ...previous, items: previous.items.map(item => item.key === key
+            ? { ...item, [name]: next, ...(name === "unit" && next === 3 ? { quantity: "1" } : {}) } : item) }));
+        setPreview(null);
+    }
+    function chooseVendor(next) {
+        setVendor(next);
+        setValue(previous => ({ ...previous, vendorId: next?.id || "", branch: next?.branch || "",
+            currency: next?.currency || "", paymentTerms: next?.paymentTerms || "",
+            billingAddress: next ? vendorAddress(next) : "" }));
+        setPreview(null);
+    }
+    function validate() {
+        if (!value.vendorId) return "Select a vendor.";
+        if (!value.billDate) return "Bill date is required.";
+        if (value.dueDate && value.dueDate < value.billDate)
+            return "Due date cannot precede the bill date.";
+        if (!choices.data?.branches.some(branch => branch.name === value.branch)) return "Select an active managing branch.";
+        if (!choices.data?.currencies.some(currency => currency.currencyCode === value.currency)) return "Select an active currency.";
+        if (!value.items.length || value.items.length > 100) return "Provide between 1 and 100 items.";
+        for (const [index, item] of value.items.entries()) {
+            if (!item.itemName.trim()) return `Enter an item or service name on line ${index + 1}.`;
+            for (const name of ["quantity", "unitPrice", "taxRate", ...(item.discountEnabled ? ["discountAmount"] : [])]) {
+                if (item[name] === "" || !Number.isFinite(Number(item[name])) || Number(item[name]) < 0)
+                    return `Enter a valid ${name} on line ${index + 1}.`;
+            }
+            if (Number(item.quantity) <= 0) return "Quantity must be greater than zero.";
+            if (Number(item.taxRate) > 100) return "Tax cannot exceed 100%.";
+        }
+        return "";
+    }
+    async function submit(event, previewOnly = false) {
+        event?.preventDefault();
+        if (locked.current) return;
+        const validation = validate();
+        setError(validation);
+        if (validation) return;
+        locked.current = true; setBusy(true);
+        try {
+            const body = orderPayload(value);
+            if (previewOnly) setPreview(await previewBill(body));
+            else if (current) onSaved(await updateBill(current.id, { ...body, rowVersion: current.rowVersion }));
+            else {
+                const fingerprint = JSON.stringify(body);
+                if (request.current?.fingerprint !== fingerprint) request.current = { fingerprint, id: crypto.randomUUID() };
+                onSaved(await createBill({ ...body, requestId: request.current.id }));
+            }
+        } catch (saveError) { setError(saveError.message); setConflict(saveError.status === 409); }
+        finally { locked.current = false; setBusy(false); }
+    }
+    async function reload() {
+        if (locked.current || !current) return;
+        locked.current = true; setBusy(true);
+        try {
+            const saved = await getBill(current.id);
+            if (saved.status !== 0) throw new Error("This bill is no longer a draft. Close the form and refresh its details.");
+            setCurrent(saved); setValue(orderValues(saved)); setVendor(selectedVendor(saved));
+            setPreview(null); setError(""); setConflict(false);
+        } catch (loadError) { setError(loadError.message); }
+        finally { locked.current = false; setBusy(false); }
+    }
+    const currencies = choices.data?.currencies ?? [];
+    const branches = choices.data?.branches ?? [];
+    return <Dialog open fullWidth maxWidth="md" aria-labelledby="bill-form-title" onClose={busy ? undefined : onClose}>
+        <Box component="form" noValidate className="bill-form" onSubmit={submit}>
+            <DialogTitle id="bill-form-title">{current ? "Edit Bill" : "New Bill"}</DialogTitle>
+            <DialogContent dividers>
+                {(choices.error || vendorError) && <Alert severity="error" sx={{ mb: 2 }}
+                    action={<Button color="inherit" disabled={busy} onClick={() => {
+                        choices.refresh(); setVendorRevision(previous => previous + 1);
+                    }}>Retry choices</Button>}>{choices.error || vendorError}</Alert>}
+                <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>Basic Information</Typography>
                 <Box className="bill-form-grid">
-
-                    <TextField
-                        select
-                        fullWidth
-                        label="Vendor"
-                        defaultValue=""
-                        size="small"
-                    >
-                        <MenuItem value="">
-                            Select Vendor
-                        </MenuItem>
-
-                        <MenuItem value="abc">
-                            ABC Suppliers
-                        </MenuItem>
-
-                        <MenuItem value="global">
-                            Global Office Solutions
-                        </MenuItem>
-
-                        <MenuItem value="techworld">
-                            TechWorld Solutions
-                        </MenuItem>
-
-                        <MenuItem value="bright">
-                            Bright Office Supplies
-                        </MenuItem>
+                    <Autocomplete options={vendorChoices} value={vendor} loading={vendorLoading} disabled={busy || !!current?.sourcePurchaseOrderId}
+                        filterOptions={options => options} isOptionEqualToValue={(a, b) => a.id === b.id}
+                        getOptionLabel={option => option.name + (option.companyName ? " · " + option.companyName : "")}
+                        onInputChange={(_, text, reason) => { if (reason === "input" || reason === "clear") setVendorSearch(text); }}
+                        onChange={(_, next) => chooseVendor(next)}
+                        renderInput={params => <TextField {...params} label="Vendor" required
+                            helperText={vendorResult.total > 50 ? "Type to search more vendors." : "Select an active vendor."} />} />
+                    <TextField label="Bill Number" value={current?.billNumber || "Assigned when issued"} disabled />
+                    {[["billDate", "Bill date", true], ["dueDate", "Due date", false]].map(([name, label, required]) =>
+                        <TextField key={name} label={label} required={required} type="date" value={value[name]} disabled={busy}
+                            slotProps={{ inputLabel: { shrink: true } }} onChange={event => change(name, event.target.value)} />)}
+                    <TextField select label="Managing branch" required value={value.branch} disabled={busy || choices.loading || !!current?.sourcePurchaseOrderId}
+                        onChange={event => change("branch", event.target.value)}>
+                        {value.branch && !branches.some(branch => branch.name === value.branch) &&
+                            <MenuItem value={value.branch} disabled>{value.branch} (unavailable)</MenuItem>}
+                        {branches.map(branch => <MenuItem key={branch.id} value={branch.name}>{branch.name}</MenuItem>)}
                     </TextField>
-
-                    <TextField
-                        fullWidth
-                        label="Bill Number"
-                        defaultValue="BILL-005"
-                        size="small"
-                    />
-
-                    <TextField
-                        fullWidth
-                        label="Bill Date"
-                        type="date"
-                        defaultValue="2026-10-06"
-                        size="small"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-
-                    <TextField
-                        fullWidth
-                        label="Due Date"
-                        type="date"
-                        defaultValue="2026-11-05"
-                        size="small"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-
-                    <TextField
-                        fullWidth
-                        label="Purchase Order"
-                        defaultValue="PO-001"
-                        size="small"
-                    />
-
-                    <TextField
-                        fullWidth
-                        label="Reference Number"
-                        placeholder="Enter reference number"
-                        size="small"
-                    />
-
-                    <TextField
-                        select
-                        fullWidth
-                        label="Payment Terms"
-                        defaultValue="Net 30"
-                        size="small"
-                    >
-                        <MenuItem value="Due on Receipt">
-                            Due on Receipt
-                        </MenuItem>
-
-                        <MenuItem value="Net 15">
-                            Net 15
-                        </MenuItem>
-
-                        <MenuItem value="Net 30">
-                            Net 30
-                        </MenuItem>
-
-                        <MenuItem value="Net 45">
-                            Net 45
-                        </MenuItem>
-
-                        <MenuItem value="Net 60">
-                            Net 60
-                        </MenuItem>
+                    <TextField select label="Currency" required value={value.currency} disabled={busy || choices.loading || !!current?.sourcePurchaseOrderId}
+                        onChange={event => change("currency", event.target.value)}>
+                        {value.currency && !currencies.some(currency => currency.currencyCode === value.currency) &&
+                            <MenuItem value={value.currency} disabled>{value.currency} (unavailable)</MenuItem>}
+                        {currencies.map(currency => <MenuItem key={currency.currencyCode} value={currency.currencyCode}>{currency.currencyCode}</MenuItem>)}
                     </TextField>
-
-                    <TextField
-                        select
-                        fullWidth
-                        label="Status"
-                        defaultValue="Pending"
-                        size="small"
-                    >
-                        <MenuItem value="Draft">
-                            Draft
-                        </MenuItem>
-
-                        <MenuItem value="Pending">
-                            Pending
-                        </MenuItem>
-
-                        <MenuItem value="Paid">
-                            Paid
-                        </MenuItem>
-
-                        <MenuItem value="Overdue">
-                            Overdue
-                        </MenuItem>
-                    </TextField>
-
+                    {[["vendorInvoiceNumber", "Vendor invoice number", 200], ["reference", "Reference", 200], ["paymentTerms", "Payment terms", 200],
+                        ["billingAddress", "Vendor billing address", 1000], ["shippingAddress", "Delivery address", 1000]].map(([name, label, maxLength]) =>
+                        <TextField key={name} label={label} value={value[name]} disabled={busy}
+                            multiline={name.endsWith("Address")} slotProps={{ htmlInput: { maxLength } }}
+                            onChange={event => change(name, event.target.value)} />)}
                 </Box>
-
-            </Box>
-
-            <Divider />
-
-            {/* Item Details */}
-            <Box className="bill-form-section">
-
-                <Typography className="bill-form-section-title">
-                    Item / Service Details
-                </Typography>
-
+                <Divider sx={{ my: 3 }} />
+                <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>Items / Services</Typography>
+                <Stack spacing={2}>
+                    {value.items.map((item, index) => <Box key={item.key} sx={{ border: "1px solid", borderColor: "divider", p: 2, borderRadius: 2 }}>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+                            <Typography fontWeight={600}>Line {index + 1}</Typography>
+                            <IconButton aria-label={`Remove line ${index + 1}`} color="error" disabled={busy || value.items.length === 1}
+                                onClick={() => { change("items", value.items.filter(line => line.key !== item.key)); }}>
+                                <DeleteOutlineRoundedIcon />
+                            </IconButton>
+                        </Stack>
+                        <Box className="bill-line-grid">
+                            <TextField label="Item / service" required value={item.itemName} disabled={busy}
+                                slotProps={{ htmlInput: { maxLength: 200 } }} onChange={event => changeLine(item.key, "itemName", event.target.value)} />
+                            <TextField select label="Unit" value={item.unit} disabled={busy}
+                                onChange={event => changeLine(item.key, "unit", Number(event.target.value))}>
+                                {purchaseUnits.map((label, unit) => <MenuItem key={label} value={unit}>{label}</MenuItem>)}
+                            </TextField>
+                            {[["quantity", "Quantity", "0.0001", undefined], ["unitPrice", "Unit price", "0", undefined],
+                                ["taxRate", "Tax %", "0", "100"]].map(([name, label, min, max]) =>
+                                <TextField key={name} label={label} required type="number" value={item[name]}
+                                    disabled={busy || (name === "quantity" && item.unit === 3)}
+                                    slotProps={{ htmlInput: { min, max, step: "0.0001" } }}
+                                    onChange={event => changeLine(item.key, name, event.target.value)} />)}
+                            <TextField label="Description" value={item.description} disabled={busy}
+                                slotProps={{ htmlInput: { maxLength: 1000 } }}
+                                onChange={event => changeLine(item.key, "description", event.target.value)} />
+                            <FormControlLabel label="Apply discount" control={<Checkbox checked={item.discountEnabled} disabled={busy}
+                                onChange={event => changeLine(item.key, "discountEnabled", event.target.checked)} />} />
+                            <TextField label="Discount amount" type="number" value={item.discountAmount} disabled={busy || !item.discountEnabled}
+                                slotProps={{ htmlInput: { min: 0, step: "0.0001" } }}
+                                onChange={event => changeLine(item.key, "discountAmount", event.target.value)} />
+                        </Box>
+                    </Box>)}
+                    <Button variant="outlined" disabled={busy || value.items.length >= 100}
+                        onClick={() => change("items", [...value.items, newOrderLine()])}>Add item</Button>
+                </Stack>
+                <Divider sx={{ my: 3 }} />
                 <Box className="bill-form-grid">
-
-                    <TextField
-                        fullWidth
-                        label="Item / Service"
-                        defaultValue="Office Laptops"
-                        size="small"
-                    />
-
-                    <TextField
-                        fullWidth
-                        label="Quantity"
-                        type="number"
-                        defaultValue="10"
-                        size="small"
-                    />
-
-                    <TextField
-                        fullWidth
-                        label="Rate"
-                        defaultValue="50000"
-                        size="small"
-                    />
-
-                    <TextField
-                        select
-                        fullWidth
-                        label="Tax"
-                        defaultValue="18"
-                        size="small"
-                    >
-                        <MenuItem value="0">
-                            0%
-                        </MenuItem>
-
-                        <MenuItem value="5">
-                            5%
-                        </MenuItem>
-
-                        <MenuItem value="12">
-                            12%
-                        </MenuItem>
-
-                        <MenuItem value="18">
-                            18%
-                        </MenuItem>
-
-                        <MenuItem value="28">
-                            28%
-                        </MenuItem>
-                    </TextField>
-
-                    <TextField
-                        fullWidth
-                        label="Discount"
-                        defaultValue="0"
-                        size="small"
-                    />
-
-                    <TextField
-                        select
-                        fullWidth
-                        label="Unit"
-                        defaultValue="Nos"
-                        size="small"
-                    >
-                        <MenuItem value="Nos">
-                            Nos
-                        </MenuItem>
-
-                        <MenuItem value="Hours">
-                            Hours
-                        </MenuItem>
-
-                        <MenuItem value="Days">
-                            Days
-                        </MenuItem>
-
-                        <MenuItem value="Kg">
-                            Kg
-                        </MenuItem>
-                    </TextField>
-
-                    <TextField
-                        fullWidth
-                        multiline
-                        rows={3}
-                        label="Description"
-                        placeholder="Enter item or service description"
-                        className="bill-form-full-width"
-                    />
-
+                    {[["notes", "Notes"], ["additionalTerms", "Additional terms"]].map(([name, label]) =>
+                        <TextField key={name} label={label} multiline minRows={2} value={value[name]} disabled={busy}
+                            slotProps={{ htmlInput: { maxLength: 2000 } }} onChange={event => change(name, event.target.value)} />)}
                 </Box>
-
-            </Box>
-
-            <Divider />
-
-            {/* Address */}
-            <Box className="bill-form-section">
-
-                <Typography className="bill-form-section-title">
-                    Billing & Shipping Address
+                {preview && <Box sx={{ mt: 3, p: 2, border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
+                    <Typography fontWeight={700}>Bill Preview</Typography>
+                    {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].map(([label, name]) =>
+                        <Box key={name} className="bill-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
+                            <Typography fontWeight={name === "grandTotal" ? 700 : 400}>
+                                {money(preview[name], preview.currency, preview.currencyDecimalPlaces)}</Typography></Box>)}
+                </Box>}
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                    Saving creates a draft bill. Issue it after reviewing the details. Payments are recorded separately.
                 </Typography>
-
-                <Box className="bill-form-grid">
-
-                    <TextField
-                        fullWidth
-                        multiline
-                        rows={3}
-                        label="Billing Address"
-                        defaultValue="12 Business Park, Andheri East, Mumbai, Maharashtra - 400069"
-                    />
-
-                    <TextField
-                        fullWidth
-                        multiline
-                        rows={3}
-                        label="Shipping Address"
-                        defaultValue="12 Business Park, Andheri East, Mumbai, Maharashtra - 400069"
-                    />
-
-                </Box>
-
+            </DialogContent>
+            <Box className="bill-form-feedback" aria-live="polite">
+                {error && <Alert severity="error">{error}</Alert>}
+                {conflict && current && <Button onClick={reload} disabled={busy}>Reload saved order (replaces unsaved edits)</Button>}
             </Box>
-
-            <Divider />
-
-            {/* Notes */}
-            <Box className="bill-form-section">
-
-                <Typography className="bill-form-section-title">
-                    Additional Information
-                </Typography>
-
-                <Box className="bill-form-grid">
-
-                    <TextField
-                        fullWidth
-                        multiline
-                        rows={3}
-                        label="Notes"
-                        placeholder="Enter notes"
-                    />
-
-                    <TextField
-                        fullWidth
-                        multiline
-                        rows={3}
-                        label="Terms & Conditions"
-                        placeholder="Enter terms and conditions"
-                    />
-
-                </Box>
-
-            </Box>
-
-            <Divider />
-
-            {/* Summary */}
-            <Box className="bill-form-summary">
-
-                <Box className="bill-summary-line">
-                    <Typography>
-                        Sub Total
-                    </Typography>
-
-                    <Typography>
-                        ₹5,00,000
-                    </Typography>
-                </Box>
-
-                <Box className="bill-summary-line">
-                    <Typography>
-                        Discount
-                    </Typography>
-
-                    <Typography>
-                        ₹0
-                    </Typography>
-                </Box>
-
-                <Box className="bill-summary-line">
-                    <Typography>
-                        Tax
-                    </Typography>
-
-                    <Typography>
-                        ₹90,000
-                    </Typography>
-                </Box>
-
-                <Divider />
-
-                <Box className="bill-summary-total">
-                    <Typography>
-                        Total
-                    </Typography>
-
-                    <Typography>
-                        ₹5,90,000
-                    </Typography>
-                </Box>
-
-            </Box>
-
-            {/* Footer */}
-            <Box className="bill-form-footer">
-
-                <Button
-                    variant="outlined"
-                    className="bill-form-cancel-button"
-                    onClick={onClose}
-                >
-                    Cancel
-                </Button>
-
-                <Button
-                    type="submit"
-                    variant="contained"
-                    startIcon={<SaveRoundedIcon />}
-                    className="bill-form-save-button"
-                >
-                    Save Bill
-                </Button>
-
-            </Box>
-
+            <DialogActions sx={{ p: 2, flexWrap: "wrap", gap: 1 }}>
+                <Button disabled={busy} onClick={onClose}>Cancel</Button>
+                <Button variant="outlined" disabled={busy || choices.loading} onClick={() => submit(null, true)}>Preview Totals</Button>
+                <Button type="submit" variant="contained" disabled={busy || choices.loading || conflict}>{busy ? "Saving..." : "Save Draft"}</Button>
+            </DialogActions>
         </Box>
-    );
-};
-
-export default BillForm;
+    </Dialog>;
+}

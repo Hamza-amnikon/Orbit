@@ -1,0 +1,33 @@
+.po-summary-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 18px; margin-bottom: 24px; }
+.po-form { display: flex; flex-direction: column; min-height: 0; max-height: inherit; }
+.po-form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.po-line-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+.po-form-grid > *, .po-line-grid > * { min-width: 0; }
+.po-form-feedback { padding: 0 24px; }
+.po-form-feedback:has(.MuiAlert-root) { padding-block: 12px; }
+.po-document { padding: 28px; }
+.po-document-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.po-address-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.po-text { overflow-wrap: anywhere; white-space: pre-wrap; }
+.po-totals { margin-left: auto; width: min(100%,380px); padding-top: 20px; }
+.po-total-row { display: flex; justify-content: space-between; gap: 16px; padding-block: 8px; }
+@media (max-width:900px) { .po-summary-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width:650px) {
+    .po-form-grid,.po-line-grid,.po-address-grid { grid-template-columns: 1fr; }
+    .po-document { padding: 18px; }
+}
+@media print {
+    body:has(.po-document) .po-document,
+    body:has(.po-document) .po-document * { visibility: visible !important; }
+    body:has(.po-document) .po-address-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    body:has(.po-document) .finance-main { min-height: 0 !important; overflow: visible !important; }
+
+    body:has(.po-document) .finance-header, body:has(.po-document) .finance-sidebar,
+    body:has(.po-document) .finance-page-header, body:has(.po-document) .po-screen-only { display: none !important; }
+    body:has(.po-document) .finance-main { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+    body:has(.po-document) .live-page { padding: 0 !important; background: white !important; }
+    .po-document { color: #111827 !important; background: white !important; box-shadow: none !important; padding: 12px !important; }
+    .po-document .MuiTypography-root, .po-document .MuiTableCell-root { color: #111827 !important; }
+    .po-document .MuiTableContainer-root { overflow: visible !important; }
+    .po-document .MuiTableRow-root { break-inside: avoid; }
+}

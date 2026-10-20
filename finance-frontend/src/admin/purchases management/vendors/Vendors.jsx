@@ -1,402 +1,165 @@
-import React, { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Typography,
+    Alert, Box, Button, Card, CardContent, Chip, CircularProgress, MenuItem, Pagination,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography,
 } from "@mui/material";
-
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import FilterListRoundedIcon from "@mui/icons-material/FilterListRounded";
-
+import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import { useAuth } from "../../../context/AuthContext";
+import { getVendors } from "./VendorService";
 import VendorForm from "./VendorForm";
-import VendorDetails from "./VendorDetails";
-
+import VendorArchiveDialog from "./VendorArchiveDialog";
 import "./Vendors.css";
+import "./VendorIntegration.css";
 
-const Vendors = () => {
-    const [showVendorForm, setShowVendorForm] = useState(false);
-    const [showVendorDetails, setShowVendorDetails] = useState(false);
+const pageSize = 25;
 
-    /* =========================================
-       VENDOR DETAILS
-    ========================================= */
-    if (showVendorDetails) {
-        return (
-            <VendorDetails
-                onBack={() => setShowVendorDetails(false)}
-            />
-        );
+export default function Vendors() {
+    const navigate = useNavigate();
+    const { canWrite } = useAuth();
+    const [search, setSearch] = useState("");
+    const [status, setStatus] = useState("");
+    const [page, setPage] = useState(1);
+    const [revision, setRevision] = useState(0);
+    const [result, setResult] = useState(null);
+    const [summary, setSummary] = useState(null);
+    const [form, setForm] = useState(null);
+    const [archive, setArchive] = useState(null);
+    const [notice, setNotice] = useState("");
+    const key = JSON.stringify([page, search, status, revision]);
+    const loading = result?.key !== key;
+    const error = loading ? "" : result.error;
+    const vendors = loading || error ? [] : result.data;
+    const total = loading || error ? 0 : result.total;
+
+    useEffect(() => {
+        const controller = new AbortController();
+        const timer = setTimeout(async () => {
+            try {
+                const data = await getVendors({ page, pageSize, search, isActive: status }, controller.signal);
+                if (controller.signal.aborted) return;
+                const lastPage = Math.max(1, Math.ceil(data.total / pageSize));
+                if (page > lastPage) setPage(lastPage);
+                else setResult({ key, ...data, error: "" });
+            } catch (loadError) {
+                if (!controller.signal.aborted) setResult({ key, data: [], total: 0, error: loadError.message });
+            }
+        }, search ? 250 : 0);
+        return () => { clearTimeout(timer); controller.abort(); };
+    }, [key, page, search, status, revision]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        Promise.all([
+            getVendors({ pageSize: 1 }, controller.signal),
+            getVendors({ pageSize: 1, isActive: true }, controller.signal),
+        ]).then(([all, active]) => {
+            if (!controller.signal.aborted) setSummary({
+                revision, total: all.total, active: active.total, inactive: Math.max(0, all.total - active.total),
+            });
+        }).catch(() => {
+            if (!controller.signal.aborted) setSummary({ revision, error: true });
+        });
+        return () => controller.abort();
+    }, [revision]);
+
+    function refresh() { setRevision((previous) => previous + 1); }
+    function saved() {
+        const editing = Boolean(form?.vendor);
+        setForm(null);
+        setNotice(editing ? "Vendor updated." : "Vendor created.");
+        refresh();
     }
 
-    return (
-        <Box className="vendors-page">
-
-            {/* =========================================
-                PAGE HEADER
-            ========================================= */}
-            <Box className="vendors-header">
-
-                <Box>
-                    <Typography className="vendors-title">
-                        Vendors
-                    </Typography>
-
-                    <Typography className="vendors-subtitle">
-                        Manage your suppliers and vendors
-                    </Typography>
-                </Box>
-
-                <Button
-                    variant="contained"
-                    startIcon={<AddRoundedIcon />}
-                    className="add-vendor-button"
-                    onClick={() => setShowVendorForm(true)}
-                >
-                    New Vendor
-                </Button>
-
+    return <Box className="vendors-page">
+        <Box className="vendors-header">
+            <Box>
+                <Typography component="h1" className="vendors-title">Vendors</Typography>
+                <Typography className="vendors-subtitle">Manage your suppliers and vendors</Typography>
             </Box>
-
-            {/* =========================================
-                SUMMARY CARDS
-            ========================================= */}
-            <Box className="vendor-summary-grid">
-
-                <Card className="vendor-summary-card">
-                    <CardContent>
-                        <Typography className="vendor-summary-label">
-                            Total Vendors
-                        </Typography>
-
-                        <Typography className="vendor-summary-value">
-                            36
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="vendor-summary-card">
-                    <CardContent>
-                        <Typography className="vendor-summary-label">
-                            Active Vendors
-                        </Typography>
-
-                        <Typography className="vendor-summary-value">
-                            29
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="vendor-summary-card">
-                    <CardContent>
-                        <Typography className="vendor-summary-label">
-                            Payables
-                        </Typography>
-
-                        <Typography className="vendor-summary-value">
-                            ₹4,85,600
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="vendor-summary-card">
-                    <CardContent>
-                        <Typography className="vendor-summary-label">
-                            Inactive Vendors
-                        </Typography>
-
-                        <Typography className="vendor-summary-value">
-                            7
-                        </Typography>
-                    </CardContent>
-                </Card>
-
+            <Box className="vendor-list-actions">
+                <Button variant="outlined" startIcon={<RefreshRoundedIcon />} onClick={refresh} disabled={loading}>Refresh</Button>
+                {canWrite && <Button variant="contained" startIcon={<AddRoundedIcon />}
+                    onClick={() => setForm({ vendor: null })}>New Vendor</Button>}
             </Box>
-
-            {/* =========================================
-                VENDOR LIST
-            ========================================= */}
-            <Card className="vendor-list-card">
-
-                <CardContent className="vendor-list-content">
-
-                    {/* List Header */}
-                    <Box className="vendor-list-header">
-
-                        <Box>
-                            <Typography className="vendor-list-title">
-                                Vendor List
-                            </Typography>
-
-                            <Typography className="vendor-list-subtitle">
-                                View and manage your vendors
-                            </Typography>
-                        </Box>
-
-                        <Box className="vendor-list-actions">
-
-                            {/* Search */}
-                            <Box className="vendor-search-box">
-
-                                <SearchRoundedIcon />
-
-                                <input
-                                    type="text"
-                                    placeholder="Search vendors..."
-                                />
-
-                            </Box>
-
-                            {/* Filter */}
-                            <Button
-                                variant="outlined"
-                                startIcon={<FilterListRoundedIcon />}
-                                className="vendor-filter-button"
-                            >
-                                Filter
-                            </Button>
-
-                        </Box>
-
-                    </Box>
-
-                    {/* =========================================
-                        TABLE HEADER
-                    ========================================= */}
-                    <Box className="vendor-table-header">
-
-                        <Typography>
-                            Vendor
-                        </Typography>
-
-                        <Typography>
-                            Vendor Code
-                        </Typography>
-
-                        <Typography>
-                            Contact Person
-                        </Typography>
-
-                        <Typography>
-                            Phone
-                        </Typography>
-
-                        <Typography>
-                            Payable
-                        </Typography>
-
-                        <Typography>
-                            Status
-                        </Typography>
-
-                        <Typography>
-                            Action
-                        </Typography>
-
-                    </Box>
-
-                    {/* =========================================
-                        ROW 1
-                    ========================================= */}
-                    <Box className="vendor-table-row">
-
-                        <Box>
-                            <Typography className="vendor-name">
-                                ABC Suppliers
-                            </Typography>
-
-                            <Typography className="vendor-email">
-                                accounts@abcsuppliers.com
-                            </Typography>
-                        </Box>
-
-                        <Typography className="vendor-code">
-                            VEN-001
-                        </Typography>
-
-                        <Typography>
-                            Rahul Sharma
-                        </Typography>
-
-                        <Typography>
-                            9876543210
-                        </Typography>
-
-                        <Typography className="vendor-amount">
-                            ₹1,25,000
-                        </Typography>
-
-                        <Box className="vendor-status active">
-                            Active
-                        </Box>
-
-                        <Button
-                            className="vendor-view-button"
-                            onClick={() => setShowVendorDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                    {/* =========================================
-                        ROW 2
-                    ========================================= */}
-                    <Box className="vendor-table-row">
-
-                        <Box>
-                            <Typography className="vendor-name">
-                                Global Office Solutions
-                            </Typography>
-
-                            <Typography className="vendor-email">
-                                sales@globaloffice.com
-                            </Typography>
-                        </Box>
-
-                        <Typography className="vendor-code">
-                            VEN-002
-                        </Typography>
-
-                        <Typography>
-                            Priya Mehta
-                        </Typography>
-
-                        <Typography>
-                            9988776655
-                        </Typography>
-
-                        <Typography className="vendor-amount">
-                            ₹86,500
-                        </Typography>
-
-                        <Box className="vendor-status active">
-                            Active
-                        </Box>
-
-                        <Button
-                            className="vendor-view-button"
-                            onClick={() => setShowVendorDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                    {/* =========================================
-                        ROW 3
-                    ========================================= */}
-                    <Box className="vendor-table-row">
-
-                        <Box>
-                            <Typography className="vendor-name">
-                                TechWorld Solutions
-                            </Typography>
-
-                            <Typography className="vendor-email">
-                                finance@techworld.com
-                            </Typography>
-                        </Box>
-
-                        <Typography className="vendor-code">
-                            VEN-003
-                        </Typography>
-
-                        <Typography>
-                            Amit Patel
-                        </Typography>
-
-                        <Typography>
-                            9123456780
-                        </Typography>
-
-                        <Typography className="vendor-amount">
-                            ₹72,250
-                        </Typography>
-
-                        <Box className="vendor-status active">
-                            Active
-                        </Box>
-
-                        <Button
-                            className="vendor-view-button"
-                            onClick={() => setShowVendorDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                    {/* =========================================
-                        ROW 4
-                    ========================================= */}
-                    <Box className="vendor-table-row">
-
-                        <Box>
-                            <Typography className="vendor-name">
-                                Bright Office Supplies
-                            </Typography>
-
-                            <Typography className="vendor-email">
-                                billing@brightoffice.com
-                            </Typography>
-                        </Box>
-
-                        <Typography className="vendor-code">
-                            VEN-004
-                        </Typography>
-
-                        <Typography>
-                            Neha Shah
-                        </Typography>
-
-                        <Typography>
-                            9012345678
-                        </Typography>
-
-                        <Typography className="vendor-amount">
-                            ₹48,000
-                        </Typography>
-
-                        <Box className="vendor-status inactive">
-                            Inactive
-                        </Box>
-
-                        <Button
-                            className="vendor-view-button"
-                            onClick={() => setShowVendorDetails(true)}
-                        >
-                            View
-                        </Button>
-
-                    </Box>
-
-                </CardContent>
-
-            </Card>
-
-            {/* =========================================
-                NEW VENDOR FORM MODAL
-            ========================================= */}
-            {showVendorForm && (
-                <Box className="vendor-modal-overlay">
-
-                    <Box className="vendor-modal">
-
-                        <VendorForm
-                            onClose={() => setShowVendorForm(false)}
-                        />
-
-                    </Box>
-
-                </Box>
-            )}
-
         </Box>
-    );
-};
-
-export default Vendors;
+        {notice && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setNotice("")}>{notice}</Alert>}
+        <Box className="vendor-summary-grid vendor-connected-summary">
+            {[["Total Vendors", "total"], ["Active Vendors", "active"], ["Inactive Vendors", "inactive"]].map(([label, field]) =>
+                <Card key={field} className="vendor-summary-card"><CardContent>
+                    <Typography className="vendor-summary-label">{label}</Typography>
+                    <Typography className="vendor-summary-value">
+                        {summary?.revision === revision && !summary.error ? summary[field] : "—"}
+                    </Typography>
+                </CardContent></Card>
+            )}
+        </Box>
+        {summary?.revision === revision && summary.error && <Alert severity="warning" sx={{ mb: 2 }}
+            action={<Button color="inherit" onClick={refresh}>Retry</Button>}>Vendor counts could not be loaded.</Alert>}
+        <Card className="vendor-list-card"><CardContent className="vendor-list-content">
+            <Box className="vendor-list-header">
+                <Box>
+                    <Typography component="h2" className="vendor-list-title">Vendor List</Typography>
+                    <Typography className="vendor-list-subtitle">{loading ? "Loading vendors..." : `${total} matching vendors`}</Typography>
+                </Box>
+                <Box className="vendor-list-actions">
+                    <TextField size="small" label="Search vendors" value={search}
+                        slotProps={{ htmlInput: { maxLength: 200 } }}
+                        onChange={(event) => { setSearch(event.target.value); setPage(1); }} />
+                    <TextField select size="small" label="Status" value={status} sx={{ minWidth: 140 }}
+                        onChange={(event) => { setStatus(event.target.value); setPage(1); }}>
+                        <MenuItem value="">All vendors</MenuItem>
+                        <MenuItem value="true">Active</MenuItem>
+                        <MenuItem value="false">Inactive</MenuItem>
+                    </TextField>
+                </Box>
+            </Box>
+            {loading ? <Box className="vendor-feedback"><CircularProgress aria-label="Loading vendors" /></Box> :
+                error ? <Alert severity="error" sx={{ m: 2 }} action={<Button color="inherit" onClick={refresh}>Retry</Button>}>{error}</Alert> :
+                <>
+                    <TableContainer tabIndex={0} role="region" aria-label="Vendor list">
+                        <Table sx={{ minWidth: 800 }} aria-label="Vendors">
+                            <TableHead><TableRow>
+                                {["Vendor", "Contact Person", "Phone", "Branch", "Currency", "Status", "Actions"].map(
+                                    (heading) => <TableCell key={heading}>{heading}</TableCell>
+                                )}
+                            </TableRow></TableHead>
+                            <TableBody>
+                                {vendors.length === 0 ? <TableRow><TableCell colSpan={7} align="center" sx={{ py: 5 }}>
+                                    {search || status ? "No vendors match your filters." : "No vendors yet. Create your first vendor to get started."}
+                                </TableCell></TableRow> : vendors.map((vendor) => <TableRow key={vendor.id} hover>
+                                    <TableCell><Typography className="vendor-name">{vendor.name}</Typography>
+                                        <Typography className="vendor-email">{vendor.email || vendor.companyName || "—"}</Typography></TableCell>
+                                    <TableCell>{vendor.contactPerson || "—"}</TableCell>
+                                    <TableCell>{vendor.phone || "—"}</TableCell>
+                                    <TableCell>{vendor.branch}</TableCell>
+                                    <TableCell>{vendor.currency}</TableCell>
+                                    <TableCell><Chip size="small" label={vendor.isActive ? "Active" : "Inactive"}
+                                        color={vendor.isActive ? "success" : "default"} /></TableCell>
+                                    <TableCell><Box className="vendor-row-actions">
+                                        <Button size="small" onClick={() => navigate(`/purchases/vendors/${vendor.id}`)}
+                                            aria-label={`View ${vendor.name}`}>View</Button>
+                                        {canWrite && <>
+                                            <Button size="small" onClick={() => setForm({ vendor })}
+                                                aria-label={`Edit ${vendor.name}`}>Edit</Button>
+                                            {vendor.isActive && <Button size="small" color="warning"
+                                                onClick={() => setArchive(vendor)} aria-label={`Archive ${vendor.name}`}>Archive</Button>}
+                                        </>}
+                                    </Box></TableCell>
+                                </TableRow>)}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Box className="vendor-pagination">
+                        <Pagination page={page} count={Math.max(1, Math.ceil(total / pageSize))}
+                            onChange={(_, nextPage) => setPage(nextPage)} />
+                    </Box>
+                </>
+            }
+        </CardContent></Card>
+        {canWrite && form && <VendorForm vendor={form.vendor} onClose={() => setForm(null)} onSaved={saved} />}
+        {canWrite && archive && <VendorArchiveDialog vendor={archive} onClose={() => setArchive(null)}
+            onArchived={() => { setArchive(null); setNotice("Vendor archived."); refresh(); }} />}
+    </Box>;
+}

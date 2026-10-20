@@ -1,0 +1,40 @@
+.client-details-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.client-details-title {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+}
+
+.client-details-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.client-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.client-info-grid .MuiTypography-root {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+    .client-details-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .client-info-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,17 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ThemeProvider } from "@mui/material/styles";
+import FinanceThemeProvider from "./styles/FinanceThemeProvider";
 
 import App from "./App";
-import theme from "./styles/theme";
 
 import "./index.css";
 import "./styles/finance-ui.css";
+import "./styles/finance-workspace.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <ThemeProvider theme={theme}>
+        <FinanceThemeProvider>
             <App />
-        </ThemeProvider>
+        </FinanceThemeProvider>
     </React.StrictMode>
 );

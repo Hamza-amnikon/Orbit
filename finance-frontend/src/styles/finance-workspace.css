@@ -1,0 +1,164 @@
+/* Finance workspace polish. Screen-only rules preserve issued document printing. */
+:root {
+  --finance-control: #ffffff;
+  --finance-focus: #2563eb;
+  --finance-disabled-bg: #e9edf3;
+  --finance-disabled-text: #66758a;
+}
+:root[data-theme="dark"] {
+  --finance-control: #172235;
+  --finance-focus: #82b1ff;
+  --finance-disabled-bg: #2b3a4f;
+  --finance-disabled-text: #a6b4c8;
+}
+
+@media screen {
+  .finance-main { color: var(--text-dark); }
+  .finance-main > :is([class*="-page"], .finance-dashboard) {
+    background: var(--page-bg) !important;
+    scroll-margin-top: 90px;
+  }
+  .finance-main > .live-page { padding: 30px; }
+  .finance-page-header h1 { overflow-wrap: anywhere; }
+  .finance-page-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .finance-main .MuiCard-root { background-color: var(--surface) !important; }
+  .finance-main :is(.MuiCard-root, .MuiPaper-root) { min-width: 0; }
+  .finance-main .MuiCardContent-root > .MuiStack-root { min-width: 0; }
+  .finance-records-toolbar { align-items: stretch; }
+  .finance-records-search-row { width: 100%; min-width: 0; }
+  .finance-records-filters { width: 100%; min-width: 0; }
+  .finance-records-filters > .MuiStack-root { gap: 12px; flex-wrap: wrap; align-items: center; }
+  .finance-records-filters .MuiTextField-root { flex: 1 1 140px; min-width: 140px !important; }
+  .finance-records-filters .MuiButton-root { flex-shrink: 0; }
+  .finance-records-toolbar > .MuiTextField-root { max-width: 100%; }
+  .finance-records-toolbar > .MuiStack-root { min-width: 0; max-width: 100%; }
+  .finance-main .MuiTableContainer-root { border: 1px solid var(--border); scrollbar-width: thin; }
+  .finance-main .MuiTableCell-root { line-height: 1.5; }
+  .finance-main .MuiTableCell-body { font-variant-numeric: tabular-nums; }
+  .finance-records .MuiTableCell-body:first-child { white-space: nowrap; }
+  .finance-main .MuiTableCell-body .MuiButton-root { white-space: nowrap; }
+  .finance-main .MuiTableRow-root:last-child .MuiTableCell-body { border-bottom: 0; }
+  .finance-main .MuiTableRow-root:hover .MuiTableCell-body { transition: background-color 120ms ease; }
+  .finance-records-empty { color: var(--text-dark); border-bottom: 1px solid var(--border); }
+  .finance-records-pagination { padding-top: 8px; }
+  .finance-main .MuiCard-root:hover { transform: none; }
+  .finance-main :is([class*="-summary-card"], .summary-card):hover { transform: none !important; }
+
+  /* Explicit states prevent disabled primary actions from appearing active. */
+  :is(.finance-main, .MuiDialog-paper) .MuiButton-containedPrimary:not(.Mui-disabled) {
+    color: #ffffff !important;
+  }
+  :is(.finance-main, .MuiDialog-paper) .MuiButton-root.Mui-disabled {
+    color: var(--finance-disabled-text) !important;
+    background-color: var(--finance-disabled-bg) !important;
+    border-color: var(--border) !important;
+    box-shadow: none !important;
+  }
+  :is(.finance-main, .MuiDialog-paper) .MuiOutlinedInput-root {
+    background-color: var(--finance-control);
+  }
+  :is(.finance-main, .MuiDialog-paper) .MuiOutlinedInput-root.Mui-focused {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--finance-focus) 13%, transparent);
+  }
+  :is(.finance-main, .MuiDialog-paper) .MuiInputBase-input::placeholder { opacity: 1; }
+  :is(.finance-main, .MuiDialog-paper) :is(input[type="date"], input[type="number"]) { min-width: 0; }
+  :is(.finance-main, .MuiDialog-paper) :is(button, a, [tabindex="0"]):focus-visible {
+    outline: 2px solid var(--finance-focus); outline-offset: 3px;
+  }
+  .MuiDialog-paper .MuiDialogActions-root { border-top: 1px solid var(--border); }
+  .MuiDialog-paper .MuiDialogTitle-root { overflow-wrap: anywhere; }
+  .MuiDialog-paper .MuiDialogContent-root { overscroll-behavior: contain; }
+  .MuiDialog-paper .admin-form-grid { gap: 20px; }
+  .MuiDialog-paper :is(.admin-details-grid, [class*="-form-grid"]) > * { min-width: 0; }
+
+  .finance-sidebar .MuiDrawer-paper { display: flex; flex-direction: column; }
+  .finance-sidebar .sidebar-logo { flex-shrink: 0; }
+  .finance-sidebar .sidebar-list { min-height: 0; overflow-y: auto; overscroll-behavior: contain; flex: 1; }
+  .finance-sidebar :is(.sidebar-item, .sidebar-child) { transition: background-color 140ms ease, color 140ms ease; }
+  .finance-header .MuiAutocomplete-root { flex-shrink: 0; }
+
+  /* Legacy search boxes keep native input behavior and gain visible focus. */
+  .finance-main :is(.invoice-search-box, .estimate-search, .credit-note-search-box) {
+    min-width: 0; background: var(--finance-control); border-color: var(--border); border-radius: 10px;
+  }
+  .finance-main :is(.invoice-search-box, .estimate-search, .credit-note-search-box):focus-within {
+    border-color: var(--finance-focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--finance-focus) 13%, transparent);
+  }
+  .finance-main :is(.invoice-search-box, .estimate-search, .credit-note-search-box) input {
+    color: var(--text-dark); background: transparent; min-width: 0;
+  }
+
+  /* Credit-note CSS predates the theme; scope its neutral colors explicitly. */
+  .finance-main :is(.credit-notes-title, .credit-note-details-title, .credit-note-summary-value,
+    .credit-note-list-title, .credit-note-amount, .credit-note-company-name,
+    .credit-note-number-large, .credit-note-customer-name, .credit-note-section-title) {
+    color: var(--text-dark) !important;
+  }
+  .finance-main :is(.credit-notes-subtitle, .credit-note-details-subtitle,
+    .credit-note-summary-label, .credit-note-list-subtitle, .credit-note-company-info,
+    .credit-note-document-label, .credit-note-info-title, .credit-note-info-text,
+    .credit-note-notes-text, .credit-note-footer-text) { color: var(--text-light) !important; }
+  .finance-main :is(.credit-note-table-header, .credit-note-item-header) { background: var(--table-bg); }
+  .finance-main :is(.credit-note-table-header, .credit-note-item-header) .MuiTypography-root { color: var(--text-light) !important; }
+  .finance-main :is(.credit-note-table-row, .credit-note-item-row) .MuiTypography-root { color: var(--text-dark); }
+  .finance-main .credit-note-item-row .MuiTypography-root { color: var(--text-dark) !important; }
+  .finance-main :is(.credit-note-info-row, .credit-note-details-summary-row) .MuiTypography-root:first-child { color: var(--text-light) !important; }
+  .finance-main :is(.credit-note-info-row, .credit-note-details-summary-row) .MuiTypography-root:last-child { color: var(--text-dark) !important; }
+  .finance-main .credit-note-details-total-row .MuiTypography-root:first-child { color: var(--text-dark) !important; }
+  .finance-main .credit-note-details-total-row .MuiTypography-root:last-child { color: var(--finance-focus) !important; }
+  .finance-main :is(.credit-note-table-row, .credit-note-info-row, .credit-note-item-table, .credit-note-item-row, .credit-note-details-summary-row) { border-color: var(--border); }
+  .finance-main :is(.credit-note-action-button, .credit-note-filter-button) { color: var(--text-dark) !important; border-color: var(--border) !important; }
+  .finance-main :is(.credit-note-action-button, .credit-note-filter-button):hover { background: var(--hover-bg) !important; border-color: var(--finance-focus) !important; }
+  .finance-main :is(.credit-note-back-button, .credit-note-view-button, .credit-note-number) { color: var(--finance-focus) !important; }
+  .finance-main .credit-note-view-button:hover { background: var(--accent-bg) !important; }
+  .MuiDialog-paper .credit-note-form { background: var(--page-bg); }
+  .MuiDialog-paper :is(.credit-note-form-card, .credit-note-summary-card) { background: var(--surface) !important; border-color: var(--border) !important; }
+  .MuiDialog-paper .credit-note-form-grid .MuiTextField-root { background: transparent; }
+  .MuiDialog-paper .credit-note-form-section-title { color: var(--text-dark) !important; }
+  .MuiDialog-paper .credit-note-summary-row .MuiTypography-root { color: var(--text-light); }
+  .MuiDialog-paper .credit-note-summary-row .MuiTypography-root:last-child { color: var(--text-dark); }
+  .MuiDialog-paper .credit-note-grand-total-row .MuiTypography-root:first-child { color: var(--text-dark) !important; }
+  .MuiDialog-paper .credit-note-grand-total-row .MuiTypography-root:last-child { color: var(--finance-focus) !important; }
+  .MuiDialog-paper .credit-note-cancel-button { color: var(--text-dark) !important; border-color: var(--border) !important; }
+  .MuiDialog-paper .credit-note-cancel-button:hover { background: var(--hover-bg) !important; }
+  :root[data-theme="dark"] .credit-note-status.issued,
+  :root[data-theme="dark"] .credit-note-details-status.issued { color: #b7d8ff; background: #203c5e; }
+  :root[data-theme="dark"] .credit-note-status.draft { color: #d2dbea; background: #2b3a4f; }
+  :root[data-theme="dark"] .credit-note-details-status.draft { color: #ffe3a1; background: #49391a; }
+}
+
+@media screen and (max-width: 1199px) {
+  .finance-main > .live-page { padding: 24px; }
+}
+@media screen and (max-width: 700px) {
+  .finance-main :is(.estimates-table-header, .invoices-list-header, .credit-note-list-header,
+    .clients-toolbar, .invoice-actions, .estimate-actions, .credit-note-list-actions) {
+    flex-wrap: wrap; gap: 12px; min-width: 0;
+  }
+  .finance-main .estimate-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .finance-records-pagination { align-items: flex-start; }
+}
+@media screen and (max-width: 600px) {
+  .finance-main > .live-page { padding: 20px 16px; }
+  .finance-page-header { align-items: flex-start; }
+  .finance-page-header h1 { font-size: 24px; }
+  .finance-page-actions { width: 100%; }
+  .finance-records > .MuiCardContent-root { padding: 16px; }
+  .finance-records-toolbar > .MuiTextField-root { width: 100%; }
+  .finance-records-toolbar > .MuiStack-root { width: 100%; }
+  .finance-records-search-row > .MuiTextField-root { flex: 1; width: 0; min-width: 0; }
+  .finance-records-search-row > .MuiButton-root { flex-shrink: 0; }
+  .finance-records-filters .MuiTextField-root { width: 100%; min-width: 0 !important; flex-basis: 100%; }
+  .finance-records-pagination { flex-direction: column; }
+  .finance-main .MuiPaginationItem-root { min-width: 28px; height: 32px; margin-inline: 1px; }
+  .finance-header .MuiToolbar-root { gap: 8px; padding-inline: 12px; }
+  .finance-header .MuiAvatar-root { width: 32px; height: 32px; font-size: 12px; }
+  .MuiDialog-paper .MuiDialogTitle-root { padding: 20px 20px 14px; }
+  .MuiDialog-paper .MuiDialogContent-root { padding-inline: 20px; }
+  .MuiDialog-paper .MuiDialogActions-root { padding: 16px; gap: 8px; }
+  .MuiDialog-paper .MuiDialogActions-root > .MuiButton-root { margin-left: 0; }
+  .finance-main .credit-note-details-card > .MuiCardContent-root { padding: 20px !important; }
+  .finance-main :is(.invoice-actions, .estimate-actions) { width: 100%; }
+  .finance-main .estimate-search { flex: 1; width: 100%; }
+  .finance-main .MuiAlert-action { margin-right: 0; }
+}
