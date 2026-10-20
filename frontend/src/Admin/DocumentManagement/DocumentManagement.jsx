@@ -599,9 +599,14 @@ function DocumentManagement() {
       <MuiLayoutBox className="document-filter" component="div">
 
         <TextField
+          id="document-management-search"
+          name="documentManagementSearchQuery"
           className="document-search-field"
           label="Search employee or document"
           placeholder="Enter employee name, ID, or document name"
+          autoComplete="new-password"
+          autoCorrect="off"
+          spellCheck={false}
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           size="small"
@@ -612,6 +617,11 @@ function DocumentManagement() {
                 <SearchRoundedIcon />
               </InputAdornment>
             ),
+          }}
+          inputProps={{
+            autoComplete: "new-password",
+            name: "documentManagementSearchQuery",
+            "aria-autocomplete": "none",
           }}
         />
         <FormControl className="document-filter-field" size="small" fullWidth>
