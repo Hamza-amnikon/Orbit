@@ -54,6 +54,8 @@ function DashboardLayout() {
     const isDocumentsPage =
         location.pathname === "/settings" &&
         new URLSearchParams(location.search).get("tab") === "documents";
+    const isHrDocumentsPage =
+        location.pathname.toLowerCase().replace(/\/$/, "") === "/documents";
 
 
     // ==========================================================
@@ -91,7 +93,7 @@ function DashboardLayout() {
 
         // If employee is already on the Documents page,
         // don't cover the upload UI with the popup.
-        if (isDocumentsPage) {
+        if (isDocumentsPage || (isHrDocumentsPage && onboardingStep === "documents")) {
 
             setOnboardingPromptOpen(false);
 
@@ -109,6 +111,7 @@ function DashboardLayout() {
         sparkAccessLoading,
         profileLoading,
         isDocumentsPage,
+        isHrDocumentsPage,
         policyPromptDismissed
     ]);
 
@@ -146,7 +149,8 @@ function DashboardLayout() {
         !sparkAccessLoading &&
         !profileLoading &&
         !sparkAccessGranted &&
-        (isPolicyAcknowledgementStage || (onboardingStep === "documents" && !isDocumentsPage));
+        (isPolicyAcknowledgementStage ||
+            (onboardingStep === "documents" && !isDocumentsPage && !isHrDocumentsPage));
 
 
     // ==========================================================
@@ -308,7 +312,7 @@ function DashboardLayout() {
                             className="onboarding-prompt-button"
                         >
 
-                            {isPolicyAcknowledgementStage ? "Review Policies" : "Submit Documents"}
+                            {isPolicyAcknowledgementStage ? "Review Policies" : "Open Documents"}
 
                         </MuiButtonMigration>
 

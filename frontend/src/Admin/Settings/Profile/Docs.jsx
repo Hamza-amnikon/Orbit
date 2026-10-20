@@ -20,6 +20,9 @@ const validationRules = {
 };
 
 const API_URL = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
+const ONBOARDING_API_URL =
+    import.meta.env.VITE_ONBOARDING_API_URL ||
+    "https://sparkapi.amnikontechnologies.com:5126";
 
 const REQUIRED_DOCUMENT_TYPES = [
     "Aadhaar",
@@ -28,11 +31,18 @@ const REQUIRED_DOCUMENT_TYPES = [
     "Education Certificate",
 ];
 
+const formatAadhaarNumber = (value) => {
+    const digits = String(value || "").replace(/\D/g, "").slice(0, 12);
+    return digits.match(/\d{1,4}/g)?.join(" ") || "";
+};
+
 function Documents({ profile }) {
 
     const [documents, setDocuments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [hasOnboardingDetails, setHasOnboardingDetails] = useState(false);
+    const [draggingField, setDraggingField] = useState("");
 
     const employeeId =
         profile?.employeeId ??
@@ -84,27 +94,39 @@ function Documents({ profile }) {
         try {
             setLoading(true);
 
-            const response = await axios.get(
-                `${API_URL}/employee/${employeeId}`
-            );
+            const [documentsResult, onboardingResult] = await Promise.allSettled([
+                axios.get(`${API_URL}/employee/${employeeId}`),
+                axios.get(`${ONBOARDING_API_URL}/api/Onboarding/${employeeId}/details`),
+            ]);
 
-            const data = Array.isArray(response.data)
-                ? response.data
-                : [response.data];
+            const data = documentsResult.status === "fulfilled"
+                ? (Array.isArray(documentsResult.value.data)
+                    ? documentsResult.value.data
+                    : [documentsResult.value.data])
+                : [];
+
+            if (
+                documentsResult.status === "rejected" &&
+                documentsResult.reason?.response?.status !== 404
+            ) {
+                throw documentsResult.reason;
+            }
 
             setDocuments(data);
+            setHasOnboardingDetails(onboardingResult.status === "fulfilled");
 
-            const aadhaar = data.find(
-                (x) =>
-                    String(x.documentType || "").toLowerCase() ===
-                    "aadhaar"
-            );
+            const findLatestDocument = (type) =>
+                data
+                    .filter((document) =>
+                        String(document.documentType || document.documentName || "").toLowerCase() ===
+                        type.toLowerCase()
+                    )
+                    .sort((a, b) =>
+                        Number(b.documentId || b.DocumentId || 0) - Number(a.documentId || a.DocumentId || 0)
+                    )[0];
 
-            const pan = data.find(
-                (x) =>
-                    String(x.documentType || "").toLowerCase() ===
-                    "pan"
-            );
+            const aadhaar = findLatestDocument("Aadhaar");
+            const pan = findLatestDocument("PAN");
 
             const uan = data.find(
                 (x) =>
@@ -113,23 +135,21 @@ function Documents({ profile }) {
                         "epfo / uan"
             );
 
-            const bank = data.find(
-                (x) =>
-                    String(x.documentType || "").toLowerCase() ===
-                    "bank"
-            );
+            const bank = findLatestDocument("Bank");
 
             setForm((prev) => ({
                 ...prev,
 
                 aadhaarNumber:
-                    aadhaar?.documentNumber || "",
+                    formatAadhaarNumber(aadhaar?.documentNumber),
 
                 panNumber:
-                    pan?.documentNumber || "",
+                    pan?.documentNumber?.toUpperCase() || "",
 
                 uanNumber:
-                    uan?.documentNumber || "",
+                    onboardingResult.status === "fulfilled"
+                        ? onboardingResult.value.data?.data?.uanNumber || ""
+                        : uan?.documentNumber || "",
 
                 bankName:
                     bank?.bankName || "",
@@ -157,11 +177,36 @@ function Documents({ profile }) {
         }
     };
 
+    const saveUanNumber = async () => {
+        const detailsUrl = `${ONBOARDING_API_URL}/api/Onboarding/${employeeId}/details`;
+        let existingDetails = {};
+
+        try {
+            const response = await axios.get(detailsUrl);
+            existingDetails = response.data?.data || {};
+        } catch (error) {
+            if (error.response?.status !== 404) {
+                throw error;
+            }
+        }
+
+        await axios.put(detailsUrl, {
+            ...existingDetails,
+            uanNumber: form.uanNumber.trim() || null,
+        });
+    };
+
     /* ======================================================
        INPUT CHANGE
     ====================================================== */
 
     const handleInputChange = (field, value) => {
+        if (field === "aadhaarNumber") {
+            value = formatAadhaarNumber(value);
+        } else if (field === "panNumber") {
+            value = value.toUpperCase();
+        }
+
         setForm((prev) => ({
             ...prev,
             [field]: value,
@@ -172,15 +217,13 @@ function Documents({ profile }) {
        FILE CHANGE
     ====================================================== */
 
-    const handleFileChange = (field, event) => {
-        const file = event.target.files?.[0] || null;
-
+    const handleSelectedFile = (field, file, input) => {
         if (!file) return;
 
         /* Maximum 2 MB from UI */
         if (file.size > 2 * 1024 * 1024) {
             showReactAlert("File size must not exceed 2MB.");
-            event.target.value = "";
+            if (input) input.value = "";
             return;
         }
 
@@ -203,7 +246,7 @@ function Documents({ profile }) {
                 "Only PDF, DOCX and DOC files are allowed."
             );
 
-            event.target.value = "";
+            if (input) input.value = "";
             return;
         }
 
@@ -211,6 +254,39 @@ function Documents({ profile }) {
             ...prev,
             [field]: file,
         }));
+
+        if (input) input.value = "";
+    };
+
+    const handleFileChange = (field, event) => {
+        handleSelectedFile(field, event.target.files?.[0], event.target);
+    };
+
+    const getDropProps = (field) => ({
+        onDragOver: (event) => {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "copy";
+            setDraggingField(field);
+        },
+        onDragLeave: (event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+                setDraggingField("");
+            }
+        },
+        onDrop: (event) => {
+            event.preventDefault();
+            setDraggingField("");
+            handleSelectedFile(field, event.dataTransfer.files?.[0]);
+        },
+    });
+
+    const isDragging = (field) => draggingField === field;
+
+    const handleDropKeyDown = (field, inputId) => (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            document.getElementById(inputId)?.click();
+        }
     };
 
     /* ======================================================
@@ -218,11 +294,15 @@ function Documents({ profile }) {
     ====================================================== */
 
     const getDocument = (type) =>
-        documents.find(
-            (x) =>
-                String(x.documentType || "").toLowerCase() ===
-                type.toLowerCase()
-        );
+        documents
+            .filter(
+                (x) =>
+                    String(x.documentType || x.documentName || "").toLowerCase() ===
+                    type.toLowerCase()
+            )
+            .sort(
+                (a, b) => Number(b.documentId || b.DocumentId || 0) - Number(a.documentId || a.DocumentId || 0)
+            )[0];
 
     /* ======================================================
        GET STATUS
@@ -380,13 +460,6 @@ function Documents({ profile }) {
            ================================================== */
 
         if (file) {
-            /*
-             * Do not upload an already approved document.
-             */
-            if (existing?.status === "Approved") {
-                return existing;
-            }
-
 const formData = new FormData();
 
             // Use the exact backend property names.
@@ -579,12 +652,17 @@ const payload = {
 
             setSaving(true);
 
+            const uanSaved = Boolean(form.uanNumber.trim()) || hasOnboardingDetails;
+            if (uanSaved) {
+                await saveUanNumber();
+            }
+
             const saved = [];
 
             const items = [
                 {
                     type: "Aadhaar",
-                    number: form.aadhaarNumber,
+                    number: form.aadhaarNumber.replace(/\s/g, ""),
                     file: form.aadhaarFile,
                 },
 
@@ -592,11 +670,6 @@ const payload = {
                     type: "PAN",
                     number: form.panNumber,
                     file: form.panFile,
-                },
-
-                {
-                    type: "UAN",
-                    number: form.uanNumber,
                 },
 
                 {
@@ -653,8 +726,8 @@ const payload = {
                  * Approved document must not be modified.
                  */
                 if (
-                    existing?.status ===
-                    "Approved"
+                    String(existing?.status || "").toLowerCase() === "approved" &&
+                    !item.file
                 ) {
                     continue;
                 }
@@ -683,8 +756,8 @@ const payload = {
             await loadDocuments();
 
             showReactAlert(
-                saved.length
-                    ? "Documents saved as Draft successfully."
+                saved.length || uanSaved
+                    ? "Document details saved successfully."
                     : "No document changes to save."
             );
         } catch (error) {
@@ -717,7 +790,7 @@ const payload = {
 
         const aadhaar =
             form.aadhaarNumber
-                ?.trim() || "";
+                ?.replace(/\s/g, "") || "";
 
         const pan =
             form.panNumber
@@ -939,6 +1012,10 @@ const payload = {
 
             setSaving(true);
 
+            if (form.uanNumber.trim() || hasOnboardingDetails) {
+                await saveUanNumber();
+            }
+
             const saved = [];
 
             /* ==================================================
@@ -950,7 +1027,7 @@ const payload = {
                     type: "Aadhaar",
                     number:
                         form.aadhaarNumber
-                            ?.trim() || "",
+                            ?.replace(/\s/g, "") || "",
                     file:
                         form.aadhaarFile,
                 },
@@ -963,13 +1040,6 @@ const payload = {
                             .toUpperCase() || "",
                     file:
                         form.panFile,
-                },
-
-                {
-                    type: "UAN",
-                    number:
-                        form.uanNumber
-                            ?.trim() || "",
                 },
 
                 {
@@ -1039,8 +1109,8 @@ const payload = {
                  * be modified.
                  */
                 if (
-                    existing?.status ===
-                    "Approved"
+                    String(existing?.status || "").toLowerCase() === "approved" &&
+                    !item.file
                 ) {
                     continue;
                 }
@@ -1096,6 +1166,16 @@ const payload = {
                 const document of
                 currentDocuments
             ) {
+                const documentType = String(
+                    document.documentType || document.documentName || ""
+                ).toLowerCase().replace(/[^a-z0-9]/g, "");
+
+                // Legacy UAN number records are not uploaded documents and
+                // must not enter the HR document approval workflow.
+                if (["uan", "epfouan", "uannumber", "epfouannumber"].includes(documentType)) {
+                    continue;
+                }
+
                 if (
                     document.status !==
                         "Approved" &&
@@ -1282,8 +1362,9 @@ const payload = {
 
                             <MuiInputMigration
                                 type="text"
-                                placeholder="XXXX XXXX 1234"
-                                maxLength="12"
+                                placeholder="1234 5678 9012"
+                                maxLength="14"
+                                inputProps={{ inputMode: "numeric" }}
                                 value={
                                     form.aadhaarNumber
                                 }
@@ -1306,8 +1387,11 @@ const payload = {
                             </MuiLayoutBox>
 
                             <MuiActionButton
-                                className="upload-box"
-                                
+                                className={`upload-box${isDragging("aadhaarFile") ? " is-dragging" : ""}`}
+                                {...getDropProps("aadhaarFile")}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={handleDropKeyDown("aadhaarFile", "aadhaarFile")}
                                 onClick={() =>
                                     document
                                         .getElementById(
@@ -1327,7 +1411,7 @@ const payload = {
                                 </MuiText>
 
                                 <MuiText component="small" variant="caption">
-                                     PDF, DOCS, DOCX (Max. 2MB)
+                                     Drop file or click to browse · PDF, DOCX (Max. 2MB)
                                 </MuiText>
 
                             </MuiActionButton>
@@ -1394,8 +1478,11 @@ const payload = {
                             </MuiLayoutBox>
 
                             <MuiActionButton
-                                className="upload-box"
-                                
+                                className={`upload-box${isDragging("panFile") ? " is-dragging" : ""}`}
+                                {...getDropProps("panFile")}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={handleDropKeyDown("panFile", "panFile")}
                                 onClick={() =>
                                     document
                                         .getElementById(
@@ -1415,7 +1502,7 @@ const payload = {
                                 </MuiText>
 
                                 <MuiText component="small" variant="caption">
-                                    PDF, DOCS, DOCX (Max. 2MB)
+                                    Drop file or click to browse · PDF, DOCX (Max. 2MB)
                                 </MuiText>
 
                             </MuiActionButton>
@@ -1636,8 +1723,11 @@ const payload = {
                             </MuiLayoutBox>
 
                             <MuiActionButton
-                                className="upload-box"
-                                
+                                className={`upload-box${isDragging("bankFile") ? " is-dragging" : ""}`}
+                                {...getDropProps("bankFile")}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={handleDropKeyDown("bankFile", "bankFile")}
                                 onClick={() =>
                                     document
                                         .getElementById(
@@ -1657,7 +1747,7 @@ const payload = {
                                 </MuiText>
 
                                 <MuiText component="small" variant="caption">
-                                    PDF, DOCS, DOCX (Max. 2MB)
+                                    Drop file or click to browse · PDF, DOCX (Max. 2MB)
                                 </MuiText>
 
                             </MuiActionButton>
@@ -1695,7 +1785,7 @@ const payload = {
                     <MuiLayoutBox className="other-documents" component="div">
 
                         {/* Passport */}
-                        <MuiLayoutBox className="other-document-row" component="div">
+                        <MuiLayoutBox className={`other-document-row${isDragging("passportFile") ? " is-dragging" : ""}`} {...getDropProps("passportFile")} component="div">
                             <MuiText component="span" variant="inherit">Passport</MuiText>
 
                             <MuiLayoutBox className="other-document-status-area" component="div">
@@ -1731,7 +1821,7 @@ const payload = {
                         </MuiLayoutBox>
 
                         {/* Driving License */}
-                        <MuiLayoutBox className="other-document-row" component="div">
+                        <MuiLayoutBox className={`other-document-row${isDragging("drivingLicenseFile") ? " is-dragging" : ""}`} {...getDropProps("drivingLicenseFile")} component="div">
                             <MuiText component="span" variant="inherit">Driving License</MuiText>
 
                             <MuiLayoutBox className="other-document-status-area" component="div">
@@ -1767,7 +1857,7 @@ const payload = {
                         </MuiLayoutBox>
 
                         {/* Education Certificate */}
-                        <MuiLayoutBox className="other-document-row" component="div">
+                        <MuiLayoutBox className={`other-document-row${isDragging("educationFile") ? " is-dragging" : ""}`} {...getDropProps("educationFile")} component="div">
                             <MuiText component="span" variant="inherit">
                                 Education Certificate <MuiText className="required-star" component="span" variant="inherit">*</MuiText>
                             </MuiText>
@@ -1805,7 +1895,7 @@ const payload = {
                         </MuiLayoutBox>
 
                         {/* Experience Certificate */}
-                        <MuiLayoutBox className="other-document-row" component="div">
+                        <MuiLayoutBox className={`other-document-row${isDragging("experienceFile") ? " is-dragging" : ""}`} {...getDropProps("experienceFile")} component="div">
                             <MuiText component="span" variant="inherit">Experience Certificate</MuiText>
 
                             <MuiLayoutBox className="other-document-status-area" component="div">
@@ -1841,7 +1931,7 @@ const payload = {
                         </MuiLayoutBox>
 
                         {/* Other Document */}
-                        <MuiLayoutBox className="other-document-row" component="div">
+                        <MuiLayoutBox className={`other-document-row${isDragging("otherFile") ? " is-dragging" : ""}`} {...getDropProps("otherFile")} component="div">
                             <MuiText component="span" variant="inherit">Other Document</MuiText>
 
                             <MuiLayoutBox className="other-document-status-area" component="div">
