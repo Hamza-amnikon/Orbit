@@ -121,8 +121,61 @@ function DocumentManagement() {
 
   // ================= FILTER =================
 
+  // The upload endpoint keeps a new row for each replacement so the audit
+  // history remains available. In this management view, show only the latest
+  // version for each employee/document type so superseded files do not appear
+  // alongside the newly submitted version.
+  const latestDocuments = useMemo(() => {
+    const latestByEmployeeAndType = new Map();
+
+    documents.forEach((document) => {
+      const employeeId =
+        document.employeeId ||
+        document.EmployeeId ||
+        document.employeeCode ||
+        document.EmployeeCode ||
+        document.employeeAzureId ||
+        document.EmployeeAzureId ||
+        "unknown-employee";
+      const documentType =
+        document.documentType ||
+        document.DocumentType ||
+        document.documentName ||
+        document.DocumentName ||
+        document.fileName ||
+        document.FileName ||
+        "unknown-document";
+      const key = `${String(employeeId).trim().toLowerCase()}::${String(documentType)
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "")}`;
+      const current = latestByEmployeeAndType.get(key);
+      const currentId = Number(current?.documentId ?? current?.DocumentId ?? current?.id ?? current?.Id);
+      const candidateId = Number(document.documentId ?? document.DocumentId ?? document.id ?? document.Id);
+
+      const currentSubmittedAt = Date.parse(
+        current?.submittedDate ?? current?.SubmittedDate ?? current?.createdDate ?? current?.CreatedDate ?? ""
+      );
+      const candidateSubmittedAt = Date.parse(
+        document.submittedDate ?? document.SubmittedDate ?? document.createdDate ?? document.CreatedDate ?? ""
+      );
+      const candidateIsNewer = Number.isFinite(candidateId) && Number.isFinite(currentId)
+        ? candidateId > currentId
+        : Number.isFinite(candidateId) && !Number.isFinite(currentId)
+          ? true
+          : Number.isFinite(candidateSubmittedAt) &&
+            (!Number.isFinite(currentSubmittedAt) || candidateSubmittedAt > currentSubmittedAt);
+
+      if (!current || candidateIsNewer) {
+        latestByEmployeeAndType.set(key, document);
+      }
+    });
+
+    return Array.from(latestByEmployeeAndType.values());
+  }, [documents]);
+
   const filteredDocuments = useMemo(() => {
-    return documents.filter((document) => {
+    return latestDocuments.filter((document) => {
       const employeeId =
         document.employeeId ||
         document.EmployeeId ||
@@ -188,27 +241,27 @@ function DocumentManagement() {
         matchesToDate
       );
     });
-  }, [documents, search, status, fromDate, toDate]);
+  }, [latestDocuments, search, status, fromDate, toDate]);
 
   // ================= COUNTS =================
 
-  const totalDocuments = documents.length;
+  const totalDocuments = latestDocuments.length;
 
-  const pendingDocuments = documents.filter(
+  const pendingDocuments = latestDocuments.filter(
     (document) =>
       String(
         document.status || document.Status || ""
       ).toLowerCase() === "submitted"
   ).length;
 
-  const approvedDocuments = documents.filter(
+  const approvedDocuments = latestDocuments.filter(
     (document) =>
       String(
         document.status || document.Status || ""
       ).toLowerCase() === "approved"
   ).length;
 
-  const rejectedDocuments = documents.filter(
+  const rejectedDocuments = latestDocuments.filter(
     (document) =>
       String(
         document.status || document.Status || ""

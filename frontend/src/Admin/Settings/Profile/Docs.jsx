@@ -1194,8 +1194,14 @@ const payload = {
 
             await loadDocuments();
 
+            const sharePointCleanupFailed = saved.some(
+                (result) => result?.sharePointCleanupFailed
+            );
+
             showReactAlert(
-                "Documents submitted successfully for HR approval."
+                sharePointCleanupFailed
+                    ? "Documents were submitted for HR approval, but an older SharePoint file could not be deleted. Please contact HR."
+                    : "Documents submitted successfully for HR approval."
             );
         } catch (error) {
             console.error(
