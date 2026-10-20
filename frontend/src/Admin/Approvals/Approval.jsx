@@ -985,7 +985,7 @@ const Approval = () => {
     // AZURE EMPLOYEE ID
     // ========================================================
     // NEW:
-    // Displays Azure Employee ID below employee name.
+    // Azure employee identifiers are retained for internal matching and exports.
     // Does not change approval logic.
     // ========================================================
 
@@ -2008,10 +2008,6 @@ const response =
                             <MuiTableRowMigration>
 
                                 <MuiTableCellMigration>
-                                    Request ID
-                                </MuiTableCellMigration>
-
-                                <MuiTableCellMigration>
                                     Employee
                                 </MuiTableCellMigration>
 
@@ -2050,7 +2046,7 @@ const response =
                                 <MuiTableRowMigration>
 
                                     <MuiTableCellMigration
-                                        colSpan="8"
+                                        colSpan="7"
                                         className="approval-message"
                                     >
                                         Loading approval requests...
@@ -2066,7 +2062,7 @@ const response =
                                     <MuiTableRowMigration>
 
                                         <MuiTableCellMigration
-                                            colSpan="8"
+                                            colSpan="7"
                                             className="approval-message error"
                                         >
                                             {error}
@@ -2083,7 +2079,7 @@ const response =
                                     <MuiTableRowMigration>
 
                                         <MuiTableCellMigration
-                                            colSpan="8"
+                                            colSpan="7"
                                             className="approval-message"
                                         >
                                             No approval requests found.
@@ -2127,17 +2123,7 @@ const response =
                                                 }
                                             >
 
-                                                <MuiTableCellMigration>
-
-                                                    {request.requestId ||
-                                                        request.approvalRequestId ||
-                                                        "—"}
-
-                                                </MuiTableCellMigration>
-
-                                                {/* =================================================
-                                                    EMPLOYEE + AZURE ID
-                                                ================================================= */}
+                                                {/* Employee */}
 
                                                 <MuiTableCellMigration>
 
@@ -2160,22 +2146,6 @@ const response =
                                                             <MuiText component="strong" variant="inherit">
                                                                 {employeeName}
                                                             </MuiText>
-
-                                                            <MuiLayoutBox
-                                                                style={{
-                                                                    fontSize:
-                                                                        "11px",
-                                                                    color:
-                                                                        "#64748b",
-                                                                    marginTop:
-                                                                        "3px"
-                                                                }}
-                                                             component="div">
-                                                                {/* Azure ID:{" "} */}
-                                                                {getAzureEmployeeId(
-                                                                    request
-                                                                )}
-                                                            </MuiLayoutBox>
 
                                                         </MuiLayoutBox>
 
@@ -2420,29 +2390,10 @@ const response =
 
                                 </MuiLayoutBox>
 
-                                {/* EMPLOYEE ID */}
-
                                 <MuiLayoutBox className="approval-detail-item" component="div">
 
                                     <MuiText component="span" variant="inherit">
-                                        Employee ID
-                                    </MuiText>
-
-                                    <MuiText component="strong" variant="inherit">
-                                        {
-                                            selectedRequest.employeeId ||
-                                            "—"
-                                        }
-                                    </MuiText>
-
-                                </MuiLayoutBox>
-
-                                {/* EMPLOYEE NAME */}
-
-                                <MuiLayoutBox className="approval-detail-item" component="div">
-
-                                    <MuiText component="span" variant="inherit">
-                                        Employee Name
+                                        Employee
                                     </MuiText>
 
                                     <MuiText component="strong" variant="inherit">
@@ -2455,52 +2406,14 @@ const response =
 
                                 </MuiLayoutBox>
 
-                                {/* AZURE ID */}
-
                                 <MuiLayoutBox className="approval-detail-item" component="div">
-
-                                    <MuiText component="span" variant="inherit">
-                                        Azure Employee ID
-                                    </MuiText>
-
-                                    <MuiText component="strong" variant="inherit">
-                                        {
-                                            getAzureEmployeeId(
-                                                selectedRequest
-                                            )
-                                        }
-                                    </MuiText>
-
+                                    <MuiText component="span" variant="inherit">From Date</MuiText>
+                                    <MuiText component="strong" variant="inherit">{formatDate(selectedRequest.fromDate)}</MuiText>
                                 </MuiLayoutBox>
 
                                 <MuiLayoutBox className="approval-detail-item" component="div">
-
-                                    <MuiText component="span" variant="inherit">
-                                        Approval Level
-                                    </MuiText>
-
-                                    <MuiText component="strong" variant="inherit">
-                                        {
-                                            selectedRequest.approvalLevel ||
-                                            "—"
-                                        }
-                                    </MuiText>
-
-                                </MuiLayoutBox>
-
-                                <MuiLayoutBox className="approval-detail-item" component="div">
-
-                                    <MuiText component="span" variant="inherit">
-                                        Current Approver ID
-                                    </MuiText>
-
-                                    <MuiText component="strong" variant="inherit">
-                                        {
-                                            selectedRequest.currentApproverId ||
-                                            "—"
-                                        }
-                                    </MuiText>
-
+                                    <MuiText component="span" variant="inherit">To Date</MuiText>
+                                    <MuiText component="strong" variant="inherit">{formatDate(selectedRequest.toDate)}</MuiText>
                                 </MuiLayoutBox>
 
                                 <MuiLayoutBox className="approval-detail-item" component="div">
@@ -2703,11 +2616,7 @@ const response =
                                         variant="caption"
                                         className="approval-action-dialog-subtitle"
                                     >
-                                        Approval Request ID:{" "}
-                                        {
-                                            selectedRequest.approvalRequestId ||
-                                            "—"
-                                        }
+                                        {getEmployeeName(selectedRequest)} · Review the request before confirming
                                     </Typography>
 
                                 </Box>
@@ -2744,6 +2653,10 @@ const response =
                             className="approval-action-dialog-content"
                         >
 
+                            <Box className="approval-action-review-note">
+                                Review the request summary below before confirming your decision.
+                            </Box>
+
                             <Box
                                 className="approval-action-details-grid"
                             >
@@ -2776,49 +2689,7 @@ const response =
                                     <Typography
                                         className="approval-action-detail-label"
                                     >
-                                        Request ID
-                                    </Typography>
-
-                                    <Typography
-                                        className="approval-action-detail-value"
-                                    >
-                                        {
-                                            selectedRequest.requestId ||
-                                            "—"
-                                        }
-                                    </Typography>
-
-                                </Box>
-
-                                <Box
-                                    className="approval-action-detail"
-                                >
-
-                                    <Typography
-                                        className="approval-action-detail-label"
-                                    >
-                                        Employee ID
-                                    </Typography>
-
-                                    <Typography
-                                        className="approval-action-detail-value"
-                                    >
-                                        {
-                                            selectedRequest.employeeId ||
-                                            "—"
-                                        }
-                                    </Typography>
-
-                                </Box>
-
-                                <Box
-                                    className="approval-action-detail"
-                                >
-
-                                    <Typography
-                                        className="approval-action-detail-label"
-                                    >
-                                        Employee Name
+                                        Employee
                                     </Typography>
 
                                     <Typography
@@ -2833,68 +2704,24 @@ const response =
 
                                 </Box>
 
-                                <Box
-                                    className="approval-action-detail"
-                                >
-
-                                    <Typography
-                                        className="approval-action-detail-label"
-                                    >
-                                        Azure Employee ID
-                                    </Typography>
-
-                                    <Typography
-                                        className="approval-action-detail-value"
-                                    >
-                                        {
-                                            getAzureEmployeeId(
-                                                selectedRequest
-                                            )
-                                        }
-                                    </Typography>
-
+                                <Box className="approval-action-detail">
+                                    <Typography className="approval-action-detail-label">From Date</Typography>
+                                    <Typography className="approval-action-detail-value">{formatDate(selectedRequest.fromDate)}</Typography>
                                 </Box>
 
-                                <Box
-                                    className="approval-action-detail"
-                                >
-
-                                    <Typography
-                                        className="approval-action-detail-label"
-                                    >
-                                        Approval Level
-                                    </Typography>
-
-                                    <Typography
-                                        className="approval-action-detail-value"
-                                    >
-                                        {
-                                            selectedRequest.approvalLevel ||
-                                            "—"
-                                        }
-                                    </Typography>
-
+                                <Box className="approval-action-detail">
+                                    <Typography className="approval-action-detail-label">To Date</Typography>
+                                    <Typography className="approval-action-detail-value">{formatDate(selectedRequest.toDate)}</Typography>
                                 </Box>
 
-                                <Box
-                                    className="approval-action-detail"
-                                >
+                                <Box className="approval-action-detail">
+                                    <Typography className="approval-action-detail-label">Submitted On</Typography>
+                                    <Typography className="approval-action-detail-value">{formatDate(selectedRequest.requestedDate)}</Typography>
+                                </Box>
 
-                                    <Typography
-                                        className="approval-action-detail-label"
-                                    >
-                                        Current Approver ID
-                                    </Typography>
-
-                                    <Typography
-                                        className="approval-action-detail-value"
-                                    >
-                                        {
-                                            selectedRequest.currentApproverId ||
-                                            "—"
-                                        }
-                                    </Typography>
-
+                                <Box className="approval-action-detail">
+                                    <Typography className="approval-action-detail-label">Current Status</Typography>
+                                    <Typography className="approval-action-detail-value">{selectedRequest.status || "Pending"}</Typography>
                                 </Box>
 
                                 {/* LEAVE ATTACHMENT */}

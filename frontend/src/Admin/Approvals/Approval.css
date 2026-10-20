@@ -1370,6 +1370,71 @@
     gap: 6px;
 }
 
+/* Keep approval columns and row actions aligned at desktop widths. */
+.approval-table {
+    min-width: 1200px;
+    table-layout: fixed;
+}
+
+.approval-table thead th:nth-child(1) { width: 22%; }
+.approval-table thead th:nth-child(2) { width: 18%; }
+.approval-table thead th:nth-child(3),
+.approval-table thead th:nth-child(4) { width: 10%; }
+.approval-table thead th:nth-child(5) { width: 12%; }
+.approval-table thead th:nth-child(6) { width: 9%; }
+.approval-table thead th:nth-child(7) { width: 19%; }
+
+.approval-table thead th:nth-child(3),
+.approval-table thead th:nth-child(4),
+.approval-table thead th:nth-child(5),
+.approval-table thead th:nth-child(6),
+.approval-table thead th:nth-child(7),
+.approval-table tbody td:nth-child(3),
+.approval-table tbody td:nth-child(4),
+.approval-table tbody td:nth-child(5),
+.approval-table tbody td:nth-child(6),
+.approval-table tbody td:nth-child(7) {
+    text-align: center;
+}
+
+.approval-table tbody td:nth-child(3),
+.approval-table tbody td:nth-child(4),
+.approval-table tbody td:nth-child(5) {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.approval-table tbody td:nth-child(7) {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.approval-actions {
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 6px;
+}
+
+.approval-actions .approval-approve-btn,
+.approval-actions .approval-reject-btn,
+.approval-actions .approval-view-btn {
+    flex: 0 0 auto;
+    padding-right: 9px;
+    padding-left: 9px;
+}
+
+.approval-action-review-note {
+    margin: 0 0 12px;
+    padding: 11px 14px;
+    border: 1px solid #d8e6fb;
+    border-left: 3px solid #2f67ed;
+    border-radius: 9px;
+    background: #f4f8ff;
+    color: #536b8d;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
 .approval-approve-btn,
 .approval-reject-btn,
 .approval-view-btn {

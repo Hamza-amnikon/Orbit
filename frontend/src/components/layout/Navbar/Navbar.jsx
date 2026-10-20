@@ -19,6 +19,7 @@ import { getProfile } from "../../../Admin/Services/ProfileService";
 import LeaveService from "../../../Admin/Services/LeaveService";
 import PolicyService from "../../../Admin/Services/PolicyService";
 import { useColorMode } from "../../../context/ColorModeContext";
+import axios from "axios";
 
 import "./Navbar.css";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
@@ -215,6 +216,82 @@ function Navbar({ title }) {
                     : [];
                 const employeeId = profile?.employeeId ?? profile?.employeeID ?? profile?.employee?.employeeId ?? profile?.employee?.employeeID;
                 const employeeAzureId = profile?.azureEmployeeId ?? profile?.azureEmployeeID ?? profile?.employee?.azureEmployeeId ?? profile?.employee?.azureEmployeeID;
+                const approvalBaseUrl = import.meta.env.VITE_APPROVAL_API_BASE_URL;
+                let currentEmployeeId = employeeId ?? profile?.EmployeeId ?? profile?.employee?.EmployeeId;
+                const currentEmployeeAzureId = employeeAzureId ?? profile?.AzureEmployeeId ?? profile?.employee?.AzureEmployeeId;
+                // Auth profiles may expose only the Azure identity. Resolve it to
+                // the internal employee ID used by ApprovalRequests in that case.
+                if (currentEmployeeId == null && currentEmployeeAzureId && import.meta.env.VITE_EMPLOYEE_API_BASE_URL) {
+                    try {
+                        const employeeResponse = await axios.get(`${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`);
+                        const employeePayload = employeeResponse.data;
+                        const employees = Array.isArray(employeePayload)
+                            ? employeePayload
+                            : Array.isArray(employeePayload?.data)
+                                ? employeePayload.data
+                                : Array.isArray(employeePayload?.employees)
+                                    ? employeePayload.employees
+                                    : Array.isArray(employeePayload?.items)
+                                        ? employeePayload.items
+                                        : [];
+                        const matchedEmployee = employees.find((employee) => {
+                            const azureId = employee?.azureEmployeeId ?? employee?.AzureEmployeeId ?? employee?.azureEmployeeID ?? employee?.AzureEmployeeID ?? employee?.azureId ?? employee?.AzureId;
+                            return azureId && String(azureId).trim().toLowerCase() === String(currentEmployeeAzureId).trim().toLowerCase();
+                        });
+                        currentEmployeeId = matchedEmployee?.employeeId ?? matchedEmployee?.EmployeeId ?? matchedEmployee?.employeeID ?? matchedEmployee?.id ?? matchedEmployee?.Id;
+                    } catch (error) {
+                        console.warn("Could not resolve employee ID for approval notifications:", error);
+                    }
+                }
+                let approvalRequests = [];
+                if (approvalBaseUrl) {
+                    try {
+                        const response = await axios.get(`${approvalBaseUrl}/api/Approval`);
+                        const payload = response.data;
+                        approvalRequests = Array.isArray(payload)
+                            ? payload
+                            : Array.isArray(payload?.data)
+                                ? payload.data
+                                : [];
+                    } catch (error) {
+                        console.warn("Approval notifications unavailable:", error);
+                    }
+                }
+                const pendingApprovalsForEmployee = approvalRequests.flatMap((approval) => {
+                    const status = String(approval?.status ?? approval?.Status ?? "").trim().toLowerCase();
+                    if (status !== "pending") return [];
+
+                    const approverId = approval?.currentApproverId ?? approval?.CurrentApproverId ?? approval?.currentApprover?.employeeId ?? approval?.CurrentApprover?.EmployeeId;
+                    const approverAzureId = approval?.currentApproverAzureEmployeeId ?? approval?.CurrentApproverAzureEmployeeId ?? approval?.currentApprover?.azureEmployeeId ?? approval?.CurrentApprover?.AzureEmployeeId;
+                    const previousApproverId = approval?.previousApproverId ?? approval?.PreviousApproverId ?? approval?.previousApprover?.employeeId ?? approval?.PreviousApprover?.EmployeeId;
+                    const previousApproverAzureId = approval?.previousApproverAzureEmployeeId ?? approval?.PreviousApproverAzureEmployeeId ?? approval?.previousApprover?.azureEmployeeId ?? approval?.PreviousApprover?.AzureEmployeeId;
+                    const employeeAzureKey = currentEmployeeAzureId ? String(currentEmployeeAzureId).trim().toLowerCase() : "";
+                    const isCurrentApprover = currentEmployeeId != null && approverId != null
+                        ? String(currentEmployeeId) === String(approverId)
+                        : Boolean(employeeAzureKey && approverAzureId && employeeAzureKey === String(approverAzureId).trim().toLowerCase());
+                    const isPreviousApprover = currentEmployeeId != null && previousApproverId != null
+                        ? String(currentEmployeeId) === String(previousApproverId)
+                        : Boolean(employeeAzureKey && previousApproverAzureId && employeeAzureKey === String(previousApproverAzureId).trim().toLowerCase());
+                    return isCurrentApprover || isPreviousApprover
+                        ? [{ approval, isCurrentApprover }]
+                        : [];
+                });
+                const mappedApprovals = pendingApprovalsForEmployee.map(({ approval, isCurrentApprover }, index) => {
+                    const requestId = approval?.approvalRequestId ?? approval?.ApprovalRequestId ?? approval?.id ?? approval?.Id ?? index;
+                    const requestType = approval?.requestType ?? approval?.RequestType ?? "Approval request";
+                    const requester = approval?.employeeName ?? approval?.EmployeeName ?? approval?.employee?.employeeName ?? approval?.employee?.EmployeeName;
+                    const currentApprover = approval?.currentApproverName ?? approval?.CurrentApproverName ?? approval?.currentApprover?.employeeName ?? approval?.CurrentApprover?.EmployeeName;
+                    return {
+                        id: `approval-${requestId}`,
+                        kind: "approval",
+                        route: "/approvals?status=Pending",
+                        title: isCurrentApprover ? `${requestType} awaiting your approval` : `${requestType} escalated`,
+                        message: isCurrentApprover
+                            ? (requester ? `Submitted by ${requester}. Review this request.` : "A request is waiting for your review.")
+                            : `This request has moved to ${currentApprover || `Employee ${approval?.currentApproverId ?? approval?.CurrentApproverId ?? "the next approver"}`}.`,
+                        date: approval?.requestedDate ?? approval?.RequestedDate ?? approval?.createdDate ?? approval?.CreatedDate,
+                    };
+                });
                 const sameEmployee = (item) => {
                     const itemEmployee = item?.employee ?? item?.Employee ?? {};
                     const itemId = item?.employeeId ?? item?.employeeID ?? itemEmployee.employeeId ?? itemEmployee.employeeID;
@@ -261,7 +338,7 @@ function Navbar({ title }) {
                             date: policy.updatedAt ?? policy.UpdatedAt ?? policy.modifiedDate ?? policy.ModifiedDate ?? policy.createdAt ?? policy.CreatedAt,
                         };
                     });
-                if (mounted) setNotifications([...mappedLeaves, ...mappedPolicies]);
+                if (mounted) setNotifications([...mappedApprovals, ...mappedLeaves, ...mappedPolicies]);
             } catch (error) {
                 if (mounted) setNotifications([]);
                 console.warn("Navbar notifications unavailable:", error);
@@ -303,8 +380,10 @@ function Navbar({ title }) {
         }
     }, [profile]);
 
+    // Keep assigned pending approvals visible until their status changes. Read
+    // state only controls the badge for other notification types.
     const pendingNotifications = notifications.filter(
-        (notification) => !readNotificationTimes[String(notification.id)]
+        (notification) => notification.kind === "approval" || !readNotificationTimes[String(notification.id)]
     );
 
     const markNotificationRead = (notificationId) => {

@@ -1936,6 +1936,13 @@ html[data-color-mode="dark"] :is(.approval-detail-item, .approval-action-detail)
   border-color: var(--spark-border) !important;
 }
 
+html[data-color-mode="dark"] .approval-action-review-note {
+  color: var(--spark-muted) !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+  border-left-color: #5b8cff !important;
+}
+
 html[data-color-mode="dark"] :is(.approval-details-close, .approval-action-dialog-close, .approval-action-cancel-btn) {
   color: #c8d8ef !important;
   background: var(--spark-surface) !important;
