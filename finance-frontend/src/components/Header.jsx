@@ -27,7 +27,12 @@ export default function Header({ desktop, onMenuClick }) {
   const current = pages.find((page) => page.path === pathname) ||
     (vendorPage ? pages.find((page) => page.path === "/purchases/vendors") :
       purchaseOrderPage ? pages.find((page) => page.path === "/purchases/orders") :
+<<<<<<< HEAD
       billPage ? pages.find((page) => page.path === "/purchases/bills") : undefined);
+=======
+      billPage ? pages.find((page) => page.path === "/purchases/bills") :
+      pathname.startsWith("/purchases/payments/") ? pages.find((page) => page.path === "/purchases/payments") : undefined);
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
   return (
     <AppBar position="fixed" elevation={0} className="finance-header" sx={{
       bgcolor: "background.paper", color: "text.primary", borderBottom: "1px solid", borderColor: "divider",
@@ -37,7 +42,11 @@ export default function Header({ desktop, onMenuClick }) {
         {!desktop && <IconButton aria-label="Open navigation" onClick={onMenuClick}><MenuRoundedIcon /></IconButton>}
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography sx={{ fontSize: 16, fontWeight: 700 }} noWrap>{current?.label || "Finance"}</Typography>
+<<<<<<< HEAD
           <Typography sx={{ fontSize: 11, color: "text.secondary" }}>{vendorPage ? "Vendor management" : purchaseOrderPage ? "Purchase order management" : billPage ? "Manage vendor bills" : previewMode ? "Frontend preview · API not connected" : "Finance workspace"}</Typography>
+=======
+          <Typography sx={{ fontSize: 11, color: "text.secondary" }}>{vendorPage ? "Vendor management" : purchaseOrderPage ? "Purchase order management" : billPage ? "Manage vendor bills" : pathname.startsWith("/purchases/payments") ? "Manage vendor payments" : pathname.startsWith("/purchases/vendor-credits") ? "Manage vendor credits" : pathname === "/expenses" ? "Manage company expenses" : previewMode ? "Frontend preview · API not connected" : "Finance workspace"}</Typography>
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
         </Box>
         <Autocomplete options={pages} value={null} blurOnSelect
           onChange={(_, page) => { if (page) navigate(page.path); }}

@@ -8,6 +8,10 @@ import { useLoad } from "../../../live/data";
 import { changeBillStatus, getBill } from "./BillService";
 import { formatDate, money, orderStatus, purchaseUnits } from "./BillHelpers";
 import BillForm from "./BillForm";
+<<<<<<< HEAD
+=======
+import { getBillPaymentBalance } from "../Payments Made/PaymentMadeService";
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
 import "./BillWorkspace.css";
 
 export default function BillDetails() {
@@ -16,6 +20,10 @@ export default function BillDetails() {
     const { canWrite } = useAuth();
     const detail = useLoad(signal => getBill(id, signal), [id]);
     const order = detail.data;
+<<<<<<< HEAD
+=======
+    const paymentBalance = useLoad(signal => getBillPaymentBalance(id, signal), [id]);
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
     const [editing, setEditing] = useState(false);
     const [action, setAction] = useState(null);
     const [busy, setBusy] = useState(false);
@@ -46,6 +54,17 @@ export default function BillDetails() {
                     <Button variant="outlined" onClick={() => setEditing(true)}>Edit Draft</Button>
                     <Button variant="contained" onClick={() => openAction("issue")}>Issue Bill</Button>
                 </>}
+<<<<<<< HEAD
+=======
+                {canWrite && order.status === 1 && paymentBalance.data?.outstandingAmount > 0 && (
+                    <Button
+                        variant="contained"
+                        onClick={() => navigate("/purchases/payments?billId=" + order.id)}
+                    >
+                        Record Payment
+                    </Button>
+                )}
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
                 {canWrite && order.status !== 2 && <Button variant="outlined" color="error" onClick={() => openAction("cancel")}>Cancel Bill</Button>}
             </>}
         </>}>
@@ -102,6 +121,23 @@ export default function BillDetails() {
                         <Typography fontWeight={name === "grandTotal" ? 700 : 400}>
                             {money(order[name], order.currency, order.currencyDecimalPlaces)}</Typography></Box>)}
             </Box>
+<<<<<<< HEAD
+=======
+            {order.status === 1 && paymentBalance.data && (
+                <Alert severity="info" sx={{ mt: 2 }}>
+                    {paymentBalance.data.paymentStatus}
+                    {" · "}Paid: {money(paymentBalance.data.paidAmount, order.currency, order.currencyDecimalPlaces)}
+                    {" · "}Credits applied: {money(paymentBalance.data.appliedCreditAmount ?? 0, order.currency, order.currencyDecimalPlaces)}
+                    {" · "}Outstanding: {money(paymentBalance.data.outstandingAmount, order.currency, order.currencyDecimalPlaces)}
+                </Alert>
+            )}
+            {paymentBalance.error && (
+                <Alert severity="warning" sx={{ mt: 2 }}
+                    action={<Button onClick={paymentBalance.refresh}>Retry balance</Button>}>
+                    Payment balance could not be loaded.
+                </Alert>
+            )}
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
             {(order.notes || order.additionalTerms) && <Divider sx={{ my: 3 }} />}
             <Stack spacing={2}>
                 {order.notes && <Box><Typography fontWeight={700}>Notes</Typography><Typography className="bill-text">{order.notes}</Typography></Box>}

@@ -5,12 +5,21 @@ import { FinanceAuth } from "../live/Auth";
 import Dashboard from "../live/Dashboard";
 import Vendors from "../admin/purchases management/vendors/Vendors";
 import VendorDetails from "../admin/purchases management/vendors/VendorDetails";
+<<<<<<< HEAD
+=======
+import VendorCredits from "../admin/purchases management/vendor credits/VendorCredits";
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
 import Bills from "../admin/purchases management/bills/Bills";
 import BillDetails from "../admin/purchases management/bills/BillDetails";
 import PurchaseOrders from "../admin/purchases management/purchase orders/PurchaseOrders";
 import PurchaseOrderDetails from "../admin/purchases management/purchase orders/PurchaseOrderDetails";
 import Documents from "../live/Documents";
+<<<<<<< HEAD
 import Payments from "../live/Payments";
+=======
+import PaymentsMade from "../admin/purchases management/Payments Made/PaymentsMade";
+import PaymentMadeDetails from "../admin/purchases management/Payments Made/PaymentMadeDetails";
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
 
 import Clients from "../admin/sales management/clients/Clients";
 import ClientDetails from "../admin/sales management/clients/ClientDetails";
@@ -23,7 +32,10 @@ import { adminModuleRoutes } from "../admin/moduleRoutes";
 
 const documentRoutes = [
     ["/sales/orders", "SalesOrder"],
+<<<<<<< HEAD
     ["/purchases/vendor-credits", "VendorCredit"],
+=======
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
 ];
 
 function AppRoutes() {
@@ -85,6 +97,14 @@ function AppRoutes() {
                         <Route path="/purchases/orders" element={<PurchaseOrders />} />
                         <Route path="/purchases/orders/:id" element={<PurchaseOrderDetails />} />
 
+<<<<<<< HEAD
+=======
+                        <Route
+                            path="/purchases/vendor-credits"
+                            element={<VendorCredits />}
+                        />
+
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
                         {documentRoutes.map(([path, kind]) => (
                             <Route
                                 key={path}
@@ -102,12 +122,21 @@ function AppRoutes() {
 
                         <Route
                             path="/purchases/payments"
+<<<<<<< HEAD
                             element={
                                 <Payments
                                     key="Made"
                                     direction="Made"
                                 />
                             }
+=======
+                            element={<PaymentsMade />}
+                        />
+
+                        <Route
+                            path="/purchases/payments/:id"
+                            element={<PaymentMadeDetails />}
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc
                         />
 
                         {adminModuleRoutes
@@ -131,4 +160,8 @@ function AppRoutes() {
     );
 }
 
+<<<<<<< HEAD
 export default AppRoutes;
+=======
+export default AppRoutes;
+>>>>>>> aa1e4a9f74574849eb8f784b0674a71d22345bdc

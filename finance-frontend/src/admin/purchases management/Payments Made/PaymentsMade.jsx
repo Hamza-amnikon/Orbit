@@ -1,284 +1,190 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
+    Alert,
     Box,
     Button,
     Card,
     CardContent,
+    Chip,
+    MenuItem,
+    TextField,
     Typography,
 } from "@mui/material";
-
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import FilterListRoundedIcon from "@mui/icons-material/FilterListRounded";
-
+import { useAuth } from "../../../context/AuthContext";
+import { Page, Records } from "../../../live/shared";
+import { useLoad } from "../../../live/data";
+import {
+    formatDate,
+    getPaymentsMade,
+    getPaymentsMadeSummary,
+    money,
+} from "./PaymentMadeService";
 import PaymentMadeForm from "./PaymentMadeForm";
-import PaymentMadeDetails from "./PaymentMadeDetails";
-
 import "./PaymentsMade.css";
 
-const PaymentsMade = () => {
-    const [showPaymentForm, setShowPaymentForm] = useState(false);
-    const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+export default function PaymentsMade() {
+    const navigate = useNavigate();
+    const { canWrite } = useAuth();
+    const [params, setParams] = useSearchParams();
+    const sourceBillId = params.get("billId");
+    const [adding, setAdding] = useState(Boolean(sourceBillId));
+    const [search, setSearch] = useState("");
+    const [status, setStatus] = useState("");
+    const [page, setPage] = useState(1);
 
-    if (showPaymentDetails) {
-        return (
-            <PaymentMadeDetails
-                onBack={() => setShowPaymentDetails(false)}
-            />
-        );
+    const list = useLoad(
+        signal => getPaymentsMade({ page, search, status }, signal),
+        [page, search, status]
+    );
+
+    const summary = useLoad(getPaymentsMadeSummary, []);
+
+    function refresh() {
+        list.refresh();
+        summary.refresh();
+    }
+
+    function closeForm() {
+        setAdding(false);
+        setParams({}, { replace: true });
+    }
+
+    function paymentSaved(payment) {
+        closeForm();
+        navigate("/purchases/payments/" + payment.id);
     }
 
     return (
-        <Box className="payments-made-page">
-
-            {/* Header */}
-            <Box className="payments-made-header">
-                <Box>
-                    <Typography className="payments-made-title">
-                        Payments Made
-                    </Typography>
-
-                    <Typography className="payments-made-subtitle">
-                        Manage payments made to your vendors and suppliers
-                    </Typography>
-                </Box>
-
-                <Button
-                    variant="contained"
-                    startIcon={<AddRoundedIcon />}
-                    className="payments-made-add-button"
-                    onClick={() => setShowPaymentForm(true)}
-                >
-                    New Payment
-                </Button>
-            </Box>
-
-            {/* Summary Cards */}
+        <Page
+            title="Payments Made"
+            subtitle="Record payments against vendor bills"
+            action={
+                canWrite && (
+                    <Button
+                        variant="contained"
+                        startIcon={<AddRoundedIcon />}
+                        onClick={() => setAdding(true)}
+                    >
+                        New Payment
+                    </Button>
+                )
+            }
+        >
             <Box className="payments-made-summary">
+                {[
+                    ["Total Payments", "total"],
+                    ["Recorded", "recorded"],
+                    ["Voided", "voided"],
+                ].map(([label, name]) => (
+                    <Card key={name}>
+                        <CardContent>
+                            <Typography color="text.secondary">{label}</Typography>
+                            <Typography variant="h5" fontWeight={700}>
+                                {summary.data?.[name] ?? "—"}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                ))}
 
-                <Card className="payments-made-summary-card">
+                <Card>
                     <CardContent>
-                        <Typography className="summary-label">
-                            Total Payments
+                        <Typography color="text.secondary">
+                            Recorded total by currency
                         </Typography>
 
-                        <Typography className="summary-value">
-                            46
-                        </Typography>
+                        {(summary.data?.byCurrency ?? []).map(row => (
+                            <Typography key={row.currency} fontWeight={700}>
+                                {money(row.amount, row.currency, row.currencyDecimalPlaces)}
+                            </Typography>
+                        ))}
+
+                        {summary.data?.byCurrency?.length === 0 && (
+                            <Typography>No recorded payments</Typography>
+                        )}
                     </CardContent>
                 </Card>
-
-                <Card className="payments-made-summary-card">
-                    <CardContent>
-                        <Typography className="summary-label">
-                            This Month
-                        </Typography>
-
-                        <Typography className="summary-value">
-                            ₹6,48,500
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="payments-made-summary-card">
-                    <CardContent>
-                        <Typography className="summary-label">
-                            Pending
-                        </Typography>
-
-                        <Typography className="summary-value">
-                            8
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Card className="payments-made-summary-card">
-                    <CardContent>
-                        <Typography className="summary-label">
-                            Total Paid
-                        </Typography>
-
-                        <Typography className="summary-value">
-                            ₹18,42,500
-                        </Typography>
-                    </CardContent>
-                </Card>
-
             </Box>
 
-            {/* Payments List */}
-            <Card className="payments-made-list-card">
-
-                <Box className="payments-made-list-header">
-
-                    <Box>
-                        <Typography className="payments-made-list-title">
-                            Payments Made
-                        </Typography>
-
-                        <Typography className="payments-made-list-subtitle">
-                            View and manage vendor payments
-                        </Typography>
-                    </Box>
-
-                    <Box className="payments-made-actions">
-
-                        <Box className="payments-made-search">
-                            <SearchRoundedIcon />
-
-                            <input
-                                type="text"
-                                placeholder="Search payments..."
-                            />
-                        </Box>
-
-                        <Button
-                            variant="outlined"
-                            startIcon={<FilterListRoundedIcon />}
-                            className="payments-made-filter-button"
-                        >
-                            Filter
-                        </Button>
-
-                    </Box>
-                </Box>
-
-                <Box className="payments-made-table-wrapper">
-
-                    <table className="payments-made-table">
-
-                        <thead>
-                            <tr>
-                                <th>Payment ID</th>
-                                <th>Vendor</th>
-                                <th>Payment Date</th>
-                                <th>Payment Method</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-                                <td>PAY-001</td>
-                                <td>ABC Suppliers</td>
-                                <td>06 Oct 2026</td>
-                                <td>Bank Transfer</td>
-                                <td>₹2,95,000</td>
-                                <td>
-                                    <span className="payment-status paid">
-                                        Paid
-                                    </span>
-                                </td>
-                                <td>
-                                    <Button
-                                        className="payment-view-button"
-                                        onClick={() =>
-                                            setShowPaymentDetails(true)
-                                        }
-                                    >
-                                        View
-                                    </Button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>PAY-002</td>
-                                <td>Global Office Solutions</td>
-                                <td>04 Oct 2026</td>
-                                <td>Bank Transfer</td>
-                                <td>₹1,41,600</td>
-                                <td>
-                                    <span className="payment-status paid">
-                                        Paid
-                                    </span>
-                                </td>
-                                <td>
-                                    <Button
-                                        className="payment-view-button"
-                                        onClick={() =>
-                                            setShowPaymentDetails(true)
-                                        }
-                                    >
-                                        View
-                                    </Button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>PAY-003</td>
-                                <td>TechWorld Solutions</td>
-                                <td>02 Oct 2026</td>
-                                <td>Cheque</td>
-                                <td>₹72,250</td>
-                                <td>
-                                    <span className="payment-status pending">
-                                        Pending
-                                    </span>
-                                </td>
-                                <td>
-                                    <Button
-                                        className="payment-view-button"
-                                        onClick={() =>
-                                            setShowPaymentDetails(true)
-                                        }
-                                    >
-                                        View
-                                    </Button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>PAY-004</td>
-                                <td>Bright Office Supplies</td>
-                                <td>29 Sep 2026</td>
-                                <td>Cash</td>
-                                <td>₹48,000</td>
-                                <td>
-                                    <span className="payment-status cancelled">
-                                        Cancelled
-                                    </span>
-                                </td>
-                                <td>
-                                    <Button
-                                        className="payment-view-button"
-                                        onClick={() =>
-                                            setShowPaymentDetails(true)
-                                        }
-                                    >
-                                        View
-                                    </Button>
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </Box>
-
-            </Card>
-
-            {/* New Payment Modal */}
-            {showPaymentForm && (
-                <Box className="payment-made-modal-overlay">
-
-                    <Box className="payment-made-modal">
-
-                        <PaymentMadeForm
-                            onCancel={() => setShowPaymentForm(false)}
-                            onSave={() => setShowPaymentForm(false)}
-                        />
-
-                    </Box>
-
-                </Box>
+            {summary.error && (
+                <Alert severity="warning" sx={{ mb: 2 }}>
+                    Payment counts could not be loaded. {summary.error}
+                </Alert>
             )}
 
-        </Box>
-    );
-};
+            <Records
+                {...list}
+                rows={list.data?.data ?? []}
+                total={list.data?.total ?? 0}
+                page={page}
+                setPage={setPage}
+                search={search}
+                setSearch={setSearch}
+                refresh={refresh}
+                extra={
+                    <TextField
+                        select
+                        label="Status"
+                        size="small"
+                        value={status}
+                        sx={{ minWidth: 150 }}
+                        onChange={event => {
+                            setStatus(event.target.value);
+                            setPage(1);
+                        }}
+                    >
+                        <MenuItem value="">All statuses</MenuItem>
+                        <MenuItem value="0">Recorded</MenuItem>
+                        <MenuItem value="1">Voided</MenuItem>
+                    </TextField>
+                }
+                columns={[
+                    { label: "Payment", render: row => row.paymentNumber },
+                    { label: "Vendor", render: row => row.vendorName },
+                    { label: "Bill", render: row => row.billNumber },
+                    { label: "Date", render: row => formatDate(row.paymentDate) },
+                    { label: "Mode", render: row => row.paymentMode },
+                    {
+                        label: "Amount",
+                        render: row => money(
+                            row.amount,
+                            row.currency,
+                            row.currencyDecimalPlaces
+                        ),
+                    },
+                    {
+                        label: "Status",
+                        render: row => (
+                            <Chip
+                                size="small"
+                                label={row.status === 0 ? "Recorded" : "Voided"}
+                                color={row.status === 0 ? "success" : "default"}
+                            />
+                        ),
+                    },
+                    {
+                        label: "Action",
+                        render: row => (
+                            <Button
+                                onClick={() => {
+                                    navigate("/purchases/payments/" + row.id);
+                                }}
+                            >
+                                View
+                            </Button>
+                        ),
+                    },
+                ]}
+            />
 
-export default PaymentsMade;
+            {canWrite && adding && (
+                <PaymentMadeForm
+                    billId={sourceBillId}
+                    onClose={closeForm}
+                    onSaved={paymentSaved}
+                />
+            )}
+        </Page>
+    );
+}
