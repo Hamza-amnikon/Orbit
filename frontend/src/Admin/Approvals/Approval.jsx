@@ -291,7 +291,7 @@ const Approval = () => {
 
             const approvalResponse =
                 await axios.get(
-                    `${APPROVAL_API_BASE_URL}/Approval`
+                    `${APPROVAL_API_BASE_URL}/Approval/for-current-approver`
                 );
 
             const approvalData =

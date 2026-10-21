@@ -71,19 +71,12 @@ export default function AttendanceLogs() {
 
   const [status, setStatus] = useState("");
 
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(() => dayjs().format("YYYY-MM"));
+  const [dayDate, setDayDate] = useState("");
 
   const [attendanceList, setAttendanceList] = useState([]);
 
   const [loading, setLoading] = useState(false);
-
-  const [dashboard, setDashboard] = useState({
-    present: 0,
-    absent: 0,
-    late: 0,
-    leave: 0,
-    wfh: 0,
-  });
 
   const [selectedAttendance, setSelectedAttendance] = useState(null);
 
@@ -100,15 +93,22 @@ export default function AttendanceLogs() {
     if (!canView) return;
 
     loadAttendance();
-
-    loadDashboard();
-  }, [canView]);
+  }, [canView, date, dayDate]);
 
   const loadAttendance = async () => {
     try {
       setLoading(true);
 
-      const data = await AttendanceService.getAll();
+      const monthStart = dayjs(`${date}-01`).startOf("month");
+      const startDate = monthStart.format("YYYY-MM-DD");
+      const endDateExclusive = monthStart.add(1, "month").format("YYYY-MM-DD");
+      let data;
+
+      if (dayDate) {
+        data = await AttendanceService.getByDate(dayDate);
+      } else {
+        data = await AttendanceService.getByDateRange(startDate, endDateExclusive);
+      }
 
       setAttendanceList(data.map((item) => ({
         ...item,
@@ -120,25 +120,24 @@ export default function AttendanceLogs() {
       })));
     } catch (error) {
       console.error("Attendance Load Error", error);
+      setAttendanceList([]);
+      const apiMessage = typeof error?.response?.data === "string"
+        ? error.response.data
+        : error?.response?.data?.message ?? error?.response?.data?.title;
+      setNotice({
+        open: true,
+        severity: "error",
+        message: error?.response?.status
+          ? `Attendance API returned ${error.response.status}${apiMessage ? `: ${apiMessage}` : ". Check the API connection and try again."}`
+          : "Attendance could not be loaded. Check the attendance API connection and try again.",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const loadDashboard = async () => {
-    try {
-      const data = await AttendanceService.getDashboard();
-
-      setDashboard(data);
-    } catch (error) {
-      console.error("Dashboard Error", error);
-    }
-  };
-
   const refreshData = () => {
     loadAttendance();
-
-    loadDashboard();
   };
 
   const handleGenerateAttendance = async () => {
@@ -161,7 +160,8 @@ export default function AttendanceLogs() {
     setSearch("");
     setShift("");
     setStatus("");
-    setDate("");
+    setDate(dayjs().format("YYYY-MM"));
+    setDayDate("");
   };
 
   const filteredByOtherFilters = attendanceList.filter((item) => {
@@ -176,8 +176,10 @@ export default function AttendanceLogs() {
 
     const shiftMatch = shift === "" || item.shift === shift;
 
-    const dateMatch =
-      !date || item.attendanceDate?.split("T")[0] === date;
+    const attendanceDate = item.attendanceDate?.split("T")[0];
+    const dateMatch = dayDate
+      ? attendanceDate === dayDate
+      : attendanceDate?.startsWith(date);
 
     return searchMatch && shiftMatch && dateMatch;
   });
@@ -389,7 +391,7 @@ export default function AttendanceLogs() {
       <MuiLayoutBox className="attendance-filter-card" component="div">
         <Grid container spacing={2} alignItems="center">
 
-          <Grid size={{ xs: 12, md: 5 }}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <TextField
               className="attendance-search-field"
               fullWidth
@@ -466,10 +468,29 @@ export default function AttendanceLogs() {
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
+                label="Month"
+                views={["year", "month"]}
+                value={dayjs(`${date}-01`)}
+                onChange={(value) => {
+                  setDate(value?.isValid() ? value.format("YYYY-MM") : dayjs().format("YYYY-MM"));
+                  setDayDate("");
+                }}
+                format="MMMM YYYY"
+                slotProps={{ textField: { fullWidth: true, size: "medium" }, popper: { className: "attendance-date-popover" } }}
+              />
+            </LocalizationProvider>
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
                 label="Date"
-                value={date ? dayjs(date) : null}
-                onChange={(value) => setDate(value?.isValid() ? value.format("YYYY-MM-DD") : "")}
+                value={dayDate ? dayjs(dayDate) : null}
+                minDate={dayjs(`${date}-01`)}
+                maxDate={dayjs(`${date}-01`).endOf("month")}
+                onChange={(value) => setDayDate(value?.isValid() ? value.format("YYYY-MM-DD") : "")}
                 format="DD-MM-YYYY"
+                clearable
                 slotProps={{ textField: { fullWidth: true, size: "medium" }, popper: { className: "attendance-date-popover" } }}
               />
             </LocalizationProvider>

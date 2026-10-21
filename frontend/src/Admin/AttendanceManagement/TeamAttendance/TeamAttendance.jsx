@@ -121,7 +121,7 @@ export default function TeamAttendance() {
     try {
       const [hierarchyResult, attendanceResult] = await Promise.all([
         HierarchyService.getHierarchy(),
-        AttendanceService.getAll(),
+        date ? AttendanceService.getByDate(date) : AttendanceService.getAll(),
       ]);
       const hierarchy = Array.isArray(hierarchyResult) ? hierarchyResult : [];
       const attendance = Array.isArray(attendanceResult) ? attendanceResult : [];
@@ -148,7 +148,7 @@ export default function TeamAttendance() {
     } finally {
       setLoading(false);
     }
-  }, [employeeId]);
+  }, [employeeId, date]);
 
   useEffect(() => {
     if (canView) loadTeamAttendance();

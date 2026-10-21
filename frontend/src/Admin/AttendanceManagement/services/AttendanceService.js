@@ -35,6 +35,43 @@ const AttendanceService = {
     return response.data;
   },
 
+  getByDateRange: async (startDate, endDateExclusive) => {
+    try {
+      const response = await axios.get(`${API_URL}/range`, {
+        params: { startDate, endDateExclusive },
+      });
+      return response.data;
+    } catch (error) {
+      // Older deployments may not support this range request yet. Fall back
+      // to indexed day queries instead of downloading the full attendance table.
+      if (![400, 404].includes(error?.response?.status)) throw error;
+
+      const end = new Date(`${endDateExclusive}T00:00:00`);
+      const dates = [];
+      const current = new Date(`${startDate}T00:00:00`);
+      const formatLocalDate = (value) => [
+        value.getFullYear(),
+        String(value.getMonth() + 1).padStart(2, "0"),
+        String(value.getDate()).padStart(2, "0"),
+      ].join("-");
+      while (current < end) {
+        dates.push(formatLocalDate(current));
+        current.setDate(current.getDate() + 1);
+      }
+
+      const records = [];
+      for (let index = 0; index < dates.length; index += 5) {
+        const batch = await Promise.all(
+          dates.slice(index, index + 5).map((date) => axios.get(`${API_URL}/date/${date}`))
+        );
+        batch.forEach((response) => {
+          if (Array.isArray(response.data)) records.push(...response.data);
+        });
+      }
+      return records;
+    }
+  },
+
   getByStatus: async (status) => {
     const response = await axios.get(`${API_URL}/status/${status}`);
     return response.data;

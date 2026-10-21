@@ -35,6 +35,11 @@ const LeaveService = {
     }
   },
 
+  getNotifications: async () => {
+    const response = await axios.get(`${API_URL}/Leave/notifications`);
+    return Array.isArray(response.data) ? response.data : response.data?.data ?? [];
+  },
+
   // =========================================================
   // GET APPROVAL DETAILS BY LEAVE REQUEST ID
   // =========================================================
