@@ -22,7 +22,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const requestUrl = String(error.config?.url || "").toLowerCase();
+    if (error.response?.status === 401 && /\/auth\/profile(?:\?|$)/.test(requestUrl)) {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       if (window.location.pathname !== "/login" && window.location.pathname !== "/auth/callback") {

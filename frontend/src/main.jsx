@@ -32,7 +32,12 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && localStorage.getItem("token")) {
+    // Only the authenticated profile endpoint validates the login session.
+    // A 401 from another module can be endpoint-specific and must not log the
+    // employee out of the whole application.
+    const requestUrl = String(error.config?.url || "").toLowerCase();
+    const isProfileValidation = /\/auth\/profile(?:\?|$)/.test(requestUrl);
+    if (error.response?.status === 401 && isProfileValidation && localStorage.getItem("token")) {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       if (window.location.pathname !== "/login" && window.location.pathname !== "/auth/callback") {

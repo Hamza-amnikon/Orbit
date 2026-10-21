@@ -740,85 +740,35 @@ export function AuthProvider({ children }) {
                     );
 
 
-                    /*
-                    -------------------------------------------------
-                    CHECK DOCUMENT APPROVAL
-                    -------------------------------------------------
-                    */
+                    // The employee profile validates the login. Module and
+                    // onboarding services are supplemental and must not turn
+                    // a successful sign-in into a logout when temporarily down.
+                    const roleId = profileData?.roleId;
+                    setUser({ token, ...profileData });
 
-                    await checkSparkAccess(
-                        currentEmployeeId
-                    );
-
-
-                    /*
-                    -------------------------------------------------
-                    ROLE
-                    -------------------------------------------------
-                    */
-
-                    const roleId =
-                        profileData?.roleId;
-
-
-                    /*
-                    -------------------------------------------------
-                    LOAD ALL PERMISSION DEFINITIONS
-                    -------------------------------------------------
-                    */
-
-                    const allPermissions =
-                        await getPermissions();
-
-
-                    console.log(
-                        "AuthContext Permission Catalog:",
-                        allPermissions
-                    );
-
-
-                    setPermissionCatalog(
-                        allPermissions || []
-                    );
-
-
-                    /*
-                    -------------------------------------------------
-                    LOAD ROLE PERMISSIONS
-                    -------------------------------------------------
-                    */
-
-                    let loginRolePermissions =
-                        [];
-
-
-                    if (roleId) {
-
-                        const rolePermissions =
-                            await getRolePermissions(
-                                roleId
-                            );
-
-
-                        console.log(
-                            "AuthContext Role Permissions:",
-                            rolePermissions
-                        );
-
-
-                        loginRolePermissions =
-                            rolePermissions || [];
-
-
-                        setPermissions(
-                            loginRolePermissions
-                        );
-
+                    try {
+                        await checkSparkAccess(currentEmployeeId);
+                    } catch (accessError) {
+                        console.error("AuthContext: Onboarding access check failed:", accessError);
+                        setSparkAccessGranted(false);
+                        setOnboardingStep("verification");
+                        setPendingPolicyIds([]);
                     }
-                    else {
 
+                    try {
+                        const allPermissions = await getPermissions();
+                        setPermissionCatalog(allPermissions || []);
+
+                        if (roleId) {
+                            const rolePermissions = await getRolePermissions(roleId);
+                            setPermissions(rolePermissions || []);
+                        } else {
+                            setPermissions([]);
+                        }
+                    } catch (permissionError) {
+                        console.error("AuthContext: Permission loading failed after login:", permissionError);
+                        setPermissionCatalog([]);
                         setPermissions([]);
-
                     }
 
 
@@ -869,26 +819,20 @@ export function AuthProvider({ children }) {
                     );
 
 
-                    /*
-                    -------------------------------------------------
-                    IMPORTANT
-
-                    Authentication has failed only if
-                    profile loading itself fails.
-                    -------------------------------------------------
-                    */
-
-                    localStorage.removeItem(
-                        "token"
-                    );
-
-
-                    setUser(null);
-
-                    setProfile(null);
+                    // Only an explicit unauthorized profile response means
+                    // this session is invalid. Preserve the token on transient
+                    // network or server errors so the employee is not signed out.
+                    if (error?.response?.status === 401) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("role");
+                        setUser(null);
+                        setProfile(null);
+                    } else {
+                        setUser({ token });
+                    }
 
                     setSparkAccessGranted(false);
-                    setOnboardingStep("documents");
+                    setOnboardingStep("verification");
                     setPendingPolicyIds([]);
 
                     throw error;
