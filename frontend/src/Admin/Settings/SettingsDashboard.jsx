@@ -257,10 +257,11 @@ export default function SettingsDashboard() {
         if (!file) return;
 
         const extension = file.name.split(".").pop()?.toLowerCase();
-        const isPng = file.type === "image/png" || extension === "png";
-        const isJpeg = file.type === "image/jpeg" || ["jpg", "jpeg"].includes(extension);
-        if (!isPng && !isJpeg) {
-            setPhotoMessage({ type: "error", text: "Choose a JPG or PNG photo." });
+        const commonImageExtensions = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "avif", "tif", "tiff"];
+        // Microsoft Graph expects JPEG profile photos. Accept image formats
+        // recognized by the browser and rasterize them to JPEG before upload.
+        if (!file.type.startsWith("image/") && !commonImageExtensions.includes(extension)) {
+            setPhotoMessage({ type: "error", text: "Choose an image file." });
             return;
         }
         if (file.size > 4 * 1024 * 1024) {
@@ -271,30 +272,31 @@ export default function SettingsDashboard() {
         setPhotoUploading(true);
         setPhotoMessage({ type: "", text: "" });
         try {
-            // Microsoft 365 accepts JPEG profile photos. Convert PNG selections
-            // locally while keeping the picker limited to JPG and PNG images.
-            let uploadFile = file;
-            if (isPng) {
-                const bitmap = await createImageBitmap(file);
-                const maxDimension = 1024;
-                const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
-                const canvas = document.createElement("canvas");
-                canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-                canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-                const context = canvas.getContext("2d");
-                if (!context) throw new Error("Could not prepare the selected photo.");
-                context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+            const bitmap = await createImageBitmap(file).catch(() => {
+                throw new Error("This image format cannot be opened by your browser. Try JPG, PNG, WebP, GIF, or BMP.");
+            });
+            const maxDimension = 1024;
+            const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+            canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+            const context = canvas.getContext("2d");
+            if (!context) {
                 bitmap.close();
-
-                const jpegBlob = await new Promise((resolve, reject) => {
-                    canvas.toBlob(
-                        (blob) => blob ? resolve(blob) : reject(new Error("Could not convert the selected photo.")),
-                        "image/jpeg",
-                        0.88,
-                    );
-                });
-                uploadFile = new File([jpegBlob], file.name.replace(/\.png$/i, ".jpg"), { type: "image/jpeg" });
+                throw new Error("Could not prepare the selected photo.");
             }
+            context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+            bitmap.close();
+
+            const jpegBlob = await new Promise((resolve, reject) => {
+                canvas.toBlob(
+                    (blob) => blob ? resolve(blob) : reject(new Error("Could not convert the selected image. Choose a common image format and try again.")),
+                    "image/jpeg",
+                    0.88,
+                );
+            });
+            const baseName = file.name.replace(/\.[^.]+$/, "") || "profile-photo";
+            const uploadFile = new File([jpegBlob], `${baseName}.jpg`, { type: "image/jpeg" });
 
             if (uploadFile.size > 4 * 1024 * 1024) {
                 setPhotoMessage({ type: "error", text: "The prepared photo is larger than 4 MB. Choose a smaller image." });
@@ -316,7 +318,7 @@ export default function SettingsDashboard() {
             console.error("Profile photo upload failed:", uploadError);
             setPhotoMessage({
                 type: "error",
-                text: uploadError.response?.data?.message || "Could not upload the photo. Please try again.",
+                text: uploadError.response?.data?.message || uploadError.message || "Could not upload the photo. Please try again.",
             });
         } finally {
             setPhotoUploading(false);

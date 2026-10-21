@@ -50,13 +50,13 @@ function ProfileHeader({ profile, onPhotoUpload, photoUploading, photoMessage })
                         {photoUploading ? "Uploading…" : profile.photoUrl ? "Change photo" : "Upload photo"}
                     </Button>
                     {hasPhoto === false && <Chip className="profile-photo-required" label="Required" size="small" color="error" />}
-                    <span className="profile-photo-format-hint">JPG or PNG · Up to 4 MB</span>
+                    <span className="profile-photo-format-hint">Image formats · Up to 4 MB</span>
                     <input
                         ref={fileInputRef}
                         className="profile-photo-file-input"
                         type="file"
-                        accept="image/jpeg,image/png,.jpg,.jpeg,.png"
-                        aria-label="Upload a JPG or PNG profile photo"
+                        accept="image/*"
+                        aria-label="Upload a profile photo in any image format"
                         onChange={(event) => {
                             onPhotoUpload?.(event.target.files?.[0]);
                             event.target.value = "";
@@ -69,7 +69,7 @@ function ProfileHeader({ profile, onPhotoUpload, photoUploading, photoMessage })
             </MuiLayoutBox>
             {hasPhoto === false && (
                 <Alert className="profile-photo-message" severity="warning">
-                    A profile photo is required before you can continue using Spark. Upload a JPG or PNG photo here.
+                    A profile photo is required before you can continue using Spark. Upload an image here.
                 </Alert>
             )}
             {photoMessage?.text && (
