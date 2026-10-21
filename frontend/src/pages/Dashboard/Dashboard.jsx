@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EmployeeService from "../../Admin/AttendanceManagement/services/EmployeeService";
 import LeaveService from "../../Admin/Services/LeaveService";
 
@@ -561,13 +561,10 @@ function Dashboard() {
 
                     <MuiActionButton
                         key={module.permissionPath}
+                        component={Link}
+                        to={module.route}
                         className="dashboard-module-card"
-                        role={module.route ? "button" : undefined}
-                        tabIndex={module.route ? 0 : undefined}
-                        onClick={() =>
-                            openModule(module.route)
-                        }
-                     component="div">
+                    >
 
 
                         {/* ======================================
