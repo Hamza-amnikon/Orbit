@@ -1430,14 +1430,15 @@ body,
 }
 
 .logo-image {
-    width: 144px !important;
-    height: 82px !important;
+    width: 156px !important;
+    height: 86px !important;
 
     max-width: 100% !important;
 
     object-fit: contain !important;
 
     display: block !important;
+    transform: translateY(-3px);
 }
 
 

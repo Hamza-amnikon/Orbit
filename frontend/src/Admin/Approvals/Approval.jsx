@@ -142,6 +142,11 @@ const Approval = () => {
         loadApprovalRequests();
     }, []);
 
+    const statusFromUrl = searchParams.get("status") || "All";
+    useEffect(() => {
+        setStatus(statusFromUrl);
+    }, [statusFromUrl]);
+
     const loadApprovalRequests = async () => {
 
         try {

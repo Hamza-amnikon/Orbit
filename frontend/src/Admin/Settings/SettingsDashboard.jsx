@@ -14,6 +14,7 @@ import EmergencyContact from "./Profile/EmergencyContact";
 import Documents from "./Profile/Docs";
 
 import { getProfile } from "../Services/ProfileService";
+import api from "../Services/api";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import "./SettingsDashboard.refinement.css";
 
@@ -38,6 +39,8 @@ export default function SettingsDashboard() {
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
+    const [photoUploading, setPhotoUploading] = useState(false);
+    const [photoMessage, setPhotoMessage] = useState({ type: "", text: "" });
 
 
     // =========================================================
@@ -250,6 +253,76 @@ export default function SettingsDashboard() {
 
     }, []);
 
+    const handleProfilePhotoUpload = async (file) => {
+        if (!file) return;
+
+        const extension = file.name.split(".").pop()?.toLowerCase();
+        const isPng = file.type === "image/png" || extension === "png";
+        const isJpeg = file.type === "image/jpeg" || ["jpg", "jpeg"].includes(extension);
+        if (!isPng && !isJpeg) {
+            setPhotoMessage({ type: "error", text: "Choose a JPG or PNG photo." });
+            return;
+        }
+        if (file.size > 4 * 1024 * 1024) {
+            setPhotoMessage({ type: "error", text: "The photo must be 4 MB or smaller." });
+            return;
+        }
+
+        setPhotoUploading(true);
+        setPhotoMessage({ type: "", text: "" });
+        try {
+            // Microsoft 365 accepts JPEG profile photos. Convert PNG selections
+            // locally while keeping the picker limited to JPG and PNG images.
+            let uploadFile = file;
+            if (isPng) {
+                const bitmap = await createImageBitmap(file);
+                const maxDimension = 1024;
+                const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+                const canvas = document.createElement("canvas");
+                canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+                canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+                const context = canvas.getContext("2d");
+                if (!context) throw new Error("Could not prepare the selected photo.");
+                context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+                bitmap.close();
+
+                const jpegBlob = await new Promise((resolve, reject) => {
+                    canvas.toBlob(
+                        (blob) => blob ? resolve(blob) : reject(new Error("Could not convert the selected photo.")),
+                        "image/jpeg",
+                        0.88,
+                    );
+                });
+                uploadFile = new File([jpegBlob], file.name.replace(/\.png$/i, ".jpg"), { type: "image/jpeg" });
+            }
+
+            if (uploadFile.size > 4 * 1024 * 1024) {
+                setPhotoMessage({ type: "error", text: "The prepared photo is larger than 4 MB. Choose a smaller image." });
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", uploadFile);
+            await api.post("/Auth/profile/photo", formData);
+            window.dispatchEvent(new Event("spark:profile-photo-updated"));
+            setProfile((current) => ({
+                ...current,
+                photoUrl: current?.photoUrl
+                    ? `${current.photoUrl.split("?")[0]}?v=${Date.now()}`
+                    : current?.photoUrl,
+            }));
+            setPhotoMessage({ type: "success", text: "Your profile photo has been updated." });
+        } catch (uploadError) {
+            console.error("Profile photo upload failed:", uploadError);
+            setPhotoMessage({
+                type: "error",
+                text: uploadError.response?.data?.message || "Could not upload the photo. Please try again.",
+            });
+        } finally {
+            setPhotoUploading(false);
+        }
+    };
+
 
     // =========================================================
     // LOADING
@@ -358,6 +431,9 @@ export default function SettingsDashboard() {
 
                 <ProfileHeader
                     profile={profile}
+                    onPhotoUpload={handleProfilePhotoUpload}
+                    photoUploading={photoUploading}
+                    photoMessage={photoMessage}
                 />
 
             </MuiLayoutBox>

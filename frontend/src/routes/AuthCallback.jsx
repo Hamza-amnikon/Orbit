@@ -5,7 +5,6 @@ import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Box as MuiLayoutBox, GlobalStyles as MuiGlobalStyles, Typography as MuiText } from "@mui/material";
 
-
 function AuthCallback() {
 
     const [searchParams] = useSearchParams();
@@ -52,8 +51,7 @@ function AuthCallback() {
                 =================================================
                 */
 
-                const loginResult =
-                    await completeLogin(token);
+                await completeLogin(token);
 
 
                 if (cancelled) {
@@ -66,22 +64,8 @@ function AuthCallback() {
                 );
 
 
-                /*
-                =================================================
-                LOGIN REDIRECT
-
-                completeLogin() can return an initialRoute
-                based on the user's permissions.
-
-                If no initialRoute is returned, keep the
-                existing /dashboard behavior.
-                =================================================
-                */
-
-                window.location.replace(
-                    loginResult?.initialRoute ||
-                    "/dashboard"
-                );
+                // Always return to the main dashboard after login.
+                window.location.replace("/dashboard");
 
             }
             catch (error) {

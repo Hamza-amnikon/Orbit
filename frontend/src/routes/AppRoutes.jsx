@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Routes, Route, Outlet, useLocation, Navigate } from "react-router-dom";
 import { syncPermissions } from "../Admin/Services/PermissionService";
 import { useAuth } from "../context/AuthContext";
@@ -457,10 +457,58 @@ function OnboardingGuard() {
         onboardingStep,
         loading,
         profileLoading,
+        profile,
         hasPermission,
     } = useAuth();
 
     const location = useLocation();
+    const [profilePhotoStatus, setProfilePhotoStatus] = useState("checking");
+    const uploadConfirmedRef = useRef(false);
+    const profilePhotoUrl = profile?.photoUrl ?? profile?.PhotoUrl ?? "";
+
+    useEffect(() => {
+        const markPhotoUploaded = () => {
+            uploadConfirmedRef.current = true;
+            setProfilePhotoStatus("ready");
+        };
+
+        window.addEventListener("spark:profile-photo-updated", markPhotoUploaded);
+        return () => window.removeEventListener("spark:profile-photo-updated", markPhotoUploaded);
+    }, []);
+
+    useEffect(() => {
+        if (loading || profileLoading) return;
+        if (uploadConfirmedRef.current) {
+            setProfilePhotoStatus("ready");
+            return;
+        }
+        if (!profile) {
+            setProfilePhotoStatus("unavailable");
+            return;
+        }
+        if (!profilePhotoUrl) {
+            setProfilePhotoStatus("missing");
+            return;
+        }
+
+        const controller = new AbortController();
+        setProfilePhotoStatus("checking");
+        fetch(profilePhotoUrl, { cache: "no-store", signal: controller.signal })
+            .then((response) => {
+                if (uploadConfirmedRef.current) return;
+                if (response.ok) setProfilePhotoStatus("ready");
+                else if (response.status === 404) setProfilePhotoStatus("missing");
+                else setProfilePhotoStatus("unavailable");
+                response.body?.cancel();
+            })
+            .catch(() => {
+                if (!controller.signal.aborted && !uploadConfirmedRef.current) {
+                    setProfilePhotoStatus("unavailable");
+                }
+            });
+
+        return () => controller.abort();
+    }, [loading, profile, profileLoading, profilePhotoUrl]);
 
     /*
     =========================================================
@@ -478,6 +526,10 @@ function OnboardingGuard() {
         sparkAccessLoading
     ) {
         return <MuiLayoutBox component="div">Loading...</MuiLayoutBox>;
+    }
+
+    if (profilePhotoStatus === "checking") {
+        return <MuiLayoutBox component="div" role="status">Checking required profile photo…</MuiLayoutBox>;
     }
 
     const pathname =
@@ -499,6 +551,10 @@ function OnboardingGuard() {
     const isSettings =
         pathname === "/settings" ||
         pathname.startsWith("/settings/");
+
+    if (profilePhotoStatus === "missing" && !isSettings) {
+        return <Navigate to="/settings?photoRequired=1" replace state={{ from: location }} />;
+    }
 
     const isCompanyPolicies =
         pathname === "/company-policies";

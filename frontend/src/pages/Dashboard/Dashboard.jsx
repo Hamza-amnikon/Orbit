@@ -8,6 +8,7 @@ import EventBusyRoundedIcon from "@mui/icons-material/EventBusyRounded";
 import ConfirmationNumberRoundedIcon from "@mui/icons-material/ConfirmationNumberRounded";
 import PaidRoundedIcon from "@mui/icons-material/PaidRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import DashboardCustomizeRoundedIcon from "@mui/icons-material/DashboardCustomizeRounded";
 
 import { useAuth } from "../../context/AuthContext";
 import { menu as sidebarMenu } from "../../components/layout/Sidebar/Sidebar";
@@ -296,6 +297,7 @@ function Dashboard() {
 
     const moduleDescriptions = {
         "/dashboard": "Your workspace overview and key updates.",
+        "/MyDashboard": "Your personal attendance, leave and work summary.",
         "/employees": "Manage employee records and organization.",
         "/attendance": "Review attendance, shifts and time records.",
         "/leave": "Manage leave requests, balances and policies.",
@@ -311,6 +313,7 @@ function Dashboard() {
     };
     const moduleColors = {
         "/dashboard": "#2563eb",
+        "/MyDashboard": "#4f46e5",
         "/employees": "#2563eb",
         "/attendance": "#0ea5e9",
         "/leave": "#16a34a",
@@ -324,14 +327,24 @@ function Dashboard() {
         "/reimbursements": "#14b8a6",
         "/policy": "#ca8a04",
     };
-    const modules = sidebarMenu.filter((item) => item.permissionPath !== "/dashboard").map((item) => ({
-        title: item.title.trim(),
-        description: moduleDescriptions[item.permissionPath] || "Open this SPARK module.",
-        icon: item.icon,
-        color: moduleColors[item.permissionPath] || "#2563eb",
-        route: getModuleLoginRoute?.(item.permissionPath) || item.path,
-        permissionPath: item.permissionPath,
-    }));
+    const modules = [
+        {
+            title: "My Dashboard",
+            description: moduleDescriptions["/MyDashboard"],
+            icon: <DashboardCustomizeRoundedIcon />,
+            color: moduleColors["/MyDashboard"],
+            route: getModuleLoginRoute?.("/MyDashboard") || "/MyDashboard",
+            permissionPath: "/MyDashboard",
+        },
+        ...sidebarMenu.filter((item) => item.permissionPath !== "/dashboard").map((item) => ({
+            title: item.title.trim(),
+            description: moduleDescriptions[item.permissionPath] || "Open this SPARK module.",
+            icon: item.icon,
+            color: moduleColors[item.permissionPath] || "#2563eb",
+            route: getModuleLoginRoute?.(item.permissionPath) || item.path,
+            permissionPath: item.permissionPath,
+        })),
+    ];
 
 
     /* ========================================================

@@ -159,7 +159,6 @@ function Sidebar() {
        ======================================================== */
 
     const getMenuRoute = (item) => {
-
         try {
 
             const loginRoute =

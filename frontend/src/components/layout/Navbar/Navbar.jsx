@@ -262,7 +262,7 @@ function Navbar({ title }) {
                     const type = leave.leaveTypeName ?? leave.leaveType ?? "Leave request";
                     const normalized = status.toLowerCase();
                     const action = normalized.includes("approv") ? "approved" : normalized.includes("reject") ? "rejected" : "submitted";
-                    return { id: leave.id ?? leave.leaveId ?? index, route: "/leave", title: action === "submitted" ? "Leave update" : "Approval update", message: `${type} was ${action}.`, status, date: leave.updatedAt ?? leave.createdAt ?? leave.requestDate };
+                    return { id: leave.id ?? leave.leaveId ?? index, kind: "leave", route: "/leave/my-leave", title: action === "submitted" ? "Leave update" : "Approval update", message: `${type} was ${action}.`, status, date: leave.updatedAt ?? leave.createdAt ?? leave.requestDate };
                 });
                 const requiredPolicies = policies.filter((policy) =>
                     String(policy.status ?? policy.Status ?? "Published").toLowerCase() === "published" &&
@@ -288,6 +288,7 @@ function Navbar({ title }) {
                         const revision = policy.version ?? policy.Version ?? policy.policyVersion ?? policy.PolicyVersion ?? policy.updatedAt ?? policy.UpdatedAt ?? policy.modifiedDate ?? policy.ModifiedDate ?? policy.createdAt ?? "current";
                         return {
                             id: `policy-${policyId ?? index}-${revision}`,
+                            kind: "policy",
                             route: "/company-policies",
                             title: "Policy acknowledgement required",
                             message: `${policy.policyTitle ?? policy.PolicyTitle ?? policy.title ?? policy.name ?? "A company policy"} needs your acknowledgement.`,
@@ -573,6 +574,14 @@ function Navbar({ title }) {
     };
 
     const renderNotification = (notification) => {
+        const notificationRoute = notification.kind === "leave"
+            ? "/leave/my-leave"
+            : notification.kind === "approval"
+                ? "/approvals?status=Pending"
+                : notification.kind === "policy"
+                    ? "/company-policies"
+                    : notification.route;
+
         return (
             <MuiButtonMigration
                 key={notification.id}
@@ -581,7 +590,7 @@ function Navbar({ title }) {
                 onClick={() => {
                     markNotificationRead(notification.id);
                     setNotificationsOpen(false);
-                    navigate(notification.route || "/leave");
+                    if (notificationRoute) navigate(notificationRoute);
                 }}
             >
                 <MuiText className="notification-item-title" component="span" variant="inherit">

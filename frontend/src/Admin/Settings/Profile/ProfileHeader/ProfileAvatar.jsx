@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
-function ProfileAvatar({ profile }) {
+function ProfileAvatar({ profile, onPhotoStateChange }) {
 
     const [imageError, setImageError] = useState(false);
+
+    useEffect(() => {
+        setImageError(false);
+        onPhotoStateChange?.(null);
+    }, [onPhotoStateChange, profile?.photoUrl]);
 
     const showPhoto =
         profile.photoUrl &&
         profile.photoUrl.trim() !== "" &&
         !imageError;
-console.log("Profile:", profile);
-console.log("Photo URL:", profile.photoUrl);
     return (
 
         <MuiLayoutBox className="profile-avatar-wrapper" component="div">
@@ -23,10 +26,10 @@ console.log("Photo URL:", profile.photoUrl);
     src={profile.photoUrl}
     alt={profile.displayName}
     className="profile-avatar-image"
-    onLoad={() => console.log("Image loaded")}
-    onError={(e) => {
-        console.log("Image failed:", e.target.src);
+    onLoad={() => onPhotoStateChange?.(true)}
+    onError={() => {
         setImageError(true);
+        onPhotoStateChange?.(false);
     }}
  component="img"/>
 
