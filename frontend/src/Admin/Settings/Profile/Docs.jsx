@@ -95,10 +95,10 @@ function Documents({ profile }) {
     useEffect(() => {
         if (loading) return;
 
-        const hasEducationCertificate = Boolean(
-            form.educationFile ||
-            getDocument("Education Certificate")?.documentPath ||
-            getDocument("Education Certificate")?.DocumentPath
+        const hasExperienceCertificate = Boolean(
+            form.experienceFile ||
+            getDocument("Experience Certificate")?.documentPath ||
+            getDocument("Experience Certificate")?.DocumentPath
         );
         const hasPayslip = Boolean(
             form.lastCompanyPayslipFile ||
@@ -106,12 +106,12 @@ function Documents({ profile }) {
             getDocument("Last Company Payslip")?.DocumentPath
         );
 
-        if (hasEducationCertificate && !hasPayslip) {
+        if (hasExperienceCertificate && !hasPayslip) {
             setPayslipPromptOpen(true);
         } else {
             setPayslipPromptOpen(false);
         }
-    }, [documents, form.educationFile, form.lastCompanyPayslipFile, loading]);
+    }, [documents, form.experienceFile, form.lastCompanyPayslipFile, loading]);
 
     const loadDocuments = async () => {
         try {
@@ -278,7 +278,7 @@ function Documents({ profile }) {
             [field]: file,
         }));
 
-        if (field === "educationFile") {
+        if (field === "experienceFile") {
             setPayslipPromptOpen(true);
         } else if (field === "lastCompanyPayslipFile") {
             setPayslipPromptOpen(false);
@@ -334,13 +334,13 @@ function Documents({ profile }) {
             )[0];
 
     const getRequiredDocumentTypes = () => {
-        const hasEducationCertificate = Boolean(
-            form.educationFile ||
-            getDocument("Education Certificate")?.documentPath ||
-            getDocument("Education Certificate")?.DocumentPath
+        const hasExperienceCertificate = Boolean(
+            form.experienceFile ||
+            getDocument("Experience Certificate")?.documentPath ||
+            getDocument("Experience Certificate")?.DocumentPath
         );
 
-        return hasEducationCertificate
+        return hasExperienceCertificate
             ? [...REQUIRED_DOCUMENT_TYPES, "Last Company Payslip"]
             : REQUIRED_DOCUMENT_TYPES;
     };
@@ -1011,18 +1011,18 @@ const payload = {
             );
         }
 
-        const educationCertificateProvided = Boolean(
-            form.educationFile ||
-            getDocument("Education Certificate")?.documentPath
+        const experienceCertificateProvided = Boolean(
+            form.experienceFile ||
+            getDocument("Experience Certificate")?.documentPath
         );
 
         if (
-            educationCertificateProvided &&
+            experienceCertificateProvided &&
             !form.lastCompanyPayslipFile &&
             !getDocument("Last Company Payslip")?.documentPath
         ) {
             errors.push(
-                "Last Company Payslip is required when you upload an Education Certificate."
+                "Last Company Payslip is required when you upload an Experience Certificate."
             );
         }
 
@@ -1315,7 +1315,7 @@ const payload = {
        COMPLETION PERCENTAGE
 
        3 base documents; add Last Company Payslip when an
-       Education Certificate is uploaded.
+       Experience Certificate is uploaded.
 
        Progress is recalculated from the active required document count.
 
@@ -1989,7 +1989,7 @@ const payload = {
                             </MuiLayoutBox>
                         </MuiLayoutBox>
 
-                        {(form.educationFile || getDocument("Education Certificate")?.documentPath) && (
+                        {(form.experienceFile || getDocument("Experience Certificate")?.documentPath) && (
                             <MuiLayoutBox
                                 className={`other-document-row${isDragging("lastCompanyPayslipFile") ? " is-dragging" : ""}`}
                                 {...getDropProps("lastCompanyPayslipFile")}
@@ -2126,16 +2126,16 @@ const payload = {
                         component="section"
                         role="dialog"
                         aria-modal="true"
-                        aria-labelledby="education-payslip-prompt-title"
+                        aria-labelledby="experience-payslip-prompt-title"
                     >
                         <MuiLayoutBox className="onboarding-prompt-icon" component="div" aria-hidden="true">
                             !
                         </MuiLayoutBox>
-                        <MuiText id="education-payslip-prompt-title" component="h2" variant="h5">
+                        <MuiText id="experience-payslip-prompt-title" component="h2" variant="h5">
                             Last Company Payslip Required
                         </MuiText>
                         <MuiText component="p" variant="body1">
-                            You added an Education Certificate. Upload your last company payslip as well. Spark access will remain locked until HR approves the required documents.
+                            You added an Experience Certificate. Upload your last company payslip as well. Spark access will remain locked until HR approves the required documents.
                         </MuiText>
                         <MuiButtonMigration
                             type="button"

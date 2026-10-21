@@ -155,7 +155,7 @@ export function AuthProvider({ children }) {
 
                 // Keep a frontend fail-safe for the conditional payslip rule as
                 // well as the backend check. This prevents an older deployed
-                // onboarding service from granting access after Education has
+                // onboarding service from granting access after an Experience Certificate has
                 // been uploaded but before the required payslip is approved.
                 if (DOCUMENT_API_URL) {
                     const documentsResponse = await fetch(
@@ -177,13 +177,13 @@ export function AuthProvider({ children }) {
                         document?.documentType ?? document?.DocumentType ??
                         document?.documentName ?? document?.DocumentName ?? ""
                     ).trim().toLowerCase();
-                    const educationUploaded = documents.some((document) =>
-                        ["education certificate", "educationcertificate", "education_certificate"]
+                    const experienceCertificateUploaded = documents.some((document) =>
+                        ["experience certificate", "experiencecertificate", "experience_certificate", "experience letter"]
                             .includes(documentType(document)) &&
                         Boolean(document?.documentPath ?? document?.DocumentPath)
                     );
 
-                    if (educationUploaded) {
+                    if (experienceCertificateUploaded) {
                         const approvedPayslip = documents.some((document) =>
                             ["last company payslip", "lastcompanypayslip", "last_company_payslip"]
                                 .includes(documentType(document)) &&
