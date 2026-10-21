@@ -478,9 +478,7 @@ function Navbar({ title }) {
 
         closeMenu();
 
-        navigate(
-            "/employee/profile"
-        );
+        navigate("/settings?tab=personal");
 
     };
 
