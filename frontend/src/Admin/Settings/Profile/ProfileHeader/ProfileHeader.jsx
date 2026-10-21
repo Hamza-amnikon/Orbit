@@ -73,11 +73,6 @@ function ProfileHeader({ profile, onPhotoUpload, photoUploading, photoMessage })
                 <ProfileDetails profile={profile} />
 
             </MuiLayoutBox>
-            {hasPhoto === false && (
-                <Alert className="profile-photo-message" severity="warning">
-                    A profile photo is required before you can continue using Spark. Upload an image here.
-                </Alert>
-            )}
             {photoMessage?.text && (
                 <Alert className="profile-photo-message" severity={photoMessage.type}>
                     {photoMessage.text}

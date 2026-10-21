@@ -1350,12 +1350,31 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
         ]);
 
 
+    const requestedCalendarDays = useMemo(() => {
+        if (!leaveForm.fromDate || !leaveForm.toDate) return 0;
+
+        const from = new Date(`${leaveForm.fromDate}T00:00:00Z`);
+        const to = new Date(`${leaveForm.toDate}T00:00:00Z`);
+        if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime()) || to < from) return 0;
+
+        return Math.floor((to.getTime() - from.getTime()) / 86400000) + 1;
+    }, [leaveForm.fromDate, leaveForm.toDate]);
+
+    const policyRequiresDocument = [true, 1, "true"].includes(
+        typeof (selectedLeavePolicy?.requiresDocument ?? selectedLeavePolicy?.RequiresDocument) === "string"
+            ? String(selectedLeavePolicy?.requiresDocument ?? selectedLeavePolicy?.RequiresDocument).toLowerCase()
+            : (selectedLeavePolicy?.requiresDocument ?? selectedLeavePolicy?.RequiresDocument)
+    );
+    const documentAfterDays = Number(
+        selectedLeavePolicy?.documentAfterDays ??
+        selectedLeavePolicy?.DocumentAfterDays ??
+        0
+    );
+    // Match the API rule: a document is needed only when the requested
+    // calendar span is longer than the configured document-free period.
     const requiresDocument =
-        selectedLeavePolicy?.requiresDocument === true ||
-        selectedLeavePolicy?.requiresDocument === 1 ||
-        String(
-            selectedLeavePolicy?.requiresDocument
-        ).toLowerCase() === "true";
+        policyRequiresDocument &&
+        requestedCalendarDays > (Number.isFinite(documentAfterDays) ? documentAfterDays : 0);
 
 
     // =========================================================
@@ -4304,6 +4323,17 @@ const closeViewLeaveDialog = () => {
                                 </Box>
 
                             )}
+
+                        {policyRequiresDocument && requestedCalendarDays > 0 && (
+                            <Alert
+                                severity={requiresDocument ? "warning" : "info"}
+                                sx={{ py: 0.25 }}
+                            >
+                                {requiresDocument
+                                    ? `This request exceeds the ${documentAfterDays}-day document threshold. Attach a supporting document to continue.`
+                                    : `This policy requires a supporting document only for leave longer than ${documentAfterDays} days.`}
+                            </Alert>
+                        )}
 
 
                         {/* REASON */}

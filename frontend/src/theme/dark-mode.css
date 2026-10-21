@@ -9099,16 +9099,39 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payr
   color: var(--spark-text) !important;
 }
 
-html[data-color-mode="dark"] .profile-photo-required-dialog .MuiDialog-paper {
+html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialog-paper {
   color: var(--spark-text);
-  background: #172438;
-  border-color: #304159;
+  background: #172438 !important;
+  border: 1px solid #304159 !important;
 }
 
-html[data-color-mode="dark"] .profile-photo-required-dialog .MuiDialogTitle-root,
-html[data-color-mode="dark"] .profile-photo-required-dialog .MuiDialogContent-root,
-html[data-color-mode="dark"] .profile-photo-required-dialog .profile-photo-dialog-hint {
-  color: var(--spark-text);
+html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialogTitle-root,
+html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialogContent-root,
+html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialogActions-root {
+  color: var(--spark-text) !important;
+  background: #172438 !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialogTitle-root {
+  border-bottom: 1px solid #304159;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialogContent-root :is(.MuiTypography-root, p),
+html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .profile-photo-dialog-hint {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialogActions-root .MuiButton-root {
+  color: #fff !important;
+  background: #3267ed !important;
+  border-radius: 10px;
+  font-weight: 700;
+  text-transform: none;
+  box-shadow: none;
+}
+
+html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialogActions-root .MuiButton-root:hover {
+  background: #2457d6 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-calculated-value {
