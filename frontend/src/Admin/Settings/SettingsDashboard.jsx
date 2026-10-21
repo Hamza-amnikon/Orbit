@@ -310,12 +310,22 @@ export default function SettingsDashboard() {
             await axios.post(`${DOCUMENT_API_URL}/profile-photo`, formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            let refreshedProfile = null;
+            try {
+                refreshedProfile = await getProfile();
+            } catch (refreshError) {
+                // The upload is already persisted; keep the successful result even
+                // if the profile refresh endpoint is temporarily unavailable.
+                console.warn("Profile photo uploaded, but profile refresh failed:", refreshError);
+            }
             window.dispatchEvent(new Event("spark:profile-photo-updated"));
             setProfile((current) => ({
                 ...current,
-                photoUrl: current?.photoUrl
-                    ? `${current.photoUrl.split("?")[0]}?v=${Date.now()}`
-                    : current?.photoUrl,
+                ...(refreshedProfile || {}),
+                photoUrl: (() => {
+                    const updatedUrl = refreshedProfile?.photoUrl ?? refreshedProfile?.PhotoUrl ?? current?.photoUrl;
+                    return updatedUrl ? `${updatedUrl.split("?")[0]}?v=${Date.now()}` : updatedUrl;
+                })(),
             }));
             setPhotoMessage({ type: "success", text: "Your profile photo has been updated." });
         } catch (uploadError) {

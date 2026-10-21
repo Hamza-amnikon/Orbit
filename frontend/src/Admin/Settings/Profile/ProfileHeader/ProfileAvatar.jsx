@@ -1,20 +1,55 @@
 import { useEffect, useState } from "react";
-import { useAuthenticatedProfilePhoto } from "../../../Services/ProfilePhotoService";
+import { loadAuthenticatedProfilePhoto } from "../../../Services/ProfilePhotoService";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ProfileAvatar({ profile, onPhotoStateChange }) {
 
     const [imageError, setImageError] = useState(false);
-    const photoImageUrl = useAuthenticatedProfilePhoto(profile?.photoUrl);
+    const [photoImageUrl, setPhotoImageUrl] = useState("");
+    const profilePhotoUrl = profile?.photoUrl ?? profile?.PhotoUrl ?? "";
 
     useEffect(() => {
+        const controller = new AbortController();
+        let active = true;
+        setPhotoImageUrl("");
         setImageError(false);
         onPhotoStateChange?.(null);
-    }, [onPhotoStateChange, photoImageUrl]);
+
+        if (!profilePhotoUrl || !profilePhotoUrl.trim()) {
+            onPhotoStateChange?.(false);
+            return () => {
+                active = false;
+                controller.abort();
+            };
+        }
+
+        const loadPhoto = (refresh = false) => loadAuthenticatedProfilePhoto(profilePhotoUrl, { refresh, signal: controller.signal })
+            .then((url) => {
+                if (!active || controller.signal.aborted) return;
+                if (url) {
+                    setPhotoImageUrl(url);
+                } else {
+                    onPhotoStateChange?.(false);
+                }
+            })
+            .catch(() => {
+                if (active && !controller.signal.aborted) onPhotoStateChange?.(false);
+            });
+
+        const onPhotoUpdated = () => loadPhoto(true);
+        loadPhoto();
+        window.addEventListener("spark:profile-photo-updated", onPhotoUpdated);
+
+        return () => {
+            active = false;
+            controller.abort();
+            window.removeEventListener("spark:profile-photo-updated", onPhotoUpdated);
+        };
+    }, [onPhotoStateChange, profilePhotoUrl]);
 
     const showPhoto =
         photoImageUrl &&
-        profile.photoUrl.trim() !== "" &&
+        profilePhotoUrl.trim() !== "" &&
         !imageError;
     return (
 

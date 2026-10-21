@@ -9013,3 +9013,147 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .team-attendance-pa
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .team-attendance-page .team-attendance-state > .MuiSvgIcon-root {
   color: var(--spark-muted);
 }
+
+/* Employee Payroll: give the assignment editor and its summary a complete dark surface. */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page {
+  padding: 26px clamp(16px, 2vw, 32px) 36px !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employees-payroll-card.MuiCard-root {
+  color: var(--spark-text) !important;
+  background: linear-gradient(155deg, #1a2940 0%, #172438 100%) !important;
+  border: 1px solid #304159 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .16) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-section-heading-icon {
+  color: #9fc0ff !important;
+  background: rgba(76, 132, 245, .15) !important;
+  border: 1px solid rgba(115, 159, 245, .2);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-section-heading-icon.epr-green {
+  color: #80dfad !important;
+  background: rgba(34, 197, 94, .13) !important;
+  border-color: rgba(69, 190, 123, .2);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-section-heading-icon.epr-deduction {
+  color: #ffbd85 !important;
+  background: rgba(234, 120, 50, .14) !important;
+  border-color: rgba(234, 120, 50, .2);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employee-details,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-template-info-bar > div,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-deduction-note {
+  color: var(--spark-text) !important;
+  background: #142136 !important;
+  border-color: #304159 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-template-info-label,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-earnings-header,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-summary-item,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-summary-description,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-deduction-note > p:last-child {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-template-info-value,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-summary-value,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-summary-total-label,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-deduction-note-title {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-template-badge {
+  color: #b8d0ff !important;
+  background: rgba(70, 124, 235, .17) !important;
+  border: 1px solid rgba(113, 157, 243, .23) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page :is(.epr-table-avatar, .epr-employee-avatar, .epr-view-avatar) {
+  color: #dce8ff !important;
+  background: linear-gradient(145deg, #31558c, #263c64) !important;
+  border: 1px solid #5271a0 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-earning-row,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-summary-box {
+  color: var(--spark-text) !important;
+  background: #142136 !important;
+  border-color: #304159 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-earning-row:hover {
+  background: #1c2d46 !important;
+  border-color: #405a7b !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-component-name,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-template-value,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-employee-name,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-section-title,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-summary-box strong {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .profile-photo-required-dialog .MuiDialog-paper {
+  color: var(--spark-text);
+  background: #172438;
+  border-color: #304159;
+}
+
+html[data-color-mode="dark"] .profile-photo-required-dialog .MuiDialogTitle-root,
+html[data-color-mode="dark"] .profile-photo-required-dialog .MuiDialogContent-root,
+html[data-color-mode="dark"] .profile-photo-required-dialog .profile-photo-dialog-hint {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-calculated-value {
+  color: #7fe0ad !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-summary-total {
+  color: #8db8ff !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-calculation-badge {
+  color: #a9c6ff !important;
+  background: rgba(70, 124, 235, .16) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-deduction-badge {
+  color: #ffc18b !important;
+  background: rgba(234, 120, 50, .15) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-summary-divider,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-component-row {
+  border-color: #304159 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-component-list {
+  border-color: #304159 !important;
+  background: #142136 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-component-row p,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-summary-box p,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-employee-meta {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-paper:has(.epr-view-dialog-title),
+html[data-color-mode="dark"] .MuiDialog-paper:has(.epr-delete-confirm-actions) {
+  color: var(--spark-text) !important;
+  background: #172438 !important;
+  border: 1px solid #304159 !important;
+}
+
+html[data-color-mode="dark"] .MuiDialog-paper:has(.epr-view-dialog-title) .epr-view-employee-header {
+  color: var(--spark-text) !important;
+  background: #142136 !important;
+  border-color: #304159 !important;
+}

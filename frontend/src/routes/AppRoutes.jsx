@@ -501,7 +501,10 @@ function OnboardingGuard() {
             })
             .catch(() => {
                 if (!controller.signal.aborted && !uploadConfirmedRef.current) {
-                    setProfilePhotoStatus("unavailable");
+                    // If the image endpoint cannot supply the image, require a
+                    // new upload rather than allowing the missing-photo gate to
+                    // be bypassed.
+                    setProfilePhotoStatus("missing");
                 }
             });
 

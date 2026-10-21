@@ -1,6 +1,6 @@
 import "./ProfileHeader.css";
 import PhotoCameraRoundedIcon from "@mui/icons-material/PhotoCameraRounded";
-import { Alert, Button, Chip, CircularProgress } from "@mui/material";
+import { Alert, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import { useRef, useState } from "react";
 
 import ProfileAvatar from "./ProfileAvatar";
@@ -12,6 +12,10 @@ function ProfileHeader({ profile, onPhotoUpload, photoUploading, photoMessage })
     const [hasPhoto, setHasPhoto] = useState(null);
 
     if (!profile) return null;
+
+    const profilePhotoUrl = profile.photoUrl ?? profile.PhotoUrl ?? "";
+    const photoMissing = !profilePhotoUrl || hasPhoto === false;
+    const photoPromptOpen = photoMissing && photoMessage?.type !== "success";
 
     return (
 
@@ -47,10 +51,10 @@ function ProfileHeader({ profile, onPhotoUpload, photoUploading, photoMessage })
                         disabled={photoUploading}
                         onClick={() => fileInputRef.current?.click()}
                     >
-                        {photoUploading ? "Uploading…" : profile.photoUrl ? "Change photo" : "Upload photo"}
+                        {photoUploading ? "Uploading…" : profilePhotoUrl ? "Change photo" : "Upload photo"}
                     </Button>
                     {hasPhoto === false && <Chip className="profile-photo-required" label="Required" size="small" color="error" />}
-                    {!profile.photoUrl && (
+                    {!profilePhotoUrl && (
                         <span className="profile-photo-format-hint">Image formats · Up to 4 MB</span>
                     )}
                     <input
@@ -79,6 +83,38 @@ function ProfileHeader({ profile, onPhotoUpload, photoUploading, photoMessage })
                     {photoMessage.text}
                 </Alert>
             )}
+
+            <Dialog
+                className="profile-photo-required-dialog"
+                open={photoPromptOpen}
+                onClose={() => {}}
+                disableEscapeKeyDown
+                aria-labelledby="profile-photo-required-title"
+                aria-describedby="profile-photo-required-description"
+            >
+                <DialogTitle id="profile-photo-required-title">Add your profile photo</DialogTitle>
+                <DialogContent>
+                    <Typography id="profile-photo-required-description" variant="body1">
+                        A profile photo is required to use Spark. Upload a photo to continue; access will be available once any other onboarding requirements are complete.
+                    </Typography>
+                    {photoMessage?.type === "error" && (
+                        <Alert severity="error" sx={{ mt: 2 }}>{photoMessage.text}</Alert>
+                    )}
+                    <Typography className="profile-photo-dialog-hint" variant="body2">
+                        Choose an image up to 4 MB.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        startIcon={photoUploading ? <CircularProgress size={16} color="inherit" /> : <PhotoCameraRoundedIcon />}
+                        disabled={photoUploading}
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        {photoUploading ? "Uploading…" : "Upload photo"}
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
         </MuiLayoutBox>
 
