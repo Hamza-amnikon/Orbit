@@ -236,6 +236,8 @@ function Sidebar() {
                                 key={item.title}
                                 component={NavLink}
                                 to={menuRoute}
+                                aria-label={item.title}
+                                title={item.title}
                                 className={({ isActive }) =>
                                     isActive
                                         ? "menu-item active"
@@ -279,6 +281,8 @@ function Sidebar() {
                 <MuiButtonMigration
                     type="button"
                     className="logout-btn"
+                    aria-label="Log out"
+                    title="Log out"
                     onClick={handleLogout}
                 >
 

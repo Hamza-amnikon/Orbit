@@ -116,6 +116,21 @@ function Navbar({ title }) {
         }
 
 
+        if (path.includes("approval")) {
+            return "Approvals";
+        }
+
+
+        if (path.includes("document")) {
+            return "Documents";
+        }
+
+
+        if (path.includes("policy")) {
+            return "Company Policies";
+        }
+
+
         if (path.includes("setting")) {
             return "Profile";
         }

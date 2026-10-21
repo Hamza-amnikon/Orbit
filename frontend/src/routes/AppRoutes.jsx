@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Routes, Route, Outlet, useLocation, Navigate } from "react-router-dom";
+import RouteErrorBoundary from "./RouteErrorBoundary";
 import { syncPermissions } from "../Admin/Services/PermissionService";
 import { useAuth } from "../context/AuthContext";
 import { loadAuthenticatedProfilePhoto } from "../Admin/Services/ProfilePhotoService";
@@ -676,6 +677,7 @@ function AppRoutes() {
     }, [authLoading, isAuthenticated]);
 
     return (
+        <RouteErrorBoundary>
         <Suspense
             fallback={
                 <MuiLayoutBox className="route-loading" role="status" aria-live="polite" component="div">
@@ -948,6 +950,7 @@ function AppRoutes() {
 
         </Routes>
         </Suspense>
+        </RouteErrorBoundary>
 
     );
 }

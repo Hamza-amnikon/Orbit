@@ -3593,7 +3593,8 @@ const selectLoginPage = (permission) => {
                                       onChange={() =>
                                         selectLoginPage(permission)
                                       }
-                                      title="Set as login page"
+                                      aria-label={`Set ${permission.page} as login page`}
+                                      title={`Set ${permission.page} as login page`}
                                     />
                                   </MuiTableCellMigration>
 

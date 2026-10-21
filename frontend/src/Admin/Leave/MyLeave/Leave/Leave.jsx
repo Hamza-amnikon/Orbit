@@ -598,6 +598,14 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
                 return true;
             }
 
+            // The current Auth/profile DTO does not include employee gender.
+            // A positive balance is only created for leave types the employee
+            // is eligible for, so keep those types selectable when gender is
+            // unavailable in the profile response.
+            if (!employeeGender) {
+                return true;
+            }
+
             // Male/Female leave must match logged-in employee gender.
             return employeeGender === eligibleGender;
         });
