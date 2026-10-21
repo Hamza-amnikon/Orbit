@@ -333,7 +333,9 @@ function Dashboard() {
             description: moduleDescriptions["/MyDashboard"],
             icon: <DashboardCustomizeRoundedIcon />,
             color: moduleColors["/MyDashboard"],
-            route: getModuleLoginRoute?.("/MyDashboard") || "/MyDashboard",
+            // My Dashboard is its own personal page, so it must not inherit
+            // the Dashboard module's configured landing page (/dashboard).
+            route: "/MyDashboard",
             permissionPath: "/MyDashboard",
         },
         ...sidebarMenu.filter((item) => item.permissionPath !== "/dashboard").map((item) => ({
