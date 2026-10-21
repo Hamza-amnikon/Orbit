@@ -30,6 +30,7 @@ ONBOARDING API
 const ONBOARDING_API_URL =
     import.meta.env.VITE_ONBOARDING_API_URL ||
     "https://sparkapi.amnikontechnologies.com:5126";
+const DOCUMENT_API_URL = import.meta.env.VITE_DOCUMENT_API_BASE_URL;
 
 
 /*
@@ -150,6 +151,53 @@ export function AuthProvider({ children }) {
 
                 if (showLoading) {
                     setSparkAccessLoading(true);
+                }
+
+                // Keep a frontend fail-safe for the conditional payslip rule as
+                // well as the backend check. This prevents an older deployed
+                // onboarding service from granting access after Education has
+                // been uploaded but before the required payslip is approved.
+                if (DOCUMENT_API_URL) {
+                    const documentsResponse = await fetch(
+                        `${DOCUMENT_API_URL}/api/Document/employee/${currentEmployeeId}`
+                    );
+                    if (!documentsResponse.ok && documentsResponse.status !== 404) {
+                        throw new Error(
+                            `Employee documents API returned ${documentsResponse.status}`
+                        );
+                    }
+
+                    const rawDocuments = documentsResponse.status === 404
+                        ? []
+                        : await documentsResponse.json();
+                    const documents = Array.isArray(rawDocuments)
+                        ? rawDocuments
+                        : rawDocuments ? [rawDocuments] : [];
+                    const documentType = (document) => String(
+                        document?.documentType ?? document?.DocumentType ??
+                        document?.documentName ?? document?.DocumentName ?? ""
+                    ).trim().toLowerCase();
+                    const educationUploaded = documents.some((document) =>
+                        ["education certificate", "educationcertificate", "education_certificate"]
+                            .includes(documentType(document)) &&
+                        Boolean(document?.documentPath ?? document?.DocumentPath)
+                    );
+
+                    if (educationUploaded) {
+                        const approvedPayslip = documents.some((document) =>
+                            ["last company payslip", "lastcompanypayslip", "last_company_payslip"]
+                                .includes(documentType(document)) &&
+                            String(document?.status ?? document?.Status ?? "").trim().toLowerCase() === "approved" &&
+                            Boolean(document?.documentPath ?? document?.DocumentPath)
+                        );
+
+                        if (!approvedPayslip) {
+                            setSparkAccessGranted(false);
+                            setOnboardingStep("documents");
+                            setPendingPolicyIds([]);
+                            return false;
+                        }
+                    }
                 }
 
 

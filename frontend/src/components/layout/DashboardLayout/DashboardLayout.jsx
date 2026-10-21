@@ -255,7 +255,7 @@ function DashboardLayout() {
 
                         {!isPolicyAcknowledgementStage && (
                             <MuiText component="p" variant="body1">
-                                Please upload and submit all required documents to get full access to Spark.
+                                Please upload and submit all required documents. If you upload an Education Certificate, include your Last Company Payslip too. Spark access unlocks after HR approves the required documents.
                             </MuiText>
                         )}
 
@@ -294,7 +294,11 @@ function DashboardLayout() {
                             </MuiLayoutBox>
 
                             <MuiLayoutBox component="li">
-                                Education Certificate
+                                Profile Photo
+                            </MuiLayoutBox>
+
+                            <MuiLayoutBox component="li">
+                                Last Company Payslip (if Education Certificate is uploaded)
                             </MuiLayoutBox>
 
                             </>}

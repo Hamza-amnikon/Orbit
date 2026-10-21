@@ -678,3 +678,66 @@
     }
 
 }
+
+/* Payslip requirement prompt: keep text and actions readable in both modes. */
+.payslip-required-prompt {
+    color: #172554;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+.payslip-required-prompt h2 {
+    color: #172554 !important;
+}
+
+.payslip-required-prompt p {
+    color: #475569 !important;
+}
+
+.payslip-required-prompt .onboarding-prompt-button {
+    color: #ffffff !important;
+    background: #2563eb !important;
+    transform: none;
+}
+
+.payslip-required-prompt .onboarding-prompt-button:hover {
+    color: #ffffff !important;
+    background: #1d4ed8 !important;
+    transform: none;
+}
+
+.payslip-required-prompt .save-draft-button {
+    color: #334155 !important;
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    transform: none;
+}
+
+.payslip-required-prompt .save-draft-button:hover {
+    background: #e2e8f0 !important;
+    transform: none;
+}
+
+html[data-color-mode="dark"] .payslip-required-prompt {
+    color: var(--spark-text);
+    background: var(--spark-surface-raised);
+    border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .payslip-required-prompt h2 {
+    color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .payslip-required-prompt p {
+    color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .payslip-required-prompt .save-draft-button {
+    color: var(--spark-text) !important;
+    background: var(--spark-surface) !important;
+    border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .payslip-required-prompt .save-draft-button:hover {
+    background: var(--spark-hover) !important;
+}

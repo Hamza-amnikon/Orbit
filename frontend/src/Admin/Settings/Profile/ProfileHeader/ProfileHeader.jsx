@@ -50,7 +50,9 @@ function ProfileHeader({ profile, onPhotoUpload, photoUploading, photoMessage })
                         {photoUploading ? "Uploading…" : profile.photoUrl ? "Change photo" : "Upload photo"}
                     </Button>
                     {hasPhoto === false && <Chip className="profile-photo-required" label="Required" size="small" color="error" />}
-                    <span className="profile-photo-format-hint">Image formats · Up to 4 MB</span>
+                    {!profile.photoUrl && (
+                        <span className="profile-photo-format-hint">Image formats · Up to 4 MB</span>
+                    )}
                     <input
                         ref={fileInputRef}
                         className="profile-photo-file-input"

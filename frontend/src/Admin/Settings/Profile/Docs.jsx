@@ -1,5 +1,5 @@
 import { MuiButtonMigration, MuiInputMigration } from "../../../components/ui/MuiCompat.jsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./Docs.css";
 import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
@@ -28,7 +28,6 @@ const REQUIRED_DOCUMENT_TYPES = [
     "Aadhaar",
     "PAN",
     "Bank",
-    "Education Certificate",
 ];
 
 const formatAadhaarNumber = (value) => {
@@ -43,6 +42,8 @@ function Documents({ profile }) {
     const [saving, setSaving] = useState(false);
     const [hasOnboardingDetails, setHasOnboardingDetails] = useState(false);
     const [draggingField, setDraggingField] = useState("");
+    const [payslipPromptOpen, setPayslipPromptOpen] = useState(false);
+    const payslipFileInputRef = useRef(null);
 
     const employeeId =
         profile?.employeeId ??
@@ -77,6 +78,7 @@ function Documents({ profile }) {
         drivingLicenseFile: null,
         educationFile: null,
         experienceFile: null,
+        lastCompanyPayslipFile: null,
         otherFile: null,
     });
 
@@ -89,6 +91,27 @@ function Documents({ profile }) {
             loadDocuments();
         }
     }, [employeeId]);
+
+    useEffect(() => {
+        if (loading) return;
+
+        const hasEducationCertificate = Boolean(
+            form.educationFile ||
+            getDocument("Education Certificate")?.documentPath ||
+            getDocument("Education Certificate")?.DocumentPath
+        );
+        const hasPayslip = Boolean(
+            form.lastCompanyPayslipFile ||
+            getDocument("Last Company Payslip")?.documentPath ||
+            getDocument("Last Company Payslip")?.DocumentPath
+        );
+
+        if (hasEducationCertificate && !hasPayslip) {
+            setPayslipPromptOpen(true);
+        } else {
+            setPayslipPromptOpen(false);
+        }
+    }, [documents, form.educationFile, form.lastCompanyPayslipFile, loading]);
 
     const loadDocuments = async () => {
         try {
@@ -255,6 +278,12 @@ function Documents({ profile }) {
             [field]: file,
         }));
 
+        if (field === "educationFile") {
+            setPayslipPromptOpen(true);
+        } else if (field === "lastCompanyPayslipFile") {
+            setPayslipPromptOpen(false);
+        }
+
         if (input) input.value = "";
     };
 
@@ -303,6 +332,18 @@ function Documents({ profile }) {
             .sort(
                 (a, b) => Number(b.documentId || b.DocumentId || 0) - Number(a.documentId || a.DocumentId || 0)
             )[0];
+
+    const getRequiredDocumentTypes = () => {
+        const hasEducationCertificate = Boolean(
+            form.educationFile ||
+            getDocument("Education Certificate")?.documentPath ||
+            getDocument("Education Certificate")?.DocumentPath
+        );
+
+        return hasEducationCertificate
+            ? [...REQUIRED_DOCUMENT_TYPES, "Last Company Payslip"]
+            : REQUIRED_DOCUMENT_TYPES;
+    };
 
     /* ======================================================
        GET STATUS
@@ -376,6 +417,7 @@ function Documents({ profile }) {
             "Driving License": "drivingLicenseFile",
             "Education Certificate": "educationFile",
             "Experience Certificate": "experienceFile",
+            "Last Company Payslip": "lastCompanyPayslipFile",
             "Other Document": "otherFile",
         };
 
@@ -712,6 +754,13 @@ const payload = {
 
                 {
                     type:
+                        "Last Company Payslip",
+                    file:
+                        form.lastCompanyPayslipFile,
+                },
+
+                {
+                    type:
                         "Other Document",
                     file:
                         form.otherFile,
@@ -778,11 +827,10 @@ const payload = {
     /* ======================================================
        VALIDATE REQUIRED DOCUMENTS
        
-       4 MANDATORY DOCUMENTS:
+       3 MANDATORY DOCUMENTS:
        1. Aadhaar
        2. PAN
        3. Bank
-       4. Education Certificate
     ====================================================== */
 
     const validateDocuments = () => {
@@ -963,18 +1011,18 @@ const payload = {
             );
         }
 
-        /* ==================================================
-           EDUCATION CERTIFICATE
-        ================================================== */
+        const educationCertificateProvided = Boolean(
+            form.educationFile ||
+            getDocument("Education Certificate")?.documentPath
+        );
 
         if (
-            !form.educationFile &&
-            !getDocument(
-                "Education Certificate"
-            )?.documentPath
+            educationCertificateProvided &&
+            !form.lastCompanyPayslipFile &&
+            !getDocument("Last Company Payslip")?.documentPath
         ) {
             errors.push(
-                "Education Certificate is required."
+                "Last Company Payslip is required when you upload an Education Certificate."
             );
         }
 
@@ -1086,6 +1134,13 @@ const payload = {
                         "Experience Certificate",
                     file:
                         form.experienceFile,
+                },
+
+                {
+                    type:
+                        "Last Company Payslip",
+                    file:
+                        form.lastCompanyPayslipFile,
                 },
 
                 {
@@ -1224,10 +1279,8 @@ const payload = {
 
     const overallStatus = () => {
         const statuses =
-            REQUIRED_DOCUMENT_TYPES.map((type) =>
-                String(
-                    getDocument(type)?.status || ""
-                ).toLowerCase()
+            getRequiredDocumentTypes().map((type) =>
+                String(getStatus(type) || "").toLowerCase()
             );
 
         if (
@@ -1261,12 +1314,10 @@ const payload = {
     /* ======================================================
        COMPLETION PERCENTAGE
 
-       ONLY 4 MANDATORY DOCUMENTS
+       3 base documents; add Last Company Payslip when an
+       Education Certificate is uploaded.
 
-       Aadhaar       = 25%
-       PAN           = 25%
-       Bank          = 25%
-       Education     = 25%
+       Progress is recalculated from the active required document count.
 
        IMPORTANT:
        ONLY "Approved" COUNTS.
@@ -1274,17 +1325,19 @@ const payload = {
 
     const completionPercentage = () => {
         const completedDocuments =
-            REQUIRED_DOCUMENT_TYPES.filter(
+            getRequiredDocumentTypes().filter(
                 (type) => {
                     const document =
                         getDocument(type);
+                    const documentPath =
+                        document?.documentPath || document?.DocumentPath;
+                    const status =
+                        document?.status || document?.Status || "";
 
                     return (
                         document &&
-                        document.documentPath &&
-                        String(
-                            document.status || ""
-                        ).toLowerCase() ===
+                        documentPath &&
+                        String(status).toLowerCase() ===
                             "approved"
                     );
                 }
@@ -1292,7 +1345,7 @@ const payload = {
 
         return Math.round(
             (completedDocuments /
-                REQUIRED_DOCUMENT_TYPES.length) *
+                getRequiredDocumentTypes().length) *
                 100
         );
     };
@@ -1865,7 +1918,7 @@ const payload = {
                         {/* Education Certificate */}
                         <MuiLayoutBox className={`other-document-row${isDragging("educationFile") ? " is-dragging" : ""}`} {...getDropProps("educationFile")} component="div">
                             <MuiText component="span" variant="inherit">
-                                Education Certificate <MuiText className="required-star" component="span" variant="inherit">*</MuiText>
+                                Education Certificate
                             </MuiText>
 
                             <MuiLayoutBox className="other-document-status-area" component="div">
@@ -1935,6 +1988,49 @@ const payload = {
                                 />
                             </MuiLayoutBox>
                         </MuiLayoutBox>
+
+                        {(form.educationFile || getDocument("Education Certificate")?.documentPath) && (
+                            <MuiLayoutBox
+                                className={`other-document-row${isDragging("lastCompanyPayslipFile") ? " is-dragging" : ""}`}
+                                {...getDropProps("lastCompanyPayslipFile")}
+                                component="div"
+                            >
+                                <MuiText component="span" variant="inherit">
+                                    Last Company Payslip <MuiText className="required-star" component="span" variant="inherit">*</MuiText>
+                                </MuiText>
+
+                                <MuiLayoutBox className="other-document-status-area" component="div">
+                                    <RejectionStatus type="Last Company Payslip" />
+                                    {getFileInfo("Last Company Payslip").name && (
+                                        <MuiText
+                                            className="other-document-file-info"
+                                            title={getFileInfo("Last Company Payslip").name}
+                                            component="span"
+                                            variant="inherit"
+                                        >
+                                            <MuiText className="other-document-file-name" component="span" variant="inherit">
+                                                {getFileInfo("Last Company Payslip").name}
+                                            </MuiText>
+                                            {getFileInfo("Last Company Payslip").size && (
+                                                <MuiText className="other-document-file-size" component="span" variant="inherit">
+                                                    {getFileInfo("Last Company Payslip").size}
+                                                </MuiText>
+                                            )}
+                                        </MuiText>
+                                    )}
+                                </MuiLayoutBox>
+
+                                <MuiLayoutBox className="upload-button" component="label">
+                                    ☁ Upload
+                                    <input
+                                        ref={payslipFileInputRef}
+                                        type="file"
+                                        accept=".docs,.docx,.pdf"
+                                        onChange={(event) => handleFileChange("lastCompanyPayslipFile", event)}
+                                    />
+                                </MuiLayoutBox>
+                            </MuiLayoutBox>
+                        )}
 
                         {/* Other Document */}
                         <MuiLayoutBox className={`other-document-row${isDragging("otherFile") ? " is-dragging" : ""}`} {...getDropProps("otherFile")} component="div">
@@ -2022,6 +2118,35 @@ const payload = {
                 </MuiLayoutBox>
 
             </MuiLayoutBox>
+
+            {payslipPromptOpen && (
+                <MuiLayoutBox className="onboarding-prompt-overlay" component="div">
+                    <MuiLayoutBox
+                        className="onboarding-prompt payslip-required-prompt"
+                        component="section"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="education-payslip-prompt-title"
+                    >
+                        <MuiLayoutBox className="onboarding-prompt-icon" component="div" aria-hidden="true">
+                            !
+                        </MuiLayoutBox>
+                        <MuiText id="education-payslip-prompt-title" component="h2" variant="h5">
+                            Last Company Payslip Required
+                        </MuiText>
+                        <MuiText component="p" variant="body1">
+                            You added an Education Certificate. Upload your last company payslip as well. Spark access will remain locked until HR approves the required documents.
+                        </MuiText>
+                        <MuiButtonMigration
+                            type="button"
+                            className="onboarding-prompt-button"
+                            onClick={() => payslipFileInputRef.current?.click()}
+                        >
+                            Upload Last Company Payslip
+                        </MuiButtonMigration>
+                    </MuiLayoutBox>
+                </MuiLayoutBox>
+            )}
 
         </MuiLayoutBox>
     );
