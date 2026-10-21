@@ -14,11 +14,11 @@ import EmergencyContact from "./Profile/EmergencyContact";
 import Documents from "./Profile/Docs";
 
 import { getProfile } from "../Services/ProfileService";
-import api from "../Services/api";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import "./SettingsDashboard.refinement.css";
 
 const EMPLOYEE_API_URL = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
+const DOCUMENT_API_URL = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
 
 
 export default function SettingsDashboard() {
@@ -258,8 +258,8 @@ export default function SettingsDashboard() {
 
         const extension = file.name.split(".").pop()?.toLowerCase();
         const commonImageExtensions = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "avif", "tif", "tiff"];
-        // Microsoft Graph expects JPEG profile photos. Accept image formats
-        // recognized by the browser and rasterize them to JPEG before upload.
+        // Accept browser-supported image formats and normalize them for
+        // consistent storage through the document service.
         if (!file.type.startsWith("image/") && !commonImageExtensions.includes(extension)) {
             setPhotoMessage({ type: "error", text: "Choose an image file." });
             return;
@@ -305,7 +305,11 @@ export default function SettingsDashboard() {
 
             const formData = new FormData();
             formData.append("file", uploadFile);
-            await api.post("/Auth/profile/photo", formData);
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("Your Spark session has expired. Sign in again.");
+            await axios.post(`${DOCUMENT_API_URL}/profile-photo`, formData, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             window.dispatchEvent(new Event("spark:profile-photo-updated"));
             setProfile((current) => ({
                 ...current,

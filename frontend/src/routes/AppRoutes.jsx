@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Routes, Route, Outlet, useLocation, Navigate } from "react-router-dom";
 import { syncPermissions } from "../Admin/Services/PermissionService";
 import { useAuth } from "../context/AuthContext";
+import { loadAuthenticatedProfilePhoto } from "../Admin/Services/ProfilePhotoService";
 
 
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
@@ -493,13 +494,10 @@ function OnboardingGuard() {
 
         const controller = new AbortController();
         setProfilePhotoStatus("checking");
-        fetch(profilePhotoUrl, { cache: "no-store", signal: controller.signal })
-            .then((response) => {
+        loadAuthenticatedProfilePhoto(profilePhotoUrl, { signal: controller.signal })
+            .then((photoUrl) => {
                 if (uploadConfirmedRef.current) return;
-                if (response.ok) setProfilePhotoStatus("ready");
-                else if (response.status === 404) setProfilePhotoStatus("missing");
-                else setProfilePhotoStatus("unavailable");
-                response.body?.cancel();
+                setProfilePhotoStatus(photoUrl ? "ready" : "missing");
             })
             .catch(() => {
                 if (!controller.signal.aborted && !uploadConfirmedRef.current) {

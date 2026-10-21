@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
+import { useAuthenticatedProfilePhoto } from "../../../Services/ProfilePhotoService";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ProfileAvatar({ profile, onPhotoStateChange }) {
 
     const [imageError, setImageError] = useState(false);
+    const photoImageUrl = useAuthenticatedProfilePhoto(profile?.photoUrl);
 
     useEffect(() => {
         setImageError(false);
         onPhotoStateChange?.(null);
-    }, [onPhotoStateChange, profile?.photoUrl]);
+    }, [onPhotoStateChange, photoImageUrl]);
 
     const showPhoto =
-        profile.photoUrl &&
+        photoImageUrl &&
         profile.photoUrl.trim() !== "" &&
         !imageError;
     return (
@@ -23,7 +25,7 @@ function ProfileAvatar({ profile, onPhotoStateChange }) {
                 {showPhoto ? (
 
 <MuiLayoutBox
-    src={profile.photoUrl}
+    src={photoImageUrl}
     alt={profile.displayName}
     className="profile-avatar-image"
     onLoad={() => onPhotoStateChange?.(true)}

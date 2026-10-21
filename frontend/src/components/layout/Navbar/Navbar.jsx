@@ -16,6 +16,7 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
 import { getProfile } from "../../../Admin/Services/ProfileService";
+import { useAuthenticatedProfilePhoto } from "../../../Admin/Services/ProfilePhotoService";
 import LeaveService from "../../../Admin/Services/LeaveService";
 import PolicyService from "../../../Admin/Services/PolicyService";
 import { useColorMode } from "../../../context/ColorModeContext";
@@ -54,6 +55,7 @@ function Navbar({ title }) {
     // Tracks whether the profile image failed to load.
     // If it fails, the avatar falls back to the employee's first initial.
     const [profileImageError, setProfileImageError] = useState(false);
+    const profileImageUrl = useAuthenticatedProfilePhoto(profile?.photoUrl);
 
 
     /* ========================================================
@@ -444,11 +446,7 @@ function Navbar({ title }) {
        CHECK PROFILE IMAGE
        ======================================================== */
 
-    const hasProfileImage =
-        Boolean(
-            profile?.photoUrl &&
-            String(profile.photoUrl).trim()
-        ) && !profileImageError;
+    const hasProfileImage = Boolean(profile?.photoUrl && profileImageUrl) && !profileImageError;
 
 
     /* ========================================================
@@ -775,7 +773,7 @@ function Navbar({ title }) {
                             {hasProfileImage ? (
 
                                 <MuiLayoutBox
-                                    src={profile.photoUrl}
+                                    src={profileImageUrl}
                                     alt=""
                                     className="navbar-avatar-image"
                                     onError={() => {
@@ -843,7 +841,7 @@ function Navbar({ title }) {
                                     {hasProfileImage ? (
 
                                         <MuiLayoutBox
-                                            src={profile.photoUrl}
+                                            src={profileImageUrl}
                                             alt=""
                                             className="navbar-avatar-image"
                                             onError={() => {
