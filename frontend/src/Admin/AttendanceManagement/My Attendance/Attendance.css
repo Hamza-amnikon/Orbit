@@ -1186,4 +1186,157 @@
 .attendance-regularization-actions .MuiButton-root{min-width:116px;border-radius:10px;padding:9px 17px;text-transform:none;font-weight:650}
 @media(max-width:560px){.attendance-regularization-dialog .attendance-regularization-title{min-height:76px;padding:14px 58px 14px 16px}.attendance-regularization-close{right:14px}.attendance-regularization-content{padding:16px!important}.attendance-regularization-fields{grid-template-columns:1fr;gap:13px}.attendance-regularization-actions{padding:12px 16px 16px!important}.attendance-regularization-heading-text{font-size:17px!important}}
 
+/* Keep the Actions column in view; long remarks are truncated and shown in a tooltip. */
+.attendance-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.attendance-table {
+    width: 100%;
+    min-width: 0 !important;
+    table-layout: fixed;
+}
+
+.attendance-table th,
+.attendance-table td {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.attendance-table .attendance-date-column { width: 11%; }
+.attendance-table .attendance-day-column { width: 5%; }
+.attendance-table .attendance-status-column { width: 11%; }
+.attendance-table .attendance-checkin-column { width: 9%; }
+.attendance-table .attendance-checkout-column { width: 10%; }
+.attendance-table .attendance-hours-column { width: 11%; }
+.attendance-table .attendance-actions-column { width: clamp(56px, 6vw, 88px); }
+.attendance-table .attendance-remarks-column { width: auto; }
+
+.attendance-remarks-text {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: help;
+}
+
+.attendance-remarks-text:focus-visible {
+    outline: 2px solid #3970e9;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+.attendance-table td.attendance-actions-column {
+    padding-left: 4px;
+    padding-right: 4px;
+    text-align: center;
+}
+
+.attendance-table th.attendance-actions-column {
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 8px;
+    letter-spacing: 0;
+    text-align: left;
+}
+
+.attendance-table .table-action-button {
+    width: 28px;
+    min-width: 28px !important;
+    height: 28px;
+    padding: 0;
+}
+
+.attendance-table .table-action-button svg {
+    font-size: 18px;
+}
+
+@media (max-width: 900px) {
+    .attendance-table .attendance-day-column {
+        display: none;
+    }
+
+    .attendance-table .attendance-date-column { width: 13%; }
+    .attendance-table .attendance-status-column { width: 14%; }
+    .attendance-table .attendance-checkin-column { width: 12%; }
+    .attendance-table .attendance-checkout-column { width: 12%; }
+    .attendance-table .attendance-hours-column { width: 13%; }
+    .attendance-table .attendance-actions-column { width: clamp(56px, 9vw, 82px); }
+}
+
+@media (max-width: 600px) {
+    .attendance-table,
+    .attendance-table tbody {
+        display: block;
+    }
+
+    .attendance-table thead,
+    .attendance-table .attendance-day-column {
+        display: none;
+    }
+
+    .attendance-table tbody tr {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 4px 2px;
+        padding: 10px 12px;
+        border-bottom: 1px solid #edf1f6;
+    }
+
+    .attendance-table tbody tr:last-child {
+        border-bottom: 0;
+    }
+
+    .attendance-table td {
+        display: block;
+        width: auto !important;
+        height: auto !important;
+        min-height: 0;
+        padding: 5px 4px !important;
+        overflow: visible;
+        border: 0;
+        white-space: normal;
+        text-align: left !important;
+        font-size: 11px;
+    }
+
+    .attendance-table .attendance-date-column { grid-column: span 3; }
+    .attendance-table .attendance-status-column { grid-column: span 2; }
+    .attendance-table .attendance-checkin-column,
+    .attendance-table .attendance-checkout-column,
+    .attendance-table .attendance-hours-column { grid-column: span 2; }
+    .attendance-table .attendance-remarks-column { grid-column: 1 / -1; }
+    .attendance-table .attendance-actions-column {
+        grid-column: span 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .attendance-table td[data-label]::before {
+        display: block;
+        margin-bottom: 3px;
+        color: #7888a0;
+        font-size: 9px;
+        line-height: 12px;
+        font-weight: 600;
+        content: attr(data-label);
+    }
+
+    .attendance-table .attendance-actions-column::before {
+        display: none !important;
+    }
+
+    .attendance-remarks-text {
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+}
+
 

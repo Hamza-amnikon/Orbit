@@ -9238,3 +9238,19 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(.MuiCard-root, 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(.MuiTableHead-root, thead) {
   background-color: var(--spark-table-head) !important;
 }
+
+/* Payroll Process marks the focused employee with a light-mode-only row fill. */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process-page .pr-payroll-table-container .pr-selected-payroll-row,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process-page .pr-payroll-table-container .pr-selected-payroll-row:hover {
+  background: var(--spark-hover) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process-page .pr-payroll-table-container .pr-selected-payroll-row > .MuiTableCell-body {
+  color: var(--spark-text) !important;
+  background: transparent !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process-page .pr-payroll-table-container .pr-selected-payroll-row .MuiTypography-root {
+  color: var(--spark-text) !important;
+}

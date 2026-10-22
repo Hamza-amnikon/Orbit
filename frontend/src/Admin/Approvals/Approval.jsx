@@ -42,6 +42,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import api from "../Services/api";
 import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 // ============================================================
 // CENTRAL APPROVAL SERVICE
@@ -57,7 +61,7 @@ const EMPLOYEE_API_BASE_URL =
 // APPROVAL PAGE
 // ============================================================
 
-const Approval = () => {
+const Approval = ({ attendanceOnly = false }) => {
 
     const navigate = useNavigate();
 
@@ -439,7 +443,7 @@ const Approval = () => {
         );
 
         navigate(
-            `/approvals?status=${selectedStatus}`
+            `${attendanceOnly ? "/attendance/regularization-requests" : "/approvals"}?status=${selectedStatus}`
         );
     };
 
@@ -629,6 +633,10 @@ const Approval = () => {
             return requests.filter(
                 request => {
 
+                    if (attendanceOnly && !String(request.requestType || "").toLowerCase().includes("attendance regularization")) {
+                        return false;
+                    }
+
                     const currentApproverId =
                         Number(
                             request.currentApproverId
@@ -656,7 +664,8 @@ const Approval = () => {
         }, [
             requests,
             profile,
-            employeeMap
+            employeeMap,
+            attendanceOnly
         ]);
 
     const isPreviousApprover = (
@@ -1757,16 +1766,18 @@ const response =
                         className="approval-back-button"
                         aria-label="Go back"
                         title="Go back"
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate(attendanceOnly ? "/attendance" : -1)}
                     >
                         <ArrowBackRoundedIcon />
                     </IconButton>
                     <MuiLayoutBox component="div">
                         <MuiText component="h1" variant="h4">
-                            Approvals
+                            {attendanceOnly ? "Attendance Regularization Requests" : "Approvals"}
                         </MuiText>
                         <MuiText component="p" variant="body1">
-                            Review and manage requests that require your approval.
+                            {attendanceOnly
+                                ? "Review attendance correction requests and approve or reject them."
+                                : "Review and manage requests that require your approval."}
                         </MuiText>
                     </MuiLayoutBox>
                 </MuiLayoutBox>
@@ -1973,7 +1984,7 @@ const response =
                                 onChange={(event) => {
                                     const selectedStatus = event.target.value;
                                     setStatus(selectedStatus);
-                                    navigate(`/approvals?status=${selectedStatus}`);
+                                    navigate(`${attendanceOnly ? "/attendance/regularization-requests" : "/approvals"}?status=${selectedStatus}`);
                                 }}
                             >
                                 <MenuItem value="All">All statuses</MenuItem>
@@ -1988,16 +1999,23 @@ const response =
                         <MuiText className="approval-filter-label" component="label" htmlFor="approval-date-input" variant="caption">
                             Date Range
                         </MuiText>
-                        <TextField
-                            id="approval-date-input"
-                            className="approval-date"
-                            type="date"
-                            size="small"
-                            fullWidth
-                            value={date}
-                            onChange={(event) => setDate(event.target.value)}
-                            inputProps={{ "aria-label": "Filter by request date" }}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                value={date ? dayjs(date) : null}
+                                onChange={(value) => setDate(value?.isValid() ? value.format("YYYY-MM-DD") : "")}
+                                format="DD-MM-YYYY"
+                                slotProps={{
+                                    textField: {
+                                        id: "approval-date-input",
+                                        className: "approval-date",
+                                        size: "small",
+                                        fullWidth: true,
+                                        inputProps: { "aria-label": "Filter by request date" },
+                                    },
+                                    popper: { className: "approval-date-popover" },
+                                }}
+                            />
+                        </LocalizationProvider>
                     </MuiLayoutBox>
 
                 </MuiLayoutBox>

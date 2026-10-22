@@ -9,6 +9,7 @@ import ScheduleIcon from "@mui/icons-material/Schedule";
 import EventIcon from "@mui/icons-material/Event";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import Groups2Icon from "@mui/icons-material/Groups2";
+import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
@@ -29,6 +30,16 @@ const menuItems = [
         icon: <AccessTimeIcon />,
         color: "#10B981",
         path: "/attendance/logs",
+        decoration: "document",
+    },
+
+    {
+        title: "Regularization Requests",
+        description: "Review and approve attendance correction requests",
+        icon: <FactCheckOutlinedIcon />,
+        color: "#F59E0B",
+        path: "/attendance/regularization-requests",
+        permissionPath: "/attendance/logs",
         decoration: "document",
     },
 

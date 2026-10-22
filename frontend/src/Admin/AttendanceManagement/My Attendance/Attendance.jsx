@@ -20,6 +20,7 @@ import {
     DialogContent,
     DialogActions,
     TextField,
+    Tooltip,
 } from "@mui/material";
 
 import {
@@ -1638,14 +1639,20 @@ function Attendance() {
 
                                 <MuiTableRowMigration>
 
-                                    <MuiTableCellMigration>Date</MuiTableCellMigration>
-                                    <MuiTableCellMigration>Day</MuiTableCellMigration>
-                                    <MuiTableCellMigration>Status</MuiTableCellMigration>
-                                    <MuiTableCellMigration>Check In</MuiTableCellMigration>
-                                    <MuiTableCellMigration>Check Out</MuiTableCellMigration>
-                                    <MuiTableCellMigration>Working Hours</MuiTableCellMigration>
-                                    <MuiTableCellMigration>Remarks</MuiTableCellMigration>
-                                    <MuiTableCellMigration>Actions</MuiTableCellMigration>
+                                    <MuiTableCellMigration className="attendance-date-column">Date</MuiTableCellMigration>
+                                    <MuiTableCellMigration className="attendance-day-column">Day</MuiTableCellMigration>
+                                    <MuiTableCellMigration className="attendance-status-column">Status</MuiTableCellMigration>
+                                    <MuiTableCellMigration className="attendance-checkin-column">Check In</MuiTableCellMigration>
+                                    <MuiTableCellMigration className="attendance-checkout-column">Check Out</MuiTableCellMigration>
+                                    <MuiTableCellMigration className="attendance-hours-column">Working Hours</MuiTableCellMigration>
+                                    <MuiTableCellMigration className="attendance-remarks-column">Remarks</MuiTableCellMigration>
+                                    <MuiTableCellMigration
+                                        className="attendance-actions-column"
+                                        aria-label="Row actions"
+                                        title="Row actions"
+                                    >
+                                        ACTION
+                                    </MuiTableCellMigration>
 
                                 </MuiTableRowMigration>
 
@@ -1677,7 +1684,7 @@ function Attendance() {
                                                     }
                                                 >
 
-                                                    <MuiTableCellMigration>
+                                                    <MuiTableCellMigration className="attendance-date-column" data-label="Date">
                                                         <MuiText className="recent-date-value" component="strong" variant="inherit">
                                                             {getDate(
                                                                 item
@@ -1685,13 +1692,13 @@ function Attendance() {
                                                         </MuiText>
                                                     </MuiTableCellMigration>
 
-                                                    <MuiTableCellMigration>
+                                                    <MuiTableCellMigration className="attendance-day-column" data-label="Day">
                                                         {getDay(
                                                             item
                                                         )}
                                                     </MuiTableCellMigration>
 
-                                                    <MuiTableCellMigration>
+                                                    <MuiTableCellMigration className="attendance-status-column" data-label="Status">
 
                                                         <MuiText
                                                             className={`table-status ${getStatusClass(
@@ -1707,19 +1714,19 @@ function Attendance() {
 
                                                     </MuiTableCellMigration>
 
-                                                    <MuiTableCellMigration>
+                                                    <MuiTableCellMigration className="attendance-checkin-column" data-label="Check In">
                                                         {getCheckIn(
                                                             item
                                                         )}
                                                     </MuiTableCellMigration>
 
-                                                    <MuiTableCellMigration>
+                                                    <MuiTableCellMigration className="attendance-checkout-column" data-label="Check Out">
                                                         {getCheckOut(
                                                             item
                                                         )}
                                                     </MuiTableCellMigration>
 
-                                                    <MuiTableCellMigration>
+                                                    <MuiTableCellMigration className="attendance-hours-column" data-label="Working Hours">
 
                                                         <MuiText className="hours-value" component="strong" variant="inherit">
                                                             {getWorkingHours(
@@ -1729,17 +1736,37 @@ function Attendance() {
 
                                                     </MuiTableCellMigration>
 
-                                                    <MuiTableCellMigration>
+                                                    <MuiTableCellMigration className="attendance-remarks-column" data-label="Remarks">
                                                         {hasPendingRegularization ? (
                                                             <Chip size="small" label="Approval Pending" color="warning" variant="outlined" />
                                                         ) : regularizationStatus === "approved" ? (
                                                             <Chip size="small" label="Approved" color="success" variant="outlined" />
                                                         ) : regularizationStatus === "rejected" ? (
                                                             <Chip size="small" label="Rejected" color="error" variant="outlined" />
-                                                        ) : item?.remarks || "-"}
+                                                        ) : (
+                                                            <Tooltip
+                                                                title={String(item?.remarks || "").trim()}
+                                                                arrow
+                                                                placement="top"
+                                                                enterDelay={300}
+                                                                enterTouchDelay={0}
+                                                                disableHoverListener={!String(item?.remarks || "").trim()}
+                                                                disableFocusListener={!String(item?.remarks || "").trim()}
+                                                                disableTouchListener={!String(item?.remarks || "").trim()}
+                                                            >
+                                                                <Box
+                                                                    component="span"
+                                                                    className="attendance-remarks-text"
+                                                                    tabIndex={String(item?.remarks || "").trim() ? 0 : undefined}
+                                                                    aria-label={String(item?.remarks || "").trim() || "No remarks"}
+                                                                >
+                                                                    {String(item?.remarks || "").trim() || "-"}
+                                                                </Box>
+                                                            </Tooltip>
+                                                        )}
                                                     </MuiTableCellMigration>
 
-                                                    <MuiTableCellMigration>
+                                                    <MuiTableCellMigration className="attendance-actions-column" data-label="Actions">
 
                                                         {hasPendingRegularization ? (
                                                             <Chip size="small" label="Awaiting approval" color="warning" variant="outlined" />

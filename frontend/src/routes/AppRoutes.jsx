@@ -185,6 +185,11 @@ export const PERMISSION_PAGES = [
     },
     {
         module: "Attendance Management",
+        pageName: "Regularization Requests",
+        route: "/attendance/regularization-requests",
+    },
+    {
+        module: "Attendance Management",
         pageName: "Team Attendance",
         route: "/attendance/team-logs",
     },
@@ -432,9 +437,12 @@ function PermissionGuard() {
     const isRequiredPolicyPage =
         location.pathname.toLowerCase().replace(/\/$/, "") === "/company-policies" &&
         onboardingStep === "policies";
+    const isAttendanceRegularizationPage =
+        location.pathname.toLowerCase().replace(/\/$/, "") === "/attendance/regularization-requests";
     const allowed =
         isRequiredPolicyPage ||
-        hasPermission(location.pathname, "view");
+        hasPermission(location.pathname, "view") ||
+        (isAttendanceRegularizationPage && hasPermission("/attendance/logs", "view"));
 
     if (!allowed) {
         return (
@@ -806,6 +814,11 @@ function AppRoutes() {
                         <Route
                             path="/attendance/logs"
                             element={<AttendanceLogs />}
+                        />
+
+                        <Route
+                            path="/attendance/regularization-requests"
+                            element={<Approval attendanceOnly />}
                         />
 
                         <Route

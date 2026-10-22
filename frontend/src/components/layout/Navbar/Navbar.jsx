@@ -7,7 +7,6 @@ import {
 
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
@@ -498,19 +497,6 @@ function Navbar({ title }) {
 
 
     /* ========================================================
-       SETTINGS
-       ======================================================== */
-
-    const handleSettings = () => {
-
-        closeMenu();
-
-        navigate("/settings");
-
-    };
-
-
-    /* ========================================================
        LOGOUT
        ======================================================== */
 
@@ -726,22 +712,6 @@ function Navbar({ title }) {
                         )}
                     </MuiLayoutBox>
                 )}
-
-
-                {/* =================================================
-                    SETTINGS
-                ================================================= */}
-
-                <MuiButtonMigration
-                    type="button"
-                    className="icon-btn settings-btn"
-                    aria-label="Settings"
-                    onClick={handleSettings}
-                >
-
-                    <SettingsOutlinedIcon />
-
-                </MuiButtonMigration>
 
 
                 {/* =================================================

@@ -14,6 +14,13 @@ import LeaveService from "../../Services/LeaveService";
 function ProfileStats({ profile }) {
     const [attendanceValue, setAttendanceValue] = useState("—");
     const [leaveValue, setLeaveValue] = useState("—");
+    const now = new Date();
+    const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    const [currentYear, currentMonth] = currentMonthKey.split("-").map(Number);
+    const attendanceMonthLabel = new Intl.DateTimeFormat(undefined, {
+        month: "long",
+        year: "numeric",
+    }).format(new Date(now.getFullYear(), now.getMonth(), 1));
 
     useEffect(() => {
         const employeeId = profile?.employeeId ?? profile?.EmployeeId ?? profile?.employeeID ?? profile?.EmployeeID;
@@ -30,7 +37,21 @@ function ProfileStats({ profile }) {
 
             if (attendanceResult.status === "fulfilled") {
                 const records = Array.isArray(attendanceResult.value) ? attendanceResult.value : [];
-                const counted = records.filter((record) => {
+                const thisMonthRecords = records.filter((record) => {
+                    const dateValue = record?.attendanceDate ?? record?.date ?? record?.AttendanceDate ?? record?.Date;
+                    if (!dateValue) return false;
+
+                    // Prefer the date portion of ISO values so UTC timestamps near
+                    // month boundaries are grouped by their recorded calendar date.
+                    const isoMonth = String(dateValue).match(/^\d{4}-\d{2}/)?.[0];
+                    if (isoMonth) return isoMonth === currentMonthKey;
+
+                    const date = new Date(dateValue);
+                    return !Number.isNaN(date.getTime()) &&
+                        date.getFullYear() === currentYear &&
+                        date.getMonth() + 1 === currentMonth;
+                });
+                const counted = thisMonthRecords.filter((record) => {
                     const status = String(record?.status ?? record?.attendanceStatus ?? "").toLowerCase();
                     return status && !status.includes("leave") && !status.includes("weekly off") && !status.includes("holiday");
                 });
@@ -52,7 +73,7 @@ function ProfileStats({ profile }) {
 
         loadStats();
         return () => { mounted = false; };
-    }, [profile]);
+    }, [profile, currentMonthKey]);
 
     const joinDate = profile?.joiningDate ?? profile?.JoiningDate ?? profile?.joinDate ?? profile?.JoinDate;
     const experience = (() => {
@@ -69,7 +90,7 @@ function ProfileStats({ profile }) {
     const stats = [
         {
             icon: <EventAvailable />,
-            title: "Attendance",
+            title: `Attendance (${attendanceMonthLabel})`,
             value: attendanceValue,
             color: "#22c55e"
         },
