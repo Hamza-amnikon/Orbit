@@ -1,13 +1,13 @@
 html[data-color-mode="dark"] {
   color-scheme: dark;
-  --spark-page: #0d1422;
-  --spark-surface: #121d2e;
-  --spark-surface-raised: #19263a;
-  --spark-border: #2a3a50;
+  --spark-page: #000000;
+  --spark-surface: #0b0b0b;
+  --spark-surface-raised: #151515;
+  --spark-border: #292929;
   --spark-text: #f2f5fb;
-  --spark-muted: #a8b6cb;
-  --spark-table-head: #18263a;
-  --spark-hover: #1d2c43;
+  --spark-muted: #a6a6a6;
+  --spark-table-head: #101010;
+  --spark-hover: #202020;
   --spark-primary-soft: rgba(75, 125, 255, .14);
 }
 
@@ -24,7 +24,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui {
   --workspace-muted: var(--spark-muted);
   --workspace-border: var(--spark-border);
   --workspace-shadow: 0 8px 24px rgba(0, 0, 0, .2);
-  background: radial-gradient(ellipse at 50% -25%, #18263b 0%, var(--spark-page) 62%);
+  background: var(--spark-page);
 }
 
 /* Holiday & Events: keep the page controls, summary cards, and grid in dark mode. */
@@ -298,7 +298,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendanc
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .attendance-summary-card:hover {
-  background: #1d2d45 !important;
+  background: var(--spark-surface) !important;
   box-shadow: 0 8px 20px rgba(0, 0, 0, .24) !important;
   transform: none !important;
 }
@@ -474,7 +474,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendanc
   .table-status.status-default
 ) {
   color: #c3d0e3 !important;
-  background: #26364d !important;
+  background: var(--spark-hover) !important;
 }
 
 /* Attendance Reports */
@@ -613,7 +613,7 @@ html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-
 
 html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-card .MuiChip-colorDefault {
   color: #c3d0e3;
-  background: #26364d;
+  background: var(--spark-hover);
 }
 
 html[data-color-mode="dark"] .attendance-reports-page .attendance-reports-table-card .MuiChip-colorSuccess {
@@ -766,7 +766,7 @@ html[data-color-mode="dark"] .leave-overview .summary-card-bottom > span {
 }
 
 html[data-color-mode="dark"] .leave-overview .summary-icon {
-  background: #22344e !important;
+  background: var(--spark-hover) !important;
   color: #a9c4ff !important;
 }
 
@@ -849,7 +849,7 @@ html[data-color-mode="dark"] .leave-overview .upcoming-table-row {
 }
 
 html[data-color-mode="dark"] .leave-overview .upcoming-table-row:nth-child(odd) {
-  background: #172438 !important;
+  background: var(--spark-surface) !important;
 }
 
 html[data-color-mode="dark"] .leave-overview :is(.upcoming-event-item, .event-date-box) {
@@ -890,7 +890,7 @@ html[data-color-mode="dark"] .leave-requests-page .leave-table-toolbar :is(h2, .
 }
 
 html[data-color-mode="dark"] .leave-requests-page .leave-table-toolbar .MuiChip-root {
-  background: #26364d !important;
+  background: var(--spark-hover) !important;
   border: 1px solid var(--spark-border);
 }
 
@@ -956,12 +956,12 @@ html[data-color-mode="dark"] .leave-requests-page .leave-action-buttons .reject-
 
 html[data-color-mode="dark"] .leave-history-page .leave-history-count {
   color: #c8d8ef !important;
-  background: #26364d !important;
+  background: var(--spark-hover) !important;
   border: 1px solid var(--spark-border);
 }
 
 html[data-color-mode="dark"] .leave-history-page .leave-history-table tbody tr:nth-child(even) td {
-  background: #172438 !important;
+  background: var(--spark-surface) !important;
 }
 
 html[data-color-mode="dark"] .leave-history-page .azure-employee-id,
@@ -1025,7 +1025,7 @@ html[data-color-mode="dark"] .leave-details-dialog :is(.leave-details-dialog-pap
 
 html[data-color-mode="dark"] .leave-details-dialog .leave-modal-header {
   color: var(--spark-text) !important;
-  background: linear-gradient(110deg, #1c2d46, #172438) !important;
+  background: linear-gradient(110deg, var(--spark-surface-raised), var(--spark-surface)) !important;
   border-color: var(--spark-border) !important;
 }
 
@@ -1047,7 +1047,7 @@ html[data-color-mode="dark"] .leave-details-dialog :is(.leave-detail-item, .leav
 
 html[data-color-mode="dark"] .leave-details-dialog :is(.leave-detail-item, .leave-detail-section) :is(.leave-detail-icon, .leave-note-icon) {
   color: #b9d0ff !important;
-  background: #263a56 !important;
+  background: var(--spark-hover) !important;
 }
 
 html[data-color-mode="dark"] :is(
@@ -1264,7 +1264,7 @@ html[data-color-mode="dark"] .leave-dashboard .overview-label :is(strong, span) 
 }
 
 html[data-color-mode="dark"] .leave-dashboard .overview-bar {
-  background: #25364f !important;
+  background: var(--spark-hover) !important;
 }
 
 html[data-color-mode="dark"] .leave-dashboard .balance-pill {
@@ -1274,7 +1274,7 @@ html[data-color-mode="dark"] .leave-dashboard .balance-pill {
 
 html[data-color-mode="dark"] .leave-dashboard .leave-status.cancelled {
   color: #c8d8ef !important;
-  background: #26364d !important;
+  background: var(--spark-hover) !important;
 }
 
 /* My Leave calendar: dark day cells, controls, and semantic legend colors. */
@@ -1286,7 +1286,7 @@ html[data-color-mode="dark"] .leave-dashboard .leave-calendar-panel {
 
 html[data-color-mode="dark"] .leave-dashboard .my-leave-calendar-icon {
   color: #b9d0ff !important;
-  background: #263a56 !important;
+  background: var(--spark-hover) !important;
 }
 
 html[data-color-mode="dark"] .leave-dashboard .my-leave-calendar-title,
@@ -1508,12 +1508,12 @@ html[data-color-mode="dark"] .leave-types-page .leave-type-table-heading {
 
 html[data-color-mode="dark"] .leave-types-page .leave-type-table-heading .MuiChip-root {
   color: #c8d8ef !important;
-  background: #26364d !important;
+  background: var(--spark-hover) !important;
   border: 1px solid var(--spark-border);
 }
 
 html[data-color-mode="dark"] .leave-types-page .leave-type-table tbody tr:nth-child(even) td {
-  background: #172438 !important;
+  background: var(--spark-surface) !important;
 }
 
 html[data-color-mode="dark"] .leave-types-page .leave-type-table tbody tr:hover td {
@@ -1564,7 +1564,7 @@ html[data-color-mode="dark"] .leave-balance-page .leave-balance-summary .MuiTypo
 }
 
 html[data-color-mode="dark"] .leave-balance-page .leave-balance-summary .MuiStack-root > .MuiBox-root:last-child {
-  background: #26364d !important;
+  background: var(--spark-hover) !important;
   border-color: var(--spark-border) !important;
 }
 
@@ -1614,7 +1614,7 @@ html[data-color-mode="dark"] .leave-balance-page .table-header .MuiTypography-ca
 
 html[data-color-mode="dark"] .leave-balance-page .leave-balance-count {
   color: #c8d8ef !important;
-  background: #26364d !important;
+  background: var(--spark-hover) !important;
   border: 1px solid var(--spark-border);
 }
 
@@ -2009,7 +2009,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payr
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employees-payroll-export-button.Mui-disabled {
   color: #8494aa !important;
-  background: #182438 !important;
+  background: var(--spark-surface) !important;
   border-color: var(--spark-border) !important;
 }
 
@@ -2083,7 +2083,7 @@ html[data-color-mode="dark"] .notifications-menu .notifications-empty {
 
 html[data-color-mode="dark"] .notifications-menu .notifications-empty-icon {
   color: #9bb9ff !important;
-  background: #203758 !important;
+  background: var(--spark-surface) !important;
 }
 
 html[data-color-mode="dark"] .notifications-menu .notifications-empty strong {
@@ -2250,7 +2250,7 @@ html[data-color-mode="dark"] .spark-dashboard-page {
 html[data-color-mode="dark"] .spark-dashboard-page .dashboard-stat-card,
 html[data-color-mode="dark"] .spark-dashboard-page .dashboard-module-card,
 html[data-color-mode="dark"] .spark-dashboard-page .dashboard-auth-card {
-  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface) 78%);
   border-color: #2a3b53;
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
 }
@@ -2303,13 +2303,13 @@ html[data-color-mode="dark"] .spark-dashboard-page .module-decoration {
 
 /* Employee Management page and its custom employee table */
 html[data-color-mode="dark"] .employee-list-page {
-  --employee-page: #0d1422;
-  --employee-surface: #121d2e;
-  --employee-raised: #18263a;
-  --employee-border: #2a3a50;
+  --employee-page: var(--spark-page);
+  --employee-surface: var(--spark-surface);
+  --employee-raised: var(--spark-surface-raised);
+  --employee-border: var(--spark-border);
   --employee-text: #f2f5fb;
-  --employee-muted: #a8b6cb;
-  background: radial-gradient(ellipse at 48% -18%, #18263b 0%, var(--employee-page) 60%);
+  --employee-muted: var(--spark-muted);
+  background: var(--spark-page);
   color: var(--employee-text);
 }
 
@@ -2347,7 +2347,7 @@ html[data-color-mode="dark"] .employee-list-page .employee-back-button.MuiIconBu
 }
 
 html[data-color-mode="dark"] .employee-list-page .employee-back-button.MuiIconButton-root:hover {
-  background: #22344e;
+  background: var(--spark-hover);
   border-color: #526c90;
 }
 
@@ -2359,7 +2359,7 @@ html[data-color-mode="dark"] .employee-list-page :is(
   .loading-card
 ) {
   color: var(--employee-text);
-  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface) 78%);
   border-color: var(--employee-border);
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
 }
@@ -2370,13 +2370,13 @@ html[data-color-mode="dark"] .employee-list-page .stats-card:hover {
 }
 
 html[data-color-mode="dark"] .employee-list-page .stats-card.is-selected {
-  background: linear-gradient(145deg, #1b2d49, #142238);
+  background: linear-gradient(145deg, var(--spark-hover), var(--spark-surface));
   border-color: #5579b3;
   box-shadow: 0 0 0 3px rgba(75, 125, 255, .12), 0 12px 30px rgba(0, 0, 0, .26);
 }
 
 html[data-color-mode="dark"] .employee-list-page .toolbar .MuiOutlinedInput-root {
-  background: #0f1929;
+  background: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .employee-list-page .employee-table-wrapper {
@@ -2391,13 +2391,13 @@ html[data-color-mode="dark"] .employee-list-page .employee-table-wrapper {
   --surface: #121d2e;
   --surface-alt: #18263a;
   color: var(--employee-text);
-  background: #121d2e;
+  background: var(--spark-surface);
   border-color: var(--employee-border);
   box-shadow: 0 12px 32px rgba(0, 0, 0, .25);
 }
 
 html[data-color-mode="dark"] .employee-list-page .employee-table-header {
-  background: linear-gradient(180deg, #17243a, #141f31);
+  background: linear-gradient(180deg, var(--spark-surface-raised), var(--spark-surface));
   border-bottom-color: var(--employee-border);
 }
 
@@ -2407,7 +2407,7 @@ html[data-color-mode="dark"] .employee-list-page .employee-table-tag {
 }
 
 html[data-color-mode="dark"] .employee-list-page .employee-table-count {
-  background: #1b2c45;
+  background: var(--spark-surface);
   border-color: #354a66;
 }
 
@@ -2420,17 +2420,17 @@ html[data-color-mode="dark"] .employee-list-page .employee-table :is(th, td) {
 }
 
 html[data-color-mode="dark"] .employee-list-page .employee-table th {
-  background: #1a293e;
+  background: var(--spark-surface);
   color: #b8c8df;
 }
 
 html[data-color-mode="dark"] .employee-list-page .employee-table tbody tr,
 html[data-color-mode="dark"] .employee-list-page .employee-table tbody tr:nth-child(even) {
-  background: #121d2e;
+  background: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .employee-list-page .employee-table tbody tr:hover {
-  background: #1b2a40;
+  background: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .employee-list-page .employee-table td,
@@ -2460,7 +2460,7 @@ html[data-color-mode="dark"] .employee-list-page .action-buttons button {
 
 html[data-color-mode="dark"] .employee-list-page .action-buttons button:hover {
   color: #f2f5fb;
-  background: #26374f;
+  background: var(--spark-hover);
 }
 
 html[data-color-mode="dark"] .employee-list-page .action-buttons .edit-btn {
@@ -2491,7 +2491,7 @@ html[data-color-mode="dark"] .employee-list-page .loader {
 /* Employees landing page (/employees) */
 html[data-color-mode="dark"] .employee-dashboard {
   color: var(--spark-text);
-  background: radial-gradient(ellipse at 52% -18%, #18263b 0%, #0d1422 64%);
+  background: var(--spark-page);
 }
 
 html[data-color-mode="dark"] .employee-dashboard .employee-breadcrumb {
@@ -2516,7 +2516,7 @@ html[data-color-mode="dark"] .employee-dashboard .employee-header p {
 
 html[data-color-mode="dark"] .employee-dashboard .employee-card {
   color: var(--spark-text);
-  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface) 78%);
   border-color: #2a3b53;
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
 }
@@ -2552,12 +2552,12 @@ html[data-color-mode="dark"] .employee-dashboard .employee-card:hover .card-arro
    also use it to let the shared mode toggle control the full app shell. */
 html[data-color-mode="dark"] .sidebar {
   color: var(--spark-text) !important;
-  background: #101a2a !important;
+  background: var(--spark-surface) !important;
   border-right-color: var(--spark-border) !important;
 }
 
 html[data-color-mode="dark"] .sidebar .sidebar-footer {
-  background: #101a2a !important;
+  background: var(--spark-surface) !important;
   border-top-color: var(--spark-border) !important;
 }
 
@@ -2567,7 +2567,7 @@ html[data-color-mode="dark"] .sidebar .menu-item:not(.active) {
 
 html[data-color-mode="dark"] .sidebar :is(.menu-item, a):not(.active):hover {
   color: #e1eaff !important;
-  background: #1d2c43 !important;
+  background: var(--spark-surface) !important;
 }
 
 html[data-color-mode="dark"] .sidebar .menu-item.active {
@@ -2588,7 +2588,7 @@ html[data-color-mode="dark"] .sidebar .logout-btn:hover {
 /* Attendance Management landing page (/attendance) */
 html[data-color-mode="dark"] .attendance-home {
   color: var(--spark-text);
-  background: radial-gradient(ellipse at 52% -18%, #18263b 0%, #0d1422 64%);
+  background: var(--spark-page);
 }
 
 html[data-color-mode="dark"] .attendance-home .attendance-breadcrumb {
@@ -2618,7 +2618,7 @@ html[data-color-mode="dark"] .attendance-home .circle-two {
 
 html[data-color-mode="dark"] .attendance-home .attendance-menu-card {
   color: var(--spark-text);
-  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface) 78%);
   border-color: #2a3b53;
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
 }
@@ -2682,7 +2682,7 @@ html[data-color-mode="dark"] .module-overview-header p {
 
 html[data-color-mode="dark"] .module-overview-card {
   color: var(--spark-text);
-  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface) 78%);
   border-color: #2a3b53;
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
 }
@@ -2773,12 +2773,12 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui tbody tr:nth-of-type(even) {
-  background-color: #142135;
+  background-color: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui tbody tr:hover,
 html[data-color-mode="dark"] .dashboard-content.workspace-ui tbody tr:hover td {
-  background-color: #1c2b41;
+  background-color: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
@@ -2856,12 +2856,12 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page :is(
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-table-wrapper {
-  background: #0f1929;
+  background: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-message {
   color: var(--spark-muted);
-  background: #142135;
+  background: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .approval-page .approval-message.error {
@@ -2879,7 +2879,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboa
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-card {
   color: var(--spark-text);
-  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface) 78%);
   border-color: #2a3b53;
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
 }
@@ -2907,7 +2907,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboa
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-panel {
   color: var(--spark-text);
-  background: #121d2e;
+  background: var(--spark-surface);
   border-color: var(--spark-border);
 }
 
@@ -3062,7 +3062,7 @@ html[data-color-mode="dark"] .attendance-details-dialog .details-section label {
 
 html[data-color-mode="dark"] .attendance-details-dialog .MuiChip-root {
   color: #d9e5f7 !important;
-  background: #263a56 !important;
+  background: var(--spark-hover) !important;
 }
 
 html[data-color-mode="dark"] .attendance-dialog :is(
@@ -3099,7 +3099,7 @@ html[data-color-mode="dark"] .attendance-dialog .MuiOutlinedInput-root.Mui-focus
 
 html[data-color-mode="dark"] .attendance-dialog .MuiOutlinedInput-root.Mui-disabled {
   color: #8b9bb2 !important;
-  background: #172337 !important;
+  background: var(--spark-surface) !important;
 }
 
 html[data-color-mode="dark"] .attendance-dialog .MuiInputLabel-root.Mui-disabled {
@@ -3187,31 +3187,31 @@ html[data-color-mode="dark"] .attendance-delete-dialog .MuiButton-containedError
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-dashboard-actions .MuiButton-outlined {
   color: #d5e2f4 !important;
-  background: #19263a !important;
+  background: var(--spark-surface) !important;
   border-color: #405672 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-dashboard-actions .MuiButton-outlined:hover {
   color: #fff !important;
-  background: #243650 !important;
+  background: var(--spark-hover) !important;
   border-color: #6c8bb6 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-back-button {
   color: #b8ceff !important;
-  background: #19263a !important;
+  background: var(--spark-surface) !important;
   border-color: #405672 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .attendance-back-button:hover {
   color: #fff !important;
-  background: #243650 !important;
+  background: var(--spark-hover) !important;
   border-color: #6c8bb6 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .dashboard-date-card {
   color: #d9e5f7 !important;
-  background: linear-gradient(145deg, #1b2b43, #152236) !important;
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface)) !important;
   border-color: #354a66 !important;
 }
 
@@ -3221,7 +3221,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboa
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard :is(.holiday-card, .quick-action-card) {
   color: var(--spark-text);
-  background: #17243a;
+  background: var(--spark-surface);
   border-color: #2a3b53;
 }
 
@@ -3248,7 +3248,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboa
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .holiday-date-badge {
   color: #c6d5ea;
-  background: #1b2b43;
+  background: var(--spark-surface);
   border-color: #354a66;
 }
 
@@ -3258,7 +3258,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboa
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .holiday-card .MuiChip-root {
   color: #c6d5ea;
-  background: #263a56;
+  background: var(--spark-hover);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-dashboard .quick-action-icon {
@@ -3287,7 +3287,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs :i
   .table-header
 ) {
   color: var(--spark-text);
-  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface) 78%);
   border-color: var(--spark-border);
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
 }
@@ -3302,31 +3302,31 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .a
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-back-button {
   color: #b8ceff !important;
-  background: #19263a !important;
+  background: var(--spark-surface) !important;
   border-color: #405672 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-back-button:hover {
   color: #fff !important;
-  background: #243650 !important;
+  background: var(--spark-hover) !important;
   border-color: #6c8bb6 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .outline-btn {
   color: #d5e2f4 !important;
-  background: #19263a !important;
+  background: var(--spark-surface) !important;
   border-color: #405672 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .outline-btn:hover {
   color: #fff !important;
-  background: #243650 !important;
+  background: var(--spark-hover) !important;
   border-color: #6c8bb6 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .dashboard-card {
   color: var(--spark-text);
-  background: linear-gradient(145deg, #1a2940, #121d2e);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface));
   border-color: #2a3b53;
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
 }
@@ -3353,7 +3353,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .d
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-filter-card {
-  background: #121d2e;
+  background: var(--spark-surface);
   border-color: var(--spark-border);
 }
 
@@ -3362,7 +3362,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .a
   .MuiPickersOutlinedInput-root
 ) {
   color: var(--spark-text);
-  background: #0f1929;
+  background: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .attendance-filter-card :is(
@@ -3405,7 +3405,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .t
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .record-count {
   color: var(--spark-muted);
-  background: #1b2b43;
+  background: var(--spark-surface);
   border-color: #354a66;
 }
 
@@ -3446,7 +3446,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs :i
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .attendance-logs .dashboard-card {
   color: var(--spark-text) !important;
-  background: linear-gradient(145deg, #1a2940, #121d2e) !important;
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface)) !important;
   border-color: var(--spark-border) !important;
 }
 
@@ -3689,7 +3689,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-dashboard {
-  background: radial-gradient(ellipse at 95% 0%, rgba(52, 91, 157, .16), transparent 35%), var(--spark-page) !important;
+  background: var(--spark-page) !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
@@ -4411,7 +4411,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management {
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-header-card {
   color: var(--spark-text);
-  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface) 78%);
   border-color: var(--spark-border);
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
 }
@@ -4426,31 +4426,31 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .attendance-back-button {
   color: #b8ceff !important;
-  background: #19263a !important;
+  background: var(--spark-surface) !important;
   border-color: #405672 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .attendance-back-button:hover {
   color: #fff !important;
-  background: #243650 !important;
+  background: var(--spark-hover) !important;
   border-color: #6c8bb6 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .outline-btn {
   color: #d5e2f4 !important;
-  background: #19263a !important;
+  background: var(--spark-surface) !important;
   border-color: #405672 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .outline-btn:hover {
   color: #fff !important;
-  background: #243650 !important;
+  background: var(--spark-hover) !important;
   border-color: #6c8bb6 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .dashboard-card {
   color: var(--spark-text);
-  background: linear-gradient(145deg, #1a2940, #121d2e);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface));
   border-color: #2a3b53;
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
 }
@@ -4482,18 +4482,18 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management :
   .table-header
 ) {
   color: var(--spark-text);
-  background: linear-gradient(145deg, #17243a 0%, #121d2e 78%);
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface) 78%);
   border-color: var(--spark-border);
   box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-filter-card {
-  background: #121d2e;
+  background: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-filter-card .MuiOutlinedInput-root {
   color: var(--spark-text);
-  background: #0f1929;
+  background: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-filter-card :is(
@@ -4533,7 +4533,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .record-count {
   color: var(--spark-muted);
-  background: #1b2b43;
+  background: var(--spark-surface);
   border-color: #354a66;
 }
 
@@ -4557,7 +4557,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management :
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .dashboard-card {
   color: var(--spark-text) !important;
-  background: linear-gradient(145deg, #1a2940, #121d2e) !important;
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface)) !important;
   border-color: var(--spark-border) !important;
 }
 
@@ -4636,7 +4636,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-table .shift-chip {
   color: #c4d5ef !important;
-  background: #263a56 !important;
+  background: var(--spark-hover) !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .shift-management .shift-table .status-chip.active {
@@ -4773,14 +4773,14 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
   .MuiButton-text
 ) {
   color: #c6d5ea;
-  background-color: #19263a;
+  background-color: var(--spark-surface);
   border-color: #354862;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiButton-outlined:hover,
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiButton-text:hover {
   color: #edf3fc;
-  background-color: #243650;
+  background-color: var(--spark-hover);
   border-color: #58749a;
 }
 
@@ -4855,18 +4855,18 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiIconButton-root
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .MuiIconButton-root:not(.MuiIconButton-colorError):not(.MuiIconButton-colorSuccess):hover {
   color: #edf3fc;
-  background-color: #25364f;
+  background-color: var(--spark-hover);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui button:not(.MuiButtonBase-root):not([class*="approve"]):not([class*="success"]):not([class*="reject"]):not([class*="delete"]):not([class*="remove"]):not([class*="danger"]):not([class*="warning"]):not([class*="primary"]):not([class*="contained"]) {
   color: #c6d5ea;
-  background-color: #19263a;
+  background-color: var(--spark-surface);
   border-color: #354862;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui button:not(.MuiButtonBase-root):not([class*="approve"]):not([class*="success"]):not([class*="reject"]):not([class*="delete"]):not([class*="remove"]):not([class*="danger"]):not([class*="warning"]):not([class*="primary"]):not([class*="contained"]):hover {
   color: #edf3fc;
-  background-color: #243650;
+  background-color: var(--spark-hover);
   border-color: #58749a;
 }
 
@@ -4885,7 +4885,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
   button:disabled
 ) {
   color: #7889a2;
-  background-color: #1a2434;
+  background-color: var(--spark-surface);
   border-color: #2c394b;
   box-shadow: none;
   opacity: .72;
@@ -4895,14 +4895,14 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
 html[data-color-mode="dark"] .MuiButton-outlined,
 html[data-color-mode="dark"] .MuiButton-text {
   color: #c6d5ea;
-  background-color: #19263a;
+  background-color: var(--spark-surface);
   border-color: #354862;
 }
 
 html[data-color-mode="dark"] .MuiButton-outlined:hover,
 html[data-color-mode="dark"] .MuiButton-text:hover {
   color: #edf3fc;
-  background-color: #243650;
+  background-color: var(--spark-hover);
   border-color: #58749a;
 }
 
@@ -4947,7 +4947,7 @@ html[data-color-mode="dark"] .MuiIconButton-root:not(.MuiIconButton-colorError):
 
 html[data-color-mode="dark"] .MuiIconButton-root:not(.MuiIconButton-colorError):not(.MuiIconButton-colorSuccess):hover {
   color: #edf3fc;
-  background-color: #25364f;
+  background-color: var(--spark-hover);
 }
 
 html[data-color-mode="dark"] :is(
@@ -4955,7 +4955,7 @@ html[data-color-mode="dark"] :is(
   .MuiIconButton-root:disabled
 ) {
   color: #7889a2;
-  background-color: #1a2434;
+  background-color: var(--spark-surface);
   border-color: #2c394b;
   box-shadow: none;
   opacity: .72;
@@ -5010,7 +5010,7 @@ html[data-color-mode="dark"] .leave-reports-page :is(.leave-report-section-title
 html[data-color-mode="dark"] .leave-policy-page .leave-policy-count,
 html[data-color-mode="dark"] .leave-reports-page .report-record-count {
   color: #c8d8ef !important;
-  background: #26364d !important;
+  background: var(--spark-hover) !important;
   border: 1px solid var(--spark-border) !important;
 }
 
@@ -5685,7 +5685,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
   .employee-payroll-page
 ) :is(.MuiButton-root, .MuiIconButton-root).Mui-disabled {
   color: #75849a !important;
-  background-color: #182235 !important;
+  background-color: var(--spark-surface) !important;
   border-color: #29374a !important;
   box-shadow: none !important;
 }
@@ -5788,7 +5788,7 @@ html[data-color-mode="dark"] .sc-salary-component-dialog-paper.MuiPaper-root {
 
 html[data-color-mode="dark"] .sc-salary-component-dialog-title.MuiDialogTitle-root {
   color: var(--spark-text) !important;
-  background: linear-gradient(120deg, #1b2b42, #172438) !important;
+  background: linear-gradient(120deg, var(--spark-surface-raised), var(--spark-surface)) !important;
   border-bottom-color: var(--spark-border) !important;
 }
 
@@ -5802,7 +5802,7 @@ html[data-color-mode="dark"] .sc-salary-component-dialog-subtitle.MuiTypography-
 
 html[data-color-mode="dark"] .sc-salary-component-dialog-icon {
   color: #a9c5f2 !important;
-  background: #223754 !important;
+  background: var(--spark-hover) !important;
   border: 1px solid #344c6b !important;
 }
 
@@ -5976,7 +5976,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .pd-payroll-dashboa
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .pd-payroll-dashboard :is(.pd-payroll-progress, .pd-department-progress) {
-  background: #26364d !important;
+  background: var(--spark-hover) !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .pd-payroll-dashboard .pd-payroll-progress .MuiLinearProgress-bar {
@@ -5994,7 +5994,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .pd-payroll-dashboa
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .pd-payroll-dashboard .pd-quick-action-button.MuiButton-root {
   color: #d4e1f4 !important;
-  background: #17243a !important;
+  background: var(--spark-surface) !important;
   border: 1px solid var(--spark-border) !important;
 }
 
@@ -6006,7 +6006,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .pd-payroll-dashboa
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-section-heading-icon {
   color: #a9c5f2 !important;
-  background: #223754 !important;
+  background: var(--spark-hover) !important;
   border: 1px solid #344c6b !important;
 }
 
@@ -6197,7 +6197,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process-page .pr-status-chip.pr-status-ready {
   color: #a8c4f4 !important;
-  background: #22344d !important;
+  background: var(--spark-hover) !important;
   border-color: #344c6b !important;
 }
 
@@ -6238,7 +6238,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process-page .pr-payroll-empty-icon {
   color: #a8c4f4 !important;
-  background: #22344d !important;
+  background: var(--spark-hover) !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process-page .pr-payroll-api-error,
@@ -6288,7 +6288,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .ph-payroll-history
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .ph-payroll-history-page .ph-history-empty-icon {
   color: #a8c4f4 !important;
-  background: #22344d !important;
+  background: var(--spark-hover) !important;
   border: 1px solid #344c6b !important;
 }
 
@@ -6654,7 +6654,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
   .employee-payroll-page
 ) :is(.MuiButton-root, .MuiIconButton-root).Mui-disabled {
   color: #75849a !important;
-  background: #182235 !important;
+  background: var(--spark-surface) !important;
   border-color: #29374a !important;
   box-shadow: none !important;
   opacity: .72;
@@ -6724,7 +6724,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .pd-payroll-dashboa
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .pd-payroll-dashboard .pd-payroll-summary-card.MuiCard-root {
   border-color: #304159 !important;
-  background: linear-gradient(145deg, #1a2940, #17243a) !important;
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface)) !important;
   box-shadow: none !important;
   transform: none !important;
   transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease !important;
@@ -6732,7 +6732,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .pd-payroll-dashboa
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .pd-payroll-dashboard .pd-payroll-summary-card.MuiCard-root:hover {
   border-color: #4a6384 !important;
-  background: linear-gradient(145deg, #1d2d45, #19263a) !important;
+  background: linear-gradient(145deg, var(--spark-hover), var(--spark-surface)) !important;
   box-shadow: 0 8px 20px rgba(0, 0, 0, .14) !important;
   transform: none !important;
 }
@@ -6946,7 +6946,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .info-card-icon,
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .section-icon {
-  background: #203653;
+  background: var(--spark-surface);
   color: #a9c3f3;
 }
 
@@ -6987,7 +6987,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .upload-box.is-dragging,
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .other-document-row.is-dragging {
   border-color: #7da6ff;
-  background: #1d2c43;
+  background: var(--spark-surface);
   color: #dbe8ff;
 }
 
@@ -7029,7 +7029,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .document-note {
   border-color: #344967;
-  background: #17263b;
+  background: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .document-note strong {
@@ -7060,7 +7060,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .document-item-status.draft {
-  background: #26354b;
+  background: var(--spark-hover);
   color: #bfcee2;
 }
 
@@ -7210,7 +7210,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page :
   .permission-table th,
   .permission-user-table th
 ) {
-  background: #1b293d;
+  background: var(--spark-surface);
   color: #b9c9df;
   border-color: var(--spark-border);
 }
@@ -7228,7 +7228,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page :
   .permission-module-row td,
   .permission-user-module-row td
 ) {
-  background: #1b293d !important;
+  background: var(--spark-surface) !important;
   color: var(--spark-text) !important;
   border-color: var(--spark-border) !important;
 }
@@ -7238,7 +7238,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .permission-user-module-row td span {
-  background: #28384e;
+  background: var(--spark-hover);
   color: #bfcee2;
 }
 
@@ -7248,7 +7248,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page :
   .permission-user-readonly-badge,
   .permission-user-cross
 ) {
-  background: #28384e;
+  background: var(--spark-hover);
   color: #b9c9df;
   border-color: var(--spark-border);
 }
@@ -7259,7 +7259,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page :
   .permission-user-empty-icon,
   .permission-loading-role
 ) {
-  background: #1b293d;
+  background: var(--spark-surface);
   color: #b9c9df;
   border-color: var(--spark-border);
 }
@@ -7303,12 +7303,12 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .permission-access-badge.disabled {
-  background: #27364a;
+  background: var(--spark-hover);
   color: #a8b6cb;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .permission-login-radio {
-  background: #0d1727;
+  background: var(--spark-page);
   border-color: #7186a3;
 }
 
@@ -7334,18 +7334,18 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .permission-manage-count {
-  background: #28384e;
+  background: var(--spark-hover);
   color: #bfcee2;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .permission-manage-count.complete {
-  background: #263d65;
+  background: var(--spark-hover);
   color: #a9c4ff;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .permission-manage-row td,
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .permission-manage-panel {
-  background: #17253a !important;
+  background: var(--spark-surface) !important;
   border-color: var(--spark-border) !important;
 }
 
@@ -7371,7 +7371,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .permissions-page .permission-user-cross {
-  background: #26364b;
+  background: var(--spark-hover);
   color: #91a3bb;
 }
 
@@ -7426,7 +7426,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-reimbursements-
   .my-reimbursements-table-card .MuiTableHead-root,
   .my-reimbursements-table-card thead
 ) {
-  background: #1b293d !important;
+  background: var(--spark-surface) !important;
   color: #b9c9df !important;
   border-color: var(--spark-border) !important;
 }
@@ -7607,7 +7607,7 @@ html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-paper .Mui
 
 html[data-color-mode="dark"] .MuiDialog-root .my-reimbursement-create-paper .MuiDialogActions-root .MuiButton-contained {
   color: var(--spark-text) !important;
-  background: #26364c !important;
+  background: var(--spark-hover) !important;
   border: 1px solid #3a4d66 !important;
   box-shadow: none !important;
 }
@@ -7717,7 +7717,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .reimbursement-page
   .reimbursement-table thead .MuiTableRow-root,
   .reimbursement-table thead .MuiTableCell-root
 ) {
-  background: #1b293d !important;
+  background: var(--spark-surface) !important;
   color: #b9c9df !important;
   border-color: var(--spark-border) !important;
 }
@@ -7812,13 +7812,13 @@ html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiDialog
 
 html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiDialogActions-root .MuiButton-contained {
   color: var(--spark-text) !important;
-  background: #26364c !important;
+  background: var(--spark-hover) !important;
   border: 1px solid #3a4d66 !important;
   box-shadow: none !important;
 }
 
 html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .MuiDialogActions-root .MuiButton-contained:hover {
-  background: #31445e !important;
+  background: var(--spark-hover) !important;
 }
 
 html[data-color-mode="dark"] .MuiDialog-root.new-reimbursement-dialog .new-reimbursement-form .MuiInputLabel-root {
@@ -7934,7 +7934,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .company-policies-p
   .company-policy-title-icon,
   .company-policy-empty-icon
 ) {
-  background: #213554;
+  background: var(--spark-surface);
   color: #a9c4ff;
 }
 
@@ -7952,12 +7952,12 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .company-policies-p
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .company-policies-page .company-policy-category {
-  background: #24395f !important;
+  background: var(--spark-hover) !important;
   color: #a9c4ff !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .company-policies-page .company-policy-version {
-  background: #28384e !important;
+  background: var(--spark-hover) !important;
   color: #bfcee2 !important;
 }
 
@@ -8064,7 +8064,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .policy-dashboard .
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .policy-dashboard .policy-search-shortcut {
-  background: #25364c !important;
+  background: var(--spark-hover) !important;
   border-color: var(--spark-border) !important;
   color: #c5d4e9 !important;
   flex: 0 0 auto !important;
@@ -8113,7 +8113,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .policy-dashboard :
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .policy-dashboard .policy-mui-table thead th {
-  background: #1b293d !important;
+  background: var(--spark-surface) !important;
   color: #b9c9df !important;
   border-color: var(--spark-border) !important;
 }
@@ -8133,7 +8133,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .policy-dashboard .
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .policy-dashboard .policy-category {
-  background: #24395f !important;
+  background: var(--spark-hover) !important;
   color: #a9c4ff !important;
 }
 
@@ -8148,7 +8148,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .policy-dashboard .
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .policy-dashboard .policy-status.archived {
-  background: #28384e !important;
+  background: var(--spark-hover) !important;
   color: #bfcee2 !important;
 }
 
@@ -8307,7 +8307,7 @@ html[data-color-mode="dark"] .policy-form-paper .policy-file-dropzone {
 }
 
 html[data-color-mode="dark"] .policy-form-paper .policy-file-dropzone:hover {
-  background: #1d2c41 !important;
+  background: var(--spark-surface) !important;
   border-color: #4d82f3 !important;
 }
 
@@ -8466,13 +8466,13 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-dashboard-page 
   .dashboard-date-icon
 ) {
   border-color: var(--spark-border);
-  background: #203653;
+  background: var(--spark-surface);
   color: #9dbcf2;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-dashboard-page .holiday-date-box {
   border-color: #304866;
-  background: #1b2d46;
+  background: var(--spark-surface);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-dashboard-page .holiday-day {
@@ -8484,7 +8484,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-dashboard-page 
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-dashboard-page .holiday-skeleton {
-  background: linear-gradient(90deg, #1a273a 25%, #24354d 50%, #1a273a 75%);
+  background: linear-gradient(90deg, var(--spark-surface) 25%, var(--spark-hover) 50%, var(--spark-surface) 75%);
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-dashboard-page .quick-action {
@@ -8537,7 +8537,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-dashboard-page 
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-dashboard-page .attendance-summary-card.weekend .summary-icon {
-  background: #263247;
+  background: var(--spark-hover);
   color: #b5c5df;
 }
 
@@ -8758,14 +8758,14 @@ html[data-color-mode="dark"] .login-recovery-dialog .MuiOutlinedInput-notchedOut
 /* Keep primary actions in the dark surface palette instead of the bright blue theme color. */
 html[data-color-mode="dark"] :is(.MuiButton-containedPrimary, .MuiButton-contained:not(.MuiButton-containedError):not(.MuiButton-containedSuccess):not(.MuiButton-containedWarning):not(.MuiButton-containedInfo):not(.MuiButton-colorError):not(.MuiButton-colorSuccess):not(.MuiButton-colorWarning):not(.MuiButton-colorInfo)) {
   color: #e5edf8 !important;
-  background: #26364c !important;
+  background: var(--spark-hover) !important;
   border: 1px solid #3a4d66 !important;
   box-shadow: none !important;
 }
 
 html[data-color-mode="dark"] :is(.MuiButton-containedPrimary, .MuiButton-contained:not(.MuiButton-containedError):not(.MuiButton-containedSuccess):not(.MuiButton-containedWarning):not(.MuiButton-containedInfo):not(.MuiButton-colorError):not(.MuiButton-colorSuccess):not(.MuiButton-colorWarning):not(.MuiButton-colorInfo)):hover:not(:disabled) {
   color: #fff !important;
-  background: #31445e !important;
+  background: var(--spark-hover) !important;
   border-color: #526b8a !important;
   box-shadow: none !important;
 }
@@ -8777,7 +8777,7 @@ html[data-color-mode="dark"] :is(.MuiButton-containedPrimary, .MuiButton-contain
 
 html[data-color-mode="dark"] .sidebar .menu-item.active {
   color: #f2f5fb !important;
-  background: #25364c !important;
+  background: var(--spark-hover) !important;
   border: 1px solid #3a4d66 !important;
   box-shadow: inset 3px 0 0 #9aadc5 !important;
 }
@@ -8785,14 +8785,14 @@ html[data-color-mode="dark"] .sidebar .menu-item.active {
 html[data-color-mode="dark"] .sidebar aside a.active,
 html[data-color-mode="dark"] aside.sidebar a.active {
   color: #f2f5fb !important;
-  background: #25364c !important;
+  background: var(--spark-hover) !important;
   border: 1px solid #3a4d66 !important;
   box-shadow: inset 3px 0 0 #9aadc5 !important;
 }
 
 html[data-color-mode="dark"] .sidebar .menu-item:not(.active):hover {
   color: #edf3fc !important;
-  background: #1b2a3e !important;
+  background: var(--spark-surface) !important;
 }
 
 /* Older pages use native buttons with action names instead of MUI variants. */
@@ -8808,7 +8808,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui button:is(
   [class*="run-"]
 ):not(.MuiButtonBase-root):not([class*="delete"]):not([class*="remove"]) {
   color: #e5edf8 !important;
-  background: #26364c !important;
+  background: var(--spark-hover) !important;
   border-color: #3a4d66 !important;
   box-shadow: none !important;
 }
@@ -8825,7 +8825,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui button:is(
   [class*="run-"]
 ):not(.MuiButtonBase-root):not([class*="delete"]):not([class*="remove"]):hover:not(:disabled) {
   color: #fff !important;
-  background: #31445e !important;
+  background: var(--spark-hover) !important;
   border-color: #526b8a !important;
 }
 
@@ -9029,7 +9029,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payr
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-employees-payroll-card.MuiCard-root {
   color: var(--spark-text) !important;
-  background: linear-gradient(155deg, #1a2940 0%, #172438 100%) !important;
+  background: linear-gradient(155deg, var(--spark-surface-raised), var(--spark-surface)) !important;
   border: 1px solid #304159 !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, .16) !important;
 }
@@ -9056,7 +9056,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payr
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-template-info-bar > div,
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-deduction-note {
   color: var(--spark-text) !important;
-  background: #142136 !important;
+  background: var(--spark-surface) !important;
   border-color: #304159 !important;
 }
 
@@ -9090,12 +9090,12 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payr
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-earning-row,
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-summary-box {
   color: var(--spark-text) !important;
-  background: #142136 !important;
+  background: var(--spark-surface) !important;
   border-color: #304159 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-earning-row:hover {
-  background: #1c2d46 !important;
+  background: var(--spark-surface) !important;
   border-color: #405a7b !important;
 }
 
@@ -9109,7 +9109,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payr
 
 html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialog-paper {
   color: var(--spark-text);
-  background: #172438 !important;
+  background: var(--spark-surface) !important;
   border: 1px solid #304159 !important;
 }
 
@@ -9117,7 +9117,7 @@ html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiD
 html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialogContent-root,
 html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialogActions-root {
   color: var(--spark-text) !important;
-  background: #172438 !important;
+  background: var(--spark-surface) !important;
 }
 
 html[data-color-mode="dark"] .MuiDialog-root.profile-photo-required-dialog .MuiDialogTitle-root {
@@ -9167,7 +9167,7 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payr
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-component-list {
   border-color: #304159 !important;
-  background: #142136 !important;
+  background: var(--spark-surface) !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payroll-page .epr-view-component-row p,
@@ -9179,12 +9179,62 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .epr-employees-payr
 html[data-color-mode="dark"] .MuiDialog-paper:has(.epr-view-dialog-title),
 html[data-color-mode="dark"] .MuiDialog-paper:has(.epr-delete-confirm-actions) {
   color: var(--spark-text) !important;
-  background: #172438 !important;
+  background: var(--spark-surface) !important;
   border: 1px solid #304159 !important;
 }
 
 html[data-color-mode="dark"] .MuiDialog-paper:has(.epr-view-dialog-title) .epr-view-employee-header {
   color: var(--spark-text) !important;
-  background: #142136 !important;
+  background: var(--spark-surface) !important;
   border-color: #304159 !important;
+}
+
+/* Keep the shared shell and module cards neutral in black dark mode. */
+html[data-color-mode="dark"] .sidebar,
+html[data-color-mode="dark"] .sidebar .sidebar-footer {
+  background: var(--spark-surface) !important;
+}
+
+html[data-color-mode="dark"] .sidebar :is(.menu-item, a):not(.active):hover {
+  background: var(--spark-hover) !important;
+}
+
+html[data-color-mode="dark"] :is(
+  .spark-dashboard-page,
+  .employee-dashboard,
+  .employee-list-page,
+  .attendance-home,
+  .module-overview
+) {
+  background: var(--spark-page) !important;
+}
+
+html[data-color-mode="dark"] :is(
+  .spark-dashboard-page .dashboard-stat-card,
+  .spark-dashboard-page .dashboard-module-card,
+  .spark-dashboard-page .dashboard-auth-card,
+  .employee-dashboard .employee-card,
+  .employee-list-page .stats-card,
+  .employee-list-page .toolbar-card,
+  .employee-list-page .table-card,
+  .employee-list-page .empty-card,
+  .employee-list-page .loading-card,
+  .attendance-home .attendance-menu-card,
+  .module-overview-card
+) {
+  color: var(--spark-text) !important;
+  background: linear-gradient(145deg, var(--spark-surface-raised), var(--spark-surface) 78%) !important;
+  border-color: var(--spark-border) !important;
+}
+
+
+/* Final shared surface pass: route-level MUI panels use the same near-black palette. */
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(.MuiCard-root, .MuiPaper-root, .MuiTableContainer-root) {
+  background-color: var(--spark-surface-raised) !important;
+  color: var(--spark-text) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(.MuiTableHead-root, thead) {
+  background-color: var(--spark-table-head) !important;
 }
