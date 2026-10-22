@@ -3335,6 +3335,8 @@ const PayrollHistory = ({
                         ) : filteredPayrolls.length >
                           0 ? (
 
+                            <>
+
                             <MuiTableMigration className="ph-payroll-history-table">
 
                                 <MuiTableHeadMigration>
@@ -3540,6 +3542,8 @@ const PayrollHistory = ({
                                 rowsPerPageOptions={[10, 25, 50, 100]}
                                 labelRowsPerPage="Rows per page:"
                             />
+
+                            </>
 
                         ) : (
 
