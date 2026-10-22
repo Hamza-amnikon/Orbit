@@ -118,7 +118,7 @@
   .permission-stat-card, .permission-table-container, .approval-stat-card,
   .approval-table-card, .leave-summary-card, .leave-trend-panel,
   .upcoming-leaves-panel, .leave-balance-card, .form-card, .employee-form-card,
-  .vendor-table-card, .coming-soon-card) {
+  .coming-soon-card) {
   border: 1px solid var(--workspace-border);
   border-radius: var(--workspace-radius); box-shadow: var(--workspace-shadow);
 }

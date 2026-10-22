@@ -2153,7 +2153,6 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui :is(
   .leave-balance-card,
   .form-card,
   .employee-form-card,
-  .vendor-table-card,
   .coming-soon-card
 ) {
   background-color: var(--spark-surface);
