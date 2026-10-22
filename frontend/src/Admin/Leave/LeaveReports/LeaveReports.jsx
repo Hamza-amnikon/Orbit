@@ -21,6 +21,7 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    TablePagination,
     CircularProgress,
 } from "@mui/material";
 
@@ -72,6 +73,8 @@ export default function LeaveReports() {
     const [filters, setFilters] = useState({ ...EMPTY_FILTERS });
 
     const [appliedFilters, setAppliedFilters] = useState({ ...EMPTY_FILTERS });
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(25);
 
     // Used only to force native date fields to remount after Reset.
     const [resetVersion, setResetVersion] = useState(0);
@@ -128,6 +131,7 @@ export default function LeaveReports() {
 
         setFilters(emptyFilters);
         setAppliedFilters(emptyFilters);
+        setPage(0);
         setResetVersion((prev) => prev + 1);
     };
 
@@ -142,6 +146,7 @@ export default function LeaveReports() {
 
     const handleApplyFilters = () => {
         setAppliedFilters({ ...filters });
+        setPage(0);
     };
 
     const handleReset = () => {
@@ -149,6 +154,7 @@ export default function LeaveReports() {
 
         setFilters(emptyFilters);
         setAppliedFilters(emptyFilters);
+        setPage(0);
         setResetVersion((prev) => prev + 1);
         setError("");
     };
@@ -337,6 +343,11 @@ export default function LeaveReports() {
             );
         });
     }, [leaveData, appliedFilters, reportType, employees]);
+
+    const visibleData = useMemo(
+        () => filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+        [filteredData, page, rowsPerPage]
+    );
 
     const summary = useMemo(() => {
         return filteredData.reduce(
@@ -1076,7 +1087,7 @@ export default function LeaveReports() {
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    filteredData.map((item) => (
+                                    visibleData.map((item) => (
                                         <TableRow key={item.leaveId}>
                                             <TableCell>
                                                 <Typography className="employee-id">
@@ -1128,6 +1139,19 @@ export default function LeaveReports() {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <TablePagination
+                        component="div"
+                        count={filteredData.length}
+                        page={page}
+                        onPageChange={(_, nextPage) => setPage(nextPage)}
+                        rowsPerPage={rowsPerPage}
+                        onRowsPerPageChange={(event) => {
+                            setRowsPerPage(Number(event.target.value));
+                            setPage(0);
+                        }}
+                        rowsPerPageOptions={[10, 25, 50, 100]}
+                        labelRowsPerPage="Rows per page:"
+                    />
                 </Card>
             )}
 

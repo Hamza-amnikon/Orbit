@@ -75,8 +75,8 @@ const payrollModules = [
         {
             title: "My Payslip",
             description:
-                "View and export payroll reports and analytics.",
-            icon: <BarChartIcon />,
+                "View and download your personal payslips.",
+            icon: <ReceiptLongIcon />,
             color: "#030303",
             route: "/employee/payroll",
         },

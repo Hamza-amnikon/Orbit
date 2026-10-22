@@ -9,6 +9,7 @@
 }
 
 .attendance-table-scroll{width:100%;overflow-x:auto}
+.attendance-table-container{width:100%;min-width:0}
 
 /* ============================
    Header

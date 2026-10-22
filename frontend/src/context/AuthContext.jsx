@@ -973,6 +973,12 @@ export function AuthProvider({ children }) {
 
         null;
 
+    const updateProfile = useCallback((profileUpdates) => {
+        if (!profileUpdates || typeof profileUpdates !== "object") return;
+        setProfile((current) => ({ ...(current || {}), ...profileUpdates }));
+        setUser((current) => current ? { ...current, ...profileUpdates } : current);
+    }, []);
+
 
     /*
     =========================================================
@@ -997,15 +1003,13 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
 
-        if (!user || !employeeId) {
+        // The profile load performs the initial access check. Starting another
+        // check here races that result during login and can briefly redirect
+        // an approved employee to Settings. Start only the background refresh
+        // after the initial profile/access checks have settled.
+        if (!user || !employeeId || loading || profileLoading || sparkAccessLoading) {
             return;
         }
-
-        // Check immediately.
-        checkSparkAccess(
-            employeeId,
-            false
-        );
 
         // Continue checking for HR approval changes while the tab is visible.
         // A 30-second interval avoids an unnecessary request every 10 seconds,
@@ -1042,6 +1046,9 @@ export function AuthProvider({ children }) {
     }, [
         user,
         employeeId,
+        loading,
+        profileLoading,
+        sparkAccessLoading,
         checkSparkAccess
     ]);
 
@@ -1967,6 +1974,8 @@ export function AuthProvider({ children }) {
 
                 refreshProfile:
                     loadProfile,
+
+                updateProfile,
 
 
                 /*

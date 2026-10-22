@@ -159,6 +159,10 @@ function Sidebar() {
        ======================================================== */
 
     const getMenuRoute = (item) => {
+        if (item.skipLoginRoute) {
+            return item.path;
+        }
+
         try {
 
             const loginRoute =

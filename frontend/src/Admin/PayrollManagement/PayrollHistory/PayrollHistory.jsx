@@ -26,6 +26,7 @@ import {
     MenuItem,
     Select,
     Snackbar,
+    TablePagination,
     TextField,
     Typography,
 } from "@mui/material";
@@ -1135,6 +1136,10 @@ const PayrollHistory = ({
         setMonthFilter,
     ] = useState("All");
 
+    const [historyPage, setHistoryPage] = useState(0);
+
+    const [historyRowsPerPage, setHistoryRowsPerPage] = useState(25);
+
     const [
         payrolls,
         setPayrolls,
@@ -1423,6 +1428,18 @@ const PayrollHistory = ({
                 monthFilter,
             ]
         );
+
+    const visiblePayrolls = useMemo(
+        () => filteredPayrolls.slice(
+            historyPage * historyRowsPerPage,
+            historyPage * historyRowsPerPage + historyRowsPerPage
+        ),
+        [filteredPayrolls, historyPage, historyRowsPerPage]
+    );
+
+    useEffect(() => {
+        setHistoryPage(0);
+    }, [search, statusFilter, monthFilter]);
 
     const handleExportHistory = async () => {
         if (!canExport || exportingHistory) return;
@@ -3366,7 +3383,7 @@ const PayrollHistory = ({
 
                                 <MuiTableBodyMigration>
 
-                                    {filteredPayrolls.map(
+                                    {visiblePayrolls.map(
                                         (
                                             payroll
                                         ) => (
@@ -3509,6 +3526,20 @@ const PayrollHistory = ({
                                 </MuiTableBodyMigration>
 
                             </MuiTableMigration>
+
+                            <TablePagination
+                                component="div"
+                                count={filteredPayrolls.length}
+                                page={historyPage}
+                                onPageChange={(_, nextPage) => setHistoryPage(nextPage)}
+                                rowsPerPage={historyRowsPerPage}
+                                onRowsPerPageChange={(event) => {
+                                    setHistoryRowsPerPage(Number(event.target.value));
+                                    setHistoryPage(0);
+                                }}
+                                rowsPerPageOptions={[10, 25, 50, 100]}
+                                labelRowsPerPage="Rows per page:"
+                            />
 
                         ) : (
 

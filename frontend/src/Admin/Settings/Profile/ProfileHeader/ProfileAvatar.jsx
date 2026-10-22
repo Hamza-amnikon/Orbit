@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { loadAuthenticatedProfilePhoto } from "../../../Services/ProfilePhotoService";
+import {
+    getCachedAuthenticatedProfilePhoto,
+    loadAuthenticatedProfilePhoto,
+} from "../../../Services/ProfilePhotoService";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ProfileAvatar({ profile, onPhotoStateChange }) {
 
     const [imageError, setImageError] = useState(false);
-    const [photoImageUrl, setPhotoImageUrl] = useState("");
     const profilePhotoUrl = profile?.photoUrl ?? profile?.PhotoUrl ?? "";
+    const [photoImageUrl, setPhotoImageUrl] = useState(() => getCachedAuthenticatedProfilePhoto(profilePhotoUrl) || "");
 
     useEffect(() => {
-        const controller = new AbortController();
         let active = true;
-        setPhotoImageUrl("");
         setImageError(false);
         onPhotoStateChange?.(null);
 
@@ -19,13 +20,14 @@ function ProfileAvatar({ profile, onPhotoStateChange }) {
             onPhotoStateChange?.(false);
             return () => {
                 active = false;
-                controller.abort();
             };
         }
 
-        const loadPhoto = (refresh = false) => loadAuthenticatedProfilePhoto(profilePhotoUrl, { refresh, signal: controller.signal })
+        const cachedPhoto = getCachedAuthenticatedProfilePhoto(profilePhotoUrl);
+        setPhotoImageUrl(cachedPhoto || "");
+        const loadPhoto = (refresh = false) => loadAuthenticatedProfilePhoto(profilePhotoUrl, { refresh })
             .then((url) => {
-                if (!active || controller.signal.aborted) return;
+                if (!active) return;
                 if (url) {
                     setPhotoImageUrl(url);
                 } else {
@@ -42,7 +44,6 @@ function ProfileAvatar({ profile, onPhotoStateChange }) {
 
         return () => {
             active = false;
-            controller.abort();
             window.removeEventListener("spark:profile-photo-updated", onPhotoUpdated);
         };
     }, [onPhotoStateChange, profilePhotoUrl]);

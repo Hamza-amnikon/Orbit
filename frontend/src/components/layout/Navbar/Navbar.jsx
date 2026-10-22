@@ -72,7 +72,6 @@ function Navbar({ title }) {
         const path =
             location.pathname.toLowerCase();
 
-
         if (path === "/mydashboard") {
             return "My Dashboard";
         }

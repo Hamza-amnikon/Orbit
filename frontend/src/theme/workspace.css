@@ -146,6 +146,11 @@
 .dashboard-content.workspace-ui .reports-empty { padding: 32px; background: white; border: 1px solid var(--workspace-border); border-radius: 16px; color: var(--workspace-muted); }
 .dashboard-content.workspace-ui .reports-empty svg { width: 48px; height: 48px; color: #2563eb; margin-bottom: 16px; }
 .dashboard-content.workspace-ui .reports-empty h2 { color: var(--workspace-heading); font-size: 20px; margin: 0 0 8px; }
+.dashboard-content.workspace-ui .reports-module-card { height: 100%; border: 1px solid var(--workspace-border); border-radius: 16px; background: var(--workspace-surface); }
+.dashboard-content.workspace-ui .reports-module-card .MuiCardContent-root { display: flex; height: 100%; flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px; }
+.dashboard-content.workspace-ui .reports-module-card svg { color: #2563eb; font-size: 32px; }
+.dashboard-content.workspace-ui .reports-module-card h3 { color: var(--workspace-heading); }
+.dashboard-content.workspace-ui .reports-module-card p { color: var(--workspace-muted); }
 
 .dashboard-content.workspace-ui :is(.attendance-header-card, .shift-header-card,
   .role-header-card, .leave-types-header-card, .leave-policy-header-card,

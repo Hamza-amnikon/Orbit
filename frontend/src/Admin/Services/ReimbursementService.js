@@ -27,6 +27,15 @@ const reimbursementApi = axios.create({
   baseURL: API_BASE_URL,
 });
 
+reimbursementApi.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // ============================================================
 // ERROR HELPER
 // ============================================================
@@ -89,6 +98,9 @@ const getErrorMessage = (
   // ----------------------------------------------------------
 
   if (error?.message) {
+    if (error.response?.status === 401) {
+      return "The reimbursement service rejected this session (401). Please sign in again or contact an administrator if the problem continues.";
+    }
     return error.message;
   }
 
@@ -164,11 +176,7 @@ export const getReimbursements = async (
     return response.data;
 
   } catch (error) {
-    console.error(
-      "Error fetching reimbursements:",
-      error.response?.data ||
-      error.message
-    );
+
 
     throw new Error(
       getErrorMessage(
@@ -202,11 +210,7 @@ export const getReimbursementById =
       return response.data;
 
     } catch (error) {
-      console.error(
-        "Error fetching reimbursement:",
-        error.response?.data ||
-        error.message
-      );
+
 
       throw new Error(
         getErrorMessage(
@@ -253,11 +257,6 @@ export const createReimbursement =
           "Reimbursement data is required."
         );
       }
-
-      console.log(
-        "Original reimbursement data:",
-        reimbursementData
-      );
 
       // ------------------------------------------------------
       // FIND RECEIPT FILE
@@ -461,38 +460,6 @@ export const createReimbursement =
       }
 
       // ------------------------------------------------------
-      // DEBUG
-      // ------------------------------------------------------
-
-      console.log(
-        "=========================================="
-      );
-
-      console.log(
-        "Creating reimbursement with FormData:"
-      );
-
-      console.log(
-        "=========================================="
-      );
-
-      for (
-        const [key, value]
-        of formData.entries()
-      ) {
-        console.log(
-          `FormData ${key}:`,
-          value instanceof File
-            ? value.name
-            : value
-        );
-      }
-
-      console.log(
-        "=========================================="
-      );
-
-      // ------------------------------------------------------
       // POST
       // ------------------------------------------------------
       //
@@ -517,23 +484,14 @@ export const createReimbursement =
 
       return response.data;
 
-    } catch (error) {
-
-      console.error(
-        "Error creating reimbursement:",
-        error.response?.data ||
-        error.message
-      );
+    } catch {
 
       // ------------------------------------------------------
       // SHOW ASP.NET VALIDATION ERRORS
       // ------------------------------------------------------
 
       if (error.response?.data?.errors) {
-        console.error(
-          "Backend validation errors:",
-          error.response.data.errors
-        );
+
       }
 
       throw new Error(
@@ -591,11 +549,7 @@ export const uploadReceipt =
 
     } catch (error) {
 
-      console.error(
-        "Error uploading receipt:",
-        error.response?.data ||
-        error.message
-      );
+
 
       throw new Error(
         getErrorMessage(
@@ -652,11 +606,7 @@ export const updateReimbursement =
 
     } catch (error) {
 
-      console.error(
-        "Error updating reimbursement:",
-        error.response?.data ||
-        error.message
-      );
+
 
       throw new Error(
         getErrorMessage(
@@ -692,11 +642,7 @@ export const deleteReimbursement =
 
     } catch (error) {
 
-      console.error(
-        "Error deleting reimbursement:",
-        error.response?.data ||
-        error.message
-      );
+
 
       throw new Error(
         getErrorMessage(
@@ -754,11 +700,7 @@ export const updateReimbursementStatus =
 
     } catch (error) {
 
-      console.error(
-        "Error updating reimbursement status:",
-        error.response?.data ||
-        error.message
-      );
+
 
       throw new Error(
         getErrorMessage(
@@ -839,11 +781,7 @@ export const getReimbursementSummary =
 
     } catch (error) {
 
-      console.error(
-        "Error fetching reimbursement summary:",
-        error.response?.data ||
-        error.message
-      );
+
 
       throw new Error(
         getErrorMessage(
@@ -879,11 +817,7 @@ export const getEmployeeReimbursements =
 
     } catch (error) {
 
-      console.error(
-        "Error fetching employee reimbursements:",
-        error.response?.data ||
-        error.message
-      );
+
 
       throw new Error(
         getErrorMessage(
@@ -1037,11 +971,7 @@ export const downloadReceipt =
 
     } catch (error) {
 
-      console.error(
-        "Error downloading receipt:",
-        error.response?.data ||
-        error.message
-      );
+
 
       throw new Error(
         getErrorMessage(
@@ -1083,11 +1013,7 @@ export const getReceiptBlob =
 
     } catch (error) {
 
-      console.error(
-        "Error loading receipt:",
-        error.response?.data ||
-        error.message
-      );
+
 
       throw new Error(
         getErrorMessage(
@@ -1153,13 +1079,9 @@ export const checkReceiptExists =
         response.status < 300
       );
 
-    } catch (error) {
+    } catch {
 
-      console.error(
-        "Receipt does not exist:",
-        error.response?.data ||
-        error.message
-      );
+
 
       return false;
     }

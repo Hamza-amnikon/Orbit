@@ -14,6 +14,7 @@ import EmergencyContact from "./Profile/EmergencyContact";
 import Documents from "./Profile/Docs";
 
 import { getProfile } from "../Services/ProfileService";
+import { useAuth } from "../../context/AuthContext";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import "./SettingsDashboard.refinement.css";
 
@@ -22,6 +23,8 @@ const DOCUMENT_API_URL = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Docu
 
 
 export default function SettingsDashboard() {
+
+    const { updateProfile } = useAuth();
 
     // =========================================================
     // URL QUERY PARAMETERS
@@ -204,13 +207,14 @@ export default function SettingsDashboard() {
                     data?.DateOfJoining;
 
                 if (mounted) {
-
-                    setProfile({
+                    const currentProfile = {
                         ...(employeeRecord || {}),
                         ...data,
                         joinDate: joiningDate,
                         joiningDate,
-                    });
+                    };
+                    setProfile(currentProfile);
+                    updateProfile?.(currentProfile);
 
                 }
 
@@ -251,7 +255,7 @@ export default function SettingsDashboard() {
 
         };
 
-    }, []);
+    }, [updateProfile]);
 
     const handleProfilePhotoUpload = async (file) => {
         if (!file) return;
@@ -318,15 +322,16 @@ export default function SettingsDashboard() {
                 // if the profile refresh endpoint is temporarily unavailable.
                 console.warn("Profile photo uploaded, but profile refresh failed:", refreshError);
             }
-            window.dispatchEvent(new Event("spark:profile-photo-updated"));
-            setProfile((current) => ({
-                ...current,
+            const currentProfile = {
+                ...(profile || {}),
                 ...(refreshedProfile || {}),
-                photoUrl: (() => {
-                    const updatedUrl = refreshedProfile?.photoUrl ?? refreshedProfile?.PhotoUrl ?? current?.photoUrl;
-                    return updatedUrl ? `${updatedUrl.split("?")[0]}?v=${Date.now()}` : updatedUrl;
-                })(),
-            }));
+            };
+            const updatedPhotoUrl = refreshedProfile?.photoUrl ?? refreshedProfile?.PhotoUrl ?? currentProfile?.photoUrl;
+            const versionedPhotoUrl = updatedPhotoUrl ? `${updatedPhotoUrl.split("?")[0]}?v=${Date.now()}` : updatedPhotoUrl;
+            const updatedProfile = { ...currentProfile, photoUrl: versionedPhotoUrl };
+            window.dispatchEvent(new Event("spark:profile-photo-updated"));
+            setProfile(updatedProfile);
+            updateProfile?.(updatedProfile);
             setPhotoMessage({ type: "success", text: "Your profile photo has been updated." });
         } catch (uploadError) {
             console.error("Profile photo upload failed:", uploadError);

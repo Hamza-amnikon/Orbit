@@ -5,8 +5,6 @@ import LeaveService from "../../Admin/Services/LeaveService";
 
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import EventBusyRoundedIcon from "@mui/icons-material/EventBusyRounded";
-import ConfirmationNumberRoundedIcon from "@mui/icons-material/ConfirmationNumberRounded";
-import PaidRoundedIcon from "@mui/icons-material/PaidRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import DashboardCustomizeRoundedIcon from "@mui/icons-material/DashboardCustomizeRounded";
 
@@ -270,24 +268,6 @@ function Dashboard() {
             route: "/leave"
         },
 
-        {
-            title: "Open Tickets",
-            value: null,
-            detail: "Not connected to live ticket data",
-            color: "#ea580c",
-            icon: <ConfirmationNumberRoundedIcon />,
-            route: "/tickets"
-        },
-
-        {
-            title: "Pending Salaries",
-            value: null,
-            detail: "Not connected to live payroll status",
-            color: "#9333ea",
-            icon: <PaidRoundedIcon />,
-            route: "/payroll"
-        }
-
     ];
 
 
@@ -340,10 +320,10 @@ function Dashboard() {
         },
         ...sidebarMenu.filter((item) => item.permissionPath !== "/dashboard").map((item) => ({
             title: item.title.trim(),
-            description: moduleDescriptions[item.permissionPath] || "Open this SPARK module.",
+            description: item.description || moduleDescriptions[item.permissionPath] || "Open this SPARK module.",
             icon: item.icon,
             color: moduleColors[item.permissionPath] || "#2563eb",
-            route: getModuleLoginRoute?.(item.permissionPath) || item.path,
+            route: item.skipLoginRoute ? item.path : getModuleLoginRoute?.(item.permissionPath) || item.path,
             permissionPath: item.permissionPath,
         })),
     ];

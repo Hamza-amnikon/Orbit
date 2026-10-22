@@ -3,7 +3,11 @@ import { Routes, Route, Outlet, useLocation, Navigate } from "react-router-dom";
 import RouteErrorBoundary from "./RouteErrorBoundary";
 import { syncPermissions } from "../Admin/Services/PermissionService";
 import { useAuth } from "../context/AuthContext";
-import { loadAuthenticatedProfilePhoto } from "../Admin/Services/ProfilePhotoService";
+import {
+    getCachedAuthenticatedProfilePhoto,
+    loadAuthenticatedProfilePhoto,
+} from "../Admin/Services/ProfilePhotoService";
+import SparkLoadingScreen from "../components/ui/SparkLoadingScreen";
 
 
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
@@ -160,7 +164,6 @@ export const PERMISSION_PAGES = [
         pageName: "Employee Hierarchy",
         route: "/employees/EmployeeHierarchy",
     },
-
     // ========================================================
     // ATTENDANCE MANAGEMENT
     // ========================================================
@@ -423,7 +426,7 @@ function PermissionGuard() {
         profileLoading ||
         sparkAccessLoading
     ) {
-        return <MuiLayoutBox component="div">Loading...</MuiLayoutBox>;
+        return <SparkLoadingScreen title="Checking your access" description="Verifying your account permissions." />;
     }
 
     const isRequiredPolicyPage =
@@ -493,15 +496,21 @@ function OnboardingGuard() {
             return;
         }
 
-        const controller = new AbortController();
+        const cachedPhoto = getCachedAuthenticatedProfilePhoto(profilePhotoUrl);
+        if (cachedPhoto) {
+            setProfilePhotoStatus("ready");
+            return;
+        }
+
+        let active = true;
         setProfilePhotoStatus("checking");
-        loadAuthenticatedProfilePhoto(profilePhotoUrl, { signal: controller.signal })
+        loadAuthenticatedProfilePhoto(profilePhotoUrl)
             .then((photoUrl) => {
-                if (uploadConfirmedRef.current) return;
+                if (!active || uploadConfirmedRef.current) return;
                 setProfilePhotoStatus(photoUrl ? "ready" : "missing");
             })
             .catch(() => {
-                if (!controller.signal.aborted && !uploadConfirmedRef.current) {
+                if (active && !uploadConfirmedRef.current) {
                     // If the image endpoint cannot supply the image, require a
                     // new upload rather than allowing the missing-photo gate to
                     // be bypassed.
@@ -509,8 +518,8 @@ function OnboardingGuard() {
                 }
             });
 
-        return () => controller.abort();
-    }, [loading, profile, profileLoading, profilePhotoUrl]);
+        return () => { active = false; };
+    }, [loading, profileLoading, profilePhotoUrl]);
 
     /*
     =========================================================
@@ -527,11 +536,11 @@ function OnboardingGuard() {
         profileLoading ||
         sparkAccessLoading
     ) {
-        return <MuiLayoutBox component="div">Loading...</MuiLayoutBox>;
+        return <SparkLoadingScreen title="Preparing your workspace" description="Loading your profile and onboarding status." />;
     }
 
     if (profilePhotoStatus === "checking") {
-        return <MuiLayoutBox component="div" role="status">Checking required profile photo…</MuiLayoutBox>;
+        return <SparkLoadingScreen title="Checking your profile" description="Confirming your profile photo and required onboarding documents." />;
     }
 
     const pathname =
@@ -553,6 +562,21 @@ function OnboardingGuard() {
     const isSettings =
         pathname === "/settings" ||
         pathname.startsWith("/settings/");
+
+    const arrivedForPhotoRequirement =
+        new URLSearchParams(location.search).get("photoRequired") === "1";
+
+    // Settings can refresh a stale auth profile after login. Once both the
+    // photo and full onboarding access are confirmed, finish the interrupted
+    // redirect instead of leaving the employee stranded on Profile.
+    if (
+        isSettings &&
+        arrivedForPhotoRequirement &&
+        profilePhotoStatus === "ready" &&
+        sparkAccessGranted === true
+    ) {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     if (profilePhotoStatus === "missing" && !isSettings) {
         return <Navigate to="/settings?photoRequired=1" replace state={{ from: location }} />;
@@ -680,9 +704,7 @@ function AppRoutes() {
         <RouteErrorBoundary>
         <Suspense
             fallback={
-                <MuiLayoutBox className="route-loading" role="status" aria-live="polite" component="div">
-                    Loading page…
-                </MuiLayoutBox>
+                <SparkLoadingScreen title="Opening your workspace" description="Loading the page you selected." />
             }
         >
         <Routes>

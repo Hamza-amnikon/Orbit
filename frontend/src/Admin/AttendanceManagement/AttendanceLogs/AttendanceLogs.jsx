@@ -551,6 +551,7 @@ export default function AttendanceLogs() {
         </MuiLayoutBox>
 
         <AttendanceTable
+          key={`${search}|${shift}|${status}|${date}|${dayDate}`}
           rows={filteredAttendance}
           loading={loading}
 

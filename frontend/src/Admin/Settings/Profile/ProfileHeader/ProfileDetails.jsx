@@ -10,6 +10,10 @@ import {
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function ProfileDetails({ profile }) {
+    const locationLabel = [profile.city, profile.country]
+        .map((value) => String(value || "").trim().replace(/,+\s*$/, ""))
+        .filter(Boolean)
+        .join(", ");
     const joinDateValue =
         profile.joinDate ||
         profile.JoinDate ||
@@ -69,7 +73,7 @@ function ProfileDetails({ profile }) {
 
                         <LocationOn fontSize="small" />
 
-                        {profile.city}, {profile.country}
+                        {locationLabel || "Location not provided"}
 
                     </MuiLayoutBox>
 

@@ -16,8 +16,9 @@ import {
 } from "@mui/icons-material";
 
 import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { Box as MuiLayoutBox, TablePagination, Typography as MuiText } from "@mui/material";
 
 export default function AttendanceTable({
   rows = [],
@@ -26,6 +27,8 @@ export default function AttendanceTable({
   onEdit,
   onDelete,
 }) {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const location = useLocation();
   const { hasPermission } = useAuth();
 
@@ -34,6 +37,11 @@ export default function AttendanceTable({
   const canView = hasPermission(permissionRoute, "view");
   const canEdit = hasPermission(permissionRoute, "edit");
   const canDelete = hasPermission(permissionRoute, "delete");
+
+  useEffect(() => {
+    const lastPage = Math.max(0, Math.ceil(rows.length / rowsPerPage) - 1);
+    if (page > lastPage) setPage(lastPage);
+  }, [rows.length, rowsPerPage, page]);
 
   if (loading) {
     return (
@@ -75,7 +83,10 @@ export default function AttendanceTable({
     return time.substring(0, 5);
   };
 
+  const visibleRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
     return (
+    <MuiLayoutBox className="attendance-table-container" component="div">
     <MuiLayoutBox className="attendance-table-scroll" component="div">
     <MuiTableMigration className="attendance-table">
       <MuiTableHeadMigration>
@@ -105,7 +116,7 @@ export default function AttendanceTable({
       </MuiTableHeadMigration>
 
       <MuiTableBodyMigration>
-        {rows.map((row) => (
+        {visibleRows.map((row) => (
           <MuiTableRowMigration key={row.attendanceId}>
             <MuiTableCellMigration>
               <Checkbox />
@@ -190,6 +201,20 @@ export default function AttendanceTable({
         ))}
       </MuiTableBodyMigration>
     </MuiTableMigration>
+    </MuiLayoutBox>
+    <TablePagination
+      component="div"
+      count={rows.length}
+      page={page}
+      onPageChange={(_, nextPage) => setPage(nextPage)}
+      rowsPerPage={rowsPerPage}
+      onRowsPerPageChange={(event) => {
+        setRowsPerPage(Number(event.target.value));
+        setPage(0);
+      }}
+      rowsPerPageOptions={[10, 25, 50, 100]}
+      labelRowsPerPage="Rows per page:"
+    />
     </MuiLayoutBox>
   );
 }

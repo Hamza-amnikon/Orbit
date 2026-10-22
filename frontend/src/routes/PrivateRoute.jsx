@@ -1,17 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Box as MuiLayoutBox } from "@mui/material";
+import SparkLoadingScreen from "../components/ui/SparkLoadingScreen";
 
 function PrivateRoute() {
     const { isAuthenticated, loading } = useAuth();
     const location = useLocation();
 
     if (loading) {
-        return (
-            <MuiLayoutBox style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }} component="div">
-                <MuiLayoutBox component="div">Loading authentication...</MuiLayoutBox>
-            </MuiLayoutBox>
-        );
+        return <SparkLoadingScreen title="Signing you in" description="Securely checking your Spark session." />;
     }
 
     if (!isAuthenticated) {

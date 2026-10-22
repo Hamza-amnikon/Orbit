@@ -14,6 +14,8 @@ function ContactInfo({ profile }) {
 
     if (!profile) return null;
 
+    const city = String(profile.city || "").trim().replace(/,+\s*$/, "").trim();
+
     return (
 
         <MuiLayoutBox className="profile-section" component="div">
@@ -102,7 +104,7 @@ function ContactInfo({ profile }) {
 
                         <MuiLayoutBox component="label">City</MuiLayoutBox>
 
-                        <MuiText component="span" variant="inherit">{profile.city || "-"}</MuiText>
+                        <MuiText component="span" variant="inherit">{city || "-"}</MuiText>
 
                     </MuiLayoutBox>
 

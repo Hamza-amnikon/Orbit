@@ -8605,6 +8605,15 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .reports-empty > sv
   color: var(--spark-muted);
 }
 
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .reports-module-card {
+  border-color: var(--spark-border);
+  background: var(--spark-surface);
+  color: var(--spark-text);
+}
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .reports-module-card :is(h3, p) {
+  color: var(--spark-text);
+}
+
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .reports-empty {
   display: grid;
   min-height: 240px;

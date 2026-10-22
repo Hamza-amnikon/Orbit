@@ -1,6 +1,6 @@
 import { MuiButtonMigration } from "../components/ui/MuiCompat.jsx";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
 import { Box as MuiLayoutBox, GlobalStyles as MuiGlobalStyles, Typography as MuiText } from "@mui/material";
@@ -8,6 +8,7 @@ import { Box as MuiLayoutBox, GlobalStyles as MuiGlobalStyles, Typography as Mui
 function AuthCallback() {
 
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const { completeLogin } = useAuth();
 
@@ -64,8 +65,10 @@ function AuthCallback() {
                 );
 
 
-                // Always return to the main dashboard after login.
-                window.location.replace("/dashboard");
+                // Keep the completed auth/profile/access state in the current
+                // provider instead of forcing a full reload and repeating the
+                // startup access checks.
+                navigate("/dashboard", { replace: true });
 
             }
             catch (error) {
@@ -101,7 +104,8 @@ function AuthCallback() {
 
     }, [
         token,
-        completeLogin
+        completeLogin,
+        navigate
     ]);
 
 

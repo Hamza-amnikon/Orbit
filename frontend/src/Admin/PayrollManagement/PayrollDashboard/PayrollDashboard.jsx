@@ -1,606 +1,137 @@
-import React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+    Alert,
     Box,
+    Button,
     Card,
     CardContent,
+    CircularProgress,
     Grid,
-    Typography,
-    Button,
-    Select,
-    MenuItem,
-    LinearProgress,
     IconButton,
+    MenuItem,
+    Select,
+    Typography,
 } from "@mui/material";
-
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
-import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
-import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router-dom";
-
-import "./PayrollDashboard.css";
 import { useAuth } from "../../../context/AuthContext";
-import { Typography as MuiText } from "@mui/material";
+import "./PayrollDashboard.css";
+
+const API_BASE_URL = String(import.meta.env.VITE_PAYROLL_API_BASE_URL || "").replace(/\/+$/, "");
+
+const formatCurrency = (value) => `₹${Number(value || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+const getRunKey = (run) => `${run.payrollYear}-${String(run.payrollMonth).padStart(2, "0")}`;
+const getRunLabel = (run) => new Date(Number(run.payrollYear), Number(run.payrollMonth) - 1, 1)
+    .toLocaleDateString("en-IN", { month: "long", year: "numeric" });
 
 function PayrollDashboard() {
     const { hasPermission } = useAuth();
     const navigate = useNavigate();
+    const canView = hasPermission("/payroll/dashboard", "view");
+    const canAccessProcess = hasPermission("/payroll/process", "view");
+    const [runs, setRuns] = useState([]);
+    const [selectedRunKey, setSelectedRunKey] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-    const permissionRoute = "/payroll/dashboard";
-    const canView = hasPermission(permissionRoute, "view");
-    const canCreate = hasPermission(permissionRoute, "create");
-
-    const [month, setMonth] = React.useState("May 2026");
-
-    const summaryCards = [
-        {
-            title: "Total Payroll",
-            value: "₹24,85,000",
-            subtitle: "+12.4% from Apr 2026",
-            icon: <AccountBalanceWalletOutlinedIcon />,
-            color: "blue",
-            positive: true,
-        },
-        {
-            title: "Employees Processed",
-            value: "156",
-            subtitle: "Active employees",
-            icon: <GroupsOutlinedIcon />,
-            color: "green",
-        },
-        {
-            title: "Net Salary Paid",
-            value: "₹21,66,250",
-            subtitle: "87.1% of total payroll",
-            icon: <TrendingUpOutlinedIcon />,
-            color: "purple",
-        },
-        {
-            title: "Total Deductions",
-            value: "₹2,18,750",
-            subtitle: "8.8% of total payroll",
-            icon: <ReceiptLongOutlinedIcon />,
-            color: "orange",
-        },
-        
-    ];
-
-    const payrollOverview = [
-        {
-            month: "Dec",
-            value: 68,
-        },
-        {
-            month: "Jan",
-            value: 76,
-        },
-        {
-            month: "Feb",
-            value: 72,
-        },
-        {
-            month: "Mar",
-            value: 84,
-        },
-        {
-            month: "Apr",
-            value: 80,
-        },
-        {
-            month: "May",
-            value: 92,
-        },
-    ];
-
-    const departments = [
-        {
-            name: "IT Department",
-            amount: "₹9,25,000",
-            percentage: 74,
-        },
-        {
-            name: "HR Department",
-            amount: "₹4,80,000",
-            percentage: 52,
-        },
-        {
-            name: "Finance Department",
-            amount: "₹3,65,000",
-            percentage: 40,
-        },
-        {
-            name: "Sales Department",
-            amount: "₹4,10,000",
-            percentage: 45,
-        },
-        {
-            name: "Operations",
-            amount: "₹3,05,000",
-            percentage: 33,
-        },
-    ];
-
-    const handleRunPayroll = () => {
-        if (!canCreate) return;
-        console.log("Run Payroll:", month);
-    };
-
-    const handleQuickAction = (action) => {
-        if (
-            (action === "Run Payroll" || action === "Generate Payslips") &&
-            !canCreate
-        ) {
-            return;
+    const loadRuns = useCallback(async (signal, showLoading = true) => {
+        if (showLoading) setLoading(true);
+        try {
+            if (!API_BASE_URL) throw new Error("Payroll service is not configured.");
+            const token = localStorage.getItem("token");
+            const response = await fetch(`${API_BASE_URL}/api/Payroll/history`, {
+                signal,
+                headers: {
+                    Accept: "application/json",
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
+            });
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    throw new Error("You are not authorized to view payroll history. Sign in again or contact an administrator.");
+                }
+                throw new Error(`Payroll history could not be loaded (HTTP ${response.status}).`);
+            }
+            const data = await response.json();
+            const normalizedRuns = (Array.isArray(data) ? data : data?.data ?? data?.items ?? [])
+                .filter((run) => Number(run.payrollYear) > 0 && Number(run.payrollMonth) >= 1 && Number(run.payrollMonth) <= 12)
+                .sort((a, b) => Number(b.payrollYear) - Number(a.payrollYear) || Number(b.payrollMonth) - Number(a.payrollMonth));
+            setRuns(normalizedRuns);
+            setError("");
+            setSelectedRunKey((current) => normalizedRuns.some((run) => getRunKey(run) === current)
+                ? current
+                : normalizedRuns[0] ? getRunKey(normalizedRuns[0]) : "");
+        } catch (loadError) {
+            if (loadError.name !== "AbortError") {
+                setError(loadError.message || "Payroll history could not be loaded.");
+                setRuns([]);
+            }
+        } finally {
+            if (!signal?.aborted) setLoading(false);
         }
+    }, []);
 
-        console.log("Quick Action:", action);
-    };
+    useEffect(() => {
+        const controller = new AbortController();
+        loadRuns(controller.signal, false);
+        return () => controller.abort();
+    }, [loadRuns]);
+
+    const selectedRun = runs.find((run) => getRunKey(run) === selectedRunKey) || null;
+    const recentRuns = useMemo(() => runs.slice(0, 6).reverse(), [runs]);
+    const maxGross = Math.max(1, ...recentRuns.map((run) => Number(run.totalGrossSalary) || 0));
+    const summaryCards = selectedRun ? [
+        { title: "Gross Payroll", value: formatCurrency(selectedRun.totalGrossSalary), icon: <AccountBalanceWalletOutlinedIcon />, color: "blue" },
+        { title: "Employees Processed", value: Number(selectedRun.employeeCount || 0).toLocaleString("en-IN"), icon: <GroupsOutlinedIcon />, color: "green" },
+        { title: "Net Salary", value: formatCurrency(selectedRun.totalNetSalary), icon: <TrendingUpOutlinedIcon />, color: "purple" },
+        { title: "Deductions", value: formatCurrency(selectedRun.totalDeductions), icon: <ReceiptLongOutlinedIcon />, color: "orange" },
+    ] : [];
 
     if (!canView) {
-        return (
-            <Box
-                className="pd-payroll-dashboard"
-                sx={{ padding: "60px", textAlign: "center" }}
-            >
-                <Typography variant="h5">
-                    Access Denied
-                </Typography>
-
-                <Typography sx={{ mt: 1 }}>
-                    You do not have permission to access this page.
-                </Typography>
-            </Box>
-        );
+        return <Box className="pd-payroll-dashboard" sx={{ p: 6, textAlign: "center" }}><Typography variant="h5">Access Denied</Typography><Typography sx={{ mt: 1 }}>You do not have permission to access this page.</Typography></Box>;
     }
 
     return (
         <Box className="pd-payroll-dashboard">
-
-            {/* =========================
-                HEADER
-            ========================= */}
-
             <Box className="pd-payroll-dashboard-header">
-
                 <Box className="pd-payroll-dashboard-heading">
-                    <IconButton
-                        className="pd-dashboard-back-button"
-                        aria-label="Back to Payroll Management"
-                        onClick={() => navigate("/payroll")}
-                    >
-                        <ArrowBackIcon />
-                    </IconButton>
-
-                    <Box>
-                        <Typography className="pd-payroll-dashboard-title">
-                            Payroll Dashboard
-                        </Typography>
-
-                        <Typography className="pd-payroll-dashboard-subtitle">
-                            Monitor payroll, salaries, deductions and employee payments.
-                        </Typography>
-                    </Box>
+                    <IconButton className="pd-dashboard-back-button" aria-label="Back to Payroll Management" onClick={() => navigate("/payroll")}><ArrowBackIcon /></IconButton>
+                    <Box><Typography className="pd-payroll-dashboard-title">Payroll Dashboard</Typography><Typography className="pd-payroll-dashboard-subtitle">Payroll totals from completed and in-progress payroll runs.</Typography></Box>
                 </Box>
-
                 <Box className="pd-payroll-dashboard-header-actions">
-
-                    <Select
-                        value={month}
-                        onChange={(e) => setMonth(e.target.value)}
-                        className="pd-payroll-month-select"
-                        size="small"
-                    >
-                        <MenuItem value="May 2026">
-                            May 2026
-                        </MenuItem>
-
-                        <MenuItem value="April 2026">
-                            April 2026
-                        </MenuItem>
-
-                        <MenuItem value="March 2026">
-                            March 2026
-                        </MenuItem>
-
-                        <MenuItem value="February 2026">
-                            February 2026
-                        </MenuItem>
+                    <Select value={selectedRunKey} onChange={(event) => setSelectedRunKey(event.target.value)} className="pd-payroll-month-select" size="small" displayEmpty disabled={loading || runs.length === 0} inputProps={{ "aria-label": "Payroll period" }}>
+                        {runs.length === 0 && <MenuItem value="">No payroll history</MenuItem>}
+                        {runs.map((run) => <MenuItem key={getRunKey(run)} value={getRunKey(run)}>{getRunLabel(run)}</MenuItem>)}
                     </Select>
-
-                    {canCreate && (
-                        <Button
-                            className="pd-run-payroll-button"
-                            variant="contained"
-                            startIcon={<PlayArrowIcon />}
-                            onClick={handleRunPayroll}
-                        >
-                            Run Payroll
-                        </Button>
-                    )}
-
+                    <Button startIcon={<RefreshIcon />} onClick={() => loadRuns() } disabled={loading}>Refresh</Button>
+                    {canAccessProcess && <Button className="pd-run-payroll-button" variant="contained" startIcon={<ArrowForwardIcon />} onClick={() => navigate("/payroll/process")}>Open Payroll Process</Button>}
                 </Box>
-
             </Box>
 
+            {error && <Alert severity="error" sx={{ mb: 2 }} action={<Button color="inherit" size="small" onClick={() => loadRuns()}>Retry</Button>}>{error}</Alert>}
 
-            {/* =========================
-                SUMMARY CARDS
-            ========================= */}
-
-            <Grid
-                container
-                spacing={2.5}
-                className="pd-payroll-summary-grid"
-            >
-
-                {summaryCards.map((card) => (
-                    <Grid
-                        key={card.title}
-                        size={{
-                            xs: 12,
-                            sm: 6,
-                            lg: 3,
-                        }}
-                    >
-
-                        <Card className="pd-payroll-summary-card">
-
-                            <CardContent>
-
-                                <Box className="pd-summary-card-top">
-
-                                    <Box>
-                                        <Typography className="pd-summary-card-title">
-                                            {card.title}
-                                        </Typography>
-
-                                        <Typography className="pd-summary-card-value">
-                                            {card.value}
-                                        </Typography>
-
-                                        <Typography
-                                            className={
-                                                card.positive
-                                                    ? "pd-summary-card-subtitle pd-positive"
-                                                    : "pd-summary-card-subtitle"
-                                            }
-                                        >
-                                            {card.subtitle}
-                                        </Typography>
-                                    </Box>
-
-                                    <Box
-                                        className={`pd-summary-card-icon pd-${card.color}`}
-                                    >
-                                        {card.icon}
-                                    </Box>
-
-                                </Box>
-
-                            </CardContent>
-
-                        </Card>
-
+            {loading ? (
+                <Box sx={{ minHeight: 240, display: "grid", placeItems: "center" }}><CircularProgress aria-label="Loading payroll history" /></Box>
+            ) : !error && runs.length === 0 ? (
+                <Alert severity="info">There are no payroll runs to summarize yet. Payroll figures will appear here after a run is recorded.</Alert>
+            ) : selectedRun && (
+                <>
+                    <Grid container spacing={2.5} className="pd-payroll-summary-grid">
+                        {summaryCards.map((card) => <Grid key={card.title} size={{ xs: 12, sm: 6, lg: 3 }}><Card className="pd-payroll-summary-card"><CardContent><Box className="pd-summary-card-top"><Box><Typography className="pd-summary-card-title">{card.title}</Typography><Typography className="pd-summary-card-value">{card.value}</Typography><Typography className="pd-summary-card-subtitle">{getRunLabel(selectedRun)}</Typography></Box><Box className={`pd-summary-card-icon pd-${card.color}`}>{card.icon}</Box></Box></CardContent></Card></Grid>)}
                     </Grid>
-                ))}
 
-            </Grid>
-
-
-            {/* =========================
-                OVERVIEW + STATUS
-            ========================= */}
-
-            <Grid
-                container
-                spacing={2.5}
-                className="pd-payroll-main-grid"
-            >
-
-                {/* Payroll Overview */}
-
-                <Grid
-                    size={{
-                        xs: 12,
-                        lg: 8,
-                    }}
-                >
-
-                    <Card className="pd-payroll-panel">
-
-                        <CardContent>
-
-                            <Typography className="pd-panel-title">
-                                Payroll Overview
-                            </Typography>
-
-                            <Typography className="pd-panel-subtitle">
-                                {month} payroll breakdown
-                            </Typography>
-
-                            <Box className="pd-payroll-chart">
-
-                                <Box className="pd-payroll-chart-bars">
-
-                                    {payrollOverview.map((item) => (
-                                        <Box
-                                            className="pd-payroll-chart-column"
-                                            key={item.month}
-                                        >
-
-                                            <Box
-                                                className="pd-payroll-chart-bar"
-                                                style={{
-                                                    height: `${item.value * 2}px`,
-                                                }}
-                                            />
-
-                                            <Typography className="pd-payroll-chart-label">
-                                                {item.month}
-                                            </Typography>
-
-                                        </Box>
-                                    ))}
-
-                                </Box>
-
-                            </Box>
-
-                        </CardContent>
-
-                    </Card>
-
-                </Grid>
-
-
-                {/* Payroll Status */}
-
-                <Grid
-                    size={{
-                        xs: 12,
-                        lg: 4,
-                    }}
-                >
-
-                    <Card className="pd-payroll-panel pd-payroll-status-panel">
-
-                        <CardContent>
-
-                            <Typography className="pd-panel-title">
-                                Payroll Status
-                            </Typography>
-
-                            <Typography className="pd-panel-subtitle">
-                                Current payroll processing status
-                            </Typography>
-
-
-                            {/* Completed */}
-
-                            <Box className="pd-payroll-status-item pd-completed">
-
-                                <Box className="pd-status-icon pd-completed-icon">
-                                    <TaskAltOutlinedIcon />
-                                </Box>
-
-                                <Box className="pd-status-content">
-
-                                    <Typography className="pd-status-title">
-                                        Payroll Completed
-                                        <MuiText component="span" variant="inherit">Done</MuiText>
-                                    </Typography>
-
-                                    <Typography className="pd-status-date">
-                                        20 May 2026
-                                    </Typography>
-
-                                </Box>
-
-                            </Box>
-
-
-                            {/* Upcoming */}
-
-                            <Box className="pd-payroll-status-item pd-upcoming">
-
-                                <Box className="pd-status-icon pd-upcoming-icon">
-                                    <PendingOutlinedIcon />
-                                </Box>
-
-                                <Box className="pd-status-content">
-
-                                    <Typography className="pd-status-title">
-                                        Next Payroll
-                                        <MuiText component="span" variant="inherit">Upcoming</MuiText>
-                                    </Typography>
-
-                                    <Typography className="pd-status-date">
-                                        20 June 2026
-                                    </Typography>
-
-                                </Box>
-
-                            </Box>
-
-
-                            {/* Progress */}
-
-                            <Box className="pd-payroll-progress-section">
-
-                                <Box className="pd-payroll-progress-header">
-
-                                    <Typography>
-                                        Payroll completion
-                                    </Typography>
-
-                                    <Typography>
-                                        100%
-                                    </Typography>
-
-                                </Box>
-
-                                <LinearProgress
-                                    variant="determinate"
-                                    value={100}
-                                    className="pd-payroll-progress"
-                                />
-
-                            </Box>
-
-                        </CardContent>
-
-                    </Card>
-
-                </Grid>
-
-            </Grid>
-
-
-            {/* =========================
-                DEPARTMENT + QUICK ACTIONS
-            ========================= */}
-
-            <Grid
-                container
-                spacing={2.5}
-                className="pd-payroll-bottom-grid"
-            >
-
-                {/* Department Payroll */}
-
-                <Grid
-                    size={{
-                        xs: 12,
-                        lg: 8,
-                    }}
-                >
-
-                    <Card className="pd-payroll-panel pd-department-panel">
-
-                        <CardContent>
-
-                            <Typography className="pd-panel-title">
-                                Department Payroll
-                            </Typography>
-
-                            <Typography className="pd-panel-subtitle">
-                                Payroll distribution by department
-                            </Typography>
-
-
-                            <Box className="pd-department-list">
-
-                                {departments.map((department) => (
-                                    <Box
-                                        className="pd-department-item"
-                                        key={department.name}
-                                    >
-
-                                        <Box className="pd-department-header">
-
-                                            <Typography>
-                                                {department.name}
-                                            </Typography>
-
-                                            <Typography>
-                                                {department.amount}
-                                            </Typography>
-
-                                        </Box>
-
-                                        <LinearProgress
-                                            variant="determinate"
-                                            value={department.percentage}
-                                            className="pd-department-progress"
-                                        />
-
-                                    </Box>
-                                ))}
-
-                            </Box>
-
-                        </CardContent>
-
-                    </Card>
-
-                </Grid>
-
-
-                {/* Quick Actions */}
-
-                <Grid
-                    size={{
-                        xs: 12,
-                        lg: 4,
-                    }}
-                >
-
-                    <Card className="pd-payroll-panel pd-quick-actions-panel">
-
-                        <CardContent>
-
-                            <Typography className="pd-panel-title">
-                                Quick Actions
-                            </Typography>
-
-
-                            <Box className="pd-quick-actions">
-
-                                {canCreate && (
-                                    <>
-                                        <Button
-                                            className="pd-quick-action-button"
-                                            onClick={() =>
-                                                handleQuickAction("Run Payroll")
-                                            }
-                                            startIcon={<PlayArrowIcon />}
-                                            endIcon={<ArrowForwardIcon />}
-                                        >
-                                            Run Payroll
-                                        </Button>
-
-                                        <Button
-                                            className="pd-quick-action-button"
-                                            onClick={() =>
-                                                handleQuickAction("Generate Payslips")
-                                            }
-                                            startIcon={<DescriptionOutlinedIcon />}
-                                            endIcon={<ArrowForwardIcon />}
-                                        >
-                                            Generate Payslips
-                                        </Button>
-                                    </>
-                                )}
-
-
-                                <Button
-                                    className="pd-quick-action-button"
-                                    onClick={() =>
-                                        handleQuickAction("Payroll Reports")
-                                    }
-                                    startIcon={<AssessmentOutlinedIcon />}
-                                    endIcon={<ArrowForwardIcon />}
-                                >
-                                    Payroll Reports
-                                </Button>
-
-                            </Box>
-
-                        </CardContent>
-
-                    </Card>
-
-                </Grid>
-
-            </Grid>
-
+                    <Grid container spacing={2.5} className="pd-payroll-main-grid" sx={{ mt: 0.5 }}>
+                        <Grid size={{ xs: 12, lg: 8 }}><Card className="pd-payroll-panel"><CardContent><Typography className="pd-panel-title">Recent Payroll Runs</Typography><Typography className="pd-panel-subtitle">Gross payroll by recorded period</Typography><Box className="pd-payroll-chart"><Box className="pd-payroll-chart-bars">{recentRuns.map((run) => <Box className="pd-payroll-chart-column" key={getRunKey(run)} title={`${getRunLabel(run)} · ${formatCurrency(run.totalGrossSalary)}`}><Box className="pd-payroll-chart-bar" style={{ height: `${Math.max(8, (Number(run.totalGrossSalary) / maxGross) * 180)}px` }} /><Typography className="pd-payroll-chart-label">{getRunLabel(run)}</Typography></Box>)}</Box></Box></CardContent></Card></Grid>
+                        <Grid size={{ xs: 12, lg: 4 }}><Card className="pd-payroll-panel pd-payroll-status-panel"><CardContent><Typography className="pd-panel-title">Selected Run</Typography><Typography className="pd-panel-subtitle">Status recorded by Payroll Service</Typography><Box className="pd-payroll-status-item pd-completed"><Box className="pd-status-icon pd-completed-icon"><ReceiptLongOutlinedIcon /></Box><Box className="pd-status-content"><Typography className="pd-status-title">{selectedRun.status || "Status unavailable"}</Typography><Typography className="pd-payroll-status-date">{selectedRun.completedDate ? new Date(selectedRun.completedDate).toLocaleDateString("en-IN") : "Completion date not recorded"}</Typography></Box></Box><Button fullWidth endIcon={<ArrowForwardIcon />} onClick={() => navigate("/payroll/history")}>View payroll history</Button></CardContent></Card></Grid>
+                    </Grid>
+                </>
+            )}
         </Box>
     );
 }

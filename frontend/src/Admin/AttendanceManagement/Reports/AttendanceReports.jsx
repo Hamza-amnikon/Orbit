@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Alert, Box, Button, Card, CardContent, Chip, IconButton, InputAdornment,
   MenuItem, Paper, Snackbar, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, TextField, Typography,
+  TableHead, TableRow, TablePagination, TextField, Typography,
 } from "@mui/material";
 import ArrowBackRounded from "@mui/icons-material/ArrowBackRounded";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
@@ -28,6 +28,8 @@ export default function AttendanceReports() {
   const [status, setStatus] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
   const loadRows = async () => {
@@ -54,6 +56,11 @@ export default function AttendanceReports() {
       return (!query || searchable) && (!status || row.status === status) && (!fromDate || date >= fromDate) && (!toDate || date <= toDate);
     });
   }, [rows, search, status, fromDate, toDate]);
+  const visibleRows = useMemo(
+    () => filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [filteredRows, page, rowsPerPage],
+  );
+  useEffect(() => { setPage(0); }, [search, status, fromDate, toDate]);
   const countByStatus = (value) => rows.filter((row) => row.status === value).length;
 
   const handleExport = async () => {
@@ -107,7 +114,7 @@ export default function AttendanceReports() {
         <TextField select label="Status" value={status} onChange={(event) => setStatus(event.target.value)}><MenuItem value="">All Status</MenuItem>{statuses.map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}</TextField>
         <TextField type="date" label="From" value={fromDate} onChange={(event) => setFromDate(event.target.value)} slotProps={{ inputLabel: { shrink: true } }} />
         <TextField type="date" label="To" value={toDate} onChange={(event) => setToDate(event.target.value)} slotProps={{ inputLabel: { shrink: true } }} />
-        <Button variant="text" onClick={() => { setSearch(""); setStatus(""); setFromDate(""); setToDate(""); }}>Clear filters</Button>
+        <Button variant="text" onClick={() => { setSearch(""); setStatus(""); setFromDate(""); setToDate(""); setPage(0); }}>Clear filters</Button>
       </Paper>
 
       <Paper className="attendance-reports-table-card" elevation={0}>
@@ -119,7 +126,7 @@ export default function AttendanceReports() {
             <TableHead><TableRow>{["Employee ID", "Employee", "Department", "Date", "Shift", "Check In", "Check Out", "Total Hours", "Status"].map((label) => <TableCell key={label}>{label}</TableCell>)}</TableRow></TableHead>
             <TableBody>
               {loading ? <TableRow><TableCell colSpan={9} align="center">Loading attendance records…</TableCell></TableRow>
-                : filteredRows.length ? filteredRows.map((row) => <TableRow key={row.attendanceId}>
+                : filteredRows.length ? visibleRows.map((row) => <TableRow key={row.attendanceId}>
                   <TableCell>{row.azureEmployeeId || row.employeeCode || "—"}</TableCell><TableCell>{row.employeeName || "—"}</TableCell><TableCell>{row.department || "—"}</TableCell>
                   <TableCell>{row.attendanceDate ? new Date(row.attendanceDate).toLocaleDateString("en-GB") : "—"}</TableCell><TableCell>{row.shift || "—"}</TableCell>
                   <TableCell>{row.checkIn || "—"}</TableCell><TableCell>{row.checkOut || "—"}</TableCell><TableCell>{row.totalHours || "—"}</TableCell>
@@ -128,6 +135,16 @@ export default function AttendanceReports() {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          component="div"
+          count={filteredRows.length}
+          page={page}
+          onPageChange={(_, nextPage) => setPage(nextPage)}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={(event) => { setRowsPerPage(Number(event.target.value)); setPage(0); }}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          labelRowsPerPage="Rows per page:"
+        />
       </Paper>
 
       <Snackbar open={notice.open} autoHideDuration={4500} onClose={() => setNotice((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>

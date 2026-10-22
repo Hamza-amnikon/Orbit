@@ -4,6 +4,7 @@ let cachedEndpoint = "";
 let cachedToken = "";
 let cachedObjectUrl = "";
 let pendingToken = "";
+let pendingEndpoint = "";
 let pendingPhotoRequest = null;
 
 function canonicalEndpoint(photoUrl) {
@@ -14,20 +15,30 @@ function canonicalEndpoint(photoUrl) {
     return url.toString();
 }
 
-export async function loadAuthenticatedProfilePhoto(photoUrl, { refresh = false, signal } = {}) {
+export function getCachedAuthenticatedProfilePhoto(photoUrl) {
+    const endpoint = canonicalEndpoint(photoUrl);
+    const token = localStorage.getItem("token");
+    return endpoint && endpoint === cachedEndpoint && token === cachedToken
+        ? cachedObjectUrl || null
+        : null;
+}
+
+export async function loadAuthenticatedProfilePhoto(photoUrl, { refresh = false } = {}) {
     const endpoint = canonicalEndpoint(photoUrl);
     if (!endpoint) return null;
 
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Your Spark session has expired. Sign in again.");
     if (!refresh && endpoint === cachedEndpoint && token === cachedToken) return cachedObjectUrl || null;
-    if (!refresh && pendingPhotoRequest && token === pendingToken) return pendingPhotoRequest;
+    // Share an in-flight request even when multiple mounted avatars refresh at
+    // once. A component unmount must not abort the shared request and discard
+    // the in-memory cache for the next page.
+    if (pendingPhotoRequest && endpoint === pendingEndpoint && token === pendingToken) return pendingPhotoRequest;
 
     pendingToken = token;
     pendingPhotoRequest = fetch(endpoint, {
         cache: "no-store",
         headers: { Authorization: `Bearer ${token}` },
-        signal,
     }).then(async (response) => {
         if (response.status === 404) {
             if (cachedObjectUrl) URL.revokeObjectURL(cachedObjectUrl);
@@ -47,19 +58,26 @@ export async function loadAuthenticatedProfilePhoto(photoUrl, { refresh = false,
     }).finally(() => {
         pendingPhotoRequest = null;
         pendingToken = "";
+        pendingEndpoint = "";
     });
+    pendingEndpoint = endpoint;
 
     return pendingPhotoRequest;
 }
 
 export function useAuthenticatedProfilePhoto(photoUrl) {
-    const [imageUrl, setImageUrl] = useState("");
+    const [imageUrl, setImageUrl] = useState(() => getCachedAuthenticatedProfilePhoto(photoUrl) || "");
 
     useEffect(() => {
         let active = true;
         const load = (refresh = false) => {
             if (!photoUrl) {
                 setImageUrl("");
+                return;
+            }
+            const cachedPhoto = !refresh && getCachedAuthenticatedProfilePhoto(photoUrl);
+            if (cachedPhoto) {
+                setImageUrl(cachedPhoto);
                 return;
             }
             loadAuthenticatedProfilePhoto(photoUrl, { refresh })

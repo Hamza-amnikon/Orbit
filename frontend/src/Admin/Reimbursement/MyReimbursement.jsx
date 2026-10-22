@@ -146,32 +146,6 @@ const MyReimbursements = () => {
         useState("");
 
     // ========================================================
-    // DEBUG AUTH DATA
-    // ========================================================
-
-    useEffect(() => {
-
-        console.log(
-            "=========================================="
-        );
-
-        console.log(
-            "AUTH USER:",
-            user
-        );
-
-        console.log(
-            "AUTH PROFILE:",
-            profile
-        );
-
-        console.log(
-            "=========================================="
-        );
-
-    }, [user, profile]);
-
-    // ========================================================
     // GET EMPLOYEE ID
     // ========================================================
 
@@ -349,27 +323,6 @@ const MyReimbursements = () => {
     }, [profile, user]);
 
     // ========================================================
-    // DEBUG EMPLOYEE
-    // ========================================================
-
-    useEffect(() => {
-
-        console.log(
-            "Logged-in Employee ID:",
-            employeeId
-        );
-
-        console.log(
-            "Logged-in Employee Name:",
-            employeeName
-        );
-
-    }, [
-        employeeId,
-        employeeName,
-    ]);
-
-    // ========================================================
     // LOAD MY REIMBURSEMENTS
     // ========================================================
 
@@ -409,10 +362,7 @@ const MyReimbursements = () => {
 
             } catch (err) {
 
-                console.error(
-                    "Failed to load my reimbursements:",
-                    err
-                );
+
 
                 setClaims([]);
 
@@ -700,15 +650,9 @@ const MyReimbursements = () => {
                     ).trim()
                 ) {
 
-                    console.error(
-                        "Profile:",
-                        profile
-                    );
 
-                    console.error(
-                        "User:",
-                        user
-                    );
+
+
 
                     throw new Error(
                         "Employee name not found. Please refresh the page and try again."
@@ -824,11 +768,6 @@ if (form.receipt.size > maxSize) {
                         form.receipt,
                 };
 
-                console.log(
-                    "Submitting reimbursement:",
-                    reimbursementData
-                );
-
                 // ------------------------------------------------
                 // API
                 // ------------------------------------------------
@@ -858,10 +797,7 @@ if (form.receipt.size > maxSize) {
 
             } catch (err) {
 
-                console.error(
-                    "Create reimbursement failed:",
-                    err
-                );
+
 
                 setFormError(
                     err.message ||
@@ -884,11 +820,6 @@ if (form.receipt.size > maxSize) {
             if (!claim) {
                 return;
             }
-
-            console.log(
-                "Selected reimbursement:",
-                claim
-            );
 
             setSelectedClaim(
                 claim
