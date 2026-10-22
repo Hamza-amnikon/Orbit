@@ -7,6 +7,21 @@ const API = axios.create({
     },
 });
 
+// Axios instances created with axios.create() do not inherit interceptors
+// registered on the global axios object in main.jsx. RoleService therefore
+// needs to attach the current user's JWT to its own requests.
+API.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            config.headers = config.headers || {};
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error),
+);
+
 export const getRoles = () => API.get("");
 
 export const getRoleById = (id) => API.get(`/${id}`);
