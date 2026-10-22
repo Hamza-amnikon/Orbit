@@ -930,7 +930,7 @@ const InvoiceForm = ({ onClose, onSaved }) => {
                                 </Typography>
                             </Box>
 
-                            {items.some((item) => item.discountEnabled) && (
+                            {Number(totals?.discountTotal) > 0 && (
                                 <Box className="invoice-form-summary-row">
                                     <Typography>Discount</Typography>
 

@@ -373,19 +373,6 @@ const SalesOrderForm = ({ onClose }) => {
                                 <Box className="sales-order-total-row">
 
                                     <Typography>
-                                        Discount
-                                    </Typography>
-
-                                    <Typography>
-                                        ₹0.00
-                                    </Typography>
-
-                                </Box>
-
-
-                                <Box className="sales-order-total-row">
-
-                                    <Typography>
                                         Tax
                                     </Typography>
 

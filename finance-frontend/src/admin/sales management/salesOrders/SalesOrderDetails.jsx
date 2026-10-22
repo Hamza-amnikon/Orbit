@@ -314,11 +314,6 @@ const SalesOrderDetails = ({ onBack, salesOrder }) => {
                             </Box>
 
                             <Box className="sales-order-summary-row">
-                                <span>Discount</span>
-                                <strong>₹0</strong>
-                            </Box>
-
-                            <Box className="sales-order-summary-row">
                                 <span>Tax</span>
                                 <strong>₹13,500</strong>
                             </Box>

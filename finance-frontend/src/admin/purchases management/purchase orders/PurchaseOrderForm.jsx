@@ -435,7 +435,7 @@ export default function PurchaseOrderForm({
                             getOptionLabel={option =>
                                 option.name +
                                 (option.companyName
-                                    ? " · " + option.companyName
+                                    ? " Â· " + option.companyName
                                     : "")
                             }
                             onInputChange={(_, text, reason) => {
@@ -861,28 +861,30 @@ export default function PurchaseOrderForm({
                                         }
                                     />
 
-                                    <TextField
-                                        label="Discount amount"
-                                        type="number"
-                                        value={item.discountAmount}
-                                        disabled={
-                                            busy ||
-                                            !item.discountEnabled
-                                        }
-                                        slotProps={{
-                                            htmlInput: {
-                                                min: 0,
-                                                step: "0.0001",
-                                            },
-                                        }}
-                                        onChange={event => {
-                                            changeLine(
-                                                item.key,
-                                                "discountAmount",
-                                                event.target.value
-                                            );
-                                        }}
-                                    />
+                                    {item.discountEnabled && (
+                                        <TextField
+                                            label="Discount amount"
+                                            type="number"
+                                            value={item.discountAmount}
+                                            disabled={
+                                                busy ||
+                                                !item.discountEnabled
+                                            }
+                                            slotProps={{
+                                                htmlInput: {
+                                                    min: 0,
+                                                    step: "0.0001",
+                                                },
+                                            }}
+                                            onChange={event => {
+                                                changeLine(
+                                                    item.key,
+                                                    "discountAmount",
+                                                    event.target.value
+                                                );
+                                            }}
+                                        />
+                                    )}
                                 </Box>
                             </Box>
                         ))}

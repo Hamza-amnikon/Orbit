@@ -195,9 +195,8 @@ function Expenses() {
             <Stack
                 direction="row"
                 useFlexGap
-                flexWrap="wrap"
                 spacing={2}
-                sx={{ mb: 2 }}
+                sx={{ mb: 2, flexWrap: "wrap" }}
             >
                 <TextField
                     select
@@ -311,7 +310,7 @@ function Expenses() {
                     <Stack
                         direction="row"
                         useFlexGap
-                        flexWrap="wrap"
+                        sx={{ flexWrap: "wrap" }}
                         spacing={2}
                     >
                         <TextField

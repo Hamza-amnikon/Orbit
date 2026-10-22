@@ -207,6 +207,7 @@ const Sidebar = ({ desktop, open, onClose }) => {
                     <List disablePadding>
                         {childItem("Bank Accounts", "/banking/accounts")}
                         {childItem("Transactions", "/banking/transactions")}
+                        {childItem("Bank Transfers", "/banking/transfers")}
                         {childItem("Bank Reconciliation", "/banking/reconciliation")}
                     </List>
                 </Collapse>

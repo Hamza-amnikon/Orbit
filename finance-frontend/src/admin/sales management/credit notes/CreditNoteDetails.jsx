@@ -47,7 +47,7 @@ const CreditNoteDetails = ({ id, onBack, onViewInvoice }) => {
     const ready = !loading && !error && creditNote;
     const status = creditNote ? statusName(creditNote.status) : "";
     const items = [...(creditNote?.items || [])].sort((a, b) => a.lineNumber - b.lineNumber);
-    const hasDiscount = items.some(item => item.discountEnabled === true);
+    const hasDiscount = Number(creditNote?.discountTotal) > 0;
     const money = value => amount(value, creditNote.currency);
     const refresh = () => setRevision(previous => previous + 1);
 
@@ -133,7 +133,7 @@ const CreditNoteDetails = ({ id, onBack, onViewInvoice }) => {
                         </Box>
                         {items.map(item => <Box key={item.id || item.lineNumber} className="credit-note-item-row">
                             <Typography className="credit-note-item-name">{item.serviceName}</Typography>
-                            <Box><Typography sx={{ whiteSpace: "pre-line" }}>{item.description || "—"}</Typography>{item.discountEnabled && <Typography>Discount: {money(item.discountAmount)}</Typography>}</Box>
+                            <Box><Typography sx={{ whiteSpace: "pre-line" }}>{item.description || "—"}</Typography>{Number(item.discountAmount) > 0 && <Typography>Discount: {money(item.discountAmount)}</Typography>}</Box>
                             <Box>{item.creditAmount != null ? <><Typography>Amount adjustment</Typography><Typography>{money(item.creditAmount)} before tax</Typography></> : <><Typography>{item.quantity}</Typography><Typography>{units[item.unit] || ""}</Typography></>}</Box>
                             <Typography>{money(item.unitPrice)}</Typography>
                             <Box><Typography>{item.taxRate}%</Typography><Typography>{money(item.taxAmount)}</Typography></Box>

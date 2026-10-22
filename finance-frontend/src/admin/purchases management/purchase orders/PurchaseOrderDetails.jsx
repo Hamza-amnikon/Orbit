@@ -87,14 +87,14 @@ export default function PurchaseOrderDetails() {
             <Divider sx={{ my: 3 }} />
             <TableContainer tabIndex={0} role="region" aria-label="Purchase order items">
                 <Table sx={{ minWidth: 700 }} aria-label="Purchase order items">
-                    <TableHead><TableRow>{["Item / Service", "Unit", "Quantity", "Rate", "Discount", "Tax", "Amount"].map(label =>
+                    <TableHead><TableRow>{["Item / Service", "Unit", "Quantity", "Rate", ...(order.items.some(item => Number(item.discountAmount) > 0) ? ["Discount"] : []), "Tax", "Amount"].map(label =>
                         <TableCell key={label}>{label}</TableCell>)}</TableRow></TableHead>
                     <TableBody>{order.items.map(item => <TableRow key={item.id || item.lineNumber}>
                         <TableCell><Typography fontWeight={600}>{item.itemName}</Typography>
                             <Typography variant="body2" color="text.secondary">{item.description}</Typography></TableCell>
                         <TableCell>{purchaseUnits[item.unit] || "—"}</TableCell><TableCell>{item.quantity}</TableCell>
                         <TableCell>{money(item.unitPrice, order.currency, order.currencyDecimalPlaces)}</TableCell>
-                        <TableCell>{money(item.discountAmount, order.currency, order.currencyDecimalPlaces)}</TableCell>
+                        {order.items.some(line => Number(line.discountAmount) > 0) && <TableCell>{Number(item.discountAmount) > 0 ? money(item.discountAmount, order.currency, order.currencyDecimalPlaces) : "—"}</TableCell>}
                         <TableCell>{item.taxRate}%<Typography variant="caption" display="block">
                             {money(item.taxAmount, order.currency, order.currencyDecimalPlaces)}</Typography></TableCell>
                         <TableCell>{money(item.lineTotal, order.currency, order.currencyDecimalPlaces)}</TableCell>
@@ -102,7 +102,7 @@ export default function PurchaseOrderDetails() {
                 </Table>
             </TableContainer>
             <Box className="po-totals">
-                {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].map(([label, name]) =>
+                {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].filter(([, name]) => name !== "discountTotal" || Number(order.discountTotal) > 0).map(([label, name]) =>
                     <Box key={name} className="po-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
                         <Typography fontWeight={name === "grandTotal" ? 700 : 400}>
                             {money(order[name], order.currency, order.currencyDecimalPlaces)}</Typography></Box>)}

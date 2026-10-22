@@ -74,7 +74,7 @@ const CreditNoteForm = ({ onClose, onSaved }) => {
     const locked = busy || Boolean(pendingBody);
     const ready = canWrite && invoice && !optionsLoading && !contextLoading && !optionsError && !contextError;
     const readOnly = { input: { readOnly: true } };
-    const hasDiscount = preview?.items.some(item => item.discountEnabled);
+    const hasDiscount = Number(preview?.discountTotal) > 0;
     function change(field, value) {
         setForm(previous => ({ ...previous, [field]: value }));
         setPreview(null);
@@ -186,7 +186,7 @@ const CreditNoteForm = ({ onClose, onSaved }) => {
                             <TextField label={`${creditBasis === "Amount" ? "Credit amount before tax" : "Credit quantity"} — ${item.serviceName}`} type="number" required={selected} value={quantities[item.id] ?? ""} disabled={locked || !selected} onChange={event => { const value = event.target.value; setQuantities(previous => ({ ...previous, [item.id]: value })); setPreview(null); setError(""); }} slotProps={{ htmlInput: { min: 0.0001, max: available, step: 0.0001 } }} />
                             <TextField label="Original rate" value={money(item.unitPrice, invoice.currency)} slotProps={readOnly} />
                             <TextField label="Original tax rate" value={`${item.taxRate}%`} slotProps={readOnly} />
-                            {item.discountEnabled && <TextField label="Original line discount" value={money(item.discountAmount, invoice.currency)} slotProps={readOnly} />}
+                            {Number(item.discountAmount) > 0 && <TextField label="Original line discount" value={money(item.discountAmount, invoice.currency)} slotProps={readOnly} />}
                         </Box>
                     </Box>;
                 })}

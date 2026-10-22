@@ -155,7 +155,7 @@ const EstimateForm = ({ estimate, onClose, onSaved, onReload }) => {
                             <TextField select name="clientId" label="Client" required value={form.clientId} disabled={busy || loading} fullWidth onChange={event => selectClient(event.target.value)} helperText={loading ? "Loading clients..." : !clients.length ? "No active clients available." : ""}>
                                 <MenuItem value="">Select client</MenuItem>
                                 {form.clientId && !client && <MenuItem value={form.clientId} disabled>{estimate?.clientName || "Selected client"} (unavailable)</MenuItem>}
-                                {clients.map(record => <MenuItem key={record.id} value={record.id}>{record.name}{record.companyName ? ` · ${record.companyName}` : ""}</MenuItem>)}
+                                {clients.map(record => <MenuItem key={record.id} value={record.id}>{record.name}{record.companyName ? ` Â· ${record.companyName}` : ""}</MenuItem>)}
                             </TextField>
                             <TextField label="Estimate number" value={estimate?.estimateNumber || "Assigned when marked as sent"} fullWidth slotProps={{ input: { readOnly: true } }} />
                         </Box>
@@ -186,7 +186,9 @@ const EstimateForm = ({ estimate, onClose, onSaved, onReload }) => {
                                 </Box>
                                 <Box className="estimate-form-row">
                                     <FormControlLabel control={<Switch checked={item.discountEnabled} onChange={event => changeItem(item.key, "discountEnabled", event.target.checked)} disabled={busy} />} label={`Enable discount for line ${index + 1}`} />
-                                    <TextField name={`discountAmount-${index}`} label="Discount amount" type="number" value={item.discountAmount} onChange={event => changeItem(item.key, "discountAmount", event.target.value)} disabled={busy || !item.discountEnabled} slotProps={{ htmlInput: { min: 0, max: 99999999999999, step: "0.0001" } }} />
+                                    {item.discountEnabled && (
+                                        <TextField name={`discountAmount-${index}`} label="Discount amount" type="number" value={item.discountAmount} onChange={event => changeItem(item.key, "discountAmount", event.target.value)} disabled={busy || !item.discountEnabled} slotProps={{ htmlInput: { min: 0, max: 99999999999999, step: "0.0001" } }} />
+                                    )}
                                 </Box>
                                 <Button color="error" disabled={busy || items.length === 1} onClick={() => { setItems(previous => previous.filter(record => record.key !== item.key)); setTotals(null); }}>Remove service {index + 1}</Button>
                             </Box>
@@ -197,7 +199,7 @@ const EstimateForm = ({ estimate, onClose, onSaved, onReload }) => {
                     <Box className="estimate-total-section" aria-live="polite">
                         {totals ? <>
                             <Box className="estimate-total-row"><Typography>Subtotal</Typography><Typography>{formatAmount(totals.subTotal, totals.currency)}</Typography></Box>
-                            {items.some(item => item.discountEnabled) && <Box className="estimate-total-row"><Typography>Discount</Typography><Typography>{formatAmount(totals.discountTotal, totals.currency)}</Typography></Box>}
+                            {Number(totals.discountTotal) > 0 && <Box className="estimate-total-row"><Typography>Discount</Typography><Typography>{formatAmount(totals.discountTotal, totals.currency)}</Typography></Box>}
                             <Box className="estimate-total-row"><Typography>Tax</Typography><Typography>{formatAmount(totals.taxTotal, totals.currency)}</Typography></Box>
                             <Box className="estimate-grand-total"><Typography className="estimate-grand-total-label">Grand Total</Typography><Typography className="estimate-grand-total-value">{formatAmount(totals.grandTotal, totals.currency)}</Typography></Box>
                         </> : <Typography>Click Preview totals to calculate this estimate. Saving also calculates the final totals.</Typography>}

@@ -118,7 +118,7 @@ export default function BillForm({ order = null, onClose, onSaved }) {
                 <Box className="bill-form-grid">
                     <Autocomplete options={vendorChoices} value={vendor} loading={vendorLoading} disabled={busy || !!current?.sourcePurchaseOrderId}
                         filterOptions={options => options} isOptionEqualToValue={(a, b) => a.id === b.id}
-                        getOptionLabel={option => option.name + (option.companyName ? " · " + option.companyName : "")}
+                        getOptionLabel={option => option.name + (option.companyName ? " Â· " + option.companyName : "")}
                         onInputChange={(_, text, reason) => { if (reason === "input" || reason === "clear") setVendorSearch(text); }}
                         onChange={(_, next) => chooseVendor(next)}
                         renderInput={params => <TextField {...params} label="Vendor" required
@@ -174,9 +174,11 @@ export default function BillForm({ order = null, onClose, onSaved }) {
                                 onChange={event => changeLine(item.key, "description", event.target.value)} />
                             <FormControlLabel label="Apply discount" control={<Checkbox checked={item.discountEnabled} disabled={busy}
                                 onChange={event => changeLine(item.key, "discountEnabled", event.target.checked)} />} />
-                            <TextField label="Discount amount" type="number" value={item.discountAmount} disabled={busy || !item.discountEnabled}
-                                slotProps={{ htmlInput: { min: 0, step: "0.0001" } }}
-                                onChange={event => changeLine(item.key, "discountAmount", event.target.value)} />
+                            {item.discountEnabled && (
+                                <TextField label="Discount amount" type="number" value={item.discountAmount} disabled={busy || !item.discountEnabled}
+                                    slotProps={{ htmlInput: { min: 0, step: "0.0001" } }}
+                                    onChange={event => changeLine(item.key, "discountAmount", event.target.value)} />
+                            )}
                         </Box>
                     </Box>)}
                     <Button variant="outlined" disabled={busy || value.items.length >= 100}
@@ -190,7 +192,7 @@ export default function BillForm({ order = null, onClose, onSaved }) {
                 </Box>
                 {preview && <Box sx={{ mt: 3, p: 2, border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
                     <Typography fontWeight={700}>Bill Preview</Typography>
-                    {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].map(([label, name]) =>
+                    {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].filter(([, name]) => name !== "discountTotal" || Number(preview.discountTotal) > 0).map(([label, name]) =>
                         <Box key={name} className="bill-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
                             <Typography fontWeight={name === "grandTotal" ? 700 : 400}>
                                 {money(preview[name], preview.currency, preview.currencyDecimalPlaces)}</Typography></Box>)}

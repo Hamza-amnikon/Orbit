@@ -1,46 +1,282 @@
 import { useState } from "react";
-import { Alert, Box, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
-import { allRecords, financeApi } from "../../../services/financeApi";
-import { today, money, useLoad } from "../../../live/data";
-import { useAuth } from "../../../live/AuthContext";
-import { Feedback, Page, Records } from "../../../live/shared";
-import ModuleForm from "../../shared/ModuleForm";
-import { parseStatementCsv } from "./parseStatementCsv";
+
+import {
+    Alert,
+    Button,
+    Chip,
+    MenuItem,
+    Stack,
+    TextField,
+} from "@mui/material";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+
+import { useAuth } from "../../../context/AuthContext";
+import { useLoad } from "../../../live/data";
+import {
+    Feedback,
+    Page,
+    Records,
+} from "../../../live/shared";
+import { getBankAccounts } from "../bank accounts/BankAccountService";
+import { getReconciliations } from "./ReconciliationService";
+import {
+    formatAmount,
+    formatDate,
+} from "./reconciliationFormat";
+import ReconciliationForm from "./ReconciliationForm";
+import ReconciliationDetails from "./ReconciliationDetails";
+
 import "./BankReconciliation.css";
 
-export default function ReconciliationPage() {
-  const { canWrite } = useAuth(); const list = useLoad(() => financeApi.reconciliations.list(), []);
-  const banks = useLoad(signal => allRecords(financeApi.workspace("accounts"), {}, signal), []);
-  const [search, setSearch] = useState(""); const [page, setPage] = useState(1); const [edit, setEdit] = useState(null); const [detail, setDetail] = useState(null);
-  const [error, setError] = useState(""); const [busy, setBusy] = useState(false); const [complete, setComplete] = useState(false);
-  async function view(id) { setBusy(true); setError(""); try { setDetail(await financeApi.reconciliations.get(id)); } catch (failure) { setError(failure.message); } finally { setBusy(false); } }
-  async function create(event) { event.preventDefault(); setBusy(true); setError(""); try { const result = await financeApi.reconciliations.create({ ...edit, statementBalance: Number(edit.statementBalance) }); setEdit(null); list.refresh(); await view(result.id); } catch (failure) { setError(failure.message); } finally { setBusy(false); } }
-  async function importFile(event) { const file = event.target.files?.[0]; if (!file) return; try { if (file.size > 1024 * 1024) throw new Error("CSV must be smaller than 1 MB."); const lines = parseStatementCsv(await file.text()); setEdit(current => ({ ...current, lines })); setError(""); } catch (failure) { setError(failure.message); } }
-  async function match(line, value) { setBusy(true); setError(""); try { setDetail(await financeApi.reconciliations.match(detail.id, line.id, { journalLineId: value || null, rowVersion: line.rowVersion })); } catch (failure) { setError(failure.message); } finally { setBusy(false); } }
-  async function finish() { setBusy(true); setError(""); try { setDetail(await financeApi.reconciliations.complete(detail.id, { rowVersion: detail.rowVersion })); setComplete(false); list.refresh(); } catch (failure) { setError(failure.message); } finally { setBusy(false); } }
-  const rows = (list.data || []).filter(row => `${row.account} ${row.statementDate}`.toLowerCase().includes(search.toLowerCase()));
-  return <Page title="Bank Reconciliation" subtitle="Import statement lines and match them to posted book entries" action={canWrite && <Button variant="contained" onClick={() => { setError(""); setEdit({ accountId: "", statementDate: today(), statementBalance: "", notes: "", lines: [] }); }}>New Reconciliation</Button>}>
-    {error && !edit && !detail && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-    <Records {...list} rows={rows.slice((page - 1) * 25, page * 25)} total={rows.length} page={page} setPage={setPage} search={search} setSearch={setSearch} columns={[
-      { label: "Bank account", render: row => row.account }, { label: "Statement date", render: row => row.statementDate }, { label: "Statement balance", render: row => money(row.statementBalance) }, { label: "Status", render: row => <Chip label={row.status} size="small" /> }, { label: "Actions", render: row => <Button disabled={busy} onClick={() => view(row.id)}>View / match</Button> },
-    ]} />
-    {edit && <Dialog open fullWidth maxWidth="md" onClose={busy ? undefined : () => setEdit(null)}><form onSubmit={create}><DialogTitle>New Reconciliation</DialogTitle><DialogContent dividers>
-      <Feedback error={error || banks.error} loading={banks.loading} retry={banks.refresh} />
-      <ModuleForm value={edit} onChange={setEdit} fields={[{ name: "accountId", label: "Bank account", required: true, options: (banks.data || []).filter(row => row.isActive).map(row => ({ value: row.id, label: row.name })) }, { name: "statementDate", label: "Statement date", required: true, type: "date" }, { name: "statementBalance", label: "Statement closing balance", required: true, type: "number", min: -1000000000 }, { name: "notes", label: "Notes" }]} />
-      <Alert severity="info" sx={{ mb: 2 }}>CSV columns: Date, Reference, Direction, Amount. Dates: YYYY-MM-DD. Direction: MoneyIn or MoneyOut. Amounts must be positive. Maximum 2,000 lines.</Alert>
-      <Button component="label" variant="outlined">Import statement CSV<input type="file" accept=".csv,text/csv" hidden onChange={importFile} /></Button><Typography sx={{ mt: 2 }}>{edit.lines.length} statement lines ready to import</Typography>
-    </DialogContent><DialogActions><Button disabled={busy} onClick={() => setEdit(null)}>Cancel</Button><Button type="submit" variant="contained" disabled={busy || banks.loading || !!banks.error}>Save Statement</Button></DialogActions></form></Dialog>}
-    {detail && <Dialog open fullWidth maxWidth="lg" onClose={busy ? undefined : () => setDetail(null)}><DialogTitle>Reconciliation · {detail.statementDate} · {detail.status}</DialogTitle><DialogContent dividers>
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-      <Box className="admin-summary-grid">{[["Statement", detail.statementBalance], ["Book balance", detail.bookBalance], ["Outstanding deposits", detail.outstandingDeposits], ["Outstanding withdrawals", detail.outstandingWithdrawals], ["Difference", detail.difference]].map(([label, value]) => <Card key={label}><CardContent><Typography color="text.secondary">{label}</Typography><Typography fontWeight={700}>{money(value)}</Typography></CardContent></Card>)}</Box>
-      <TableContainer><Table><TableHead><TableRow>{["Date", "Reference", "Direction", "Amount", "Matched book entry"].map(label => <TableCell key={label}>{label}</TableCell>)}</TableRow></TableHead><TableBody>{detail.lines.map(line => <TableRow key={line.id}>
-        <TableCell>{line.date}</TableCell><TableCell>{line.reference}</TableCell><TableCell>{line.direction}</TableCell><TableCell>{money(line.amount)}</TableCell><TableCell>
-          <TextField select fullWidth size="small" label={`Match ${line.reference}`} value={line.matchedJournalLineId || ""} disabled={busy || !canWrite || detail.status === "Completed"} onChange={event => match(line, event.target.value)}>
-            <MenuItem value="">Unmatched</MenuItem>{detail.books.filter(book => Math.round((book.debit - book.credit) * 100) === Math.round((line.direction === "MoneyIn" ? line.amount : -line.amount) * 100)).map(book => <MenuItem key={book.id} value={book.id}>{book.date} · {book.reference} · {money(book.debit - book.credit)}</MenuItem>)}
-          </TextField></TableCell></TableRow>)}</TableBody></Table></TableContainer>
-      {!detail.lines.length && <Typography>No statement lines were imported.</Typography>}
-      {complete && <Alert severity="warning" sx={{ mt: 2 }} action={<Stack direction="row"><Button disabled={busy} onClick={() => setComplete(false)}>Cancel</Button><Button disabled={busy} onClick={finish}>Confirm completion</Button></Stack>}>Complete this reconciliation? Completed statements cannot be edited.</Alert>}
-    </DialogContent><DialogActions><Button disabled={busy} onClick={() => setDetail(null)}>Close</Button>{canWrite && detail.status === "Draft" && <Button disabled={busy || detail.difference !== 0 || detail.lines.some(line => !line.matchedJournalLineId)} variant="contained" onClick={() => setComplete(true)}>Complete Reconciliation</Button>}</DialogActions></Dialog>}
-  </Page>;
+async function loadAccounts(signal) {
+    const accounts = new Map();
+    let page = 1;
+
+    while (true) {
+        const result = await getBankAccounts({ page, pageSize: 100 }, signal);
+
+        if (!Array.isArray(result?.data) || !Number.isInteger(result.total)) {
+            throw new Error("Invalid bank account response.");
+        }
+
+        const previousSize = accounts.size;
+
+        for (const account of result.data) {
+            accounts.set(account.id, account);
+        }
+
+        if (accounts.size >= result.total) {
+            return Array.from(accounts.values());
+        }
+
+        if (!result.data.length || previousSize === accounts.size) {
+            throw new Error("The account list changed while loading. Refresh and try again.");
+        }
+
+        page += 1;
+    }
 }
 
+function ReconciliationPage() {
+    const { canWrite } = useAuth();
+    const [search, setSearch] = useState("");
+    const [bankAccountId, setBankAccountId] = useState("");
+    const [status, setStatus] = useState("");
+    const [page, setPage] = useState(1);
+    const [creating, setCreating] = useState(false);
+    const [detailId, setDetailId] = useState(null);
+    const [notice, setNotice] = useState("");
+
+    const choices = useLoad(loadAccounts, []);
+    const accounts = choices.data || [];
+    const ready = !choices.loading && !choices.error;
+
+    const list = useLoad(
+        signal => getReconciliations({
+            page,
+            pageSize: 25,
+            search,
+            bankAccountId,
+            status,
+        }, signal),
+        [page, search, bankAccountId, status]
+    );
+
+    function refresh() {
+        list.refresh();
+        choices.refresh();
+    }
+
+    function saved(reconciliation) {
+        setCreating(false);
+        setNotice("Statement imported. Match its entries to the Finance transactions.");
+        setDetailId(reconciliation.id);
+        list.refresh();
+    }
+
+    return (
+        <Page
+            title="Bank Reconciliation"
+            subtitle="Compare bank statements with posted Finance transactions"
+            action={canWrite && (
+                <Button
+                    variant="contained"
+                    startIcon={<AddRoundedIcon />}
+                    disabled={!ready || !accounts.some(account => account.openingBalanceDate)}
+                    onClick={() => {
+                        setNotice("");
+                        setCreating(true);
+                    }}
+                >
+                    New Reconciliation
+                </Button>
+            )}
+        >
+            {notice && (
+                <Alert
+                    severity="success"
+                    sx={{ mb: 2 }}
+                    onClose={() => setNotice("")}
+                >
+                    {notice}
+                </Alert>
+            )}
+
+            <Feedback
+                loading={choices.loading}
+                error={choices.error}
+                retry={refresh}
+            />
+
+            <Records
+                rows={list.data?.data || []}
+                total={list.data?.total || 0}
+                page={list.data?.page || page}
+                setPage={setPage}
+                search={search}
+                setSearch={setSearch}
+                loading={list.loading}
+                error={list.error}
+                refresh={refresh}
+                extra={(
+                    <Stack
+                        direction="row"
+                        useFlexGap
+                        sx={{ flexWrap: "wrap" }}
+                        spacing={2}
+                    >
+                        <TextField
+                            select
+                            size="small"
+                            label="Bank account"
+                            value={bankAccountId}
+                            disabled={!ready}
+                            sx={{ minWidth: 260 }}
+                            onChange={event => {
+                                setBankAccountId(event.target.value);
+                                setPage(1);
+                            }}
+                        >
+                            <MenuItem
+                                value=""
+                            >
+                                All accounts
+                            </MenuItem>
+                            {accounts.map(account => (
+                                <MenuItem
+                                    key={account.id}
+                                    value={String(account.id)}
+                                >
+                                    {account.name} · {account.currency}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+
+                        <TextField
+                            select
+                            size="small"
+                            label="Status"
+                            value={status}
+                            sx={{ minWidth: 180 }}
+                            onChange={event => {
+                                setStatus(event.target.value);
+                                setPage(1);
+                            }}
+                        >
+                            <MenuItem
+                                value=""
+                            >
+                                All statuses
+                            </MenuItem>
+                            <MenuItem
+                                value="Draft"
+                            >
+                                Draft
+                            </MenuItem>
+                            <MenuItem
+                                value="Completed"
+                            >
+                                Completed
+                            </MenuItem>
+                        </TextField>
+
+                        <Button onClick={() => {
+                            setSearch("");
+                            setBankAccountId("");
+                            setStatus("");
+                            setPage(1);
+                        }}>
+                            Clear filters
+                        </Button>
+                    </Stack>
+                )}
+                columns={[
+                    {
+                        label: "Reconciliation",
+                        render: row => "Reconciliation " + row.id,
+                    },
+                    {
+                        label: "Account",
+                        render: row => row.bankAccountName,
+                    },
+                    {
+                        label: "Company",
+                        render: row => row.companyName,
+                    },
+                    {
+                        label: "From",
+                        render: row => formatDate(row.periodStart),
+                    },
+                    {
+                        label: "To",
+                        render: row => formatDate(row.periodEnd),
+                    },
+                    {
+                        label: "Statement closing balance",
+                        render: row => formatAmount(row.statementClosingBalance, row.currency, row.currencyDecimalPlaces),
+                    },
+                    {
+                        label: "Status",
+                        render: row => (
+                            <Chip
+                                size="small"
+                                label={row.status}
+                                color={row.status === "Completed" ? "success" : "warning"}
+                            />
+                        ),
+                    },
+                    {
+                        label: "Actions",
+                        render: row => (
+                            <Button
+                                onClick={() => setDetailId(row.id)}
+                            >
+                                View / Match
+                            </Button>
+                        ),
+                    },
+                ]}
+            />
+
+            {creating && (
+                <ReconciliationForm
+                    accounts={accounts}
+                    onClose={() => setCreating(false)}
+                    onSaved={saved}
+                />
+            )}
+
+            {detailId !== null && (
+                <ReconciliationDetails
+                    key={detailId}
+                    id={detailId}
+                    canWrite={canWrite}
+                    onClose={() => setDetailId(null)}
+                    onChanged={() => list.refresh()}
+                />
+            )}
+        </Page>
+    );
+}
+
+export default ReconciliationPage;

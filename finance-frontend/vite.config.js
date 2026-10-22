@@ -52,6 +52,29 @@ export default defineConfig({
                 secure: false,
             },
 
+            "/api/bank-accounts": {
+                target: "https://localhost:7051",
+                changeOrigin: true,
+                secure: false,
+            },
+
+            "/api/bank-transactions": {
+                target: "https://localhost:7051",
+                changeOrigin: true,
+                secure: false,
+            },
+
+            "/api/bank-reconciliations": {
+                target: "https://localhost:7051",
+                changeOrigin: true,
+                secure: false,
+            },
+            "/api/bank-transfers": {
+                 target: "https://localhost:7051",
+                 changeOrigin: true,
+                 secure: false,
+            },
+
             "/api/currencies": {
                 ...invoiceProxy,
             },

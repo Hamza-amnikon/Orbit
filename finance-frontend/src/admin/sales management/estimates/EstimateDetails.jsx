@@ -63,7 +63,7 @@ const EstimateDetails = ({ id, onBack, onViewInvoice }) => {
 
     const status = estimate ? estimateStatus(estimate.status) : "";
     const items = [...(estimate?.items || [])].sort((first, second) => first.lineNumber - second.lineNumber);
-    const hasDiscount = items.some(item => item.discountEnabled === true);
+    const hasDiscount = items.some(item => Number(item.discountAmount) > 0);
 
     function reload() {
         setRevision(value => value + 1);
@@ -164,7 +164,7 @@ const EstimateDetails = ({ id, onBack, onViewInvoice }) => {
                 </Box>
                 <Box className="estimate-details-total-wrapper"><Box className="estimate-details-totals">
                     <Box className="estimate-details-total-row"><Typography>Subtotal</Typography><Typography>{formatAmount(estimate.subTotal, estimate.currency)}</Typography></Box>
-                    {hasDiscount && <Box className="estimate-details-total-row"><Typography>Discount</Typography><Typography>{formatAmount(estimate.discountTotal, estimate.currency)}</Typography></Box>}
+                    {Number(estimate.discountTotal) > 0 && <Box className="estimate-details-total-row"><Typography>Discount</Typography><Typography>{formatAmount(estimate.discountTotal, estimate.currency)}</Typography></Box>}
                     <Box className="estimate-details-total-row"><Typography>Tax</Typography><Typography>{formatAmount(estimate.taxTotal, estimate.currency)}</Typography></Box>
                     <Box className="estimate-details-grand-total"><Typography>Grand Total</Typography><Typography>{formatAmount(estimate.grandTotal, estimate.currency)}</Typography></Box>
                 </Box></Box>
