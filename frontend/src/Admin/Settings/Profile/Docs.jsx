@@ -40,7 +40,7 @@ function Documents({ profile }) {
     const [documents, setDocuments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
-    const [hasOnboardingDetails, setHasOnboardingDetails] = useState(false);
+    const loadedUanNumberRef = useRef("");
     const [draggingField, setDraggingField] = useState("");
     const [payslipPromptOpen, setPayslipPromptOpen] = useState(false);
     const payslipFileInputRef = useRef(null);
@@ -136,7 +136,10 @@ function Documents({ profile }) {
             }
 
             setDocuments(data);
-            setHasOnboardingDetails(onboardingResult.status === "fulfilled");
+            const onboardingUan = onboardingResult.status === "fulfilled"
+                ? onboardingResult.value.data?.data?.uanNumber || ""
+                : "";
+            loadedUanNumberRef.current = String(onboardingUan).trim();
 
             const findLatestDocument = (type) =>
                 data
@@ -171,7 +174,7 @@ function Documents({ profile }) {
 
                 uanNumber:
                     onboardingResult.status === "fulfilled"
-                        ? onboardingResult.value.data?.data?.uanNumber || ""
+                        ? onboardingUan
                         : uan?.documentNumber || "",
 
                 bankName:
@@ -201,6 +204,15 @@ function Documents({ profile }) {
     };
 
     const saveUanNumber = async () => {
+        const currentUan = form.uanNumber.trim();
+
+        // Approved onboarding details are immutable on the API. Avoid sending
+        // an unchanged UAN on every document save, which otherwise prevents
+        // the separate Document API upload from running.
+        if (currentUan === loadedUanNumberRef.current) {
+            return;
+        }
+
         const detailsUrl = `${ONBOARDING_API_URL}/api/Onboarding/${employeeId}/details`;
         let existingDetails = {};
 
@@ -215,8 +227,9 @@ function Documents({ profile }) {
 
         await axios.put(detailsUrl, {
             ...existingDetails,
-            uanNumber: form.uanNumber.trim() || null,
+            uanNumber: currentUan || null,
         });
+        loadedUanNumberRef.current = currentUan;
     };
 
     /* ======================================================
@@ -694,8 +707,7 @@ const payload = {
 
             setSaving(true);
 
-            const uanSaved = Boolean(form.uanNumber.trim()) || hasOnboardingDetails;
-            if (uanSaved) {
+            if (form.uanNumber.trim() !== loadedUanNumberRef.current) {
                 await saveUanNumber();
             }
 
@@ -1060,7 +1072,7 @@ const payload = {
 
             setSaving(true);
 
-            if (form.uanNumber.trim() || hasOnboardingDetails) {
+            if (form.uanNumber.trim() !== loadedUanNumberRef.current) {
                 await saveUanNumber();
             }
 
