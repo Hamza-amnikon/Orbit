@@ -2,7 +2,10 @@ import { useAuth } from "../../context/AuthContext";
 import { Alert, Box as MuiLayoutBox, Button, Typography as MuiText } from "@mui/material";
 
 const getTicketPortalUrl = () => {
-    const configuredUrl = String(import.meta.env.VITE_TICKETING_PORTAL_URL || "").trim();
+    const configuredUrl = String(
+        import.meta.env.VITE_TICKETING_PORTAL_URL ||
+        "https://ticketing-lab.amnikon.net/"
+    ).trim();
     if (!configuredUrl) return null;
 
     try {
