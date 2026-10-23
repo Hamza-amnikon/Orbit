@@ -77,9 +77,19 @@ jobs:
               }
             }
           }
-          $missing = @($overrides.Keys | Where-Object { -not $seen.ContainsKey($_) })
+          # The Advance Salary API was added after the original FRONTEND_ENV
+          # secret was created. Keep older secrets deployable by supplying its
+          # production URL here when the key is absent.
+          $optionalSettings = @("VITE_ADVANCE_SALARY_API_BASE_URL")
+          $missing = @($overrides.Keys | Where-Object { -not $seen.ContainsKey($_) -and $_ -notin $optionalSettings })
           if ($missing.Count -gt 0) {
             throw "FRONTEND_ENV is missing required API settings: $($missing -join ', ')"
+          }
+          foreach ($name in $optionalSettings) {
+            if (-not $seen.ContainsKey($name)) {
+              $lines += "$name=$($overrides[$name])"
+              $seen[$name] = $true
+            }
           }
           $apiHost = "sparkapi.amnikontechnologies.com"
           foreach ($line in $lines) {
