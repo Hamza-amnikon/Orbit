@@ -71,7 +71,7 @@ const payrollModules = [
             icon: <RequestQuoteIcon />,
             color: "#0f766e",
             route: "/payroll/advance-salary",
-            permissionPath: "/payroll",
+            permissionPath: "/payroll/advance-salary",
         },
         {
             title: "Request Advance Salary",
@@ -79,7 +79,7 @@ const payrollModules = [
             icon: <RequestQuoteIcon />,
             color: "#0d9488",
             route: "/payroll/my-advance-salary",
-            permissionPath: "/payroll",
+            permissionPath: "/payroll/my-advance-salary",
         },
         {
             title: "Payroll Reports",

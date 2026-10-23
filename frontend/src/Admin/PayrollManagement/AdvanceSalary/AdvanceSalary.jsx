@@ -44,6 +44,7 @@ export default function AdvanceSalary() {
     const employeeId = valueOf(profile, EMPLOYEE_ID_FIELDS) || valueOf(profile?.employee, EMPLOYEE_ID_FIELDS);
     const employeeName = profile?.employeeName || profile?.EmployeeName || profile?.name || profile?.Name || "";
     const canReview = hasPermission("/approvals", "approve");
+    const canCreateRequest = hasPermission("/payroll/my-advance-salary", "create");
     const [requests, setRequests] = useState([]);
     const [employeeDirectory, setEmployeeDirectory] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -227,9 +228,9 @@ export default function AdvanceSalary() {
                     <Typography component="h1" variant="h4">Advance Salary</Typography>
                     <Typography component="p" variant="body1">Apply for a salary advance and review requests awaiting approval.</Typography>
                 </Box>
-                <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => navigate("/payroll/advance-salary/request")}>
+                {canCreateRequest && <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => navigate("/payroll/advance-salary/request")}>
                     Request Advance
-                </Button>
+                </Button>}
             </Box>
 
             <Box className="advance-salary-stats">

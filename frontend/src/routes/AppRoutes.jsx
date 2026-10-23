@@ -326,6 +326,11 @@ export const PERMISSION_PAGES = [
         pageName: "Advance Salary",
         route: "/payroll/advance-salary",
     },
+    {
+        module: "Payroll",
+        pageName: "Request Advance Salary",
+        route: "/payroll/my-advance-salary",
+    },
 
     // ========================================================
     // REPORTS
@@ -447,19 +452,13 @@ function PermissionGuard() {
         onboardingStep === "policies";
     const isAttendanceRegularizationPage =
         location.pathname.toLowerCase().replace(/\/$/, "") === "/attendance/regularization-requests";
-    const isAdvanceSalaryPage =
-        location.pathname.toLowerCase().replace(/\/$/, "") === "/payroll/advance-salary";
-    const isMyAdvanceSalaryPage =
-        location.pathname.toLowerCase().replace(/\/$/, "") === "/payroll/my-advance-salary";
     const isAdvanceSalaryRequestPage =
         location.pathname.toLowerCase().replace(/\/$/, "") === "/payroll/advance-salary/request";
     const allowed =
         isRequiredPolicyPage ||
         hasPermission(location.pathname, "view") ||
         (isAttendanceRegularizationPage && hasPermission("/attendance/logs", "view")) ||
-        (isAdvanceSalaryPage && hasPermission("/payroll", "view")) ||
-        (isMyAdvanceSalaryPage && hasPermission("/payroll", "view")) ||
-        (isAdvanceSalaryRequestPage && hasPermission("/payroll", "view"));
+        (isAdvanceSalaryRequestPage && hasPermission("/payroll/my-advance-salary", "create"));
 
     if (!allowed) {
         return (

@@ -34,7 +34,8 @@ function SummaryCard({ icon, label, value, detail }) {
 
 export default function MyAdvanceSalary() {
     const navigate = useNavigate();
-    const { profile, profileLoading } = useAuth();
+    const { profile, profileLoading, hasPermission } = useAuth();
+    const canCreateRequest = hasPermission("/payroll/my-advance-salary", "create");
     const employeeId = valueOf(profile, ["employeeId", "EmployeeId", "employeeID", "EmployeeID"]) ??
         valueOf(profile?.employee, ["employeeId", "EmployeeId", "employeeID", "EmployeeID"]);
     const [requests, setRequests] = useState([]);
@@ -130,7 +131,7 @@ export default function MyAdvanceSalary() {
             <Box className="advance-salary-heading"><Typography component="h1" variant="h4">My Advance Salary</Typography><Typography component="p">Request an advance, review approved loans, and follow your repayment plan.</Typography></Box>
             <Stack direction="row" spacing={1}>
                 <Button variant="outlined" onClick={load} disabled={loading}>Refresh</Button>
-                <Button variant="contained" onClick={() => { setSubmitError(""); setRequestOpen(true); }}>Request Salary Advance</Button>
+                {canCreateRequest && <Button variant="contained" onClick={() => { setSubmitError(""); setRequestOpen(true); }}>Request Salary Advance</Button>}
             </Stack>
         </Box>
 
