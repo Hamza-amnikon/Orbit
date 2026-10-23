@@ -16,6 +16,7 @@ const Dashboard = lazy(() => import("../pages/Dashboard/Dashboard"));
 const Attendance = lazy(() => import("../Admin/AttendanceManagement/Attendance"));
 const Approval = lazy(() => import("../Admin/Approvals/Approval"));
 const Payroll = lazy(() => import("../Admin/PayrollManagement/Payroll"));
+const AdvanceSalary = lazy(() => import("../Admin/PayrollManagement/AdvanceSalary/AdvanceSalary"));
 const Reports = lazy(() => import("../pages/Reports/Reports"));
 const Tickets = lazy(() => import("../pages/Tickets/Tickets"));
 
@@ -318,6 +319,11 @@ export const PERMISSION_PAGES = [
         pageName: "Salary Components",
         route: "/payroll/salary-components",
     },
+    {
+        module: "Payroll",
+        pageName: "Advance Salary",
+        route: "/payroll/advance-salary",
+    },
 
     // ========================================================
     // REPORTS
@@ -439,10 +445,13 @@ function PermissionGuard() {
         onboardingStep === "policies";
     const isAttendanceRegularizationPage =
         location.pathname.toLowerCase().replace(/\/$/, "") === "/attendance/regularization-requests";
+    const isAdvanceSalaryPage =
+        location.pathname.toLowerCase().replace(/\/$/, "") === "/payroll/advance-salary";
     const allowed =
         isRequiredPolicyPage ||
         hasPermission(location.pathname, "view") ||
-        (isAttendanceRegularizationPage && hasPermission("/attendance/logs", "view"));
+        (isAttendanceRegularizationPage && hasPermission("/attendance/logs", "view")) ||
+        (isAdvanceSalaryPage && hasPermission("/payroll", "view"));
 
     if (!allowed) {
         return (
@@ -694,6 +703,11 @@ function AppRoutes() {
             try {
                 await syncPermissions(PERMISSION_PAGES);
 
+                // The Permission screen reads its catalog from the API. Notify
+                // it after the catalog sync so it can refresh if it mounted
+                // while the request was still in flight.
+                window.dispatchEvent(new Event("spark:permissions-synced"));
+
                 console.log(
                     "Permission pages synchronized successfully."
                 );
@@ -902,6 +916,11 @@ function AppRoutes() {
                         <Route
                             path="/payroll/history"
                             element={<EmployeesHistory />}
+                        />
+
+                        <Route
+                            path="/payroll/advance-salary"
+                            element={<AdvanceSalary />}
                         />
 
                         <Route

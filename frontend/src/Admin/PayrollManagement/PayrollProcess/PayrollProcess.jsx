@@ -213,8 +213,9 @@ const normalizePayslip = (payslip) => {
         // payroll-component deductions. This keeps the UI consistent with the backend.
         attendanceDeduction: Number(getValue(payslip, "attendanceDeduction", "AttendanceDeduction") || 0),
         components,
-        earnings: components.filter((c) => String(c.componentType).toLowerCase() !== "deduction"),
+        earnings: components.filter((c) => String(c.componentType).toLowerCase() === "earning"),
         deductions: components.filter((c) => String(c.componentType).toLowerCase() === "deduction"),
+        otherPayments: components.filter((c) => String(c.componentType).toLowerCase() === "other payment"),
     };
 };
 
@@ -497,6 +498,7 @@ const PayrollProcess = () => {
                     monthlyCtc: Number(processedPayslip?.monthlyCtc || preview.monthlyCtc) || 0,
                     earnings: processed ? processedPayslip.earnings : preview.earnings,
                     deductions: processed ? processedPayslip.deductions : preview.deductions,
+                    otherPayments: processed ? processedPayslip.otherPayments : [],
                     grossSalary: processed ? processedPayslip.grossSalary : preview.monthlyGrossSalary,
                     totalDeductions: processed ? processedPayslip.totalDeductions : preview.monthlyDeductions,
                     netSalary: processed ? processedPayslip.netSalary : preview.monthlyNetSalary,
@@ -922,7 +924,22 @@ const PayrollProcess = () => {
                             </Box>
                         </Box>
 
-                        <Box className="pr-net-salary-panel"><Box><Typography className="pr-net-salary-label">Net Salary</Typography><Typography className="pr-net-salary-helper">Gross salary minus total deductions</Typography></Box><Typography className="pr-net-salary-amount">{formatCurrency(selectedEmployee.netSalary)}</Typography></Box>
+                        {selectedEmployee.processed && selectedEmployee.otherPayments?.length > 0 && (
+                            <Box className="pr-calculation-section">
+                                <Typography className="pr-calculation-section-title">Other payments</Typography>
+                                <Typography className="pr-calculation-section-helper">Advance amounts included in this payroll, shown separately from gross salary.</Typography>
+                                <Box className="pr-calculation-list">
+                                    {selectedEmployee.otherPayments.map((payment, index) => (
+                                        <Box className="pr-calculation-row" key={`${payment.componentCode}-${index}`}>
+                                            <Typography className="pr-calculation-component">{payment.componentName}</Typography>
+                                            <Typography className="pr-calculation-amount">{formatCurrency(payment.amount)}</Typography>
+                                        </Box>
+                                    ))}
+                                </Box>
+                            </Box>
+                        )}
+
+                        <Box className="pr-net-salary-panel"><Box><Typography className="pr-net-salary-label">Net Salary</Typography><Typography className="pr-net-salary-helper">Gross salary plus other payments, minus total deductions</Typography></Box><Typography className="pr-net-salary-amount">{formatCurrency(selectedEmployee.netSalary)}</Typography></Box>
 
                         {selectedEmployee.processed && (
                             <Box className="pr-payroll-attendance-grid">

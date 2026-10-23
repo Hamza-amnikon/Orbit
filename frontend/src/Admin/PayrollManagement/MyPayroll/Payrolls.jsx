@@ -9,6 +9,9 @@ import axios from "axios";
 import "./Payrolls.css";
 import useProfile from "../../Services/useProfile";
 import { useAuth } from "../../../context/AuthContext";
+import AttendanceService from "../../Services/AttendanceService";
+import LeaveService from "../../Services/LeaveService";
+import { getAttendanceStatusForDuration } from "../../AttendanceManagement/AttendanceLogs/attendanceRules";
 
 import {
     Alert,
@@ -16,7 +19,6 @@ import {
     Button,
     Card,
     CardContent,
-    Chip,
     CircularProgress,
     Divider,
     FormControl,
@@ -25,12 +27,6 @@ import {
     Paper,
     Select,
     Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Typography,
 } from "@mui/material";
 
@@ -41,9 +37,9 @@ import {
     ReceiptLongOutlined,
 } from "@mui/icons-material";
 
-import sparkLogo from "../../../Images/amnikon-logo.png";
 import { Typography as MuiText } from "@mui/material";
-import { Box as MuiLayoutBox } from "@mui/material";
+
+const payslipLogo = "/Amnikon%20logo.jpg";
 
 /* =========================================================
    API
@@ -52,6 +48,7 @@ import { Box as MuiLayoutBox } from "@mui/material";
 const PAYROLL_API =
     `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
 const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
+const DOCUMENT_API = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
 
 /* =========================================================
    HELPERS
@@ -78,6 +75,18 @@ const getValue = (obj, ...keys) => {
 const validId = (value) =>
     Number.isInteger(Number(value)) &&
     Number(value) > 0;
+
+const attendanceDateKey = (record) => {
+    const value = getValue(record, "attendanceDate", "AttendanceDate", "date", "Date", "createdAt", "CreatedAt");
+    const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return match ? `${match[1]}-${match[2]}-${match[3]}` : "";
+};
+
+const attendanceStatus = (record) => getAttendanceStatusForDuration(
+    getValue(record, "status", "Status", "attendanceStatus", "AttendanceStatus") || "",
+    getValue(record, "checkIn", "CheckIn", "checkInTime", "CheckInTime", "inTime", "InTime"),
+    getValue(record, "checkOut", "CheckOut", "checkOutTime", "CheckOutTime", "outTime", "OutTime")
+).trim().toLowerCase().replace(/[ _-]+/g, "");
 
 
 /* =========================================================
@@ -119,69 +128,10 @@ const currency = (value) =>
         maximumFractionDigits: 2,
     });
 
-const numberToWords = (value) => {
-    const ones = [
-        "", "One", "Two", "Three", "Four", "Five",
-        "Six", "Seven", "Eight", "Nine", "Ten",
-        "Eleven", "Twelve", "Thirteen", "Fourteen",
-        "Fifteen", "Sixteen", "Seventeen", "Eighteen",
-        "Nineteen",
-    ];
-
-    const tens = [
-        "", "", "Twenty", "Thirty", "Forty",
-        "Fifty", "Sixty", "Seventy", "Eighty", "Ninety",
-    ];
-
-    const underThousand = (n) => {
-        let result = "";
-
-        if (n >= 100) {
-            result += `${ones[Math.floor(n / 100)]} Hundred`;
-            n %= 100;
-            if (n) result += " ";
-        }
-
-        if (n >= 20) {
-            result += tens[Math.floor(n / 10)];
-            n %= 10;
-            if (n) result += ` ${ones[n]}`;
-        } else if (n > 0) {
-            result += ones[n];
-        }
-
-        return result;
-    };
-
-    let n = Math.floor(Math.abs(Number(value || 0)));
-
-    if (n === 0) return "Zero Rupees";
-
-    const parts = [];
-
-    if (n >= 10000000) {
-        parts.push(`${underThousand(Math.floor(n / 10000000))} Crore`);
-        n %= 10000000;
-    }
-
-    if (n >= 100000) {
-        parts.push(`${underThousand(Math.floor(n / 100000))} Lakh`);
-        n %= 100000;
-    }
-
-    if (n >= 1000) {
-        parts.push(`${underThousand(Math.floor(n / 1000))} Thousand`);
-        n %= 1000;
-    }
-
-    if (n > 0) {
-        parts.push(underThousand(n));
-    }
-
-    return `${parts.join(" ")} Rupees`;
+const formatAadhaarNumber = (value) => {
+    const digits = String(value || "").replace(/\D/g, "").slice(0, 12);
+    return digits.match(/\d{1,4}/g)?.join(" ") || "-";
 };
-
-const amountWords = (value) => numberToWords(value);
 
 const InfoRow = ({ label, value }) => (
     <Box className="payslip-info-row">
@@ -196,9 +146,19 @@ const InfoRow = ({ label, value }) => (
     </Box>
 );
 
+const AttendanceValue = ({ label, value }) => (
+    <Box className="payslip-attendance-item">
+        <Typography className="payslip-attendance-label">{label}</Typography>
+        <Typography className="payslip-attendance-value">
+            {typeof value === "number" ? value.toFixed(2) : value}
+        </Typography>
+    </Box>
+);
+
 const SalaryTable = ({
     title,
     rows = [],
+    rowCount = rows.length,
     totalLabel = "Total",
     total = 0,
 }) => (
@@ -212,10 +172,24 @@ const SalaryTable = ({
         <Box className="payslip-salary-table">
             <Box className="payslip-salary-header">
                 <Typography>Description</Typography>
-                <Typography>Amount</Typography>
+                <Typography>Amount (INR)</Typography>
             </Box>
 
-            {rows.map((row, index) => {
+            {Array.from({ length: Math.max(rowCount, rows.length) }, (_, index) => {
+                const row = rows[index];
+                if (!row) {
+                    return (
+                        <Box
+                            className="payslip-salary-row is-empty"
+                            aria-hidden="true"
+                            key={`empty-${title}-${index}`}
+                        >
+                            <Typography>&nbsp;</Typography>
+                            <Typography>&nbsp;</Typography>
+                        </Box>
+                    );
+                }
+
                 const label =
                     row?.componentName ??
                     row?.label ??
@@ -810,28 +784,6 @@ function Payslips() {
     const [error, setError] =
         useState("");
 
-    const [employeeDocuments, setEmployeeDocuments] = useState([]);
-
-    useEffect(() => {
-        const employeeId = profile?.employeeId ?? profile?.EmployeeId ?? profile?.employeeID ?? profile?.EmployeeID;
-        if (!employeeId) return;
-        const loadEmployeeDocuments = async () => {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document/employee/${employeeId}`);
-                setEmployeeDocuments(Array.isArray(response.data) ? response.data : response.data ? [response.data] : []);
-            } catch (documentError) {
-                console.warn("Payroll employee documents unavailable:", documentError);
-                setEmployeeDocuments([]);
-            }
-        };
-        loadEmployeeDocuments();
-    }, [profile]);
-
-    const getEmployeeDocumentNumber = (type) => {
-        const document = employeeDocuments.find((item) => String(item.documentType ?? item.DocumentType ?? "").toLowerCase() === type.toLowerCase());
-        return document?.documentNumber ?? document?.DocumentNumber ?? "-";
-    };
-
     const [selectedYear, setSelectedYear] =
         useState(
             new Date().getFullYear()
@@ -841,6 +793,132 @@ function Payslips() {
         useState(
             new Date().getMonth() + 1
         );
+
+    const [attendanceRecords, setAttendanceRecords] = useState([]);
+    const [attendanceLoading, setAttendanceLoading] = useState(false);
+    const [attendanceError, setAttendanceError] = useState("");
+    const [leaveBalances, setLeaveBalances] = useState([]);
+    const [leaveTypes, setLeaveTypes] = useState([]);
+    const [identityDocuments, setIdentityDocuments] = useState({
+        panNumber: "",
+        aadhaarNumber: "",
+    });
+
+    useEffect(() => {
+        let active = true;
+        const loadAttendanceSummary = async () => {
+            if (!profile || profileLoading) return;
+            setAttendanceLoading(true);
+            setAttendanceError("");
+            try {
+                const employeeId = await resolveEmployeeId(profile);
+                if (!employeeId) throw new Error("Unable to identify your employee profile.");
+
+                const [attendanceResult, balancesResult, typesResult, documentsResult] = await Promise.allSettled([
+                    AttendanceService.getEmployeeAttendance(employeeId),
+                    LeaveService.getEmployeeLeaveBalances(employeeId),
+                    LeaveService.getLeaveTypes(),
+                    axios.get(`${DOCUMENT_API}/employee/${employeeId}`),
+                ]);
+                if (!active) return;
+
+                if (documentsResult.status === "fulfilled") {
+                    const responseData = documentsResult.value?.data;
+                    const documents = Array.isArray(responseData)
+                        ? responseData
+                        : Array.isArray(responseData?.data)
+                            ? responseData.data
+                            : responseData && typeof responseData === "object"
+                                ? [responseData]
+                                : [];
+                    const getDocumentType = (document) => String(getValue(
+                        document,
+                        "documentType",
+                        "DocumentType",
+                        "documentName",
+                        "DocumentName"
+                    ) || "").trim().toLowerCase();
+                    const latestDocument = (type) => documents
+                        .filter((document) => getDocumentType(document) === type)
+                        .sort((left, right) => Number(getValue(right, "documentId", "DocumentId") || 0) - Number(getValue(left, "documentId", "DocumentId") || 0))[0];
+                    const pan = latestDocument("pan");
+                    const aadhaar = latestDocument("aadhaar");
+
+                    setIdentityDocuments({
+                        panNumber: getValue(pan, "documentNumber", "DocumentNumber") || "",
+                        aadhaarNumber: getValue(aadhaar, "documentNumber", "DocumentNumber") || "",
+                    });
+                }
+
+                if (attendanceResult.status === "rejected") {
+                    throw attendanceResult.reason;
+                }
+
+                const attendanceData = attendanceResult.value;
+                setAttendanceRecords(Array.isArray(attendanceData)
+                    ? attendanceData
+                    : Array.isArray(attendanceData?.data)
+                        ? attendanceData.data
+                        : []);
+                setLeaveBalances(balancesResult.status === "fulfilled" && Array.isArray(balancesResult.value)
+                    ? balancesResult.value
+                    : []);
+                setLeaveTypes(typesResult.status === "fulfilled" && Array.isArray(typesResult.value)
+                    ? typesResult.value
+                    : []);
+
+            } catch (loadError) {
+                if (active) {
+                    setAttendanceRecords([]);
+                    setAttendanceError(loadError?.message || "Unable to load attendance records.");
+                }
+            } finally {
+                if (active) setAttendanceLoading(false);
+            }
+        };
+
+        loadAttendanceSummary();
+        return () => { active = false; };
+    }, [profile, profileLoading, selectedYear, selectedMonth]);
+
+    const monthlyAttendance = useMemo(() => {
+        const monthPrefix = `${selectedYear}-${String(selectedMonth).padStart(2, "0")}-`;
+        const byDate = new Map();
+        attendanceRecords.forEach((record) => {
+            const date = attendanceDateKey(record);
+            if (date.startsWith(monthPrefix)) byDate.set(date, record);
+        });
+
+        const counts = { present: 0, weeklyOff: 0, paidOff: 0, lwp: 0, absent: 0, paidLeave: 0 };
+        byDate.forEach((record) => {
+            const status = attendanceStatus(record);
+            if (["present", "late", "wfh", "workfromhome"].includes(status)) counts.present += 1;
+            else if (status === "halfday") counts.present += 0.5;
+            else if (status.includes("weeklyoff") || status.includes("weekoff")) counts.weeklyOff += 1;
+            else if (status.includes("paidoff") || status.includes("holiday")) counts.paidOff += 1;
+            else if (status.includes("paidleave") || status === "pl") counts.paidLeave += 1;
+            else if (status.includes("unpaid") || status === "lwp" || status.includes("leavewithoutpay")) counts.lwp += 1;
+            else if (status.includes("absent")) counts.absent += 1;
+        });
+
+        return {
+            ...counts,
+            daysPaid: counts.present + counts.weeklyOff + counts.paidOff + counts.paidLeave,
+            recordCount: byDate.size,
+        };
+    }, [attendanceRecords, selectedYear, selectedMonth]);
+
+    const paidLeaveBalance = useMemo(() => {
+        const plTypeIds = new Set(leaveTypes
+            .filter((type) => /^(pl|paid leave|privilege leave|earned leave)$/i.test(String(getValue(type, "leaveTypeName", "LeaveTypeName", "name", "Name") || "").trim()))
+            .map((type) => String(getValue(type, "leaveTypeId", "LeaveTypeId", "id", "Id"))));
+        const balance = leaveBalances.find((item) => {
+            const typeName = String(getValue(item, "leaveTypeName", "LeaveTypeName") || "").trim();
+            const typeId = String(getValue(item, "leaveTypeId", "LeaveTypeId") || "");
+            return /^(pl|paid leave|privilege leave|earned leave)$/i.test(typeName) || plTypeIds.has(typeId);
+        });
+        return balance ? Number(getValue(balance, "balanceDays", "BalanceDays", "balance", "Balance") || 0) : null;
+    }, [leaveBalances, leaveTypes]);
 
     /* =====================================================
        FETCH PAYSLIP
@@ -1164,6 +1242,10 @@ function Payslips() {
         0
     );
 
+    const advanceRepaymentTotal = deductions
+        .filter((row) => String(row?.componentCode || row?.ComponentCode || "").toUpperCase() === "ADVANCE_REPAYMENT")
+        .reduce((sum, row) => sum + Number(row?.amount || 0), 0);
+
     const hasAttendanceRow = deductions.some((row) => {
         const name = String(
             row?.componentName ||
@@ -1240,7 +1322,7 @@ function Payslips() {
      */
     const otherPayrollDeduction = Math.max(
         0,
-        backendTotalDeductions - effectiveAttendanceDeduction
+        backendTotalDeductions - effectiveAttendanceDeduction - advanceRepaymentTotal
     );
 
     const displayDeductions = [];
@@ -1262,6 +1344,33 @@ function Payslips() {
             amount: effectiveAttendanceDeduction,
         });
     }
+
+    if (advanceRepaymentTotal > 0.01) {
+        displayDeductions.push({
+            salaryComponentId: "advance-repayment",
+            sequence: 999997,
+            componentName: "Salary Advance Repayment",
+            amount: advanceRepaymentTotal,
+        });
+    }
+
+    const advancePayments = (payslip?.components || [])
+        .filter((row) => String(row?.componentCode || row?.ComponentCode || "").toUpperCase() === "ADVANCE_PAYOUT")
+        .map((row) => ({
+            ...row,
+            componentName: "Salary Advance Payout",
+            amount: Number(row?.amount ?? row?.Amount ?? 0),
+        }));
+    const advancePayoutTotal = advancePayments.reduce((sum, row) => sum + row.amount, 0);
+    const displayEarnings = [...earnings, ...advancePayments];
+    const displayTotalEarnings =
+        Number(payslip?.totalEarnings || payslip?.grossSalary || 0) +
+        advancePayoutTotal;
+    const salaryRowCount = Math.max(
+        displayEarnings.length,
+        displayDeductions.length,
+        1
+    );
 
     /*
      * If there is no backend total, fall back to the actual component rows.
@@ -1295,7 +1404,7 @@ function Payslips() {
                 payslip?.totalEarnings ||
                 payslip?.grossSalary ||
                 0
-            ) - effectiveTotalDeductions;
+            ) - effectiveTotalDeductions + advancePayoutTotal;
 
     /* =====================================================
        PRINT
@@ -1613,23 +1722,18 @@ function Payslips() {
                     ========================================= */}
 
                     <Box className="payslip-company-header">
-
                         <Box className="company-information">
-
-<Box className="company-logo">
-    <MuiLayoutBox
-        src={sparkLogo}
-        alt="SPARK ERP & HR SYSTEM"
-        className="company-logo-image"
-     component="img"/>
-</Box>
-
-                          
-
+                            <Box className="company-logo">
+                                <Box
+                                    component="img"
+                                    src={payslipLogo}
+                                    alt="Amnikon Technologies"
+                                    className="company-logo-image"
+                                />
+                            </Box>
                         </Box>
 
                         <Box className="payslip-title-block">
-
                             <Typography className="payslip-title">
                                 PAYSLIP
                             </Typography>
@@ -1646,36 +1750,24 @@ function Payslips() {
 
                             {payslip.payslipNumber && (
                                 <Typography className="payslip-number">
-                                    {
-                                        payslip.payslipNumber
-                                    }
+                                    {payslip.payslipNumber}
                                 </Typography>
                             )}
-<br/><br/>
-                            <Typography className="company-name">
-                                AMNIKON TECHNOLOGIES
-                                PVT. LTD.
-                            </Typography>
-
-                            <Typography className="company-line">
-                                1601, Amnikon Technologies, Arihant Aura
-                            </Typography>
-
-                            <Typography className="company-line">
-                                Turbhe, Navi Mumbai -
-                                400705
-                            </Typography>
-
-                            <Typography className="company-line">
-                                Phone: +91 22 1234
-                                5678&nbsp;&nbsp;|
-                                &nbsp;&nbsp;Email:
-                                hr@sparktech.com
-                            </Typography>
-
-
+                            <Box className="payslip-company-details">
+                                <Typography className="company-name">
+                                    AMNIKON TECHNOLOGIES PVT. LTD.
+                                </Typography>
+                                <Typography className="company-line">
+                                    1601, Amnikon Technologies, Arihant Aura
+                                </Typography>
+                                <Typography className="company-line">
+                                    Turbhe, Navi Mumbai - 400705
+                                </Typography>
+                                <Typography className="company-line">
+                                    Phone: +91 22 1234 5678&nbsp;&nbsp;|&nbsp;&nbsp;Email: hr@sparktech.com
+                                </Typography>
+                            </Box>
                         </Box>
-
                     </Box>
 
                     <Divider />
@@ -1712,14 +1804,10 @@ function Payslips() {
                                     payslip.designation || profile?.designation || profile?.jobTitle || "-"
                                 }
                             />
-
                             <InfoRow
-                                label="Department"
-                                value={
-                                    payslip.department
-                                }
+                                label="PAN Number"
+                                value={identityDocuments.panNumber || "-"}
                             />
-
                         </Box>
 
                         <Box className="employee-info-column">
@@ -1738,15 +1826,51 @@ function Payslips() {
                                 }
                             />
 
-                            <InfoRow label="PAN Number" value={getEmployeeDocumentNumber("PAN")} />
-
-                            <InfoRow label="Aadhaar Number" value={getEmployeeDocumentNumber("Aadhaar")} />
+                            <InfoRow
+                                label="Department"
+                                value={payslip.department || profile?.department || "-"}
+                            />
+                            <InfoRow
+                                label="Aadhaar Number"
+                                value={formatAadhaarNumber(identityDocuments.aadhaarNumber)}
+                            />
 
                         </Box>
 
                     </Box>
 
                     <Divider />
+
+                    {/* =========================================
+                        MONTHLY ATTENDANCE FROM ATTENDANCE SERVICE
+                    ========================================= */}
+
+                    <Box className="payslip-attendance-summary">
+                        <Typography className="payslip-attendance-title">
+                            ATTENDANCE LOGS
+                        </Typography>
+                        {attendanceLoading ? (
+                            <Typography className="payslip-attendance-state">Loading attendance records…</Typography>
+                        ) : attendanceError ? (
+                            <Typography className="payslip-attendance-state payslip-attendance-error">
+                                Attendance records unavailable: {attendanceError}
+                            </Typography>
+                        ) : (
+                            <Box className="payslip-attendance-grid">
+                                <AttendanceValue label="Days Paid" value={monthlyAttendance.recordCount ? monthlyAttendance.daysPaid : "—"} />
+                                <AttendanceValue label="Days Present" value={monthlyAttendance.recordCount ? monthlyAttendance.present : "—"} />
+                                <AttendanceValue label="W.Off / Pd.Off" value={monthlyAttendance.recordCount ? `${monthlyAttendance.weeklyOff.toFixed(2)} / ${monthlyAttendance.paidOff.toFixed(2)}` : "—"} />
+                                <AttendanceValue label="LWP / Absent" value={monthlyAttendance.recordCount ? `${monthlyAttendance.lwp.toFixed(2)} / ${monthlyAttendance.absent.toFixed(2)}` : "—"} />
+                                <AttendanceValue label="PL" value={monthlyAttendance.recordCount ? monthlyAttendance.paidLeave.toFixed(2) : "—"} />
+                                <AttendanceValue label="Bal PL" value={paidLeaveBalance === null ? "—" : paidLeaveBalance.toFixed(2)} />
+                            </Box>
+                        )}
+                        {!attendanceLoading && !attendanceError && monthlyAttendance.recordCount === 0 && (
+                            <Typography className="payslip-attendance-state">
+                                No attendance records are available for this payroll month.
+                            </Typography>
+                        )}
+                    </Box>
 
                     {/* =========================================
                         EARNINGS / DEDUCTIONS
@@ -1757,26 +1881,20 @@ function Payslips() {
                         <Box className="salary-table-column">
                             <SalaryTable
                                 title="EARNINGS"
-                                rows={
-                                    earnings
-                                }
+                                rows={displayEarnings}
+                                rowCount={salaryRowCount}
                                 totalLabel="TOTAL EARNINGS"
-                                total={
-                                    payslip.totalEarnings
-                                }
+                                total={displayTotalEarnings}
                             />
                         </Box>
 
-                        <Box className="salary-table-column">
+                        <Box className="salary-table-column salary-deductions-column">
                             <SalaryTable
                                 title="DEDUCTIONS"
-                                rows={
-                                    displayDeductions
-                                }
+                                rows={displayDeductions}
+                                rowCount={salaryRowCount}
                                 totalLabel="TOTAL DEDUCTIONS"
-                                total={
-                                    effectiveTotalDeductions
-                                }
+                                total={effectiveTotalDeductions}
                             />
                         </Box>
 
@@ -1787,134 +1905,12 @@ function Payslips() {
                     ========================================= */}
 
                     <Box className="net-pay-box">
-
-                        <Box className="net-pay-item">
-                            <Typography>
-                                TOTAL EARNINGS
-                            </Typography>
-
-                            <MuiText component="strong" variant="inherit">
-                                {currency(
-                                    payslip.totalEarnings
-                                )}
-                            </MuiText>
-                        </Box>
-
-                        <Typography className="net-pay-symbol">
-                            −
-                        </Typography>
-
-                        <Box className="net-pay-item">
-                            <Typography>
-                                TOTAL DEDUCTIONS
-                            </Typography>
-
-                            <MuiText component="strong" variant="inherit">
-                                {currency(
-                                    effectiveTotalDeductions
-                                )}
-                            </MuiText>
-                        </Box>
-
-                        <Typography className="net-pay-symbol">
-                            =
-                        </Typography>
-
-                        <Box className="net-pay-item net-pay-highlight">
-                            <Typography>
-                                NET PAY
-                            </Typography>
-
-                            <MuiText component="strong" variant="inherit">
-                                {currency(
-                                    effectiveNetSalary
-                                )}
-                            </MuiText>
-                        </Box>
-
-                        <Typography className="amount-in-words">
-                            (
-                            {amountWords(
-                                effectiveNetSalary
-                            )}{" "}
-                            Only)
-                        </Typography>
-
+                        <Typography className="net-pay-label">NET PAY</Typography>
+                        <MuiText component="strong" variant="inherit" className="net-pay-value">
+                            {currency(effectiveNetSalary)}
+                        </MuiText>
                     </Box>
 
-                    {/* =========================================
-                        SALARY DETAILS
-                    ========================================= */}
-
-                    <Paper
-                        className="salary-details-box"
-                        elevation={0}
-                    >
-
-                        <Typography className="salary-details-header">
-                            SALARY DETAILS
-                        </Typography>
-
-                        <Box className="salary-details-grid">
-
-                            <Box className="salary-detail-item">
-                                <Typography>
-                                    Annual CTC
-                                </Typography>
-
-                                <MuiText component="strong" variant="inherit">
-                                    {currency(
-                                        payslip.annualCtc
-                                    )}
-                                </MuiText>
-                            </Box>
-
-                            <Box className="salary-detail-item">
-                                <Typography>
-                                    Monthly CTC
-                                </Typography>
-
-                                <MuiText component="strong" variant="inherit">
-                                    {currency(
-                                        payslip.monthlyCtc
-                                    )}
-                                </MuiText>
-                            </Box>
-
-                            <Box className="salary-detail-item">
-                                <Typography>
-                                    Gross Salary
-                                </Typography>
-
-                                <MuiText component="strong" variant="inherit">
-                                    {currency(
-                                        payslip.grossSalary
-                                    )}
-                                </MuiText>
-                            </Box>
-
-                            <Box className="salary-detail-item">
-                                <Typography>
-                                    Status
-                                </Typography>
-
-                                <Chip
-                                    label={
-                                        payslip.status ||
-                                        "Generated"
-                                    }
-                                    size="small"
-                                    className="status-chip"
-                                />
-                            </Box>
-
-                        </Box>
-
-                    </Paper>
-
-                    <Divider />
-<br/>
-<br />
                     {/* =========================================
                         FOOTER
                     ========================================= */}

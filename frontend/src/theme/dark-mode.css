@@ -9254,3 +9254,111 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .pr-payroll-process-page .pr-payroll-table-container .pr-selected-payroll-row .MuiTypography-root {
   color: var(--spark-text) !important;
 }
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .advance-salary-page {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .advance-salary-page :is(
+  .advance-salary-heading h1,
+  .advance-salary-stat h5,
+  .advance-salary-panel-header h2,
+  .advance-salary-employee,
+  .advance-salary-empty h6
+) {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .advance-salary-page :is(
+  .advance-salary-heading p,
+  .advance-salary-panel-header p,
+  .advance-salary-stat p,
+  .advance-salary-secondary,
+  .advance-salary-loading,
+  .advance-salary-empty
+) {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .advance-salary-page :is(
+  .advance-salary-back,
+  .advance-salary-stat,
+  .advance-salary-panel
+) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .advance-salary-page .advance-salary-stat svg {
+  color: #a9c4ff;
+  background: rgba(75, 125, 255, .16);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .advance-salary-page .advance-salary-panel-header,
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .advance-salary-page .advance-salary-table-wrap :is(th, td) {
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .advance-salary-page .advance-salary-table-wrap th {
+  color: var(--spark-muted) !important;
+  background: var(--spark-table-head) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .advance-salary-page .advance-salary-table-wrap td {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .advance-salary-page .advance-salary-table-wrap tbody tr:hover td {
+  background: var(--spark-hover) !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .MuiDialog-paper {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+  border: 1px solid var(--spark-border);
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog :is(.MuiDialogTitle-root, .MuiDialogContent-root, .MuiDialogActions-root) {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface-raised) !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .MuiDialogTitle-root {
+  border-bottom: 1px solid var(--spark-border);
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .MuiDialogActions-root {
+  border-top: 1px solid var(--spark-border);
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .MuiDialogContent-root :is(.MuiTypography-root, .MuiInputLabel-root, .MuiFormHelperText-root) {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .MuiDialogContent-root .MuiInputLabel-root.Mui-focused {
+  color: #8fb0ff !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .MuiOutlinedInput-root {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface) !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .MuiOutlinedInput-notchedOutline {
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #506581 !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #78a2ff !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .MuiSelect-icon,
+html[data-color-mode="dark"] .advance-salary-dialog .MuiInputAdornment-root {
+  color: var(--spark-muted) !important;
+}

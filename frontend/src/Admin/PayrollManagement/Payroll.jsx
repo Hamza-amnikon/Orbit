@@ -7,6 +7,7 @@ import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import HistoryIcon from "@mui/icons-material/History";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 const payrollModules = [
         {
             title: "Payroll Dashboard",
@@ -63,6 +64,14 @@ const payrollModules = [
             icon: <HistoryIcon />,
             color: "#0d9488",
             route: "/payroll/history",
+        },
+        {
+            title: "Advance Salary",
+            description: "Request a salary advance and track its approval and repayment plan.",
+            icon: <RequestQuoteIcon />,
+            color: "#0f766e",
+            route: "/payroll/advance-salary",
+            permissionPath: "/payroll",
         },
         {
             title: "Payroll Reports",

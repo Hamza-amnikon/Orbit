@@ -1,0 +1,245 @@
+.advance-salary-page {
+  display: grid;
+  gap: 22px;
+  width: 100%;
+  padding: 28px;
+  color: #14213d;
+  box-sizing: border-box;
+}
+
+.advance-salary-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.advance-salary-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.advance-salary-heading h1 {
+  margin: 0 0 5px;
+  color: #101b3d;
+  font-weight: 750;
+}
+
+.advance-salary-heading p,
+.advance-salary-panel-header p {
+  margin: 0;
+  color: #617594;
+}
+
+.advance-salary-back {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #d8e2f0;
+  border-radius: 12px !important;
+  color: #45618c;
+  background: #fff !important;
+}
+
+.advance-salary-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.advance-salary-stat,
+.advance-salary-panel {
+  border: 1px solid #dce6f2;
+  border-radius: 16px !important;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(25, 49, 87, .05) !important;
+}
+
+.advance-salary-stat .MuiCardContent-root {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 4px;
+  padding: 18px !important;
+}
+
+.advance-salary-stat svg {
+  grid-row: span 2;
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  box-sizing: border-box;
+  color: #2563eb;
+  background: #edf4ff;
+  border-radius: 12px;
+}
+
+.advance-salary-stat p {
+  color: #617594;
+}
+
+.advance-salary-stat h5 {
+  color: #14213d;
+  font-weight: 750;
+}
+
+.advance-salary-panel {
+  overflow: hidden;
+}
+
+.advance-salary-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 22px;
+  border-bottom: 1px solid #e4ebf4;
+}
+
+.advance-salary-panel-header h2 {
+  margin-bottom: 4px;
+  color: #14213d;
+  font-weight: 700;
+}
+
+.advance-salary-status-filter {
+  min-width: 160px;
+}
+
+.advance-salary-error {
+  margin: 16px 20px 0;
+}
+
+.advance-salary-table-wrap {
+  width: 100%;
+}
+
+.advance-salary-table-wrap th {
+  color: #4e6484;
+  background: #f6f9fd;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.advance-salary-table-wrap td {
+  color: #243958;
+  border-color: #e7edf5;
+  vertical-align: middle;
+}
+
+.advance-salary-employee {
+  color: #172849;
+  font-weight: 700;
+}
+
+.advance-salary-secondary {
+  color: #7487a2;
+  font-size: 12px;
+}
+
+.advance-salary-amount {
+  font-weight: 700 !important;
+  white-space: nowrap;
+}
+
+.advance-salary-reason {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.advance-salary-status.pending {
+  color: #9a5b00;
+  background: #fff4db;
+}
+
+.advance-salary-status.approved {
+  color: #087443;
+  background: #e5f8ee;
+}
+
+.advance-salary-status.rejected {
+  color: #b42318;
+  background: #ffebea;
+}
+
+.advance-salary-loading,
+.advance-salary-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 220px;
+  color: #7083a0;
+}
+
+.advance-salary-empty svg {
+  color: #7194cc;
+  font-size: 34px;
+}
+
+.advance-salary-empty h6 {
+  color: #172849;
+  font-weight: 700;
+}
+
+.advance-salary-dialog .MuiDialog-paper {
+  border-radius: 18px;
+}
+
+.advance-salary-dialog-content {
+  display: grid;
+  gap: 18px;
+  padding-top: 12px !important;
+}
+
+@media (max-width: 860px) {
+  .advance-salary-page {
+    padding: 22px 18px;
+  }
+
+  .advance-salary-table-wrap {
+    overflow-x: auto;
+  }
+
+  .advance-salary-table-wrap table {
+    min-width: 760px;
+  }
+}
+
+@media (max-width: 600px) {
+  .advance-salary-page {
+    padding: 16px 12px 28px;
+    gap: 16px;
+  }
+
+  .advance-salary-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .advance-salary-header > .MuiButton-root {
+    width: 100%;
+  }
+
+  .advance-salary-heading h1 {
+    font-size: 25px;
+  }
+
+  .advance-salary-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .advance-salary-panel-header {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 16px;
+  }
+}

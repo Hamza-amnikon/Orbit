@@ -2,6 +2,15 @@
 
 const API_BASE_URL = `${import.meta.env.VITE_ATTENDANCE_API_BASE_URL}`;
 
+const authHeaders = (headers = {}) => {
+    const token = localStorage.getItem("token");
+    return {
+        Accept: "application/json",
+        ...headers,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+};
+
 
 // =====================================================
 // GET EMPLOYEE ATTENDANCE
@@ -14,7 +23,8 @@ export async function getEmployeeAttendance(employeeId) {
     }
 
     const response = await fetch(
-        `${API_BASE_URL}/api/Attendance/employee/${employeeId}`
+        `${API_BASE_URL}/api/Attendance/employee/${employeeId}`,
+        { headers: authHeaders() }
     );
 
     if (!response.ok) {
@@ -34,7 +44,8 @@ export async function getEmployeeAttendance(employeeId) {
 export async function getTodayAttendance() {
 
     const response = await fetch(
-        `${API_BASE_URL}/api/Attendance/today`
+        `${API_BASE_URL}/api/Attendance/today`,
+        { headers: authHeaders() }
     );
 
     if (!response.ok) {
@@ -56,7 +67,8 @@ export async function checkIn(attendanceId) {
     const response = await fetch(
         `${API_BASE_URL}/api/Attendance/${attendanceId}/checkin`,
         {
-            method: "POST"
+            method: "POST",
+            headers: authHeaders(),
         }
     );
 
@@ -79,7 +91,8 @@ export async function checkOut(attendanceId) {
     const response = await fetch(
         `${API_BASE_URL}/api/Attendance/${attendanceId}/checkout`,
         {
-            method: "POST"
+            method: "POST",
+            headers: authHeaders(),
         }
     );
 
@@ -96,7 +109,7 @@ export async function getEmployeeRegularizationRequests(employeeId) {
     if (!employeeId) return [];
     const response = await fetch(
         `${API_BASE_URL}/api/Attendance/employee/${employeeId}/regularization-requests`,
-        { headers: { Accept: "application/json" } }
+        { headers: authHeaders() }
     );
     if (!response.ok) {
         throw new Error(`Failed to load regularization requests. Status: ${response.status}`);
@@ -109,7 +122,7 @@ export async function createRegularizationRequest(payload) {
         `${API_BASE_URL}/api/Attendance/regularization-requests`,
         {
             method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            headers: authHeaders({ "Content-Type": "application/json" }),
             body: JSON.stringify(payload),
         }
     );

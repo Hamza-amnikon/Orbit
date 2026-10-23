@@ -8,7 +8,7 @@ import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 export default function ModuleOverview({ title, description, modules }) {
   const { hasPermission } = useAuth();
   const visibleModules = modules.filter((module) =>
-    hasPermission(module.path || module.route, "view"),
+    hasPermission(module.permissionPath || module.path || module.route, "view"),
   );
 
   return (

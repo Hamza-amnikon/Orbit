@@ -989,6 +989,13 @@ export default function Permissions() {
 
   useEffect(() => {
     loadData();
+
+    const handlePermissionsSynced = () => loadData();
+    window.addEventListener("spark:permissions-synced", handlePermissionsSynced);
+
+    return () => {
+      window.removeEventListener("spark:permissions-synced", handlePermissionsSynced);
+    };
   }, []);
 
   /* ========================================================================

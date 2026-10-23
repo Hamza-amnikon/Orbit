@@ -60,7 +60,39 @@ jobs:
             throw "The FRONTEND_ENV GitHub Actions secret is missing or empty."
           }
           $environmentPath = Join-Path $env:GITHUB_WORKSPACE "frontend\.env"
-          [System.IO.File]::WriteAllText($environmentPath, $env:FRONTEND_ENV, [System.Text.UTF8Encoding]::new($false))
+          $overrides = @{
+            VITE_ATTENDANCE_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7136/"
+            VITE_PAYROLL_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:5111/"
+            VITE_REIMBURSEMENT_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7282/"
+            VITE_ADVANCE_SALARY_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:5125/"
+          }
+          $lines = $env:FRONTEND_ENV -split "`r?`n"
+          $seen = @{}
+          for ($index = 0; $index -lt $lines.Length; $index++) {
+            if ($lines[$index] -match '^\s*([^#=]+)=(.*)$') {
+              $name = $Matches[1].Trim()
+              if ($overrides.ContainsKey($name)) {
+                $lines[$index] = "$name=$($overrides[$name])"
+                $seen[$name] = $true
+              }
+            }
+          }
+          $missing = @($overrides.Keys | Where-Object { -not $seen.ContainsKey($_) })
+          if ($missing.Count -gt 0) {
+            throw "FRONTEND_ENV is missing required API settings: $($missing -join ', ')"
+          }
+          $apiHost = "sparkapi.amnikontechnologies.com"
+          foreach ($line in $lines) {
+            if ($line -match '^\s*(VITE_[A-Z0-9_]*(?:API|SERVICE)[A-Z0-9_]*(?:BASE_URL|URL))=(.*)$') {
+              $name = $Matches[1].Trim()
+              $urlText = $Matches[2].Trim().Trim('"').Trim("'")
+              $uri = $null
+              if (-not [uri]::TryCreate($urlText, [UriKind]::Absolute, [ref]$uri) -or $uri.Scheme -ne "https" -or $uri.Host -ine $apiHost) {
+                throw "FRONTEND_ENV API setting '$name' must use HTTPS on $apiHost."
+              }
+            }
+          }
+          [System.IO.File]::WriteAllLines($environmentPath, $lines, [System.Text.UTF8Encoding]::new($false))
 
       - name: Install frontend dependencies
         working-directory: frontend
