@@ -54,17 +54,22 @@ jobs:
       - name: Create frontend environment file
         env:
           FRONTEND_ENV: ${{ secrets.FRONTEND_ENV }}
+          VITE_ADVANCE_SALARY_API_BASE_URL: ${{ secrets.VITE_ADVANCE_SALARY_API_BASE_URL }}
         run: |
           $ErrorActionPreference = "Stop"
           if ([string]::IsNullOrWhiteSpace($env:FRONTEND_ENV)) {
             throw "The FRONTEND_ENV GitHub Actions secret is missing or empty."
+          }
+          $advanceSalaryApiUrl = $env:VITE_ADVANCE_SALARY_API_BASE_URL
+          if ([string]::IsNullOrWhiteSpace($advanceSalaryApiUrl)) {
+            $advanceSalaryApiUrl = "https://sparkapi.amnikontechnologies.com:5125/"
           }
           $environmentPath = Join-Path $env:GITHUB_WORKSPACE "frontend\.env"
           $overrides = @{
             VITE_ATTENDANCE_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7136/"
             VITE_PAYROLL_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:5111/"
             VITE_REIMBURSEMENT_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:7282/"
-            VITE_ADVANCE_SALARY_API_BASE_URL = "https://sparkapi.amnikontechnologies.com:5125/"
+            VITE_ADVANCE_SALARY_API_BASE_URL = $advanceSalaryApiUrl
           }
           $lines = $env:FRONTEND_ENV -split "`r?`n"
           $seen = @{}
