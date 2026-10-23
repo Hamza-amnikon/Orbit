@@ -57,6 +57,10 @@ const APPROVAL_API_BASE_URL =
 const EMPLOYEE_API_BASE_URL =
     `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
+const ATTENDANCE_API_BASE_URL = String(
+    import.meta.env.VITE_ATTENDANCE_API_BASE_URL || ""
+).replace(/\/+$/, "");
+
 // ============================================================
 // APPROVAL PAGE
 // ============================================================
@@ -1464,9 +1468,8 @@ const response =
 
             if (String(request?.requestType || "").toLowerCase().includes("attendance regularization")) {
                 try {
-                    const attendanceApi = import.meta.env.VITE_ATTENDANCE_API_BASE_URL;
                     const detailResponse = await axios.get(
-                        `${attendanceApi}/api/Attendance/regularization-requests/${request.requestId}`
+                        `${ATTENDANCE_API_BASE_URL}/api/Attendance/regularization-requests/${request.requestId}`
                     );
                     setAttendanceRequestDetails(detailResponse.data);
                 } catch (detailError) {
