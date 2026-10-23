@@ -17,6 +17,8 @@ const Attendance = lazy(() => import("../Admin/AttendanceManagement/Attendance")
 const Approval = lazy(() => import("../Admin/Approvals/Approval"));
 const Payroll = lazy(() => import("../Admin/PayrollManagement/Payroll"));
 const AdvanceSalary = lazy(() => import("../Admin/PayrollManagement/AdvanceSalary/AdvanceSalary"));
+const AdvanceSalaryRequest = lazy(() => import("../Admin/PayrollManagement/AdvanceSalary/AdvanceSalaryRequest"));
+const MyAdvanceSalary = lazy(() => import("../Admin/PayrollManagement/AdvanceSalary/MyAdvanceSalary"));
 const Reports = lazy(() => import("../pages/Reports/Reports"));
 const Tickets = lazy(() => import("../pages/Tickets/Tickets"));
 
@@ -447,11 +449,17 @@ function PermissionGuard() {
         location.pathname.toLowerCase().replace(/\/$/, "") === "/attendance/regularization-requests";
     const isAdvanceSalaryPage =
         location.pathname.toLowerCase().replace(/\/$/, "") === "/payroll/advance-salary";
+    const isMyAdvanceSalaryPage =
+        location.pathname.toLowerCase().replace(/\/$/, "") === "/payroll/my-advance-salary";
+    const isAdvanceSalaryRequestPage =
+        location.pathname.toLowerCase().replace(/\/$/, "") === "/payroll/advance-salary/request";
     const allowed =
         isRequiredPolicyPage ||
         hasPermission(location.pathname, "view") ||
         (isAttendanceRegularizationPage && hasPermission("/attendance/logs", "view")) ||
-        (isAdvanceSalaryPage && hasPermission("/payroll", "view"));
+        (isAdvanceSalaryPage && hasPermission("/payroll", "view")) ||
+        (isMyAdvanceSalaryPage && hasPermission("/payroll", "view")) ||
+        (isAdvanceSalaryRequestPage && hasPermission("/payroll", "view"));
 
     if (!allowed) {
         return (
@@ -921,6 +929,14 @@ function AppRoutes() {
                         <Route
                             path="/payroll/advance-salary"
                             element={<AdvanceSalary />}
+                        />
+                        <Route
+                            path="/payroll/my-advance-salary"
+                            element={<MyAdvanceSalary />}
+                        />
+                        <Route
+                            path="/payroll/advance-salary/request"
+                            element={<AdvanceSalaryRequest />}
                         />
 
                         <Route

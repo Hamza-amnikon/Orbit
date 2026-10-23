@@ -67,10 +67,18 @@ const payrollModules = [
         },
         {
             title: "Advance Salary",
-            description: "Request a salary advance and track its approval and repayment plan.",
+            description: "Review and approve employee salary advance requests.",
             icon: <RequestQuoteIcon />,
             color: "#0f766e",
             route: "/payroll/advance-salary",
+            permissionPath: "/payroll",
+        },
+        {
+            title: "Request Advance Salary",
+            description: "Submit a salary advance request and track its approval and repayment plan.",
+            icon: <RequestQuoteIcon />,
+            color: "#0d9488",
+            route: "/payroll/my-advance-salary",
             permissionPath: "/payroll",
         },
         {

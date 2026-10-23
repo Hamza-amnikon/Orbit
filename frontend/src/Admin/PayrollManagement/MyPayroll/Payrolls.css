@@ -1987,6 +1987,17 @@
 
     #payslip-print-area .payslip-company-details {
         margin-top: 5mm !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        text-align: right !important;
+    }
+
+    #payslip-print-area .payslip-company-details .company-name {
+        max-width: 100% !important;
+        font-size: 12px !important;
+        line-height: 1.25 !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
     }
 
     #payslip-print-area .employee-information-grid {

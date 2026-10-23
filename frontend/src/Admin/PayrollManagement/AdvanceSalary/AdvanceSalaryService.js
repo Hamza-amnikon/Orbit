@@ -38,6 +38,15 @@ const AdvanceSalaryService = {
         return normalizeList(await readResponse(response, "Could not load your advance salary requests."));
     },
 
+    async getEmployeeRepayments(employeeId) {
+        ensureConfigured();
+        if (!employeeId) throw new Error("Employee ID is required.");
+        const response = await fetch(`${RESOURCE_URL}/employee/${encodeURIComponent(employeeId)}/repayments`, {
+            headers: { Accept: "application/json" },
+        });
+        return normalizeList(await readResponse(response, "Could not load your recorded repayments."));
+    },
+
     async createRequest(payload) {
         ensureConfigured();
         const response = await fetch(RESOURCE_URL, {

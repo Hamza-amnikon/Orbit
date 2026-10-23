@@ -43,7 +43,7 @@
 
 .advance-salary-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 16px;
 }
 
@@ -79,6 +79,12 @@
   color: #617594;
 }
 
+.advance-salary-stat .advance-salary-stat-detail {
+  grid-column: 2;
+  color: #7487a2;
+  line-height: 1.4;
+}
+
 .advance-salary-stat h5 {
   color: #14213d;
   font-weight: 750;
@@ -86,6 +92,144 @@
 
 .advance-salary-panel {
   overflow: hidden;
+}
+
+.advance-loan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 16px;
+  padding: 20px 22px;
+}
+
+.advance-loan-card {
+  border-color: #dce6f2 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #fff 55%, #f5f8ff 100%);
+}
+
+.advance-loan-card .MuiCardContent-root {
+  padding: 20px !important;
+}
+
+.advance-loan-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.advance-loan-card-top .MuiTypography-overline {
+  color: #7083a0;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.advance-loan-card-top h3 {
+  margin: 2px 0 0;
+  color: #14213d;
+  font-weight: 750;
+}
+
+.advance-loan-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 12px;
+  margin-top: 22px;
+}
+
+.advance-loan-details > div {
+  display: grid;
+  gap: 4px;
+}
+
+.advance-loan-details .MuiTypography-caption {
+  color: #7083a0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+
+.advance-loan-details .MuiTypography-body1 {
+  color: #1b2d4c;
+  font-weight: 650;
+}
+
+.advance-loan-reason {
+  margin-top: 18px !important;
+  padding-top: 14px;
+  color: #617594;
+  border-top: 1px solid #e7edf5;
+}
+
+.advance-salary-status.paid-off {
+  color: #2456b8;
+  background: #eaf1ff;
+}
+
+.advance-loan-progress {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.advance-loan-progress .MuiLinearProgress-root {
+  height: 8px;
+  border-radius: 999px;
+  background: #e8eef8;
+}
+
+.advance-loan-progress .MuiLinearProgress-bar {
+  border-radius: inherit;
+  background: #2563eb;
+}
+
+.advance-loan-progress .MuiTypography-root {
+  color: #617594;
+  white-space: nowrap;
+}
+
+.advance-loan-payment-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.advance-loan-payment-list > .MuiTypography-root {
+  color: #7083a0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+
+.advance-loan-payment-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 10px;
+  background: #f6f9fd;
+  border-radius: 8px;
+}
+
+.advance-loan-payment-row .MuiTypography-root:last-child {
+  color: #1b2d4c;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.advance-request-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.advance-request-estimate {
+  width: fit-content;
+  padding: 9px 12px;
+  color: #2456b8;
+  background: #eef4ff;
+  border-radius: 9px;
 }
 
 .advance-salary-panel-header {
@@ -118,7 +262,8 @@
 .advance-salary-table-wrap th {
   color: #4e6484;
   background: #f6f9fd;
-  font-size: 12px;
+  font-family: inherit;
+  font-size: 14px;
   font-weight: 750;
   letter-spacing: .035em;
   text-transform: uppercase;
@@ -129,6 +274,15 @@
   color: #243958;
   border-color: #e7edf5;
   vertical-align: middle;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.advance-salary-table-wrap td .MuiTypography-root,
+.advance-salary-table-wrap td .MuiChip-label,
+.advance-salary-table-wrap td .MuiButton-root {
+  font-family: inherit;
+  font-size: 14px;
 }
 
 .advance-salary-employee {
@@ -138,7 +292,8 @@
 
 .advance-salary-secondary {
   color: #7487a2;
-  font-size: 12px;
+  font-family: inherit;
+  font-size: 14px;
 }
 
 .advance-salary-amount {
@@ -190,13 +345,141 @@
 }
 
 .advance-salary-dialog .MuiDialog-paper {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100% - 16px);
   border-radius: 18px;
 }
 
 .advance-salary-dialog-content {
   display: grid;
-  gap: 18px;
+  align-content: start;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  gap: 14px;
   padding-top: 12px !important;
+}
+
+.advance-salary-repayment-stats .MuiCardContent-root {
+  padding: 12px !important;
+}
+
+.advance-salary-dialog-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.advance-salary-dialog-content::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: #b8c7dc;
+  background-clip: padding-box;
+}
+
+.advance-salary-history {
+  overflow: hidden;
+  border: 1px solid #e1e9f3;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.advance-salary-history.has-payments {
+  min-height: max-content;
+}
+
+.advance-salary-history-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e8eef6;
+}
+
+.advance-salary-history-heading h3 {
+  color: #172849;
+}
+
+.advance-salary-history-heading .MuiTypography-body2 {
+  margin-top: 2px;
+  color: #7083a0;
+}
+
+.advance-salary-history-heading .MuiChip-root {
+  color: #315fae;
+  background: #edf4ff;
+  font-weight: 650;
+}
+
+.advance-salary-history-list {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.advance-salary-history-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, .35fr);
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+  padding: 0 16px;
+  border-bottom: 1px solid #e8eef6;
+  color: #243958;
+}
+
+.advance-salary-history-row > .MuiTypography-root {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.advance-salary-history-row > .MuiTypography-root:last-child {
+  text-align: right;
+}
+
+.advance-salary-history-columns {
+  min-height: 42px;
+  color: #4e6484;
+  background: #f6f9fd;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+
+.advance-salary-history-row:last-child {
+  border-bottom: 0;
+}
+
+.advance-salary-history-amount {
+  font-weight: 700 !important;
+  white-space: nowrap;
+}
+
+.advance-salary-history-empty {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 92px;
+  padding: 16px;
+  color: #253956;
+}
+
+.advance-salary-history-empty > svg {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  box-sizing: border-box;
+  color: #3970c9;
+  background: #edf4ff;
+  border-radius: 11px;
+}
+
+.advance-salary-history-empty .MuiTypography-body2 {
+  margin-top: 3px;
+  color: #7083a0;
 }
 
 @media (max-width: 860px) {
@@ -237,9 +520,22 @@
     gap: 10px;
   }
 
+  .advance-loan-grid {
+    padding: 14px;
+  }
+
+  .advance-request-fields {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
   .advance-salary-panel-header {
     align-items: stretch;
     flex-direction: column;
     padding: 16px;
+  }
+
+  .advance-salary-history-heading {
+    align-items: flex-start;
   }
 }

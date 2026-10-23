@@ -51,6 +51,7 @@ const PAYROLL_API_BASE_URL = String(
 const PAYROLL_API = `${PAYROLL_API_BASE_URL}/api`;
 const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 const DOCUMENT_API = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
+const ONBOARDING_API_URL = import.meta.env.VITE_ONBOARDING_API_URL || "https://sparkapi.amnikontechnologies.com:5107";
 
 /* =========================================================
    HELPERS
@@ -803,7 +804,7 @@ function Payslips() {
     const [leaveTypes, setLeaveTypes] = useState([]);
     const [identityDocuments, setIdentityDocuments] = useState({
         panNumber: "",
-        aadhaarNumber: "",
+        uanNumber: "",
     });
 
     useEffect(() => {
@@ -816,11 +817,12 @@ function Payslips() {
                 const employeeId = await resolveEmployeeId(profile);
                 if (!employeeId) throw new Error("Unable to identify your employee profile.");
 
-                const [attendanceResult, balancesResult, typesResult, documentsResult] = await Promise.allSettled([
+                const [attendanceResult, balancesResult, typesResult, documentsResult, onboardingResult] = await Promise.allSettled([
                     AttendanceService.getEmployeeAttendance(employeeId),
                     LeaveService.getEmployeeLeaveBalances(employeeId),
                     LeaveService.getLeaveTypes(),
                     axios.get(`${DOCUMENT_API}/employee/${employeeId}`),
+                    axios.get(`${ONBOARDING_API_URL}/api/Onboarding/${employeeId}/details`),
                 ]);
                 if (!active) return;
 
@@ -844,11 +846,15 @@ function Payslips() {
                         .filter((document) => getDocumentType(document) === type)
                         .sort((left, right) => Number(getValue(right, "documentId", "DocumentId") || 0) - Number(getValue(left, "documentId", "DocumentId") || 0))[0];
                     const pan = latestDocument("pan");
-                    const aadhaar = latestDocument("aadhaar");
+                    const uan = documents
+                        .filter((document) => ["uan", "epfo / uan"].includes(getDocumentType(document)))
+                        .sort((left, right) => Number(getValue(right, "documentId", "DocumentId") || 0) - Number(getValue(left, "documentId", "DocumentId") || 0))[0];
 
                     setIdentityDocuments({
                         panNumber: getValue(pan, "documentNumber", "DocumentNumber") || "",
-                        aadhaarNumber: getValue(aadhaar, "documentNumber", "DocumentNumber") || "",
+                        uanNumber: (onboardingResult.status === "fulfilled"
+                            ? onboardingResult.value?.data?.data?.uanNumber
+                            : "") || getValue(uan, "documentNumber", "DocumentNumber") || "",
                     });
                 }
 
@@ -1766,7 +1772,7 @@ function Payslips() {
                                     Turbhe, Navi Mumbai - 400705
                                 </Typography>
                                 <Typography className="company-line">
-                                    Phone: +91 22 1234 5678&nbsp;&nbsp;|&nbsp;&nbsp;Email: hr@sparktech.com
+                                    Email: info@amnikontechnologies.com
                                 </Typography>
                             </Box>
                         </Box>
@@ -1833,8 +1839,8 @@ function Payslips() {
                                 value={payslip.department || profile?.department || "-"}
                             />
                             <InfoRow
-                                label="Aadhaar Number"
-                                value={formatAadhaarNumber(identityDocuments.aadhaarNumber)}
+                                label="UAN Number"
+                                value={identityDocuments.uanNumber || "-"}
                             />
 
                         </Box>
@@ -1923,7 +1929,7 @@ function Payslips() {
 
         <Typography className="footer-note">
             <MuiText component="strong" variant="inherit">Note:</MuiText>&nbsp;
-            This is a system generated payslip. Please contact HR for any payroll related queries.
+            This is a system generated payslip.
         </Typography>
 
     </Box>
