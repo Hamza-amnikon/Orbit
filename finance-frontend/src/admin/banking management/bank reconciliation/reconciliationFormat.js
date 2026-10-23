@@ -64,6 +64,29 @@ export function toMinorUnits(value, precision, positive = false) {
     return result;
 }
 
+export function calculateStatementClosingBalance(openingBalance, lines, precision) {
+    let closing = toMinorUnits(openingBalance, precision);
+
+    for (const line of lines) {
+        const amount = toMinorUnits(line.amount, precision, true);
+        closing += line.direction === 1 ? amount : -amount;
+    }
+
+    const negative = closing < 0n;
+    const digits = (negative ? -closing : closing)
+        .toString()
+        .padStart(precision + 1, "0");
+
+    const formatted = precision === 0
+        ? digits
+        : digits.slice(0, -precision) + "." + digits.slice(-precision);
+
+    const result = (negative ? "-" : "") + formatted;
+    toMinorUnits(result, precision);
+
+    return result;
+}
+
 export function sameAmount(first, second, precision) {
     try {
         return toMinorUnits(first, precision) === toMinorUnits(second, precision);

@@ -117,6 +117,13 @@ export function matchStatementLine(id, lineId, body) {
     });
 }
 
+export function autoMatchReconciliation(id, rowVersion) {
+    return request("/" + id + "/auto-match", {
+        method: "POST",
+        body: { rowVersion },
+    });
+}
+
 export function completeReconciliation(id, rowVersion) {
     return request("/" + id + "/complete", {
         method: "POST",

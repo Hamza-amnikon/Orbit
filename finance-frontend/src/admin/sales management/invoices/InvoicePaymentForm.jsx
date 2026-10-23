@@ -41,6 +41,7 @@ const InvoicePaymentForm = ({
     const [form, setForm] = useState(() => ({
         paymentDate: today(),
         amount: "",
+        percentage: "",
         paymentMode: "",
         reference: "",
         notes: "",
@@ -85,6 +86,13 @@ const InvoicePaymentForm = ({
     const currency = summary?.currency || invoice.currency;
     const balanceDue = summary?.balanceDue ?? 0;
     const enteredAmount = Number(form.amount || 0);
+    const enteredPercentage = form.percentage === ""
+        ? null
+        : Number(form.percentage);
+    const percentageError = enteredPercentage !== null &&
+        (!Number.isFinite(enteredPercentage) ||
+            enteredPercentage < 0 ||
+            enteredPercentage > 100);
 
     const issued =
         invoice.status === 1 ||
@@ -103,9 +111,36 @@ const InvoicePaymentForm = ({
 
         setError("");
 
+        if (name === "percentage") {
+            if (!/^\d{0,3}$/.test(value)) {
+                return;
+            }
+
+            const percentage = Number(value);
+            const decimalPlaces = summary?.currencyDecimalPlaces ?? 2;
+            const isValidPercentage =
+                value === "" ||
+                (Number.isFinite(percentage) &&
+                    percentage >= 0 &&
+                    percentage <= 100);
+
+            const amount = value === "" || !isValidPercentage
+                ? ""
+                : (balanceDue * percentage / 100).toFixed(decimalPlaces);
+
+            setForm((previous) => ({
+                ...previous,
+                percentage: value,
+                amount,
+            }));
+
+            return;
+        }
+
         setForm((previous) => ({
             ...previous,
             [name]: value,
+            ...(name === "amount" ? { percentage: "" } : {}),
         }));
     }
 
@@ -118,6 +153,11 @@ const InvoicePaymentForm = ({
 
         if (!Number.isFinite(enteredAmount) || enteredAmount <= 0) {
             setError("Enter a payment amount greater than zero.");
+            return;
+        }
+
+        if (percentageError) {
+            setError("Enter a percentage from 0 to 100.");
             return;
         }
 
@@ -318,6 +358,36 @@ const InvoicePaymentForm = ({
                         />
 
                         <TextField
+                            name="percentage"
+                            label="Percentage of remaining balance (%)"
+                            type="text"
+                            value={form.percentage}
+                            onChange={changeField}
+                            disabled={!ready || busy}
+                            error={percentageError}
+                            slotProps={{
+                                htmlInput: {
+                                    inputMode: "numeric",
+                                    maxLength: 3,
+                                },
+                            }}
+                            helperText={
+                                percentageError
+                                    ? "Enter a value between 0 and 100."
+                                    : "Based on remaining balance: " +
+                                        money(balanceDue, currency)
+                            }
+                            slotProps={{
+                                htmlInput: {
+                                    min: 0,
+                                    max: 100,
+                                    step: "any",
+                                },
+                            }}
+                            fullWidth
+                        />
+
+                        <TextField
                             name="amount"
                             label={`Amount received (${currency || ""})`}
                             type="number"
@@ -345,6 +415,7 @@ const InvoicePaymentForm = ({
                                 setForm((previous) => ({
                                     ...previous,
                                     amount: String(balanceDue),
+                                    percentage: "100",
                                 }));
                             }}
                         >

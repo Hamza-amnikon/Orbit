@@ -34,6 +34,7 @@ import {
 } from "../bank transfers/BankTransferService";
 
 import {
+    autoMatchReconciliation,
     completeReconciliation,
     getReconciliationById,
     matchStatementLine,
@@ -493,6 +494,17 @@ function ReconciliationDetails({ id, canWrite, onClose, onChanged }) {
                 >
                     Refresh
                 </Button>
+                {editable && !confirmComplete && (
+                    <Button
+                        disabled={busy || needsRefresh || record.loading}
+                        onClick={() => saveChange(
+                            () => autoMatchReconciliation(id, detail.rowVersion),
+                            "Automatic matching finished. Review the matches and any remaining entries."
+                        )}
+                    >
+                        Auto Match
+                    </Button>
+                )}
                 {editable && !confirmComplete && (
                     <Button
                         variant="contained"

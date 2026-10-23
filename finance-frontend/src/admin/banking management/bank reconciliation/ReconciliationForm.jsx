@@ -35,6 +35,7 @@ import {
 } from "./ReconciliationService";
 import { parseStatementCsv } from "./parseStatementCsv";
 import {
+    calculateStatementClosingBalance,
     formatAmount,
     isValidDate,
     toMinorUnits,
@@ -117,7 +118,17 @@ function ReconciliationForm({ accounts = [], onClose, onSaved }) {
                 account.currencyDecimalPlaces
             );
 
+            const closingBalance = calculateStatementClosingBalance(
+                defaults.statementOpeningBalance,
+                imported,
+                account.currencyDecimalPlaces
+            );
+
             if (revision === fileRevision.current) {
+                setValue(current => ({
+                    ...current,
+                    statementClosingBalance: closingBalance,
+                }));
                 setLines(imported);
                 setFileName(file.name);
                 setEmptyStatement(imported.length === 0);
@@ -382,7 +393,7 @@ function ReconciliationForm({ accounts = [], onClose, onSaved }) {
                             label="Statement closing balance"
                             value={value.statementClosingBalance}
                             disabled={disabled}
-                            helperText="Enter the closing balance shown on the actual bank statement."
+                            helperText="Calculated from the opening balance and imported CSV. Check against your bank statement; you can edit it."
                             slotProps={{ htmlInput: { inputMode: "decimal" } }}
                             onChange={event => change("statementClosingBalance", event.target.value)}
                         />
