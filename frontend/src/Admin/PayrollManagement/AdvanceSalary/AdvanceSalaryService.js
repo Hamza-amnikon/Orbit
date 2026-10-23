@@ -22,6 +22,26 @@ function normalizeList(payload) {
     return payload?.items ?? payload?.data ?? payload?.requests ?? [];
 }
 
+function firstValue(item, keys, fallback = null) {
+    for (const key of keys) if (item?.[key] !== undefined && item[key] !== null) return item[key];
+    return fallback;
+}
+
+function hasOutstandingAdvance(requests, repayments) {
+    const confirmedRepayments = repayments.filter((item) =>
+        String(firstValue(item, ["transactionType", "TransactionType"], "")).toLowerCase() === "repayment"
+    );
+    return requests.some((request) => {
+        if (String(firstValue(request, ["status", "Status"], "")).toLowerCase() !== "approved") return false;
+        const advanceId = String(firstValue(request, ["advanceSalaryId", "AdvanceSalaryId", "requestId", "RequestId", "id", "Id"], ""));
+        const amount = Number(firstValue(request, ["amount", "requestedAmount", "Amount"], 0)) || 0;
+        const repaid = confirmedRepayments
+            .filter((payment) => String(firstValue(payment, ["advanceSalaryId", "AdvanceSalaryId"], "")) === advanceId)
+            .reduce((total, payment) => total + (Number(firstValue(payment, ["amount", "Amount"], 0)) || 0), 0);
+        return amount - repaid > 0.005;
+    });
+}
+
 const AdvanceSalaryService = {
     async getAllRequests() {
         ensureConfigured();
@@ -45,6 +65,13 @@ const AdvanceSalaryService = {
             headers: { Accept: "application/json" },
         });
         return normalizeList(await readResponse(response, "Could not load your recorded repayments."));
+    },
+
+    async hasActiveLoan(employeeId) {
+        const requests = await this.getEmployeeRequests(employeeId);
+        if (!requests.some((request) => String(firstValue(request, ["status", "Status"], "")).toLowerCase() === "approved")) return false;
+        const repayments = await this.getEmployeeRepayments(employeeId);
+        return hasOutstandingAdvance(requests, repayments);
     },
 
     async createRequest(payload) {

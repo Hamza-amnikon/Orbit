@@ -9362,3 +9362,49 @@ html[data-color-mode="dark"] .advance-salary-dialog .MuiSelect-icon,
 html[data-color-mode="dark"] .advance-salary-dialog .MuiInputAdornment-root {
   color: var(--spark-muted) !important;
 }
+
+html[data-color-mode="dark"] .advance-salary-dialog .advance-request-title {
+  color: var(--spark-text) !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .advance-request-intro {
+  color: var(--spark-muted) !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .advance-request-estimate {
+  color: #dbeafe;
+  background: #172b49;
+  border-color: #2d4c78;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .advance-request-estimate .MuiTypography-overline,
+html[data-color-mode="dark"] .advance-salary-dialog .advance-request-estimate .MuiTypography-caption {
+  color: #b4c8e7 !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .advance-request-estimate .MuiTypography-h6 {
+  color: #f3f7ff !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .advance-request-actions .advance-request-cancel {
+  color: var(--spark-text) !important;
+  background: var(--spark-surface) !important;
+  border-color: var(--spark-border) !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .advance-request-actions .advance-request-cancel:hover {
+  background: var(--spark-hover) !important;
+  border-color: #506581 !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .advance-request-actions .advance-request-submit {
+  color: #fff !important;
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 3px 10px rgb(37 99 235 / 28%) !important;
+}
+
+html[data-color-mode="dark"] .advance-salary-dialog .advance-request-actions .advance-request-submit:hover:not(:disabled) {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}

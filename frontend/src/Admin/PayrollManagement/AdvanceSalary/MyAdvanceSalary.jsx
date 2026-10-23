@@ -44,7 +44,6 @@ export default function MyAdvanceSalary() {
     const [error, setError] = useState("");
     const [repaymentError, setRepaymentError] = useState("");
     const [submitError, setSubmitError] = useState("");
-    const [success, setSuccess] = useState("");
     const [saving, setSaving] = useState(false);
     const [requestOpen, setRequestOpen] = useState(false);
     const [form, setForm] = useState({ amount: "", repaymentMonths: "1", reason: "" });
@@ -97,6 +96,7 @@ export default function MyAdvanceSalary() {
         return { loan, payments, repaid, balance, paidMonths: payments.length, remainingMonths: Math.max(0, term - payments.length), monthlyAmount: term ? amountOf(loan) / term : 0 };
     }), [approved, repaymentByLoan]);
     const activeLoans = loanSummaries.filter((item) => item.balance > 0.005);
+    const hasActiveLoan = activeLoans.length > 0;
     const visibleLoans = repaymentError ? loanSummaries : activeLoans;
     const estimatedMonthlyRepayment = activeLoans.reduce((sum, item) => sum + item.monthlyAmount, 0);
     const totalRepaid = loanSummaries.reduce((sum, item) => sum + item.repaid, 0);
@@ -111,11 +111,13 @@ export default function MyAdvanceSalary() {
         }
         setSaving(true);
         setSubmitError("");
-        setSuccess("");
         try {
+            if (await AdvanceSalaryService.hasActiveLoan(employeeId)) {
+                setSubmitError("You already have an active salary advance. Repay it before requesting another one.");
+                return;
+            }
             await AdvanceSalaryService.createRequest({ amount, repaymentMonths, reason: form.reason.trim() });
             setForm({ amount: "", repaymentMonths: "1", reason: "" });
-            setSuccess("Your advance salary request was submitted for review.");
             setRequestOpen(false);
             await load();
         } catch (e) {
@@ -131,11 +133,12 @@ export default function MyAdvanceSalary() {
             <Box className="advance-salary-heading"><Typography component="h1" variant="h4">My Advance Salary</Typography><Typography component="p">Request an advance, review approved loans, and follow your repayment plan.</Typography></Box>
             <Stack direction="row" spacing={1}>
                 <Button variant="outlined" onClick={load} disabled={loading}>Refresh</Button>
-                {canCreateRequest && <Button variant="contained" onClick={() => { setSubmitError(""); setRequestOpen(true); }}>Request Salary Advance</Button>}
+                {canCreateRequest && <Button variant="contained" onClick={() => { setSubmitError(""); setRequestOpen(true); }} disabled={loading || hasActiveLoan} title={hasActiveLoan ? "Repay your active advance before requesting another one." : undefined}>Request Salary Advance</Button>}
             </Stack>
         </Box>
 
         {error && <Alert severity="error">{error}</Alert>}
+        {hasActiveLoan && <Alert severity="info">You have an active salary advance. You can request another one after the outstanding balance is fully repaid.</Alert>}
 
         <Box className="advance-salary-stats">
             <SummaryCard icon={<AccountBalanceWalletOutlinedIcon />} label="Active loans" value={loading ? "—" : repaymentError ? approved.length : activeLoans.length} detail={repaymentError ? "Repayment status unavailable" : "Approved advances not fully repaid"} />
@@ -205,24 +208,29 @@ export default function MyAdvanceSalary() {
 
         <Dialog open={requestOpen} onClose={() => !saving && setRequestOpen(false)} fullWidth maxWidth="sm" className="advance-salary-dialog">
             <Box component="form" onSubmit={submit}>
-                <DialogTitle>Request a Salary Advance</DialogTitle>
+                <DialogTitle className="advance-request-title">Request a Salary Advance</DialogTitle>
                 <DialogContent className="advance-salary-dialog-content">
-                    <Typography variant="body2">Choose an amount and repayment period. Payroll will review your request.</Typography>
+                    <Typography className="advance-request-intro" variant="body2">Choose an amount and repayment period. Payroll will review your request.</Typography>
                     {submitError && <Alert severity="error">{submitError}</Alert>}
                     <Box className="advance-request-fields">
-                        <TextField autoFocus required fullWidth type="number" label="Amount (INR)" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} inputProps={{ min: 1, step: "0.01" }} />
-                        <TextField select required fullWidth label="Repayment period" value={form.repaymentMonths} onChange={(e) => setForm({ ...form, repaymentMonths: e.target.value })}>
+                        <TextField className="advance-request-input" autoFocus required fullWidth type="number" label="Amount (INR)" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} inputProps={{ min: 1, step: "0.01" }} />
+                        <TextField className="advance-request-input" select required fullWidth label="Repayment period" value={form.repaymentMonths} onChange={(e) => setForm({ ...form, repaymentMonths: e.target.value })}>
                             {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => <MenuItem key={n} value={String(n)}>{n} {n === 1 ? "month" : "months"}</MenuItem>)}
                         </TextField>
                     </Box>
-                    <Typography className="advance-request-estimate" variant="body2">Estimated installment: {form.amount && Number(form.amount) > 0 ? formatAmount(Number(form.amount) / Number(form.repaymentMonths)) : "—"} per month, subject to approval.</Typography>
-                    <TextField required fullWidth multiline minRows={3} label="Reason for request" value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value })} inputProps={{ maxLength: 500, minLength: 10 }} helperText={`${form.reason.length}/500 · at least 10 characters`} />
+                    <Box className="advance-request-estimate" role="status" aria-live="polite">
+                        <Typography variant="overline">Estimated monthly installment</Typography>
+                        <Typography component="strong" variant="h6">{form.amount && Number(form.amount) > 0 ? formatAmount(Number(form.amount) / Number(form.repaymentMonths)) : "—"}</Typography>
+                        <Typography variant="caption">per month · subject to approval</Typography>
+                    </Box>
+                    <TextField className="advance-request-reason" required fullWidth multiline minRows={3} label="Reason for request" value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value })} inputProps={{ maxLength: 500, minLength: 10 }} helperText={`${form.reason.length}/500 · at least 10 characters`} />
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setRequestOpen(false)} disabled={saving}>Cancel</Button>
-                    <Button type="submit" variant="contained" disabled={saving || profileLoading || !employeeId}>{saving ? "Submitting…" : "Submit request"}</Button>
+                <DialogActions className="advance-request-actions">
+                    <Button className="advance-request-cancel" onClick={() => setRequestOpen(false)} disabled={saving}>Cancel</Button>
+                    <Button className="advance-request-submit" type="submit" variant="contained" disabled={saving || profileLoading || !employeeId}>{saving ? "Submitting…" : "Submit request"}</Button>
                 </DialogActions>
             </Box>
         </Dialog>
+
     </Box>;
 }

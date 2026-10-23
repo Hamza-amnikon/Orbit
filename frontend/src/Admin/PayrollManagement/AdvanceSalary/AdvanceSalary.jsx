@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
 import {
     Alert, Box, Button, Card, CardContent, Chip, CircularProgress,
     Dialog, DialogActions, DialogContent, DialogTitle, FormControl,
@@ -10,7 +11,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import PendingActionsOutlinedIcon from "@mui/icons-material/PendingActionsOutlined";
 import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { useAuth } from "../../../context/AuthContext";
 import AdvanceSalaryService from "./AdvanceSalaryService";
@@ -44,7 +45,7 @@ export default function AdvanceSalary() {
     const employeeId = valueOf(profile, EMPLOYEE_ID_FIELDS) || valueOf(profile?.employee, EMPLOYEE_ID_FIELDS);
     const employeeName = profile?.employeeName || profile?.EmployeeName || profile?.name || profile?.Name || "";
     const canReview = hasPermission("/approvals", "approve");
-    const canCreateRequest = hasPermission("/payroll/my-advance-salary", "create");
+    const canExport = hasPermission("/payroll/advance-salary", "export");
     const [requests, setRequests] = useState([]);
     const [employeeDirectory, setEmployeeDirectory] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -59,6 +60,7 @@ export default function AdvanceSalary() {
     const [reviewStatus, setReviewStatus] = useState("");
     const [reviewComment, setReviewComment] = useState("");
     const [notice, setNotice] = useState(null);
+    const [exporting, setExporting] = useState(false);
 
     const loadRequests = useCallback(async () => {
         if (profileLoading) return;
@@ -157,6 +159,38 @@ export default function AdvanceSalary() {
         approved: requests.filter((request) => String(valueOf(request, ["status", "Status"], "")).toLowerCase() === "approved").length,
     }), [requests]);
 
+    const exportRequests = () => {
+        setExporting(true);
+        try {
+            const rows = filteredRequests.map((request) => ({
+                "Employee Name": employeeNameFor(request),
+                "Employee ID": azureIdFor(valueOf(request, EMPLOYEE_ID_FIELDS)),
+                "Requested On": formatDate(valueOf(request, ["requestedDate", "RequestedDate", "createdDate", "CreatedDate"])),
+                "Amount (INR)": Number(valueOf(request, ["amount", "requestedAmount", "Amount"], 0)) || 0,
+                "Repayment Term (Months)": Number(valueOf(request, ["repaymentMonths", "RepaymentMonths"], 0)) || 0,
+                "Monthly Installment (INR)": (() => {
+                    const amount = Number(valueOf(request, ["amount", "requestedAmount", "Amount"], 0)) || 0;
+                    const months = Number(valueOf(request, ["repaymentMonths", "RepaymentMonths"], 0)) || 0;
+                    return months && String(valueOf(request, ["status", "Status"], "")).toLowerCase() === "approved" ? amount / months : "";
+                })(),
+                Status: valueOf(request, ["status", "Status"], "Pending"),
+                Reason: valueOf(request, ["reason", "Reason"], ""),
+                "Review Comment": valueOf(request, ["reviewComment", "ReviewComment"], ""),
+            }));
+            const headers = ["Employee Name", "Employee ID", "Requested On", "Amount (INR)", "Repayment Term (Months)", "Monthly Installment (INR)", "Status", "Reason", "Review Comment"];
+            const sheet = rows.length ? XLSX.utils.json_to_sheet(rows, { header: headers }) : XLSX.utils.aoa_to_sheet([headers]);
+            sheet["!cols"] = headers.map((header) => ({ wch: Math.min(36, Math.max(16, header.length + 2)) }));
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, sheet, "Advance Salary Requests");
+            const date = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(workbook, `Advance_Salary_Requests_${date}.xlsx`);
+        } catch {
+            setNotice({ severity: "error", message: "Advance salary requests could not be exported. Please try again." });
+        } finally {
+            setExporting(false);
+        }
+    };
+
     const submitRequest = async (event) => {
         event.preventDefault();
         const amount = Number(requestForm.amount);
@@ -228,9 +262,11 @@ export default function AdvanceSalary() {
                     <Typography component="h1" variant="h4">Advance Salary</Typography>
                     <Typography component="p" variant="body1">Apply for a salary advance and review requests awaiting approval.</Typography>
                 </Box>
-                {canCreateRequest && <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => navigate("/payroll/advance-salary/request")}>
-                    Request Advance
-                </Button>}
+                <Stack direction="row" spacing={1}>
+                    {canExport && <Button variant="outlined" startIcon={<FileDownloadOutlinedIcon />} onClick={exportRequests} disabled={exporting || loading || filteredRequests.length === 0}>
+                        {exporting ? "Exporting…" : "Export Excel"}
+                    </Button>}
+                </Stack>
             </Box>
 
             <Box className="advance-salary-stats">

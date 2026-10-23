@@ -225,11 +225,76 @@
 }
 
 .advance-request-estimate {
-  width: fit-content;
-  padding: 9px 12px;
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+  padding: 12px 16px;
   color: #2456b8;
   background: #eef4ff;
-  border-radius: 9px;
+  border: 1px solid #d9e6ff;
+  border-radius: 12px;
+}
+
+.advance-request-estimate .MuiTypography-overline {
+  color: #5b77a1;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  line-height: 1.4;
+}
+
+.advance-request-estimate .MuiTypography-h6 {
+  color: #173b7a;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.advance-request-estimate .MuiTypography-caption {
+  color: #5b77a1;
+}
+
+.advance-request-title {
+  padding: 22px 24px 18px !important;
+  color: #14213d;
+  font-size: 1.35rem !important;
+  font-weight: 750 !important;
+}
+
+.advance-request-intro {
+  color: #5b6f8f;
+  line-height: 1.55;
+}
+
+.advance-request-input .MuiOutlinedInput-root,
+.advance-request-reason .MuiOutlinedInput-root {
+  border-radius: 11px;
+}
+
+.advance-request-actions {
+  gap: 10px;
+  padding: 14px 24px 20px !important;
+}
+
+.advance-request-actions .MuiButton-root {
+  min-width: 116px;
+  min-height: 44px;
+  border-radius: 10px;
+  font-weight: 650;
+  text-transform: none;
+}
+
+.advance-request-actions .advance-request-cancel {
+  color: #536984;
+  border: 1px solid #d6e0ed;
+}
+
+.advance-request-actions .advance-request-cancel:hover {
+  border-color: #aebfd3;
+  background: #f5f8fc;
+}
+
+.advance-request-actions .advance-request-submit {
+  box-shadow: 0 3px 8px rgb(37 99 235 / 18%);
 }
 
 .advance-salary-panel-header {

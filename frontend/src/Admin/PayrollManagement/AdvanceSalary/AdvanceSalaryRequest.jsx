@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, Box, Button, Card, CardContent, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
@@ -12,7 +12,23 @@ export default function AdvanceSalaryRequest() {
     const [form, setForm] = useState({ amount: "", repaymentMonths: "1", reason: "" });
     const [error, setError] = useState("");
     const [saving, setSaving] = useState(false);
+    const [loanCheck, setLoanCheck] = useState("checking");
+    const employeeId = profile?.employeeId || profile?.EmployeeId || profile?.employeeID || profile?.EmployeeID ||
+        profile?.employee?.employeeId || profile?.employee?.EmployeeId || profile?.employee?.employeeID || profile?.employee?.EmployeeID;
     const employeeName = profile?.employeeName || profile?.EmployeeName || profile?.name || profile?.Name || "";
+
+    useEffect(() => {
+        let active = true;
+        if (!employeeId) {
+            setLoanCheck("unavailable");
+            return () => { active = false; };
+        }
+        setLoanCheck("checking");
+        AdvanceSalaryService.hasActiveLoan(employeeId)
+            .then((hasLoan) => { if (active) setLoanCheck(hasLoan ? "active" : "clear"); })
+            .catch(() => { if (active) setLoanCheck("unavailable"); });
+        return () => { active = false; };
+    }, [employeeId]);
 
     const submit = async (event) => {
         event.preventDefault();
@@ -25,6 +41,11 @@ export default function AdvanceSalaryRequest() {
         setSaving(true);
         setError("");
         try {
+            if (await AdvanceSalaryService.hasActiveLoan(employeeId)) {
+                setLoanCheck("active");
+                setError("You already have an active salary advance. Repay it before requesting another one.");
+                return;
+            }
             await AdvanceSalaryService.createRequest({ amount, repaymentMonths, reason: form.reason.trim(), employeeName });
             navigate("/payroll/my-advance-salary", { state: { requestSubmitted: true } });
         } catch (submitError) {
@@ -43,6 +64,9 @@ export default function AdvanceSalaryRequest() {
             <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                 <Stack component="form" spacing={2.5} onSubmit={submit}>
                     {error && <Alert severity="error">{error}</Alert>}
+                    {loanCheck === "active" && <Alert severity="info">You have an active salary advance. You can request another one after the outstanding balance is fully repaid.</Alert>}
+                    {loanCheck === "checking" && <Alert severity="info">Checking your current advance balance…</Alert>}
+                    {loanCheck === "unavailable" && <Alert severity="warning">Your active advance status could not be verified. Try again before submitting.</Alert>}
                     <TextField required fullWidth type="number" label="Amount (INR)" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} inputProps={{ min: 1, step: "0.01" }} />
                     <TextField select required fullWidth label="Repayment period" value={form.repaymentMonths} onChange={(e) => setForm({ ...form, repaymentMonths: e.target.value })}>
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => <MenuItem key={n} value={String(n)}>{n} {n === 1 ? "month" : "months"}</MenuItem>)}
@@ -50,7 +74,7 @@ export default function AdvanceSalaryRequest() {
                     <TextField required fullWidth multiline minRows={4} label="Reason for request" value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value })} inputProps={{ maxLength: 500, minLength: 10 }} helperText={form.reason.length + "/500 · at least 10 characters"} />
                     <Stack direction="row" spacing={1} justifyContent="flex-end">
                         <Button onClick={() => navigate("/payroll/my-advance-salary")} disabled={saving}>Cancel</Button>
-                        <Button type="submit" variant="contained" disabled={saving}>{saving ? "Submitting…" : "Submit request"}</Button>
+                        <Button type="submit" variant="contained" disabled={saving || loanCheck !== "clear"}>{saving ? "Submitting…" : "Submit request"}</Button>
                     </Stack>
                 </Stack>
             </CardContent>

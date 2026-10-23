@@ -937,7 +937,6 @@ function AppRoutes() {
                             path="/payroll/advance-salary/request"
                             element={<AdvanceSalaryRequest />}
                         />
-
                         <Route
                             path="/payroll/salary-components"
                             element={<SalaryComponents />}
