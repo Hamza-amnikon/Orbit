@@ -45,8 +45,10 @@ const payslipLogo = "/Amnikon%20logo.jpg";
    API
    ========================================================= */
 
-const PAYROLL_API =
-    `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
+const PAYROLL_API_BASE_URL = String(
+    import.meta.env.VITE_PAYROLL_API_BASE_URL || ""
+).replace(/\/+$/, "");
+const PAYROLL_API = `${PAYROLL_API_BASE_URL}/api`;
 const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 const DOCUMENT_API = `${import.meta.env.VITE_DOCUMENT_API_BASE_URL}/api/Document`;
 

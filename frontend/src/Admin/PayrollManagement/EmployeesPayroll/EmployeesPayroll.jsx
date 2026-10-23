@@ -44,8 +44,10 @@ import { Typography as MuiText } from "@mui/material";
 const EMPLOYEE_API =
     `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
-const PAYROLL_API =
-    `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
+const PAYROLL_API_BASE_URL = String(
+    import.meta.env.VITE_PAYROLL_API_BASE_URL || ""
+).replace(/\/+$/, "");
+const PAYROLL_API = `${PAYROLL_API_BASE_URL}/api`;
 
 const EMPLOYEE_SALARIES_API =
     `${PAYROLL_API}/EmployeeSalaries`;
@@ -1585,7 +1587,7 @@ const confirmDelete = async () => {
 
     try {
         await axios.delete(
-            `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api/EmployeeSalaries/${employeeSalaryId}`
+            `${EMPLOYEE_SALARIES_API}/${employeeSalaryId}`
         );
 
         // Remove the deleted assignment from the table

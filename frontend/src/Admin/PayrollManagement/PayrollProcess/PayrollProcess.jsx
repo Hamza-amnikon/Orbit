@@ -48,7 +48,10 @@ import { Typography as MuiText } from "@mui/material";
 import { loadXlsx } from "../../../utils/exportLibraries";
 
 const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
-const PAYROLL_API = `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
+const PAYROLL_API_BASE_URL = String(
+    import.meta.env.VITE_PAYROLL_API_BASE_URL || ""
+).replace(/\/+$/, "");
+const PAYROLL_API = `${PAYROLL_API_BASE_URL}/api`;
 
 const getMonthLabel = (date) =>
     date.toLocaleDateString("en-US", {

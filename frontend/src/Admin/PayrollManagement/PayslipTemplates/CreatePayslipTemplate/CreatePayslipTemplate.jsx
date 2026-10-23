@@ -28,7 +28,10 @@ import { useAuth } from "../../../../context/AuthContext";
 import "./CreatePayslipTemplate.css";
 import { Typography as MuiText } from "@mui/material";
 
-const API_BASE_URL = `${import.meta.env.VITE_PAYROLL_API_BASE_URL}/api`;
+const PAYROLL_API_BASE_URL = String(
+    import.meta.env.VITE_PAYROLL_API_BASE_URL || ""
+).replace(/\/+$/, "");
+const API_BASE_URL = `${PAYROLL_API_BASE_URL}/api`;
 
 /* ============================================================
    FALLBACK SALARY COMPONENTS
