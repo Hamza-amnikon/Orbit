@@ -27,6 +27,12 @@ export async function getEmployeeAttendance(employeeId) {
         { headers: authHeaders() }
     );
 
+    // Treat a missing employee attendance collection as empty so the page can
+    // render its empty state; other HTTP failures remain visible.
+    if (response.status === 404) {
+        return [];
+    }
+
     if (!response.ok) {
         throw new Error(
             `Failed to load employee attendance. Status: ${response.status}`

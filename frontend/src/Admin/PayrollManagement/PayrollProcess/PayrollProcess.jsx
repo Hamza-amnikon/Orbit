@@ -308,24 +308,31 @@ const PayrollProcess = () => {
     const [payrollRunResult, setPayrollRunResult] = useState(null);
     const [exportMessage, setExportMessage] = useState("");
 
+    const getPayrollList = async (url) => {
+        try {
+            const response = await axios.get(url);
+            const data = response?.data;
+            return Array.isArray(data) ? data : data?.data || data?.items || data?.value || [];
+        } catch (err) {
+            // Treat a missing list resource as an empty collection while
+            // keeping authentication and server failures visible.
+            if (err?.response?.status === 404) return [];
+            throw err;
+        }
+    };
+
     const loadEmployees = async () => {
-        const response = await axios.get(EMPLOYEE_API);
-        const data = response?.data;
-        const list = Array.isArray(data) ? data : data?.data || data?.items || data?.value || [];
+        const list = await getPayrollList(EMPLOYEE_API);
         return list.map(normalizeEmployee);
     };
 
     const loadAssignments = async () => {
-        const response = await axios.get(`${PAYROLL_API}/EmployeeSalaries`);
-        const data = response?.data;
-        const list = Array.isArray(data) ? data : data?.data || data?.items || data?.value || [];
+        const list = await getPayrollList(`${PAYROLL_API}/EmployeeSalaries`);
         return list.map(normalizeAssignment);
     };
 
     const loadTemplates = async () => {
-        const response = await axios.get(`${PAYROLL_API}/PayrollTemplates`);
-        const data = response?.data;
-        const list = Array.isArray(data) ? data : data?.data || data?.items || data?.value || [];
+        const list = await getPayrollList(`${PAYROLL_API}/PayrollTemplates`);
         const active = list
             .map(normalizeTemplate)
             .filter((template) => String(template.status).toLowerCase() !== "inactive");

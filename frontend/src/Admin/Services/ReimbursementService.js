@@ -817,6 +817,12 @@ export const getEmployeeReimbursements =
 
     } catch (error) {
 
+      // Treat a missing employee reimbursement collection as empty; keep
+      // authentication and server errors visible to the user.
+      if (error?.response?.status === 404) {
+        return { success: true, data: [] };
+      }
+
 
 
       throw new Error(
