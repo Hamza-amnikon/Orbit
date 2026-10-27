@@ -12,6 +12,12 @@ export default defineConfig({
 
     server: {
         proxy: {
+            "/api/dashboard": {
+                target: "https://localhost:7051",
+                changeOrigin: true,
+                secure: false,
+            },
+
             "/api/expenses": {
                 target: "https://localhost:7128",
                 changeOrigin: true,

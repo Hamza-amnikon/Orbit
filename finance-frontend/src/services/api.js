@@ -6,14 +6,17 @@ const baseUrl = (
 
 const tokenKey = "orbit.finance.accessToken";
 
-export async function request(path, { body, ...options } = {}) {
-    if (previewMode) {
+export async function request(path, { body, live = false, useProxy = false, ...options } = {}) {
+    if (previewMode && !live) {
         return previewRequest(path, { ...options, body });
     }
 
     const token = sessionStorage.getItem(tokenKey);
     const isFormData = body instanceof FormData;
-    const response = await fetch(`${baseUrl}/api/${path}`, {
+    const requestUrl = useProxy
+        ? `/api/${path}`
+        : `${baseUrl}/api/${path}`;
+    const response = await fetch(requestUrl, {
         ...options,
         headers: {
             ...(body !== undefined && !isFormData

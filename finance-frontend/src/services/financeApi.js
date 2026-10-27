@@ -64,8 +64,8 @@ export const financeApi = {
     const { list, get, create } = resource(`payments/${encodeURIComponent(direction)}`);
     return { list, get, create };
   },
-  dashboard: (filters) => request(`dashboard${query(filters)}`),
-  activity: () => request("dashboard/activity"),
+  dashboard: (filters) => request(`dashboard${query(filters)}`, { live: true, useProxy: true }),
+  activity: () => request("dashboard/activity", { live: true, useProxy: true }),
 };
 
 export async function allRecords(api, filters = {}, signal) {

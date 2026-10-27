@@ -173,6 +173,11 @@ const InvoicePaymentForm = ({
             return;
         }
 
+        if (!form.reference.trim()) {
+            setError("Enter a payment reference.");
+            return;
+        }
+
         const payload = {
             requestId,
             paymentDate: form.paymentDate,
@@ -451,6 +456,7 @@ const InvoicePaymentForm = ({
                             slotProps={{
                                 htmlInput: { maxLength: 200 },
                             }}
+                            required
                             fullWidth
                         />
 

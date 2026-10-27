@@ -75,6 +75,47 @@
 @page { size: A4; margin: 12mm; }
 
 @media print {
+    body * {
+        visibility: hidden !important;
+    }
+
+    .invoice-payment-preview-dialog,
+    .invoice-payment-preview-dialog * {
+        visibility: visible !important;
+    }
+
+    .invoice-payment-preview-dialog {
+        position: absolute !important;
+        inset: 0 !important;
+        overflow: visible !important;
+    }
+
+    .invoice-payment-preview-dialog .MuiDialog-container {
+        display: block !important;
+        height: auto !important;
+    }
+
+    .invoice-payment-preview-dialog .MuiDialog-paper {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        box-shadow: none !important;
+    }
+
+    .invoice-payment-preview-dialog .MuiDialogTitle-root,
+    .invoice-payment-preview-dialog .MuiDialogActions-root {
+        display: none !important;
+    }
+
+    .invoice-payment-preview-dialog .MuiDialogContent-root {
+        overflow: visible !important;
+        padding: 0 !important;
+        border: 0 !important;
+    }
+
     .finance-main > .invoice-details-page:has(.issued-invoice) {
         padding: 0 !important;
         min-height: 0 !important;

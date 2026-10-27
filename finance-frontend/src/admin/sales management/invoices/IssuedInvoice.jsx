@@ -2,7 +2,13 @@ import React from "react";
 import logo from "../../../assets/amnikon-logo.png";
 import "./IssuedInvoice.css";
 
-const IssuedInvoice = ({ invoice, formatDate, formatAmount, unitNames }) => {
+const IssuedInvoice = ({
+    invoice,
+    formatDate,
+    formatAmount,
+    unitNames,
+    paymentSummary = null,
+}) => {
     const issuer = invoice.issuer;
     const items = [...(invoice.items || [])].sort((a, b) => a.lineNumber - b.lineNumber);
     const money = (value) => formatAmount(value, invoice.currency);
@@ -98,6 +104,13 @@ const IssuedInvoice = ({ invoice, formatDate, formatAmount, unitNames }) => {
                     {invoice.discountTotal > 0 && <div><dt>Discount</dt><dd>{money(invoice.discountTotal)}</dd></div>}
                     {invoice.taxTotal > 0 && <div><dt>Tax</dt><dd>{money(invoice.taxTotal)}</dd></div>}
                     <div className="issued-invoice-grand-total"><dt>Total</dt><dd>{money(invoice.grandTotal)}</dd></div>
+                    {paymentSummary && (
+                        <>
+                            <div><dt>This payment</dt><dd>{money(paymentSummary.paymentAmount)}</dd></div>
+                            <div><dt>Paid to date</dt><dd>{money(paymentSummary.paidAmount)}</dd></div>
+                            <div className="issued-invoice-grand-total"><dt>Balance due</dt><dd>{money(paymentSummary.balanceDue)}</dd></div>
+                        </>
+                    )}
                 </dl>
             </section>
 

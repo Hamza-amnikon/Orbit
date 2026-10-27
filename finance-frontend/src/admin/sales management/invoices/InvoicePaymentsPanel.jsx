@@ -7,6 +7,10 @@ import {
     Card,
     CardContent,
     Chip,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     Stack,
     Table,
     TableBody,
@@ -21,6 +25,7 @@ import { useAuth } from "../../../live/AuthContext";
 import { money } from "../../../live/data";
 
 import InvoicePaymentForm from "./InvoicePaymentForm";
+import IssuedInvoice from "./IssuedInvoice";
 import {
     getInvoicePaymentSummary,
 } from "./SalesInvoicePaymentService";
@@ -33,6 +38,25 @@ function formatDate(value) {
     return value.slice(0, 10).split("-").reverse().join("/");
 }
 
+const unitNames = {
+    0: "Hour",
+    1: "Day",
+    2: "Month",
+    3: "Fixed fee",
+};
+
+function formatAmount(value, currency) {
+    if (value == null) {
+        return "—";
+    }
+
+    return new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency,
+        currencyDisplay: "code",
+    }).format(value);
+}
+
 const InvoicePaymentsPanel = ({ invoice }) => {
     const { canWrite } = useAuth();
 
@@ -41,6 +65,7 @@ const InvoicePaymentsPanel = ({ invoice }) => {
     const [error, setError] = useState("");
     const [notice, setNotice] = useState("");
     const [open, setOpen] = useState(false);
+    const [viewPayment, setViewPayment] = useState(null);
     const [revision, setRevision] = useState(0);
 
     useEffect(() => {
@@ -102,6 +127,86 @@ const InvoicePaymentsPanel = ({ invoice }) => {
             )} recorded.`
         );
         refresh();
+    }
+
+    function downloadInvoicePdf() {
+        const invoiceContent = document.querySelector(
+            ".invoice-payment-preview-content"
+        );
+
+        if (!invoiceContent) {
+            return;
+        }
+
+        document.getElementById("invoice-payment-print-root")?.remove();
+        document.getElementById("invoice-payment-print-style")?.remove();
+
+        const printRoot = document.createElement("div");
+        printRoot.id = "invoice-payment-print-root";
+        printRoot.appendChild(invoiceContent.cloneNode(true));
+
+        const printStyle = document.createElement("style");
+        printStyle.id = "invoice-payment-print-style";
+        printStyle.textContent = `
+            @media print {
+                @page { size: A4; margin: 12mm; }
+                body > *:not(#invoice-payment-print-root) {
+                    display: none !important;
+                }
+                #invoice-payment-print-root,
+                #invoice-payment-print-root * {
+                    visibility: visible !important;
+                }
+                #invoice-payment-print-root {
+                    display: block !important;
+                    position: static !important;
+                    width: 100% !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    background: #ffffff !important;
+                }
+                #invoice-payment-print-root .issued-invoice {
+                    box-sizing: border-box;
+                    width: 100%;
+                    max-width: 186mm;
+                    min-height: 0;
+                    margin: 0 auto;
+                    padding-top: 0;
+                    overflow: visible;
+                    color: #111111;
+                    background: #ffffff;
+                    font-family: Arial, sans-serif;
+                    font-size: 10pt;
+                    --invoice-paper: #ffffff;
+                    --invoice-hover: #eef3fa;
+                    --invoice-text: #111111;
+                }
+                #invoice-payment-print-root .issued-invoice-logo {
+                    width: 135px;
+                    height: 85px;
+                    object-fit: contain;
+                }
+                #invoice-payment-print-root img { max-width: 100%; }
+            }
+        `;
+
+        document.head.appendChild(printStyle);
+        document.body.appendChild(printRoot);
+
+        const cleanUpPrint = () => {
+            printRoot.remove();
+            printStyle.remove();
+            window.removeEventListener("afterprint", cleanUpPrint);
+        };
+
+        window.addEventListener("afterprint", cleanUpPrint, { once: true });
+        window.print();
+
+        window.setTimeout(() => {
+            if (printRoot.isConnected) {
+                cleanUpPrint();
+            }
+        }, 60000);
     }
 
     const ready = !loading && !error && summary != null;
@@ -283,6 +388,7 @@ const InvoicePaymentsPanel = ({ invoice }) => {
                                         Amount
                                     </TableCell>
                                     <TableCell>Reference</TableCell>
+                                    <TableCell>Action</TableCell>
                                 </TableRow>
                             </TableHead>
 
@@ -313,6 +419,14 @@ const InvoicePaymentsPanel = ({ invoice }) => {
                                         <TableCell>
                                             {payment.reference || "—"}
                                         </TableCell>
+
+                                        <TableCell>
+                                            <Button
+                                                onClick={() => setViewPayment(payment)}
+                                            >
+                                                View
+                                            </Button>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -328,6 +442,65 @@ const InvoicePaymentsPanel = ({ invoice }) => {
                     onClose={closeForm}
                     onSaved={handleSaved}
                 />
+            )}
+
+            {viewPayment && (
+                <Dialog
+                    open
+                    fullWidth
+                    maxWidth="lg"
+                    className="invoice-payment-preview-dialog"
+                    onClose={() => setViewPayment(null)}
+                    aria-labelledby="invoice-payment-view-title"
+                >
+                    <DialogTitle id="invoice-payment-view-title">
+                        Payment {viewPayment.paymentNumber} · Invoice {invoice.invoiceNumber}
+                    </DialogTitle>
+
+                    <DialogContent dividers>
+                        <div className="invoice-payment-preview-content">
+                            <IssuedInvoice
+                                invoice={invoice}
+                                formatDate={formatDate}
+                                formatAmount={formatAmount}
+                                unitNames={unitNames}
+                                paymentSummary={{
+                                    paymentAmount: viewPayment.amount,
+                                    paidAmount: summary.payments
+                                        .filter(payment =>
+                                            payment.paymentDate < viewPayment.paymentDate ||
+                                            (payment.paymentDate === viewPayment.paymentDate &&
+                                                payment.id <= viewPayment.id)
+                                        )
+                                        .reduce((total, payment) => total + payment.amount, 0),
+                                    balanceDue: Math.max(
+                                        0,
+                                        (summary.adjustedInvoiceTotal ?? summary.invoiceTotal) -
+                                            summary.payments
+                                                .filter(payment =>
+                                                    payment.paymentDate < viewPayment.paymentDate ||
+                                                    (payment.paymentDate === viewPayment.paymentDate &&
+                                                        payment.id <= viewPayment.id)
+                                                )
+                                                .reduce((total, payment) => total + payment.amount, 0)
+                                    ),
+                                }}
+                            />
+                        </div>
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button
+                            variant="contained"
+                            onClick={downloadInvoicePdf}
+                        >
+                            Download PDF
+                        </Button>
+                        <Button onClick={() => setViewPayment(null)}>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             )}
         </Card>
     );

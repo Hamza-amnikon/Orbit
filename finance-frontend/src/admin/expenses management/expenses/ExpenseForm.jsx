@@ -629,6 +629,7 @@ export default function ExpenseForm({
                             >
                                 {file?.name ||
                                     saved?.receiptName ||
+                                   
                                     "PDF, PNG, JPEG, WebP · up to 5 MB"}
                             </Typography>
 
