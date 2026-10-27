@@ -429,6 +429,7 @@
     background: #f5f8fd;
 }
 
+
 /* =========================================================
    MUTED DAYS
    ========================================================= */
@@ -595,6 +596,36 @@
     line-height: 16px;
 
     white-space: nowrap;
+}
+
+.calendar-selected-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 11px 12px;
+    border: 1px solid #e2e9f2;
+    border-radius: 12px;
+    background: #f8faff;
+}
+
+.calendar-selected-details {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.calendar-selected-details strong {
+    color: #233b5d;
+    font-size: 12px;
+}
+
+.calendar-selected-details span {
+    color: #687b96;
+    font-size: 11px;
 }
 
 /* =========================================================

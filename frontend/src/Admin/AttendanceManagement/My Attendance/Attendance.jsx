@@ -414,8 +414,7 @@ function Attendance() {
         setActionRecord(null);
     };
 
-    const openRegularizationForm = () => {
-        const item = actionRecord;
+    const openRegularizationForm = (item = actionRecord) => {
         closeRowActions();
         if (!item) return;
         const normalizeTime = (value) => {
@@ -997,10 +996,23 @@ function Attendance() {
        SELECTED DAY RECORD
     ========================================================= */
 
-    const selectedRecord =
-        getAttendanceForDay(
-            selectedDate.getDate()
-        );
+    const selectedRecord = attendance.find((item) => {
+        const value = getDateValue(item);
+        if (!value) return false;
+        const date = new Date(value);
+        return !Number.isNaN(date.getTime()) &&
+            date.getFullYear() === selectedDate.getFullYear() &&
+            date.getMonth() === selectedDate.getMonth() &&
+            date.getDate() === selectedDate.getDate();
+    });
+    const selectedRegularizationStatus = String(
+        requestForAttendance(selectedRecord)?.status || ""
+    ).trim().toLowerCase();
+    const canRequestSelectedRegularization = Boolean(
+        selectedRecord &&
+        selectedRegularizationStatus !== "pending" &&
+        !selectedRecord.isRegularized
+    );
 
 
     /* =========================================================
@@ -1358,25 +1370,16 @@ function Attendance() {
                                     getCalendarStatus(
                                         item.day
                                     );
-
                                 return (
-
                                     <MuiButtonMigration
                                         key={index}
                                         className={`
                                             calendar-day
                                             ${status}
-                                            ${isToday(item.day)
-                                                ? "today"
-                                                : ""
-                                            }
-                                            ${isSelected(item.day)
-                                                ? "selected"
-                                                : ""
-                                            }
+                                            ${isToday(item.day) ? "today" : ""}
+                                            ${isSelected(item.day) ? "selected" : ""}
                                         `}
                                         onClick={() => {
-
                                             setSelectedDate(
                                                 new Date(
                                                     calendarDate.getFullYear(),
@@ -1384,32 +1387,28 @@ function Attendance() {
                                                     item.day
                                                 )
                                             );
-
                                         }}
                                     >
-
                                         <MuiText component="span" variant="inherit">
                                             {item.day}
                                         </MuiText>
 
                                         {status === "present" && (
-                                            <MuiLayoutBox className="calendar-dot present-dot"  component="span"/>
+                                            <MuiLayoutBox className="calendar-dot present-dot" component="span" />
                                         )}
 
                                         {status === "absent" && (
-                                            <MuiLayoutBox className="calendar-dot absent-dot"  component="span"/>
+                                            <MuiLayoutBox className="calendar-dot absent-dot" component="span" />
                                         )}
 
                                         {status === "half" && (
-                                            <MuiLayoutBox className="calendar-dot half-dot"  component="span"/>
+                                            <MuiLayoutBox className="calendar-dot half-dot" component="span" />
                                         )}
 
                                         {status === "leave" && (
-                                            <MuiLayoutBox className="calendar-dot leave-dot"  component="span"/>
+                                            <MuiLayoutBox className="calendar-dot leave-dot" component="span" />
                                         )}
-
                                     </MuiButtonMigration>
-
                                 );
 
                             }
@@ -1440,6 +1439,37 @@ function Attendance() {
                             Weekly Off
                         </MuiText>
 
+                    </Box>
+
+                    <Box className="calendar-selected-action">
+                        <Box className="calendar-selected-details">
+                            <MuiText component="strong" variant="inherit">
+                                {selectedDate.toLocaleDateString("en-IN", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                })}
+                            </MuiText>
+                            <MuiText component="span" variant="inherit">
+                                {selectedRecord ? getStatus(selectedRecord) : "No attendance record for this date."}
+                            </MuiText>
+                        </Box>
+                        {canRequestSelectedRegularization && (
+                            <Button
+                                variant="outlined"
+                                size="small"
+                                startIcon={<HistoryOutlined />}
+                                onClick={() => openRegularizationForm(selectedRecord)}
+                            >
+                                Request regularization
+                            </Button>
+                        )}
+                        {selectedRegularizationStatus === "pending" && (
+                            <Chip size="small" label="Regularization pending" color="warning" variant="outlined" />
+                        )}
+                        {selectedRecord?.isRegularized && (
+                            <Chip size="small" label="Regularized" color="success" variant="outlined" />
+                        )}
                     </Box>
 
                 </Paper>
@@ -1802,7 +1832,7 @@ function Attendance() {
             </Paper>
 
             <Menu anchorEl={actionAnchor} open={Boolean(actionAnchor)} onClose={closeRowActions}>
-                <MenuItem onClick={openRegularizationForm}>
+                <MenuItem onClick={() => openRegularizationForm()}>
                     <HistoryOutlined fontSize="small" sx={{ mr: 1 }} /> Request attendance regularization
                 </MenuItem>
             </Menu>

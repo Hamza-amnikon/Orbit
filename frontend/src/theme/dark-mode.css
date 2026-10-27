@@ -342,6 +342,20 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendanc
   background: var(--spark-hover);
 }
 
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-selected-action {
+  color: var(--spark-text);
+  background: var(--spark-surface);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-selected-details strong {
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-selected-details span {
+  color: var(--spark-muted);
+}
+
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day.muted {
   color: #718198;
 }
