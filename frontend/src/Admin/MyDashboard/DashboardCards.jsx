@@ -361,13 +361,15 @@ function DashboardCards() {
     useEffect(() => {
 
         let cancelled = false;
+        let requestInFlight = false;
 
 
         const loadDashboard = async () => {
 
-            try {
+            if (requestInFlight) return;
+            requestInFlight = true;
 
-                setLoading(true);
+            try {
 
 
                 /* =================================================
@@ -1081,6 +1083,8 @@ function DashboardCards() {
 
             finally {
 
+                requestInFlight = false;
+
                 if (!cancelled) {
 
                     setLoading(false);
@@ -1094,10 +1098,13 @@ function DashboardCards() {
 
         loadDashboard();
 
+        const refreshTimer = window.setInterval(loadDashboard, 60_000);
+
 
         return () => {
 
             cancelled = true;
+            window.clearInterval(refreshTimer);
 
         };
 

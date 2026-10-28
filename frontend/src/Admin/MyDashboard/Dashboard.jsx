@@ -19,7 +19,13 @@ function Dashboard() {
 
     useEffect(() => {
 
+        let cancelled = false;
+        let requestInFlight = false;
+
         async function loadDashboard() {
+
+            if (requestInFlight) return;
+            requestInFlight = true;
 
             try {
 
@@ -34,6 +40,7 @@ function Dashboard() {
                     profileData
                 );
 
+                if (cancelled) return;
                 setProfile(profileData);
 
 
@@ -67,6 +74,7 @@ function Dashboard() {
                         attendanceData
                     );
 
+                    if (cancelled) return;
                     setAttendance(
                         Array.isArray(attendanceData)
                             ? attendanceData
@@ -80,7 +88,7 @@ function Dashboard() {
                         "Employee ID was not found in profile."
                     );
 
-                    setAttendance([]);
+                    if (!cancelled) setAttendance([]);
 
                 }
 
@@ -92,18 +100,26 @@ function Dashboard() {
                     error
                 );
 
-                setAttendance([]);
+                if (!cancelled) setAttendance([]);
 
             }
             finally {
 
-                setLoadingAttendance(false);
+                requestInFlight = false;
+                if (!cancelled) setLoadingAttendance(false);
 
             }
 
         }
 
         loadDashboard();
+
+        const refreshTimer = window.setInterval(loadDashboard, 60_000);
+
+        return () => {
+            cancelled = true;
+            window.clearInterval(refreshTimer);
+        };
 
     }, []);
 
