@@ -1118,14 +1118,33 @@ function AttendanceChart({
        Weekend:
            Comes from Shift API.
        
-       Absent:
-           Comes ONLY from Attendance API.
-       
-       No attendance record:
-           NOT Absent.
+       Completed assigned shifts without a record are shown as
+       absent while the backend catches up. This does not create
+       or change an attendance record.
     ========================================================= */
 
     const chartData = useMemo(() => {
+
+        const now = new Date();
+        const shiftFrom = String(resolvedShift?.fromDate ?? resolvedShift?.FromDate ?? "").slice(0, 10);
+        const shiftTo = String(resolvedShift?.toDate ?? resolvedShift?.ToDate ?? "").slice(0, 10);
+        const startTime = String(resolvedShift?.startTime ?? resolvedShift?.StartTime ?? "");
+        const endTime = String(resolvedShift?.endTime ?? resolvedShift?.EndTime ?? "");
+        const parseMinutes = (time) => {
+            const match = time.match(/^(\d{1,2}):(\d{2})/);
+            return match ? Number(match[1]) * 60 + Number(match[2]) : null;
+        };
+        const startMinutes = parseMinutes(startTime);
+        const endMinutes = parseMinutes(endTime);
+        const overnight = startMinutes !== null && endMinutes !== null && endMinutes <= startMinutes;
+        const hasCompletedShift = (date, key) => {
+            if (!resolvedShift || !shiftFrom || !shiftTo || key < shiftFrom || key > shiftTo) return false;
+            if (endMinutes === null) return date < new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const shiftEnd = new Date(date);
+            if (overnight) shiftEnd.setDate(shiftEnd.getDate() + 1);
+            shiftEnd.setHours(Math.floor(endMinutes / 60), endMinutes % 60, 0, 0);
+            return shiftEnd < now;
+        };
 
         const totalDays =
             new Date(
@@ -1160,6 +1179,9 @@ function AttendanceChart({
                         day
                     ).padStart(2, "0")}`;
 
+                const record = attendanceMap.get(key);
+                const approvedLeave = approvedLeaveDates.get(key) ?? null;
+
 
                 /* =================================================
                    WEEKEND
@@ -1168,7 +1190,7 @@ function AttendanceChart({
                 ================================================= */
 
                 if (
-                    isWeekend(date)
+                    isWeekend(date) && !record && !approvedLeave
                 ) {
 
                     return {
@@ -1207,10 +1229,6 @@ function AttendanceChart({
                    ATTENDANCE RECORD
                 ================================================= */
 
-                const record =
-                    attendanceMap.get(key);
-
-
                 /* =================================================
                    APPROVED LEAVE (Leave API)
 
@@ -1220,19 +1238,11 @@ function AttendanceChart({
                    all for this day.
                 ================================================= */
 
-                const approvedLeave =
-                    approvedLeaveDates.get(key) ??
-                    null;
-
-
                 /* =================================================
                    NO ATTENDANCE RECORD
                    
-                   DO NOT MAKE IT ABSENT.
-
-                   But DO mark it Leave if an approved
-                   leave request from the Leave API
-                   covers this date.
+                   Approved leave takes precedence. A completed
+                   assigned work shift with no record is absent.
                 ================================================= */
 
                 if (!record) {
@@ -1270,19 +1280,21 @@ function AttendanceChart({
                     }
 
 
+                    const isMissingShift = !isWeekend(date) && hasCompletedShift(date, key);
+
                     return {
 
                         day,
 
                         hours: 0,
 
-                        displayHours: 0,
+                        displayHours: isMissingShift ? 0.65 : 0,
 
-                        status: "Not Marked",
+                        status: isMissingShift ? "Absent" : "Not Marked",
 
                         isWeekend: false,
 
-                        isAbsent: false,
+                        isAbsent: isMissingShift,
 
                         isLeave: false,
 
@@ -1366,6 +1378,11 @@ function AttendanceChart({
                     status ===
                         "work from home";
 
+                const isWeeklyOff =
+                    status === "week off" ||
+                    status === "weekly off" ||
+                    status === "weekend";
+
 
                 /* =================================================
                    PRESENT
@@ -1389,6 +1406,9 @@ function AttendanceChart({
                     finalStatus =
                         "Absent";
 
+                }
+                else if (isWeeklyOff) {
+                    finalStatus = "Weekend";
                 }
                 else if (isLeave) {
 
@@ -1435,6 +1455,10 @@ function AttendanceChart({
 
                 }
 
+                else if (isWeeklyOff) {
+                    displayHours = 0.65;
+                }
+
 
                 /*
                  * Leave = small orange bar
@@ -1459,6 +1483,10 @@ function AttendanceChart({
 
                 }
 
+                else if (isPresent && hours <= 0) {
+                    displayHours = 0.65;
+                }
+
 
                 return {
 
@@ -1476,7 +1504,7 @@ function AttendanceChart({
 
                     status: finalStatus,
 
-                    isWeekend: false,
+                    isWeekend: isWeeklyOff,
 
                     isAbsent,
 
@@ -1504,7 +1532,8 @@ function AttendanceChart({
         month,
         attendanceMap,
         weekendDays,
-        approvedLeaveDates
+        approvedLeaveDates,
+        resolvedShift
     ]);
 
 
@@ -1604,6 +1633,15 @@ function AttendanceChart({
 
     }, [chartData]);
 
+
+    const maxChartHours = Math.max(
+        10,
+        Math.ceil(Math.max(...chartData.map((entry) => entry.displayHours), 0) / 2) * 2
+    );
+    const chartHourTicks = Array.from(
+        { length: maxChartHours / 2 + 1 },
+        (_, index) => index * 2
+    );
 
     /* =========================================================
        BAR COLOR
@@ -2105,15 +2143,8 @@ function AttendanceChart({
                             ================================================= */}
 
                             <YAxis
-                                domain={[0, 10]}
-                                ticks={[
-                                    0,
-                                    2,
-                                    4,
-                                    6,
-                                    8,
-                                    10
-                                ]}
+                                domain={[0, maxChartHours]}
+                                ticks={chartHourTicks}
                                 tickFormatter={
                                     (value) =>
                                         `${value}h`
