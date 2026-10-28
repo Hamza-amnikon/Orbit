@@ -74,3 +74,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+// Keep shared route, theme, and authentication providers at the app root.
