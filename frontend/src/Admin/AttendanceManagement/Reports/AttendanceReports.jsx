@@ -56,7 +56,7 @@ export default function AttendanceReports() {
   const reportRows = useMemo(
     () => rows.map((row) => ({
       ...row,
-      reportStatus: getAttendanceStatusForDuration(row.status, row.checkIn, row.checkOut),
+      reportStatus: getAttendanceStatusForDuration(row.status, row.checkIn, row.checkOut, row.totalHours),
     })),
     [rows],
   );

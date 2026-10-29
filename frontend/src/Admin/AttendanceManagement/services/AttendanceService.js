@@ -90,9 +90,29 @@ const AttendanceService = {
     return response.data;
   },
 
-  update: async (id, data) => {
-    const response = await axios.put(`${API_URL}/${id}`, data);
-    return response.data;
+  update: async (id, data, originalAttendance) => {
+    try {
+      const response = await axios.put(`${API_URL}/${id}`, data);
+      return response.data;
+    } catch (error) {
+      if (error?.response?.status !== 404 || !originalAttendance?.employeeId || !originalAttendance?.attendanceDate) {
+        throw error;
+      }
+
+      // The AccessVault sync can replace a generated row after the edit dialog
+      // opens. Resolve its current ID by employee and original work date.
+      const date = originalAttendance.attendanceDate.split("T")[0];
+      const records = await AttendanceService.getByDate(date);
+      const matches = records.filter((record) =>
+        Number(record.employeeId) === Number(originalAttendance.employeeId)
+      );
+      if (matches.length !== 1 || matches[0].attendanceId === id) {
+        throw error;
+      }
+
+      const response = await axios.put(`${API_URL}/${matches[0].attendanceId}`, data);
+      return response.data;
+    }
   },
 
 

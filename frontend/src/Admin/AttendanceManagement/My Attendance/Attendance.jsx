@@ -475,6 +475,15 @@ function Attendance() {
         if (!canView) return;
 
         loadAttendance();
+        const refreshWhenVisible = () => {
+            if (document.visibilityState === "visible") loadAttendance();
+        };
+        const timer = window.setInterval(refreshWhenVisible, 30000);
+        document.addEventListener("visibilitychange", refreshWhenVisible);
+        return () => {
+            window.clearInterval(timer);
+            document.removeEventListener("visibilitychange", refreshWhenVisible);
+        };
     }, [canView]);
 
 
@@ -488,7 +497,8 @@ function Attendance() {
         return getAttendanceStatusForDuration(
             status,
             item?.checkIn || item?.checkInTime || item?.inTime,
-            item?.checkOut || item?.checkOutTime || item?.outTime
+            item?.checkOut || item?.checkOutTime || item?.outTime,
+            item?.totalHours
         );
 
     };

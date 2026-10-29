@@ -22,12 +22,15 @@ export const formatWorkedHours = (checkIn, checkOut) => {
   return `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
 };
 
-export const getAttendanceStatusForDuration = (status, checkIn, checkOut) => {
+export const getAttendanceStatusForDuration = (status, checkIn, checkOut, totalHours) => {
   const current = String(status || "").trim();
   const normalized = current.toLowerCase().replace(/[ _-]/g, "");
   if (!["present", "late", "halfday"].includes(normalized)) return current;
 
-  const minutes = getWorkedMinutes(checkIn, checkOut);
+  const worked = typeof totalHours === "string" && /^(\d+):([0-5]\d)$/.exec(totalHours);
+  const minutes = checkOut && worked
+    ? Number(worked[1]) * 60 + Number(worked[2])
+    : getWorkedMinutes(checkIn, checkOut);
   if (minutes === null) return current;
   if (minutes < HALF_DAY_THRESHOLD_MINUTES) return "Half Day";
   return normalized === "late" ? "Late" : "Present";

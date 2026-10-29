@@ -2,7 +2,6 @@ SET NOCOUNT ON;
 SET XACT_ABORT ON;
 
 DECLARE @EmployeeRows int = 0;
-DECLARE @AttendanceDeleted int = 0;
 DECLARE @AttendanceInserted int = 0;
 DECLARE @RunAt datetime2(0) = SYSDATETIME();
 
@@ -134,6 +133,8 @@ BEGIN TRY
         ShiftName nvarchar(50) NOT NULL,
         FirstEvent datetime2(7) NOT NULL,
         LastEvent datetime2(7) NOT NULL,
+        ShiftEndAt datetime2(7) NULL,
+        EventCount int NOT NULL,
         TotalMinutes int NOT NULL,
         LateMinutes int NOT NULL,
         EarlyCheckoutMinutes int NOT NULL,
@@ -144,7 +145,7 @@ BEGIN TRY
     INSERT INTO @DailyAttendance
     (
         EmployeeId, AzureEmployeeId, EmployeeCode, EmployeeName,
-        AttendanceDate, ShiftName, FirstEvent, LastEvent, TotalMinutes,
+        AttendanceDate, ShiftName, FirstEvent, LastEvent, ShiftEndAt, EventCount, TotalMinutes,
         LateMinutes, EarlyCheckoutMinutes, OvertimeMinutes
     )
     SELECT
@@ -156,6 +157,8 @@ BEGIN TRY
         MAX(c.ShiftName),
         MIN(c.EventTime),
         MAX(c.EventTime),
+        MAX(c.ShiftEndAt),
+        COUNT(*),
         DATEDIFF(minute, MIN(c.EventTime), MAX(c.EventTime)),
         CASE
             WHEN MAX(c.ShiftStartAt) IS NULL THEN 0
@@ -197,22 +200,7 @@ BEGIN TRY
         c.EmployeeId, c.AzureEmployeeId, c.EmployeeCode, c.EmployeeName,
         c.AttendanceDate;
 
-    DECLARE @DeleteFrom date;
-    DECLARE @DeleteTo date;
-    SELECT
-        @DeleteFrom = DATEADD(day, -1, MIN(AttendanceDate)),
-        @DeleteTo = DATEADD(day, 1, MAX(AttendanceDate))
-    FROM @DailyAttendance;
-
-    IF @DeleteFrom IS NOT NULL
-    BEGIN
-        DELETE FROM Orbit.dbo.Attendances
-        WHERE CreatedBy = N'AccessVaultSync'
-          AND IsRegularized = 0
-          AND AttendanceDate BETWEEN @DeleteFrom AND @DeleteTo;
-        SET @AttendanceDeleted = @@ROWCOUNT;
-    END;
-
+    -- Keep generated attendance IDs stable while refreshing their punch data.
     UPDATE a
     SET
         a.AzureEmployeeId = d.AzureEmployeeId,
@@ -220,12 +208,14 @@ BEGIN TRY
         a.EmployeeName = d.EmployeeName,
         a.Shift = d.ShiftName,
         a.CheckIn = CONVERT(time(7), d.FirstEvent),
-        a.CheckOut = CONVERT(time(7), d.LastEvent),
+        a.CheckOut = CASE WHEN d.EventCount > 1 AND (d.ShiftEndAt IS NULL OR @RunAt >= d.ShiftEndAt)
+            THEN CONVERT(time(7), d.LastEvent) ELSE NULL END,
         a.TotalHours =
             CASE WHEN d.TotalMinutes / 60 < 10 THEN '0' ELSE '' END
             + CONVERT(varchar(10), d.TotalMinutes / 60)
             + ':' + RIGHT('0' + CONVERT(varchar(2), d.TotalMinutes % 60), 2),
-        a.Status = N'Present',
+        a.Status = CASE WHEN d.EventCount > 1 AND (d.ShiftEndAt IS NULL OR @RunAt >= d.ShiftEndAt)
+            THEN N'Present' ELSE N'Pending' END,
         a.LateMinutes = d.LateMinutes,
         a.EarlyCheckoutMinutes = d.EarlyCheckoutMinutes,
         a.IsLate = CASE WHEN d.LateMinutes > 0 THEN 1 ELSE 0 END,
@@ -233,7 +223,8 @@ BEGIN TRY
         a.OvertimeMinutes = d.OvertimeMinutes,
         a.BreakMinutes = 0,
         a.FirstInAt = d.FirstEvent,
-        a.LastOutAt = d.LastEvent,
+        a.LastOutAt = CASE WHEN d.EventCount > 1 AND (d.ShiftEndAt IS NULL OR @RunAt >= d.ShiftEndAt)
+            THEN d.LastEvent ELSE NULL END,
         a.UnpaidGapMinutes = 0,
         a.UnpaidOvertimeGapMinutes = 0,
         a.UpdatedDate = @RunAt,
@@ -243,7 +234,8 @@ BEGIN TRY
         ON d.EmployeeId = a.EmployeeId
         AND d.AttendanceDate = a.AttendanceDate
     WHERE a.IsRegularized = 0
-      AND a.CreatedBy = N'AccessVaultSync';
+      AND (a.CreatedBy = N'AccessVaultSync'
+        OR (a.CreatedBy = N'System' AND a.Status IN (N'Pending', N'Absent')));
 
     INSERT INTO Orbit.dbo.Attendances
     (
@@ -257,15 +249,20 @@ BEGIN TRY
     SELECT
         d.EmployeeId, d.AzureEmployeeId, d.EmployeeCode, d.EmployeeName,
         d.AttendanceDate, d.ShiftName,
-        CONVERT(time(7), d.FirstEvent), CONVERT(time(7), d.LastEvent),
+        CONVERT(time(7), d.FirstEvent),
+        CASE WHEN d.EventCount > 1 AND (d.ShiftEndAt IS NULL OR @RunAt >= d.ShiftEndAt)
+            THEN CONVERT(time(7), d.LastEvent) ELSE NULL END,
         CASE WHEN d.TotalMinutes / 60 < 10 THEN '0' ELSE '' END
             + CONVERT(varchar(10), d.TotalMinutes / 60)
             + ':' + RIGHT('0' + CONVERT(varchar(2), d.TotalMinutes % 60), 2),
-        N'Present', d.LateMinutes, d.EarlyCheckoutMinutes,
+        CASE WHEN d.EventCount > 1 AND (d.ShiftEndAt IS NULL OR @RunAt >= d.ShiftEndAt)
+            THEN N'Present' ELSE N'Pending' END, d.LateMinutes, d.EarlyCheckoutMinutes,
         CASE WHEN d.LateMinutes > 0 THEN 1 ELSE 0 END,
         CASE WHEN d.EarlyCheckoutMinutes > 0 THEN 1 ELSE 0 END,
         @RunAt, N'AccessVaultSync', d.OvertimeMinutes, 0,
-        d.FirstEvent, d.LastEvent, 0, 0, 0
+        d.FirstEvent,
+        CASE WHEN d.EventCount > 1 AND (d.ShiftEndAt IS NULL OR @RunAt >= d.ShiftEndAt)
+            THEN d.LastEvent ELSE NULL END, 0, 0, 0
     FROM @DailyAttendance AS d
     WHERE NOT EXISTS
     (
@@ -281,7 +278,6 @@ BEGIN TRY
 
     PRINT CONCAT(
         N'AccessVault sync completed. Employees updated: ', @EmployeeRows,
-        N'; generated attendance rows replaced: ', @AttendanceDeleted,
         N'; attendance rows inserted: ', @AttendanceInserted,
         N'. Overtime is minutes after assigned shift end.'
     );
@@ -291,4 +287,13 @@ BEGIN CATCH
         ROLLBACK TRANSACTION;
     THROW;
 END CATCH;
+
+-- Run after the base sync so IN/OUT office sessions determine worked hours.
+-- Deploy AccessvaultOfficeMovementSchema.sql and
+-- ProcessAccessvaultOfficeAttendance.sql before enabling this step.
+DECLARE @OfficeToday date = CONVERT(date, GETDATE());
+DECLARE @OfficeYesterday date = DATEADD(day, -1, @OfficeToday);
+EXEC Orbit.dbo.ProcessAccessvaultOfficeAttendance
+    @FromDate = @OfficeYesterday,
+    @ToDate = @OfficeToday;
 

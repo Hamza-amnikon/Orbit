@@ -8,6 +8,7 @@ import {
   Button,
   MenuItem,
   Typography,
+  Alert,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
@@ -47,6 +48,7 @@ export default function EditAttendanceDialog({
   const [errors, setErrors] = useState({});
 
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
 
@@ -75,12 +77,14 @@ export default function EditAttendanceDialog({
       });
 
       setErrors({});
+      setSaveError("");
 
     } else {
 
       setForm(initialForm);
 
       setErrors({});
+      setSaveError("");
 
     }
 
@@ -213,6 +217,7 @@ const handleSubmit = async () => {
   try {
 
     setSaving(true);
+    setSaveError("");
 
     const payload = {
 
@@ -242,7 +247,8 @@ const handleSubmit = async () => {
 
     await AttendanceService.update(
       attendance.attendanceId,
-      payload
+      payload,
+      attendance
     );
 
     if (onUpdated) {
@@ -255,6 +261,9 @@ const handleSubmit = async () => {
   catch (error) {
 
     console.error("Update Error", error);
+    setSaveError(error?.response?.status === 404
+      ? "This attendance record changed while you were editing. Refresh the list and try again."
+      : error?.response?.data?.message || "Could not save attendance. Please try again.");
 
   }
   finally {
@@ -518,6 +527,7 @@ return (
         gap: 2,
       }}
     >
+      {saveError && <Alert severity="error" sx={{ mr: "auto" }}>{saveError}</Alert>}
       <Button
         variant="outlined"
         onClick={handleCancel}

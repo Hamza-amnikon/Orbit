@@ -81,6 +81,15 @@ export default function AttendanceDashboard() {
 
   useEffect(() => {
     refreshData();
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") refreshData();
+    };
+    const timer = window.setInterval(refreshWhenVisible, 30000);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+    };
   }, []);
 
   const refreshData = () => {
@@ -93,7 +102,7 @@ export default function AttendanceDashboard() {
 
       const normalizedAttendance = data.map((item) => ({
         ...item,
-        status: getAttendanceStatusForDuration(item.status, item.checkIn, item.checkOut),
+        status: getAttendanceStatusForDuration(item.status, item.checkIn, item.checkOut, item.totalHours),
       }));
       setTodayAttendance(normalizedAttendance);
 

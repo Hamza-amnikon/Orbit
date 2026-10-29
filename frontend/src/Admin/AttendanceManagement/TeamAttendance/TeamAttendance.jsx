@@ -134,6 +134,7 @@ export default function TeamAttendance() {
             valueOf(item, "status", "Status"),
             valueOf(item, "checkIn", "CheckIn"),
             valueOf(item, "checkOut", "CheckOut"),
+            valueOf(item, "totalHours", "TotalHours"),
           ),
         }))
         .sort((left, right) => new Date(valueOf(right, "attendanceDate", "AttendanceDate") ?? 0) - new Date(valueOf(left, "attendanceDate", "AttendanceDate") ?? 0));

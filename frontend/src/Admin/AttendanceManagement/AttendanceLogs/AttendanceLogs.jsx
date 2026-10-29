@@ -115,7 +115,8 @@ export default function AttendanceLogs() {
         status: getAttendanceStatusForDuration(
           item.status,
           item.checkIn,
-          item.checkOut
+          item.checkOut,
+          item.totalHours
         ),
       })));
     } catch (error) {
