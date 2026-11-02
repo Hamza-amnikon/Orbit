@@ -28,7 +28,7 @@ body {
     margin: 0;
     background-color: var(--page-bg);
     color: var(--text-dark);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
 button,

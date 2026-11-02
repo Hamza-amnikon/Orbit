@@ -1,6 +1,6 @@
 .bill-form {
     width: 100%;
-    background: #ffffff;
+    background: var(--surface);
 }
 
 /* Header */
@@ -62,7 +62,7 @@
 
 .bill-form-section-title {
     margin-bottom: 18px !important;
-    color: #111827;
+    color: var(--text-dark);
     font-size: 15px !important;
     font-weight: 700 !important;
 }
@@ -80,11 +80,11 @@
 /* MUI TextFields */
 
 .bill-form .MuiTextField-root {
-    background: #ffffff;
+    background: var(--surface);
 }
 
 .bill-form .MuiInputLabel-root {
-    color: #64748b;
+    color: var(--text-light);
 }
 
 .bill-form .MuiOutlinedInput-root {
@@ -123,7 +123,7 @@
 }
 
 .bill-summary-line .MuiTypography-root {
-    color: #64748b;
+    color: var(--text-light);
     font-size: 13px;
 }
 
@@ -140,7 +140,7 @@
 }
 
 .bill-summary-total .MuiTypography-root {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 17px;
     font-weight: 700;
 }
@@ -153,8 +153,8 @@
     justify-content: flex-end;
     gap: 12px;
     padding: 16px 24px;
-    background: #f8fafc;
-    border-top: 1px solid #e5eaf1;
+    background: var(--table-bg);
+    border-top: 1px solid var(--border);
 }
 
 .bill-form-cancel-button {
@@ -180,7 +180,7 @@
 /* Divider */
 
 .bill-form > .MuiDivider-root {
-    border-color: #e5eaf1;
+    border-color: var(--border);
 }
 
 /* Responsive */

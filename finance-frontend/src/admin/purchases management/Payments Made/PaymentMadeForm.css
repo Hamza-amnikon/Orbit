@@ -17,7 +17,7 @@
     max-width: 760px;
     max-height: 92vh;
 
-    background: #ffffff;
+    background: var(--surface);
     border-radius: 10px;
 
     overflow-y: auto;
@@ -80,7 +80,7 @@
     font-size: 13px !important;
     font-weight: 700 !important;
 
-    color: #111827;
+    color: var(--text-dark);
 }
 
 /* GRID */
@@ -96,7 +96,7 @@
 /* MUI FIELDS */
 
 .payment-form-modal .MuiOutlinedInput-root {
-    background: #ffffff;
+    background: var(--surface);
     border-radius: 6px;
 }
 
@@ -111,7 +111,7 @@
 
 .payment-form-modal .MuiInputLabel-root {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-light);
 }
 
 .payment-form-modal .MuiInputLabel-root.Mui-focused {
@@ -133,9 +133,9 @@
     justify-content: space-between;
     align-items: center;
 
-    background: #f5f7fb;
+    background: var(--page-bg);
 
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
 }
 
@@ -143,7 +143,7 @@
     margin-bottom: 8px !important;
 
     font-size: 11px !important;
-    color: #64748b;
+    color: var(--text-light);
 }
 
 .payment-summary-values {
@@ -155,7 +155,7 @@
 
     font-size: 12px !important;
     font-weight: 700 !important;
-    color: #111827;
+    color: var(--text-dark);
 }
 
 /* FOOTER */
@@ -168,18 +168,18 @@
     padding: 14px 20px;
 
     border-top: 1px solid #e1e8ef;
-    background: #ffffff;
+    background: var(--surface);
 }
 
 .payment-cancel-button {
     min-width: 80px !important;
 
     border-color: #b8c4d0 !important;
-    color: #111827 !important;
+    color: var(--text-dark) !important;
 }
 
 .payment-cancel-button:hover {
-    background: #f5f7fb !important;
+    background: var(--page-bg) !important;
     border-color: #111827 !important;
 }
 

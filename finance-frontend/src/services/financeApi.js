@@ -20,6 +20,7 @@ function resource(path) {
 }
 
 export const financeApi = {
+  exchangeRates: (signal) => request("exchange-rates/latest", { live: true, useProxy: true, signal, timeoutMs: 15000 }),
   currencies: () => request("currencies"),
   saveRate: body => request("currencies", { method: "POST", body }),
   hasSession: () => !!sessionStorage.getItem(tokenKey),
@@ -64,8 +65,8 @@ export const financeApi = {
     const { list, get, create } = resource(`payments/${encodeURIComponent(direction)}`);
     return { list, get, create };
   },
-  dashboard: (filters) => request(`dashboard${query(filters)}`, { live: true, useProxy: true }),
-  activity: () => request("dashboard/activity", { live: true, useProxy: true }),
+  dashboard: (filters, signal) => request(`dashboard${query(filters)}`, { live: true, useProxy: true, signal, timeoutMs: 45000 }),
+  activity: (signal) => request("dashboard/activity", { live: true, useProxy: true, signal, timeoutMs: 45000 }),
 };
 
 export async function allRecords(api, filters = {}, signal) {

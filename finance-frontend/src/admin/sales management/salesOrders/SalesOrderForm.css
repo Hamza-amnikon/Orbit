@@ -11,7 +11,7 @@
     margin: 0;
     overflow: hidden;
 
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px !important;
 
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.08) !important;
@@ -90,7 +90,7 @@
 .sales-order-section-title {
     padding-bottom: 10px;
 
-    color: #111827 !important;
+    color: var(--text-dark) !important;
 
     font-size: 15px !important;
     font-weight: 700 !important;
@@ -119,7 +119,7 @@
 }
 
 .sales-order-form .MuiOutlinedInput-root {
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 .sales-order-form .MuiOutlinedInput-root:hover fieldset {
@@ -145,9 +145,9 @@
 
     padding: 20px;
 
-    background-color: #f8fafc;
+    background-color: var(--table-bg);
 
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
 }
 
@@ -158,7 +158,7 @@
 
     padding: 7px 0;
 
-    color: #64748b;
+    color: var(--text-light);
 
     font-size: 13px;
 }
@@ -171,11 +171,11 @@
     margin-top: 10px;
     padding-top: 14px;
 
-    border-top: 1px solid #e5eaf1;
+    border-top: 1px solid var(--border);
 }
 
 .sales-order-grand-total-label {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
 
     font-size: 16px !important;
     font-weight: 700 !important;
@@ -214,11 +214,11 @@
 .sales-order-cancel-button {
     border-color: #b0bec5 !important;
 
-    color: #111827 !important;
+    color: var(--text-dark) !important;
 }
 
 .sales-order-cancel-button:hover {
-    background-color: #f5f7fb !important;
+    background-color: var(--page-bg) !important;
 
     border-color: #111827 !important;
 }

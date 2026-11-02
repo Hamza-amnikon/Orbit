@@ -1,6 +1,6 @@
 .purchase-order-form {
     width: 100%;
-    background-color: #ffffff;
+    background-color: var(--surface);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -73,7 +73,7 @@
 }
 
 .purchase-order-form-body::-webkit-scrollbar-track {
-    background: #f5f7fb;
+    background: var(--page-bg);
 }
 
 .purchase-order-form-body::-webkit-scrollbar-thumb {
@@ -83,7 +83,7 @@
 
 .purchase-order-form-section-title {
     margin-bottom: 16px !important;
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 16px !important;
     font-weight: 700 !important;
 }
@@ -107,7 +107,7 @@
 ========================= */
 
 .purchase-order-form .MuiTextField-root {
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 .purchase-order-form .MuiOutlinedInput-root {
@@ -155,9 +155,9 @@
     max-width: 450px;
     margin-left: auto;
     padding: 18px 20px;
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
-    background-color: #f8fafc;
+    background-color: var(--table-bg);
 }
 
 .purchase-order-summary-row {
@@ -165,18 +165,18 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 0;
-    color: #64748b;
+    color: var(--text-light);
     font-size: 14px;
 }
 
 .purchase-order-summary-row .MuiTypography-root:last-child {
-    color: #111827;
+    color: var(--text-dark);
     font-weight: 600;
 }
 
 .purchase-order-summary-box .MuiDivider-root {
     margin: 8px 0;
-    border-color: #e5eaf1;
+    border-color: var(--border);
 }
 
 .purchase-order-summary-total {
@@ -187,7 +187,7 @@
 }
 
 .purchase-order-summary-total .MuiTypography-root {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 17px;
     font-weight: 700;
 }
@@ -207,7 +207,7 @@
     gap: 12px;
     padding: 16px 26px;
     border-top: 1px solid #e1e8ef;
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 .purchase-order-cancel-button {

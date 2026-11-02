@@ -6,10 +6,10 @@
   --finance-disabled-text: #66758a;
 }
 :root[data-theme="dark"] {
-  --finance-control: #172235;
+  --finance-control: #121d2e;
   --finance-focus: #82b1ff;
-  --finance-disabled-bg: #2b3a4f;
-  --finance-disabled-text: #a6b4c8;
+  --finance-disabled-bg: #1d2c43;
+  --finance-disabled-text: #a8b6cb;
 }
 
 @media screen {

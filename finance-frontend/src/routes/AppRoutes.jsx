@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
 import { FinanceAuth } from "../live/Auth";
 
-import Dashboard from "../live/Dashboard";
+import FinanceDashboard from "../live/Dashboard";
 import Vendors from "../admin/purchases management/vendors/Vendors";
 import VendorDetails from "../admin/purchases management/vendors/VendorDetails";
 import VendorCredits from "../admin/purchases management/vendor credits/VendorCredits";
@@ -33,7 +33,7 @@ function AppRoutes() {
             <FinanceAuth>
                 <Routes>
                     <Route element={<DashboardLayout />}>
-                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/" element={<FinanceDashboard />} />
 
                         <Route
                             path="/sales/estimates"

@@ -2,7 +2,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 24px 28px;
-    background-color: #f5f7fb;
+    background-color: var(--page-bg);
 }
 
 
@@ -18,14 +18,14 @@
 }
 
 .sales-orders-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 24px !important;
     font-weight: 700 !important;
 }
 
 .sales-orders-subtitle {
     margin-top: 4px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 13px !important;
 }
 
@@ -54,12 +54,12 @@
 }
 
 .sales-order-summary-card {
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     box-shadow: none !important;
 }
 
 .sales-order-summary-label {
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 12px !important;
 }
 
@@ -78,7 +78,7 @@
 /* ================================ */
 
 .sales-orders-table-card {
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     box-shadow: none !important;
 }
 
@@ -90,7 +90,7 @@
 }
 
 .sales-orders-table-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 17px !important;
     font-weight: 700 !important;
 }
@@ -118,7 +118,7 @@
     border: 1px solid #2563eb;
     border-radius: 6px;
 
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 .sales-order-search svg {
@@ -134,7 +134,7 @@
     border: none;
     outline: none;
 
-    color: #111827;
+    color: var(--text-dark);
 
     font-size: 13px;
 }
@@ -176,7 +176,7 @@
 
     border-top: 1px solid #e5ebf0;
 
-    color: #111827;
+    color: var(--text-dark);
     font-size: 13px;
 }
 
@@ -185,7 +185,7 @@
 
     border-top: none;
 
-    color: #64748b;
+    color: var(--text-light);
 
     font-size: 11px;
     font-weight: 600;
@@ -206,7 +206,7 @@
 }
 
 .sales-order-amount {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-weight: 600 !important;
 }
 
@@ -220,7 +220,7 @@
 }
 
 .status-draft {
-    color: #64748b !important;
+    color: var(--text-light) !important;
 }
 
 .status-cancelled {

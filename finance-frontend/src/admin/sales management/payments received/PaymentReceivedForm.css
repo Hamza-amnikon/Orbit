@@ -4,7 +4,7 @@
 
 .payment-form {
     width: 100%;
-    background-color: #f5f7fb;
+    background-color: var(--page-bg);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -61,13 +61,13 @@
 
 .payment-form-body {
     padding: 24px;
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 .payment-form-section-title {
     margin-bottom: 18px !important;
 
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 16px !important;
     font-weight: 700 !important;
 }
@@ -85,11 +85,11 @@
 ========================================= */
 
 .payment-form .MuiTextField-root {
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 .payment-form .MuiInputLabel-root {
-    color: #64748b;
+    color: var(--text-light);
 }
 
 .payment-form .MuiInputLabel-root.Mui-focused {
@@ -117,7 +117,7 @@
 
 .payment-form-divider {
     margin: 26px 0 !important;
-    border-color: #e5eaf1 !important;
+    border-color: var(--border) !important;
 }
 
 /* =========================================
@@ -129,16 +129,16 @@
 
     padding: 18px;
 
-    background-color: #f7f9fc;
+    background-color: var(--table-bg);
 
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
 }
 
 .payment-form-summary-title {
     margin-bottom: 14px !important;
 
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 14px !important;
     font-weight: 700 !important;
 }
@@ -150,12 +150,12 @@
 }
 
 .payment-form-summary-label {
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 13px !important;
 }
 
 .payment-form-summary-value {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 18px !important;
     font-weight: 700 !important;
 }
@@ -172,13 +172,13 @@
 
     padding: 16px 24px;
 
-    background-color: #ffffff;
+    background-color: var(--surface);
 
-    border-top: 1px solid #e5eaf1;
+    border-top: 1px solid var(--border);
 }
 
 .payment-form-cancel-button {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     border-color: #cbd5e1 !important;
 
     text-transform: none !important;

@@ -1,34 +1,34 @@
 /* Shared geometry follows frontend's dashboard. Loaded after module styles. */
 :root {
-  --primary-dark: #111827;
+  --primary-dark: #111b4b;
   --sidebar-dark: #fff;
   --sidebar-hover: #eff6ff;
   --primary-blue: #2563eb;
-  --page-bg: #f5f7fb;
-  --border: #e5eaf1;
-  --text-dark: #111827;
-  --text-light: #64748b;
+  --page-bg: #f4f7fc;
+  --border: #e2e9f2;
+  --text-dark: #111b4b;
+  --text-light: #5b77a1;
   --surface: #ffffff;
-  --nav-text: #41638f;
+  --nav-text: #5b77a1;
   --hover-bg: #f1f5fb;
   --accent-bg: #eff6ff;
-  --table-bg: #f8fafc;
+  --table-bg: #f4f7fc;
   color-scheme: light;
 }
 :root[data-theme="dark"] {
-  --primary-dark: #e8eef7;
-  --sidebar-dark: #1e293b;
-  --sidebar-hover: #293b55;
-  --page-bg: #0f172a;
-  --surface: #1e293b;
-  --white: #1e293b;
-  --border: #334155;
-  --text-dark: #e8eef7;
-  --text-light: #a6b4c8;
-  --nav-text: #c2d3e9;
-  --hover-bg: #293b55;
-  --accent-bg: #243b5c;
-  --table-bg: #263449;
+  --primary-dark: #f2f5fb;
+  --sidebar-dark: #19263a;
+  --sidebar-hover: #1d2c43;
+  --page-bg: #0d1422;
+  --surface: #19263a;
+  --white: #19263a;
+  --border: #2a3a50;
+  --text-dark: #f2f5fb;
+  --text-light: #a8b6cb;
+  --nav-text: #a8b6cb;
+  --hover-bg: #1d2c43;
+  --accent-bg: #1d2c43;
+  --table-bg: #18263a;
   color-scheme: dark;
 }
 body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
@@ -80,15 +80,15 @@ body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
 .finance-main [class*="-form-title"] { color: var(--text-dark) !important; }
 .finance-main [class*="-form-subtitle"] { color: var(--text-light) !important; }
 .finance-main [class*="-form-close"] { color: var(--text-light) !important; }
-.finance-main [class*="-form-modal"] { border-radius: 18px; max-height: calc(100dvh - 32px); overflow-y: auto; }
+.finance-main [class*="-form-modal"] { border-radius: 16px; max-height: calc(100dvh - 32px); overflow-y: auto; }
 
 /* Modal forms and detail panels also inherit the light dashboard surfaces. */
 :is([class*="-form-page"], [class*="-form-modal"], [class*="-form-card"]) [class*="-form-header"] { background: var(--surface); border-bottom: 1px solid var(--border); padding: 24px; }
 :is([class*="-form-page"], [class*="-form-modal"], [class*="-form-card"]) [class*="-form-title"] { color: var(--text-dark) !important; font-size: 22px !important; }
 :is([class*="-form-page"], [class*="-form-modal"], [class*="-form-card"]) [class*="-form-subtitle"] { color: var(--text-light) !important; }
 :is([class*="-form-page"], [class*="-form-modal"], [class*="-form-card"]) [class*="-form-close"] { color: var(--text-light) !important; }
-.MuiDialog-paper { border: 1px solid var(--border); border-radius: 18px !important; box-shadow: 0 24px 80px rgb(15 23 42 / 20%) !important; }
-.MuiDialog-paper [class*="-form-header"] { background: var(--surface); border-bottom: 1px solid var(--border); padding: 24px; border-radius: 18px 18px 0 0; }
+.MuiDialog-paper { border: 1px solid var(--border); border-radius: 16px !important; box-shadow: 0 24px 80px rgb(15 23 42 / 20%) !important; }
+.MuiDialog-paper [class*="-form-header"] { background: var(--surface); border-bottom: 1px solid var(--border); padding: 24px; border-radius: 16px 16px 0 0; }
 .MuiDialog-paper [class*="-form-title"] { color: var(--text-dark) !important; font-size: 22px !important; }
 .MuiDialog-paper [class*="-form-subtitle"] { color: var(--text-light) !important; font-size: 13px !important; }
 .MuiDialog-paper [class*="-form-close"] { color: var(--text-light) !important; }

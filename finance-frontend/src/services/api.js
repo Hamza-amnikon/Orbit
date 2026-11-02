@@ -6,7 +6,7 @@ const baseUrl = (
 
 const tokenKey = "orbit.finance.accessToken";
 
-export async function request(path, { body, live = false, useProxy = false, ...options } = {}) {
+export async function request(path, { body, live = false, useProxy = false, timeoutMs, ...options } = {}) {
     if (previewMode && !live) {
         return previewRequest(path, { ...options, body });
     }
@@ -16,8 +16,15 @@ export async function request(path, { body, live = false, useProxy = false, ...o
     const requestUrl = useProxy
         ? `/api/${path}`
         : `${baseUrl}/api/${path}`;
-    const response = await fetch(requestUrl, {
+    const timeout = timeoutMs ? AbortSignal.timeout(timeoutMs) : null;
+    const signal = timeout
+        ? (options.signal ? AbortSignal.any([options.signal, timeout]) : timeout)
+        : options.signal;
+    let response;
+    try {
+      response = await fetch(requestUrl, {
         ...options,
+        signal,
         headers: {
             ...(body !== undefined && !isFormData
                 ? { "Content-Type": "application/json" }
@@ -28,9 +35,21 @@ export async function request(path, { body, live = false, useProxy = false, ...o
         ...(body !== undefined
             ? { body: isFormData ? body : JSON.stringify(body) }
             : {}),
-    });
+      });
+    } catch (error) {
+        if (timeout?.aborted && !options.signal?.aborted) {
+            throw new Error("The server took too long to respond. Please retry.");
+        }
+        throw error;
+    }
 
-    const payload = await response.json().catch(() => null);
+    const payload = await response.json().catch(error => {
+        if (timeout?.aborted && !options.signal?.aborted) {
+            throw new Error("The server took too long to respond. Please retry.");
+        }
+        if (signal?.aborted) throw error;
+        return null;
+    });
 
     if (!response.ok) {
         if (response.status === 401 && path !== "auth/login") {

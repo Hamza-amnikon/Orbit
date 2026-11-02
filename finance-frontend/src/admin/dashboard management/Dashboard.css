@@ -6,7 +6,7 @@
     width: 100%;
     min-height: 100vh;
     padding: 28px 32px 40px;
-    background: #f5f7fb;
+    background: var(--page-bg);
     box-sizing: border-box;
 }
 
@@ -23,23 +23,23 @@
 }
 
 .dashboard-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 26px !important;
     font-weight: 700 !important;
 }
 
 .dashboard-subtitle {
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 14px !important;
     margin-top: 4px !important;
 }
 
 .date-filter {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     border-color: #bcccdc !important;
     text-transform: none !important;
     font-weight: 500 !important;
-    background: #ffffff !important;
+    background: var(--surface) !important;
 }
 
 .date-filter:hover {
@@ -59,10 +59,10 @@
 
 .summary-card {
     height: 100%;
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px !important;
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
-    background: #ffffff !important;
+    background: var(--surface) !important;
     transition: 0.2s ease;
 }
 
@@ -98,14 +98,14 @@
 }
 
 .card-label {
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 13px !important;
     font-weight: 500 !important;
     margin-bottom: 5px !important;
 }
 
 .card-value {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 23px !important;
     font-weight: 700 !important;
 }
@@ -129,7 +129,7 @@
 }
 
 .neutral-change {
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 11px !important;
     font-weight: 500 !important;
 }
@@ -164,10 +164,10 @@
 
 .dashboard-card {
     height: 100%;
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px !important;
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
-    background: #ffffff !important;
+    background: var(--surface) !important;
 }
 
 .dashboard-card .MuiCardContent-root {
@@ -182,7 +182,7 @@
 }
 
 .section-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 16px !important;
     font-weight: 700 !important;
 }
@@ -251,7 +251,7 @@
 
 .chart-lines span {
     width: 100%;
-    border-top: 1px dashed #e5eaf1;
+    border-top: 1px dashed var(--border);
 }
 
 
@@ -360,7 +360,7 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    color: #64748b;
+    color: var(--text-light);
     font-size: 12px;
 }
 
@@ -395,12 +395,12 @@
 }
 
 .cash-total p:first-child {
-    color: #64748b;
+    color: var(--text-light);
     font-size: 12px;
 }
 
 .cash-total p:last-child {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 19px;
     font-weight: 700;
 }
@@ -445,7 +445,7 @@
 }
 
 .bank-item > p {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 12px;
     font-weight: 600;
 }
@@ -570,7 +570,7 @@
 }
 
 .invoice-right > p:first-child {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 12px;
     font-weight: 700;
 }
@@ -596,7 +596,7 @@
 
 .quick-actions-card {
     margin-top: 16px;
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px !important;
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
 }
@@ -613,7 +613,7 @@
 }
 
 .quick-actions-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 15px !important;
     font-weight: 700 !important;
 }

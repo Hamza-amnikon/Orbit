@@ -36,7 +36,7 @@
     .vendor-form-dialog .MuiInputBase-input::placeholder { color: var(--text-light); }
     .vendor-form-dialog .MuiOutlinedInput-notchedOutline { border-color: var(--border); background: transparent; }
     .vendor-form-dialog .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline { border-color: var(--finance-focus); }
-    .vendor-form-dialog .MuiInputLabel-root.Mui-error { color: var(--mui-palette-error-main, #d32f2f); }
+    .vendor-form-dialog .MuiInputLabel-root.Mui-error { color: var(--finance-error); }
 }
 @media (max-width: 700px) {
     .vendors-page .vendor-connected-summary { grid-template-columns: 1fr; }

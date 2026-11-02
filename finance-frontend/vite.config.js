@@ -12,8 +12,19 @@ export default defineConfig({
 
     server: {
         proxy: {
+            "/api/accounts": {
+                target: "https://localhost:7017",
+                changeOrigin: true,
+                secure: false,
+            },
+
+            "/api/exchange-rates": {
+                target: "http://localhost:7442",
+                changeOrigin: true,
+            },
+
             "/api/dashboard": {
-                target: "https://localhost:7051",
+                target: "http://localhost:7332",
                 changeOrigin: true,
                 secure: false,
             },
@@ -23,6 +34,7 @@ export default defineConfig({
                 changeOrigin: true,
                 secure: false,
             },
+
             "/api/clients": {
                 target: "http://localhost:5080",
                 changeOrigin: true,
@@ -75,10 +87,11 @@ export default defineConfig({
                 changeOrigin: true,
                 secure: false,
             },
+
             "/api/bank-transfers": {
-                 target: "https://localhost:7051",
-                 changeOrigin: true,
-                 secure: false,
+                target: "https://localhost:7051",
+                changeOrigin: true,
+                secure: false,
             },
 
             "/api/currencies": {

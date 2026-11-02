@@ -2,7 +2,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 28px 32px 40px;
-    background-color: #f5f7fb;
+    background-color: var(--page-bg);
 }
 
 /* =========================
@@ -25,14 +25,14 @@
 }
 
 .purchase-order-details-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 28px !important;
     font-weight: 700 !important;
 }
 
 .purchase-order-details-subtitle {
     margin-top: 6px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 14px !important;
 }
 
@@ -54,8 +54,8 @@
 
 .purchase-order-details-card {
     width: 100%;
-    border: 1px solid #e5eaf1;
-    background-color: #ffffff;
+    border: 1px solid var(--border);
+    background-color: var(--surface);
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
 }
 
@@ -75,14 +75,14 @@
 }
 
 .purchase-order-company-name {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 22px !important;
     font-weight: 700 !important;
 }
 
 .purchase-order-company-info {
     margin-top: 4px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 14px !important;
 }
 
@@ -92,7 +92,7 @@
 }
 
 .purchase-order-document-label {
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 11px !important;
     font-weight: 700 !important;
     letter-spacing: 0.8px;
@@ -136,7 +136,7 @@
 
 .purchase-order-section-title {
     margin-bottom: 18px !important;
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 17px !important;
     font-weight: 700 !important;
 }
@@ -157,13 +157,13 @@
 
 .purchase-order-info-label {
     margin-bottom: 5px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 12px !important;
     font-weight: 600 !important;
 }
 
 .purchase-order-info-value {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 14px !important;
     font-weight: 500 !important;
     word-break: break-word;
@@ -171,7 +171,7 @@
 
 .purchase-order-info-text {
     margin-top: 4px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 13px !important;
 }
 
@@ -182,7 +182,7 @@
 .purchase-order-item-table {
     width: 100%;
     overflow-x: auto;
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
 }
 
@@ -198,12 +198,12 @@
 
 .purchase-order-item-header {
     min-height: 48px;
-    background-color: #f5f7fb;
-    border-bottom: 1px solid #e5eaf1;
+    background-color: var(--page-bg);
+    border-bottom: 1px solid var(--border);
 }
 
 .purchase-order-item-header .MuiTypography-root {
-    color: #64748b;
+    color: var(--text-light);
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
@@ -214,7 +214,7 @@
 }
 
 .purchase-order-item-row .MuiTypography-root {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 13px;
 }
 
@@ -223,7 +223,7 @@
 }
 
 .purchase-order-item-amount {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-weight: 700 !important;
 }
 
@@ -239,9 +239,9 @@
 .purchase-order-total-box {
     width: 380px;
     padding: 18px 20px;
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
-    background-color: #f8fafc;
+    background-color: var(--table-bg);
 }
 
 .purchase-order-total-row {
@@ -249,18 +249,18 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 0;
-    color: #64748b;
+    color: var(--text-light);
     font-size: 14px;
 }
 
 .purchase-order-total-row .MuiTypography-root:last-child {
-    color: #111827;
+    color: var(--text-dark);
     font-weight: 600;
 }
 
 .purchase-order-total-box .MuiDivider-root {
     margin: 8px 0;
-    border-color: #e5eaf1;
+    border-color: var(--border);
 }
 
 .purchase-order-grand-total {
@@ -271,7 +271,7 @@
 }
 
 .purchase-order-grand-total .MuiTypography-root {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 17px;
     font-weight: 700;
 }
@@ -292,14 +292,14 @@
 
 .purchase-order-address-box {
     padding: 18px;
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
-    background-color: #f8fafc;
+    background-color: var(--table-bg);
 }
 
 .purchase-order-address-title {
     margin-bottom: 10px !important;
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 14px !important;
     font-weight: 700 !important;
 }
@@ -312,8 +312,8 @@
     padding: 15px 18px;
     border-left: 4px solid #2563eb;
     border-radius: 4px;
-    background-color: #f5f7fb;
-    color: #64748b !important;
+    background-color: var(--page-bg);
+    color: var(--text-light) !important;
     font-size: 14px !important;
     line-height: 1.7 !important;
 }

@@ -25,12 +25,15 @@ export default function Header({ desktop, onMenuClick }) {
   const billPage = pathname === "/purchases/bills" || pathname.startsWith("/purchases/bills/");
   const purchaseOrderPage = pathname === "/purchases/orders" || pathname.startsWith("/purchases/orders/");
   const dashboardPage = pathname === "/";
+  const exchangeRatePage = pathname === "/settings/exchange-rates";
   const current = pages.find((page) => page.path === pathname) ||
     (vendorPage ? pages.find((page) => page.path === "/purchases/vendors") :
       purchaseOrderPage ? pages.find((page) => page.path === "/purchases/orders") :
       billPage ? pages.find((page) => page.path === "/purchases/bills") :
       pathname.startsWith("/purchases/payments/") ? pages.find((page) => page.path === "/purchases/payments") : undefined);
-  const subtitle = vendorPage
+  const subtitle = exchangeRatePage
+    ? "Daily exchange-rate monitoring · Read only"
+    : vendorPage
     ? "Vendor management"
     : purchaseOrderPage
       ? "Purchase order management"

@@ -1,7 +1,7 @@
 .vendor-credit-form-page {
     min-height: calc(100vh - 70px);
     padding: 28px 32px;
-    background: #f5f7fb;
+    background: var(--page-bg);
 }
 
 /* Header */
@@ -14,14 +14,14 @@
 }
 
 .vendor-credit-form-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 26px !important;
     font-weight: 700 !important;
 }
 
 .vendor-credit-form-subtitle {
     margin-top: 4px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 14px !important;
 }
 
@@ -30,8 +30,8 @@
     width: 40px;
     height: 40px;
     padding: 0 !important;
-    color: #111827 !important;
-    border: 1px solid #e5eaf1 !important;
+    color: var(--text-dark) !important;
+    border: 1px solid var(--border) !important;
     border-radius: 10px !important;
 }
 
@@ -45,15 +45,15 @@
 .vendor-credit-summary-section {
     margin-bottom: 20px;
     padding: 24px;
-    background: #ffffff;
-    border: 1px solid #e5eaf1;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 10px;
     box-shadow: 0 1px 3px rgba(16, 42, 67, 0.08);
 }
 
 .vendor-credit-section-title {
     margin-bottom: 18px !important;
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 17px !important;
     font-weight: 700 !important;
 }
@@ -69,11 +69,11 @@
 /* MUI Fields */
 
 .vendor-credit-form-page .MuiTextField-root {
-    background: #ffffff;
+    background: var(--surface);
 }
 
 .vendor-credit-form-page .MuiInputLabel-root {
-    color: #64748b;
+    color: var(--text-light);
 }
 
 .vendor-credit-form-page .MuiInputLabel-root.Mui-focused {
@@ -98,7 +98,7 @@
 }
 
 .vendor-credit-form-page .MuiOutlinedInput-input {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 14px;
 }
 
@@ -139,13 +139,13 @@
     align-items: center;
     justify-content: space-between;
     padding: 11px 0;
-    color: #64748b;
+    color: var(--text-light);
     font-size: 14px;
     border-bottom: 1px solid #edf1f5;
 }
 
 .vendor-credit-summary-row p:last-child {
-    color: #111827;
+    color: var(--text-dark);
     font-weight: 600;
 }
 
@@ -154,7 +154,7 @@
     align-items: center;
     justify-content: space-between;
     padding-top: 18px;
-    color: #111827;
+    color: var(--text-dark);
     font-size: 18px;
     font-weight: 700;
 }
@@ -176,8 +176,8 @@
 .vendor-credit-cancel-button {
     min-width: 100px !important;
     height: 42px;
-    color: #111827 !important;
-    border-color: #e5eaf1 !important;
+    color: var(--text-dark) !important;
+    border-color: var(--border) !important;
     border-radius: 10px !important;
     text-transform: none !important;
     font-weight: 600 !important;

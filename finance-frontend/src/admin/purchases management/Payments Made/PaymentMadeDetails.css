@@ -1,7 +1,7 @@
 .payment-made-details-page {
     padding: 28px;
     min-height: 100vh;
-    background: #f5f7fb;
+    background: var(--page-bg);
 }
 
 /* Top */
@@ -14,7 +14,7 @@
 }
 
 .payment-made-back-button {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     text-transform: none !important;
 }
 
@@ -48,20 +48,20 @@
 }
 
 .payment-made-details-title {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 24px !important;
     font-weight: 700 !important;
 }
 
 .payment-made-details-subtitle {
-    color: #64748b;
+    color: var(--text-light);
     font-size: 13px !important;
 }
 
 /* Card */
 
 .payment-made-details-card {
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     overflow: hidden;
 }
 
@@ -118,11 +118,11 @@
 
 .payment-details-section {
     padding: 24px;
-    border-bottom: 1px solid #e5eaf1;
+    border-bottom: 1px solid var(--border);
 }
 
 .payment-details-section-title {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 15px !important;
     font-weight: 700 !important;
     margin-bottom: 18px !important;
@@ -136,13 +136,13 @@
 
 .payment-details-grid span {
     display: block;
-    color: #64748b;
+    color: var(--text-light);
     font-size: 12px;
     margin-bottom: 5px;
 }
 
 .payment-details-grid strong {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 13px;
     font-weight: 600;
 }
@@ -152,8 +152,8 @@
 .payment-made-amount-box {
     margin: 22px 24px;
     padding: 18px 20px;
-    background: #f5f7fb;
-    border: 1px solid #e5eaf1;
+    background: var(--page-bg);
+    border: 1px solid var(--border);
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
@@ -161,12 +161,12 @@
 }
 
 .payment-made-amount-box span {
-    color: #64748b;
+    color: var(--text-light);
     font-size: 14px;
 }
 
 .payment-made-amount-box strong {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 22px;
 }
 

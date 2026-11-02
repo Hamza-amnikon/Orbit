@@ -2,7 +2,7 @@
     width: 100%;
     min-height: calc(100vh - 70px);
     padding: 28px 32px 40px;
-    background-color: #f5f7fb;
+    background-color: var(--page-bg);
 }
 
 /* =========================
@@ -25,7 +25,7 @@
 }
 
 .vendor-details-title {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 28px !important;
     font-weight: 700 !important;
     line-height: 1.2 !important;
@@ -33,7 +33,7 @@
 
 .vendor-details-subtitle {
     margin-top: 6px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 14px !important;
 }
 
@@ -65,8 +65,8 @@
 
 .vendor-details-card {
     width: 100%;
-    border: 1px solid #e5eaf1;
-    background-color: #ffffff;
+    border: 1px solid var(--border);
+    background-color: var(--surface);
     box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06) !important;
 }
 
@@ -86,7 +86,7 @@
 }
 
 .vendor-company-name {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 22px !important;
     font-weight: 700 !important;
     letter-spacing: 0.3px;
@@ -94,7 +94,7 @@
 
 .vendor-company-info {
     margin-top: 4px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 14px !important;
 }
 
@@ -104,7 +104,7 @@
 }
 
 .vendor-document-label {
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 11px !important;
     font-weight: 700 !important;
     letter-spacing: 0.8px;
@@ -148,7 +148,7 @@
 
 .vendor-section-title {
     margin-bottom: 18px !important;
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 17px !important;
     font-weight: 700 !important;
 }
@@ -169,13 +169,13 @@
 
 .vendor-info-label {
     margin-bottom: 5px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 12px !important;
     font-weight: 600 !important;
 }
 
 .vendor-info-value {
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 14px !important;
     font-weight: 500 !important;
     word-break: break-word;
@@ -183,7 +183,7 @@
 
 .vendor-info-text {
     margin-top: 4px !important;
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 13px !important;
 }
 
@@ -193,9 +193,9 @@
 
 .vendor-address-box {
     padding: 16px 18px;
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
-    background-color: #f8fafc;
+    background-color: var(--table-bg);
 }
 
 /* =========================
@@ -209,9 +209,9 @@
 }
 
 .vendor-transaction-card {
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     box-shadow: none !important;
-    background-color: #ffffff;
+    background-color: var(--surface);
 }
 
 .vendor-transaction-card .MuiCardContent-root {
@@ -219,14 +219,14 @@
 }
 
 .vendor-transaction-label {
-    color: #64748b !important;
+    color: var(--text-light) !important;
     font-size: 12px !important;
     font-weight: 600 !important;
 }
 
 .vendor-transaction-value {
     margin-top: 7px !important;
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 20px !important;
     font-weight: 700 !important;
 }
@@ -242,7 +242,7 @@
 .vendor-transaction-table {
     width: 100%;
     overflow-x: auto;
-    border: 1px solid #e5eaf1;
+    border: 1px solid var(--border);
     border-radius: 10px;
 }
 
@@ -257,12 +257,12 @@
 }
 
 .vendor-transaction-header {
-    background-color: #f5f7fb;
-    border-bottom: 1px solid #e5eaf1;
+    background-color: var(--page-bg);
+    border-bottom: 1px solid var(--border);
 }
 
 .vendor-transaction-header .MuiTypography-root {
-    color: #64748b;
+    color: var(--text-light);
     font-size: 12px;
     font-weight: 700;
 }
@@ -277,7 +277,7 @@
 }
 
 .vendor-transaction-row .MuiTypography-root {
-    color: #111827;
+    color: var(--text-dark);
     font-size: 13px;
 }
 
@@ -315,8 +315,8 @@
     padding: 15px 18px;
     border-left: 4px solid #2563eb;
     border-radius: 4px;
-    background-color: #f5f7fb;
-    color: #64748b !important;
+    background-color: var(--page-bg);
+    color: var(--text-light) !important;
     font-size: 14px !important;
     line-height: 1.7 !important;
 }

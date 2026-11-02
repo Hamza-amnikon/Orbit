@@ -1,1 +1,105 @@
 @import "../../shared/AdminModules.css";
+
+.chart-account-code {
+    color: var(--finance-text-primary, #10245c);
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.chart-account-form .MuiFormHelperText-root {
+    margin-left: 0;
+}
+
+.chart-account-details {
+    min-height: 180px;
+}
+
+.chart-tree-card {
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.chart-tree {
+    overflow-x: auto;
+    border: 1px solid var(--finance-border, #dbe3f0);
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.chart-tree-header,
+.chart-tree-row {
+    display: grid;
+    grid-template-columns:
+        minmax(320px, 2fr)
+        minmax(110px, 0.7fr)
+        minmax(120px, 0.8fr)
+        minmax(100px, 0.7fr)
+        minmax(90px, 0.6fr)
+        minmax(140px, 0.8fr);
+    align-items: center;
+    min-width: 900px;
+}
+
+.chart-tree-header {
+    min-height: 38px;
+    padding: 0 12px;
+    color: var(--finance-text-secondary, #52658a);
+    background: var(--finance-surface-muted, #f5f8fd);
+    border-bottom: 1px solid var(--finance-border, #dbe3f0);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.chart-tree-row {
+    min-height: 52px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--finance-border, #e2e8f2);
+}
+
+.chart-tree-row:last-child {
+    border-bottom: 0;
+}
+
+.chart-tree-row:hover {
+    background: var(--finance-surface-hover, #f8faff);
+}
+
+.chart-tree-account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding-left: calc(var(--chart-tree-depth) * 28px);
+}
+
+.chart-tree-leaf-space {
+    display: inline-block;
+    flex: 0 0 34px;
+    width: 34px;
+}
+
+.chart-tree-type,
+.chart-tree-balance,
+.chart-tree-usage,
+.chart-tree-status,
+.chart-tree-action {
+    padding: 0 8px;
+    font-size: 0.875rem;
+}
+
+.chart-tree-action {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+@media (max-width: 600px) {
+    .chart-account-form {
+        grid-template-columns: 1fr;
+    }
+}

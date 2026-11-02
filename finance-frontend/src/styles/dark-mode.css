@@ -1,0 +1,81 @@
+/* SPARK palette aliases for Finance's existing theme and module styles. */
+:root {
+  --spark-page: #f4f7fc;
+  --spark-surface: #ffffff;
+  --spark-surface-raised: #ffffff;
+  --spark-border: #e2e9f2;
+  --spark-text: #111b4b;
+  --spark-muted: #5b77a1;
+  --spark-table-head: #f4f7fc;
+  --spark-hover: #eff6ff;
+  --finance-error: #dc2626;
+}
+
+:root[data-theme="dark"] {
+  --spark-page: #0d1422;
+  --spark-surface: #121d2e;
+  --spark-surface-raised: #19263a;
+  --spark-border: #2a3a50;
+  --spark-text: #f2f5fb;
+  --spark-muted: #a8b6cb;
+  --spark-table-head: #18263a;
+  --spark-hover: #1d2c43;
+  --finance-error: #f87171;
+}
+
+@media screen {
+  :root {
+    --page-bg: var(--spark-page);
+    --surface: var(--spark-surface-raised);
+    --border: var(--spark-border);
+    --text-dark: var(--spark-text);
+    --text-light: var(--spark-muted);
+    --table-bg: var(--spark-table-head);
+    --hover-bg: var(--spark-hover);
+    --finance-control: var(--spark-surface);
+  }
+
+  .finance-main :is(h1, h2, h3, h4, h5, h6),
+  .MuiDialog-paper :is(h1, h2, h3, h4, h5, h6) {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  }
+
+  :is(.finance-main, .finance-header, .MuiDialog-paper) .MuiOutlinedInput-root {
+    color: var(--spark-text);
+    background-color: var(--spark-surface);
+  }
+
+  /* The outline is decorative: hover/focus may change its border, never its fill. */
+  :is(.finance-main, .finance-header, .MuiDialog-paper) .MuiOutlinedInput-notchedOutline,
+  :is(.finance-main, .finance-header, .MuiDialog-paper) .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    background: transparent !important;
+  }
+
+  :root[data-theme="dark"] :is(.finance-main, .MuiDialog-paper) .MuiTableCell-body {
+    color: var(--spark-text);
+    border-color: var(--spark-border);
+  }
+
+  :root[data-theme="dark"] :is(.finance-main, .MuiDialog-paper) .MuiButton-outlined:not(.Mui-disabled) {
+    border-color: var(--spark-border);
+  }
+
+  :root[data-theme="dark"] :is(.finance-main, .MuiDialog-paper) .MuiButton-outlined:not(.Mui-disabled):hover {
+    background-color: var(--spark-hover);
+    border-color: var(--finance-focus);
+  }
+}
+
+/* Printed documents retain readable light surfaces regardless of the UI mode. */
+@media print {
+  :root[data-theme] {
+    --page-bg: #ffffff;
+    --surface: #ffffff;
+    --white: #ffffff;
+    --border: #e2e9f2;
+    --text-dark: #111b4b;
+    --text-light: #5b77a1;
+    --table-bg: #f4f7fc;
+    --hover-bg: #eff6ff;
+  }
+}

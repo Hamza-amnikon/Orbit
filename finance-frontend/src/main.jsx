@@ -7,6 +7,7 @@ import App from "./App";
 import "./index.css";
 import "./styles/finance-ui.css";
 import "./styles/finance-workspace.css";
+import "./styles/dark-mode.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>

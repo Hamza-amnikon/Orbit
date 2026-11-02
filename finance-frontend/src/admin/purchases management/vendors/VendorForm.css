@@ -4,7 +4,7 @@
 
 .vendor-form {
     width: 100%;
-    background: #ffffff;
+    background: var(--surface);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -71,12 +71,12 @@
     max-height: 65vh;
     overflow-y: auto;
     padding: 24px;
-    background: #ffffff;
+    background: var(--surface);
 }
 
 .vendor-form-section-title {
     margin-bottom: 16px !important;
-    color: #111827 !important;
+    color: var(--text-dark) !important;
     font-size: 15px !important;
     font-weight: 700 !important;
 }
@@ -100,7 +100,7 @@
 }
 
 .vendor-form .MuiInputLabel-root {
-    color: #64748b;
+    color: var(--text-light);
     font-size: 13px;
 }
 
@@ -109,7 +109,7 @@
 }
 
 .vendor-form .MuiOutlinedInput-root {
-    background: #ffffff;
+    background: var(--surface);
     border-radius: 6px;
     font-size: 13px;
 }
@@ -131,7 +131,7 @@
 
 .vendor-form .MuiOutlinedInput-input {
     padding: 12px 14px;
-    color: #111827;
+    color: var(--text-dark);
 }
 
 .vendor-form .MuiInputBase-input::placeholder {
@@ -149,7 +149,7 @@
 
 .vendor-form-divider {
     margin: 24px 0 !important;
-    border-color: #e5eaf1 !important;
+    border-color: var(--border) !important;
 }
 
 /* =========================================
@@ -162,8 +162,8 @@
     justify-content: flex-end;
     gap: 12px;
     padding: 16px 24px;
-    border-top: 1px solid #e5eaf1;
-    background: #f8fafc;
+    border-top: 1px solid var(--border);
+    background: var(--table-bg);
 }
 
 /* =========================================
@@ -176,14 +176,14 @@
     border: 1px solid #bcccdc !important;
     border-radius: 6px !important;
     color: #486581 !important;
-    background: #ffffff !important;
+    background: var(--surface) !important;
     text-transform: none !important;
     font-weight: 600 !important;
 }
 
 .vendor-form-cancel-button:hover {
     border-color: #64748b !important;
-    background: #f5f7fb !important;
+    background: var(--page-bg) !important;
 }
 
 /* =========================================
@@ -213,7 +213,7 @@
 }
 
 .vendor-form-body::-webkit-scrollbar-track {
-    background: #f5f7fb;
+    background: var(--page-bg);
 }
 
 .vendor-form-body::-webkit-scrollbar-thumb {

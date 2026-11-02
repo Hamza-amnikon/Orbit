@@ -15,7 +15,7 @@ export function previewRequest(path, options = {}) {
     const currency = url.searchParams.get("currency") || "INR";
     return {
       revenue: 0, expenses: 0, received: 0, paid: 0,
-      accountsReceivable: 0, accountsPayable: 0, customers: 0, vendors: 0,
+      accountsReceivable: 0, accountsPayable: 0, customerCredits: 0, customers: 0, vendors: 0,
       branch: url.searchParams.get("branch") || "All", currency,
       rateToInr: currency === "INR" ? 1 : null, rateDate: null, rateSource: "Frontend preview",
     };

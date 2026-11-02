@@ -21,21 +21,22 @@ import { money, today, useLoad } from "./data";
 import { Feedback, Page } from "./shared";
 
 const dashboardCards = [
-    ["Revenue", "revenue"],
-    ["Expenses", "expenses"],
+    ["Invoice sales including tax, less credits", "revenue"],
+    ["Bills and recorded expenses", "expenses"],
     ["Payments received", "received"],
-    ["Payments made", "paid"],
-    ["Accounts receivable", "accountsReceivable"],
-    ["Accounts payable", "accountsPayable"],
+    ["Supplier payments made", "paid"],
+    ["Current accounts receivable", "accountsReceivable"],
+    ["Current accounts payable", "accountsPayable"],
+    ["Current customer credits", "customerCredits"],
 ];
 
 const dashboardCalculations = [
     {
-        label: "Revenue",
-        formula: "Total of issued invoices dated in the selected period, branch and reporting currency.",
+        label: "Invoice sales including tax, less credits",
+        formula: "Tax-inclusive totals of issued invoices dated in the selected period, minus issued sales credit notes dated in that period, for the selected branch and reporting currency.",
     },
     {
-        label: "Expenses",
+        label: "Bills and recorded expenses",
         formula: "Recorded expenses plus issued purchase bills dated in the selected period and branch, converted to the reporting currency.",
     },
     {
@@ -43,16 +44,20 @@ const dashboardCalculations = [
         formula: "Total of recorded customer payments dated in the selected period.",
     },
     {
-        label: "Payments made",
+        label: "Supplier payments made",
         formula: "Total of recorded supplier payments dated in the selected period.",
     },
     {
-        label: "Accounts receivable",
-        formula: "Outstanding balances on issued invoices: invoice total minus received payments and applied credit notes.",
+        label: "Current accounts receivable",
+        formula: "Sum of positive balances due on issued invoices after payments and issued credit notes. Excess payments after credits are shown separately as customer credits. Includes all dates for the selected branch.",
     },
     {
-        label: "Accounts payable",
-        formula: "Outstanding balances on issued bills: bill total minus recorded payments and applied vendor credits.",
+        label: "Current accounts payable",
+        formula: "Outstanding balances on issued bills: bill total minus recorded payments and applied vendor credits. Includes all dates for the selected branch.",
+    },
+    {
+        label: "Current customer credits",
+        formula: "Sum of excess payments remaining on individual issued invoices after issued credit notes. Shown separately from unpaid invoices and includes all dates for the selected branch.",
     },
 ];
 
@@ -63,18 +68,20 @@ export default function Dashboard() {
     const [currency, setCurrency] = useState("INR");
 
     const summary = useLoad(
-        () => financeApi.dashboard({
+        signal => financeApi.dashboard({
             from,
             to,
             branch: branch === "All" ? "" : branch,
             currency,
-        }),
+        }, signal),
         [from, to, branch, currency],
+        { keepPreviousData: true },
     );
 
     const activity = useLoad(
-        () => financeApi.activity(),
+        signal => financeApi.activity(signal),
         [],
+        { keepPreviousData: true },
     );
     const refreshSummary = summary.refresh;
     const refreshActivity = activity.refresh;
@@ -114,7 +121,7 @@ export default function Dashboard() {
             title="Finance Dashboard"
             subtitle="Your business finances at a glance"
             action={
-                <Button onClick={refreshDashboard}>
+                <Button onClick={refreshDashboard} disabled={summary.loading}>
                     Refresh
                 </Button>
             }
@@ -185,7 +192,7 @@ export default function Dashboard() {
                 </Button>
             </Stack>
 
-            {previewMode && summary.data?.dataMode !== "live" && (
+            {previewMode && summary.data && summary.data.dataMode !== "live" && (
                 <Alert severity="info" sx={{ mb: 2 }}>
                     Preview data is active, so the dashboard shows placeholder
                     zero values. Live totals will appear after the frontend is
@@ -195,8 +202,21 @@ export default function Dashboard() {
 
             <Feedback
                 {...summary}
+                loading={summary.loading && !summary.data}
                 retry={summary.refresh}
             />
+
+            {summary.data && summary.loading && (
+                <Typography role="status" color="text.secondary" sx={{ mb: 2 }}>
+                    Updating totals… Showing the last loaded figures.
+                </Typography>
+            )}
+
+            {summary.data && summary.error && (
+                <Typography color="text.secondary" sx={{ mb: 2 }}>
+                    These are the last loaded figures. The latest refresh failed.
+                </Typography>
+            )}
 
             {summary.data?.rateWarning && (
                 <Alert severity="warning" sx={{ mb: 2 }}>
@@ -295,9 +315,10 @@ export default function Dashboard() {
             >
                 Original transaction amounts remain unchanged. This overview
                 converts recorded amounts into the selected reporting currency
-                using the rate for the report end date. Receivables and payables show all outstanding
-                balances; this is a management comparison, not a period-end
-                foreign currency revaluation.
+                using the rate for the report end date. The date range applies
+                to invoice sales, bills, recorded expenses and payments. Current
+                receivables, payables and customer credits include all dates for
+                the selected branch. This overview is a management comparison.
             </Typography>
 
             <Accordion sx={{ mb: 3 }}>
