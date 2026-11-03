@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
     Alert,
@@ -18,6 +18,7 @@ import { today } from "../../../live/data";
 
 import {
     createBankAccount,
+    getBankAccountingAccounts,
     updateBankAccount,
 } from "./BankAccountService";
 
@@ -46,6 +47,8 @@ function BankAccountForm({
 
         return {
             companyId,
+            accountingAccountId:
+                account?.accountingAccountId || "",
             name: account?.name || "",
             bankName: account?.bankName || "",
             accountNumber: "",
@@ -63,8 +66,47 @@ function BankAccountForm({
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState("");
     const [conflict, setConflict] = useState(false);
+    const [accountingAccounts, setAccountingAccounts] = useState([]);
+    const [accountingLoading, setAccountingLoading] = useState(false);
+    const [accountingError, setAccountingError] = useState("");
 
     const locked = useRef(false);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        setAccountingAccounts([]);
+        setAccountingError("");
+        setAccountingLoading(false);
+
+        if (!value.companyId) {
+            return () => controller.abort();
+        }
+
+        setAccountingLoading(true);
+
+        getBankAccountingAccounts(
+            Number(value.companyId),
+            controller.signal
+        )
+            .then(result => {
+                if (!controller.signal.aborted) {
+                    setAccountingAccounts(result);
+                }
+            })
+            .catch(failure => {
+                if (!controller.signal.aborted) {
+                    setAccountingError(failure.message);
+                }
+            })
+            .finally(() => {
+                if (!controller.signal.aborted) {
+                    setAccountingLoading(false);
+                }
+            });
+
+        return () => controller.abort();
+    }, [value.companyId]);
 
     function change(name, next) {
         setValue(current => ({
@@ -85,6 +127,7 @@ function BankAccountForm({
         setValue(current => ({
             ...current,
             companyId: id,
+            accountingAccountId: "",
             currency:
                 currency?.currencyCode ||
                 currencies[0]?.currencyCode ||
@@ -103,6 +146,15 @@ function BankAccountForm({
 
         if (!value.name.trim() || !value.bankName.trim()) {
             setError("Account name and bank name are required.");
+            return;
+        }
+
+        if (!accountingAccounts.some(
+            row => row.id === Number(value.accountingAccountId)
+        )) {
+            setError(
+                "Select an accounting posting account under Bank Accounts."
+            );
             return;
         }
 
@@ -154,6 +206,8 @@ function BankAccountForm({
                 result = await updateBankAccount(
                     account.id,
                     {
+                        accountingAccountId:
+                            Number(value.accountingAccountId),
                         name: value.name.trim(),
                         bankName: value.bankName.trim(),
                         isActive: value.isActive,
@@ -163,6 +217,8 @@ function BankAccountForm({
             } else {
                 result = await createBankAccount({
                     companyId: Number(value.companyId),
+                    accountingAccountId:
+                        Number(value.accountingAccountId),
                     name: value.name.trim(),
                     bankName: value.bankName.trim(),
                     accountNumber: value.accountNumber.trim(),
@@ -214,6 +270,15 @@ function BankAccountForm({
                         </Alert>
                     )}
 
+                    {accountingError && (
+                        <Alert
+                            severity="error"
+                            sx={{ mb: 2 }}
+                        >
+                            {accountingError}
+                        </Alert>
+                    )}
+
                     <Box
                         sx={{
                             display: "grid",
@@ -252,6 +317,36 @@ function BankAccountForm({
                                 ))}
                             </TextField>
                         )}
+
+                        <TextField
+                            select
+                            required
+                            label="Accounting ledger account"
+                            value={value.accountingAccountId}
+                            disabled={busy || accountingLoading}
+                            helperText={
+                                accountingLoading
+                                    ? "Loading accounting accounts…"
+                                    : accountingAccounts.length
+                                        ? "This ledger will receive the bank account movements."
+                                        : "Create a posting account under Bank Accounts in Chart of Accounts."
+                            }
+                            onChange={event =>
+                                change(
+                                    "accountingAccountId",
+                                    event.target.value
+                                )
+                            }
+                        >
+                            {accountingAccounts.map(row => (
+                                <MenuItem
+                                    key={row.id}
+                                    value={row.id}
+                                >
+                                    {row.code} · {row.name}
+                                </MenuItem>
+                            ))}
+                        </TextField>
 
                         <TextField
                             required
@@ -424,6 +519,8 @@ function BankAccountForm({
                         disabled={
                             busy ||
                             conflict ||
+                            accountingLoading ||
+                            !value.accountingAccountId ||
                             (!editing && (
                                 !companies.length ||
                                 !currencies.length

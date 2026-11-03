@@ -294,6 +294,14 @@ function BankAccounts() {
                         render: account => account.bankName || "Not provided",
                     },
                     {
+                        label: "Accounting account",
+                        render: account => account.accountingAccountId
+                            ? account.accountingAccountCode +
+                                " · " +
+                                account.accountingAccountName
+                            : "Not linked",
+                    },
+                    {
                         label: "Account ending",
                         render: account => account.lastFour
                             ? "•••• " + account.lastFour

@@ -3,6 +3,11 @@ const endpoint = (
     "/api/bank-accounts"
 ).replace(/\/$/, "");
 
+const accountingEndpoint = (
+    import.meta.env.VITE_ACCOUNTING_API_URL ||
+    "/api/accounts"
+).replace(/\/$/, "");
+
 async function request(
     path = "",
     {
@@ -166,5 +171,72 @@ export function getBankingCurrencies(
     return request(
         "/lookups/currencies",
         { signal }
+    );
+}
+
+export async function getBankAccountingAccounts(
+    companyId,
+    signal
+) {
+    const token = sessionStorage.getItem(
+        "orbit.finance.accessToken"
+    );
+
+    let response;
+
+    try {
+        response = await fetch(
+            accountingEndpoint +
+            "/tree?companyId=" +
+            encodeURIComponent(companyId),
+            {
+                signal,
+                headers: token
+                    ? { Authorization: "Bearer " + token }
+                    : {},
+            }
+        );
+    } catch (error) {
+        if (error.name === "AbortError") {
+            throw error;
+        }
+
+        throw new Error(
+            "Cannot reach AccountingService.API. Check that it is running."
+        );
+    }
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+        throw new Error(
+            data?.message ||
+            data?.detail ||
+            data?.title ||
+            "Accounting account request failed."
+        );
+    }
+
+    if (!Array.isArray(data)) {
+        throw new Error(
+            "The Accounting API returned an invalid account list."
+        );
+    }
+
+    const bankGroup = data.find(account =>
+        account.systemKey === "BANK_ACCOUNTS"
+    );
+
+    if (!bankGroup) {
+        return [];
+    }
+
+    return data.filter(account =>
+        account.parentAccountId === bankGroup.id &&
+        account.type === "Asset" &&
+        account.isPostingAccount &&
+        !account.isControlAccount &&
+        !account.isSystemAccount &&
+        account.isActive
     );
 }
