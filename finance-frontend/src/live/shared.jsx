@@ -3,8 +3,8 @@ import { Alert, Box, Button, Card, CardContent, CircularProgress, Dialog, Dialog
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import SearchOffRoundedIcon from "@mui/icons-material/SearchOffRounded";
 
-export function Page({ title, subtitle, action, children }) {
-  return <Box className="live-page"><Stack className="finance-page-header" direction="row" sx={{ justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 2, mb: 3 }}>
+export function Page({ title, subtitle, action, children, className = "" }) {
+  return <Box className={`live-page ${className}`.trim()}><Stack className="finance-page-header" direction="row" sx={{ justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 2, mb: 3 }}>
     <Box sx={{ minWidth: 0 }}><Typography component="h1" variant="h4" fontWeight={700}>{title}</Typography><Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{subtitle}</Typography></Box>
     {action && <Box className="finance-page-actions">{action}</Box>}
   </Stack>{children}</Box>;
@@ -33,11 +33,11 @@ export function Records({ columns, rows, total, page, setPage, loading, error, r
     </>}
   </CardContent></Card>;
 }
-export function Editor({ title, onClose, onSubmit, busy, disabled, error, children }) {
+export function Editor({ title, onClose, onSubmit, busy, disabled, error, children, className = "" }) {
   const titleId = useId();
-  return <Dialog open fullWidth maxWidth="md" onClose={busy ? undefined : onClose} aria-labelledby={titleId}>
-    <Box component="form" className="finance-editor" onSubmit={onSubmit}>
-      <DialogTitle id={titleId} component="h2">{title}</DialogTitle><DialogContent dividers>{error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}{children}</DialogContent>
+  return <Dialog open fullWidth maxWidth="md" scroll="paper" className={className} onClose={busy ? undefined : onClose} aria-labelledby={titleId}>
+    <Box component="form" className="finance-editor" onSubmit={onSubmit} sx={{ display: "flex", flexDirection: "column", minHeight: 0, height: "100%" }}>
+      <DialogTitle id={titleId} component="h2">{title}</DialogTitle><DialogContent dividers sx={{ flex: "1 1 auto", minHeight: 0, overflowY: "auto" }}>{error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}{children}</DialogContent>
       <DialogActions sx={{ p: 2 }}><Button onClick={onClose} disabled={busy}>Cancel</Button><Button type="submit" variant="contained" disabled={busy || disabled}>{busy ? "Saving..." : "Save"}</Button></DialogActions>
     </Box>
   </Dialog>;

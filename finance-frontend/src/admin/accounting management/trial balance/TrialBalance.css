@@ -1,1 +1,227 @@
 @import "../../shared/AdminModules.css";
+
+.trial-balance-page {
+    box-sizing: border-box;
+    height: calc(100dvh - 70px);
+    overflow-y: scroll;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+    touch-action: pan-y;
+}
+
+.trial-balance-filter-card {
+    padding: 18px;
+    border-radius: 12px;
+    background-color:
+        var(--finance-surface, #ffffff);
+}
+
+.trial-balance-filter-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(230px, 1.25fr)
+        minmax(160px, 0.8fr)
+        minmax(180px, 1fr)
+        minmax(180px, 1fr)
+        minmax(190px, auto)
+        auto;
+    gap: 14px;
+    align-items: center;
+}
+
+.trial-balance-filter-grid
+.MuiTextField-root {
+    width: 100%;
+    min-width: 0;
+}
+
+.trial-balance-zero-option {
+    min-height: 40px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.trial-balance-filter-actions {
+    justify-content: flex-end;
+    white-space: nowrap;
+}
+
+.trial-balance-filter-actions
+.MuiButton-root {
+    min-width: 78px;
+    min-height: 40px;
+}
+
+.trial-balance-report-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+    padding: 16px 18px;
+    border: 1px solid
+        var(--finance-border, #dbe3f0);
+    border-radius: 12px;
+    background-color:
+        var(--finance-surface, #ffffff);
+}
+
+.trial-balance-summary-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+    margin-bottom: 20px;
+}
+
+.trial-balance-summary-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+    min-height: 120px;
+    padding: 18px;
+    border-radius: 12px;
+    background-color:
+        var(--finance-surface, #ffffff);
+}
+
+.trial-balance-summary-card:hover {
+    border-color: #b8c8e3;
+    box-shadow:
+        0 4px 12px
+        rgba(25, 55, 110, 0.06);
+}
+
+.trial-balance-summary-card
+.MuiTypography-h6 {
+    color:
+        var(--finance-text-primary, #10245c);
+    overflow-wrap: anywhere;
+}
+
+.trial-balance-page
+.finance-records {
+    margin-top: 16px;
+}
+
+.trial-balance-page
+.finance-records-filters {
+    width: 100%;
+}
+
+.trial-balance-page
+.finance-records-filters
+.MuiTextField-root {
+    min-width: 0;
+}
+
+.trial-balance-page
+.MuiTableContainer-root {
+    overflow-x: auto;
+    scrollbar-gutter: stable;
+}
+
+.trial-balance-page
+.MuiTable-root {
+    min-width: 1300px;
+}
+
+.trial-balance-page
+.MuiTableCell-head {
+    white-space: nowrap;
+}
+
+.trial-balance-page
+.MuiTableCell-body {
+    vertical-align: middle;
+}
+
+.trial-balance-page
+.MuiTableCell-body:nth-of-type(5),
+.trial-balance-page
+.MuiTableCell-body:nth-of-type(6),
+.trial-balance-page
+.MuiTableCell-body:nth-of-type(7),
+.trial-balance-page
+.MuiTableCell-body:nth-of-type(8) {
+    white-space: nowrap;
+    font-variant-numeric:
+        tabular-nums;
+}
+
+.trial-balance-page
+.MuiAlert-root {
+    border-radius: 10px;
+}
+
+@media (max-width: 1200px) {
+    .trial-balance-filter-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .trial-balance-filter-actions {
+        justify-content: flex-start;
+    }
+
+    .trial-balance-summary-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .trial-balance-page {
+        height: calc(100dvh - 60px);
+    }
+
+    .trial-balance-filter-card {
+        padding: 14px;
+    }
+
+    .trial-balance-filter-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .trial-balance-report-heading {
+        align-items: flex-start;
+        padding: 14px;
+    }
+
+    .trial-balance-summary-grid {
+        gap: 12px;
+    }
+
+    .trial-balance-summary-card {
+        min-height: 110px;
+        padding: 14px;
+    }
+}
+
+@media (max-width: 560px) {
+    .trial-balance-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trial-balance-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trial-balance-report-heading {
+        flex-direction: column;
+    }
+
+    .trial-balance-filter-actions {
+        width: 100%;
+    }
+
+    .trial-balance-filter-actions
+    .MuiButton-root {
+        flex: 1;
+    }
+}

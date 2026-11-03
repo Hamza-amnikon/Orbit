@@ -14,7 +14,7 @@ export function money(value, currency, precision) {
 }
 export const vendorAddress = vendor => [vendor.address, vendor.city, vendor.state, vendor.country, vendor.postalCode].filter(Boolean).join(", ");
 export const newOrderLine = () => ({
-    key: crypto.randomUUID(), itemName: "", description: "", unit: 4, quantity: "1", unitPrice: "0",
+    key: crypto.randomUUID(), itemName: "", accountCode: "", description: "", unit: 4, quantity: "1", unitPrice: "0",
     discountEnabled: false, discountAmount: "0", taxRate: "0",
 });
 export function orderValues(order) {
@@ -22,11 +22,11 @@ export function orderValues(order) {
         vendorInvoiceNumber: order?.vendorInvoiceNumber || "",
         vendorId: order?.vendorId || "", billDate: order?.billDate || today(),
         dueDate: order?.dueDate || "", branch: order?.branch || "",
-        currency: order?.currency || "", billingAddress: order?.billingAddress || "",
+        currency: order?.currency || "", taxTreatment: order?.taxTreatment || "", billingAddress: order?.billingAddress || "",
         shippingAddress: order?.shippingAddress || "", reference: order?.reference || "",
         paymentTerms: order?.paymentTerms || "", notes: order?.notes || "", additionalTerms: order?.additionalTerms || "",
         items: order?.items?.length ? order.items.map(item => ({ ...item, key: crypto.randomUUID(),
-            quantity: String(item.quantity), unitPrice: String(item.unitPrice),
+            accountCode: item.accountCode || "", quantity: String(item.quantity), unitPrice: String(item.unitPrice),
             discountAmount: String(item.discountAmount), taxRate: String(item.taxRate) })) : [newOrderLine()],
     };
 }
@@ -35,8 +35,9 @@ export function orderPayload(value) {
         ...Object.fromEntries(["vendorId", "billDate", "branch", "currency", "billingAddress", "shippingAddress",
             "vendorInvoiceNumber", "reference", "paymentTerms", "notes", "additionalTerms"].map(name => [name, value[name].trim()])),
         dueDate: value.dueDate || null,
+        taxTreatment: value.taxTreatment || null,
         items: value.items.map(item => ({
-            itemName: item.itemName.trim(), description: item.description.trim(), unit: Number(item.unit),
+            itemName: item.itemName.trim(), accountCode: item.accountCode.trim(), description: item.description.trim(), unit: Number(item.unit),
             quantity: Number(item.quantity), unitPrice: Number(item.unitPrice), discountEnabled: item.discountEnabled,
             discountAmount: item.discountEnabled ? Number(item.discountAmount) : 0, taxRate: Number(item.taxRate),
         })),

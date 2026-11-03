@@ -350,10 +350,7 @@
 
     padding: 30px;
 
-    background-color: rgba(244, 247, 250, 0.72);
-
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background-color: rgba(0, 0, 0, 0.5);
 
     overflow-y: auto;
 }

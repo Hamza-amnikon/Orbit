@@ -1,1 +1,127 @@
 @import "../../shared/AdminModules.css";
+
+.journal-entries-page {
+    box-sizing: border-box;
+    height: calc(100dvh - 70px);
+    overflow-y: scroll;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+    touch-action: pan-y;
+}
+
+.journal-entry-editor
+.MuiDialog-paper {
+    height: calc(100dvh - 32px);
+    max-height: calc(100dvh - 32px);
+    overflow: hidden;
+}
+
+.journal-entry-editor
+.finance-editor {
+    min-height: 0;
+    height: 100%;
+}
+
+.journal-entry-editor
+.MuiDialogContent-root {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: scroll;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+    touch-action: pan-y;
+}
+
+.MuiDialog-root:has(.journal-line)
+.MuiDialog-paper,
+.MuiDialog-root:has(.journal-details-grid)
+.MuiDialog-paper {
+    max-height: calc(100dvh - 32px);
+    overflow: hidden;
+}
+
+.MuiDialog-root:has(.journal-line)
+.finance-editor {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+}
+
+.MuiDialog-root:has(.journal-line)
+.MuiDialogContent-root,
+.MuiDialog-root:has(.journal-details-grid)
+.MuiDialogContent-root {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    touch-action: pan-y;
+}
+
+.journal-details-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.journal-line {
+    padding: 18px;
+    border: 1px solid
+        var(--finance-border, #d9e2f0);
+    border-radius: 12px;
+    background-color:
+        var(--finance-surface-soft, #f8faff);
+}
+
+.journal-line:hover {
+    border-color: #b8c8e3;
+}
+
+.journal-line .MuiTextField-root {
+    min-width: 0;
+}
+
+.finance-records-filters {
+    width: 100%;
+}
+
+.finance-records-filters
+.MuiTextField-root {
+    min-width: 0;
+}
+
+.finance-records
+.MuiTableCell-head {
+    white-space: nowrap;
+}
+
+.finance-records
+.MuiTableCell-body {
+    vertical-align: middle;
+}
+
+@media (max-width: 1100px) {
+    .journal-details-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .journal-details-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .journal-line {
+        padding: 14px;
+    }
+}
+
+@media (max-width: 520px) {
+    .journal-details-grid {
+        grid-template-columns: 1fr;
+    }
+}

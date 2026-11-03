@@ -7,15 +7,31 @@ const invoiceProxy = {
     secure: false,
 };
 
+const accountingProxy = {
+    target: "https://localhost:7017",
+    changeOrigin: true,
+    secure: false,
+};
+
 export default defineConfig({
     plugins: [react()],
 
     server: {
         proxy: {
+            "/api/journal-entries": {
+                ...accountingProxy,
+            },
+
+            "/api/general-ledger": {
+                ...accountingProxy,
+            },
+
+            "/api/trial-balance": {
+                ...accountingProxy,
+            },
+
             "/api/accounts": {
-                target: "https://localhost:7017",
-                changeOrigin: true,
-                secure: false,
+                ...accountingProxy,
             },
 
             "/api/exchange-rates": {

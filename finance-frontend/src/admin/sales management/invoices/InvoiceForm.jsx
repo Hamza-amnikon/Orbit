@@ -138,6 +138,7 @@ const InvoiceForm = ({ onClose, onSaved }) => {
         servicePeriodEnd: "",
         currency: "",
         branch: "",
+        taxTreatment: "",
         preferredPaymentMode: "",
         billingAddress: "",
         notes: "",
@@ -208,6 +209,11 @@ const InvoiceForm = ({ onClose, onSaved }) => {
     }, [reload]);
 
     const disabled = loading || busy || Boolean(savedInvoice);
+    const selectedBranch = branches.find(
+        (branch) => branch.name === form.branch
+    );
+    const branchCountry = selectedBranch?.countryCode?.toUpperCase() || "";
+    const hasTax = items.some((item) => Number(item.taxRate || 0) > 0);
 
     function clearPreview() {
         setTotals(null);
@@ -236,6 +242,7 @@ const InvoiceForm = ({ onClose, onSaved }) => {
             ...previous,
             clientId: client?.id || "",
             branch: client?.branch || "",
+            taxTreatment: "",
             currency: currencies.some(
                 (currency) => currency.currencyCode === client?.currency
             )
@@ -323,8 +330,34 @@ const InvoiceForm = ({ onClose, onSaved }) => {
             );
         }
 
+        let taxTreatment = "NoTax";
+
+        if (hasTax && branchCountry === "AE") {
+            taxTreatment = "UaeVat";
+        }
+
+        if (hasTax && branchCountry === "IN") {
+            if (
+                form.taxTreatment !== "IndiaCgstSgst" &&
+                form.taxTreatment !== "IndiaIgst"
+            ) {
+                throw new Error(
+                    "Select CGST + SGST or IGST for this India invoice."
+                );
+            }
+
+            taxTreatment = form.taxTreatment;
+        }
+
+        if (hasTax && branchCountry !== "AE" && branchCountry !== "IN") {
+            throw new Error(
+                "Tax treatment is not configured for the selected branch country."
+            );
+        }
+
         return {
             ...form,
+            taxTreatment,
             servicePeriodStart: form.servicePeriodStart || null,
             servicePeriodEnd: form.servicePeriodEnd || null,
             items: items.map((item) => ({
@@ -659,6 +692,49 @@ const InvoiceForm = ({ onClose, onSaved }) => {
                                     </MenuItem>
                                 ))}
                             </TextField>
+
+                            {branchCountry === "IN" && hasTax ? (
+                                <TextField
+                                    name="taxTreatment"
+                                    label="Tax treatment"
+                                    select
+                                    value={form.taxTreatment}
+                                    onChange={changeField}
+                                    disabled={disabled}
+                                    helperText="Choose based on the customer place of supply"
+                                    required
+                                    fullWidth
+                                >
+                                    <MenuItem value="IndiaCgstSgst">
+                                        CGST + SGST (within the same state)
+                                    </MenuItem>
+                                    <MenuItem value="IndiaIgst">
+                                        IGST (between different states)
+                                    </MenuItem>
+                                </TextField>
+                            ) : (
+                                <TextField
+                                    label="Tax treatment"
+                                    value={
+                                        !hasTax
+                                            ? "No Tax"
+                                            : branchCountry === "AE"
+                                                ? "UAE VAT"
+                                                : "Select a branch"
+                                    }
+                                    helperText={
+                                        !hasTax
+                                            ? "Automatically selected because all tax rates are zero"
+                                            : branchCountry === "AE"
+                                                ? "Automatically selected for the UAE branch"
+                                                : "Tax treatment depends on the branch country"
+                                    }
+                                    slotProps={{
+                                        input: { readOnly: true },
+                                    }}
+                                    fullWidth
+                                />
+                            )}
                         </Box>
                     </CardContent>
                 </Card>

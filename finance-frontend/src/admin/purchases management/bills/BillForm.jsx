@@ -4,7 +4,7 @@ import { Alert, Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, Dial
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { useLoad } from "../../../live/data";
 import { createBill, getPurchaseChoices, getBill, getPurchaseVendors,
-    previewBill, updateBill } from "./BillService";
+    getBillAccounts, previewBill, updateBill } from "./BillService";
 import { money, newOrderLine, orderPayload, orderValues, purchaseUnits, vendorAddress } from "./BillHelpers";
 import "./BillWorkspace.css";
 
@@ -18,6 +18,13 @@ export default function BillForm({ order = null, onClose, onSaved }) {
     const [vendorResult, setVendorResult] = useState({ key: "", data: [], total: 0, error: "" });
     const [vendorRevision, setVendorRevision] = useState(0);
     const choices = useLoad(getPurchaseChoices, []);
+    const branches = choices.data?.branches ?? [];
+    const currencies = choices.data?.currencies ?? [];
+    const selectedBranch = branches.find(branch => branch.name === value.branch);
+    const branchCountry = selectedBranch?.countryCode?.toUpperCase() || "";
+    const hasTax = value.items.some(item => Number(item.taxRate || 0) > 0);
+    const [accounts, setAccounts] = useState([]);
+    const [accountError, setAccountError] = useState("");
     const [preview, setPreview] = useState(null);
     const [error, setError] = useState("");
     const [conflict, setConflict] = useState(false);
@@ -42,6 +49,24 @@ export default function BillForm({ order = null, onClose, onSaved }) {
         return () => { clearTimeout(timer); controller.abort(); };
     }, [vendorSearch, vendorRevision, vendorKey]);
 
+    useEffect(() => {
+        const controller = new AbortController();
+        setAccounts([]);
+        setAccountError("");
+
+        if (selectedBranch?.accountingCompanyId) {
+            getBillAccounts(selectedBranch.accountingCompanyId, controller.signal)
+                .then(result => {
+                    if (!controller.signal.aborted) setAccounts(result);
+                })
+                .catch(loadError => {
+                    if (!controller.signal.aborted) setAccountError(loadError.message);
+                });
+        }
+
+        return () => controller.abort();
+    }, [selectedBranch?.accountingCompanyId]);
+
     function change(name, next) { setValue(previous => ({ ...previous, [name]: next })); setPreview(null); }
     function changeLine(key, name, next) {
         setValue(previous => ({ ...previous, items: previous.items.map(item => item.key === key
@@ -51,6 +76,8 @@ export default function BillForm({ order = null, onClose, onSaved }) {
     function chooseVendor(next) {
         setVendor(next);
         setValue(previous => ({ ...previous, vendorId: next?.id || "", branch: next?.branch || "",
+            taxTreatment: "",
+            items: previous.items.map(item => ({ ...item, accountCode: "" })),
             currency: next?.currency || "", paymentTerms: next?.paymentTerms || "",
             billingAddress: next ? vendorAddress(next) : "" }));
         setPreview(null);
@@ -61,10 +88,12 @@ export default function BillForm({ order = null, onClose, onSaved }) {
         if (value.dueDate && value.dueDate < value.billDate)
             return "Due date cannot precede the bill date.";
         if (!choices.data?.branches.some(branch => branch.name === value.branch)) return "Select an active managing branch.";
+        if (!selectedBranch?.accountingCompanyId) return "Link the managing branch to an accounting company.";
         if (!choices.data?.currencies.some(currency => currency.currencyCode === value.currency)) return "Select an active currency.";
         if (!value.items.length || value.items.length > 100) return "Provide between 1 and 100 items.";
         for (const [index, item] of value.items.entries()) {
             if (!item.itemName.trim()) return `Enter an item or service name on line ${index + 1}.`;
+            if (!item.accountCode.trim()) return `Select an expense or asset account on line ${index + 1}.`;
             for (const name of ["quantity", "unitPrice", "taxRate", ...(item.discountEnabled ? ["discountAmount"] : [])]) {
                 if (item[name] === "" || !Number.isFinite(Number(item[name])) || Number(item[name]) < 0)
                     return `Enter a valid ${name} on line ${index + 1}.`;
@@ -72,6 +101,10 @@ export default function BillForm({ order = null, onClose, onSaved }) {
             if (Number(item.quantity) <= 0) return "Quantity must be greater than zero.";
             if (Number(item.taxRate) > 100) return "Tax cannot exceed 100%.";
         }
+        if (hasTax && branchCountry === "IN" && value.taxTreatment !== "IndiaCgstSgst" && value.taxTreatment !== "IndiaIgst")
+            return "Select CGST + SGST or IGST for this India bill.";
+        if (hasTax && branchCountry !== "AE" && branchCountry !== "IN")
+            return "Tax treatment is not configured for the selected branch country.";
         return "";
     }
     async function submit(event, previewOnly = false) {
@@ -104,16 +137,14 @@ export default function BillForm({ order = null, onClose, onSaved }) {
         } catch (loadError) { setError(loadError.message); }
         finally { locked.current = false; setBusy(false); }
     }
-    const currencies = choices.data?.currencies ?? [];
-    const branches = choices.data?.branches ?? [];
     return <Dialog open fullWidth maxWidth="md" aria-labelledby="bill-form-title" onClose={busy ? undefined : onClose}>
         <Box component="form" noValidate className="bill-form" onSubmit={submit}>
             <DialogTitle id="bill-form-title">{current ? "Edit Bill" : "New Bill"}</DialogTitle>
             <DialogContent dividers>
-                {(choices.error || vendorError) && <Alert severity="error" sx={{ mb: 2 }}
+                {(choices.error || vendorError || accountError) && <Alert severity="error" sx={{ mb: 2 }}
                     action={<Button color="inherit" disabled={busy} onClick={() => {
                         choices.refresh(); setVendorRevision(previous => previous + 1);
-                    }}>Retry choices</Button>}>{choices.error || vendorError}</Alert>}
+                    }}>Retry choices</Button>}>{choices.error || vendorError || accountError}</Alert>}
                 <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>Basic Information</Typography>
                 <Box className="bill-form-grid">
                     <Autocomplete options={vendorChoices} value={vendor} loading={vendorLoading} disabled={busy || !!current?.sourcePurchaseOrderId}
@@ -128,7 +159,8 @@ export default function BillForm({ order = null, onClose, onSaved }) {
                         <TextField key={name} label={label} required={required} type="date" value={value[name]} disabled={busy}
                             slotProps={{ inputLabel: { shrink: true } }} onChange={event => change(name, event.target.value)} />)}
                     <TextField select label="Managing branch" required value={value.branch} disabled={busy || choices.loading || !!current?.sourcePurchaseOrderId}
-                        onChange={event => change("branch", event.target.value)}>
+                        onChange={event => setValue(previous => ({ ...previous, branch: event.target.value,
+                            taxTreatment: "", items: previous.items.map(item => ({ ...item, accountCode: "" })) }))}>
                         {value.branch && !branches.some(branch => branch.name === value.branch) &&
                             <MenuItem value={value.branch} disabled>{value.branch} (unavailable)</MenuItem>}
                         {branches.map(branch => <MenuItem key={branch.id} value={branch.name}>{branch.name}</MenuItem>)}
@@ -139,6 +171,18 @@ export default function BillForm({ order = null, onClose, onSaved }) {
                             <MenuItem value={value.currency} disabled>{value.currency} (unavailable)</MenuItem>}
                         {currencies.map(currency => <MenuItem key={currency.currencyCode} value={currency.currencyCode}>{currency.currencyCode}</MenuItem>)}
                     </TextField>
+                    {branchCountry === "IN" && hasTax ? (
+                        <TextField select required label="Tax treatment" value={value.taxTreatment} disabled={busy}
+                            helperText="Choose based on the vendor place of supply"
+                            onChange={event => change("taxTreatment", event.target.value)}>
+                            <MenuItem value="IndiaCgstSgst">CGST + SGST (within the same state)</MenuItem>
+                            <MenuItem value="IndiaIgst">IGST (between different states)</MenuItem>
+                        </TextField>
+                    ) : (
+                        <TextField label="Tax treatment" value={!hasTax ? "No Tax" : branchCountry === "AE" ? "UAE VAT" : "Select a branch"}
+                            helperText={!hasTax ? "All tax rates are zero" : branchCountry === "AE" ? "Automatically selected for UAE" : "Based on branch country"}
+                            slotProps={{ input: { readOnly: true } }} />
+                    )}
                     {[["vendorInvoiceNumber", "Vendor invoice number", 200], ["reference", "Reference", 200], ["paymentTerms", "Payment terms", 200],
                         ["billingAddress", "Vendor billing address", 1000], ["shippingAddress", "Delivery address", 1000]].map(([name, label, maxLength]) =>
                         <TextField key={name} label={label} value={value[name]} disabled={busy}
@@ -159,6 +203,12 @@ export default function BillForm({ order = null, onClose, onSaved }) {
                         <Box className="bill-line-grid">
                             <TextField label="Item / service" required value={item.itemName} disabled={busy}
                                 slotProps={{ htmlInput: { maxLength: 200 } }} onChange={event => changeLine(item.key, "itemName", event.target.value)} />
+                            <TextField select label="Expense / asset account" required value={item.accountCode} disabled={busy || !selectedBranch?.accountingCompanyId}
+                                onChange={event => changeLine(item.key, "accountCode", event.target.value)}>
+                                {accounts.map(account => <MenuItem key={account.id} value={account.code}>
+                                    {account.code} · {account.name}
+                                </MenuItem>)}
+                            </TextField>
                             <TextField select label="Unit" value={item.unit} disabled={busy}
                                 onChange={event => changeLine(item.key, "unit", Number(event.target.value))}>
                                 {purchaseUnits.map((label, unit) => <MenuItem key={label} value={unit}>{label}</MenuItem>)}

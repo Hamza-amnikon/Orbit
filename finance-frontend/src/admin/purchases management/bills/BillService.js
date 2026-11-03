@@ -49,3 +49,19 @@ export async function getPurchaseChoices(signal) {
     if (!Array.isArray(branches) || !Array.isArray(currencies)) throw new Error("Invalid bill choices.");
     return { branches, currencies };
 }
+
+export async function getBillAccounts(companyId, signal) {
+    if (!companyId) return [];
+    const query = new URLSearchParams({
+        CompanyId: String(companyId),
+        Page: "1",
+        PageSize: "100",
+        IsPostingAccount: "true",
+        IsActive: "true",
+    });
+    const response = await fetch("/api/accounts?" + query, { signal });
+    const data = await response.json().catch(() => null);
+    if (!response.ok) throw new Error(data?.message || data?.title || "Could not load accounting accounts.");
+    if (!Array.isArray(data?.data)) throw new Error("Invalid accounting account response.");
+    return data.data.filter(account => account.type === "Expense" || account.type === "Asset");
+}
