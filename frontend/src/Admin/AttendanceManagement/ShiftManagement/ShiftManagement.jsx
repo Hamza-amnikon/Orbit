@@ -74,6 +74,7 @@ export default function ShiftManagement() {
   const [shift, setShift] = useState("");
   const [department, setDepartment] = useState("");
   const [status, setStatus] = useState("");
+  const [period, setPeriod] = useState("");
   const [summaryFilter, setSummaryFilter] = useState("");
   const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
@@ -97,6 +98,7 @@ export default function ShiftManagement() {
     setShift("");
     setDepartment("");
     setStatus("");
+    setPeriod("");
     setSummaryFilter("");
   };
 
@@ -136,7 +138,11 @@ export default function ShiftManagement() {
     if (!canCreate) return;
 
     try {
-      await ShiftService.create(newAssignment);
+      if (selectedEmployee) {
+        await ShiftService.createNextPeriod(selectedEmployee.shiftId, newAssignment);
+      } else {
+        await ShiftService.create(newAssignment);
+      }
 
       await loadShifts();
 
@@ -146,7 +152,8 @@ export default function ShiftManagement() {
       setNotice({ open: true, severity: "success", message: "Shift assigned successfully." });
     } catch (error) {
       console.error("Create Error:", error.response?.data || error);
-      setNotice({ open: true, severity: "error", message: "Could not assign the shift. Please try again." });
+      setNotice({ open: true, severity: "error", message: error.response?.data?.message || "Could not assign the shift. Please try again." });
+      throw error;
     }
   };
 
@@ -171,7 +178,7 @@ export default function ShiftManagement() {
       setNotice({ open: true, severity: "success", message: "Shift assignment updated." });
     } catch (error) {
       console.error("Update Error:", error.response?.data || error);
-      setNotice({ open: true, severity: "error", message: "Could not update the shift assignment." });
+      setNotice({ open: true, severity: "error", message: error.response?.data?.message || "Could not update the shift assignment." });
     }
   };
 
@@ -227,36 +234,45 @@ export default function ShiftManagement() {
     weekday: "long",
   });
 
+  const today = new Date();
+  const currentDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const periodOf = (assignment) => assignment.toDate < currentDate
+    ? "Previous"
+    : assignment.fromDate > currentDate ? "Upcoming" : "Current";
+  const currentAssignments = employees.filter(
+    (assignment) => assignment.status?.toLowerCase() === "active" && periodOf(assignment) === "Current"
+  );
+
   const dashboard = {
-    morning: employees.filter(
+    morning: currentAssignments.filter(
       (x) =>
         (x.shiftName || x.shift) === "Morning" &&
         x.weeklyOff1 !== todayName &&
         x.weeklyOff2 !== todayName
     ).length,
 
-    general: employees.filter(
+    general: currentAssignments.filter(
       (x) =>
         (x.shiftName || x.shift) === "General" &&
         x.weeklyOff1 !== todayName &&
         x.weeklyOff2 !== todayName
     ).length,
 
-    evening: employees.filter(
+    evening: currentAssignments.filter(
       (x) =>
         (x.shiftName || x.shift) === "Evening" &&
         x.weeklyOff1 !== todayName &&
         x.weeklyOff2 !== todayName
     ).length,
 
-    night: employees.filter(
+    night: currentAssignments.filter(
       (x) =>
         (x.shiftName || x.shift) === "Night" &&
         x.weeklyOff1 !== todayName &&
         x.weeklyOff2 !== todayName
     ).length,
 
-    off: employees.filter(
+    off: currentAssignments.filter(
       (x) =>
         x.weeklyOff1 === todayName ||
         x.weeklyOff2 === todayName
@@ -289,6 +305,8 @@ export default function ShiftManagement() {
       status === "" ||
       item.status === status;
 
+    const periodMatch = period === "" || periodOf(item) === period;
+
     const summaryMatch = summaryFilter !== "off" || item.weeklyOff1 === todayName || item.weeklyOff2 === todayName;
 
     return (
@@ -296,6 +314,7 @@ export default function ShiftManagement() {
       shiftMatch &&
       departmentMatch &&
       statusMatch &&
+      periodMatch &&
       summaryMatch
     );
   });
@@ -357,7 +376,10 @@ export default function ShiftManagement() {
           {canCreate && (
             <MuiButtonMigration
               className="primary-btn"
-              onClick={() => setAssignOpen(true)}
+              onClick={() => {
+                setSelectedEmployee(null);
+                setAssignOpen(true);
+              }}
             >
               <AddIcon />
               Assign Shift
@@ -377,8 +399,8 @@ export default function ShiftManagement() {
           subtitle="Employees Assigned"
           color="#F59E0B"
           icon={<WbSunnyIcon />}
-          onClick={() => { setShift((current) => current === "Morning" ? "" : "Morning"); setSummaryFilter(""); }}
-          selected={shift === "Morning" && !summaryFilter}
+          onClick={() => { setShift((current) => current === "Morning" ? "" : "Morning"); setPeriod("Current"); setSummaryFilter(""); }}
+          selected={shift === "Morning" && period === "Current" && !summaryFilter}
         />
 
         <DashboardCard
@@ -387,8 +409,8 @@ export default function ShiftManagement() {
           subtitle="Employees Assigned"
           color="#10B981"
           icon={<GroupsIcon />}
-          onClick={() => { setShift((current) => current === "General" ? "" : "General"); setSummaryFilter(""); }}
-          selected={shift === "General" && !summaryFilter}
+          onClick={() => { setShift((current) => current === "General" ? "" : "General"); setPeriod("Current"); setSummaryFilter(""); }}
+          selected={shift === "General" && period === "Current" && !summaryFilter}
         />
 
         <DashboardCard
@@ -397,8 +419,8 @@ export default function ShiftManagement() {
           subtitle="Employees Assigned"
           color="#6366F1"
           icon={<ScheduleIcon />}
-          onClick={() => { setShift((current) => current === "Evening" ? "" : "Evening"); setSummaryFilter(""); }}
-          selected={shift === "Evening" && !summaryFilter}
+          onClick={() => { setShift((current) => current === "Evening" ? "" : "Evening"); setPeriod("Current"); setSummaryFilter(""); }}
+          selected={shift === "Evening" && period === "Current" && !summaryFilter}
         />
 
         <DashboardCard
@@ -407,8 +429,8 @@ export default function ShiftManagement() {
           subtitle="Employees Assigned"
           color="#8B5CF6"
           icon={<NightsStayIcon />}
-          onClick={() => { setShift((current) => current === "Night" ? "" : "Night"); setSummaryFilter(""); }}
-          selected={shift === "Night" && !summaryFilter}
+          onClick={() => { setShift((current) => current === "Night" ? "" : "Night"); setPeriod("Current"); setSummaryFilter(""); }}
+          selected={shift === "Night" && period === "Current" && !summaryFilter}
         />
 
         <DashboardCard
@@ -417,7 +439,7 @@ export default function ShiftManagement() {
           subtitle="Employees Off"
           color="#EF4444"
           icon={<WeekendIcon />}
-          onClick={() => { setShift(""); setSummaryFilter((current) => current === "off" ? "" : "off"); }}
+          onClick={() => { setShift(""); setPeriod("Current"); setSummaryFilter((current) => current === "off" ? "" : "off"); }}
           selected={summaryFilter === "off"}
         />
 
@@ -548,6 +570,15 @@ export default function ShiftManagement() {
 
         {/* Reset */}
 
+        <FormControl fullWidth>
+          <Select value={period} onChange={(e) => setPeriod(e.target.value)} displayEmpty input={<OutlinedInput />} inputProps={{ "aria-label": "Assignment period" }}>
+            <MenuItem value="">All Periods</MenuItem>
+            <MenuItem value="Previous">Previous</MenuItem>
+            <MenuItem value="Current">Current</MenuItem>
+            <MenuItem value="Upcoming">Upcoming</MenuItem>
+          </Select>
+        </FormControl>
+
         <Button
           variant="contained"
           startIcon={<AutorenewIcon />}
@@ -571,7 +602,7 @@ export default function ShiftManagement() {
               SHIFT DIRECTORY
             </MuiText>
 
-            <MuiText component="h3" variant="h6">Today's Shift Employees</MuiText>
+            <MuiText component="h3" variant="h6">Shift Assignment History</MuiText>
 
             <MuiText component="p" variant="body1">
               View and manage employee shift assignments.
@@ -588,7 +619,7 @@ export default function ShiftManagement() {
               </MuiText>
 
               <MuiText component="span" variant="inherit">
-                Employees
+                Assignments
               </MuiText>
 
             </MuiLayoutBox>
@@ -616,6 +647,11 @@ export default function ShiftManagement() {
             setEditOpen(true);
           }}
 
+          onAssignNext={canCreate ? (row) => {
+            setSelectedEmployee(row);
+            setAssignOpen(true);
+          } : undefined}
+
           onDelete={(row) => {
             if (!canDelete) return;
 
@@ -632,7 +668,11 @@ export default function ShiftManagement() {
       {canCreate && (
         <AssignShiftDialog
           open={assignOpen}
-          onClose={() => setAssignOpen(false)}
+          initialAssignment={selectedEmployee}
+          onClose={() => {
+            setAssignOpen(false);
+            setSelectedEmployee(null);
+          }}
           onSave={handleAssignShift}
         />
       )}

@@ -4,14 +4,28 @@ import "./ShiftManagement.css";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+
+const today = () => {
+  const date = new Date();
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+};
+
+const assignmentPeriod = (row, currentDate) => {
+  if (row.toDate < currentDate) return "Previous";
+  if (row.fromDate > currentDate) return "Upcoming";
+  return "Current";
+};
 
 export default function ShiftTable({
   rows = [],
   onView,
   onEdit,
+  onAssignNext,
   onDelete,
 }) {
+  const currentDate = today();
   return (
     <MuiLayoutBox className="shift-table-wrapper" component="div">
       <MuiTableMigration className="shift-table">
@@ -31,6 +45,8 @@ export default function ShiftTable({
 
             <MuiTableCellMigration>To Date</MuiTableCellMigration>
 
+            <MuiTableCellMigration>Period</MuiTableCellMigration>
+
             <MuiTableCellMigration>Weekly Off</MuiTableCellMigration>
 
             <MuiTableCellMigration>Status</MuiTableCellMigration>
@@ -42,7 +58,7 @@ export default function ShiftTable({
         <MuiTableBodyMigration>
           {rows.length === 0 ? (
             <MuiTableRowMigration>
-              <MuiTableCellMigration colSpan={10} className="no-data">
+              <MuiTableCellMigration colSpan={11} className="no-data">
                 No shift assignments found.
               </MuiTableCellMigration>
             </MuiTableRowMigration>
@@ -78,6 +94,12 @@ export default function ShiftTable({
                 <MuiTableCellMigration>{row.toDate}</MuiTableCellMigration>
 
                 <MuiTableCellMigration>
+                  <MuiText className={`period-chip ${assignmentPeriod(row, currentDate).toLowerCase()}`} component="span" variant="inherit">
+                    {assignmentPeriod(row, currentDate)}
+                  </MuiText>
+                </MuiTableCellMigration>
+
+                <MuiTableCellMigration>
                   {row.weeklyOff1}
                   {row.weeklyOff2 ? `, ${row.weeklyOff2}` : ""}
                 </MuiTableCellMigration>
@@ -92,6 +114,16 @@ export default function ShiftTable({
 
                 <MuiTableCellMigration>
                   <MuiLayoutBox className="action-buttons" component="div">
+                    {onAssignNext && (
+                      <MuiButtonMigration
+                        className="assign-next-btn"
+                        aria-label={`Assign next period for ${row.employeeName || "employee"}`}
+                        title="Assign next period"
+                        onClick={() => onAssignNext(row)}
+                      >
+                        <AddIcon fontSize="small" />
+                      </MuiButtonMigration>
+                    )}
                     <MuiButtonMigration
                       className="view-btn"
                       aria-label={`View shift for ${row.employeeName || "employee"}`}

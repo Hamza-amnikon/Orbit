@@ -29,6 +29,11 @@ const create = async (payload) => {
     return response.data;
 };
 
+const createNextPeriod = async (previousShiftId, payload) => {
+    const response = await axios.post(`${API_URL}/${previousShiftId}/next-period`, payload);
+    return response.data;
+};
+
 // =====================================================
 // UPDATE SHIFT ASSIGNMENT
 // =====================================================
@@ -87,6 +92,7 @@ const ShiftService = {
     getAll,
     getById,
     create,
+    createNextPeriod,
     update,
     remove,
     getEmployeeShifts,

@@ -20,6 +20,7 @@ export default function AssignShiftDialog({
   open,
   onClose,
   onSave,
+  initialAssignment,
 }) {
   // =========================================================
   // SHIFT PRESETS
@@ -88,17 +89,57 @@ export default function AssignShiftDialog({
     setErrors({});
   };
 
+  const nextPeriod = (assignment) => {
+    if (!assignment?.toDate) return { fromDate: "", toDate: "" };
+    const now = new Date();
+    const firstOfNextMonth = new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 1));
+    const previousEnd = new Date(`${assignment.toDate}T00:00:00Z`);
+    const previousStart = new Date(`${assignment.fromDate}T00:00:00Z`);
+    const start = new Date(firstOfNextMonth);
+    if (previousEnd < start || previousStart >= start) {
+      start.setTime(previousEnd.getTime());
+      start.setUTCDate(start.getUTCDate() + 1);
+    }
+    if (start <= new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()))) {
+      start.setTime(firstOfNextMonth.getTime());
+    }
+    const end = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 0));
+    return {
+      fromDate: start.toISOString().slice(0, 10),
+      toDate: end.toISOString().slice(0, 10),
+    };
+  };
+
   // =========================================================
   // LOAD EMPLOYEES
   // =========================================================
 
   useEffect(() => {
     if (open) {
+      if (initialAssignment) {
+        setForm({
+          employeeId: initialAssignment.employeeId,
+          azureEmployeeId: initialAssignment.azureEmployeeId,
+          employeeCode: initialAssignment.employeeCode || "",
+          employeeName: initialAssignment.employeeName || "",
+          department: initialAssignment.department || "",
+          designation: initialAssignment.designation || "",
+          shift: initialAssignment.shiftName || "General",
+          startTime: String(initialAssignment.startTime || "09:00").slice(0, 5),
+          endTime: String(initialAssignment.endTime || "18:00").slice(0, 5),
+          ...nextPeriod(initialAssignment),
+          status: "Active",
+          weeklyOff1: initialAssignment.weeklyOff1 || "Saturday",
+          weeklyOff2: initialAssignment.weeklyOff2 || "Sunday",
+          remarks: "",
+        });
+        setErrors({});
+      }
       loadEmployees();
     } else {
       resetForm();
     }
-  }, [open]);
+  }, [open, initialAssignment]);
 
   const loadEmployees = async () => {
     try {
@@ -386,10 +427,15 @@ export default function AssignShiftDialog({
       maxWidth="md"
     >
       <DialogTitle>
-        Assign Shift
+        {initialAssignment ? "Assign Next Period" : "Assign Shift"}
       </DialogTitle>
 
       <DialogContent dividers>
+        {initialAssignment && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            This creates a new assignment. The previous period stays in shift history.
+          </Alert>
+        )}
         <Grid
           container
           spacing={3}
@@ -426,7 +472,7 @@ export default function AssignShiftDialog({
                 errors.employeeId
               }
               disabled={
-                loadingEmployees
+                loadingEmployees || !!initialAssignment
               }
             >
               {employees.map(
@@ -529,6 +575,10 @@ export default function AssignShiftDialog({
             >
               <MenuItem value="Morning">
                 Morning Shift
+              </MenuItem>
+
+              <MenuItem value="General">
+                General Shift
               </MenuItem>
 
 
