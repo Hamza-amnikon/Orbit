@@ -93,6 +93,7 @@ function EmployeeForm({
   // =========================
 
   addEmployee,
+  isSaving = false,
   onCancel,
 
 }) {
@@ -163,6 +164,7 @@ function EmployeeForm({
     designation.trim() !== "" &&
     employeeType.trim() !== "" &&
     location.toString().trim() !== "" &&
+    String(role).trim() !== "" &&
     joiningDate.toString().trim() !== "" &&
     status.trim() !== "";
 
@@ -254,7 +256,7 @@ function EmployeeForm({
     // The backend should derive CreatedBy from JWT.
     //
 
-    addEmployee();
+    await addEmployee();
   };
 
 
@@ -546,7 +548,7 @@ function EmployeeForm({
 
               <MenuItem
                 key={item.roleId}
-                value={item.role}
+                value={item.roleId}
               >
                 {item.role}
               </MenuItem>
@@ -757,10 +759,10 @@ function EmployeeForm({
           size="large"
           startIcon={<Save />}
           onClick={handleSave}
-          disabled={!canSave}
+          disabled={!canSave || isSaving}
           type="button"
         >
-          Save Employee
+          {isSaving ? "Saving Employee..." : "Save Employee"}
         </Button>
 
       </MuiLayoutBox>

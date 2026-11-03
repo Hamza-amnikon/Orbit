@@ -92,6 +92,7 @@ function AddEmployee() {
 
   const [roles, setRoles] = useState([]);
   const [role, setRole] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   // ==========================================
   // DROPDOWN DATA
@@ -348,7 +349,7 @@ function AddEmployee() {
 
   async function addEmployee() {
 
-    if (!canCreate) {
+    if (!canCreate || isSaving) {
       return;
     }
 
@@ -437,7 +438,7 @@ function AddEmployee() {
       joiningDate,
       status,
 
-      role
+      roleId: Number(role)
 
     };
 
@@ -496,6 +497,8 @@ function AddEmployee() {
     // SAVE
     // ------------------------------------------
 
+    setIsSaving(true);
+
     try {
 
       const response =
@@ -509,7 +512,8 @@ function AddEmployee() {
 
               "Content-Type":
                 "application/json"
-            }
+            },
+            timeout: 210000
           }
         );
 
@@ -517,6 +521,10 @@ function AddEmployee() {
         "Employee Saved:",
         response.data
       );
+
+      if (response.data?.success !== true) {
+        throw new Error("The employee API did not confirm creation.");
+      }
 
       // ----------------------------------------
       // FETCH LATEST EMPLOYEE LIST
@@ -635,22 +643,22 @@ function AddEmployee() {
         );
 
         await showReactAlert(
-          JSON.stringify(
-            error.response.data,
-            null,
-            2
-          )
+          error.response.data?.message ||
+            "Employee creation failed. Please try again."
         );
 
       }
       else {
 
         await showReactAlert(
-          "Unable to connect to API."
+          error.message || "Unable to connect to API."
         );
 
       }
 
+    }
+    finally {
+      setIsSaving(false);
     }
 
   }
@@ -726,6 +734,7 @@ function AddEmployee() {
       setStatus={setStatus}
 
       addEmployee={addEmployee}
+      isSaving={isSaving}
       onCancel={handleCancel}
 
     />
