@@ -53,6 +53,7 @@ const journalSources = [
     "Manual",
     "OpeningBalance",
     "SalesInvoice",
+    "SalesCreditNote",
     "PaymentReceived",
     "PurchaseBill",
     "PaymentMade",

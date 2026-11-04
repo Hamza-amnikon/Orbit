@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Divider, MenuItem, TextField, Typography } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
-import { getCreditNote, issueCreditNote } from "./SalesCreditNoteService";
+import { applyCustomerCredit, getCreditNote, getCustomerCredit, issueCreditNote } from "./SalesCreditNoteService";
 import { useAuth } from "../../../context/AuthContext";
 import "./CreditNoteDetails.css";
 import "./CreditNotes.css";
@@ -12,6 +12,153 @@ const units = { 0: "Hour", 1: "Day", 2: "Month", 3: "Fixed fee", Hour: "Hour", D
 const date = value => value ? value.slice(0, 10).split("-").reverse().join("/") : "—";
 const amount = (value, currency) => new Intl.NumberFormat("en-US", { style: "currency", currency, currencyDisplay: "code" }).format(value);
 const statusName = value => value === 0 || value === "Draft" ? "Draft" : value === 1 || value === "Issued" ? "Issued" : "Unknown";
+
+const CustomerCreditBalance = ({ creditNote, canWrite }) => {
+    const [customerCredit, setCustomerCredit] = useState(null);
+    const [error, setError] = useState("");
+    const [revision, setRevision] = useState(0);
+    const [targetInvoiceId, setTargetInvoiceId] = useState("");
+    const [applyAmount, setApplyAmount] = useState("");
+    const [applying, setApplying] = useState(false);
+    const [applyError, setApplyError] = useState("");
+    const [notice, setNotice] = useState("");
+    const requestId = useRef(null);
+    const pending = useRef(false);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        getCustomerCredit(
+            creditNote.clientId,
+            creditNote.branch,
+            creditNote.currency,
+            controller.signal
+        ).then(result => {
+            if (!controller.signal.aborted) {
+                setCustomerCredit(result);
+            }
+        }).catch(failure => {
+            if (!controller.signal.aborted) {
+                setError(failure.message);
+            }
+        });
+
+        return () => controller.abort();
+    }, [creditNote, revision]);
+
+    const refresh = () => {
+        setCustomerCredit(null);
+        setError("");
+        setRevision(previous => previous + 1);
+    };
+
+    const money = value => amount(value, creditNote.currency);
+    const invoiceCredit = customerCredit?.sources.find(
+        source => source.salesInvoiceId === creditNote.salesInvoiceId
+    )?.availableAmount || 0;
+    const targets = (customerCredit?.targets || []).filter(
+        target => target.salesInvoiceId !== creditNote.salesInvoiceId
+    );
+    const target = targets.find(
+        invoice => invoice.salesInvoiceId === Number(targetInvoiceId)
+    );
+    const value = Number(applyAmount);
+    const validAmount = /^\d+(\.\d{1,4})?$/.test(applyAmount) &&
+        Number.isFinite(value) &&
+        value > 0 &&
+        value <= invoiceCredit &&
+        value <= (target?.balanceDue || 0);
+
+    async function applyCredit() {
+        if (!canWrite || pending.current || !validAmount) return;
+        pending.current = true;
+        setApplying(true);
+        setApplyError("");
+        setNotice("");
+        requestId.current ||= crypto.randomUUID();
+
+        try {
+            const result = await applyCustomerCredit({
+                requestId: requestId.current,
+                sourceInvoiceId: creditNote.salesInvoiceId,
+                targetInvoiceId: Number(targetInvoiceId),
+                amount: value,
+            });
+
+            if (result.sourceInvoiceId !== creditNote.salesInvoiceId ||
+                result.targetInvoiceId !== Number(targetInvoiceId) ||
+                Number(result.amount) !== value) {
+                throw new Error("Credit application could not be confirmed. Retry the same request.");
+            }
+
+            requestId.current = null;
+            setTargetInvoiceId("");
+            setApplyAmount("");
+            setNotice(`Applied ${money(value)} to invoice ${result.targetInvoiceNumber}.`);
+            refresh();
+        } catch (failure) {
+            setApplyError(failure.message);
+            if (failure.status === 400 || failure.status === 409) {
+                requestId.current = null;
+                refresh();
+            }
+        } finally {
+            pending.current = false;
+            setApplying(false);
+        }
+    }
+
+    return <Card sx={{ mt: 2 }} className="credit-note-no-print">
+        <CardContent>
+            <Typography variant="h6">Customer credit balance</Typography>
+            {error && <Alert severity="error" sx={{ mt: 1 }} action={<Button color="inherit" onClick={refresh}>Retry</Button>}>{error}</Alert>}
+            {!customerCredit && !error && <Typography sx={{ mt: 1 }}>Loading credit balance...</Typography>}
+            {customerCredit && <>
+                <Typography sx={{ mt: 1 }}>Unused credit for {creditNote.clientName} in {creditNote.branch}, {creditNote.currency}: <strong>{money(customerCredit.totalAvailable)}</strong></Typography>
+                <Typography sx={{ mt: 1 }}>From this invoice: <strong>{money(invoiceCredit)}</strong></Typography>
+                <Typography variant="body2" sx={{ mt: 1 }}>Credit can be applied only to another issued invoice for the same client, branch and currency. No bank transaction is created.</Typography>
+                {notice && <Alert severity="success" sx={{ mt: 2 }} onClose={() => setNotice("")}>{notice}</Alert>}
+                {applyError && <Alert severity="error" sx={{ mt: 2 }}>{applyError}</Alert>}
+                {canWrite && invoiceCredit > 0 && <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center", mt: 2 }}>
+                    <TextField
+                        select
+                        size="small"
+                        label="Apply to invoice"
+                        value={targetInvoiceId}
+                        onChange={event => { setTargetInvoiceId(event.target.value); requestId.current = null; }}
+                        sx={{ minWidth: 250 }}
+                        disabled={applying || targets.length === 0}
+                    >
+                        {targets.map(invoice => <MenuItem key={invoice.salesInvoiceId} value={invoice.salesInvoiceId}>
+                            {invoice.invoiceNumber} · Due {money(invoice.balanceDue)}
+                        </MenuItem>)}
+                    </TextField>
+                    <TextField
+                        size="small"
+                        label="Amount"
+                        type="number"
+                        slotProps={{ htmlInput: { min: 0.0001, max: Math.min(invoiceCredit, target?.balanceDue || 0), step: 0.0001 } }}
+                        value={applyAmount}
+                        onChange={event => { setApplyAmount(event.target.value); requestId.current = null; }}
+                        disabled={applying || !target}
+                    />
+                    <Button variant="contained" disabled={applying || !validAmount} onClick={applyCredit}>
+                        {applying ? "Applying..." : "Apply Credit"}
+                    </Button>
+                    {targets.length === 0 && <Typography variant="body2">There is no eligible unpaid invoice.</Typography>}
+                </Box>}
+                {customerCredit.applications?.some(application => application.sourceInvoiceId === creditNote.salesInvoiceId) && <Box sx={{ mt: 2 }}>
+                    <Typography variant="subtitle2">Recorded credit applications</Typography>
+                    {customerCredit.applications
+                        .filter(application => application.sourceInvoiceId === creditNote.salesInvoiceId)
+                        .map(application => <Typography key={application.id} variant="body2">
+                            {money(application.amount)} to invoice {application.targetInvoiceNumber}
+                        </Typography>)}
+                </Box>}
+            </>}
+        </CardContent>
+    </Card>;
+};
 
 const CreditNoteDetails = ({ id, onBack, onViewInvoice }) => {
     const { canWrite } = useAuth();
@@ -158,6 +305,7 @@ const CreditNoteDetails = ({ id, onBack, onViewInvoice }) => {
                     <Typography className="credit-note-footer-text">Linked Invoice: {creditNote.invoiceNumber}</Typography>
                 </Box>
             </CardContent></Card>}
+            {ready && status === "Issued" && <CustomerCreditBalance key={`${creditNote.id}-${revision}-${creditNote.rowVersion}`} creditNote={creditNote} canWrite={canWrite} />}
             <Dialog open={confirmIssue} onClose={issuing ? undefined : () => setConfirmIssue(false)} fullWidth maxWidth="sm" aria-labelledby="credit-issue-title">
                 <DialogTitle id="credit-issue-title">Issue credit note?</DialogTitle>
                 <DialogContent>

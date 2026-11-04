@@ -123,6 +123,7 @@ const Sidebar = ({ desktop, open, onClose }) => {
                         {childItem("Invoices", "/sales/invoices")}
                         {childItem("Credit Notes", "/sales/credit-notes")}
                         {childItem("Payments Received", "/sales/payments")}
+                        {childItem("Customer Statements", "/sales/customer-statements")}
                     </List>
                 </Collapse>
 

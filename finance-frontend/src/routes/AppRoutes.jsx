@@ -20,6 +20,7 @@ import Invoices from "../admin/sales management/invoices/Invoices";
 import Estimates from "../admin/sales management/estimates/Estimates";
 import CreditNotes from "../admin/sales management/credit notes/CreditNotes";
 import PaymentReceived from "../admin/sales management/payments received/PaymentReceived";
+import CustomerStatements from "../admin/sales management/customer statements/CustomerStatements";
 
 import { adminModuleRoutes } from "../admin/moduleRoutes";
 
@@ -104,6 +105,11 @@ function AppRoutes() {
                         <Route
                             path="/sales/payments"
                             element={<PaymentReceived />}
+                        />
+
+                        <Route
+                            path="/sales/customer-statements"
+                            element={<CustomerStatements />}
                         />
 
                         <Route

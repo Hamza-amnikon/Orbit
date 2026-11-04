@@ -18,6 +18,14 @@ export default defineConfig({
 
     server: {
         proxy: {
+            "/api/customer-credits": {
+                ...invoiceProxy,
+            },
+
+            "/api/customer-statements": {
+                ...invoiceProxy,
+            },
+
             "/api/journal-entries": {
                 ...accountingProxy,
             },

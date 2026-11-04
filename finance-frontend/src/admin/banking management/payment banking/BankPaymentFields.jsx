@@ -49,7 +49,10 @@ export default function BankPaymentFields({
                 } while (rows.length < result.total && result.data.length > 0);
 
                 if (!controller.signal.aborted) {
-                    setAccounts(rows.filter(account => account.isActive));
+                    setAccounts(rows.filter(account =>
+                        account.isActive &&
+                        account.accountingAccountId
+                    ));
                 }
             } catch (failure) {
                 if (!controller.signal.aborted) {
@@ -98,10 +101,12 @@ export default function BankPaymentFields({
                 isOptionEqualToValue={(left, right) => left.id === right.id}
                 getOptionLabel={row => [row.name, row.companyName, row.currency, row.lastFour ? "ending " + row.lastFour : ""].filter(Boolean).join(" Â· ")}
                 onChange={(_, next) => onChange({
+                    ...value,
                     settlementType: "Bank",
                     bankAccountId: next?.id || "",
                     bankCurrency: next?.currency || "",
                     bankAmount: "",
+                    bankChargeAmount: "",
                 })}
                 renderInput={params => (
                     <TextField
@@ -115,15 +120,28 @@ export default function BankPaymentFields({
                 )}
             />
 
-            {account && !sameCurrency && (
+            {account && (
                 <TextField
-                    required
                     label={(moneyOut ? "Actual bank debit" : "Actual bank credit") + " (" + account.currency + ")"}
                     value={value.bankAmount || ""}
                     disabled={disabled}
                     onChange={event => onChange({ ...value, bankAmount: event.target.value })}
                     slotProps={{ htmlInput: { inputMode: "decimal" } }}
-                    helperText="The account uses a different currency. Enter the actual bank amount; the payment amount above still settles the bill or invoice."
+                    helperText={sameCurrency
+                        ? "Leave empty to use the payment amount less bank charges."
+                        : "Enter the amount actually credited by the bank after conversion."}
+                    fullWidth
+                />
+            )}
+
+            {account && (
+                <TextField
+                    label={"Bank charges (" + account.currency + ")"}
+                    value={value.bankChargeAmount || ""}
+                    disabled={disabled}
+                    onChange={event => onChange({ ...value, bankChargeAmount: event.target.value })}
+                    slotProps={{ htmlInput: { inputMode: "decimal" } }}
+                    helperText="Enter zero or leave empty when the bank did not deduct a charge."
                     fullWidth
                 />
             )}

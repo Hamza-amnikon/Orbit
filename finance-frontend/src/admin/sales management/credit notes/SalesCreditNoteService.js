@@ -79,6 +79,34 @@ export function getCreditNote(id, signal) {
     );
 }
 
+export function getCustomerCredit(
+    clientId,
+    branch,
+    currency,
+    signal
+) {
+    const query = new URLSearchParams({
+        clientId,
+        branch,
+        currency,
+    });
+
+    return request(
+        `/api/customer-credits?${query}`,
+        { signal }
+    );
+}
+
+export function applyCustomerCredit(body) {
+    return request(
+        "/api/customer-credits/applications",
+        {
+            method: "POST",
+            body,
+        }
+    );
+}
+
 export function previewCreditNote(body) {
     return request(`${endpoint}/preview`, {
         method: "POST",

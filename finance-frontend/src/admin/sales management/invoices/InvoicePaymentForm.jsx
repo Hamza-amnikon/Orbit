@@ -21,6 +21,8 @@ import {
     getPaymentModes,
     recordInvoicePayment,
 } from "./SalesInvoicePaymentService";
+import BankPaymentFields from "../../banking management/payment banking/BankPaymentFields";
+import { buildBankPayment } from "../../banking management/payment banking/paymentBanking";
 
 const InvoicePaymentForm = ({
     invoice,
@@ -43,6 +45,11 @@ const InvoicePaymentForm = ({
         amount: "",
         percentage: "",
         paymentMode: "",
+        settlementType: "",
+        bankAccountId: "",
+        bankCurrency: "",
+        bankAmount: "",
+        bankChargeAmount: "",
         reference: "",
         notes: "",
     }));
@@ -178,14 +185,27 @@ const InvoicePaymentForm = ({
             return;
         }
 
-        const payload = {
-            requestId,
-            paymentDate: form.paymentDate,
-            amount: enteredAmount,
-            paymentMode: form.paymentMode,
-            reference: form.reference.trim(),
-            notes: form.notes.trim(),
-        };
+        let payload;
+
+        try {
+            payload = {
+                requestId,
+                paymentDate: form.paymentDate,
+                amount: enteredAmount,
+                paymentMode: form.paymentMode,
+                reference: form.reference.trim(),
+                notes: form.notes.trim(),
+                ...buildBankPayment(
+                    form,
+                    currency,
+                    enteredAmount,
+                    form.paymentMode
+                ),
+            };
+        } catch (failure) {
+            setError(failure.message);
+            return;
+        }
 
         setBusy(true);
         setError("");
@@ -218,7 +238,13 @@ const InvoicePaymentForm = ({
                         existing.paymentMode.toLowerCase() ===
                             payload.paymentMode.toLowerCase() &&
                         existing.reference === payload.reference &&
-                        existing.notes === payload.notes;
+                        existing.notes === payload.notes &&
+                        (existing.bankAccountId ?? null) ===
+                            payload.bankAccountId &&
+                        (existing.bankAmount ?? null) ===
+                            payload.bankAmount &&
+                        (existing.bankChargeAmount ?? 0) ===
+                            payload.bankChargeAmount;
 
                     if (samePayment) {
                         onSaved?.(existing);
@@ -325,9 +351,14 @@ const InvoicePaymentForm = ({
                                 Invoice total:{" "}
                                 {money(summary.invoiceTotal, currency)}
                                 <br />
-                                Paid amount:{" "}
+                                Cash paid:{" "}
                                 {money(summary.paidAmount, currency)}
                                 <br />
+                                {summary.appliedCreditAmount > 0 && <>
+                                    Customer credit applied:{" "}
+                                    {money(summary.appliedCreditAmount, currency)}
+                                    <br />
+                                </>}
                                 Balance due:{" "}
                                 {money(balanceDue, currency)}
                             </Alert>
@@ -374,6 +405,9 @@ const InvoicePaymentForm = ({
                                 htmlInput: {
                                     inputMode: "numeric",
                                     maxLength: 3,
+                                    min: 0,
+                                    max: 100,
+                                    step: "any",
                                 },
                             }}
                             helperText={
@@ -382,13 +416,6 @@ const InvoicePaymentForm = ({
                                     : "Based on remaining balance: " +
                                         money(balanceDue, currency)
                             }
-                            slotProps={{
-                                htmlInput: {
-                                    min: 0,
-                                    max: 100,
-                                    step: "any",
-                                },
-                            }}
                             fullWidth
                         />
 
@@ -446,6 +473,15 @@ const InvoicePaymentForm = ({
                                 </MenuItem>
                             ))}
                         </TextField>
+
+                        <BankPaymentFields
+                            value={form}
+                            onChange={setForm}
+                            currency={currency}
+                            paymentMode={form.paymentMode}
+                            direction="in"
+                            disabled={!ready || busy}
+                        />
 
                         <TextField
                             name="reference"

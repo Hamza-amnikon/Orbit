@@ -227,6 +227,12 @@ const InvoicePaymentsPanel = ({ invoice }) => {
             ["Adjusted Invoice Total", summary.adjustedInvoiceTotal],
         ] : []),
         ["Paid Amount", summary?.paidAmount],
+        ...(summary?.appliedCreditAmount > 0 ? [
+            ["Customer Credit Applied", summary.appliedCreditAmount],
+        ] : []),
+        ...(summary?.transferredCreditAmount > 0 ? [
+            ["Credit Used on Other Invoices", summary.transferredCreditAmount],
+        ] : []),
         ["Balance Due", summary?.balanceDue],
         ...(summary?.creditBalance > 0 ? [
             ["Credit Balance", summary.creditBalance],
@@ -364,12 +370,19 @@ const InvoicePaymentsPanel = ({ invoice }) => {
                 </Box>
 
                 <Typography variant="h6" sx={{ mb: 2 }}>
-                    Payment History
+                    Cash Payment History
                 </Typography>
+
+                {ready && (summary.appliedCreditAmount > 0 ||
+                    summary.transferredCreditAmount > 0) && (
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Customer credit is shown above separately from cash payments.
+                    </Typography>
+                )}
 
                 {ready && summary.payments.length === 0 && (
                     <Typography color="text.secondary">
-                        No payments recorded yet.
+                        No cash payments recorded yet.
                     </Typography>
                 )}
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+    Alert,
     Button,
     Dialog,
     DialogActions,
@@ -18,7 +19,9 @@ import { money, useLoad } from "../../../live/data";
 import {
     getReceivedPayments,
     getPaymentFilterOptions,
+    resolveReceivedPayment,
 } from "./PaymentReceivedService";
+import BankPaymentFields from "../../banking management/payment banking/BankPaymentFields";
 
 function formatDate(value) {
     if (!value) return "—";
@@ -42,6 +45,16 @@ export default function PaymentReceived() {
     const [toDate, setToDate] = useState("");
     const [filters, setFilters] = useState(emptyFilters);
     const [selectedPayment, setSelectedPayment] = useState(null);
+    const [resolvingPayment, setResolvingPayment] = useState(null);
+    const [settlement, setSettlement] = useState({
+        settlementType: "Bank",
+        bankAccountId: "",
+        bankCurrency: "",
+        bankAmount: "",
+        bankChargeAmount: "",
+    });
+    const [resolveBusy, setResolveBusy] = useState(false);
+    const [resolveError, setResolveError] = useState("");
 
     const options = useLoad(
         (signal) => getPaymentFilterOptions(signal),
@@ -113,6 +126,68 @@ export default function PaymentReceived() {
                 payment.salesInvoiceId
             )}`
         );
+    }
+
+    function openResolve(payment) {
+        setSelectedPayment(null);
+        setResolvingPayment(payment);
+        setSettlement({
+            settlementType: "Bank",
+            bankAccountId: "",
+            bankCurrency: "",
+            bankAmount: "",
+            bankChargeAmount: "",
+        });
+        setResolveError("");
+    }
+
+    async function handleResolve() {
+        const bankAccountId = Number(settlement.bankAccountId);
+        const bankAmount = Number(settlement.bankAmount);
+        const bankChargeAmount = Number(
+            settlement.bankChargeAmount || 0
+        );
+
+        if (!bankAccountId) {
+            setResolveError("Select the receiving bank account.");
+            return;
+        }
+
+        if (!Number.isFinite(bankAmount) || bankAmount <= 0) {
+            setResolveError(
+                "Enter the actual amount credited by the bank."
+            );
+            return;
+        }
+
+        if (
+            !Number.isFinite(bankChargeAmount) ||
+            bankChargeAmount < 0
+        ) {
+            setResolveError("Enter a valid bank charge amount.");
+            return;
+        }
+
+        setResolveBusy(true);
+        setResolveError("");
+
+        try {
+            await resolveReceivedPayment(
+                resolvingPayment.id,
+                {
+                    bankAccountId,
+                    bankAmount,
+                    bankChargeAmount,
+                }
+            );
+
+            setResolvingPayment(null);
+            list.refresh();
+        } catch (failure) {
+            setResolveError(failure.message);
+        } finally {
+            setResolveBusy(false);
+        }
     }
 
     const dropdowns = [
@@ -223,6 +298,25 @@ export default function PaymentReceived() {
                 ),
             ],
             ["Payment mode", selectedPayment.paymentMode],
+            ["Receiving bank", selectedPayment.bankAccountName],
+            [
+                "Actual bank credit",
+                selectedPayment.bankAmount == null
+                    ? "—"
+                    : money(
+                        selectedPayment.bankAmount,
+                        selectedPayment.bankCurrency
+                    ),
+            ],
+            [
+                "Bank charges",
+                selectedPayment.bankAccountId == null
+                    ? "—"
+                    : money(
+                        selectedPayment.bankChargeAmount || 0,
+                        selectedPayment.bankCurrency
+                    ),
+            ],
             ["Reference", selectedPayment.reference],
             ["Notes", selectedPayment.notes],
         ]
@@ -388,6 +482,18 @@ export default function PaymentReceived() {
         Print Receipt
     </Button>
 
+    {selectedPayment &&
+        String(selectedPayment.paymentMode).toLowerCase() !== "cash" &&
+        !selectedPayment.bankAccountId && (
+            <Button
+                color="warning"
+                variant="outlined"
+                onClick={() => openResolve(selectedPayment)}
+            >
+                Resolve Bank Settlement
+            </Button>
+        )}
+
     <Button
         variant="contained"
         disabled={!selectedPayment}
@@ -396,6 +502,66 @@ export default function PaymentReceived() {
         View Invoice
     </Button>
 </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={Boolean(resolvingPayment)}
+                onClose={() => {
+                    if (!resolveBusy) {
+                        setResolvingPayment(null);
+                    }
+                }}
+                fullWidth
+                maxWidth="sm"
+            >
+                <DialogTitle>Resolve Bank Settlement</DialogTitle>
+
+                <DialogContent dividers>
+                    {resolvingPayment && (
+                        <Stack spacing={2}>
+                            <Alert severity="info">
+                                {resolvingPayment.paymentNumber} received{" "}
+                                {money(
+                                    resolvingPayment.amount,
+                                    resolvingPayment.currency
+                                )}. Select the actual bank account and
+                                enter the amount credited after conversion.
+                            </Alert>
+
+                            {resolveError && (
+                                <Alert severity="error">
+                                    {resolveError}
+                                </Alert>
+                            )}
+
+                            <BankPaymentFields
+                                value={settlement}
+                                onChange={setSettlement}
+                                currency={resolvingPayment.currency}
+                                paymentMode={resolvingPayment.paymentMode}
+                                direction="in"
+                                disabled={resolveBusy}
+                            />
+                        </Stack>
+                    )}
+                </DialogContent>
+
+                <DialogActions>
+                    <Button
+                        disabled={resolveBusy}
+                        onClick={() => setResolvingPayment(null)}
+                    >
+                        Cancel
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        disabled={resolveBusy}
+                        onClick={handleResolve}
+                    >
+                        {resolveBusy ? "Processing..." : "Process Payment"}
+                    </Button>
+                </DialogActions>
             </Dialog>
         </Page>
     );

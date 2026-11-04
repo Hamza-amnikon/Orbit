@@ -138,3 +138,37 @@ export async function getPaymentFilterOptions(signal) {
         paymentModes,
     };
 }
+
+export async function resolveReceivedPayment(
+    paymentId,
+    settlement
+) {
+    const response = await fetch(
+        `/api/bank-transactions/payment-sync/received/${encodeURIComponent(paymentId)}/resolve`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(settlement),
+        }
+    );
+
+    const result = await response.json().catch(() => null);
+
+    if (!response.ok) {
+        const validation = result?.errors
+            ? Object.values(result.errors).flat().join(" ")
+            : "";
+
+        throw new Error(
+            validation ||
+            result?.message ||
+            result?.detail ||
+            result?.title ||
+            "Unable to resolve the received payment."
+        );
+    }
+
+    return result;
+}
