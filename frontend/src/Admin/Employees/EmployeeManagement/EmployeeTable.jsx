@@ -34,7 +34,7 @@ function EmployeeTable({
     user,
     profile,
     employeeId,
-    employeeCode,
+    AzureEmployeeId,
     employeeName,
     isAuthenticated,
     hasPermission,
@@ -69,12 +69,12 @@ function EmployeeTable({
   // CURRENT EMPLOYEE CODE
   // =====================================================
 
-  const currentEmployeeCode =
-    employeeCode ??
-    profile?.employeeCode ??
-    profile?.EmployeeCode ??
-    user?.employeeCode ??
-    user?.EmployeeCode ??
+  const currentAzureEmployeeId =
+    AzureEmployeeId ??
+    profile?.azureEmployeeId ??
+    profile?.AzureEmployeeId ??
+    user?.azureEmployeeId ??
+    user?.AzureEmployeeId ??
     null;
 
 
@@ -125,8 +125,8 @@ function EmployeeTable({
     );
 
     console.log(
-      "EmployeeCode:",
-      currentEmployeeCode
+      "AzureEmployeeId:",
+      currentAzureEmployeeId
     );
 
     console.log(
@@ -141,7 +141,7 @@ function EmployeeTable({
   }, [
     isAuthenticated,
     currentEmployeeId,
-    currentEmployeeCode,
+    currentAzureEmployeeId,
     currentEmployeeName,
   ]);
 
@@ -172,7 +172,7 @@ function EmployeeTable({
 
         ||
 
-        emp.employeeCode
+        emp.azureEmployeeId || emp.AzureEmployeeId
           ?.toLowerCase()
           .includes(keyword)
 
@@ -265,8 +265,8 @@ function EmployeeTable({
     );
 
     console.log(
-      "Updated By EmployeeCode:",
-      currentEmployeeCode
+      "Updated By AzureEmployeeId:",
+      currentAzureEmployeeId
     );
 
     console.log(
@@ -338,8 +338,8 @@ function EmployeeTable({
     );
 
     console.log(
-      "Deleted By EmployeeCode:",
-      currentEmployeeCode
+      "Deleted By AzureEmployeeId:",
+      currentAzureEmployeeId
     );
 
     console.log(

@@ -59,7 +59,7 @@ export default function DeleteShiftAssignmentDialog({
           </Typography>
 
           <Typography sx={{ mt: 1 }}>
-            <MuiText component="strong" variant="inherit">Employee ID :</MuiText> {employee.employeeCode}
+            <MuiText component="strong" variant="inherit">Employee ID :</MuiText> {employee.azureEmployeeId || employee.AzureEmployeeId || "-"}
           </Typography>
 
           <Typography sx={{ mt: 1 }}>

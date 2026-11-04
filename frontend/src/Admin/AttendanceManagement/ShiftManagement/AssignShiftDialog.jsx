@@ -50,7 +50,7 @@ export default function AssignShiftDialog({
   const initialForm = {
     employeeId: "",
     azureEmployeeId: "",
-    employeeCode: "",
+    AzureEmployeeId: "",
     employeeName: "",
     department: "",
     designation: "",
@@ -116,7 +116,7 @@ export default function AssignShiftDialog({
         setForm({
           employeeId: initialAssignment.employeeId,
           azureEmployeeId: initialAssignment.azureEmployeeId,
-          employeeCode: initialAssignment.employeeCode || "",
+          AzureEmployeeId: initialAssignment.azureEmployeeId || initialAssignment.AzureEmployeeId || "",
           employeeName: initialAssignment.employeeName || "",
           department: initialAssignment.department || "",
           designation: initialAssignment.designation || "",
@@ -182,8 +182,8 @@ export default function AssignShiftDialog({
           azureEmployeeId:
             employee.azureEmployeeId,
 
-          employeeCode:
-            employee.employeeCode,
+          AzureEmployeeId:
+            employee.azureEmployeeId || employee.AzureEmployeeId || "",
 
           employeeName:
             employee.employeeName,
@@ -329,11 +329,8 @@ export default function AssignShiftDialog({
       employeeId:
         Number(form.employeeId),
 
-      azureEmployeeId:
-        Number(form.azureEmployeeId),
-
-      employeeCode:
-        form.employeeCode,
+      AzureEmployeeId:
+        form.AzureEmployeeId,
 
       employeeName:
         form.employeeName,
@@ -482,7 +479,7 @@ export default function AssignShiftDialog({
                     }
                   >
                     {
-                      employee.employeeCode
+                      employee.azureEmployeeId || employee.AzureEmployeeId
                     }{" "}
                     -{" "}
                     {
@@ -497,9 +494,9 @@ export default function AssignShiftDialog({
           <Grid size={{ xs: 6 }}>
             <TextField
               fullWidth
-              label="Employee Code"
+              label="Employee ID"
               value={
-                form.employeeCode
+                form.AzureEmployeeId
               }
               disabled
             />

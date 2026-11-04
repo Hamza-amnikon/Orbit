@@ -28,7 +28,7 @@ function AddEmployee() {
     user,
     profile,
     employeeId,
-    employeeCode,
+    AzureEmployeeId,
     employeeName,
     email: loggedInEmail,
     isAuthenticated
@@ -146,8 +146,8 @@ function AddEmployee() {
     );
 
     console.log(
-      "Employee Code:",
-      employeeCode
+      "Employee ID:",
+      AzureEmployeeId
     );
 
     console.log(
@@ -182,7 +182,7 @@ function AddEmployee() {
   }, [
     isAuthenticated,
     employeeId,
-    employeeCode,
+    AzureEmployeeId,
     employeeName,
     loggedInEmail,
     profile,
@@ -453,8 +453,8 @@ function AddEmployee() {
       createdBy: employeeId,
       createdByEmployeeId: employeeId,
 
-      createdByEmployeeCode:
-        employeeCode || null,
+      createdByAzureEmployeeId:
+        AzureEmployeeId || null,
 
       createdByEmployeeName:
         employeeName || null
@@ -475,8 +475,8 @@ function AddEmployee() {
     );
 
     console.log(
-      "Logged-in EmployeeCode:",
-      employeeCode
+      "Logged-in AzureEmployeeId:",
+      AzureEmployeeId
     );
 
     console.log(

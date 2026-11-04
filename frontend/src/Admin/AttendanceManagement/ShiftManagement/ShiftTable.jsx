@@ -77,7 +77,7 @@ export default function ShiftTable({
                   </MuiLayoutBox>
                 </MuiTableCellMigration>
 
-                <MuiTableCellMigration>{row.azureEmployeeId}</MuiTableCellMigration>
+                <MuiTableCellMigration>{row.azureEmployeeId || row.AzureEmployeeId || "-"}</MuiTableCellMigration>
 
                 <MuiTableCellMigration>{row.department}</MuiTableCellMigration>
 

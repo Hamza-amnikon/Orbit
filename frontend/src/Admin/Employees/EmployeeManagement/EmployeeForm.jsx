@@ -32,7 +32,7 @@ import { showReactAlert } from "../../../components/ui/ReactPromptProvider";
 
 function EmployeeForm({
 
-  employeeCode = "Auto Generated",
+  AzureEmployeeId = "Auto Generated",
 
   // =========================
   // Personal Information
@@ -106,7 +106,7 @@ function EmployeeForm({
   const {
     profile,
     employeeId,
-    employeeCode: loggedInEmployeeCode,
+    AzureEmployeeId: loggedInAzureEmployeeId,
     employeeName,
     email: loggedInEmail,
     isAuthenticated,
@@ -128,11 +128,11 @@ function EmployeeForm({
   // CURRENT EMPLOYEE CODE
   // =====================================================
 
-  const currentEmployeeCode =
-    loggedInEmployeeCode ??
-    profile?.employeeCode ??
-    profile?.EmployeeCode ??
-    employeeCode ??
+  const currentAzureEmployeeId =
+    loggedInAzureEmployeeId ??
+    profile?.azureEmployeeId ??
+    profile?.AzureEmployeeId ??
+    AzureEmployeeId ??
     "Auto Generated";
 
 
@@ -227,8 +227,8 @@ function EmployeeForm({
     );
 
     console.log(
-      "Logged-in EmployeeCode:",
-      currentEmployeeCode
+      "Logged-in AzureEmployeeId:",
+      currentAzureEmployeeId
     );
 
     console.log(
@@ -321,7 +321,7 @@ function EmployeeForm({
           <TextField
             fullWidth
             label="Employee ID"
-            value={employeeCode}
+            value={AzureEmployeeId}
             InputProps={{
               readOnly: true,
               startAdornment: (

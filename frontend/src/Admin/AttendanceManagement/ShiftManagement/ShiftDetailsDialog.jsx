@@ -119,7 +119,7 @@ export default function ShiftDetailsDialog({
             </Typography>
 
             <Typography>
-              {employee.employeeCode}
+              {employee.azureEmployeeId || employee.AzureEmployeeId || "-"}
             </Typography>
 
           </Grid>

@@ -56,7 +56,7 @@ function EmployeeList() {
     user,
     profile,
     employeeId,
-    employeeCode,
+    AzureEmployeeId,
     employeeName,
     isAuthenticated,
     hasPermission,
@@ -93,12 +93,12 @@ function EmployeeList() {
   // CURRENT EMPLOYEE CODE
   // ==========================================
 
-  const currentEmployeeCode =
-    employeeCode ??
-    profile?.employeeCode ??
-    profile?.EmployeeCode ??
-    user?.employeeCode ??
-    user?.EmployeeCode ??
+  const currentAzureEmployeeId =
+    AzureEmployeeId ??
+    profile?.azureEmployeeId ??
+    profile?.AzureEmployeeId ??
+    user?.azureEmployeeId ??
+    user?.AzureEmployeeId ??
     null;
 
 
@@ -177,8 +177,8 @@ function EmployeeList() {
     );
 
     console.log(
-      "EmployeeCode:",
-      currentEmployeeCode
+      "AzureEmployeeId:",
+      currentAzureEmployeeId
     );
 
     console.log(
@@ -198,7 +198,7 @@ function EmployeeList() {
   }, [
     isAuthenticated,
     currentEmployeeId,
-    currentEmployeeCode,
+    currentAzureEmployeeId,
     currentEmployeeName,
   ]);
 
@@ -391,8 +391,8 @@ function EmployeeList() {
     );
 
     console.log(
-      "Logged-in EmployeeCode:",
-      currentEmployeeCode
+      "Logged-in AzureEmployeeId:",
+      currentAzureEmployeeId
     );
 
     console.log(
@@ -486,8 +486,8 @@ function EmployeeList() {
     );
 
     console.log(
-      "Deleted By EmployeeCode:",
-      currentEmployeeCode
+      "Deleted By AzureEmployeeId:",
+      currentAzureEmployeeId
     );
 
     console.log(
@@ -639,7 +639,7 @@ function EmployeeList() {
               ?.toLowerCase()
               .includes(keyword) ||
 
-            employee.employeeCode
+            employee.azureEmployeeId || employee.AzureEmployeeId
               ?.toLowerCase()
               .includes(keyword) ||
 
@@ -818,8 +818,8 @@ function EmployeeList() {
       );
 
       console.log(
-        "Requested By EmployeeCode:",
-        currentEmployeeCode
+        "Requested By AzureEmployeeId:",
+        currentAzureEmployeeId
       );
 
       console.log(

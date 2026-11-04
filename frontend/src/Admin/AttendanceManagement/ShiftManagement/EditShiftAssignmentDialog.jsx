@@ -62,7 +62,7 @@ export default function EditShiftAssignmentDialog({
   // =========================================================
 
   const [form, setForm] = useState({
-    employeeCode: "",
+    AzureEmployeeId: "",
     employeeName: "",
     department: "",
     designation: "",
@@ -165,8 +165,8 @@ export default function EditShiftAssignmentDialog({
         : normalizeTime(employee.endTime);
 
     setForm({
-      employeeCode:
-        employee.employeeCode || "",
+      AzureEmployeeId:
+        employee.azureEmployeeId || employee.AzureEmployeeId || "",
 
       employeeName:
         employee.employeeName || "",
@@ -435,14 +435,14 @@ export default function EditShiftAssignmentDialog({
           }}
         >
 
-          {/* Employee Code */}
+          {/* Employee ID */}
 
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
               label="Employee Code"
               value={
-                form.employeeCode
+                form.AzureEmployeeId
               }
               disabled
             />
