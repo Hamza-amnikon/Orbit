@@ -1,5 +1,5 @@
 import { MuiButtonMigration } from "../../ui/MuiCompat.jsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     useLocation,
     useNavigate,
@@ -46,6 +46,34 @@ function Navbar({ title }) {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const [notificationsOpen, setNotificationsOpen] = useState(false);
+    const notificationsRef = useRef(null);
+    const profileRef = useRef(null);
+
+    useEffect(() => {
+        if (!notificationsOpen && !menuOpen) return undefined;
+
+        const handleOutsideClick = (event) => {
+            if (notificationsOpen && !notificationsRef.current?.contains(event.target)) {
+                setNotificationsOpen(false);
+            }
+            if (menuOpen && !profileRef.current?.contains(event.target)) {
+                setMenuOpen(false);
+            }
+        };
+        const handleEscape = (event) => {
+            if (event.key === "Escape") {
+                setNotificationsOpen(false);
+                setMenuOpen(false);
+            }
+        };
+
+        document.addEventListener("pointerdown", handleOutsideClick);
+        document.addEventListener("keydown", handleEscape);
+        return () => {
+            document.removeEventListener("pointerdown", handleOutsideClick);
+            document.removeEventListener("keydown", handleEscape);
+        };
+    }, [notificationsOpen, menuOpen]);
 
     const [notifications, setNotifications] = useState([]);
 
@@ -467,6 +495,7 @@ function Navbar({ title }) {
        ======================================================== */
 
     const handleProfileMenu = () => {
+        setNotificationsOpen(false);
 
         setMenuOpen(
             (previous) =>
@@ -676,11 +705,12 @@ function Navbar({ title }) {
                     NOTIFICATIONS
                 ================================================= */}
 
+                <MuiLayoutBox ref={notificationsRef} component="div" className="navbar-notifications-wrapper">
                 <MuiButtonMigration
                     type="button"
                     className="icon-btn notification-btn"
                     aria-label="Notifications"
-                    onClick={() => setNotificationsOpen((open) => !open)}
+                    onClick={() => { setMenuOpen(false); setNotificationsOpen((open) => !open); }}
                     aria-expanded={notificationsOpen}
                 >
 
@@ -712,6 +742,7 @@ function Navbar({ title }) {
                         )}
                     </MuiLayoutBox>
                 )}
+                </MuiLayoutBox>
 
 
                 {/* =================================================
@@ -725,7 +756,7 @@ function Navbar({ title }) {
                     PROFILE
                 ================================================= */}
 
-                <MuiLayoutBox className="profile-wrapper" component="div">
+                <MuiLayoutBox ref={profileRef} className="profile-wrapper" component="div">
 
 
                     <MuiButtonMigration
@@ -924,3 +955,4 @@ function Navbar({ title }) {
 
 
 export default Navbar;
+
