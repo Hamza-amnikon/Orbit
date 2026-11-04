@@ -68,9 +68,14 @@ function AttendanceChart({
 }) {
 
     const today = attendanceCalendarDate(new Date());
+    const currentMonthKey = attendanceDateKey(new Date()).slice(0, 7);
 
     const [month, setMonth] =
         useState(today.getMonth());
+
+    useEffect(() => {
+        setMonth(Number(currentMonthKey.slice(5, 7)) - 1);
+    }, [currentMonthKey]);
 
     const year =
         today.getFullYear();
