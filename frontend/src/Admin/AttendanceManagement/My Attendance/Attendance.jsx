@@ -47,6 +47,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import { exportRowsToExcel } from "../../../utils/exportExcel";
 import { getAttendanceStatusForDuration } from "../AttendanceLogs/attendanceRules";
+import { attendanceCalendarDate, attendanceDateKey } from "../attendanceDate";
 
 
 function Attendance() {
@@ -68,10 +69,10 @@ function Attendance() {
     const [error, setError] = useState("");
 
     const [calendarDate, setCalendarDate] =
-        useState(new Date());
+        useState(() => attendanceCalendarDate(new Date()));
 
     const [selectedDate, setSelectedDate] =
-        useState(new Date());
+        useState(() => attendanceCalendarDate(new Date()));
     const [regularizationRequests, setRegularizationRequests] = useState([]);
     const [actionAnchor, setActionAnchor] = useState(null);
     const [actionRecord, setActionRecord] = useState(null);
@@ -180,12 +181,7 @@ function Attendance() {
                         .trim()
                         .toLowerCase();
 
-                const today = new Date();
-                const todayOnly = new Date(
-                    today.getFullYear(),
-                    today.getMonth(),
-                    today.getDate()
-                );
+                const todayOnly = attendanceCalendarDate(new Date());
 
                 const activeShifts = shifts.filter((shift) => {
                     if (
@@ -196,10 +192,10 @@ function Attendance() {
                     }
 
                     const from = shift?.fromDate
-                        ? new Date(shift.fromDate)
+                        ? attendanceCalendarDate(shift.fromDate)
                         : null;
                     const to = shift?.toDate
-                        ? new Date(shift.toDate)
+                        ? attendanceCalendarDate(shift.toDate)
                         : null;
 
                     if (from && !Number.isNaN(from.getTime())) {
@@ -308,7 +304,7 @@ function Attendance() {
                TODAY
             ================================================= */
 
-            const now = new Date();
+            const now = attendanceCalendarDate(new Date());
 
             const todayString =
                 `${now.getFullYear()}-${String(
@@ -333,7 +329,7 @@ function Attendance() {
                     }
 
                     const date =
-                        new Date(value);
+                        attendanceCalendarDate(value);
 
                     if (
                         Number.isNaN(
@@ -390,9 +386,6 @@ function Attendance() {
         }
 
     };
-
-    const attendanceDateKey = (value) =>
-        String(value ?? "").match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? null;
 
     const requestForAttendance = (item) => {
         const attendanceId = Number(item?.attendanceId ?? item?.id);
@@ -538,14 +531,7 @@ function Attendance() {
 
     };
 
-    const parseAttendanceCalendarDate = (value) => {
-        const calendarDate = String(value ?? "").match(/^(\d{4})-(\d{2})-(\d{2})/);
-        if (calendarDate) {
-            const [, year, month, day] = calendarDate;
-            return new Date(Number(year), Number(month) - 1, Number(day));
-        }
-        return new Date(value);
-    };
+    const parseAttendanceCalendarDate = attendanceCalendarDate;
 
 
     const getDate = (item) => {
@@ -906,7 +892,7 @@ function Attendance() {
     const isToday = (day) => {
 
         const today =
-            new Date();
+            attendanceCalendarDate(new Date());
 
         return (
             calendarDate.getFullYear() ===
@@ -1018,7 +1004,7 @@ function Attendance() {
     const selectedRecord = attendance.find((item) => {
         const value = getDateValue(item);
         if (!value) return false;
-        const date = new Date(value);
+        const date = parseAttendanceCalendarDate(value);
         return !Number.isNaN(date.getTime()) &&
             date.getFullYear() === selectedDate.getFullYear() &&
             date.getMonth() === selectedDate.getMonth() &&
@@ -1510,7 +1496,7 @@ function Attendance() {
                             </Typography>
 
                             <MuiText component="span" variant="inherit">
-                                {new Date().toLocaleDateString(
+                                {attendanceCalendarDate(new Date()).toLocaleDateString(
                                     "en-IN",
                                     {
                                         day: "2-digit",

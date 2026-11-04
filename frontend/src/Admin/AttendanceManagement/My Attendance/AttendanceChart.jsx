@@ -32,6 +32,7 @@ import { getProfile } from "../../Services/ProfileService";
  */
 import LeaveService from "../../Services/LeaveService";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { attendanceCalendarDate, attendanceDateKey } from "../attendanceDate";
 
 
 /* =========================================================
@@ -66,7 +67,7 @@ function AttendanceChart({
     weeklyOffs = []
 }) {
 
-    const today = new Date();
+    const today = attendanceCalendarDate(new Date());
 
     const [month, setMonth] =
         useState(today.getMonth());
@@ -1072,7 +1073,7 @@ function AttendanceChart({
                     return;
                 }
 
-                const calendarKey = String(dateValue).match(/^\d{4}-\d{2}-\d{2}/)?.[0];
+                const calendarKey = attendanceDateKey(dateValue);
                 if (calendarKey) {
                     map.set(calendarKey, record);
                     return;
@@ -1143,12 +1144,14 @@ function AttendanceChart({
         const startMinutes = parseMinutes(startTime);
         const endMinutes = parseMinutes(endTime);
         const overnight = startMinutes !== null && endMinutes !== null && endMinutes <= startMinutes;
-        const hasCompletedShift = (date, key) => {
+        const hasCompletedShift = (key) => {
             if (!resolvedShift || !shiftFrom || !shiftTo || key < shiftFrom || key > shiftTo) return false;
-            if (endMinutes === null) return date < new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const shiftEnd = new Date(date);
-            if (overnight) shiftEnd.setDate(shiftEnd.getDate() + 1);
-            shiftEnd.setHours(Math.floor(endMinutes / 60), endMinutes % 60, 0, 0);
+            if (endMinutes === null) return key < attendanceDateKey(now);
+            const shiftEnd = new Date(
+                key + "T" + String(Math.floor(endMinutes / 60)).padStart(2, "0") +
+                ":" + String(endMinutes % 60).padStart(2, "0") + ":00+05:30"
+            );
+            if (overnight) shiftEnd.setTime(shiftEnd.getTime() + 24 * 60 * 60 * 1000);
             return shiftEnd < now;
         };
 
@@ -1286,7 +1289,7 @@ function AttendanceChart({
                     }
 
 
-                    const isMissingShift = !isWeekend(date) && hasCompletedShift(date, key);
+                    const isMissingShift = !isWeekend(date) && hasCompletedShift(key);
 
                     return {
 

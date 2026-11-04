@@ -19,6 +19,7 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { Box as MuiLayoutBox, TablePagination, Typography as MuiText } from "@mui/material";
+import { attendanceCalendarDate } from "../attendanceDate";
 
 export default function AttendanceTable({
   rows = [],
@@ -74,7 +75,7 @@ export default function AttendanceTable({
   const formatDate = (date) => {
     if (!date) return "-";
 
-    return new Date(date).toLocaleDateString("en-GB");
+    return attendanceCalendarDate(date).toLocaleDateString("en-GB");
   };
 
   const formatTime = (time) => {
