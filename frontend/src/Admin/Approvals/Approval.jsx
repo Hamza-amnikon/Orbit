@@ -1055,6 +1055,16 @@ const Approval = ({ attendanceOnly = false }) => {
     ) => {
 
         setRejectionComment("");
+        setAttendanceRequestDetails(null);
+
+        if (String(request?.requestType || "").toLowerCase().includes("attendance regularization")) {
+            axios.get(`${ATTENDANCE_API_BASE_URL}/api/Attendance/regularization-requests/${request.requestId}`)
+                .then((response) => setAttendanceRequestDetails(response.data))
+                .catch((detailError) => {
+                    console.error("Unable to load attendance regularization details:", detailError);
+                    setAttendanceRequestDetails({ loadError: "Request details could not be loaded." });
+                });
+        }
 
         setSelectedRequest(
             request
@@ -2778,6 +2788,26 @@ const response =
                                     <Typography className="approval-action-detail-label">Current Status</Typography>
                                     <Typography className="approval-action-detail-value">{selectedRequest.status || "Pending"}</Typography>
                                 </Box>
+
+                                {String(selectedRequest.requestType || "").toLowerCase().includes("attendance regularization") && (
+                                    <Box className="approval-action-detail" sx={{ gridColumn: "1 / -1" }}>
+                                        <Typography className="approval-action-detail-label">Attendance correction</Typography>
+                                        {attendanceRequestDetails?.loadError ? (
+                                            <Typography className="approval-action-detail-value">{attendanceRequestDetails.loadError}</Typography>
+                                        ) : attendanceRequestDetails ? (
+                                            <>
+                                                <Typography className="approval-action-detail-value">
+                                                    Requested times: {String(attendanceRequestDetails.requestedCheckIn || "").slice(0, 5)} – {String(attendanceRequestDetails.requestedCheckOut || "").slice(0, 5)}
+                                                </Typography>
+                                                <Typography className="approval-action-detail-value">
+                                                    Reason: {attendanceRequestDetails.reason || "—"}
+                                                </Typography>
+                                            </>
+                                        ) : (
+                                            <Typography className="approval-action-detail-value">Loading request details…</Typography>
+                                        )}
+                                    </Box>
+                                )}
 
                                 {/* LEAVE ATTACHMENT */}
 
