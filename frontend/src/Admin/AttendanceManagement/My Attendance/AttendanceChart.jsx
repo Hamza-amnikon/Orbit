@@ -1072,6 +1072,12 @@ function AttendanceChart({
                     return;
                 }
 
+                const calendarKey = String(dateValue).match(/^\d{4}-\d{2}-\d{2}/)?.[0];
+                if (calendarKey) {
+                    map.set(calendarKey, record);
+                    return;
+                }
+
 
                 const date =
                     new Date(dateValue);
@@ -2372,3 +2378,4 @@ function AttendanceChart({
 
 
 export default AttendanceChart;
+

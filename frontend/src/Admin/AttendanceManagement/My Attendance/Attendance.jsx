@@ -548,6 +548,14 @@ function Attendance() {
             return "-";
         }
 
+        const calendarDate = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (calendarDate) {
+            const [, year, month, day] = calendarDate;
+            return new Date(Number(year), Number(month) - 1, Number(day)).toLocaleDateString(
+                "en-IN", { day: "2-digit", month: "short", year: "numeric" }
+            );
+        }
+
         const date =
             new Date(value);
 
@@ -1916,3 +1924,4 @@ function Attendance() {
 
 
 export default Attendance;
+
