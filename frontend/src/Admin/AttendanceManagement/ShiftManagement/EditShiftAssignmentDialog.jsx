@@ -404,7 +404,7 @@ export default function EditShiftAssignmentDialog({
 
         {validationError && <Alert severity="error" sx={{ mb: 2 }}>{validationError}</Alert>}
         <Alert severity="info" sx={{ mb: 2 }}>
-          Edit this assignment within its existing dates. Use Assign Next Period to keep the previous assignment in history.
+          You can edit this assignment, including its dates. Use Assign Next Period when the existing period should remain in history.
         </Alert>
 
         {/* ================================================= */}
@@ -686,7 +686,6 @@ export default function EditShiftAssignmentDialog({
               type="date"
               label="From Date"
               name="fromDate"
-              disabled
               value={
                 form.fromDate
               }
@@ -711,7 +710,6 @@ export default function EditShiftAssignmentDialog({
               type="date"
               label="To Date"
               name="toDate"
-              disabled
               value={
                 form.toDate
               }
