@@ -33,16 +33,7 @@ function Dashboard() {
         user,
         profile,
 
-        employeeId,
-        employeeCode,
         employeeName,
-
-        email,
-        department,
-        designation,
-
-        status,
-        role,
 
         isAuthenticated,
         hasPermission,
@@ -146,56 +137,6 @@ function Dashboard() {
         );
 
     }, [displayName]);
-
-
-    /* ========================================================
-       NORMALIZED USER
-       ======================================================== */
-
-    const dashboardUser = useMemo(() => {
-
-        return {
-
-            employeeId:
-                employeeId ?? null,
-
-            employeeCode:
-                employeeCode ?? null,
-
-            employeeName:
-                displayName,
-
-            firstName:
-                firstName,
-
-            email:
-                email ?? null,
-
-            department:
-                department ?? null,
-
-            designation:
-                designation ?? null,
-
-            status:
-                status ?? null,
-
-            role:
-                role ?? "Employee"
-
-        };
-
-    }, [
-        employeeId,
-        employeeCode,
-        displayName,
-        firstName,
-        email,
-        department,
-        designation,
-        status,
-        role
-    ]);
 
 
     /* ========================================================
@@ -539,7 +480,7 @@ function Dashboard() {
 
             <MuiLayoutBox className="dashboard-modules-grid" component="section">
 
-                {visibleModules.map((module, index) => (
+                {visibleModules.map((module) => (
 
                     <MuiActionButton
                         key={module.permissionPath}
@@ -626,3 +567,4 @@ function Dashboard() {
 
 
 export default Dashboard;
+

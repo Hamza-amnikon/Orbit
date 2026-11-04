@@ -1,6 +1,6 @@
 import "./AttendanceDashboard.css";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import DashboardCard from "./DashboardCard";
@@ -39,17 +39,17 @@ export default function AttendanceDashboard() {
   const canDelete = hasPermission(permissionRoute, "delete");
 
   const [dashboard, setDashboard] = useState({
-    present: 0,
-    halfDay: 0,
-    absent: 0,
-    late: 0,
-    leave: 0,
-    wfh: 0,
+    present: null,
+    halfDay: null,
+    absent: null,
+    late: null,
+    leave: null,
+    wfh: null,
   });
 
   const [todayAttendance, setTodayAttendance] = useState([]);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [summaryFilter, setSummaryFilter] = useState("");
   const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
@@ -79,26 +79,13 @@ export default function AttendanceDashboard() {
     }
   };
 
-  useEffect(() => {
-    refreshData();
-    const refreshWhenVisible = () => {
-      if (document.visibilityState === "visible") refreshData();
-    };
-    const timer = window.setInterval(refreshWhenVisible, 30000);
-    document.addEventListener("visibilitychange", refreshWhenVisible);
-    return () => {
-      window.clearInterval(timer);
-      document.removeEventListener("visibilitychange", refreshWhenVisible);
-    };
-  }, []);
-
-  const refreshData = () => {
-    loadDashboard();
-  };
-
-  const loadDashboard = async () => {
+  const loadDashboard = useCallback(async () => {
     try {
+      setLoading(true);
       const data = await AttendanceService.getToday();
+      if (!Array.isArray(data)) {
+        throw new Error("The attendance API returned an unexpected response.");
+      }
 
       const normalizedAttendance = data.map((item) => ({
         ...item,
@@ -116,22 +103,32 @@ export default function AttendanceDashboard() {
       });
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const loadTodayAttendance = async () => {
-    try {
-      setLoading(true);
-
-      const data = await AttendanceService.getToday();
-
-      setTodayAttendance(data);
-    } catch (error) {
-      console.error(error);
+      setNotice({
+        open: true,
+        severity: "error",
+        message: error?.response?.data?.message || error?.message || "Could not load today's attendance. Check the attendance API and try again.",
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const refreshData = useCallback(() => {
+    loadDashboard();
+  }, [loadDashboard]);
+
+  useEffect(() => {
+    refreshData();
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") refreshData();
+    };
+    const timer = window.setInterval(refreshWhenVisible, 30000);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+    };
+  }, [refreshData]);
 
   const handleDelete = async () => {
     if (!canDelete) return;
@@ -186,7 +183,7 @@ export default function AttendanceDashboard() {
 
         <DashboardCard
           title="Present"
-          value={dashboard.present}
+          value={loading ? "…" : dashboard.present ?? "—"}
           subtitle="Employees Present"
           color="#10B981"
           icon={<GroupsIcon />}
@@ -196,7 +193,7 @@ export default function AttendanceDashboard() {
 
         <DashboardCard
           title="Half Day"
-          value={dashboard.halfDay}
+          value={loading ? "…" : dashboard.halfDay ?? "—"}
           subtitle="Under 8h 15m worked"
           color="#F59E0B"
           icon={<AccessTimeIcon />}
@@ -206,7 +203,7 @@ export default function AttendanceDashboard() {
 
         <DashboardCard
           title="Absent"
-          value={dashboard.absent}
+          value={loading ? "…" : dashboard.absent ?? "—"}
           subtitle="Employees Absent"
           color="#EF4444"
           icon={<PersonOffIcon />}
@@ -216,7 +213,7 @@ export default function AttendanceDashboard() {
 
         <DashboardCard
           title="Late"
-          value={dashboard.late}
+          value={loading ? "…" : dashboard.late ?? "—"}
           subtitle="Late Check-ins"
           color="#F59E0B"
           icon={<TimerIcon />}
@@ -226,7 +223,7 @@ export default function AttendanceDashboard() {
 
         <DashboardCard
           title="On Leave"
-          value={dashboard.leave}
+          value={loading ? "…" : dashboard.leave ?? "—"}
           subtitle="Approved Leave"
           color="#8B5CF6"
           icon={<BeachAccessIcon />}
@@ -236,7 +233,7 @@ export default function AttendanceDashboard() {
 
         <DashboardCard
           title="WFH"
-          value={dashboard.wfh}
+          value={loading ? "…" : dashboard.wfh ?? "—"}
           subtitle="Work From Home"
           color="#06B6D4"
           icon={<HomeWorkIcon />}
@@ -331,3 +328,4 @@ export default function AttendanceDashboard() {
     </MuiLayoutBox>
   );
 }
+
