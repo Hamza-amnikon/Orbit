@@ -107,6 +107,11 @@
     color: #15803D !important;
 }
 
+.status-chip.early {
+    background: #E0F2FE !important;
+    color: #0369A1 !important;
+}
+
 .status-chip.late {
     background: #FEF3C7 !important;
     color: #B45309 !important;

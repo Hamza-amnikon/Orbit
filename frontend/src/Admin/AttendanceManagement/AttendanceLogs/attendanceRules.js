@@ -25,7 +25,7 @@ export const formatWorkedHours = (checkIn, checkOut) => {
 export const getAttendanceStatusForDuration = (status, checkIn, checkOut, totalHours) => {
   const current = String(status || "").trim();
   const normalized = current.toLowerCase().replace(/[ _-]/g, "");
-  if (!["present", "late", "halfday"].includes(normalized)) return current;
+  if (!["present", "early", "late", "halfday"].includes(normalized)) return current;
 
   const worked = typeof totalHours === "string" && /^(\d+):([0-5]\d)$/.exec(totalHours);
   const minutes = checkOut && worked
@@ -33,5 +33,7 @@ export const getAttendanceStatusForDuration = (status, checkIn, checkOut, totalH
     : getWorkedMinutes(checkIn, checkOut);
   if (minutes === null) return current;
   if (minutes < HALF_DAY_THRESHOLD_MINUTES) return "Half Day";
-  return normalized === "late" ? "Late" : "Present";
+  if (normalized === "late") return "Late";
+  if (normalized === "early") return "Early";
+  return "Present";
 };

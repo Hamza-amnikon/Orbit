@@ -203,7 +203,7 @@ const handleChange = (e) => {
       newErrors.status = "Status is required";
     }
 
-    if (["Present", "Late", "Half Day"].includes(form.status)) {
+    if (["Present", "Early", "Late", "Half Day"].includes(form.status)) {
       if (!form.checkIn) {
         newErrors.checkIn = "Check in time is required";
       }
@@ -377,6 +377,8 @@ const handleChange = (e) => {
               helperText={errors.status}
             >
               <MenuItem value="Present">Present</MenuItem>
+
+              <MenuItem value="Early">Early</MenuItem>
 
               <MenuItem value="Late">Late</MenuItem>
 

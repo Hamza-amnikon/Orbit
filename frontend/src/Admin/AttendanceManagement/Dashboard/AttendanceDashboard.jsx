@@ -14,6 +14,7 @@ import AttendanceService from "../services/AttendanceService";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
 import TimerIcon from "@mui/icons-material/Timer";
+import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -95,6 +96,7 @@ export default function AttendanceDashboard() {
 
       setDashboard({
         present: normalizedAttendance.filter(x => x.status === "Present").length,
+        early: normalizedAttendance.filter(x => x.status === "Early").length,
         halfDay: normalizedAttendance.filter(x => x.status === "Half Day").length,
         absent: normalizedAttendance.filter(x => x.status === "Absent").length,
         late: normalizedAttendance.filter(x => x.status === "Late").length,
@@ -219,6 +221,16 @@ export default function AttendanceDashboard() {
           icon={<TimerIcon />}
           onClick={() => setSummaryFilter((current) => current === "Late" ? "" : "Late")}
           selected={summaryFilter === "Late"}
+        />
+
+        <DashboardCard
+          title="Early"
+          value={loading ? "…" : dashboard.early ?? "—"}
+          subtitle="Arrived before shift start"
+          color="#0EA5E9"
+          icon={<WbSunnyOutlinedIcon />}
+          onClick={() => setSummaryFilter((current) => current === "Early" ? "" : "Early")}
+          selected={summaryFilter === "Early"}
         />
 
         <DashboardCard

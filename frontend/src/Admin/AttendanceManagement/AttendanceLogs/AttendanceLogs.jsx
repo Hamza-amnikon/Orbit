@@ -33,6 +33,7 @@ import AttendanceService from "../services/AttendanceService";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
 import TimerIcon from "@mui/icons-material/Timer";
+import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
 
@@ -196,6 +197,10 @@ export default function AttendanceLogs() {
       x => x.status === "Present"
     ).length,
 
+    early: filteredByOtherFilters.filter(
+      x => x.status === "Early"
+    ).length,
+
     halfDay: filteredByOtherFilters.filter(
       x => x.status === "Half Day"
     ).length,
@@ -333,6 +338,16 @@ export default function AttendanceLogs() {
           icon={<GroupsIcon />}
           onClick={() => setStatus((current) => current === "Present" ? "" : "Present")}
           selected={status === "Present"}
+        />
+
+        <DashboardCard
+          title="Early"
+          value={filteredDashboard.early}
+          subtitle="Arrived before shift start"
+          color="#0EA5E9"
+          icon={<WbSunnyOutlinedIcon />}
+          onClick={() => setStatus((current) => current === "Early" ? "" : "Early")}
+          selected={status === "Early"}
         />
 
         <DashboardCard

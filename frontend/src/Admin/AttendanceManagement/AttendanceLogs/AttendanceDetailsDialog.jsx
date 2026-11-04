@@ -79,6 +79,8 @@ export default function AttendanceDetailsDialog({ open, onClose, attendance }) {
                 color={
                   attendance.status === "Present"
                     ? "success"
+                    : attendance.status === "Early"
+                      ? "info"
                     : attendance.status === "Late"
                       ? "warning"
                       : attendance.status === "Absent"

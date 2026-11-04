@@ -10,6 +10,9 @@ export default function StatusChip({ status }) {
             case "Present":
                 return "status present";
 
+            case "Early":
+                return "status early";
+
             case "Late":
                 return "status late";
 

@@ -408,6 +408,10 @@ return (
               Present
             </MenuItem>
 
+            <MenuItem value="Early">
+              Early
+            </MenuItem>
+
             <MenuItem value="Late">
               Late
             </MenuItem>

@@ -20,7 +20,7 @@ import { getAttendanceStatusForDuration } from "../AttendanceLogs/attendanceRule
 const normalizeStatus = (status) => String(status || "").trim().toLowerCase().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
 const isHalfDayStatus = (status) => ["half day", "halfday"].includes(normalizeStatus(status));
 const displayStatus = (status) => isHalfDayStatus(status) ? "Present (Half Day)" : status || "Unknown";
-const isPresentStatus = (status) => normalizeStatus(status) === "present" || isHalfDayStatus(status);
+const isPresentStatus = (status) => ["present", "early"].includes(normalizeStatus(status)) || isHalfDayStatus(status);
 
 export default function AttendanceReports() {
   const navigate = useNavigate();

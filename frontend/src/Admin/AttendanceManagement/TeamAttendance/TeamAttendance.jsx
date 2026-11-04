@@ -85,6 +85,7 @@ const normalizeStatus = (status) => String(status ?? "").trim().toLowerCase().re
 const statusColor = (status) => {
   const normalized = normalizeStatus(status);
   if (normalized === "present") return "success";
+  if (normalized === "early") return "info";
   if (normalized === "late") return "warning";
   if (normalized === "halfday") return "info";
   if (normalized === "absent") return "error";
@@ -271,7 +272,7 @@ export default function TeamAttendance() {
         </TextField>
         <TextField select fullWidth label="Status" value={status} onChange={(event) => setStatus(event.target.value)}>
           <MenuItem value="">All statuses</MenuItem>
-          {["Present", "Half Day", "Absent", "Late", "Leave", "WFH"].map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+          {["Present", "Early", "Half Day", "Absent", "Late", "Leave", "WFH"].map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
         </TextField>
         <TextField
           fullWidth
