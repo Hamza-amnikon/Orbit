@@ -113,6 +113,9 @@ const Approval = ({ attendanceOnly = false }) => {
     const [selectedStatus, setSelectedStatus] =
         useState("");
 
+    const [rejectionComment, setRejectionComment] =
+        useState("");
+
     const [profile, setProfile] =
         useState(null);
 
@@ -1051,6 +1054,8 @@ const Approval = ({ attendanceOnly = false }) => {
         requestedStatus
     ) => {
 
+        setRejectionComment("");
+
         setSelectedRequest(
             request
         );
@@ -1073,6 +1078,15 @@ const Approval = ({ attendanceOnly = false }) => {
         async () => {
 
             if (!selectedRequest) {
+                return;
+            }
+
+            if (selectedStatus === "Rejected" && !rejectionComment.trim()) {
+                showMessagePrompt(
+                    "Enter a reason for rejecting this request.",
+                    "warning",
+                    "Rejection reason required"
+                );
                 return;
             }
 
@@ -1213,7 +1227,9 @@ const Approval = ({ attendanceOnly = false }) => {
                         `${APPROVAL_API_BASE_URL}/Approval/${approvalRequestId}/reject`,
                         {
                             approverId:
-                                loggedInEmployeeId
+                                loggedInEmployeeId,
+                            rejectionComment:
+                                rejectionComment.trim()
                         },
                         {
                             headers:
@@ -1250,6 +1266,8 @@ const Approval = ({ attendanceOnly = false }) => {
                 setSelectedStatus(
                     ""
                 );
+
+                setRejectionComment("");
 
                 await loadApprovalRequests();
 
@@ -2491,6 +2509,13 @@ const response =
 
                                 </MuiLayoutBox>
 
+                                {String(selectedRequest.status || "").toLowerCase() === "rejected" && selectedRequest.rejectionComment && (
+                                    <MuiLayoutBox className="approval-detail-item" style={{ gridColumn: "1 / -1" }} component="div">
+                                        <MuiText component="span" variant="inherit">Reason for rejection</MuiText>
+                                        <MuiText component="strong" variant="inherit">{selectedRequest.rejectionComment}</MuiText>
+                                    </MuiLayoutBox>
+                                )}
+
                                 {String(selectedRequest.requestType || "").toLowerCase().includes("attendance regularization") && (
                                     <MuiLayoutBox className="approval-detail-item" style={{ gridColumn: "1 / -1" }} component="div">
                                         <MuiText component="span" variant="inherit">Attendance correction</MuiText>
@@ -2599,6 +2624,8 @@ const response =
                                 ""
                             );
 
+                            setRejectionComment("");
+
                         }}
                         fullWidth
                         maxWidth="sm"
@@ -2660,6 +2687,8 @@ const response =
                                         setSelectedStatus(
                                             ""
                                         );
+
+                                        setRejectionComment("");
 
                                     }}
                                 >
@@ -2814,6 +2843,28 @@ const response =
 
                             </Box>
 
+                            {selectedStatus === "Rejected" && (
+                                <Box className="approval-action-comment">
+                                    <Typography className="approval-action-comment-label" component="label" htmlFor="approval-rejection-comment">
+                                        Reason for rejection <span aria-hidden="true">*</span>
+                                    </Typography>
+                                    <TextField
+                                        id="approval-rejection-comment"
+                                        className="approval-action-comment-field"
+                                        fullWidth
+                                        required
+                                        multiline
+                                        minRows={3}
+                                        maxRows={6}
+                                        value={rejectionComment}
+                                        onChange={(event) => setRejectionComment(event.target.value.slice(0, 1000))}
+                                        placeholder="Explain why this request is being rejected"
+                                        inputProps={{ maxLength: 1000, "aria-label": "Reason for rejection" }}
+                                        helperText={`${rejectionComment.length}/1000 characters. This reason will be saved with the rejection.`}
+                                    />
+                                </Box>
+                            )}
+
                         </DialogContent>
 
                         <DialogActions
@@ -2834,6 +2885,8 @@ const response =
                                         ""
                                     );
 
+                                    setRejectionComment("");
+
                                 }}
                             >
                                 Cancel
@@ -2853,7 +2906,8 @@ const response =
                                         selectedStatus ===
                                         "Approved" &&
                                         !canApprove
-                                    )
+                                    ) ||
+                                    (selectedStatus === "Rejected" && !rejectionComment.trim())
                                 }
                                 className={
                                     selectedStatus ===
@@ -2916,3 +2970,4 @@ const response =
 };
 
 export default Approval;
+
