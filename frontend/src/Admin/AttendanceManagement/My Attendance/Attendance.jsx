@@ -538,6 +538,15 @@ function Attendance() {
 
     };
 
+    const parseAttendanceCalendarDate = (value) => {
+        const calendarDate = String(value ?? "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (calendarDate) {
+            const [, year, month, day] = calendarDate;
+            return new Date(Number(year), Number(month) - 1, Number(day));
+        }
+        return new Date(value);
+    };
+
 
     const getDate = (item) => {
 
@@ -548,16 +557,8 @@ function Attendance() {
             return "-";
         }
 
-        const calendarDate = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
-        if (calendarDate) {
-            const [, year, month, day] = calendarDate;
-            return new Date(Number(year), Number(month) - 1, Number(day)).toLocaleDateString(
-                "en-IN", { day: "2-digit", month: "short", year: "numeric" }
-            );
-        }
-
         const date =
-            new Date(value);
+            parseAttendanceCalendarDate(value);
 
         if (
             Number.isNaN(
@@ -589,7 +590,7 @@ function Attendance() {
         }
 
         const date =
-            new Date(value);
+            parseAttendanceCalendarDate(value);
 
         if (
             Number.isNaN(
@@ -827,7 +828,7 @@ function Attendance() {
                 }
 
                 const date =
-                    new Date(value);
+                    parseAttendanceCalendarDate(value);
 
                 return (
                     date.getFullYear() ===
