@@ -94,15 +94,11 @@ export default function AssignShiftDialog({
     const now = new Date();
     const firstOfNextMonth = new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 1));
     const previousEnd = new Date(`${assignment.toDate}T00:00:00Z`);
-    const previousStart = new Date(`${assignment.fromDate}T00:00:00Z`);
-    const start = new Date(firstOfNextMonth);
-    if (previousEnd < start || previousStart >= start) {
-      start.setTime(previousEnd.getTime());
-      start.setUTCDate(start.getUTCDate() + 1);
-    }
-    if (start <= new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()))) {
-      start.setTime(firstOfNextMonth.getTime());
-    }
+    const dayAfterPreviousEnd = new Date(previousEnd);
+    dayAfterPreviousEnd.setUTCDate(dayAfterPreviousEnd.getUTCDate() + 1);
+    const start = dayAfterPreviousEnd > firstOfNextMonth
+      ? dayAfterPreviousEnd
+      : firstOfNextMonth;
     const end = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 0));
     return {
       fromDate: start.toISOString().slice(0, 10),
