@@ -4,6 +4,27 @@ import { Alert, Box, Button, Typography } from "@mui/material";
 export default class RouteErrorBoundary extends Component {
   state = { hasError: false };
 
+  componentDidCatch(error) {
+    const message = String(error?.message || error || "");
+    if (!/failed to fetch dynamically imported module|importing a module script failed|error loading dynamically imported module/i.test(message)) {
+      return;
+    }
+
+    // A deployment may remove a chunk referenced by an already open tab.
+    // Reload once to get the new index and chunk names, avoiding a reload loop
+    // if the server is genuinely unavailable.
+    const key = "spark:route-chunk-reload-at";
+    try {
+      const lastReload = Number(sessionStorage.getItem(key) || 0);
+      if (Date.now() - lastReload > 60_000) {
+        sessionStorage.setItem(key, String(Date.now()));
+        window.location.reload();
+      }
+    } catch {
+      // Keep the manual reload action available when storage is blocked.
+    }
+  }
+
   static getDerivedStateFromError() {
     return { hasError: true };
   }
