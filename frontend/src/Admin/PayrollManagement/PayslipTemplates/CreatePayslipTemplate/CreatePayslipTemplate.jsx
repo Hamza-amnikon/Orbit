@@ -923,9 +923,20 @@ function CreatePayslipTemplate({ onBack }) {
        ======================================================== */
 
     const formatCurrency = (value) =>
-        `₹${Number(value || 0).toLocaleString(
-            "en-IN"
-        )}`;
+        new Intl.NumberFormat(
+            currency === "INR" ? "en-IN" : "en-US",
+            {
+                style: "currency",
+                currency,
+                currencyDisplay: currency === "INR" ? "narrowSymbol" : "code",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+            }
+        ).format(Number(value) || 0);
+
+    const previewLocation = locations.find(
+        (item) => String(item.locationId) === String(locationId)
+    )?.locationName;
 
     const previewGross = allComponents
         .filter(
@@ -1752,6 +1763,17 @@ function CreatePayslipTemplate({ onBack }) {
                                             }
                                         </MuiText>
                                     </Box>
+
+                                    {previewLocation && (
+                                        <Box>
+                                            <MuiText component="span" variant="inherit">
+                                                LOCATION
+                                            </MuiText>
+                                            <MuiText component="strong" variant="inherit">
+                                                {previewLocation}
+                                            </MuiText>
+                                        </Box>
+                                    )}
                                 </Box>
 
                                 <Box className="cpt-preview-salary-section">
@@ -1870,7 +1892,7 @@ function CreatePayslipTemplate({ onBack }) {
                                 </Box>
 
                                 <Typography className="cpt-preview-calculation-note">
-                                    Calculated from preview CTC of ₹50,000
+                                    Calculated from preview CTC of {formatCurrency(50000)}
                                 </Typography>
                             </Box>
                         </Card>
