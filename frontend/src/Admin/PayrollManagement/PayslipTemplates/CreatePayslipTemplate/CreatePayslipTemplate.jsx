@@ -32,6 +32,9 @@ const PAYROLL_API_BASE_URL = String(
     import.meta.env.VITE_PAYROLL_API_BASE_URL || ""
 ).replace(/\/+$/, "");
 const API_BASE_URL = `${PAYROLL_API_BASE_URL}/api`;
+const LOCATION_API_URL = `${String(
+    import.meta.env.VITE_LOCATION_API_BASE_URL || ""
+).replace(/\/+$/, "")}/api/Location`;
 
 /* ============================================================
    FALLBACK SALARY COMPONENTS
@@ -161,6 +164,9 @@ function CreatePayslipTemplate({ onBack }) {
     const [description, setDescription] = useState("");
     const [employeeType, setEmployeeType] = useState("Permanent");
     const [currency, setCurrency] = useState("INR");
+    const [locationId, setLocationId] = useState("");
+    const [locations, setLocations] = useState([]);
+    const [locationError, setLocationError] = useState("");
     const [frequency, setFrequency] = useState("Monthly");
 
     const [salaryComponents, setSalaryComponents] = useState(
@@ -175,6 +181,36 @@ function CreatePayslipTemplate({ onBack }) {
 
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const loadLocations = async () => {
+            try {
+                const response = await fetch(LOCATION_API_URL, {
+                    credentials: "include",
+                });
+
+                if (!response.ok) {
+                    throw new Error("Locations could not be loaded.");
+                }
+
+                const data = await response.json();
+
+                if (!cancelled) {
+                    setLocations(Array.isArray(data) ? data : []);
+                    setLocationError("");
+                }
+            } catch {
+                if (!cancelled) {
+                    setLocationError("Locations could not be loaded. Please retry the page.");
+                }
+            }
+        };
+
+        loadLocations();
+        return () => { cancelled = true; };
+    }, []);
 
     /* ========================================================
        LOAD SALARY COMPONENTS
@@ -271,6 +307,7 @@ function CreatePayslipTemplate({ onBack }) {
                 setDescription("");
                 setEmployeeType("Permanent");
                 setCurrency("INR");
+                setLocationId("");
                 setFrequency("Monthly");
 
                 setEarnings([
@@ -367,6 +404,10 @@ function CreatePayslipTemplate({ onBack }) {
                         template.Currency ??
                         "INR"
                 );
+
+                setLocationId(String(
+                    template.locationId ?? template.LocationId ?? ""
+                ));
 
                 setFrequency(
                     template.payFrequency ??
@@ -678,6 +719,10 @@ function CreatePayslipTemplate({ onBack }) {
             return "Template name is required.";
         }
 
+        if (!isEditMode && !locationId) {
+            return "Select a location to set the template currency.";
+        }
+
         if (allComponents.length === 0) {
             return "Add at least one salary component.";
         }
@@ -783,6 +828,8 @@ function CreatePayslipTemplate({ onBack }) {
             payFrequency: frequency,
 
             currency,
+
+            locationId: locationId ? Number(locationId) : null,
 
             components:
                 orderedComponents,
@@ -1332,6 +1379,8 @@ function CreatePayslipTemplate({ onBack }) {
 
                             <Divider />
 
+                            {locationError && <Alert severity="error">{locationError}</Alert>}
+
                             <Box className="cpt-template-form-grid">
                                 <TextField
                                     label="Template Name"
@@ -1392,6 +1441,37 @@ function CreatePayslipTemplate({ onBack }) {
 
                                 <FormControl fullWidth>
                                     <InputLabel>
+                                        Location
+                                    </InputLabel>
+
+                                    <Select
+                                        value={locationId}
+                                        label="Location"
+                                        onChange={(event) => {
+                                            const nextId = event.target.value;
+                                            const selected = locations.find(
+                                                (item) => String(item.locationId) === String(nextId)
+                                            );
+                                            setLocationId(nextId);
+                                            if (selected?.currencyCode) {
+                                                setCurrency(selected.currencyCode);
+                                            }
+                                        }}
+                                        disabled={isViewMode || Boolean(locationError)}
+                                    >
+                                        <MenuItem value="">Select Location</MenuItem>
+                                        {locations
+                                            .filter((item) => item.status === "Active" || String(item.locationId) === String(locationId))
+                                            .map((item) => (
+                                                <MenuItem key={item.locationId} value={String(item.locationId)}>
+                                                    {item.locationName} ({item.country})
+                                                </MenuItem>
+                                            ))}
+                                    </Select>
+                                </FormControl>
+
+                                <FormControl fullWidth>
+                                    <InputLabel>
                                         Currency
                                     </InputLabel>
 
@@ -1406,10 +1486,12 @@ function CreatePayslipTemplate({ onBack }) {
                                                     .value
                                             )
                                         }
-                                        disabled={
-                                            isViewMode
-                                        }
+                                        disabled={isViewMode}
+                                        readOnly={Boolean(locationId)}
                                     >
+                                        {!['INR', 'AED', 'USD', 'GBP'].includes(currency) && (
+                                            <MenuItem value={currency}>{currency}</MenuItem>
+                                        )}
                                         <MenuItem value="INR">
                                             INR - Indian Rupee
                                         </MenuItem>
