@@ -639,8 +639,9 @@ function EmployeeList() {
               ?.toLowerCase()
               .includes(keyword) ||
 
-            employee.azureEmployeeId || employee.AzureEmployeeId
-              ?.toLowerCase()
+            employee.AzureEmployeeId
+              ?.toString()
+              .toLowerCase()
               .includes(keyword) ||
 
             employee.azureEmployeeId
