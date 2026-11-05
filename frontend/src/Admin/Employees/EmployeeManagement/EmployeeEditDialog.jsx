@@ -274,18 +274,7 @@ function EmployeeEditDialog({
       // LOCATION
       // =====================================================
 
-      if (
-        data.locationId !== null &&
-        data.locationId !== undefined
-      ) {
-        setLocation(
-          String(data.locationId)
-        );
-      } else {
-        setLocation(
-          data.location || ""
-        );
-      }
+      setLocation(data.location || "");
 
       // =====================================================
       // JOINING DATE
@@ -497,15 +486,8 @@ function EmployeeEditDialog({
     }
 
     // -------------------------------------------------------
-    // FIND LOCATION
+    // Location state uses the name returned by the Employee API.
     // -------------------------------------------------------
-
-    const selectedLocation =
-      locations.find(
-        (item) =>
-          String(item.locationId) ===
-          String(location)
-      );
 
     // -------------------------------------------------------
     // ROLE ID
@@ -576,9 +558,7 @@ function EmployeeEditDialog({
       // Location
       // -----------------------------------------------------
 
-      location:
-        selectedLocation?.locationName ||
-        location,
+      location,
 
       // -----------------------------------------------------
       // Joining
@@ -1298,7 +1278,7 @@ function EmployeeEditDialog({
                           item.locationId
                         }
                         value={
-                          item.locationId
+                          item.locationName
                         }
                       >
                         {
