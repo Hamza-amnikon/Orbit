@@ -52,7 +52,7 @@ export default function EmergencyContact({ profile, onUpdated }) {
     };
 
     return (
-        <Box className="profile-section emergency-contact-section">
+        <Box className={`profile-section emergency-contact-section${editing ? " is-editing" : ""}`}>
             <Box className="section-header">
                 <Box className="section-icon emergency-icon"><Favorite /></Box>
                 <Box className="emergency-contact-heading">
@@ -67,22 +67,26 @@ export default function EmergencyContact({ profile, onUpdated }) {
 
             <Box className="section-body">
                 {fields.map(({ key, label, icon: Icon, maxLength }) => (
-                    <Box className="profile-item" key={key}>
+                    <Box className="profile-item emergency-contact-item" key={key}>
                         <Icon className="item-icon" />
                         <Box className="emergency-contact-value">
                             {editing ? (
-                                <TextField
-                                    fullWidth
-                                    size="small"
-                                    label={label}
-                                    value={form[key]}
-                                    onChange={(event) => setForm((current) => ({ ...current, [key]: event.target.value }))}
-                                    disabled={saving}
-                                    multiline={key === "emergencyAddress"}
-                                    minRows={key === "emergencyAddress" ? 2 : undefined}
-                                    type={key === "emergencyPhone" ? "tel" : "text"}
-                                    slotProps={{ htmlInput: { maxLength } }}
-                                />
+                                <>
+                                    <Box component="label" htmlFor={`emergency-${key}`}>{label}</Box>
+                                    <TextField
+                                        id={`emergency-${key}`}
+                                        className="emergency-contact-field"
+                                        fullWidth
+                                        placeholder={`Enter ${label.toLowerCase()}`}
+                                        value={form[key]}
+                                        onChange={(event) => setForm((current) => ({ ...current, [key]: event.target.value }))}
+                                        disabled={saving}
+                                        multiline={key === "emergencyAddress"}
+                                        minRows={key === "emergencyAddress" ? 2 : undefined}
+                                        type={key === "emergencyPhone" ? "tel" : "text"}
+                                        slotProps={{ htmlInput: { maxLength } }}
+                                    />
+                                </>
                             ) : (
                                 <>
                                     <Box component="label">{label}</Box>

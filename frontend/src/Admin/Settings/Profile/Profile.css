@@ -398,3 +398,50 @@
 .emergency-contact-value span { overflow-wrap: anywhere; }
 .emergency-contact-message { margin-bottom: 20px; }
 .emergency-contact-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+
+.settings-dashboard .emergency-contact-section.is-editing .emergency-contact-item {
+    align-items: flex-start;
+    min-height: 92px;
+    padding: 16px;
+}
+
+.settings-dashboard .emergency-contact-section.is-editing .emergency-contact-item .item-icon {
+    margin-top: 27px;
+}
+
+.settings-dashboard .emergency-contact-section .emergency-contact-value > label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.settings-dashboard .emergency-contact-section .emergency-contact-field .MuiOutlinedInput-root {
+    min-height: 46px;
+    height: auto;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.settings-dashboard .emergency-contact-section .emergency-contact-field .MuiOutlinedInput-input:not(textarea) {
+    height: auto;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.settings-dashboard .emergency-contact-section .emergency-contact-field .MuiOutlinedInput-root.MuiInputBase-multiline {
+    padding: 12px 14px;
+}
+
+.settings-dashboard .emergency-contact-section .emergency-contact-field textarea.MuiOutlinedInput-input {
+    min-height: 44px;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .emergency-contact-section .emergency-contact-field .MuiOutlinedInput-root {
+    background: var(--spark-surface);
+    color: var(--spark-text);
+}

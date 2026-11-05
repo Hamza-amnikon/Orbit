@@ -530,6 +530,7 @@ export default function SettingsDashboard() {
 
                         <EmergencyContact
                             profile={profile}
+                            onUpdated={(contact) => setProfile((current) => ({ ...current, ...contact }))}
                         />
 
                     </MuiLayoutBox>
