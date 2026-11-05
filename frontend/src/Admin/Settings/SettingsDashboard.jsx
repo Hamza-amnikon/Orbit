@@ -571,11 +571,11 @@ export default function SettingsDashboard() {
                 <MuiLayoutBox className="coming-soon-card" component="div">
 
                     <MuiText component="h2" variant="h5">
-                        Skills
+                        Page is under construction
                     </MuiText>
 
                     <MuiText component="p" variant="body1">
-                        Skills and certifications will appear here.
+                        Skills and certifications are being prepared for your profile. Please check back soon.
                     </MuiText>
 
                 </MuiLayoutBox>
@@ -592,11 +592,11 @@ export default function SettingsDashboard() {
                 <MuiLayoutBox className="coming-soon-card" component="div">
 
                     <MuiText component="h2" variant="h5">
-                        Timeline
+                        Page is under construction
                     </MuiText>
 
                     <MuiText component="p" variant="body1">
-                        Employee history and activities will appear here.
+                        Your employee history and activities are being prepared. Please check back soon.
                     </MuiText>
 
                 </MuiLayoutBox>
