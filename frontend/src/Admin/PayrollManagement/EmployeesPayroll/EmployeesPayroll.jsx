@@ -1,3 +1,4 @@
+import { indiaDateKey } from "../../../utils/indiaTime";
 import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -1235,7 +1236,7 @@ function EmployeesPayroll() {
             XLSX.utils.book_append_sheet(workbook, worksheet, "Employee Payroll");
             XLSX.writeFile(
                 workbook,
-                `Employee_Payroll_${new Date().toISOString().slice(0, 10)}.xlsx`
+                `Employee_Payroll_${indiaDateKey()}.xlsx`
             );
             setPageNotice({
                 severity: "success",

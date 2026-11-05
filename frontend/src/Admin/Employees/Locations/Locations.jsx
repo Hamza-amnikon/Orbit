@@ -1,3 +1,4 @@
+import { indiaDateKey } from "../../../utils/indiaTime";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Locations.css";
@@ -248,7 +249,7 @@ function Locations() {
     const sheet = XLSX.utils.json_to_sheet(rows);
     const book = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(book, sheet, "Locations");
-    XLSX.writeFile(book, `Spark_Locations_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    XLSX.writeFile(book, `Spark_Locations_${indiaDateKey()}.xlsx`);
   };
 
   const setLocationStatusFilter = (status) => {

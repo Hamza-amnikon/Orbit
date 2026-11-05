@@ -16,6 +16,7 @@ import AttendanceService from "../services/AttendanceService";
 import { useAuth } from "../../../context/AuthContext";
 import { exportRowsToExcel } from "../../../utils/exportExcel";
 import { getAttendanceStatusForDuration } from "../AttendanceLogs/attendanceRules";
+import { formatIndiaDate } from "../../../utils/indiaTime";
 
 const normalizeStatus = (status) => String(status || "").trim().toLowerCase().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
 const isHalfDayStatus = (status) => ["half day", "halfday"].includes(normalizeStatus(status));
@@ -89,7 +90,7 @@ export default function AttendanceReports() {
       await exportRowsToExcel(filteredRows, [
         ["Employee ID", (row) => row.azureEmployeeId || row.employeeCode || ""], ["Employee", "employeeName"],
         ["Department", "department"], ["Designation", "designation"],
-        ["Date", (row) => row.attendanceDate ? new Date(row.attendanceDate).toLocaleDateString("en-GB") : ""],
+        ["Date", (row) => row.attendanceDate ? formatIndiaDate(row.attendanceDate, "en-GB") : ""],
         ["Shift", "shift"], ["Check In", "checkIn"], ["Check Out", "checkOut"], ["Total Hours", "totalHours"], ["Status", (row) => displayStatus(row.reportStatus)],
       ], "Attendance-Report.xlsx", "Attendance Report");
       setNotice({ open: true, severity: "success", message: `Exported ${filteredRows.length} attendance records.` });
@@ -149,7 +150,7 @@ export default function AttendanceReports() {
               {loading ? <TableRow><TableCell colSpan={9} align="center">Loading attendance records…</TableCell></TableRow>
                 : filteredRows.length ? visibleRows.map((row) => <TableRow key={row.attendanceId}>
                   <TableCell>{row.azureEmployeeId || row.employeeCode || "—"}</TableCell><TableCell>{row.employeeName || "—"}</TableCell><TableCell>{row.department || "—"}</TableCell>
-                  <TableCell>{row.attendanceDate ? new Date(row.attendanceDate).toLocaleDateString("en-GB") : "—"}</TableCell><TableCell>{row.shift || "—"}</TableCell>
+                  <TableCell>{row.attendanceDate ? formatIndiaDate(row.attendanceDate, "en-GB") : "—"}</TableCell><TableCell>{row.shift || "—"}</TableCell>
                   <TableCell>{row.checkIn || "—"}</TableCell><TableCell>{row.checkOut || "—"}</TableCell><TableCell>{row.totalHours || "—"}</TableCell>
                   <TableCell><Chip size="small" label={displayStatus(row.reportStatus)} color={isPresentStatus(row.reportStatus) ? "success" : normalizeStatus(row.reportStatus) === "absent" ? "error" : normalizeStatus(row.reportStatus) === "late" ? "warning" : ["leave", "on leave"].includes(normalizeStatus(row.reportStatus)) ? "secondary" : "default"} /></TableCell>
                 </TableRow>) : <TableRow><TableCell colSpan={9} align="center">No attendance records match these filters.</TableCell></TableRow>}

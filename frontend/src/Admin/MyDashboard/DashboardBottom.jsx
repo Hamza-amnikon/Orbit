@@ -9,6 +9,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import DescriptionIcon from "@mui/icons-material/Description";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { formatIndiaDate, indiaDateKey } from "../../utils/indiaTime";
 
 const API_URL = `${import.meta.env.VITE_EVENT_API_BASE_URL}/api/Event`;
 
@@ -95,25 +96,16 @@ function DashboardBottom() {
                 // ONLY UPCOMING EVENTS
                 // =====================================================
 
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
+                const today = indiaDateKey();
 
                 const upcomingEvents = normalizedEvents
                     .filter((event) => {
-                        const eventDate = new Date(event.date);
-
-                        if (Number.isNaN(eventDate.getTime())) {
-                            return false;
-                        }
-
-                        eventDate.setHours(0, 0, 0, 0);
-
-                        return eventDate >= today;
+                        const eventDate = indiaDateKey(event.date);
+                        return eventDate && eventDate >= today;
                     })
                     .sort(
                         (a, b) =>
-                            new Date(a.date) -
-                            new Date(b.date)
+                            indiaDateKey(a.date).localeCompare(indiaDateKey(b.date))
                     )
                     .slice(0, 3);
 
@@ -138,13 +130,11 @@ function DashboardBottom() {
     // =========================================================
 
     const formatHolidayDate = (date) => {
-        const parsedDate = new Date(date);
-
-        if (Number.isNaN(parsedDate.getTime())) {
+        if (!indiaDateKey(date)) {
             return date;
         }
 
-        return parsedDate.toLocaleDateString("en-GB", {
+        return formatIndiaDate(date, "en-GB", {
             day: "2-digit",
             month: "short",
             year: "numeric",
@@ -220,15 +210,12 @@ function DashboardBottom() {
                                 <MuiLayoutBox className="holiday-date-box" component="div">
 
                                     <MuiText className="holiday-day" component="span" variant="inherit">
-                                        {new Date(
-                                            holiday.date
-                                        ).getDate()}
+                                        {Number(indiaDateKey(holiday.date).slice(8, 10))}
                                     </MuiText>
 
                                     <MuiText className="holiday-month" component="span" variant="inherit">
-                                        {new Date(
-                                            holiday.date
-                                        ).toLocaleDateString(
+                                        {formatIndiaDate(
+                                            holiday.date,
                                             "en-US",
                                             {
                                                 month: "short",

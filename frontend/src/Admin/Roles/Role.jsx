@@ -1,3 +1,4 @@
+import { indiaDateKey } from "../../utils/indiaTime";
 import { useState, useEffect } from "react";
 import { FormControl, InputLabel, Select, MenuItem, Button, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert, TextField, InputAdornment } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -115,7 +116,7 @@ function Role() {
 
     XLSX.utils.book_append_sheet(workbook, worksheet, "Roles");
 
-    XLSX.writeFile(workbook, `Spark_Roles_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    XLSX.writeFile(workbook, `Spark_Roles_${indiaDateKey()}.xlsx`);
   };
 
   const confirmDeleteRole = async () => {

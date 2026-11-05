@@ -1,3 +1,4 @@
+import { indiaDateKey } from "../../../utils/indiaTime";
 import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
@@ -561,7 +562,7 @@ function Hierarchy() {
         const sheet = XLSX.utils.json_to_sheet(rows);
         const book = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(book, sheet, "Hierarchy");
-        XLSX.writeFile(book, `Spark_Employee_Hierarchy_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        XLSX.writeFile(book, `Spark_Employee_Hierarchy_${indiaDateKey()}.xlsx`);
     };
 
     // =========================================================

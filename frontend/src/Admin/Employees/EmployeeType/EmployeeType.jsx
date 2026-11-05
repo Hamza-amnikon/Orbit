@@ -1,3 +1,4 @@
+import { indiaDateKey } from "../../../utils/indiaTime";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
@@ -220,7 +221,7 @@ function EmployeeType() {
         const sheet = XLSX.utils.json_to_sheet(rows);
         const book = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(book, sheet, "Employee Types");
-        XLSX.writeFile(book, `Spark_Employee_Types_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        XLSX.writeFile(book, `Spark_Employee_Types_${indiaDateKey()}.xlsx`);
     };
     const selectStatusCard = (status) => setStatusFilter((current) => current === status ? "" : status);
 

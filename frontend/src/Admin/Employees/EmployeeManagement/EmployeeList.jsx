@@ -6,6 +6,7 @@ import * as XLSX from "xlsx";
 import EmployeeEditDialog from "./EmployeeEditDialog";
 import EmployeeTable from "./EmployeeTable";
 import "./EmployeeList.css";
+import { indiaDateKey } from "../../../utils/indiaTime";
 
 import {
   Add,
@@ -757,7 +758,7 @@ function EmployeeList() {
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Employees");
-    const date = new Date().toISOString().slice(0, 10);
+    const date = indiaDateKey();
     XLSX.writeFile(workbook, `Spark_Employees_${date}.xlsx`);
   };
 

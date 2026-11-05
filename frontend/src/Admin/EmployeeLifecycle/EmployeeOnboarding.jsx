@@ -8,11 +8,12 @@ import {
 import { Alert, Box, Button, Step, StepLabel, Stepper, TextField, Typography } from "@mui/material";
 import { jsPDF } from "jspdf";
 import "./EmployeeLifecycle.css";
+import { formatIndiaDate } from "../../utils/indiaTime";
 
 const initialValues = { firstName: "", lastName: "", address: "", joiningDate: "", designation: "", ctc: "" };
 
 const formatDate = (value) => value
-  ? new Date(`${value}T00:00:00`).toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" })
+  ? formatIndiaDate(value, "en-IN", { day: "2-digit", month: "long", year: "numeric" })
   : "[Joining date]";
 
 const formatCtc = (value) => value
@@ -63,7 +64,7 @@ export default function EmployeeOnboarding() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     let y = 52;
-    doc.text(`Date: ${new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" })}`, left, y);
+    doc.text(`Date: ${formatIndiaDate(new Date(), "en-IN", { day: "2-digit", month: "long", year: "numeric" })}`, left, y);
     y += 13;
     y = body(`To, ${fullName}`, y);
     y = body(values.address, y);
@@ -163,7 +164,7 @@ export default function EmployeeOnboarding() {
             <Typography variant="overline">OFFER OF EMPLOYMENT</Typography>
           </div>
           <div className="offer-preview-content">
-            <Typography variant="body2" color="text.secondary">Date: {new Date().toLocaleDateString("en-IN")}</Typography>
+            <Typography variant="body2" color="text.secondary">Date: {formatIndiaDate(new Date())}</Typography>
             <Typography variant="h6" component="h2">Offer of Employment</Typography>
             <div className="offer-preview-recipient">
               <Typography><b>To:</b> {fullName}</Typography>

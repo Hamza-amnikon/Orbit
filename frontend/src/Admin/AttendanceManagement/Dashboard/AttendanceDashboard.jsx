@@ -28,6 +28,7 @@ import { Alert, Box as MuiLayoutBox, Typography as MuiText, Button, IconButton, 
 import { ArrowBackRounded, RefreshRounded, FileDownloadOutlined, CalendarMonthRounded } from "@mui/icons-material";
 import { exportRowsToExcel } from "../../../utils/exportExcel";
 import { getAttendanceStatusForDuration } from "../AttendanceLogs/attendanceRules";
+import { formatIndiaDate } from "../../../utils/indiaTime";
 
 export default function AttendanceDashboard() {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ export default function AttendanceDashboard() {
   const handleExport = async () => {
     try {
       await exportRowsToExcel(displayedAttendance, [
-        ["Employee ID", (row) => row.azureEmployeeId || row.employeeCode || ""], ["Employee", "employeeName"], ["Date", (row) => row.attendanceDate ? new Date(row.attendanceDate).toLocaleDateString("en-GB") : ""],
+        ["Employee ID", (row) => row.azureEmployeeId || row.employeeCode || ""], ["Employee", "employeeName"], ["Date", (row) => row.attendanceDate ? formatIndiaDate(row.attendanceDate, "en-GB") : ""],
         ["Shift", "shift"], ["Check In", "checkIn"], ["Check Out", "checkOut"], ["Total Hours", "totalHours"], ["Status", "status"],
       ], "Todays-Attendance.xlsx", "Attendance");
       setNotice({ open: true, severity: "success", message: `Exported ${displayedAttendance.length} attendance records.` });
@@ -169,11 +170,11 @@ export default function AttendanceDashboard() {
         <MuiLayoutBox className="attendance-dashboard-actions" component="div">
           <Button variant="outlined" startIcon={<RefreshRounded />} onClick={refreshData}>Refresh</Button>
           {hasPermission(permissionRoute, "export") && <Button variant="outlined" startIcon={<FileDownloadOutlined />} onClick={handleExport}>Export Excel</Button>}
-          <MuiLayoutBox className="dashboard-date-card" component="div" aria-label={`Today, ${new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}`}>
+          <MuiLayoutBox className="dashboard-date-card" component="div" aria-label={`Today, ${formatIndiaDate(new Date(), "en-IN", { day: "numeric", month: "long", year: "numeric" })}`}>
             <CalendarMonthRounded />
             <MuiLayoutBox className="dashboard-date-copy" component="div">
               <MuiText component="span" variant="inherit">TODAY’S</MuiText>
-              <MuiText component="strong" variant="inherit">{new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</MuiText>
+              <MuiText component="strong" variant="inherit">{formatIndiaDate(new Date(), "en-IN", { day: "2-digit", month: "short", year: "numeric" })}</MuiText>
             </MuiLayoutBox>
           </MuiLayoutBox>
         </MuiLayoutBox>

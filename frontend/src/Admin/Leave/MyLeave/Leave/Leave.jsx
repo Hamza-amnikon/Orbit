@@ -1,5 +1,6 @@
 import { MuiButtonMigration, MuiInputMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../../components/ui/MuiCompat.jsx";
 import React, { useEffect, useMemo, useState } from "react";
+import { indiaCalendarDate, indiaDateKey } from "../../../../utils/indiaTime";
 import "./Leave.css";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -78,7 +79,7 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
 
     // Calendar month
     const [calendarMonth, setCalendarMonth] =
-        useState(new Date());
+        useState(() => indiaCalendarDate());
 
 
     // =========================================================
@@ -204,7 +205,7 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
                    ONLY ACTIVE / CURRENT SHIFT ASSIGNMENTS
                    ================================================= */
 
-                const today = new Date();
+                const today = indiaCalendarDate();
 
                 const todayOnly = new Date(
                     today.getFullYear(),
@@ -981,8 +982,7 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
             return [];
         }
 
-        const now =
-            new Date();
+        const now = indiaDateKey();
 
 
         // ---------------------------------------------------------
@@ -994,23 +994,7 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
             return leaves.filter(
                 (leave) => {
 
-                    const date =
-                        new Date(
-                            leave.appliedDate
-                        );
-
-                    if (
-                        isNaN(
-                            date.getTime()
-                        )
-                    ) {
-                        return false;
-                    }
-
-                    return (
-                        date.getFullYear() ===
-                        now.getFullYear()
-                    );
+                    return Boolean(leave.appliedDate) && indiaDateKey(leave.appliedDate).slice(0, 4) === now.slice(0, 4);
                 }
             );
         }
@@ -1022,40 +1006,15 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
 
         if (period === "Last Month") {
 
-            const lastMonth =
-                new Date(
-                    now.getFullYear(),
-                    now.getMonth() - 1,
-                    1
-                );
-
-            const nextMonth =
-                new Date(
-                    now.getFullYear(),
-                    now.getMonth(),
-                    1
-                );
+            const [year, month] = now.split("-").map(Number);
+            const lastMonth = new Date(Date.UTC(year, month - 2, 1)).toISOString().slice(0, 7);
+            const nextMonth = now.slice(0, 7);
 
             return leaves.filter(
                 (leave) => {
 
-                    const date =
-                        new Date(
-                            leave.appliedDate
-                        );
-
-                    if (
-                        isNaN(
-                            date.getTime()
-                        )
-                    ) {
-                        return false;
-                    }
-
-                    return (
-                        date >= lastMonth &&
-                        date < nextMonth
-                    );
+                    const monthKey = leave.appliedDate ? indiaDateKey(leave.appliedDate).slice(0, 7) : "";
+                    return monthKey >= lastMonth && monthKey < nextMonth;
                 }
             );
         }
@@ -1068,25 +1027,7 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
         return leaves.filter(
             (leave) => {
 
-                const date =
-                    new Date(
-                        leave.appliedDate
-                    );
-
-                if (
-                    isNaN(
-                        date.getTime()
-                    )
-                ) {
-                    return false;
-                }
-
-                return (
-                    date.getMonth() ===
-                    now.getMonth() &&
-                    date.getFullYear() ===
-                    now.getFullYear()
-                );
+                return Boolean(leave.appliedDate) && indiaDateKey(leave.appliedDate).slice(0, 7) === now.slice(0, 7);
             }
         );
 
@@ -1224,29 +1165,20 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
     const employeesOnLeave =
         useMemo(() => {
 
-            const today =
-                new Date();
+            const today = indiaDateKey();
 
             return filteredLeaves.filter(
                 (leave) => {
 
-                    const from =
-                        new Date(
-                            leave.fromDate
-                        );
-
-                    const to =
-                        new Date(
-                            leave.toDate
-                        );
+                    const from = leave.fromDate ? indiaDateKey(leave.fromDate) : "";
+                    const to = leave.toDate ? indiaDateKey(leave.toDate) : "";
 
                     return (
                         String(
                             leave.status
                         ).toLowerCase() ===
                         "approved" &&
-                        from <= today &&
-                        to >= today
+                        from && to && from <= today && to >= today
                     );
                 }
             ).length;
@@ -1389,12 +1321,8 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
     // LEAVE DATE RANGE
     // =========================================================
 
-    const today = new Date();
-
-    const todayString =
-        today
-            .toISOString()
-            .split("T")[0];
+    const today = indiaCalendarDate();
+    const todayString = indiaDateKey();
 
     // Allow leave to be applied up to 7 calendar days back.
     const oneWeekBackDate = new Date(today);
@@ -1402,10 +1330,11 @@ const [employeeShifts, setEmployeeShifts] = useState([]);
         oneWeekBackDate.getDate() - 7
     );
 
-    const minLeaveDate =
-        oneWeekBackDate
-            .toISOString()
-            .split("T")[0];
+    const minLeaveDate = new Date(Date.UTC(
+        oneWeekBackDate.getFullYear(),
+        oneWeekBackDate.getMonth(),
+        oneWeekBackDate.getDate()
+    )).toISOString().slice(0, 10);
 
 
     // =========================================================
@@ -1926,7 +1855,7 @@ return null;
     const goToday = () => {
 
         setCalendarMonth(
-            new Date()
+            indiaCalendarDate()
         );
     };
 

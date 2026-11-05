@@ -13,6 +13,7 @@ import { menu as sidebarMenu } from "../../components/layout/Sidebar/Sidebar";
 
 import "./Dashboard.css";
 import { Box as MuiLayoutBox, Typography as MuiText, ButtonBase as MuiActionButton } from "@mui/material";
+import { formatIndiaDate, formatIndiaTime, indiaDateKey, indiaHour } from "../../utils/indiaTime";
 
 
 /* ============================================================
@@ -57,8 +58,7 @@ function Dashboard() {
         }
 
         if (leavesResult.status === "fulfilled" && Array.isArray(leavesResult.value)) {
-            const now = new Date();
-            const today = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-");
+            const today = indiaDateKey();
             onLeaveCount = leavesResult.value.filter((leave) => {
                 const status = String(leave.status ?? leave.Status ?? "").trim().toLowerCase();
                 const from = String(leave.fromDate ?? leave.FromDate ?? "").slice(0, 10);
@@ -143,9 +143,9 @@ function Dashboard() {
        CURRENT DATE
        ======================================================== */
 
-    const today = useMemo(() => {
+    const today = (() => {
 
-        return new Date().toLocaleDateString(
+        return formatIndiaDate(new Date(),
             "en-US",
             {
                 weekday: "long",
@@ -155,16 +155,16 @@ function Dashboard() {
             }
         );
 
-    }, []);
+    })();
 
 
     /* ========================================================
        GREETING
        ======================================================== */
 
-    const greeting = useMemo(() => {
+    const greeting = (() => {
 
-        const hour = new Date().getHours();
+        const hour = indiaHour();
 
         if (hour < 12) {
             return "Good Morning";
@@ -176,7 +176,7 @@ function Dashboard() {
 
         return "Good Evening";
 
-    }, []);
+    })();
 
 
     /* ========================================================
@@ -190,7 +190,7 @@ function Dashboard() {
             value: dashboardCounts.employees,
             loading: countsLoading,
             detail: countsUpdatedAt.employees
-                ? `Updated ${countsUpdatedAt.employees.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`
+                ? `Updated ${formatIndiaTime(countsUpdatedAt.employees, "en-IN", { hour: "numeric", minute: "2-digit" })}`
                 : countsLoading ? "Loading live data" : "Live data unavailable",
             color: "#2563eb",
             icon: <GroupsRoundedIcon />,
@@ -202,7 +202,7 @@ function Dashboard() {
             value: dashboardCounts.onLeave,
             loading: countsLoading,
             detail: countsUpdatedAt.onLeave
-                ? `Updated ${countsUpdatedAt.onLeave.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`
+                ? `Updated ${formatIndiaTime(countsUpdatedAt.onLeave, "en-IN", { hour: "numeric", minute: "2-digit" })}`
                 : countsLoading ? "Loading live data" : "Live data unavailable",
             color: "#16a34a",
             icon: <EventBusyRoundedIcon />,

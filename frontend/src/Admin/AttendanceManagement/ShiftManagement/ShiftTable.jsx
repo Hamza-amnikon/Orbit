@@ -6,11 +6,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { indiaDateKey } from "../../../utils/indiaTime";
 
-const today = () => {
-  const date = new Date();
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-};
+const today = indiaDateKey;
 
 const assignmentPeriod = (row, currentDate) => {
   if (row.toDate < currentDate) return "Previous";

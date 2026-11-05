@@ -18,6 +18,7 @@ import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRou
 
 import "./CompOff.css";
 import { Box as MuiLayoutBox } from "@mui/material";
+import { indiaDateKey } from "../../../utils/indiaTime";
 
 const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 const COMPOFF_API = `${import.meta.env.VITE_LEAVE_API_BASE_URL}/api/CompOff`;
@@ -221,7 +222,7 @@ function CompOff({ open, onClose }) {
     size="small"
     slotProps={{
         htmlInput: {
-            max: new Date().toISOString().split("T")[0],
+            max: indiaDateKey(),
         },
     }}
 />

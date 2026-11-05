@@ -10,17 +10,17 @@ import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getEmployeeAttendance } from "../../Services/AttendanceService";
 import LeaveService from "../../Services/LeaveService";
+import { indiaDateKey } from "../../../utils/indiaTime";
 
 function ProfileStats({ profile }) {
     const [attendanceValue, setAttendanceValue] = useState("—");
     const [leaveValue, setLeaveValue] = useState("—");
-    const now = new Date();
-    const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    const currentMonthKey = indiaDateKey().slice(0, 7);
     const [currentYear, currentMonth] = currentMonthKey.split("-").map(Number);
     const attendanceMonthLabel = new Intl.DateTimeFormat(undefined, {
         month: "long",
         year: "numeric",
-    }).format(new Date(now.getFullYear(), now.getMonth(), 1));
+    }).format(new Date(currentYear, currentMonth - 1, 1));
 
     useEffect(() => {
         const employeeId = profile?.employeeId ?? profile?.EmployeeId ?? profile?.employeeID ?? profile?.EmployeeID;
@@ -43,13 +43,7 @@ function ProfileStats({ profile }) {
 
                     // Prefer the date portion of ISO values so UTC timestamps near
                     // month boundaries are grouped by their recorded calendar date.
-                    const isoMonth = String(dateValue).match(/^\d{4}-\d{2}/)?.[0];
-                    if (isoMonth) return isoMonth === currentMonthKey;
-
-                    const date = new Date(dateValue);
-                    return !Number.isNaN(date.getTime()) &&
-                        date.getFullYear() === currentYear &&
-                        date.getMonth() + 1 === currentMonth;
+                    return indiaDateKey(dateValue).slice(0, 7) === currentMonthKey;
                 });
                 const counted = thisMonthRecords.filter((record) => {
                     const status = String(record?.status ?? record?.attendanceStatus ?? "").toLowerCase();
@@ -78,9 +72,9 @@ function ProfileStats({ profile }) {
     const joinDate = profile?.joiningDate ?? profile?.JoiningDate ?? profile?.joinDate ?? profile?.JoinDate;
     const experience = (() => {
         if (!joinDate) return "—";
-        const started = new Date(joinDate);
-        if (Number.isNaN(started.getTime())) return "—";
-        const months = Math.max(0, (new Date().getFullYear() - started.getFullYear()) * 12 + new Date().getMonth() - started.getMonth());
+        const started = indiaDateKey(joinDate);
+        if (!started) return "—";
+        const months = Math.max(0, (currentYear - Number(started.slice(0, 4))) * 12 + currentMonth - Number(started.slice(5, 7)));
         const years = Math.floor(months / 12);
         const remainingMonths = months % 12;
         return years ? `${years} ${years === 1 ? "Year" : "Years"}` : `${remainingMonths} ${remainingMonths === 1 ? "Month" : "Months"}`;

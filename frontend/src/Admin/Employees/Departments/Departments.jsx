@@ -1,3 +1,4 @@
+import { indiaDateKey } from "../../../utils/indiaTime";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
@@ -397,7 +398,7 @@ function Department() {
     ];
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Departments");
-    XLSX.writeFile(workbook, `Spark_Departments_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    XLSX.writeFile(workbook, `Spark_Departments_${indiaDateKey()}.xlsx`);
   };
 
 

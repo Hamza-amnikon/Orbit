@@ -11,6 +11,7 @@ import LeaveService from "../Services/LeaveService";
 
 import "./DashboardCards.css";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { indiaDateKey } from "../../utils/indiaTime";
 
 /* =========================================================
    HELPERS
@@ -93,23 +94,7 @@ const getEmployeeId = (profile) => {
    DATE
 ========================================================= */
 
-const getToday = () => {
-
-    const date = new Date();
-
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(date.getMonth() + 1)
-            .padStart(2, "0");
-
-    const day =
-        String(date.getDate())
-            .padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-};
+const getToday = () => indiaDateKey();
 
 
 const isToday = (value) => {
@@ -126,11 +111,7 @@ const isToday = (value) => {
      * 2026-08-28T09:00:00Z
      */
 
-    return (
-        String(value)
-            .substring(0, 10) ===
-        getToday()
-    );
+    return indiaDateKey(value) === getToday();
 };
 
 
@@ -794,9 +775,7 @@ function DashboardCards() {
                     );
 
 
-                    const currentYear =
-                        new Date()
-                            .getFullYear();
+                    const currentYear = Number(indiaDateKey().slice(0, 4));
 
 
                     totalLeaveBalance =

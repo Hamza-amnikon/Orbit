@@ -10,6 +10,7 @@ import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 
 import "./Dashboard.css";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { formatIndiaDate, indiaHour } from "../../utils/indiaTime";
 
 function Dashboard() {
 
@@ -133,13 +134,13 @@ function Dashboard() {
             ? profile.displayName.split(" ")[0]
             : "Employee";
 
-    const currentHour = new Date().getHours();
+    const currentHour = indiaHour();
     const greeting = currentHour < 12
         ? "Good morning"
         : currentHour < 17
             ? "Good afternoon"
             : "Good evening";
-    const today = new Date().toLocaleDateString("en-US", {
+    const today = formatIndiaDate(new Date(), "en-US", {
         weekday: "long",
         month: "long",
         day: "numeric",

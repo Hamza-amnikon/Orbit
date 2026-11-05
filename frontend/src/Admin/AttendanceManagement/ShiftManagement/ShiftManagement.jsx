@@ -3,6 +3,7 @@ import "./ShiftManagement.css";
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { formatIndiaDate, indiaDateKey } from "../../../utils/indiaTime";
 
 import {
   TextField,
@@ -230,12 +231,8 @@ export default function ShiftManagement() {
      DASHBOARD COUNTS
   =========================================================== */
 
-  const todayName = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-  });
-
-  const today = new Date();
-  const currentDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const todayName = formatIndiaDate(new Date(), "en-US", { weekday: "long" });
+  const currentDate = indiaDateKey();
   const periodOf = (assignment) => assignment.toDate < currentDate
     ? "Previous"
     : assignment.fromDate > currentDate ? "Upcoming" : "Current";

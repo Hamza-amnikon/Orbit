@@ -23,6 +23,7 @@ import axios from "axios";
 
 import "./Navbar.css";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
+import { formatIndiaTime } from "../../../utils/indiaTime";
 
 
 /* ============================================================
@@ -626,7 +627,7 @@ function Navbar({ title }) {
                 </MuiText>
                 {notification.date && (
                     <MuiText className="notification-item-date" component="span" variant="inherit">
-                        {new Date(notification.date).toLocaleString()}
+                        {formatIndiaTime(notification.date, "en-IN", { dateStyle: "short", timeStyle: "medium" })}
                     </MuiText>
                 )}
             </MuiButtonMigration>

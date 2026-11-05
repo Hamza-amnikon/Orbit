@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
+import { indiaDateKey } from "../../../utils/indiaTime";
 import {
     Alert,
     Box,
@@ -59,12 +60,12 @@ const getMonthLabel = (date) =>
         year: "numeric",
     });
 
-const currentPayrollYear = new Date().getFullYear();
+const [currentPayrollYear, currentPayrollMonth] = indiaDateKey().split("-").map(Number);
 const MONTHS = Array.from(
     { length: 12 },
     (_, monthIndex) => getMonthLabel(new Date(currentPayrollYear, monthIndex, 1))
 );
-const CURRENT_PAYROLL_MONTH = getMonthLabel(new Date());
+const CURRENT_PAYROLL_MONTH = getMonthLabel(new Date(currentPayrollYear, currentPayrollMonth - 1, 1));
 
 const getValue = (object, ...keys) => {
     for (const key of keys) {

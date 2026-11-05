@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 
 import EmployeeService from "../services/EmployeeService";
+import { indiaDateKey } from "../../../utils/indiaTime";
 
 export default function AssignShiftDialog({
   open,
@@ -91,7 +92,8 @@ export default function AssignShiftDialog({
 
   const nextPeriod = (assignment) => {
     if (!assignment?.toDate) return { fromDate: "", toDate: "" };
-    const now = new Date();
+    const [indiaYear, indiaMonth] = indiaDateKey().split("-").map(Number);
+    const now = new Date(indiaYear, indiaMonth - 1, 1);
     const firstOfNextMonth = new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 1));
     const previousEnd = new Date(`${assignment.toDate}T00:00:00Z`);
     const dayAfterPreviousEnd = new Date(previousEnd);

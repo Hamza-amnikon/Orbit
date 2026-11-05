@@ -5,6 +5,7 @@ import { Box, Button, Chip, CircularProgress, Typography } from "@mui/material";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import "./CalendarWidget.css";
+import { indiaDateKey, formatIndiaDate } from "../../../utils/indiaTime";
 
 const EVENT_API = `${import.meta.env.VITE_EVENT_API_BASE_URL}/api/Event`;
 
@@ -34,8 +35,7 @@ export default function CalendarWidget() {
                 const rows = Array.isArray(payload)
                     ? payload
                     : [payload?.data, payload?.events, payload?.items].find(Array.isArray) || [];
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
+                const today = indiaDateKey();
                 const upcoming = rows
                     .map((event) => {
                         const date = getLocalDate(event.eventDate ?? event.date ?? event.holidayDate ?? event.startDate);
@@ -47,7 +47,7 @@ export default function CalendarWidget() {
                             date,
                         };
                     })
-                    .filter((event) => event.date && event.date >= today && event.status !== "inactive")
+                    .filter((event) => event.date && indiaDateKey(event.date) >= today && event.status !== "inactive")
                     .sort((a, b) => a.date - b.date)
                     .slice(0, 4);
                 if (active) setHolidays(upcoming);
@@ -62,9 +62,13 @@ export default function CalendarWidget() {
         return () => { active = false; };
     }, []);
 
-    const formatWeekday = (date) => date.toLocaleDateString("en-IN", { weekday: "short" });
-    const formatMonth = (date) => date.toLocaleDateString("en-IN", { month: "short" });
-    const daysAway = (date) => Math.round((date - new Date(new Date().setHours(0, 0, 0, 0))) / 86400000);
+    const formatWeekday = (date) => formatIndiaDate(date, "en-IN", { weekday: "short" });
+    const formatMonth = (date) => formatIndiaDate(date, "en-IN", { month: "short" });
+    const daysAway = (date) => {
+        const day = new Date(`${indiaDateKey(date)}T00:00:00Z`);
+        const today = new Date(`${indiaDateKey()}T00:00:00Z`);
+        return Math.round((day - today) / 86400000);
+    };
 
     return (
         <Box className="holiday-list">
@@ -77,9 +81,9 @@ export default function CalendarWidget() {
             ) : (
                 holidays.map((holiday) => (
                     <Box className="holiday-card" key={holiday.id}>
-                        <Box className="holiday-date-badge" aria-label={holiday.date.toLocaleDateString("en-IN")}>
+                        <Box className="holiday-date-badge" aria-label={formatIndiaDate(holiday.date)}>
                             <Typography component="span">{formatWeekday(holiday.date)}</Typography>
-                            <Typography component="strong">{holiday.date.getDate()}</Typography>
+                            <Typography component="strong">{Number(indiaDateKey(holiday.date).slice(8, 10))}</Typography>
                             <Typography component="span">{formatMonth(holiday.date)}</Typography>
                         </Box>
                         <Box className="holiday-details">

@@ -12,6 +12,7 @@ import { useAuth } from "../../../context/AuthContext";
 import AttendanceService from "../../Services/AttendanceService";
 import LeaveService from "../../Services/LeaveService";
 import { getAttendanceStatusForDuration } from "../../AttendanceManagement/AttendanceLogs/attendanceRules";
+import { indiaDateKey } from "../../../utils/indiaTime";
 
 import {
     Alert,
@@ -789,12 +790,12 @@ function Payslips() {
 
     const [selectedYear, setSelectedYear] =
         useState(
-            new Date().getFullYear()
+            Number(indiaDateKey().slice(0, 4))
         );
 
     const [selectedMonth, setSelectedMonth] =
         useState(
-            new Date().getMonth() + 1
+            Number(indiaDateKey().slice(5, 7))
         );
 
     const [attendanceRecords, setAttendanceRecords] = useState([]);
@@ -1603,7 +1604,7 @@ function Payslips() {
                                         length: 5,
                                     },
                                     (_, i) =>
-                                        new Date().getFullYear() -
+                                        Number(indiaDateKey().slice(0, 4)) -
                                         i
                                 ).map(
                                     (year) => (

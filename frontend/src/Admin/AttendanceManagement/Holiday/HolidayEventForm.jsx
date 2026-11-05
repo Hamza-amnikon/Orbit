@@ -18,6 +18,7 @@ import { CloseRounded } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { indiaDateKey } from "../../../utils/indiaTime";
 
 const API_URL = `${import.meta.env.VITE_EVENT_API_BASE_URL}/api/Event`;
 const LOCATION_API = `${import.meta.env.VITE_LOCATION_API_BASE_URL}/api/location`;
@@ -59,7 +60,7 @@ export default function HolidayEventForm({ onClose, onSaved, selectedEvent }) {
             const payload = {
                 eventId: selectedEvent?.eventId || 0,
                 ...formData,
-                createdDate: new Date().toISOString().split("T")[0],
+                createdDate: indiaDateKey(),
             };
             if (selectedEvent) {
                 await axios.put(`${API_URL}/${selectedEvent.eventId}`, payload);

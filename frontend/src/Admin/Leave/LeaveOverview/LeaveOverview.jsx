@@ -9,6 +9,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Lege
 import "./LeaveOverview.css";
 import { useAuth } from "../../../context/AuthContext";
 import { useColorMode } from "../../../context/ColorModeContext";
+import { indiaCalendarDate, indiaDateKey } from "../../../utils/indiaTime";
 import { Alert, Box as MuiLayoutBox, Button, ButtonBase as MuiActionButton, IconButton, MenuItem, TextField, Typography as MuiText } from "@mui/material";
 import { ArrowBackRounded, BeachAccessRounded, BlockRounded, CalendarMonthRounded, FileDownloadOutlined, MedicalServicesRounded, PendingActionsRounded, RefreshRounded } from "@mui/icons-material";
 
@@ -87,19 +88,17 @@ export default function LeaveOverview() {
             // Prepare Upcoming Events
             // ==========================================
 
-            const eventToday = new Date();
-            eventToday.setHours(0, 0, 0, 0);
+            const eventToday = indiaDateKey();
 
             const eventData = Array.isArray(eventResponse.data) ? eventResponse.data : eventResponse.data?.data || eventResponse.data?.events || [];
             const events = eventData
                 .filter((event) => {
 
-                    const eventDate = new Date(event.eventDate);
-                    eventDate.setHours(0, 0, 0, 0);
+                    const eventDate = event.eventDate ? indiaDateKey(event.eventDate) : "";
 
                     return (
                         event.status?.toLowerCase() === "active" &&
-                        eventDate >= eventToday
+                        eventDate && eventDate >= eventToday
                     );
 
                 })
@@ -158,7 +157,7 @@ export default function LeaveOverview() {
     // Dashboard Summary
     // ==========================================
 
-    const now = new Date();
+    const now = indiaCalendarDate();
 
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -168,7 +167,7 @@ export default function LeaveOverview() {
 
     const thisMonthLeaves = leaves.filter((leave) => {
 
-        const fromDate = new Date(leave.fromDate);
+        const fromDate = indiaCalendarDate(leave.fromDate);
 
         return (
             fromDate.getMonth() === currentMonth &&
@@ -266,7 +265,7 @@ const rejectedLeaveCount =
     // Upcoming Approved Leaves
     // ==========================================
 
-    const today = new Date();
+    const today = indiaCalendarDate();
 
     today.setHours(0, 0, 0, 0);
 

@@ -16,6 +16,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { useAuth } from "../../../context/AuthContext";
 import AdvanceSalaryService from "./AdvanceSalaryService";
 import "./AdvanceSalary.css";
+import { indiaDateKey } from "../../../utils/indiaTime";
 
 const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 
@@ -182,7 +183,7 @@ export default function AdvanceSalary() {
             sheet["!cols"] = headers.map((header) => ({ wch: Math.min(36, Math.max(16, header.length + 2)) }));
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, sheet, "Advance Salary Requests");
-            const date = new Date().toISOString().slice(0, 10);
+            const date = indiaDateKey();
             XLSX.writeFile(workbook, `Advance_Salary_Requests_${date}.xlsx`);
         } catch {
             setNotice({ severity: "error", message: "Advance salary requests could not be exported. Please try again." });

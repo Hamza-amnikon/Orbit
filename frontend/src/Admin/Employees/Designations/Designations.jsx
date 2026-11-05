@@ -1,3 +1,4 @@
+import { indiaDateKey } from "../../../utils/indiaTime";
 import {
   useState,
   useEffect,
@@ -546,7 +547,7 @@ function Designations() {
     ];
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Designations");
-    XLSX.writeFile(workbook, `Spark_Designations_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    XLSX.writeFile(workbook, `Spark_Designations_${indiaDateKey()}.xlsx`);
   };
 
 

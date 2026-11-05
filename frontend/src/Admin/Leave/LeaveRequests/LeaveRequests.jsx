@@ -1,3 +1,4 @@
+import { indiaDateKey } from "../../../utils/indiaTime";
 import { MuiButtonMigration, MuiInputMigration, MuiSelectMigration, MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
 import { useEffect, useState } from "react";
 import { Alert, Dialog, DialogTitle, DialogContent, DialogActions, Checkbox, FormControlLabel, Typography, Box, Chip, Divider, Button, TextField, Snackbar, IconButton, InputAdornment, Tooltip, MenuItem } from "@mui/material";
@@ -159,7 +160,7 @@ export default function LeaveRequests() {
         sheet["!cols"] = [{ wch: 20 }, { wch: 15 }, { wch: 24 }, { wch: 14 }, { wch: 14 }, { wch: 10 }, { wch: 42 }, { wch: 14 }];
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, sheet, "Leave Requests");
-        XLSX.writeFile(workbook, `Spark_Leave_Requests_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        XLSX.writeFile(workbook, `Spark_Leave_Requests_${indiaDateKey()}.xlsx`);
     };
 
     // ==========================================================

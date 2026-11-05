@@ -48,6 +48,7 @@ import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import { exportRowsToExcel } from "../../../utils/exportExcel";
 import { getAttendanceStatusForDuration } from "../AttendanceLogs/attendanceRules";
 import { attendanceCalendarDate, attendanceDateKey } from "../attendanceDate";
+import { formatIndiaDate } from "../../../utils/indiaTime";
 
 
 function Attendance() {
@@ -84,7 +85,7 @@ function Attendance() {
     const handleExport = async () => {
         try {
             await exportRowsToExcel(attendance, [
-                ["Date", (row) => row.attendanceDate ? new Date(row.attendanceDate).toLocaleDateString("en-GB") : ""],
+                ["Date", (row) => row.attendanceDate ? formatIndiaDate(row.attendanceDate, "en-GB") : ""],
                 ["Shift", "shift"], ["Check In", "checkIn"], ["Check Out", "checkOut"], ["Total Hours", "totalHours"], ["Status", "status"],
             ], "My-Attendance.xlsx", "My Attendance");
         } catch (exportError) {

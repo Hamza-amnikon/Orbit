@@ -3,6 +3,7 @@ import "./AttendanceLogs.css";
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { formatIndiaDate, indiaDateKey } from "../../../utils/indiaTime";
 import {
   Box,
   Grid,
@@ -72,7 +73,7 @@ export default function AttendanceLogs() {
 
   const [status, setStatus] = useState("");
 
-  const [date, setDate] = useState(() => dayjs().format("YYYY-MM"));
+  const [date, setDate] = useState(() => indiaDateKey().slice(0, 7));
   const [dayDate, setDayDate] = useState("");
 
   const [attendanceList, setAttendanceList] = useState([]);
@@ -162,7 +163,7 @@ export default function AttendanceLogs() {
     setSearch("");
     setShift("");
     setStatus("");
-    setDate(dayjs().format("YYYY-MM"));
+    setDate(indiaDateKey().slice(0, 7));
     setDayDate("");
   };
 
@@ -248,7 +249,7 @@ export default function AttendanceLogs() {
       await exportRowsToExcel(filteredAttendance, [
         ["Employee ID", (row) => row.azureEmployeeId || row.employeeCode || ""],
         ["Employee", "employeeName"], ["Department", "department"], ["Designation", "designation"],
-        ["Date", (row) => row.attendanceDate ? new Date(row.attendanceDate).toLocaleDateString("en-GB") : ""],
+        ["Date", (row) => row.attendanceDate ? formatIndiaDate(row.attendanceDate, "en-GB") : ""],
         ["Shift", "shift"], ["Check In", "checkIn"], ["Check Out", "checkOut"], ["Total Hours", "totalHours"], ["Status", "status"],
       ], "Attendance-Logs.xlsx", "Attendance Logs");
       setNotice({ open: true, severity: "success", message: `Exported ${filteredAttendance.length} attendance records.` });
@@ -488,7 +489,7 @@ export default function AttendanceLogs() {
                 views={["year", "month"]}
                 value={dayjs(`${date}-01`)}
                 onChange={(value) => {
-                  setDate(value?.isValid() ? value.format("YYYY-MM") : dayjs().format("YYYY-MM"));
+                  setDate(value?.isValid() ? value.format("YYYY-MM") : indiaDateKey().slice(0, 7));
                   setDayDate("");
                 }}
                 format="MMMM YYYY"
