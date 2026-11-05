@@ -392,3 +392,9 @@
     color:#ef4444;
 
 }
+
+.emergency-contact-heading { flex: 1; }
+.emergency-contact-value { flex: 1; min-width: 0; }
+.emergency-contact-value span { overflow-wrap: anywhere; }
+.emergency-contact-message { margin-bottom: 20px; }
+.emergency-contact-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }

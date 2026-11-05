@@ -137,7 +137,7 @@ function Profile() {
 
                     <MuiLayoutBox className="profile-grid" component="div">
 
-                        <EmergencyContact profile={profile} />
+                        <EmergencyContact profile={profile} onUpdated={(contact) => setProfile((current) => ({ ...current, ...contact }))} />
 
                     </MuiLayoutBox>
                 </>
