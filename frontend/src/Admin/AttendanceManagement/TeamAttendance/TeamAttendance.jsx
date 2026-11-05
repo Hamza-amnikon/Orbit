@@ -25,6 +25,7 @@ import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import Groups2RoundedIcon from "@mui/icons-material/Groups2Rounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
@@ -34,6 +35,7 @@ import AttendanceService from "../services/AttendanceService";
 import HierarchyService from "../services/HierarchyService";
 import { exportRowsToExcel } from "../../../utils/exportExcel";
 import { getAttendanceStatusForDuration } from "../AttendanceLogs/attendanceRules";
+import EditAttendanceDialog from "../AttendanceLogs/EditAttendanceDialog";
 import "./TeamAttendance.css";
 
 const TEAM_ROUTE = "/attendance/team-logs";
@@ -97,6 +99,7 @@ export default function TeamAttendance() {
   const { employeeId, hasPermission } = useAuth();
   const canView = hasPermission(TEAM_ROUTE, "view") || hasPermission(EXISTING_LOGS_ROUTE, "view");
   const canExport = hasPermission(TEAM_ROUTE, "export") || hasPermission(EXISTING_LOGS_ROUTE, "export");
+  const canEdit = hasPermission(TEAM_ROUTE, "edit") || hasPermission(EXISTING_LOGS_ROUTE, "edit");
 
   const [rows, setRows] = useState([]);
   const [memberCount, setMemberCount] = useState(0);
@@ -106,6 +109,8 @@ export default function TeamAttendance() {
   const [shift, setShift] = useState("");
   const [status, setStatus] = useState("");
   const [date, setDate] = useState("");
+  const [editingAttendance, setEditingAttendance] = useState(null);
+  const [saveMessage, setSaveMessage] = useState("");
 
   const loadTeamAttendance = useCallback(async () => {
     const currentEmployeeId = Number(employeeId);
@@ -228,6 +233,7 @@ export default function TeamAttendance() {
       </Box>
 
       {error && <Alert severity="error" className="team-attendance-alert">{error}</Alert>}
+      {saveMessage && <Alert severity="success" className="team-attendance-alert" onClose={() => setSaveMessage("")}>{saveMessage}</Alert>}
 
       <Grid container spacing={2} className="team-attendance-summary">
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -305,7 +311,7 @@ export default function TeamAttendance() {
           <TableContainer className="team-attendance-table-wrap">
             <Table className="team-attendance-table" aria-label="Team attendance records">
               <TableHead><TableRow>
-                <TableCell>Employee</TableCell><TableCell>Department</TableCell><TableCell>Date</TableCell><TableCell>Shift</TableCell><TableCell>Check in</TableCell><TableCell>Check out</TableCell><TableCell>Working hours</TableCell><TableCell>Status</TableCell>
+                <TableCell>Employee</TableCell><TableCell>Department</TableCell><TableCell>Date</TableCell><TableCell>Shift</TableCell><TableCell>Check in</TableCell><TableCell>Check out</TableCell><TableCell>Working hours</TableCell><TableCell>Status</TableCell>{canEdit && <TableCell>Action</TableCell>}
               </TableRow></TableHead>
               <TableBody>{filteredRows.map((row, index) => {
                 const rowId = valueOf(row, "attendanceId", "AttendanceId") ?? `${valueOf(row, "employeeId", "EmployeeId")}-${valueOf(row, "attendanceDate", "AttendanceDate")}-${index}`;
@@ -320,6 +326,7 @@ export default function TeamAttendance() {
                   <TableCell>{formatTime(valueOf(row, "checkOut", "CheckOut"))}</TableCell>
                   <TableCell className="team-attendance-hours">{valueOf(row, "totalHours", "TotalHours") || "—"}</TableCell>
                   <TableCell><Chip size="small" label={row.status || "Unknown"} color={statusColor(row.status)} className={`team-attendance-status status-${normalizeStatus(row.status)}`} /></TableCell>
+                  {canEdit && <TableCell><Button className="team-attendance-edit" size="small" startIcon={<EditRoundedIcon />} onClick={() => { setSaveMessage(""); setEditingAttendance(row); }} disabled={!Number(valueOf(row, "attendanceId", "AttendanceId"))} aria-label={`Edit attendance for ${name} on ${formatDate(valueOf(row, "attendanceDate", "AttendanceDate"))}`}>Edit</Button></TableCell>}
                 </TableRow>;
               })}</TableBody>
             </Table>
@@ -327,6 +334,17 @@ export default function TeamAttendance() {
         )}
         <Box className="team-attendance-table-footer">{filteredRows.length} of {rows.length} team attendance records</Box>
       </Paper>
+      {canEdit && <EditAttendanceDialog
+        open={Boolean(editingAttendance)}
+        attendance={editingAttendance}
+        updatedBy={`Manager ${employeeId}`}
+        onClose={() => setEditingAttendance(null)}
+        onUpdated={() => {
+          setEditingAttendance(null);
+          setSaveMessage("Team attendance updated.");
+          loadTeamAttendance();
+        }}
+      />}
     </Box>
   );
 }

@@ -23,6 +23,7 @@ export default function EditAttendanceDialog({
   onClose,
   attendance,
   onUpdated,
+  updatedBy = "Admin",
 }) {
 
   const initialForm = {
@@ -56,7 +57,7 @@ export default function EditAttendanceDialog({
 
       setForm({
 
-        attendanceDate: attendance.attendanceDate || "",
+        attendanceDate: attendance.attendanceDate?.slice(0, 10) || "",
 
         shift: attendance.shift || "General",
 
@@ -239,7 +240,7 @@ const handleSubmit = async () => {
 
       remarks: form.remarks,
 
-      updatedBy: "Admin",
+      updatedBy,
 
     };
 
