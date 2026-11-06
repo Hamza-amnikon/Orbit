@@ -1,17 +1,15 @@
 import { previewMode, previewRequest } from "./preview";
 
 const baseUrl = (
-    import.meta.env.VITE_FINANCE_API_URL || "http://localhost:5080"
+    import.meta.env.VITE_FINANCE_API_URL || (import.meta.env.DEV ? "http://localhost:5080" : "")
 ).replace(/\/$/, "");
 
-const tokenKey = "orbit.finance.accessToken";
 
 export async function request(path, { body, live = false, useProxy = false, timeoutMs, ...options } = {}) {
     if (previewMode && !live) {
         return previewRequest(path, { ...options, body });
     }
 
-    const token = sessionStorage.getItem(tokenKey);
     const isFormData = body instanceof FormData;
     const requestUrl = useProxy
         ? `/api/${path}`
@@ -29,7 +27,6 @@ export async function request(path, { body, live = false, useProxy = false, time
             ...(body !== undefined && !isFormData
                 ? { "Content-Type": "application/json" }
                 : {}),
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
             ...options.headers,
         },
         ...(body !== undefined
@@ -52,11 +49,6 @@ export async function request(path, { body, live = false, useProxy = false, time
     });
 
     if (!response.ok) {
-        if (response.status === 401 && path !== "auth/login") {
-            sessionStorage.removeItem(tokenKey);
-            window.dispatchEvent(new Event("finance:unauthorized"));
-        }
-
         const validation = payload?.errors
             ? Object.values(payload.errors).flat().join(" ")
             : "";
@@ -76,3 +68,4 @@ export async function request(path, { body, live = false, useProxy = false, time
 
     return payload;
 }
+

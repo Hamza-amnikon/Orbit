@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5080/api/country-master";
+const API_URL = "/api/country-master";
 
 async function getOptions(path, filters = {}, signal) {
     const parameters = new URLSearchParams(filters);
@@ -46,3 +46,4 @@ export function getCities(country, state, signal) {
         signal
     );
 }
+

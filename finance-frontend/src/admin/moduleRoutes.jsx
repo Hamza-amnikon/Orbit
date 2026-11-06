@@ -18,8 +18,6 @@ import ExpensesReports from "./reports management/expenses reports/ExpensesRepor
 import BranchComparison from "./reports management/branch comparison/BranchComparison";
 
 import Organization from "./settings management/organization/Organization";
-import Users from "./settings management/users/Users";
-import RolesPermissions from "./settings management/roles permissions/RolesPermissions";
 import TaxSettings from "./settings management/tax settings/TaxSettings";
 import AuditHistory from "./settings management/audit history/AuditHistory";
 import ExchangeRates from "./settings management/exchange rates/ExchangeRates";
@@ -48,7 +46,6 @@ export const adminModuleRoutes = [
     ["Expense Reports", "/reports/expenses", ExpensesReports],
 
     ["Organization", "/settings/organization", Organization],
-    ["Users", "/settings/users", Users],
-    ["Roles & Permissions", "/settings/roles", RolesPermissions],
     ["Tax Settings", "/settings/tax", TaxSettings],
 ];
+

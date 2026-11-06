@@ -1,5 +1,4 @@
-import { AppBar, Toolbar, Box, Typography, IconButton, Avatar, Autocomplete, TextField, Button } from "@mui/material";
-import { useAuth } from "../live/AuthContext";
+import { AppBar, Toolbar, Box, Typography, IconButton, Autocomplete, TextField } from "@mui/material";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,7 +17,6 @@ const pages = [
 ].map(([label, path]) => ({ label, path }));
 
 export default function Header({ desktop, onMenuClick }) {
-  const { user, logout } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const vendorPage = pathname === "/purchases/vendors" || pathname.startsWith("/purchases/vendors/");
@@ -70,13 +68,8 @@ export default function Header({ desktop, onMenuClick }) {
             slotProps={{ ...params.slotProps, input: { ...params.slotProps.input, startAdornment: <SearchRoundedIcon sx={{ mr: 1, color: "#94a3b8", fontSize: 20 }} /> }, htmlInput: { ...params.slotProps.htmlInput, "aria-label": "Find a finance page" } }} />}
         />
         <ThemeToggle />
-        <Avatar sx={{ width: 38, height: 38, bgcolor: "action.selected", color: "primary.main", fontSize: 13, fontWeight: 700 }}>{user.name?.slice(0, 2).toUpperCase()}</Avatar>
-        <Box sx={{ display: { xs: "none", md: "block" } }}>
-          <Typography sx={{ fontSize: 13, fontWeight: 600 }}>{user.name}</Typography>
-          <Typography sx={{ fontSize: 11, color: "text.secondary" }}>{user.role}</Typography>
-        </Box>
-        {!previewMode && <Button size="small" onClick={logout}>Sign out</Button>}
       </Toolbar>
     </AppBar>
   );
 }
+
