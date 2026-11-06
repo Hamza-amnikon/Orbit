@@ -286,8 +286,6 @@ const Sidebar = ({ desktop, open, onClose }) => {
                 >
                     <List disablePadding>
                         {childItem("Organization", "/settings/organization")}
-                        {childItem("Users", "/settings/users")}
-                        {childItem("Roles & Permissions", "/settings/roles")}
                         {childItem("Tax Settings", "/settings/tax")}
                         {childItem("Exchange Rates", "/settings/exchange-rates")}
                         {childItem("Audit History", "/settings/audit")}
