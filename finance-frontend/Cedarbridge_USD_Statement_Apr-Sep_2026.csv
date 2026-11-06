@@ -1,0 +1,53 @@
+Date,Reference,Direction,Amount,Description
+2026-04-05,CW-001,MoneyOut,400.00,Cash withdrawal to petty cash
+2026-04-13,PAY-001,MoneyOut,1200.00,Payment for BILL-2026-001
+2026-04-13,RCT-001,MoneyIn,720.00,Payment for INV-2026-001
+2026-04-18,PAY-002,MoneyOut,320.00,Payment for BILL-2026-002
+2026-04-20,CW-002,MoneyOut,300.00,Cash withdrawal to petty cash
+2026-04-25,RCT-002,MoneyIn,720.00,Payment for INV-2026-001
+2026-04-26,RCT-003,MoneyIn,1740.00,Payment for INV-2026-002
+2026-04-28,PAY-003,MoneyOut,380.00,Payment for BILL-2026-003
+2026-04-30,FEE-001,MoneyOut,18.50,Monthly account service fee
+2026-05-05,CW-003,MoneyOut,425.00,Cash withdrawal to petty cash
+2026-05-06,RCT-004,MoneyIn,2040.00,Payment for INV-2026-003
+2026-05-13,PAY-004,MoneyOut,1200.00,Payment for BILL-2026-004
+2026-05-13,RCT-005,MoneyIn,1170.00,Payment for INV-2026-004
+2026-05-18,PAY-005,MoneyOut,340.00,Payment for BILL-2026-005
+2026-05-20,CW-004,MoneyOut,310.00,Cash withdrawal to petty cash
+2026-05-25,RCT-006,MoneyIn,1170.00,Payment for INV-2026-004
+2026-05-28,PAY-006,MoneyOut,418.00,Payment for BILL-2026-006
+2026-05-28,RCT-007,MoneyIn,1296.00,Payment for INV-2026-005
+2026-05-31,FEE-002,MoneyOut,19.50,Monthly account service fee
+2026-06-05,CW-005,MoneyOut,450.00,Cash withdrawal to petty cash
+2026-06-13,PAY-007,MoneyOut,1200.00,Payment for BILL-2026-007
+2026-06-15,RCT-008,MoneyIn,2460.00,Payment for INV-2026-006
+2026-06-18,PAY-008,MoneyOut,360.00,Payment for BILL-2026-008
+2026-06-20,CW-006,MoneyOut,320.00,Cash withdrawal to petty cash
+2026-06-24,RCT-009,MoneyIn,1380.00,Payment for INV-2026-007
+2026-06-28,PAY-009,MoneyOut,456.00,Payment for BILL-2026-009
+2026-06-30,FEE-003,MoneyOut,20.50,Monthly account service fee
+2026-07-05,CW-007,MoneyOut,475.00,Cash withdrawal to petty cash
+2026-07-06,RCT-010,MoneyIn,1380.00,Payment for INV-2026-007
+2026-07-13,PAY-010,MoneyOut,1200.00,Payment for BILL-2026-010
+2026-07-15,RCT-011,MoneyIn,2880.00,Payment for INV-2026-009
+2026-07-18,PAY-011,MoneyOut,380.00,Payment for BILL-2026-011
+2026-07-20,CW-008,MoneyOut,330.00,Cash withdrawal to petty cash
+2026-07-24,RCT-012,MoneyIn,1590.00,Payment for INV-2026-010
+2026-07-28,PAY-012,MoneyOut,494.00,Payment for BILL-2026-012
+2026-07-31,FEE-004,MoneyOut,21.50,Monthly account service fee
+2026-08-05,CW-009,MoneyOut,500.00,Cash withdrawal to petty cash
+2026-08-05,RCT-013,MoneyIn,1590.00,Payment for INV-2026-010
+2026-08-13,PAY-013,MoneyOut,1200.00,Payment for BILL-2026-013
+2026-08-15,RCT-014,MoneyIn,3480.00,Payment for INV-2026-011
+2026-08-16,PAY-014,MoneyOut,200.00,Payment for BILL-2026-014
+2026-08-20,CW-010,MoneyOut,340.00,Cash withdrawal to petty cash
+2026-08-24,RCT-015,MoneyIn,1890.00,Payment for INV-2026-012
+2026-08-28,PAY-015,MoneyOut,532.00,Payment for BILL-2026-015
+2026-08-31,FEE-005,MoneyOut,22.50,Monthly account service fee
+2026-09-03,RCT-016,MoneyIn,1800.00,Payment for INV-2026-013
+2026-09-05,CW-011,MoneyOut,525.00,Cash withdrawal to petty cash
+2026-09-13,PAY-016,MoneyOut,1200.00,Payment for BILL-2026-016
+2026-09-13,RCT-018,MoneyIn,1560.00,Payment for INV-2026-014
+2026-09-15,RCT-017,MoneyIn,1800.00,Payment for INV-2026-013
+2026-09-20,CW-012,MoneyOut,350.00,Cash withdrawal to petty cash
+2026-09-30,FEE-006,MoneyOut,23.50,Monthly account service fee

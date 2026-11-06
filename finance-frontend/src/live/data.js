@@ -12,7 +12,7 @@ export function useLoad(loader, dependencies, { keepPreviousData = false } = {})
       dependencies.every((value, index) => Object.is(value, previousDependencies.current[index]));
     previousDependencies.current = [...dependencies];
     setState(current => ({ data: keepPreviousData && sameResource ? current.data : null, loading: true, error: "" }));
-    Promise.resolve().then(() => loader(controller.signal)).then(data => { if (!controller.signal.aborted) setState({ data, loading: false, error: "" }); })
+    Promise.resolve().then(() => controller.signal.aborted ? undefined : loader(controller.signal)).then(data => { if (!controller.signal.aborted) setState({ data, loading: false, error: "" }); })
       .catch(error => { if (!controller.signal.aborted) setState(current => ({ data: keepPreviousData ? current.data : null, loading: false, error: error.message === "Failed to fetch" ? "Cannot reach the finance server. Check that the backend is running." : error.message })); });
     return () => controller.abort();
     // The caller supplies primitive keys for the requested resource and filters.

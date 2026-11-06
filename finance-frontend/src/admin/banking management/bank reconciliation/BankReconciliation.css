@@ -1,1 +1,20 @@
 @import "../../shared/AdminModules.css";
+
+.reconciliation-form-dialog .MuiDialog-paper {
+    max-height: calc(100dvh - 32px);
+    overflow: hidden;
+}
+
+.reconciliation-form-dialog form {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    max-height: calc(100dvh - 32px);
+}
+
+.reconciliation-form-dialog .MuiDialogContent-root {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+}

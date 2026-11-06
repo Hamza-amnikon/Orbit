@@ -59,6 +59,7 @@ function ReconciliationForm({ accounts = [], onClose, onSaved }) {
     const locked = useRef(false);
     const requestId = useRef(null);
     const fileRevision = useRef(0);
+    const contentRef = useRef(null);
 
     const account = accounts.find(row => row.id === Number(value.bankAccountId));
     const accountId = Number(value.bankAccountId) || null;
@@ -238,11 +239,22 @@ function ReconciliationForm({ accounts = [], onClose, onSaved }) {
         onSaved(result);
     }
 
+    function scrollForm(event) {
+        if (!contentRef.current || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        contentRef.current.scrollTop += event.deltaY;
+    }
+
     return (
         <Dialog
             open
             fullWidth
             maxWidth="md"
+            className="reconciliation-form-dialog"
             onClose={busy || importing ? undefined : onClose}
             aria-labelledby="reconciliation-form-title"
         >
@@ -250,6 +262,7 @@ function ReconciliationForm({ accounts = [], onClose, onSaved }) {
                 component="form"
                 noValidate
                 onSubmit={save}
+                onWheel={scrollForm}
             >
                 <DialogTitle
                     id="reconciliation-form-title"
@@ -259,6 +272,7 @@ function ReconciliationForm({ accounts = [], onClose, onSaved }) {
 
                 <DialogContent
                     dividers
+                    ref={contentRef}
                 >
                     {error && (
                         <Alert
