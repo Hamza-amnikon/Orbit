@@ -64,7 +64,7 @@ jobs:
           if (-not (Test-Path -LiteralPath (Join-Path $buildPath "assets") -PathType Container)) {
             throw "Build output is missing assets."
           }
-          if (Get-ChildItem (Join-Path $buildPath "assets") -Filter "*.js" | Select-String -Pattern "http://localhost:5080" -Quiet) {
+          if (Select-String -Path (Join-Path $buildPath "assets\*.js") -Pattern "http://localhost:5080" -Quiet) {
             throw "Production JavaScript still calls localhost:5080."
           }
 
