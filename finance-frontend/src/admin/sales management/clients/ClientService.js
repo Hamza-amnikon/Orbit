@@ -1,4 +1,4 @@
-const endpoint = "http://localhost:5080/api/clients";
+const endpoint = "/api/clients";
 
 async function request(url, { body, ...options } = {}) {
     const response = await fetch(url, {
@@ -73,3 +73,4 @@ export async function archiveClient(id, rowVersion) {
         body: { rowVersion },
     });
 }
+
