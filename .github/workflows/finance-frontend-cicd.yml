@@ -1,0 +1,103 @@
+name: Finance frontend IIS deployment
+
+on:
+  push:
+    branches:
+      - mahinoor
+  workflow_dispatch:
+
+concurrency:
+  group: finance-frontend-iis-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy finance frontend
+    runs-on: [self-hosted, Windows, X64, finance-frontend-deploy]
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: powershell
+
+    steps:
+      - name: Verify deployment host
+        run: |
+          $ErrorActionPreference = "Stop"
+          if ($env:COMPUTERNAME -ine "SWVMNVMNPDDEP01") {
+            throw "Wrong deployment server: $env:COMPUTERNAME"
+          }
+          if (-not (Test-Path -LiteralPath "C:\inetpub\wwwroot\web.config" -PathType Leaf)) {
+            throw "The IIS site and its API proxy configuration are required."
+          }
+
+      - name: Check out mahinoor
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: finance-frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: finance-frontend
+        run: npm.cmd ci
+
+      - name: Build frontend
+        working-directory: finance-frontend
+        run: npm.cmd run build
+
+      - name: Validate build
+        run: |
+          $ErrorActionPreference = "Stop"
+          $buildPath = Join-Path $env:GITHUB_WORKSPACE "finance-frontend\dist"
+          $indexPath = Join-Path $buildPath "index.html"
+          if (-not (Test-Path -LiteralPath $indexPath -PathType Leaf)) {
+            throw "Build output is missing index.html."
+          }
+          if (-not (Test-Path -LiteralPath (Join-Path $buildPath "assets") -PathType Container)) {
+            throw "Build output is missing assets."
+          }
+          if (Get-ChildItem (Join-Path $buildPath "assets") -Filter "*.js" | Select-String -Pattern "http://localhost:5080" -Quiet) {
+            throw "Production JavaScript still calls localhost:5080."
+          }
+
+      - name: Deploy static files to IIS
+        run: |
+          $ErrorActionPreference = "Stop"
+          $buildPath = Join-Path $env:GITHUB_WORKSPACE "finance-frontend\dist"
+          $deployPath = "C:\inetpub\wwwroot"
+          $backupPath = Join-Path $env:RUNNER_TEMP "finance-frontend-backup-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Path $backupPath -Force | Out-Null
+          & robocopy.exe $deployPath $backupPath /E /R:2 /W:2 /NFL /NDL /NP
+          if ($LASTEXITCODE -ge 8) {
+            throw "Could not back up the IIS site (robocopy exit $LASTEXITCODE)."
+          }
+          try {
+            # Keep the server's API routing in web.config and retain existing assets.
+            & robocopy.exe $buildPath $deployPath /E /XF web.config /R:2 /W:2 /NFL /NDL /NP
+            if ($LASTEXITCODE -ge 8) {
+              throw "IIS deployment copy failed (robocopy exit $LASTEXITCODE)."
+            }
+            $response = Invoke-WebRequest -Uri "http://localhost/" -UseBasicParsing -TimeoutSec 20
+            if ($response.StatusCode -ne 200 -or $response.Content -notmatch 'id="root"') {
+              throw "Frontend health check failed."
+            }
+            $clients = Invoke-WebRequest -Uri "http://localhost/api/clients?page=1&pageSize=1" -UseBasicParsing -TimeoutSec 20
+            if ($clients.StatusCode -ne 200) {
+              throw "Client API proxy health check failed."
+            }
+            Write-Output "Deployed $env:GITHUB_SHA to http://SWVMNVMNPDDEP01/"
+          } catch {
+            & robocopy.exe $backupPath $deployPath /E /R:2 /W:2 /NFL /NDL /NP
+            if ($LASTEXITCODE -ge 8) {
+              Write-Error "Rollback copy failed (robocopy exit $LASTEXITCODE)."
+            }
+            throw
+          }
