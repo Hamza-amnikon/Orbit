@@ -1,16 +1,13 @@
 import { MuiTableBodyMigration, MuiTableCellMigration, MuiTableHeadMigration, MuiTableMigration, MuiTableRowMigration } from "../../../components/ui/MuiCompat.jsx";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import "./EmployeeTable.css";
 
 import {
   IconButton,
   Tooltip,
-  TextField,
-  InputAdornment,
 } from "@mui/material";
 
 import {
-  Search,
   Edit,
   Delete,
 } from "@mui/icons-material";
@@ -93,12 +90,6 @@ function EmployeeTable({
     "Employee";
 
 
-  // =====================================================
-  // SEARCH
-  // =====================================================
-
-  const [search, setSearch] = useState("");
-
 
   // =====================================================
   // AUTH DEBUG
@@ -144,84 +135,6 @@ function EmployeeTable({
     currentAzureEmployeeId,
     currentEmployeeName,
   ]);
-
-
-  // =====================================================
-  // FILTER EMPLOYEES
-  // =====================================================
-
-  const filteredEmployees =
-    employees.filter((emp) => {
-
-      const keyword =
-        search
-          .toLowerCase()
-          .trim();
-
-
-      if (!keyword) {
-        return true;
-      }
-
-
-      return (
-
-        emp.employeeName
-          ?.toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        emp.azureEmployeeId || emp.AzureEmployeeId
-          ?.toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        emp.email
-          ?.toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        emp.department
-          ?.toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        emp.designation
-          ?.toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        emp.mobile
-          ?.toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        emp.gender
-          ?.toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        emp.status
-          ?.toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        emp.azureEmployeeId
-          ?.toString()
-          .toLowerCase()
-          .includes(keyword)
-
-      );
-
-    });
 
 
   // =====================================================
@@ -404,7 +317,7 @@ function EmployeeTable({
         <MuiLayoutBox className="employee-table-count" component="div">
 
           <MuiText component="span" variant="inherit">
-            {filteredEmployees.length}
+            {employees.length}
           </MuiText>
 
           Employees
@@ -481,7 +394,7 @@ function EmployeeTable({
 
           <MuiTableBodyMigration>
 
-            {filteredEmployees.length === 0 ? (
+            {employees.length === 0 ? (
 
               <MuiTableRowMigration>
 
@@ -498,7 +411,7 @@ function EmployeeTable({
 
             ) : (
 
-              filteredEmployees.map(
+              employees.map(
                 (emp) => (
 
                   <MuiTableRowMigration

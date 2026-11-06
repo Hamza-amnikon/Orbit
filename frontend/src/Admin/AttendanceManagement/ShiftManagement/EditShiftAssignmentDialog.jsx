@@ -15,12 +15,6 @@ import {
 } from "@mui/material";
 import { Typography as MuiText } from "@mui/material";
 
-export default function EditShiftAssignmentDialog({
-  open,
-  employee,
-  onClose,
-  onUpdate,
-}) {
   // =========================================================
   // SHIFT PRESETS
   // =========================================================
@@ -34,8 +28,7 @@ export default function EditShiftAssignmentDialog({
   //
   // Night shift crosses midnight.
   // =========================================================
-
-  const SHIFT_TIMINGS = {
+const SHIFT_TIMINGS = {
     Morning: {
       startTime: "05:00",
       endTime: "13:30",
@@ -56,6 +49,14 @@ export default function EditShiftAssignmentDialog({
       endTime: "06:00",
     },
   };
+
+
+export default function EditShiftAssignmentDialog({
+  open,
+  employee,
+  onClose,
+  onUpdate,
+}) {
 
   // =========================================================
   // FORM
