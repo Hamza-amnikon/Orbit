@@ -63,6 +63,10 @@ export default defineConfig({
                 target: "http://localhost:5080",
                 changeOrigin: true,
             },
+            "/api/country-master": {
+                target: "http://localhost:5080",
+                changeOrigin: true,
+            },
 
             "/api/vendors": {
                 target: "https://localhost:7179",
