@@ -1,7 +1,6 @@
 import { request } from "./api";
 
-const baseUrl = (import.meta.env.VITE_FINANCE_API_URL || "http://localhost:5080").replace(/\/$/, "");
-const tokenKey = "orbit.finance.accessToken";
+const baseUrl = (import.meta.env.VITE_FINANCE_API_URL || (import.meta.env.DEV ? "http://localhost:5080" : "")).replace(/\/$/, "");
 function query(filters = {}) {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(filters)) {
@@ -23,16 +22,6 @@ export const financeApi = {
   exchangeRates: (signal) => request("exchange-rates/latest", { live: true, useProxy: true, signal, timeoutMs: 15000 }),
   currencies: () => request("currencies"),
   saveRate: body => request("currencies", { method: "POST", body }),
-  hasSession: () => !!sessionStorage.getItem(tokenKey),
-  async login(email, password) {
-    const result = await request("auth/login", { method: "POST", body: { email, password } });
-    sessionStorage.setItem(tokenKey, result.accessToken);
-    return result;
-  },
-  logout: () => sessionStorage.removeItem(tokenKey),
-  me: () => request("auth/me"),
-  createUser: (body) => request("auth/users", { method: "POST", body }),
-  users: { ...resource("auth/users"), },
   workspace: (kind) => ({ ...resource(`workspace/${kind}`), changeStatus: (id, body) => request(`workspace/${kind}/${id}/status`, { method: "PATCH", body }) }),
   expenses: (kind) => ({ ...resource(`expenses/${kind}`), changeStatus: (id, body) => request(`expenses/${kind}/${id}/status`, { method: "PATCH", body }) }),
   ledger: (filters) => request(`accounting/ledger${query(filters)}`),
@@ -42,8 +31,8 @@ export const financeApi = {
     list: () => request(`attachments/${source}/${id}`),
     upload: (body) => request(`attachments/${source}/${id}`, { method: "POST", body }),
     async download(attachment) {
-      const response = await fetch(`${baseUrl}/api/attachments/${source}/${id}/${attachment.id}`, { headers: { Authorization: `Bearer ${sessionStorage.getItem(tokenKey)}` } });
-      if (!response.ok) throw new Error(`Download failed (${response.status}). Sign in again if your session expired.`);
+      const response = await fetch(`${baseUrl}/api/attachments/${source}/${id}/${attachment.id}`);
+      if (!response.ok) throw new Error(`Download failed (${response.status}).`);
       const url = URL.createObjectURL(await response.blob()); const link = document.createElement("a"); link.href = url; link.download = attachment.fileName; link.click(); URL.revokeObjectURL(url);
     },
   }),
@@ -77,3 +66,4 @@ export async function allRecords(api, filters = {}, signal) {
     if (records.length >= result.total || result.data.length === 0) return records;
   }
 }
+
