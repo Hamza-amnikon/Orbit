@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
 import {
     Alert,
     Button,
@@ -11,14 +13,21 @@ import {
     TableHead,
     TableRow,
     TextField,
-    Typography,
+    Typography
 } from "@mui/material";
-import { Link } from "react-router-dom";
+
 import { financeApi } from "../../../services/financeApi";
-import { money, today, useLoad } from "../../../live/data";
+
+import {
+    money,
+    today,
+    useLoad
+} from "../../../live/data";
+
 import { Feedback, Page } from "../../../live/shared";
 
-export default function BranchComparison() {
+export default function BranchComparison()
+{
     const [currency, setCurrency] = useState("INR");
     const [from, setFrom] = useState(today().slice(0, 7) + "-01");
     const [to, setTo] = useState(today());
@@ -30,14 +39,15 @@ export default function BranchComparison() {
                     branch,
                     currency,
                     from,
-                    to,
+                    to
                 })
             )
         ),
         [currency, from, to]
     );
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         const timer = setInterval(
             rows.refresh,
             15 * 60 * 1000
@@ -52,7 +62,7 @@ export default function BranchComparison() {
         ["Payment Received", "received"],
         ["Payment Made", "paid"],
         ["Receivable", "accountsReceivable"],
-        ["Payable", "accountsPayable"],
+        ["Payable", "accountsPayable"]
     ];
 
     return (
@@ -62,26 +72,17 @@ export default function BranchComparison() {
         >
             <Stack
                 direction="row"
-                sx={{
-                    gap: 2,
-                    mb: 3,
-                    flexWrap: "wrap",
-                }}
+                sx={{ gap: 2, mb: 3, flexWrap: "wrap" }}
             >
                 <TextField
                     select
                     label="Reporting currency"
                     value={currency}
-                    onChange={event =>
-                        setCurrency(event.target.value)
-                    }
+                    onChange={event => setCurrency(event.target.value)}
                     sx={{ minWidth: 180 }}
                 >
                     {["INR", "AED"].map(code => (
-                        <MenuItem
-                            key={code}
-                            value={code}
-                        >
+                        <MenuItem key={code} value={code}>
                             {code}
                         </MenuItem>
                     ))}
@@ -89,20 +90,18 @@ export default function BranchComparison() {
 
                 {[
                     ["From", from, setFrom],
-                    ["To", to, setTo],
+                    ["To", to, setTo]
                 ].map(([label, value, setValue]) => (
                     <TextField
                         key={label}
                         type="date"
                         label={label}
                         value={value}
-                        onChange={event =>
-                            setValue(event.target.value)
-                        }
+                        onChange={event => setValue(event.target.value)}
                         slotProps={{
                             inputLabel: {
-                                shrink: true,
-                            },
+                                shrink: true
+                            }
                         }}
                     />
                 ))}
@@ -115,16 +114,10 @@ export default function BranchComparison() {
                 </Button>
             </Stack>
 
-            <Feedback
-                {...rows}
-                retry={rows.refresh}
-            />
+            <Feedback {...rows} retry={rows.refresh} />
 
             {rows.data?.[0].rateWarning && (
-                <Alert
-                    severity="warning"
-                    sx={{ mb: 2 }}
-                >
+                <Alert severity="warning" sx={{ mb: 2 }}>
                     {rows.data[0].rateWarning}
                 </Alert>
             )}
@@ -132,13 +125,16 @@ export default function BranchComparison() {
             {rows.data && (
                 <Typography sx={{ mb: 2 }}>
                     Source: {rows.data[0].rateSource}
+
                     {rows.data[0].ratePublishedAt &&
                         ` · Provider updated: ${new Date(
                             rows.data[0].ratePublishedAt
-                        ).toLocaleString()} (daily)`}
+                        ).toLocaleString()} (daily)`
+                    }
+
                     .{" "}
-                    {rows.data[0].rateSource ===
-                        "ExchangeRate-API" && (
+
+                    {rows.data[0].rateSource === "ExchangeRate-API" && (
                         <a
                             href="https://www.exchangerate-api.com"
                             target="_blank"
@@ -165,7 +161,9 @@ export default function BranchComparison() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Branch</TableCell>
+                                    <TableCell>
+                                        Branch
+                                    </TableCell>
 
                                     {metrics.map(([label]) => (
                                         <TableCell key={label}>
@@ -186,10 +184,7 @@ export default function BranchComparison() {
 
                                         {metrics.map(([, key]) => (
                                             <TableCell key={key}>
-                                                {money(
-                                                    row[key],
-                                                    currency
-                                                )}
+                                                {money(row[key], currency)}
                                             </TableCell>
                                         ))}
                                     </TableRow>

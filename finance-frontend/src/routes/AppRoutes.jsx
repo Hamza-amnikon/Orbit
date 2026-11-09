@@ -1,7 +1,11 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {
+    BrowserRouter,
+    Navigate,
+    Route,
+    Routes
+} from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
 import { FinanceAuth } from "../live/Auth";
-
 import FinanceDashboard from "../live/Dashboard";
 import Vendors from "../admin/purchases management/vendors/Vendors";
 import VendorDetails from "../admin/purchases management/vendors/VendorDetails";
@@ -13,7 +17,6 @@ import PurchaseOrderDetails from "../admin/purchases management/purchase orders/
 import Documents from "../live/Documents";
 import PaymentsMade from "../admin/purchases management/Payments Made/PaymentsMade";
 import PaymentMadeDetails from "../admin/purchases management/Payments Made/PaymentMadeDetails";
-
 import Clients from "../admin/sales management/clients/Clients";
 import ClientDetails from "../admin/sales management/clients/ClientDetails";
 import Invoices from "../admin/sales management/invoices/Invoices";
@@ -21,64 +24,31 @@ import Estimates from "../admin/sales management/estimates/Estimates";
 import CreditNotes from "../admin/sales management/credit notes/CreditNotes";
 import PaymentReceived from "../admin/sales management/payments received/PaymentReceived";
 import CustomerStatements from "../admin/sales management/customer statements/CustomerStatements";
-
 import { adminModuleRoutes } from "../admin/moduleRoutes";
-
-const documentRoutes = [
-    ["/sales/orders", "SalesOrder"],
-];
-
-function AppRoutes() {
-    return (
-        <BrowserRouter>
+const documentRoutes = [["/sales/orders", "SalesOrder"]];
+function AppRoutes()
+{
+    return <BrowserRouter>
             <FinanceAuth>
                 <Routes>
                     <Route element={<DashboardLayout />}>
                         <Route path="/" element={<FinanceDashboard />} />
 
-                        <Route
-                            path="/sales/estimates"
-                            element={<Estimates />}
-                        />
+                        <Route path="/sales/estimates" element={<Estimates />} />
 
-                        <Route
-                            path="/sales/credit-notes"
-                            element={<CreditNotes />}
-                        />
+                        <Route path="/sales/credit-notes" element={<CreditNotes />} />
 
-                        <Route
-                            path="/sales/clients"
-                            element={<Clients />}
-                        />
+                        <Route path="/sales/clients" element={<Clients />} />
 
-                        <Route
-                            path="/sales/clients/:id"
-                            element={<ClientDetails />}
-                        />
+                        <Route path="/sales/clients/:id" element={<ClientDetails />} />
 
-                        <Route
-                            path="/sales/customers"
-                            element={
-                                <Navigate to="/sales/clients" replace />
-                            }
-                        />
+                        <Route path="/sales/customers" element={<Navigate to="/sales/clients" replace />} />
 
-                        <Route
-                            path="/sales/customers/:id"
-                            element={<ClientDetails />}
-                        />
+                        <Route path="/sales/customers/:id" element={<ClientDetails />} />
 
-                        <Route
-                            path="/sales/invoices"
-                            element={<Invoices />}
-                        />
+                        <Route path="/sales/invoices" element={<Invoices />} />
 
-                        <Route
-                            path="/purchases/vendors"
-                            element={
-                                <Vendors />
-                            }
-                        />
+                        <Route path="/purchases/vendors" element={<Vendors />} />
 
                         <Route path="/purchases/vendors/:id" element={<VendorDetails />} />
 
@@ -87,60 +57,32 @@ function AppRoutes() {
                         <Route path="/purchases/orders" element={<PurchaseOrders />} />
                         <Route path="/purchases/orders/:id" element={<PurchaseOrderDetails />} />
 
-                        <Route
-                            path="/purchases/vendor-credits"
-                            element={<VendorCredits />}
-                        />
+                        <Route path="/purchases/vendor-credits" element={<VendorCredits />} />
 
-                        {documentRoutes.map(([path, kind]) => (
-                            <Route
-                                key={path}
-                                path={path}
-                                element={
-                                    <Documents key={kind} kind={kind} />
-                                }
-                            />
-                        ))}
+                        {documentRoutes.map(([path, kind]) => <Route
+                                                    key={path}
+                                                    path={path}
+                                                    element={<Documents key={kind} kind={kind} />}
+                                                />)}
 
-                        <Route
-                            path="/sales/payments"
-                            element={<PaymentReceived />}
-                        />
+                        <Route path="/sales/payments" element={<PaymentReceived />} />
 
-                        <Route
-                            path="/sales/customer-statements"
-                            element={<CustomerStatements />}
-                        />
+                        <Route path="/sales/customer-statements" element={<CustomerStatements />} />
 
-                        <Route
-                            path="/purchases/payments"
-                            element={<PaymentsMade />}
-                        />
+                        <Route path="/purchases/payments" element={<PaymentsMade />} />
 
-                        <Route
-                            path="/purchases/payments/:id"
-                            element={<PaymentMadeDetails />}
-                        />
+                        <Route path="/purchases/payments/:id" element={<PaymentMadeDetails />} />
 
-                        {adminModuleRoutes
-                            .filter(([, path]) => path !== "/sales/invoices")
-                            .map(([, path, Component]) => (
-                                <Route
-                                    key={path}
-                                    path={path}
-                                    element={<Component />}
-                                />
-                            ))}
+                        {adminModuleRoutes.filter(([, path]) => path !== "/sales/invoices").map(([, path, Component]) => <Route
+                                                    key={path}
+                                                    path={path}
+                                                    element={<Component />}
+                                                />)}
 
-                        <Route
-                            path="*"
-                            element={<Navigate to="/" replace />}
-                        />
+                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Route>
                 </Routes>
             </FinanceAuth>
-        </BrowserRouter>
-    );
+        </BrowserRouter>;
 }
-
 export default AppRoutes;

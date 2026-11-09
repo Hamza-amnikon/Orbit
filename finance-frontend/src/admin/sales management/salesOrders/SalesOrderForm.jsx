@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
     Box,
     Button,
@@ -7,22 +6,20 @@ import {
     CardContent,
     MenuItem,
     TextField,
-    Typography,
+    Typography
 } from "@mui/material";
-
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
-
 import "./SalesOrderForm.css";
-
-const SalesOrderForm = ({ onClose }) => {
-
-    const handleSubmit = (event) => {
+const SalesOrderForm = ({
+    onClose
+}) =>
+{
+    const handleSubmit = event =>
+    {
         event.preventDefault();
     };
-
-    return (
-        <Box className="sales-order-form-page">
+    return <Box className="sales-order-form-page">
 
             <Box className="sales-order-form-container">
 
@@ -41,10 +38,7 @@ const SalesOrderForm = ({ onClose }) => {
                             </Typography>
                         </Box>
 
-                        <Button
-                            className="sales-order-close-button"
-                            onClick={onClose}
-                        >
+                        <Button className="sales-order-close-button" onClick={onClose}>
                             <CloseRoundedIcon />
                         </Button>
 
@@ -54,10 +48,10 @@ const SalesOrderForm = ({ onClose }) => {
                     <CardContent>
 
                         <Box
-                            component="form"
-                            onSubmit={handleSubmit}
-                            className="sales-order-form"
-                        >
+                                                    component="form"
+                                                    onSubmit={handleSubmit}
+                                                    className="sales-order-form"
+                                                >
 
                             {/* Sales Order Information */}
                             <Box className="sales-order-form-section">
@@ -70,12 +64,12 @@ const SalesOrderForm = ({ onClose }) => {
                                 <Box className="sales-order-form-row">
 
                                     <TextField
-                                        select
-                                        label="Customer"
-                                        defaultValue=""
-                                        required
-                                        fullWidth
-                                    >
+                                                                            select
+                                                                            label="Customer"
+                                                                            defaultValue=""
+                                                                            required
+                                                                            fullWidth
+                                                                        >
                                         <MenuItem value="" disabled>
                                             Select Customer
                                         </MenuItem>
@@ -99,10 +93,10 @@ const SalesOrderForm = ({ onClose }) => {
 
 
                                     <TextField
-                                        label="Sales Order Number"
-                                        defaultValue="SO-005"
-                                        fullWidth
-                                    />
+                                                                            label="Sales Order Number"
+                                                                            defaultValue="SO-005"
+                                                                            fullWidth
+                                                                        />
 
                                 </Box>
 
@@ -110,27 +104,27 @@ const SalesOrderForm = ({ onClose }) => {
                                 <Box className="sales-order-form-row">
 
                                     <TextField
-                                        label="Order Date"
-                                        type="date"
-                                        defaultValue="2026-10-05"
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                        required
-                                        fullWidth
-                                    />
+                                                                            label="Order Date"
+                                                                            type="date"
+                                                                            defaultValue="2026-10-05"
+                                                                            InputLabelProps={{
+                                    shrink: true
+                                }}
+                                                                            required
+                                                                            fullWidth
+                                                                        />
 
 
                                     <TextField
-                                        label="Expected Delivery Date"
-                                        type="date"
-                                        defaultValue="2026-11-05"
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                        required
-                                        fullWidth
-                                    />
+                                                                            label="Expected Delivery Date"
+                                                                            type="date"
+                                                                            defaultValue="2026-11-05"
+                                                                            InputLabelProps={{
+                                    shrink: true
+                                }}
+                                                                            required
+                                                                            fullWidth
+                                                                        />
 
                                 </Box>
 
@@ -138,11 +132,11 @@ const SalesOrderForm = ({ onClose }) => {
                                 <Box className="sales-order-form-row">
 
                                     <TextField
-                                        select
-                                        label="Estimate"
-                                        defaultValue=""
-                                        fullWidth
-                                    >
+                                                                            select
+                                                                            label="Estimate"
+                                                                            defaultValue=""
+                                                                            fullWidth
+                                                                        >
                                         <MenuItem value="">
                                             Select Estimate
                                         </MenuItem>
@@ -166,10 +160,10 @@ const SalesOrderForm = ({ onClose }) => {
 
 
                                     <TextField
-                                        label="Reference"
-                                        placeholder="Enter reference"
-                                        fullWidth
-                                    />
+                                                                            label="Reference"
+                                                                            placeholder="Enter reference"
+                                                                            fullWidth
+                                                                        />
 
                                 </Box>
 
@@ -185,20 +179,20 @@ const SalesOrderForm = ({ onClose }) => {
 
 
                                 <TextField
-                                    label="Item / Service"
-                                    placeholder="Enter item or service"
-                                    required
-                                    fullWidth
-                                />
+                                                                    label="Item / Service"
+                                                                    placeholder="Enter item or service"
+                                                                    required
+                                                                    fullWidth
+                                                                />
 
 
                                 <TextField
-                                    label="Description"
-                                    placeholder="Enter description of the item or service"
-                                    multiline
-                                    rows={4}
-                                    fullWidth
-                                />
+                                                                    label="Description"
+                                                                    placeholder="Enter description of the item or service"
+                                                                    multiline
+                                                                    rows={4}
+                                                                    fullWidth
+                                                                />
 
                             </Box>
 
@@ -214,24 +208,24 @@ const SalesOrderForm = ({ onClose }) => {
                                 <Box className="sales-order-form-row">
 
                                     <TextField
-                                        label="Quantity"
-                                        type="number"
-                                        defaultValue="1"
-                                        inputProps={{
-                                            min: 1,
-                                        }}
-                                        required
-                                        fullWidth
-                                    />
+                                                                            label="Quantity"
+                                                                            type="number"
+                                                                            defaultValue="1"
+                                                                            inputProps={{
+                                    min: 1
+                                }}
+                                                                            required
+                                                                            fullWidth
+                                                                        />
 
 
                                     <TextField
-                                        label="Rate"
-                                        type="number"
-                                        placeholder="0.00"
-                                        required
-                                        fullWidth
-                                    />
+                                                                            label="Rate"
+                                                                            type="number"
+                                                                            placeholder="0.00"
+                                                                            required
+                                                                            fullWidth
+                                                                        />
 
                                 </Box>
 
@@ -239,11 +233,11 @@ const SalesOrderForm = ({ onClose }) => {
                                 <Box className="sales-order-form-row">
 
                                     <TextField
-                                        select
-                                        label="Tax"
-                                        defaultValue="18"
-                                        fullWidth
-                                    >
+                                                                            select
+                                                                            label="Tax"
+                                                                            defaultValue="18"
+                                                                            fullWidth
+                                                                        >
                                         <MenuItem value="0">
                                             No Tax
                                         </MenuItem>
@@ -267,11 +261,11 @@ const SalesOrderForm = ({ onClose }) => {
 
 
                                     <TextField
-                                        select
-                                        label="Discount"
-                                        defaultValue="0"
-                                        fullWidth
-                                    >
+                                                                            select
+                                                                            label="Discount"
+                                                                            defaultValue="0"
+                                                                            fullWidth
+                                                                        >
                                         <MenuItem value="0">
                                             No Discount
                                         </MenuItem>
@@ -305,21 +299,21 @@ const SalesOrderForm = ({ onClose }) => {
                                 <Box className="sales-order-form-row">
 
                                     <TextField
-                                        label="Shipping Address"
-                                        placeholder="Enter shipping address"
-                                        multiline
-                                        rows={3}
-                                        fullWidth
-                                    />
+                                                                            label="Shipping Address"
+                                                                            placeholder="Enter shipping address"
+                                                                            multiline
+                                                                            rows={3}
+                                                                            fullWidth
+                                                                        />
 
 
                                     <TextField
-                                        label="Billing Address"
-                                        placeholder="Enter billing address"
-                                        multiline
-                                        rows={3}
-                                        fullWidth
-                                    />
+                                                                            label="Billing Address"
+                                                                            placeholder="Enter billing address"
+                                                                            multiline
+                                                                            rows={3}
+                                                                            fullWidth
+                                                                        />
 
                                 </Box>
 
@@ -335,21 +329,21 @@ const SalesOrderForm = ({ onClose }) => {
 
 
                                 <TextField
-                                    label="Notes"
-                                    placeholder="Enter notes for the customer"
-                                    multiline
-                                    rows={3}
-                                    fullWidth
-                                />
+                                                                    label="Notes"
+                                                                    placeholder="Enter notes for the customer"
+                                                                    multiline
+                                                                    rows={3}
+                                                                    fullWidth
+                                                                />
 
 
                                 <TextField
-                                    label="Terms & Conditions"
-                                    placeholder="Enter terms and conditions"
-                                    multiline
-                                    rows={3}
-                                    fullWidth
-                                />
+                                                                    label="Terms & Conditions"
+                                                                    placeholder="Enter terms and conditions"
+                                                                    multiline
+                                                                    rows={3}
+                                                                    fullWidth
+                                                                />
 
                             </Box>
 
@@ -402,20 +396,20 @@ const SalesOrderForm = ({ onClose }) => {
                             <Box className="sales-order-form-actions">
 
                                 <Button
-                                    variant="outlined"
-                                    className="sales-order-cancel-button"
-                                    onClick={onClose}
-                                >
+                                                                    variant="outlined"
+                                                                    className="sales-order-cancel-button"
+                                                                    onClick={onClose}
+                                                                >
                                     Cancel
                                 </Button>
 
 
                                 <Button
-                                    type="submit"
-                                    variant="contained"
-                                    startIcon={<SaveRoundedIcon />}
-                                    className="save-sales-order-button"
-                                >
+                                                                    type="submit"
+                                                                    variant="contained"
+                                                                    startIcon={<SaveRoundedIcon />}
+                                                                    className="save-sales-order-button"
+                                                                >
                                     Save Sales Order
                                 </Button>
 
@@ -429,8 +423,6 @@ const SalesOrderForm = ({ onClose }) => {
 
             </Box>
 
-        </Box>
-    );
+        </Box>;
 };
-
 export default SalesOrderForm;

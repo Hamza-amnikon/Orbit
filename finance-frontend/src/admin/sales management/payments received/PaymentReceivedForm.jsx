@@ -6,27 +6,25 @@ import {
     IconButton,
     MenuItem,
     TextField,
-    Typography,
+    Typography
 } from "@mui/material";
-
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
-
 import "./PaymentReceivedForm.css";
-
-const PaymentReceivedForm = ({ onClose }) => {
-
-    const handleSubmit = (event) => {
+const PaymentReceivedForm = ({
+    onClose
+}) =>
+{
+    const handleSubmit = event =>
+    {
         event.preventDefault();
     };
-
-    return (
-        <Box
-            component="form"
-            className="payment-form"
-            onSubmit={handleSubmit}
-        >
+    return <Box
+        component="form"
+        className="payment-form"
+        onSubmit={handleSubmit}
+    >
 
             {/* Header */}
             <Box className="payment-form-header">
@@ -47,10 +45,7 @@ const PaymentReceivedForm = ({ onClose }) => {
 
                 </Box>
 
-                <IconButton
-                    onClick={onClose}
-                    className="payment-form-close-button"
-                >
+                <IconButton onClick={onClose} className="payment-form-close-button">
                     <CloseRoundedIcon />
                 </IconButton>
 
@@ -67,30 +62,30 @@ const PaymentReceivedForm = ({ onClose }) => {
                 <Box className="payment-form-grid">
 
                     <TextField
-                        fullWidth
-                        label="Payment Number"
-                        defaultValue="PAY-005"
-                        size="small"
-                    />
+                                            fullWidth
+                                            label="Payment Number"
+                                            defaultValue="PAY-005"
+                                            size="small"
+                                        />
 
                     <TextField
-                        fullWidth
-                        label="Payment Date"
-                        type="date"
-                        defaultValue="2026-10-06"
-                        size="small"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
+                                            fullWidth
+                                            label="Payment Date"
+                                            type="date"
+                                            defaultValue="2026-10-06"
+                                            size="small"
+                                            InputLabelProps={{
+                    shrink: true
+                }}
+                                        />
 
                     <TextField
-                        select
-                        fullWidth
-                        label="Customer"
-                        defaultValue=""
-                        size="small"
-                    >
+                                            select
+                                            fullWidth
+                                            label="Customer"
+                                            defaultValue=""
+                                            size="small"
+                                        >
                         <MenuItem value="">
                             Select Customer
                         </MenuItem>
@@ -113,12 +108,12 @@ const PaymentReceivedForm = ({ onClose }) => {
                     </TextField>
 
                     <TextField
-                        select
-                        fullWidth
-                        label="Invoice"
-                        defaultValue=""
-                        size="small"
-                    >
+                                            select
+                                            fullWidth
+                                            label="Invoice"
+                                            defaultValue=""
+                                            size="small"
+                                        >
                         <MenuItem value="">
                             Select Invoice
                         </MenuItem>
@@ -152,20 +147,20 @@ const PaymentReceivedForm = ({ onClose }) => {
                 <Box className="payment-form-grid">
 
                     <TextField
-                        fullWidth
-                        label="Amount Received"
-                        type="number"
-                        defaultValue="88500"
-                        size="small"
-                    />
+                                            fullWidth
+                                            label="Amount Received"
+                                            type="number"
+                                            defaultValue="88500"
+                                            size="small"
+                                        />
 
                     <TextField
-                        select
-                        fullWidth
-                        label="Payment Method"
-                        defaultValue=""
-                        size="small"
-                    >
+                                            select
+                                            fullWidth
+                                            label="Payment Method"
+                                            defaultValue=""
+                                            size="small"
+                                        >
                         <MenuItem value="">
                             Select Method
                         </MenuItem>
@@ -196,19 +191,19 @@ const PaymentReceivedForm = ({ onClose }) => {
                     </TextField>
 
                     <TextField
-                        fullWidth
-                        label="Reference Number"
-                        placeholder="Enter transaction / cheque reference"
-                        size="small"
-                    />
+                                            fullWidth
+                                            label="Reference Number"
+                                            placeholder="Enter transaction / cheque reference"
+                                            size="small"
+                                        />
 
                     <TextField
-                        select
-                        fullWidth
-                        label="Deposit To"
-                        defaultValue=""
-                        size="small"
-                    >
+                                            select
+                                            fullWidth
+                                            label="Deposit To"
+                                            defaultValue=""
+                                            size="small"
+                                        >
                         <MenuItem value="">
                             Select Account
                         </MenuItem>
@@ -236,13 +231,13 @@ const PaymentReceivedForm = ({ onClose }) => {
                 </Typography>
 
                 <TextField
-                    fullWidth
-                    label="Notes"
-                    multiline
-                    rows={3}
-                    placeholder="Enter any additional notes"
-                    size="small"
-                />
+                                    fullWidth
+                                    label="Notes"
+                                    multiline
+                                    rows={3}
+                                    placeholder="Enter any additional notes"
+                                    size="small"
+                                />
 
                 {/* Summary */}
                 <Box className="payment-form-summary">
@@ -271,27 +266,25 @@ const PaymentReceivedForm = ({ onClose }) => {
             <Box className="payment-form-footer">
 
                 <Button
-                    type="button"
-                    onClick={onClose}
-                    variant="outlined"
-                    className="payment-form-cancel-button"
-                >
+                                    type="button"
+                                    onClick={onClose}
+                                    variant="outlined"
+                                    className="payment-form-cancel-button"
+                                >
                     Cancel
                 </Button>
 
                 <Button
-                    type="submit"
-                    variant="contained"
-                    startIcon={<SaveRoundedIcon />}
-                    className="payment-form-save-button"
-                >
+                                    type="submit"
+                                    variant="contained"
+                                    startIcon={<SaveRoundedIcon />}
+                                    className="payment-form-save-button"
+                                >
                     Save Payment
                 </Button>
 
             </Box>
 
-        </Box>
-    );
+        </Box>;
 };
-
 export default PaymentReceivedForm;

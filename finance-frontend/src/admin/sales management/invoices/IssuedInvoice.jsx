@@ -1,32 +1,27 @@
 import React from "react";
 import logo from "../../../assets/amnikon-logo.png";
 import "./IssuedInvoice.css";
-
 const IssuedInvoice = ({
     invoice,
     formatDate,
     formatAmount,
     unitNames,
-    paymentSummary = null,
-}) => {
+    paymentSummary = null
+}) =>
+{
     const issuer = invoice.issuer;
     const items = [...(invoice.items || [])].sort((a, b) => a.lineNumber - b.lineNumber);
-    const money = (value) => formatAmount(value, invoice.currency);
-    const bankDetails = [
-        ["Name on account", issuer.bankAccountName],
-        ["Bank name", issuer.bankName],
-        ["Account number", issuer.bankAccountNumber],
-        ["IBAN", issuer.bankIban],
-        ["SWIFT / BIC", issuer.bankSwiftCode],
-    ].filter(([, value]) => value);
-    const taxLabel = issuer.countryCode === "IN" ? "GSTIN" :
-        issuer.countryCode === "AE" ? "TRN" : "Tax registration number";
+    const money = value => formatAmount(value, invoice.currency);
+    const bankDetails = [["Name on account", issuer.bankAccountName], ["Bank name", issuer.bankName], ["Account number", issuer.bankAccountNumber], ["IBAN", issuer.bankIban], ["SWIFT / BIC", issuer.bankSwiftCode]].filter(([, value]) => value);
+    const taxLabel = issuer.countryCode === "IN" ? "GSTIN" : issuer.countryCode === "AE" ? "TRN" : "Tax registration number";
     const notes = invoice.notes || issuer.invoiceNotes;
-
-    return (
-        <article className="issued-invoice" aria-label="Issued company invoice">
+    return <article className="issued-invoice" aria-label="Issued company invoice">
             <header className="issued-invoice-header">
-                <img src={logo} className="issued-invoice-logo" alt="AMNIKON Technologies" />
+                <img
+                                    src={logo}
+                                    className="issued-invoice-logo"
+                                    alt="AMNIKON Technologies"
+                                />
                 <div className="issued-invoice-company">
                     <h1>{issuer.companyName}</h1>
                     <p className="issued-invoice-multiline">{issuer.address}</p>
@@ -51,19 +46,24 @@ const IssuedInvoice = ({
                 <div className="issued-invoice-dates">
                     <p>Due date: {formatDate(invoice.dueDate)}</p>
                     <p>Currency: {invoice.currency}</p>
-                    {invoice.servicePeriodStart && invoice.servicePeriodEnd && (
-                        <p>Service period: {formatDate(invoice.servicePeriodStart)} – {formatDate(invoice.servicePeriodEnd)}</p>
-                    )}
+                    {invoice.servicePeriodStart && invoice.servicePeriodEnd && <p>Service period: {formatDate(invoice.servicePeriodStart)} – {formatDate(invoice.servicePeriodEnd)}</p>}
                 </div>
             </section>
 
             <section className="issued-invoice-items" aria-label="Invoice services">
                 <table>
-                    <colgroup><col style={{ width: "48%" }} /><col style={{ width: "12%" }} /><col style={{ width: "20%" }} /><col style={{ width: "20%" }} /></colgroup>
+                    <colgroup><col style={{
+                        width: "48%"
+                    }} /><col style={{
+                        width: "12%"
+                    }} /><col style={{
+                        width: "20%"
+                    }} /><col style={{
+                        width: "20%"
+                    }} /></colgroup>
                     <thead><tr><th>Item Description</th><th>Quantity</th><th>Unit Price</th><th>Total</th></tr></thead>
                     <tbody>
-                        {items.map((item) => (
-                            <tr key={item.id || item.lineNumber}>
+                        {items.map(item => <tr key={item.id || item.lineNumber}>
                                 <td>
                                     <strong>{item.serviceName}</strong>
                                     {item.description && <p className="issued-invoice-multiline">{item.description}</p>}
@@ -75,22 +75,17 @@ const IssuedInvoice = ({
                                     {item.taxRate > 0 && <small>Tax: {item.taxRate}%</small>}
                                 </td>
                                 <td><strong>{money(item.lineTotal)}</strong></td>
-                            </tr>
-                        ))}
+                            </tr>)}
                     </tbody>
                 </table>
             </section>
 
-            {(notes || bankDetails.length > 0) && (
-                <section className="issued-invoice-note-panel">
+            {(notes || bankDetails.length > 0) && <section className="issued-invoice-note-panel">
                     {notes && <div><strong>Note:</strong><p className="issued-invoice-multiline">{notes}</p></div>}
-                    {bankDetails.length > 0 && (
-                        <div><h2>Bank Details for Wire Transfers:</h2>
+                    {bankDetails.length > 0 && <div><h2>Bank Details for Wire Transfers:</h2>
                             {bankDetails.map(([label, value]) => <p key={label}>{label}: {value}</p>)}
-                        </div>
-                    )}
-                </section>
-            )}
+                        </div>}
+                </section>}
 
             <section className="issued-invoice-bottom">
                 <div>
@@ -104,13 +99,11 @@ const IssuedInvoice = ({
                     {invoice.discountTotal > 0 && <div><dt>Discount</dt><dd>{money(invoice.discountTotal)}</dd></div>}
                     {invoice.taxTotal > 0 && <div><dt>Tax</dt><dd>{money(invoice.taxTotal)}</dd></div>}
                     <div className="issued-invoice-grand-total"><dt>Total</dt><dd>{money(invoice.grandTotal)}</dd></div>
-                    {paymentSummary && (
-                        <>
+                    {paymentSummary && <>
                             <div><dt>This payment</dt><dd>{money(paymentSummary.paymentAmount)}</dd></div>
                             <div><dt>Paid to date</dt><dd>{money(paymentSummary.paidAmount)}</dd></div>
                             <div className="issued-invoice-grand-total"><dt>Balance due</dt><dd>{money(paymentSummary.balanceDue)}</dd></div>
-                        </>
-                    )}
+                        </>}
                 </dl>
             </section>
 
@@ -118,8 +111,6 @@ const IssuedInvoice = ({
                 {issuer.phone && <span>Tel: {issuer.phone}</span>}
                 {issuer.email && <span>{issuer.email}</span>}
             </footer>
-        </article>
-    );
+        </article>;
 };
-
 export default IssuedInvoice;

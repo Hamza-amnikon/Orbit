@@ -5,32 +5,32 @@ import {
     Card,
     CardContent,
     Divider,
-    Typography,
+    Typography
 } from "@mui/material";
-
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
-
 import "./PaymentReceivedDetails.css";
-
-const PaymentReceivedDetails = ({ onBack, onEdit }) => {
-    return (
-        <Box className="payment-details-page">
+const PaymentReceivedDetails = ({
+    onBack,
+    onEdit
+}) =>
+{
+    return <Box className="payment-details-page">
 
             {/* =========================================
-                PAGE HEADER
-            ========================================= */}
+                                PAGE HEADER
+                          ========================================= */}
 
             <Box className="payment-details-header">
 
                 <Box>
                     <Button
-                        startIcon={<ArrowBackRoundedIcon />}
-                        onClick={onBack}
-                        className="payment-back-button"
-                    >
+                                            startIcon={<ArrowBackRoundedIcon />}
+                                            onClick={onBack}
+                                            className="payment-back-button"
+                                        >
                         Back to Payments Received
                     </Button>
 
@@ -46,19 +46,19 @@ const PaymentReceivedDetails = ({ onBack, onEdit }) => {
                 <Box className="payment-details-actions">
 
                     <Button
-                        variant="outlined"
-                        startIcon={<PrintRoundedIcon />}
-                        className="payment-action-button"
-                    >
+                                            variant="outlined"
+                                            startIcon={<PrintRoundedIcon />}
+                                            className="payment-action-button"
+                                        >
                         Print
                     </Button>
 
                     <Button
-                        variant="outlined"
-                        startIcon={<EditRoundedIcon />}
-                        onClick={onEdit}
-                        className="payment-action-button"
-                    >
+                                            variant="outlined"
+                                            startIcon={<EditRoundedIcon />}
+                                            onClick={onEdit}
+                                            className="payment-action-button"
+                                        >
                         Edit
                     </Button>
 
@@ -67,8 +67,8 @@ const PaymentReceivedDetails = ({ onBack, onEdit }) => {
             </Box>
 
             {/* =========================================
-                PAYMENT DETAILS CARD
-            ========================================= */}
+                                PAYMENT DETAILS CARD
+                          ========================================= */}
 
             <Card className="payment-details-card">
 
@@ -111,11 +111,13 @@ const PaymentReceivedDetails = ({ onBack, onEdit }) => {
 
                     </Box>
 
-                    <Divider sx={{ margin: "24px 0" }} />
+                    <Divider sx={{
+                    margin: "24px 0"
+                }} />
 
                     {/* =========================================
-                        CUSTOMER INFORMATION
-                    ========================================= */}
+                                                CUSTOMER INFORMATION
+                                          ========================================= */}
 
                     <Box className="payment-info-grid">
 
@@ -199,11 +201,13 @@ const PaymentReceivedDetails = ({ onBack, onEdit }) => {
 
                     </Box>
 
-                    <Divider sx={{ margin: "24px 0" }} />
+                    <Divider sx={{
+                    margin: "24px 0"
+                }} />
 
                     {/* =========================================
-                        PAYMENT INFORMATION
-                    ========================================= */}
+                                                PAYMENT INFORMATION
+                                          ========================================= */}
 
                     <Typography className="payment-section-title">
                         Payment Information
@@ -246,8 +250,8 @@ const PaymentReceivedDetails = ({ onBack, onEdit }) => {
                     </Box>
 
                     {/* =========================================
-                        PAYMENT SUMMARY
-                    ========================================= */}
+                                                PAYMENT SUMMARY
+                                          ========================================= */}
 
                     <Box className="payment-details-summary">
 
@@ -277,7 +281,9 @@ const PaymentReceivedDetails = ({ onBack, onEdit }) => {
 
                             </Box>
 
-                            <Divider sx={{ margin: "10px 0" }} />
+                            <Divider sx={{
+                            margin: "10px 0"
+                        }} />
 
                             <Box className="payment-details-total-row">
 
@@ -296,8 +302,8 @@ const PaymentReceivedDetails = ({ onBack, onEdit }) => {
                     </Box>
 
                     {/* =========================================
-                        NOTES
-                    ========================================= */}
+                                                NOTES
+                                          ========================================= */}
 
                     <Box className="payment-notes-section">
 
@@ -313,8 +319,8 @@ const PaymentReceivedDetails = ({ onBack, onEdit }) => {
                     </Box>
 
                     {/* =========================================
-                        FOOTER
-                    ========================================= */}
+                                                FOOTER
+                                          ========================================= */}
 
                     <Box className="payment-details-footer">
 
@@ -323,10 +329,10 @@ const PaymentReceivedDetails = ({ onBack, onEdit }) => {
                         </Typography>
 
                         <Button
-                            variant="outlined"
-                            startIcon={<ReplayRoundedIcon />}
-                            className="payment-footer-button"
-                        >
+                                                    variant="outlined"
+                                                    startIcon={<ReplayRoundedIcon />}
+                                                    className="payment-footer-button"
+                                                >
                             Refund Payment
                         </Button>
 
@@ -336,8 +342,6 @@ const PaymentReceivedDetails = ({ onBack, onEdit }) => {
 
             </Card>
 
-        </Box>
-    );
+        </Box>;
 };
-
 export default PaymentReceivedDetails;

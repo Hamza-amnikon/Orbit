@@ -4,148 +4,144 @@ import {
     Autocomplete,
     Button,
     Stack,
-    TextField,
+    TextField
 } from "@mui/material";
 import { getBankAccounts } from "../bank accounts/BankAccountService";
 import { isCashPaymentMode } from "./paymentBanking";
-
 export default function BankPaymentFields({
     value,
     onChange,
     currency,
     paymentMode,
     direction,
-    disabled,
-}) {
+    disabled
+})
+{
     const bankPayment = Boolean(paymentMode) && !isCashPaymentMode(paymentMode);
     const [accounts, setAccounts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [reload, setReload] = useState(0);
-
-    useEffect(() => {
+    useEffect(() =>
+    {
         const controller = new AbortController();
-
-        async function loadAccounts() {
-            if (!bankPayment) {
+        async function loadAccounts()
+        {
+            if (!bankPayment)
+            {
                 return;
             }
-
             setLoading(true);
             setError("");
-
-            try {
+            try
+            {
                 const rows = [];
                 let page = 1;
                 let result;
-
-                do {
-                    result = await getBankAccounts(
-                        { page, pageSize: 100, isActive: true },
-                        controller.signal
-                    );
+                do
+                {
+                    result = await getBankAccounts({
+                        page,
+                        pageSize: 100,
+                        isActive: true
+                    }, controller.signal);
                     rows.push(...result.data);
                     page += 1;
                 } while (rows.length < result.total && result.data.length > 0);
-
-                if (!controller.signal.aborted) {
-                    setAccounts(rows.filter(account =>
-                        account.isActive &&
-                        account.accountingAccountId
-                    ));
+                if (!controller.signal.aborted)
+                {
+                    setAccounts(rows.filter(account => account.isActive && account.accountingAccountId));
                 }
-            } catch (failure) {
-                if (!controller.signal.aborted) {
+            } catch (failure)
+            {
+                if (!controller.signal.aborted)
+                {
                     setAccounts([]);
                     setError(failure.message);
                 }
-            } finally {
-                if (!controller.signal.aborted) {
+            } finally
+            {
+                if (!controller.signal.aborted)
+                {
                     setLoading(false);
                 }
             }
         }
-
         loadAccounts();
         return () => controller.abort();
     }, [bankPayment, reload]);
-
     const account = accounts.find(row => row.id === Number(value.bankAccountId)) || null;
     const sameCurrency = account?.currency === currency;
     const moneyOut = direction === "out";
-
-    if (!bankPayment) {
+    if (!bankPayment)
+    {
         return null;
     }
-
-    return (
-        <Stack spacing={2} sx={{ gridColumn: "1 / -1" }}>
-            {error && (
-                <Alert
-                    severity="error"
-                    action={
-                        <Button disabled={disabled} onClick={() => setReload(previous => previous + 1)}>
+    return <Stack spacing={2} sx={{
+        gridColumn: "1 / -1"
+    }}>
+            {error && <Alert severity="error" action={<Button disabled={disabled} onClick={() => setReload(previous => previous + 1)}>
                             Retry
-                        </Button>
-                    }
-                >
+                        </Button>}>
                     {error}
-                </Alert>
-            )}
+                </Alert>}
 
             <Autocomplete
-                options={accounts}
-                value={account}
-                loading={loading}
-                disabled={disabled || loading || Boolean(error)}
-                isOptionEqualToValue={(left, right) => left.id === right.id}
-                getOptionLabel={row => [row.name, row.companyName, row.currency, row.lastFour ? "ending " + row.lastFour : ""].filter(Boolean).join(" Â· ")}
-                onChange={(_, next) => onChange({
-                    ...value,
-                    settlementType: "Bank",
-                    bankAccountId: next?.id || "",
-                    bankCurrency: next?.currency || "",
-                    bankAmount: "",
-                    bankChargeAmount: "",
-                })}
-                renderInput={params => (
-                    <TextField
-                        {...params}
-                        required
-                        label={moneyOut ? "Pay from bank account" : "Receive into bank account"}
-                        helperText={moneyOut
-                            ? "Saving records Money Out from this account."
-                            : "Saving records Money In to this account."}
-                    />
-                )}
-            />
+                            options={accounts}
+                            value={account}
+                            loading={loading}
+                            disabled={disabled || loading || Boolean(error)}
+                            isOptionEqualToValue={(left, right) => left.id === right.id}
+                            getOptionLabel={row => [row.name, row.companyName, row.currency, row.lastFour ? "ending " + row.lastFour : ""].filter(Boolean).join(" Â· ")}
+                            onChange={(_, next) => onChange({
+            ...value,
+            settlementType: "Bank",
+            bankAccountId: next?.id || "",
+            bankCurrency: next?.currency || "",
+            bankAmount: "",
+            bankChargeAmount: ""
+        })}
+                            renderInput={params => <TextField
+            {...params}
+            required
+            label={moneyOut ? "Pay from bank account" : "Receive into bank account"}
+            helperText={moneyOut ? "Saving records Money Out from this account." : "Saving records Money In to this account."}
+        />}
+                        />
 
-            {account && (
-                <TextField
-                    label={(moneyOut ? "Actual bank debit" : "Actual bank credit") + " (" + account.currency + ")"}
-                    value={value.bankAmount || ""}
-                    disabled={disabled}
-                    onChange={event => onChange({ ...value, bankAmount: event.target.value })}
-                    slotProps={{ htmlInput: { inputMode: "decimal" } }}
-                    helperText={sameCurrency
-                        ? "Leave empty to use the payment amount less bank charges."
-                        : "Enter the amount actually credited by the bank after conversion."}
-                    fullWidth
-                />
-            )}
+            {account && <TextField
+                            label={(moneyOut ? "Actual bank debit" : "Actual bank credit") + " (" + account.currency + ")"}
+                            value={value.bankAmount || ""}
+                            disabled={disabled}
+                            onChange={event => onChange({
+            ...value,
+            bankAmount: event.target.value
+        })}
+                            slotProps={{
+            htmlInput: {
+                inputMode: "decimal"
+            }
+        }}
+                            helperText={sameCurrency ? "Leave empty to use the payment amount less bank charges." : "Enter the amount actually credited by the bank after conversion."}
+                            fullWidth
+                        />}
 
-            {account && (
-                <TextField
-                    label={"Bank charges (" + account.currency + ")"}
-                    value={value.bankChargeAmount || ""}
-                    disabled={disabled}
-                    onChange={event => onChange({ ...value, bankChargeAmount: event.target.value })}
-                    slotProps={{ htmlInput: { inputMode: "decimal" } }}
-                    helperText="Enter zero or leave empty when the bank did not deduct a charge."
-                    fullWidth
-                />
-            )}
+            {account && <TextField
+                            label={"Bank charges (" + account.currency + ")"}
+                            value={value.bankChargeAmount || ""}
+                            disabled={disabled}
+                            onChange={event => onChange({
+            ...value,
+            bankChargeAmount: event.target.value
+        })}
+                            slotProps={{
+            htmlInput: {
+                inputMode: "decimal"
+            }
+        }}
+                            helperText="Enter zero or leave empty when the bank did not deduct a charge."
+                            fullWidth
+                        />}
 
-        </Stack>
-    );
+        </Stack>;
 }

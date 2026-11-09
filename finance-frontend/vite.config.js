@@ -18,6 +18,28 @@ export default defineConfig({
 
     server: {
         proxy: {
+            "/api/reconciliation-reports": {
+                ...accountingProxy,
+            },
+            "/api/audit-history": {
+                ...accountingProxy,
+            },
+            "/api/aging-reports": {
+                ...accountingProxy,
+            },
+            "/api/expense-claims": {
+                target: "https://localhost:7128",
+                changeOrigin: true,
+                secure: false,
+            },
+            "/api/expense-reports": {
+                target: "https://localhost:7128",
+                changeOrigin: true,
+                secure: false,
+            },
+            "/api/sales-reports": {
+                ...invoiceProxy,
+            },
             "/api/financial-reports": {
                 ...accountingProxy,
             },
@@ -127,6 +149,10 @@ export default defineConfig({
                 target: "https://localhost:7051",
                 changeOrigin: true,
                 secure: false,
+            },
+
+            "/api/organization-profiles": {
+                ...invoiceProxy,
             },
 
             "/api/currencies": {

@@ -1,2 +1,5 @@
 import ModuleForm from "../../shared/ModuleForm";
-export default function ExpenseClaimForm(props) { return <ModuleForm {...props} />; }
+export default function ExpenseClaimForm(props)
+{
+    return <ModuleForm {...props} />;
+}

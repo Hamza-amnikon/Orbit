@@ -7,11 +7,9 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Collapse,
+    Collapse
 } from "@mui/material";
-
 import { NavLink } from "react-router-dom";
-
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import RequestQuoteRoundedIcon from "@mui/icons-material/RequestQuoteRounded";
@@ -23,62 +21,54 @@ import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import ExpandLessRoundedIcon from "@mui/icons-material/ExpandLessRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
-
 import "./Sidebar.css";
 import logo from "../assets/amnikon-logo.png";
-
-const Sidebar = ({ desktop, open, onClose }) => {
+const Sidebar = ({
+    desktop,
+    open,
+    onClose
+}) =>
+{
     const [openSales, setOpenSales] = useState(true);
     const [openPurchases, setOpenPurchases] = useState(true);
     const [openBanking, setOpenBanking] = useState(true);
     const [openAccounting, setOpenAccounting] = useState(false);
     const [openReports, setOpenReports] = useState(false);
     const [openSettings, setOpenSettings] = useState(false);
-
-    const menuItem = (icon, title, onClick, open) => (
-        <ListItemButton
-            className="sidebar-item"
-            onClick={onClick}
-            aria-expanded={open}
-        >
+    const menuItem = (icon, title, onClick, open) => <ListItemButton
+        className="sidebar-item"
+        onClick={onClick}
+        aria-expanded={open}
+    >
             <ListItemIcon className="sidebar-icon">
                 {icon}
             </ListItemIcon>
 
-            <ListItemText
-                primary={title}
-                className="sidebar-text"
-            />
+            <ListItemText primary={title} className="sidebar-text" />
 
-            {open ? (
-                <ExpandLessRoundedIcon className="sidebar-expand-icon" />
-            ) : (
-                <ExpandMoreRoundedIcon className="sidebar-expand-icon" />
-            )}
-        </ListItemButton>
-    );
-
-    const childItem = (title, path) => (
-        <ListItemButton
-            component={NavLink}
-            to={path}
-            onClick={onClose}
-            className="sidebar-child"
-        >
+            {open ? <ExpandLessRoundedIcon className="sidebar-expand-icon" /> : <ExpandMoreRoundedIcon className="sidebar-expand-icon" />}
+        </ListItemButton>;
+    const childItem = (title, path) => <ListItemButton
+        component={NavLink}
+        to={path}
+        onClick={onClose}
+        className="sidebar-child"
+    >
             <ListItemText primary={title} />
-        </ListItemButton>
-    );
-
-    return (
-        <Drawer
-            variant={desktop ? "permanent" : "temporary"}
-            open={desktop || open}
-            onClose={onClose}
-            className="finance-sidebar"
-        >
+        </ListItemButton>;
+    return <Drawer
+        variant={desktop ? "permanent" : "temporary"}
+        open={desktop || open}
+        onClose={onClose}
+        className="finance-sidebar"
+    >
             {/* Logo */}
             <Box className="sidebar-logo">
-                <img src={logo} alt="Amnikon" className="finance-brand-logo" />
+                <img
+                                    src={logo}
+                                    alt="Amnikon"
+                                    className="finance-brand-logo"
+                                />
                 <Typography className="sidebar-logo-text">Finance</Typography>
             </Box>
 
@@ -86,12 +76,12 @@ const Sidebar = ({ desktop, open, onClose }) => {
 
                 {/* Dashboard */}
                 <ListItemButton
-                    component={NavLink}
-                    to="/"
-                    end
-                    onClick={onClose}
-                    className="sidebar-item"
-                >
+                                    component={NavLink}
+                                    to="/"
+                                    end
+                                    onClick={onClose}
+                                    className="sidebar-item"
+                                >
                     <ListItemIcon className="sidebar-icon">
                         <DashboardRoundedIcon />
                     </ListItemIcon>
@@ -105,18 +95,13 @@ const Sidebar = ({ desktop, open, onClose }) => {
                     SALES
                 </Typography>
 
-                {menuItem(
-                    <PeopleAltRoundedIcon />,
-                    "Sales",
-                    () => setOpenSales(!openSales),
-                    openSales
-                )}
+                {menuItem(<PeopleAltRoundedIcon />, "Sales", () => setOpenSales(!openSales), openSales)}
 
                 <Collapse
-                    in={openSales}
-                    timeout="auto"
-                    unmountOnExit
-                >
+                                    in={openSales}
+                                    timeout="auto"
+                                    unmountOnExit
+                                >
                     <List disablePadding>
                         {childItem("Clients", "/sales/clients")}
                         {childItem("Estimates", "/sales/estimates")}
@@ -133,18 +118,13 @@ const Sidebar = ({ desktop, open, onClose }) => {
                     PURCHASES
                 </Typography>
 
-                {menuItem(
-                    <ShoppingCartRoundedIcon />,
-                    "Purchases",
-                    () => setOpenPurchases(!openPurchases),
-                    openPurchases
-                )}
+                {menuItem(<ShoppingCartRoundedIcon />, "Purchases", () => setOpenPurchases(!openPurchases), openPurchases)}
 
                 <Collapse
-                    in={openPurchases}
-                    timeout="auto"
-                    unmountOnExit
-                >
+                                    in={openPurchases}
+                                    timeout="auto"
+                                    unmountOnExit
+                                >
                     <List disablePadding>
                         {childItem("Vendors", "/purchases/vendors")}
                         {childItem("Purchase Orders", "/purchases/orders")}
@@ -161,12 +141,12 @@ const Sidebar = ({ desktop, open, onClose }) => {
                 </Typography>
 
                 <ListItemButton
-                    component={NavLink}
-                    to="/expenses"
-                    end
-                    onClick={onClose}
-                    className="sidebar-item"
-                >
+                                    component={NavLink}
+                                    to="/expenses"
+                                    end
+                                    onClick={onClose}
+                                    className="sidebar-item"
+                                >
                     <ListItemIcon className="sidebar-icon">
                         <ReceiptLongRoundedIcon />
                     </ListItemIcon>
@@ -175,11 +155,11 @@ const Sidebar = ({ desktop, open, onClose }) => {
                 </ListItemButton>
 
                 <ListItemButton
-                    component={NavLink}
-                    to="/expenses/claims"
-                    onClick={onClose}
-                    className="sidebar-item"
-                >
+                                    component={NavLink}
+                                    to="/expenses/claims"
+                                    onClick={onClose}
+                                    className="sidebar-item"
+                                >
                     <ListItemIcon className="sidebar-icon">
                         <RequestQuoteRoundedIcon />
                     </ListItemIcon>
@@ -193,18 +173,13 @@ const Sidebar = ({ desktop, open, onClose }) => {
                     BANKING
                 </Typography>
 
-                {menuItem(
-                    <AccountBalanceWalletRoundedIcon />,
-                    "Banking",
-                    () => setOpenBanking(!openBanking),
-                    openBanking
-                )}
+                {menuItem(<AccountBalanceWalletRoundedIcon />, "Banking", () => setOpenBanking(!openBanking), openBanking)}
 
                 <Collapse
-                    in={openBanking}
-                    timeout="auto"
-                    unmountOnExit
-                >
+                                    in={openBanking}
+                                    timeout="auto"
+                                    unmountOnExit
+                                >
                     <List disablePadding>
                         {childItem("Bank Accounts", "/banking/accounts")}
                         {childItem("Transactions", "/banking/transactions")}
@@ -219,18 +194,13 @@ const Sidebar = ({ desktop, open, onClose }) => {
                     ACCOUNTING
                 </Typography>
 
-                {menuItem(
-                    <AccountTreeRoundedIcon />,
-                    "Accounting",
-                    () => setOpenAccounting(!openAccounting),
-                    openAccounting
-                )}
+                {menuItem(<AccountTreeRoundedIcon />, "Accounting", () => setOpenAccounting(!openAccounting), openAccounting)}
 
                 <Collapse
-                    in={openAccounting}
-                    timeout="auto"
-                    unmountOnExit
-                >
+                                    in={openAccounting}
+                                    timeout="auto"
+                                    unmountOnExit
+                                >
                     <List disablePadding>
                         {childItem("Chart of Accounts", "/accounting/chart-of-accounts")}
                         {childItem("Journal Entries", "/accounting/journal-entries")}
@@ -245,24 +215,21 @@ const Sidebar = ({ desktop, open, onClose }) => {
                     REPORTS
                 </Typography>
 
-                {menuItem(
-                    <AssessmentRoundedIcon />,
-                    "Reports",
-                    () => setOpenReports(!openReports),
-                    openReports
-                )}
+                {menuItem(<AssessmentRoundedIcon />, "Reports", () => setOpenReports(!openReports), openReports)}
 
                 <Collapse
-                    in={openReports}
-                    timeout="auto"
-                    unmountOnExit
-                >
+                                    in={openReports}
+                                    timeout="auto"
+                                    unmountOnExit
+                                >
                     <List disablePadding>
                         {childItem("Branch Comparison", "/reports/branches")}
                         {childItem("Financial Reports", "/reports/financial")}
                         {childItem("Tax Reports", "/reports/tax")}
                         {childItem("Sales Reports", "/reports/sales")}
                         {childItem("Expense Reports", "/reports/expenses")}
+                        {childItem("Receivables & Payables Aging", "/reports/aging")}
+                        {childItem("Accounting Reconciliation", "/reports/reconciliation")}
                     </List>
                 </Collapse>
 
@@ -272,18 +239,13 @@ const Sidebar = ({ desktop, open, onClose }) => {
                     SETTINGS
                 </Typography>
 
-                {menuItem(
-                    <SettingsRoundedIcon />,
-                    "Settings",
-                    () => setOpenSettings(!openSettings),
-                    openSettings
-                )}
+                {menuItem(<SettingsRoundedIcon />, "Settings", () => setOpenSettings(!openSettings), openSettings)}
 
                 <Collapse
-                    in={openSettings}
-                    timeout="auto"
-                    unmountOnExit
-                >
+                                    in={openSettings}
+                                    timeout="auto"
+                                    unmountOnExit
+                                >
                     <List disablePadding>
                         {childItem("Organization", "/settings/organization")}
                         {childItem("Tax Settings", "/settings/tax")}
@@ -293,8 +255,6 @@ const Sidebar = ({ desktop, open, onClose }) => {
                 </Collapse>
 
             </List>
-        </Drawer>
-    );
+        </Drawer>;
 };
-
 export default Sidebar;

@@ -1,35 +1,26 @@
 import React, { useState } from "react";
 import SalesOrderDetails from "./SalesOrderDetails";
-
 import {
     Box,
     Button,
     Card,
     CardContent,
-    Typography,
+    Typography
 } from "@mui/material";
-
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import FilterListRoundedIcon from "@mui/icons-material/FilterListRounded";
-
 import SalesOrderForm from "./SalesOrderForm";
-
 import "./SalesOrders.css";
-
-const SalesOrders = () => {
+const SalesOrders = () =>
+{
     const [showSalesOrderForm, setShowSalesOrderForm] = useState(false);
     const [selectedSalesOrder, setSelectedSalesOrder] = useState(null);
-    if (selectedSalesOrder) {
-    return (
-        <SalesOrderDetails
-            onBack={() => setSelectedSalesOrder(null)}
-        />
-    );
-}
-
-    return (
-        <Box className="sales-orders-page">
+    if (selectedSalesOrder)
+    {
+        return <SalesOrderDetails onBack={() => setSelectedSalesOrder(null)} />;
+    }
+    return <Box className="sales-orders-page">
 
             {/* Header */}
             <Box className="sales-orders-header">
@@ -45,11 +36,11 @@ const SalesOrders = () => {
                 </Box>
 
                 <Button
-                    variant="contained"
-                    startIcon={<AddRoundedIcon />}
-                    className="new-sales-order-button"
-                    onClick={() => setShowSalesOrderForm(true)}
-                >
+                                    variant="contained"
+                                    startIcon={<AddRoundedIcon />}
+                                    className="new-sales-order-button"
+                                    onClick={() => setShowSalesOrderForm(true)}
+                                >
                     New Sales Order
                 </Button>
 
@@ -132,19 +123,16 @@ const SalesOrders = () => {
 
                                 <SearchRoundedIcon />
 
-                                <input
-                                    type="text"
-                                    placeholder="Search sales orders..."
-                                />
+                                <input type="text" placeholder="Search sales orders..." />
 
                             </Box>
 
 
                             <Button
-                                variant="outlined"
-                                startIcon={<FilterListRoundedIcon />}
-                                className="sales-order-filter-button"
-                            >
+                                                            variant="outlined"
+                                                            startIcon={<FilterListRoundedIcon />}
+                                                            className="sales-order-filter-button"
+                                                        >
                                 Filter
                             </Button>
 
@@ -212,9 +200,7 @@ const SalesOrders = () => {
                             Confirmed
                         </Typography>
 
-                        <Button
-    onClick={() => setSelectedSalesOrder("SO-001")}
->
+                        <Button onClick={() => setSelectedSalesOrder("SO-001")}>
     View
 </Button>
 
@@ -250,9 +236,7 @@ const SalesOrders = () => {
                             Confirmed
                         </Typography>
 
-                        <Button
-    onClick={() => setSelectedSalesOrder("SO-002")}
->
+                        <Button onClick={() => setSelectedSalesOrder("SO-002")}>
     View
 </Button>
 
@@ -288,9 +272,7 @@ const SalesOrders = () => {
                             Draft
                         </Typography>
 
-                        <Button
-    onClick={() => setSelectedSalesOrder("SO-003")}
->
+                        <Button onClick={() => setSelectedSalesOrder("SO-003")}>
     View
 </Button>
 
@@ -326,9 +308,7 @@ const SalesOrders = () => {
                             Cancelled
                         </Typography>
 
-                        <Button
-    onClick={() => setSelectedSalesOrder("SO-004")}
->
+                        <Button onClick={() => setSelectedSalesOrder("SO-004")}>
     View
 </Button>
 
@@ -340,22 +320,16 @@ const SalesOrders = () => {
 
 
             {/* New Sales Order Modal */}
-            {showSalesOrderForm && (
-                <Box className="sales-order-modal-overlay">
+            {showSalesOrderForm && <Box className="sales-order-modal-overlay">
 
                     <Box className="sales-order-modal">
 
-                        <SalesOrderForm
-                            onClose={() => setShowSalesOrderForm(false)}
-                        />
+                        <SalesOrderForm onClose={() => setShowSalesOrderForm(false)} />
 
                     </Box>
 
-                </Box>
-            )}
+                </Box>}
 
-        </Box>
-    );
+        </Box>;
 };
-
 export default SalesOrders;

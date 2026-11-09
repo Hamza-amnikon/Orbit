@@ -1,21 +1,67 @@
-import { useEffect, useRef, useState } from "react";
-import { Alert, Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle,
-    Divider, FormControlLabel, IconButton, MenuItem, Stack, TextField, Typography } from "@mui/material";
+import {
+    useEffect,
+    useRef,
+    useState
+} from "react";
+import {
+    Alert,
+    Autocomplete,
+    Box,
+    Button,
+    Checkbox,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Divider,
+    FormControlLabel,
+    IconButton,
+    MenuItem,
+    Stack,
+    TextField,
+    Typography
+} from "@mui/material";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { useLoad } from "../../../live/data";
-import { createBill, getPurchaseChoices, getBill, getPurchaseVendors,
-    getBillAccounts, previewBill, updateBill } from "./BillService";
-import { money, newOrderLine, orderPayload, orderValues, purchaseUnits, vendorAddress } from "./BillHelpers";
+import {
+    createBill,
+    getPurchaseChoices,
+    getBill,
+    getPurchaseVendors,
+    getBillAccounts,
+    previewBill,
+    updateBill
+} from "./BillService";
+import {
+    money,
+    newOrderLine,
+    orderPayload,
+    orderValues,
+    purchaseUnits,
+    vendorAddress
+} from "./BillHelpers";
 import "./BillWorkspace.css";
-
-const selectedVendor = order => order ? { id: order.vendorId, name: order.vendorName, companyName: order.companyName } : null;
-
-export default function BillForm({ order = null, onClose, onSaved }) {
+const selectedVendor = order => order ? {
+    id: order.vendorId,
+    name: order.vendorName,
+    companyName: order.companyName
+} : null;
+export default function BillForm({
+    order = null,
+    onClose,
+    onSaved
+})
+{
     const [current, setCurrent] = useState(order);
     const [value, setValue] = useState(() => orderValues(order));
     const [vendor, setVendor] = useState(() => selectedVendor(order));
     const [vendorSearch, setVendorSearch] = useState("");
-    const [vendorResult, setVendorResult] = useState({ key: "", data: [], total: 0, error: "" });
+    const [vendorResult, setVendorResult] = useState({
+        key: "",
+        data: [],
+        total: 0,
+        error: ""
+    });
     const [vendorRevision, setVendorRevision] = useState(0);
     const choices = useLoad(getPurchaseChoices, []);
     const branches = choices.data?.branches ?? [];
@@ -35,219 +81,484 @@ export default function BillForm({ order = null, onClose, onSaved }) {
     const vendorLoading = vendorResult.key !== vendorKey;
     const vendorChoices = vendorLoading ? [] : vendorResult.data;
     const vendorError = vendorLoading ? "" : vendorResult.error;
-
-    useEffect(() => {
+    useEffect(() =>
+    {
         const controller = new AbortController();
-        const timer = setTimeout(async () => {
-            try {
+        const timer = setTimeout(async () =>
+        {
+            try
+            {
                 const result = await getPurchaseVendors(vendorSearch, controller.signal);
-                if (!controller.signal.aborted) setVendorResult({ key: vendorKey, ...result, error: "" });
-            } catch (loadError) {
-                if (!controller.signal.aborted) setVendorResult({ key: vendorKey, data: [], total: 0, error: loadError.message });
+                if (!controller.signal.aborted) setVendorResult({
+                    key: vendorKey,
+                    ...result,
+                    error: ""
+                });
+            } catch (loadError)
+            {
+                if (!controller.signal.aborted) setVendorResult({
+                    key: vendorKey,
+                    data: [],
+                    total: 0,
+                    error: loadError.message
+                });
             }
         }, vendorSearch ? 250 : 0);
-        return () => { clearTimeout(timer); controller.abort(); };
+        return () =>
+        {
+            clearTimeout(timer);
+            controller.abort();
+        };
     }, [vendorSearch, vendorRevision, vendorKey]);
-
-    useEffect(() => {
+    useEffect(() =>
+    {
         const controller = new AbortController();
         setAccounts([]);
         setAccountError("");
-
-        if (selectedBranch?.accountingCompanyId) {
-            getBillAccounts(selectedBranch.accountingCompanyId, controller.signal)
-                .then(result => {
-                    if (!controller.signal.aborted) setAccounts(result);
-                })
-                .catch(loadError => {
-                    if (!controller.signal.aborted) setAccountError(loadError.message);
-                });
+        if (selectedBranch?.accountingCompanyId)
+        {
+            getBillAccounts(selectedBranch.accountingCompanyId, controller.signal).then(result =>
+            {
+                if (!controller.signal.aborted) setAccounts(result);
+            }).catch(loadError =>
+            {
+                if (!controller.signal.aborted) setAccountError(loadError.message);
+            });
         }
-
         return () => controller.abort();
     }, [selectedBranch?.accountingCompanyId]);
-
-    function change(name, next) { setValue(previous => ({ ...previous, [name]: next })); setPreview(null); }
-    function changeLine(key, name, next) {
-        setValue(previous => ({ ...previous, items: previous.items.map(item => item.key === key
-            ? { ...item, [name]: next, ...(name === "unit" && next === 3 ? { quantity: "1" } : {}) } : item) }));
+    function change(name, next)
+    {
+        setValue(previous => ({
+            ...previous,
+            [name]: next
+        }));
         setPreview(null);
     }
-    function chooseVendor(next) {
+    function changeLine(key, name, next)
+    {
+        setValue(previous => ({
+            ...previous,
+            items: previous.items.map(item => item.key === key ? {
+                ...item,
+                [name]: next,
+                ...(name === "unit" && next === 3 ? {
+                    quantity: "1"
+                } : {})
+            } : item)
+        }));
+        setPreview(null);
+    }
+    function chooseVendor(next)
+    {
         setVendor(next);
-        setValue(previous => ({ ...previous, vendorId: next?.id || "", branch: next?.branch || "",
+        setValue(previous => ({
+            ...previous,
+            vendorId: next?.id || "",
+            branch: next?.branch || "",
             taxTreatment: "",
-            items: previous.items.map(item => ({ ...item, accountCode: "" })),
-            currency: next?.currency || "", paymentTerms: next?.paymentTerms || "",
-            billingAddress: next ? vendorAddress(next) : "" }));
+            items: previous.items.map(item => ({
+                ...item,
+                accountCode: ""
+            })),
+            currency: next?.currency || "",
+            paymentTerms: next?.paymentTerms || "",
+            billingAddress: next ? vendorAddress(next) : ""
+        }));
         setPreview(null);
     }
-    function validate() {
+    function validate()
+    {
         if (!value.vendorId) return "Select a vendor.";
         if (!value.billDate) return "Bill date is required.";
-        if (value.dueDate && value.dueDate < value.billDate)
-            return "Due date cannot precede the bill date.";
+        if (value.dueDate && value.dueDate < value.billDate) return "Due date cannot precede the bill date.";
         if (!choices.data?.branches.some(branch => branch.name === value.branch)) return "Select an active managing branch.";
         if (!selectedBranch?.accountingCompanyId) return "Link the managing branch to an accounting company.";
         if (!choices.data?.currencies.some(currency => currency.currencyCode === value.currency)) return "Select an active currency.";
         if (!value.items.length || value.items.length > 100) return "Provide between 1 and 100 items.";
-        for (const [index, item] of value.items.entries()) {
+        for (const [index, item] of value.items.entries())
+        {
             if (!item.itemName.trim()) return `Enter an item or service name on line ${index + 1}.`;
             if (!item.accountCode.trim()) return `Select an expense or asset account on line ${index + 1}.`;
-            for (const name of ["quantity", "unitPrice", "taxRate", ...(item.discountEnabled ? ["discountAmount"] : [])]) {
-                if (item[name] === "" || !Number.isFinite(Number(item[name])) || Number(item[name]) < 0)
-                    return `Enter a valid ${name} on line ${index + 1}.`;
+            for (const name of ["quantity", "unitPrice", "taxRate", ...(item.discountEnabled ? ["discountAmount"] : [])])
+            {
+                if (item[name] === "" || !Number.isFinite(Number(item[name])) || Number(item[name]) < 0) return `Enter a valid ${name} on line ${index + 1}.`;
             }
             if (Number(item.quantity) <= 0) return "Quantity must be greater than zero.";
             if (Number(item.taxRate) > 100) return "Tax cannot exceed 100%.";
         }
-        if (hasTax && branchCountry === "IN" && value.taxTreatment !== "IndiaCgstSgst" && value.taxTreatment !== "IndiaIgst")
-            return "Select CGST + SGST or IGST for this India bill.";
-        if (hasTax && branchCountry !== "AE" && branchCountry !== "IN")
-            return "Tax treatment is not configured for the selected branch country.";
+        if (hasTax && branchCountry === "IN" && value.taxTreatment !== "IndiaCgstSgst" && value.taxTreatment !== "IndiaIgst") return "Select CGST + SGST or IGST for this India bill.";
+        if (hasTax && branchCountry !== "AE" && branchCountry !== "IN") return "Tax treatment is not configured for the selected branch country.";
         return "";
     }
-    async function submit(event, previewOnly = false) {
+    async function submit(event, previewOnly = false)
+    {
         event?.preventDefault();
         if (locked.current) return;
         const validation = validate();
         setError(validation);
         if (validation) return;
-        locked.current = true; setBusy(true);
-        try {
+        locked.current = true;
+        setBusy(true);
+        try
+        {
             const body = orderPayload(value);
-            if (previewOnly) setPreview(await previewBill(body));
-            else if (current) onSaved(await updateBill(current.id, { ...body, rowVersion: current.rowVersion }));
-            else {
+            if (previewOnly) setPreview(await previewBill(body));else if (current) onSaved(await updateBill(current.id, {
+                ...body,
+                rowVersion: current.rowVersion
+            }));else
+            {
                 const fingerprint = JSON.stringify(body);
-                if (request.current?.fingerprint !== fingerprint) request.current = { fingerprint, id: crypto.randomUUID() };
-                onSaved(await createBill({ ...body, requestId: request.current.id }));
+                if (request.current?.fingerprint !== fingerprint) request.current = {
+                    fingerprint,
+                    id: crypto.randomUUID()
+                };
+                onSaved(await createBill({
+                    ...body,
+                    requestId: request.current.id
+                }));
             }
-        } catch (saveError) { setError(saveError.message); setConflict(saveError.status === 409); }
-        finally { locked.current = false; setBusy(false); }
+        } catch (saveError)
+        {
+            setError(saveError.message);
+            setConflict(saveError.status === 409);
+        } finally
+        {
+            locked.current = false;
+            setBusy(false);
+        }
     }
-    async function reload() {
+    async function reload()
+    {
         if (locked.current || !current) return;
-        locked.current = true; setBusy(true);
-        try {
+        locked.current = true;
+        setBusy(true);
+        try
+        {
             const saved = await getBill(current.id);
             if (saved.status !== 0) throw new Error("This bill is no longer a draft. Close the form and refresh its details.");
-            setCurrent(saved); setValue(orderValues(saved)); setVendor(selectedVendor(saved));
-            setPreview(null); setError(""); setConflict(false);
-        } catch (loadError) { setError(loadError.message); }
-        finally { locked.current = false; setBusy(false); }
+            setCurrent(saved);
+            setValue(orderValues(saved));
+            setVendor(selectedVendor(saved));
+            setPreview(null);
+            setError("");
+            setConflict(false);
+        } catch (loadError)
+        {
+            setError(loadError.message);
+        } finally
+        {
+            locked.current = false;
+            setBusy(false);
+        }
     }
-    return <Dialog open fullWidth maxWidth="md" aria-labelledby="bill-form-title" onClose={busy ? undefined : onClose}>
-        <Box component="form" noValidate className="bill-form" onSubmit={submit}>
+    return <Dialog
+        open
+        fullWidth
+        maxWidth="md"
+        aria-labelledby="bill-form-title"
+        onClose={busy ? undefined : onClose}
+    >
+        <Box
+                    component="form"
+                    noValidate
+                    className="bill-form"
+                    onSubmit={submit}
+                >
             <DialogTitle id="bill-form-title">{current ? "Edit Bill" : "New Bill"}</DialogTitle>
             <DialogContent dividers>
-                {(choices.error || vendorError || accountError) && <Alert severity="error" sx={{ mb: 2 }}
-                    action={<Button color="inherit" disabled={busy} onClick={() => {
-                        choices.refresh(); setVendorRevision(previous => previous + 1);
-                    }}>Retry choices</Button>}>{choices.error || vendorError || accountError}</Alert>}
-                <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>Basic Information</Typography>
+                {(choices.error || vendorError || accountError) && <Alert
+                                    severity="error"
+                                    sx={{
+                    mb: 2
+                }}
+                                    action={<Button
+                    color="inherit"
+                    disabled={busy}
+                    onClick={() =>
+                {
+                    choices.refresh();
+                    setVendorRevision(previous => previous + 1);
+                }}
+                >Retry choices</Button>}
+                                >{choices.error || vendorError || accountError}</Alert>}
+                <Typography
+                                    component="h3"
+                                    variant="subtitle1"
+                                    fontWeight={700}
+                                    sx={{
+                    mb: 2
+                }}
+                                >Basic Information</Typography>
                 <Box className="bill-form-grid">
-                    <Autocomplete options={vendorChoices} value={vendor} loading={vendorLoading} disabled={busy || !!current?.sourcePurchaseOrderId}
-                        filterOptions={options => options} isOptionEqualToValue={(a, b) => a.id === b.id}
-                        getOptionLabel={option => option.name + (option.companyName ? " Â· " + option.companyName : "")}
-                        onInputChange={(_, text, reason) => { if (reason === "input" || reason === "clear") setVendorSearch(text); }}
-                        onChange={(_, next) => chooseVendor(next)}
-                        renderInput={params => <TextField {...params} label="Vendor" required
-                            helperText={vendorResult.total > 50 ? "Type to search more vendors." : "Select an active vendor."} />} />
-                    <TextField label="Bill Number" value={current?.billNumber || "Assigned when issued"} disabled />
-                    {[["billDate", "Bill date", true], ["dueDate", "Due date", false]].map(([name, label, required]) =>
-                        <TextField key={name} label={label} required={required} type="date" value={value[name]} disabled={busy}
-                            slotProps={{ inputLabel: { shrink: true } }} onChange={event => change(name, event.target.value)} />)}
-                    <TextField select label="Managing branch" required value={value.branch} disabled={busy || choices.loading || !!current?.sourcePurchaseOrderId}
-                        onChange={event => setValue(previous => ({ ...previous, branch: event.target.value,
-                            taxTreatment: "", items: previous.items.map(item => ({ ...item, accountCode: "" })) }))}>
-                        {value.branch && !branches.some(branch => branch.name === value.branch) &&
-                            <MenuItem value={value.branch} disabled>{value.branch} (unavailable)</MenuItem>}
+                    <Autocomplete
+                                            options={vendorChoices}
+                                            value={vendor}
+                                            loading={vendorLoading}
+                                            disabled={busy || !!current?.sourcePurchaseOrderId}
+                                            filterOptions={options => options}
+                                            isOptionEqualToValue={(a, b) => a.id === b.id}
+                                            getOptionLabel={option => option.name + (option.companyName ? " Â· " + option.companyName : "")}
+                                            onInputChange={(_, text, reason) =>
+                                        {
+                        if (reason === "input" || reason === "clear") setVendorSearch(text);
+                    }}
+                                            onChange={(_, next) => chooseVendor(next)}
+                                            renderInput={params => <TextField
+                        {...params}
+                        label="Vendor"
+                        required
+                        helperText={vendorResult.total > 50 ? "Type to search more vendors." : "Select an active vendor."}
+                    />}
+                                        />
+                    <TextField
+                                            label="Bill Number"
+                                            value={current?.billNumber || "Assigned when issued"}
+                                            disabled
+                                        />
+                    {[["billDate", "Bill date", true], ["dueDate", "Due date", false]].map(([name, label, required]) => <TextField
+                                            key={name}
+                                            label={label}
+                                            required={required}
+                                            type="date"
+                                            value={value[name]}
+                                            disabled={busy}
+                                            slotProps={{
+                        inputLabel: {
+                            shrink: true
+                        }
+                    }}
+                                            onChange={event => change(name, event.target.value)}
+                                        />)}
+                    <TextField
+                                            select
+                                            label="Managing branch"
+                                            required
+                                            value={value.branch}
+                                            disabled={busy || choices.loading || !!current?.sourcePurchaseOrderId}
+                                            onChange={event => setValue(previous => ({
+                        ...previous,
+                        branch: event.target.value,
+                        taxTreatment: "",
+                        items: previous.items.map(item => ({
+                            ...item,
+                            accountCode: ""
+                        }))
+                    }))}
+                                        >
+                        {value.branch && !branches.some(branch => branch.name === value.branch) && <MenuItem value={value.branch} disabled>{value.branch} (unavailable)</MenuItem>}
                         {branches.map(branch => <MenuItem key={branch.id} value={branch.name}>{branch.name}</MenuItem>)}
                     </TextField>
-                    <TextField select label="Currency" required value={value.currency} disabled={busy || choices.loading || !!current?.sourcePurchaseOrderId}
-                        onChange={event => change("currency", event.target.value)}>
-                        {value.currency && !currencies.some(currency => currency.currencyCode === value.currency) &&
-                            <MenuItem value={value.currency} disabled>{value.currency} (unavailable)</MenuItem>}
+                    <TextField
+                                            select
+                                            label="Currency"
+                                            required
+                                            value={value.currency}
+                                            disabled={busy || choices.loading || !!current?.sourcePurchaseOrderId}
+                                            onChange={event => change("currency", event.target.value)}
+                                        >
+                        {value.currency && !currencies.some(currency => currency.currencyCode === value.currency) && <MenuItem value={value.currency} disabled>{value.currency} (unavailable)</MenuItem>}
                         {currencies.map(currency => <MenuItem key={currency.currencyCode} value={currency.currencyCode}>{currency.currencyCode}</MenuItem>)}
                     </TextField>
-                    {branchCountry === "IN" && hasTax ? (
-                        <TextField select required label="Tax treatment" value={value.taxTreatment} disabled={busy}
-                            helperText="Choose based on the vendor place of supply"
-                            onChange={event => change("taxTreatment", event.target.value)}>
+                    {branchCountry === "IN" && hasTax ? <TextField
+                                            select
+                                            required
+                                            label="Tax treatment"
+                                            value={value.taxTreatment}
+                                            disabled={busy}
+                                            helperText="Choose based on the vendor place of supply"
+                                            onChange={event => change("taxTreatment", event.target.value)}
+                                        >
                             <MenuItem value="IndiaCgstSgst">CGST + SGST (within the same state)</MenuItem>
                             <MenuItem value="IndiaIgst">IGST (between different states)</MenuItem>
-                        </TextField>
-                    ) : (
-                        <TextField label="Tax treatment" value={!hasTax ? "No Tax" : branchCountry === "AE" ? "UAE VAT" : "Select a branch"}
-                            helperText={!hasTax ? "All tax rates are zero" : branchCountry === "AE" ? "Automatically selected for UAE" : "Based on branch country"}
-                            slotProps={{ input: { readOnly: true } }} />
-                    )}
-                    {[["vendorInvoiceNumber", "Vendor invoice number", 200], ["reference", "Reference", 200], ["paymentTerms", "Payment terms", 200],
-                        ["billingAddress", "Vendor billing address", 1000], ["shippingAddress", "Delivery address", 1000]].map(([name, label, maxLength]) =>
-                        <TextField key={name} label={label} value={value[name]} disabled={busy}
-                            multiline={name.endsWith("Address")} slotProps={{ htmlInput: { maxLength } }}
-                            onChange={event => change(name, event.target.value)} />)}
+                        </TextField> : <TextField
+                                                    label="Tax treatment"
+                                                    value={!hasTax ? "No Tax" : branchCountry === "AE" ? "UAE VAT" : "Select a branch"}
+                                                    helperText={!hasTax ? "All tax rates are zero" : branchCountry === "AE" ? "Automatically selected for UAE" : "Based on branch country"}
+                                                    slotProps={{
+                        input: {
+                            readOnly: true
+                        }
+                    }}
+                                                />}
+                    {[["vendorInvoiceNumber", "Vendor invoice number", 200], ["reference", "Reference", 200], ["paymentTerms", "Payment terms", 200], ["billingAddress", "Vendor billing address", 1000], ["shippingAddress", "Delivery address", 1000]].map(([name, label, maxLength]) => <TextField
+                                            key={name}
+                                            label={label}
+                                            value={value[name]}
+                                            disabled={busy}
+                                            multiline={name.endsWith("Address")}
+                                            slotProps={{
+                        htmlInput: {
+                            maxLength
+                        }
+                    }}
+                                            onChange={event => change(name, event.target.value)}
+                                        />)}
                 </Box>
-                <Divider sx={{ my: 3 }} />
-                <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>Items / Services</Typography>
+                <Divider sx={{
+                    my: 3
+                }} />
+                <Typography
+                                    component="h3"
+                                    variant="subtitle1"
+                                    fontWeight={700}
+                                    sx={{
+                    mb: 2
+                }}
+                                >Items / Services</Typography>
                 <Stack spacing={2}>
-                    {value.items.map((item, index) => <Box key={item.key} sx={{ border: "1px solid", borderColor: "divider", p: 2, borderRadius: 2 }}>
-                        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+                    {value.items.map((item, index) => <Box key={item.key} sx={{
+                        border: "1px solid",
+                        borderColor: "divider",
+                        p: 2,
+                        borderRadius: 2
+                    }}>
+                        <Stack
+                                                    direction="row"
+                                                    justifyContent="space-between"
+                                                    alignItems="center"
+                                                    sx={{
+                            mb: 2
+                        }}
+                                                >
                             <Typography fontWeight={600}>Line {index + 1}</Typography>
-                            <IconButton aria-label={`Remove line ${index + 1}`} color="error" disabled={busy || value.items.length === 1}
-                                onClick={() => { change("items", value.items.filter(line => line.key !== item.key)); }}>
+                            <IconButton
+                                                            aria-label={`Remove line ${index + 1}`}
+                                                            color="error"
+                                                            disabled={busy || value.items.length === 1}
+                                                            onClick={() =>
+                                                        {
+                                change("items", value.items.filter(line => line.key !== item.key));
+                            }}
+                                                        >
                                 <DeleteOutlineRoundedIcon />
                             </IconButton>
                         </Stack>
                         <Box className="bill-line-grid">
-                            <TextField label="Item / service" required value={item.itemName} disabled={busy}
-                                slotProps={{ htmlInput: { maxLength: 200 } }} onChange={event => changeLine(item.key, "itemName", event.target.value)} />
-                            <TextField select label="Expense / asset account" required value={item.accountCode} disabled={busy || !selectedBranch?.accountingCompanyId}
-                                onChange={event => changeLine(item.key, "accountCode", event.target.value)}>
+                            <TextField
+                                                            label="Item / service"
+                                                            required
+                                                            value={item.itemName}
+                                                            disabled={busy}
+                                                            slotProps={{
+                                htmlInput: {
+                                    maxLength: 200
+                                }
+                            }}
+                                                            onChange={event => changeLine(item.key, "itemName", event.target.value)}
+                                                        />
+                            <TextField
+                                                            select
+                                                            label="Expense / asset account"
+                                                            required
+                                                            value={item.accountCode}
+                                                            disabled={busy || !selectedBranch?.accountingCompanyId}
+                                                            onChange={event => changeLine(item.key, "accountCode", event.target.value)}
+                                                        >
                                 {accounts.map(account => <MenuItem key={account.id} value={account.code}>
                                     {account.code} · {account.name}
                                 </MenuItem>)}
                             </TextField>
-                            <TextField select label="Unit" value={item.unit} disabled={busy}
-                                onChange={event => changeLine(item.key, "unit", Number(event.target.value))}>
+                            <TextField
+                                                            select
+                                                            label="Unit"
+                                                            value={item.unit}
+                                                            disabled={busy}
+                                                            onChange={event => changeLine(item.key, "unit", Number(event.target.value))}
+                                                        >
                                 {purchaseUnits.map((label, unit) => <MenuItem key={label} value={unit}>{label}</MenuItem>)}
                             </TextField>
-                            {[["quantity", "Quantity", "0.0001", undefined], ["unitPrice", "Unit price", "0", undefined],
-                                ["taxRate", "Tax %", "0", "100"]].map(([name, label, min, max]) =>
-                                <TextField key={name} label={label} required type="number" value={item[name]}
-                                    disabled={busy || (name === "quantity" && item.unit === 3)}
-                                    slotProps={{ htmlInput: { min, max, step: "0.0001" } }}
-                                    onChange={event => changeLine(item.key, name, event.target.value)} />)}
-                            <TextField label="Description" value={item.description} disabled={busy}
-                                slotProps={{ htmlInput: { maxLength: 1000 } }}
-                                onChange={event => changeLine(item.key, "description", event.target.value)} />
-                            <FormControlLabel label="Apply discount" control={<Checkbox checked={item.discountEnabled} disabled={busy}
-                                onChange={event => changeLine(item.key, "discountEnabled", event.target.checked)} />} />
-                            {item.discountEnabled && (
-                                <TextField label="Discount amount" type="number" value={item.discountAmount} disabled={busy || !item.discountEnabled}
-                                    slotProps={{ htmlInput: { min: 0, step: "0.0001" } }}
-                                    onChange={event => changeLine(item.key, "discountAmount", event.target.value)} />
-                            )}
+                            {[["quantity", "Quantity", "0.0001", undefined], ["unitPrice", "Unit price", "0", undefined], ["taxRate", "Tax %", "0", "100"]].map(([name, label, min, max]) => <TextField
+                                                            key={name}
+                                                            label={label}
+                                                            required
+                                                            type="number"
+                                                            value={item[name]}
+                                                            disabled={busy || name === "quantity" && item.unit === 3}
+                                                            slotProps={{
+                                htmlInput: {
+                                    min,
+                                    max,
+                                    step: "0.0001"
+                                }
+                            }}
+                                                            onChange={event => changeLine(item.key, name, event.target.value)}
+                                                        />)}
+                            <TextField
+                                                            label="Description"
+                                                            value={item.description}
+                                                            disabled={busy}
+                                                            slotProps={{
+                                htmlInput: {
+                                    maxLength: 1000
+                                }
+                            }}
+                                                            onChange={event => changeLine(item.key, "description", event.target.value)}
+                                                        />
+                            <FormControlLabel label="Apply discount" control={<Checkbox
+                                                            checked={item.discountEnabled}
+                                                            disabled={busy}
+                                                            onChange={event => changeLine(item.key, "discountEnabled", event.target.checked)}
+                                                        />} />
+                            {item.discountEnabled && <TextField
+                                                            label="Discount amount"
+                                                            type="number"
+                                                            value={item.discountAmount}
+                                                            disabled={busy || !item.discountEnabled}
+                                                            slotProps={{
+                                htmlInput: {
+                                    min: 0,
+                                    step: "0.0001"
+                                }
+                            }}
+                                                            onChange={event => changeLine(item.key, "discountAmount", event.target.value)}
+                                                        />}
                         </Box>
                     </Box>)}
-                    <Button variant="outlined" disabled={busy || value.items.length >= 100}
-                        onClick={() => change("items", [...value.items, newOrderLine()])}>Add item</Button>
+                    <Button
+                                            variant="outlined"
+                                            disabled={busy || value.items.length >= 100}
+                                            onClick={() => change("items", [...value.items, newOrderLine()])}
+                                        >Add item</Button>
                 </Stack>
-                <Divider sx={{ my: 3 }} />
+                <Divider sx={{
+                    my: 3
+                }} />
                 <Box className="bill-form-grid">
-                    {[["notes", "Notes"], ["additionalTerms", "Additional terms"]].map(([name, label]) =>
-                        <TextField key={name} label={label} multiline minRows={2} value={value[name]} disabled={busy}
-                            slotProps={{ htmlInput: { maxLength: 2000 } }} onChange={event => change(name, event.target.value)} />)}
+                    {[["notes", "Notes"], ["additionalTerms", "Additional terms"]].map(([name, label]) => <TextField
+                                            key={name}
+                                            label={label}
+                                            multiline
+                                            minRows={2}
+                                            value={value[name]}
+                                            disabled={busy}
+                                            slotProps={{
+                        htmlInput: {
+                            maxLength: 2000
+                        }
+                    }}
+                                            onChange={event => change(name, event.target.value)}
+                                        />)}
                 </Box>
-                {preview && <Box sx={{ mt: 3, p: 2, border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
+                {preview && <Box sx={{
+                    mt: 3,
+                    p: 2,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: 2
+                }}>
                     <Typography fontWeight={700}>Bill Preview</Typography>
-                    {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].filter(([, name]) => name !== "discountTotal" || Number(preview.discountTotal) > 0).map(([label, name]) =>
-                        <Box key={name} className="bill-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
+                    {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].filter(([, name]) => name !== "discountTotal" || Number(preview.discountTotal) > 0).map(([label, name]) => <Box key={name} className="bill-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
                             <Typography fontWeight={name === "grandTotal" ? 700 : 400}>
                                 {money(preview[name], preview.currency, preview.currencyDecimalPlaces)}</Typography></Box>)}
                 </Box>}
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{
+                    mt: 2
+                }}
+                                >
                     Saving creates a draft bill. Issue it after reviewing the details. Payments are recorded separately.
                 </Typography>
             </DialogContent>
@@ -255,10 +566,22 @@ export default function BillForm({ order = null, onClose, onSaved }) {
                 {error && <Alert severity="error">{error}</Alert>}
                 {conflict && current && <Button onClick={reload} disabled={busy}>Reload saved order (replaces unsaved edits)</Button>}
             </Box>
-            <DialogActions sx={{ p: 2, flexWrap: "wrap", gap: 1 }}>
+            <DialogActions sx={{
+                p: 2,
+                flexWrap: "wrap",
+                gap: 1
+            }}>
                 <Button disabled={busy} onClick={onClose}>Cancel</Button>
-                <Button variant="outlined" disabled={busy || choices.loading} onClick={() => submit(null, true)}>Preview Totals</Button>
-                <Button type="submit" variant="contained" disabled={busy || choices.loading || conflict}>{busy ? "Saving..." : "Save Draft"}</Button>
+                <Button
+                                    variant="outlined"
+                                    disabled={busy || choices.loading}
+                                    onClick={() => submit(null, true)}
+                                >Preview Totals</Button>
+                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    disabled={busy || choices.loading || conflict}
+                                >{busy ? "Saving..." : "Save Draft"}</Button>
             </DialogActions>
         </Box>
     </Dialog>;

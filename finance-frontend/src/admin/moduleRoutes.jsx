@@ -1,51 +1,22 @@
 import Expenses from "./expenses management/expenses/Expenses";
 import ExpenseClaims from "./expenses management/expense claims/ExpenseClaims";
-
 import BankAccounts from "./banking management/bank accounts/BankAccounts";
 import Transactions from "./banking management/transactions/Transactions";
 import BankTransfers from "./banking management/bank transfers/BankTransfers";
 import BankReconciliation from "./banking management/bank reconciliation/BankReconciliation";
-
 import ChartOfAccounts from "./accounting management/chart of accounts/ChartOfAccounts";
 import JournalEntries from "./accounting management/journal entries/JournalEntries";
 import GeneralLedger from "./accounting management/general ledger/GeneralLedger";
 import TrialBalance from "./accounting management/trial balance/TrialBalance";
-
 import FinancialReports from "./reports management/financial reports/FinancialReports";
 import TaxReports from "./reports management/tax reports/TaxReports";
 import SalesReports from "./reports management/sales reports/SalesReports";
 import ExpensesReports from "./reports management/expenses reports/ExpensesReports";
 import BranchComparison from "./reports management/branch comparison/BranchComparison";
-
+import AgingReports from "./reports management/aging reports/AgingReports";
+import ReconciliationReports from "./reports management/reconciliation reports/ReconciliationReports";
 import Organization from "./settings management/organization/Organization";
 import TaxSettings from "./settings management/tax settings/TaxSettings";
 import AuditHistory from "./settings management/audit history/AuditHistory";
 import ExchangeRates from "./settings management/exchange rates/ExchangeRates";
-
-export const adminModuleRoutes = [
-    ["Exchange Rates", "/settings/exchange-rates", ExchangeRates],
-    ["Branch Comparison", "/reports/branches", BranchComparison],
-    ["Audit History", "/settings/audit", AuditHistory],
-
-    ["Expenses", "/expenses", Expenses],
-    ["Expense Claims", "/expenses/claims", ExpenseClaims],
-
-    ["Bank Accounts", "/banking/accounts", BankAccounts],
-    ["Transactions", "/banking/transactions", Transactions],
-    ["Bank Transfers", "/banking/transfers", BankTransfers],
-    ["Bank Reconciliation", "/banking/reconciliation", BankReconciliation],
-
-    ["Chart of Accounts", "/accounting/chart-of-accounts", ChartOfAccounts],
-    ["Journal Entries", "/accounting/journal-entries", JournalEntries],
-    ["General Ledger", "/accounting/general-ledger", GeneralLedger],
-    ["Trial Balance", "/accounting/trial-balance", TrialBalance],
-
-    ["Financial Reports", "/reports/financial", FinancialReports],
-    ["Tax Reports", "/reports/tax", TaxReports],
-    ["Sales Reports", "/reports/sales", SalesReports],
-    ["Expense Reports", "/reports/expenses", ExpensesReports],
-
-    ["Organization", "/settings/organization", Organization],
-    ["Tax Settings", "/settings/tax", TaxSettings],
-];
-
+export const adminModuleRoutes = [["Exchange Rates", "/settings/exchange-rates", ExchangeRates], ["Branch Comparison", "/reports/branches", BranchComparison], ["Audit History", "/settings/audit", AuditHistory], ["Expenses", "/expenses", Expenses], ["Expense Claims", "/expenses/claims", ExpenseClaims], ["Bank Accounts", "/banking/accounts", BankAccounts], ["Transactions", "/banking/transactions", Transactions], ["Bank Transfers", "/banking/transfers", BankTransfers], ["Bank Reconciliation", "/banking/reconciliation", BankReconciliation], ["Chart of Accounts", "/accounting/chart-of-accounts", ChartOfAccounts], ["Journal Entries", "/accounting/journal-entries", JournalEntries], ["General Ledger", "/accounting/general-ledger", GeneralLedger], ["Trial Balance", "/accounting/trial-balance", TrialBalance], ["Financial Reports", "/reports/financial", FinancialReports], ["Tax Reports", "/reports/tax", TaxReports], ["Sales Reports", "/reports/sales", SalesReports], ["Expense Reports", "/reports/expenses", ExpensesReports], ["Receivables & Payables Aging", "/reports/aging", AgingReports], ["Accounting Reconciliation", "/reports/reconciliation", ReconciliationReports], ["Organization", "/settings/organization", Organization], ["Tax Settings", "/settings/tax", TaxSettings]];

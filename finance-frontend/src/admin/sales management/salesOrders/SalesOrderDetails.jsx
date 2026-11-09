@@ -5,30 +5,30 @@ import {
     Card,
     CardContent,
     Divider,
-    Typography,
+    Typography
 } from "@mui/material";
-
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
-
 import "./SalesOrderDetails.css";
-
-const SalesOrderDetails = ({ onBack, salesOrder }) => {
-    return (
-        <Box className="sales-order-details-page">
+const SalesOrderDetails = ({
+    onBack,
+    salesOrder
+}) =>
+{
+    return <Box className="sales-order-details-page">
 
             {/* Header */}
             <Box className="sales-order-details-header">
 
                 <Box className="sales-order-details-header-left">
                     <Button
-                        variant="outlined"
-                        startIcon={<ArrowBackRoundedIcon />}
-                        className="sales-order-back-button"
-                        onClick={onBack}
-                    >
+                                            variant="outlined"
+                                            startIcon={<ArrowBackRoundedIcon />}
+                                            className="sales-order-back-button"
+                                            onClick={onBack}
+                                        >
                         Back
                     </Button>
 
@@ -46,26 +46,26 @@ const SalesOrderDetails = ({ onBack, salesOrder }) => {
                 <Box className="sales-order-details-actions">
 
                     <Button
-                        variant="outlined"
-                        startIcon={<PrintRoundedIcon />}
-                        className="sales-order-action-button"
-                    >
+                                            variant="outlined"
+                                            startIcon={<PrintRoundedIcon />}
+                                            className="sales-order-action-button"
+                                        >
                         Print
                     </Button>
 
                     <Button
-                        variant="outlined"
-                        startIcon={<EditRoundedIcon />}
-                        className="sales-order-action-button"
-                    >
+                                            variant="outlined"
+                                            startIcon={<EditRoundedIcon />}
+                                            className="sales-order-action-button"
+                                        >
                         Edit
                     </Button>
 
                     <Button
-                        variant="contained"
-                        startIcon={<SendRoundedIcon />}
-                        className="sales-order-send-button"
-                    >
+                                            variant="contained"
+                                            startIcon={<SendRoundedIcon />}
+                                            className="sales-order-send-button"
+                                        >
                         Send
                     </Button>
 
@@ -333,8 +333,6 @@ const SalesOrderDetails = ({ onBack, salesOrder }) => {
 
             </Card>
 
-        </Box>
-    );
+        </Box>;
 };
-
 export default SalesOrderDetails;

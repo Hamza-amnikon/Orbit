@@ -8,50 +8,34 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Typography,
+    Typography
 } from "@mui/material";
-
 import "./ClientsTable.css";
-
 function ClientsTable({
     clients,
     canWrite,
     busy,
     handleView,
     handleEdit,
-    handleArchive,
-}) {
-    return (
-        <TableContainer>
+    handleArchive
+})
+{
+    return <TableContainer>
             <Table aria-label="Clients" className="clients-table">
                 <TableHead>
                     <TableRow>
-                        {[
-                            "Client",
-                            "Company",
-                            "Contact",
-                            "Location",
-                            "Branch / Currency",
-                            "Status",
-                            "Actions",
-                        ].map((label) => (
-                            <TableCell key={label}>{label}</TableCell>
-                        ))}
+                        {["Client", "Company", "Contact", "Location", "Branch / Currency", "Status", "Actions"].map(label => <TableCell key={label}>{label}</TableCell>)}
                     </TableRow>
                 </TableHead>
 
                 <TableBody>
-                    {clients.map((client) => (
-                        <TableRow key={client.id}>
+                    {clients.map(client => <TableRow key={client.id}>
                             <TableCell>
                                 <Typography fontWeight={600}>
                                     {client.name}
                                 </Typography>
 
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                >
+                                <Typography variant="body2" color="text.secondary">
                                     {client.code}
                                 </Typography>
                             </TableCell>
@@ -67,9 +51,7 @@ function ClientsTable({
                             </TableCell>
 
                             <TableCell>
-                                {[client.city, client.state, client.country]
-                                    .filter(Boolean)
-                                    .join(", ") || "—"}
+                                {[client.city, client.state, client.country].filter(Boolean).join(", ") || "—"}
                             </TableCell>
 
                             <TableCell>
@@ -78,63 +60,46 @@ function ClientsTable({
 
                             <TableCell>
                                 <Chip
-                                    size="small"
-                                    label={
-                                        client.isActive ? "Active" : "Archived"
-                                    }
-                                    color={
-                                        client.isActive ? "success" : "default"
-                                    }
-                                />
+                                                                    size="small"
+                                                                    label={client.isActive ? "Active" : "Archived"}
+                                                                    color={client.isActive ? "success" : "default"}
+                                                                />
                             </TableCell>
 
                             <TableCell>
                                 <Stack direction="row" spacing={1}>
-                                    <Button
-                                        onClick={() => handleView(client)}
-                                        disabled={busy}
-                                    >
+                                    <Button onClick={() => handleView(client)} disabled={busy}>
                                         View
                                     </Button>
 
-                                    {canWrite && (
-                                        <Button
-                                            onClick={() => handleEdit(client)}
-                                            disabled={busy}
-                                        >
+                                    {canWrite && <Button onClick={() => handleEdit(client)} disabled={busy}>
                                             Edit
-                                        </Button>
-                                    )}
+                                        </Button>}
 
-                                    {canWrite && client.isActive && (
-                                        <Button
-                                            color="error"
-                                            onClick={() => handleArchive(client)}
-                                            disabled={busy}
-                                        >
+                                    {canWrite && client.isActive && <Button
+                                                                            color="error"
+                                                                            onClick={() => handleArchive(client)}
+                                                                            disabled={busy}
+                                                                        >
                                             Archive
-                                        </Button>
-                                    )}
+                                        </Button>}
                                 </Stack>
                             </TableCell>
-                        </TableRow>
-                    ))}
+                        </TableRow>)}
 
-                    {clients.length === 0 && (
-                        <TableRow>
+                    {clients.length === 0 && <TableRow>
                             <TableCell
-                                colSpan={7}
-                                align="center"
-                                sx={{ py: 5 }}
-                            >
+                                                            colSpan={7}
+                                                            align="center"
+                                                            sx={{
+                        py: 5
+                    }}
+                                                        >
                                 No clients found.
                             </TableCell>
-                        </TableRow>
-                    )}
+                        </TableRow>}
                 </TableBody>
             </Table>
-        </TableContainer>
-    );
+        </TableContainer>;
 }
-
 export default ClientsTable;

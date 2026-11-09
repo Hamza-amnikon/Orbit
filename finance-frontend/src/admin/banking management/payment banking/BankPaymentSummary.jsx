@@ -1,20 +1,27 @@
-import { Alert, Stack, Typography } from "@mui/material";
-
-export default function BankPaymentSummary({ payment }) {
-    if (!payment) {
+import {
+    Alert,
+    Stack,
+    Typography
+} from "@mui/material";
+export default function BankPaymentSummary({
+    payment
+})
+{
+    if (!payment)
+    {
         return null;
     }
-
-    if (!payment.settlementType) {
+    if (!payment.settlementType)
+    {
         return <Alert severity="info">Earlier payment: no automatic bank entry was created. Check the existing bank records before adding a separate entry.</Alert>;
     }
-
-    if (payment.settlementType === "Cash") {
+    if (payment.settlementType === "Cash")
+    {
         return <Alert severity="info">Cash payment · No bank balance change.</Alert>;
     }
-
-    return (
-        <Stack spacing={1} sx={{ mt: 2 }}>
+    return <Stack spacing={1} sx={{
+        mt: 2
+    }}>
             <Alert severity="success">
                 {payment.bankReversalTransactionId ? "Bank entry reversed in Finance." : "Bank entry posted in Finance."}
             </Alert>
@@ -22,6 +29,5 @@ export default function BankPaymentSummary({ payment }) {
             <Typography variant="body2" color="text.secondary">
                 Find the bank entry by this payment's number and reference. Matching it during reconciliation will not change the balance again.
             </Typography>
-        </Stack>
-    );
+        </Stack>;
 }

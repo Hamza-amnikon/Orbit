@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import InvoicePaymentsPanel from "./InvoicePaymentsPanel";
-
 import {
     Alert,
     Box,
@@ -12,13 +11,11 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Typography,
+    Typography
 } from "@mui/material";
-
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
-
 import IssuedInvoice from "./IssuedInvoice";
 import "./InvoiceDetails.css";
 
@@ -26,42 +23,41 @@ import "./InvoiceDetails.css";
 const statusNames = {
     0: "Draft",
     1: "Issued",
-    2: "Void",
+    2: "Void"
 };
-
 const unitNames = {
     0: "Hour",
     1: "Day",
     2: "Month",
-    3: "Fixed fee",
+    3: "Fixed fee"
 };
-
-function formatDate(value) {
-    if (!value) {
+function formatDate(value)
+{
+    if (!value)
+    {
         return "—";
     }
-
     const [year, month, day] = value.slice(0, 10).split("-");
-
     return `${day}/${month}/${year}`;
 }
-
-function formatAmount(value, currency) {
-    if (value == null) {
+function formatAmount(value, currency)
+{
+    if (value == null)
+    {
         return "—";
     }
-
-    try {
+    try
+    {
         return new Intl.NumberFormat(undefined, {
             style: "currency",
             currency,
-            currencyDisplay: "code",
+            currencyDisplay: "code"
         }).format(value);
-    } catch {
+    } catch
+    {
         return `${currency || ""} ${value}`;
     }
 }
-
 const InvoiceDetails = ({
     invoice,
     loading,
@@ -71,128 +67,86 @@ const InvoiceDetails = ({
     onIssue,
     onReload,
     issuing = false,
-    issueError = "",
-}) => {
+    issueError = ""
+}) =>
+{
     const [confirmIssue, setConfirmIssue] = useState(false);
-
-    const status = invoice
-        ? statusNames[invoice.status] || invoice.status || "Unknown"
-        : "";
-
-    const showIssuedTemplate =
-        status !== "Draft" &&
-        invoice?.issuer &&
-        invoice?.invoiceTemplateVersion === "amnikon-v1";
-
-    const items = [...(invoice?.items || [])].sort(
-        (first, second) => first.lineNumber - second.lineNumber
-    );
-
-    const metadata = invoice
-        ? [
-            ["Invoice Date", formatDate(invoice.invoiceDate)],
-            ["Due Date", formatDate(invoice.dueDate)],
-            ["Managing Branch", invoice.branch],
-            ["Currency", invoice.currency],
-            [
-                "Preferred Payment Mode",
-                invoice.preferredPaymentMode || "—",
-            ],
-            [
-                "Service Period",
-                invoice.servicePeriodStart && invoice.servicePeriodEnd
-                    ? `${formatDate(invoice.servicePeriodStart)} to ${formatDate(
-                        invoice.servicePeriodEnd
-                    )}`
-                    : "—",
-            ],
-        ]
-        : [];
-
-    return (
-        <Box className="invoice-details-page">
+    const status = invoice ? statusNames[invoice.status] || invoice.status || "Unknown" : "";
+    const showIssuedTemplate = status !== "Draft" && invoice?.issuer && invoice?.invoiceTemplateVersion === "amnikon-v1";
+    const items = [...(invoice?.items || [])].sort((first, second) => first.lineNumber - second.lineNumber);
+    const metadata = invoice ? [["Invoice Date", formatDate(invoice.invoiceDate)], ["Due Date", formatDate(invoice.dueDate)], ["Managing Branch", invoice.branch], ["Currency", invoice.currency], ["Preferred Payment Mode", invoice.preferredPaymentMode || "—"], ["Service Period", invoice.servicePeriodStart && invoice.servicePeriodEnd ? `${formatDate(invoice.servicePeriodStart)} to ${formatDate(invoice.servicePeriodEnd)}` : "—"]] : [];
+    return <Box className="invoice-details-page">
             <Box className="invoice-details-topbar">
                 <Button
-                    variant="outlined"
-                    startIcon={<ArrowBackRoundedIcon />}
-                    className="invoice-back-button"
-                    onClick={onBack}
-                    disabled={issuing}
-                >
+                                    variant="outlined"
+                                    startIcon={<ArrowBackRoundedIcon />}
+                                    className="invoice-back-button"
+                                    onClick={onBack}
+                                    disabled={issuing}
+                                >
                     Back to Invoices
                 </Button>
 
-                {invoice && !loading && !error && (
-                    <Box className="invoice-details-actions">
+                {invoice && !loading && !error && <Box className="invoice-details-actions">
                         <Button
-                            variant="outlined"
-                            startIcon={<PrintRoundedIcon />}
-                            className="invoice-action-button"
-                            onClick={() => window.print()}
-                            disabled={issuing}
-                        >
+                                                    variant="outlined"
+                                                    startIcon={<PrintRoundedIcon />}
+                                                    className="invoice-action-button"
+                                                    onClick={() => window.print()}
+                                                    disabled={issuing}
+                                                >
                             Print
                         </Button>
 
-                        {status === "Draft" &&
-                            typeof onIssue === "function" && (
-                                <Button
-                                    variant="contained"
-                                    disabled={issuing || !invoice.rowVersion}
-                                    onClick={() => setConfirmIssue(true)}
-                                >
+                        {status === "Draft" && typeof onIssue === "function" && <Button
+                                                    variant="contained"
+                                                    disabled={issuing || !invoice.rowVersion}
+                                                    onClick={() => setConfirmIssue(true)}
+                                                >
                                     {issuing ? "Issuing..." : "Issue Invoice"}
-                                </Button>
-                            )}
+                                </Button>}
 
-                        {status === "Draft" &&
-                            typeof onEdit === "function" && (
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<EditRoundedIcon />}
-                                    className="invoice-action-button"
-                                    onClick={() => onEdit(invoice)}
-                                >
+                        {status === "Draft" && typeof onEdit === "function" && <Button
+                                                    variant="outlined"
+                                                    startIcon={<EditRoundedIcon />}
+                                                    className="invoice-action-button"
+                                                    onClick={() => onEdit(invoice)}
+                                                >
                                     Edit
-                                </Button>
-                            )}
-                    </Box>
-                )}
+                                </Button>}
+                    </Box>}
             </Box>
 
-            {issueError && (
-                <Alert
-                    severity="error"
-                    sx={{ mb: 2 }}
-                    action={typeof onReload === "function" && (
-                        <Button
-                            color="inherit"
-                            disabled={issuing}
-                            onClick={onReload}
-                        >
+            {issueError && <Alert
+                            severity="error"
+                            sx={{
+            mb: 2
+        }}
+                            action={typeof onReload === "function" && <Button
+            color="inherit"
+            disabled={issuing}
+            onClick={onReload}
+        >
                             Reload invoice
-                        </Button>
-                    )}
-                >
+                        </Button>}
+                        >
                     {issueError}
-                </Alert>
-            )}
+                </Alert>}
 
             <Dialog
-                open={confirmIssue}
-                onClose={() => !issuing && setConfirmIssue(false)}
-                fullWidth
-                maxWidth="sm"
-            >
+                            open={confirmIssue}
+                            onClose={() => !issuing && setConfirmIssue(false)}
+                            fullWidth
+                            maxWidth="sm"
+                        >
                 <DialogTitle>Issue this invoice?</DialogTitle>
 
                 <DialogContent>
-                    <Typography sx={{ mb: 1 }}>
+                    <Typography sx={{
+                    mb: 1
+                }}>
                         {invoice?.clientName} · {invoice?.branch} ·{" "}
-                        {formatAmount(
-                            invoice?.grandTotal,
-                            invoice?.currency
-                        )}
+                        {formatAmount(invoice?.grandTotal, invoice?.currency)}
                     </Typography>
 
                     <Typography>
@@ -203,59 +157,49 @@ const InvoiceDetails = ({
                 </DialogContent>
 
                 <DialogActions>
-                    <Button
-                        disabled={issuing}
-                        onClick={() => setConfirmIssue(false)}
-                    >
+                    <Button disabled={issuing} onClick={() => setConfirmIssue(false)}>
                         Cancel
                     </Button>
 
                     <Button
-                        variant="contained"
-                        disabled={issuing}
-                        onClick={() => {
-                            setConfirmIssue(false);
-                            onIssue?.();
-                        }}
-                    >
+                                            variant="contained"
+                                            disabled={issuing}
+                                            onClick={() =>
+                                        {
+                    setConfirmIssue(false);
+                    onIssue?.();
+                }}
+                                        >
                         Confirm Issue
                     </Button>
                 </DialogActions>
             </Dialog>
 
-            {error && (
-                <Alert severity="error" sx={{ mb: 2 }}>
+            {error && <Alert severity="error" sx={{
+            mb: 2
+        }}>
                     {error}
-                </Alert>
-            )}
+                </Alert>}
 
-            {(loading || (!invoice && !error)) && (
-                <Typography sx={{ p: 3 }}>
+            {(loading || !invoice && !error) && <Typography sx={{
+            p: 3
+        }}>
                     Loading invoice...
-                </Typography>
-            )}
+                </Typography>}
 
             {/* Payment summary and history for issued invoices */}
-            {invoice && !loading && !error && status === "Issued" && (
-                <InvoicePaymentsPanel
-                    key={invoice.id}
-                    invoice={invoice}
-                />
-            )}
+            {invoice && !loading && !error && status === "Issued" && <InvoicePaymentsPanel key={invoice.id} invoice={invoice} />}
 
             {/* Company invoice template */}
-            {invoice && !loading && !error && showIssuedTemplate && (
-                <IssuedInvoice
-                    invoice={invoice}
-                    formatDate={formatDate}
-                    formatAmount={formatAmount}
-                    unitNames={unitNames}
-                />
-            )}
+            {invoice && !loading && !error && showIssuedTemplate && <IssuedInvoice
+                            invoice={invoice}
+                            formatDate={formatDate}
+                            formatAmount={formatAmount}
+                            unitNames={unitNames}
+                        />}
 
             {/* Existing draft / fallback invoice display */}
-            {invoice && !loading && !error && !showIssuedTemplate && (
-                <Card className="invoice-details-card">
+            {invoice && !loading && !error && !showIssuedTemplate && <Card className="invoice-details-card">
                     <Box className="invoice-details-header">
                         <Box>
                             <Typography className="invoice-company-name">
@@ -269,14 +213,11 @@ const InvoiceDetails = ({
 
                         <Box className="invoice-title-section">
                             <Typography className="invoice-main-title">
-                                {status === "Draft"
-                                    ? "DRAFT INVOICE"
-                                    : "INVOICE"}
+                                {status === "Draft" ? "DRAFT INVOICE" : "INVOICE"}
                             </Typography>
 
                             <Typography className="invoice-detail-number">
-                                {invoice.invoiceNumber ||
-                                    `Draft record #${invoice.id}`}
+                                {invoice.invoiceNumber || `Draft record #${invoice.id}`}
                             </Typography>
 
                             <Box className="invoice-detail-status">
@@ -298,30 +239,22 @@ const InvoiceDetails = ({
                                     {invoice.clientName}
                                 </Typography>
 
-                                {invoice.companyName && (
-                                    <Typography className="invoice-info-text">
+                                {invoice.companyName && <Typography className="invoice-info-text">
                                         {invoice.companyName}
-                                    </Typography>
-                                )}
+                                    </Typography>}
 
-                                <Typography
-                                    className="invoice-info-text"
-                                    sx={{ whiteSpace: "pre-wrap" }}
-                                >
+                                <Typography className="invoice-info-text" sx={{
+                            whiteSpace: "pre-wrap"
+                        }}>
                                     {invoice.billingAddress || "—"}
                                 </Typography>
                             </Box>
 
                             <Box className="invoice-meta-section">
-                                {metadata.map(([label, value]) => (
-                                    <Box
-                                        key={label}
-                                        className="invoice-meta-row"
-                                    >
+                                {metadata.map(([label, value]) => <Box key={label} className="invoice-meta-row">
                                         <Typography>{label}</Typography>
                                         <Typography>{value}</Typography>
-                                    </Box>
-                                ))}
+                                    </Box>)}
                             </Box>
                         </Box>
 
@@ -330,8 +263,12 @@ const InvoiceDetails = ({
                                 Services
                             </Typography>
 
-                            <Box sx={{ overflowX: "auto" }}>
-                                <Box sx={{ minWidth: 700 }}>
+                            <Box sx={{
+                        overflowX: "auto"
+                    }}>
+                                <Box sx={{
+                            minWidth: 700
+                        }}>
                                     <Box className="invoice-items-header">
                                         <Typography>Service</Typography>
                                         <Typography>Description</Typography>
@@ -341,11 +278,7 @@ const InvoiceDetails = ({
                                         <Typography>Amount</Typography>
                                     </Box>
 
-                                    {items.map((item) => (
-                                        <Box
-                                            key={item.id}
-                                            className="invoice-item-row"
-                                        >
+                                    {items.map(item => <Box key={item.id} className="invoice-item-row">
                                             <Typography className="invoice-item-name">
                                                 {item.lineNumber}.{" "}
                                                 {item.serviceName}
@@ -357,31 +290,18 @@ const InvoiceDetails = ({
 
                                             <Typography>
                                                 {item.quantity}{" "}
-                                                {unitNames[item.unit] ||
-                                                    item.unit}
+                                                {unitNames[item.unit] || item.unit}
                                             </Typography>
 
                                             <Box>
                                                 <Typography>
-                                                    {formatAmount(
-                                                        item.unitPrice,
-                                                        invoice.currency
-                                                    )}
+                                                    {formatAmount(item.unitPrice, invoice.currency)}
                                                 </Typography>
 
-                                                {item.discountEnabled !== false &&
-                                                    item.discountAmount > 0 && (
-                                                        <Typography
-                                                            variant="caption"
-                                                            color="text.secondary"
-                                                        >
+                                                {item.discountEnabled !== false && item.discountAmount > 0 && <Typography variant="caption" color="text.secondary">
                                                             Discount:{" "}
-                                                            {formatAmount(
-                                                                item.discountAmount,
-                                                                invoice.currency
-                                                            )}
-                                                        </Typography>
-                                                    )}
+                                                            {formatAmount(item.discountAmount, invoice.currency)}
+                                                        </Typography>}
                                             </Box>
 
                                             <Box>
@@ -390,47 +310,26 @@ const InvoiceDetails = ({
                                                 </Typography>
 
                                                 <Typography variant="caption">
-                                                    {formatAmount(
-                                                        item.taxAmount,
-                                                        invoice.currency
-                                                    )}
+                                                    {formatAmount(item.taxAmount, invoice.currency)}
                                                 </Typography>
                                             </Box>
 
                                             <Typography className="invoice-item-amount">
-                                                {formatAmount(
-                                                    item.lineTotal,
-                                                    invoice.currency
-                                                )}
+                                                {formatAmount(item.lineTotal, invoice.currency)}
                                             </Typography>
-                                        </Box>
-                                    ))}
+                                        </Box>)}
                                 </Box>
                             </Box>
                         </Box>
 
                         <Box className="invoice-total-section">
-                            {[
-                                ["Subtotal", invoice.subTotal],
-                                ...(invoice.discountTotal > 0
-                                    ? [["Discount", invoice.discountTotal]]
-                                    : []),
-                                ["Tax", invoice.taxTotal],
-                            ].map(([label, value]) => (
-                                <Box
-                                    key={label}
-                                    className="invoice-total-row"
-                                >
+                            {[["Subtotal", invoice.subTotal], ...(invoice.discountTotal > 0 ? [["Discount", invoice.discountTotal]] : []), ["Tax", invoice.taxTotal]].map(([label, value]) => <Box key={label} className="invoice-total-row">
                                     <Typography>{label}</Typography>
 
                                     <Typography>
-                                        {formatAmount(
-                                            value,
-                                            invoice.currency
-                                        )}
+                                        {formatAmount(value, invoice.currency)}
                                     </Typography>
-                                </Box>
-                            ))}
+                                </Box>)}
 
                             <Divider />
 
@@ -438,54 +337,42 @@ const InvoiceDetails = ({
                                 <Typography>Grand Total</Typography>
 
                                 <Typography>
-                                    {formatAmount(
-                                        invoice.grandTotal,
-                                        invoice.currency
-                                    )}
+                                    {formatAmount(invoice.grandTotal, invoice.currency)}
                                 </Typography>
                             </Box>
                         </Box>
 
-                        {invoice.notes && (
-                            <Box className="invoice-notes-section">
+                        {invoice.notes && <Box className="invoice-notes-section">
                                 <Typography className="invoice-section-title">
                                     Notes
                                 </Typography>
 
-                                <Typography
-                                    className="invoice-notes-text"
-                                    sx={{ whiteSpace: "pre-wrap" }}
-                                >
+                                <Typography className="invoice-notes-text" sx={{
+                        whiteSpace: "pre-wrap"
+                    }}>
                                     {invoice.notes}
                                 </Typography>
-                            </Box>
-                        )}
+                            </Box>}
 
-                        {invoice.additionalTerms && (
-                            <Box className="invoice-terms-section">
+                        {invoice.additionalTerms && <Box className="invoice-terms-section">
                                 <Typography className="invoice-section-title">
                                     Terms & Conditions
                                 </Typography>
 
-                                <Typography
-                                    className="invoice-notes-text"
-                                    sx={{ whiteSpace: "pre-wrap" }}
-                                >
+                                <Typography className="invoice-notes-text" sx={{
+                        whiteSpace: "pre-wrap"
+                    }}>
                                     {invoice.additionalTerms}
                                 </Typography>
-                            </Box>
-                        )}
+                            </Box>}
 
-                        {status === "Void" && invoice.voidReason && (
-                            <Alert severity="info" sx={{ mt: 2 }}>
+                        {status === "Void" && invoice.voidReason && <Alert severity="info" sx={{
+                    mt: 2
+                }}>
                                 Void reason: {invoice.voidReason}
-                            </Alert>
-                        )}
+                            </Alert>}
                     </CardContent>
-                </Card>
-            )}
-        </Box>
-    );
+                </Card>}
+        </Box>;
 };
-
 export default InvoiceDetails;

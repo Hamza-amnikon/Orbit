@@ -1,203 +1,185 @@
 const endpoint = "/api/vendor-credits";
-
-async function request(path = "", { body, ...options } = {}) {
+async function request(path = "", {
+    body,
+    ...options
+} = {})
+{
     let response;
-
-    try {
+    try
+    {
         response = await fetch(endpoint + path, {
             ...options,
             headers: {
-                ...(body !== undefined
-                    ? { "Content-Type": "application/json" }
-                    : {}),
-                ...options.headers,
+                ...(body !== undefined ? {
+                    "Content-Type": "application/json"
+                } : {}),
+                ...options.headers
             },
-            ...(body !== undefined
-                ? { body: JSON.stringify(body) }
-                : {}),
+            ...(body !== undefined ? {
+                body: JSON.stringify(body)
+            } : {})
         });
-    } catch (error) {
-        if (error.name === "AbortError") {
+    } catch (error)
+    {
+        if (error.name === "AbortError")
+        {
             throw error;
         }
-
-        throw new Error(
-            "Cannot reach VendorCreditService.API. Check that it is running."
-        );
+        throw new Error("Cannot reach VendorCreditService.API. Check that it is running.");
     }
-
     const data = await response.json().catch(() => null);
-
-    if (!response.ok) {
-        const validation = data?.errors
-            ? Object.values(data.errors).flat().join(" ")
-            : "";
-
-        const error = new Error(
-            validation ||
-            data?.message ||
-            data?.detail ||
-            data?.title ||
-            "Vendor credit request failed."
-        );
-
+    if (!response.ok)
+    {
+        const validation = data?.errors ? Object.values(data.errors).flat().join(" ") : "";
+        const error = new Error(validation || data?.message || data?.detail || data?.title || "Vendor credit request failed.");
         error.status = response.status;
-
         throw error;
     }
-
     return data;
 }
-
-export async function getVendorCredits(
-    {
-        page = 1,
-        pageSize = 25,
-        search = "",
-        status = "",
-        vendorId = "",
-        fromDate = "",
-        toDate = "",
-    } = {},
-    signal
-) {
+export async function getVendorCredits({
+    page = 1,
+    pageSize = 25,
+    search = "",
+    status = "",
+    vendorId = "",
+    fromDate = "",
+    toDate = ""
+} = {}, signal)
+{
     const query = new URLSearchParams({
         page: String(page),
-        pageSize: String(pageSize),
+        pageSize: String(pageSize)
     });
-
     for (const [name, value] of Object.entries({
         search,
         status,
         vendorId,
         fromDate,
-        toDate,
-    })) {
+        toDate
+    }))
+    {
         const text = String(value ?? "").trim();
-
-        if (text) {
+        if (text)
+        {
             query.set(name, text);
         }
     }
-
-    const result = await request("?" + query, { signal });
-
-    if (
-        !Array.isArray(result?.data) ||
-        !Number.isInteger(result.total) ||
-        result.total < 0
-    ) {
+    const result = await request("?" + query, {
+        signal
+    });
+    if (!Array.isArray(result?.data) || !Number.isInteger(result.total) || result.total < 0)
+    {
         throw new Error("Invalid vendor credit list.");
     }
-
     return result;
 }
-
-export function getVendorCredit(id, signal) {
-    return request("/" + encodeURIComponent(id), { signal });
+export function getVendorCredit(id, signal)
+{
+    return request("/" + encodeURIComponent(id), {
+        signal
+    });
 }
-
-export function previewVendorCredit(body) {
-    return request("/preview", { method: "POST", body });
+export function previewVendorCredit(body)
+{
+    return request("/preview", {
+        method: "POST",
+        body
+    });
 }
-
-export function createVendorCredit(body) {
-    return request("", { method: "POST", body });
+export function createVendorCredit(body)
+{
+    return request("", {
+        method: "POST",
+        body
+    });
 }
-
-export function updateVendorCredit(id, body) {
+export function updateVendorCredit(id, body)
+{
     return request("/" + encodeURIComponent(id), {
         method: "PUT",
-        body,
+        body
     });
 }
-
-export function changeVendorCreditStatus(id, action, rowVersion) {
-    return request(
-        "/" + encodeURIComponent(id) + "/" + action,
-        {
-            method: "POST",
-            body: { rowVersion },
+export function changeVendorCreditStatus(id, action, rowVersion)
+{
+    return request("/" + encodeURIComponent(id) + "/" + action, {
+        method: "POST",
+        body: {
+            rowVersion
         }
-    );
+    });
 }
-
-export async function getVendorCreditChoices(signal) {
-    const [branches, currencies] = await Promise.all([
-        request("/lookups/branches", { signal }),
-        request("/lookups/currencies", { signal }),
-    ]);
-
-    if (!Array.isArray(branches) || !Array.isArray(currencies)) {
+export async function getVendorCreditChoices(signal)
+{
+    const [branches, currencies] = await Promise.all([request("/lookups/branches", {
+        signal
+    }), request("/lookups/currencies", {
+        signal
+    })]);
+    if (!Array.isArray(branches) || !Array.isArray(currencies))
+    {
         throw new Error("Invalid vendor credit choices.");
     }
-
-    return { branches, currencies };
+    return {
+        branches,
+        currencies
+    };
 }
-
-export async function getVendorCreditVendors(search, signal) {
+export async function getVendorCreditVendors(search, signal)
+{
     const query = new URLSearchParams({
         page: "1",
         pageSize: "50",
-        search,
+        search
     });
-
     const result = await request("/lookups/vendors?" + query, {
-        signal,
+        signal
     });
-
-    if (!Array.isArray(result?.data)) {
+    if (!Array.isArray(result?.data))
+    {
         throw new Error("Invalid vendor choices.");
     }
-
     return result;
 }
-
-export async function getVendorCreditBills(filters, signal) {
+export async function getVendorCreditBills(filters, signal)
+{
     const query = new URLSearchParams({
         page: "1",
         pageSize: "50",
-        ...filters,
+        ...filters
     });
-
     const result = await request("/lookups/bills?" + query, {
-        signal,
+        signal
     });
-
-    if (!Array.isArray(result?.data)) {
+    if (!Array.isArray(result?.data))
+    {
         throw new Error("Invalid bill choices.");
     }
-
     return result;
 }
-
-export function getCreditApplicationBills(creditId, search, signal) {
+export function getCreditApplicationBills(creditId, search, signal)
+{
     const query = new URLSearchParams({
         search,
         page: "1",
-        pageSize: "50",
+        pageSize: "50"
     });
-
-    return request(
-        "/" + encodeURIComponent(creditId) + "/applications/bills?" + query,
-        { signal }
-    );
+    return request("/" + encodeURIComponent(creditId) + "/applications/bills?" + query, {
+        signal
+    });
 }
-
-export function applyVendorCredit(creditId, body) {
+export function applyVendorCredit(creditId, body)
+{
     return request("/" + encodeURIComponent(creditId) + "/applications", {
         method: "POST",
-        body,
+        body
     });
 }
-
-export function voidCreditApplication(creditId, applicationId, body) {
-    return request(
-        "/" + encodeURIComponent(creditId) + "/applications/" +
-            encodeURIComponent(applicationId) + "/void",
-        {
-            method: "POST",
-            body,
-        }
-    );
+export function voidCreditApplication(creditId, applicationId, body)
+{
+    return request("/" + encodeURIComponent(creditId) + "/applications/" + encodeURIComponent(applicationId) + "/void", {
+        method: "POST",
+        body
+    });
 }

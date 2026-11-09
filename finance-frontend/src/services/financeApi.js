@@ -1,69 +1,148 @@
 import { request } from "./api";
-
 const baseUrl = (import.meta.env.VITE_FINANCE_API_URL || (import.meta.env.DEV ? "http://localhost:5080" : "")).replace(/\/$/, "");
-function query(filters = {}) {
-  const params = new URLSearchParams();
-  for (const [key, value] of Object.entries(filters)) {
-    if (value !== undefined && value !== null && value !== "") params.set(key, String(value));
-  }
-  return params.size ? `?${params}` : "";
+function query(filters = {})
+{
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(filters))
+    {
+        if (value !== undefined && value !== null && value !== "") params.set(key, String(value));
+    }
+    return params.size ? `?${params}` : "";
 }
-
-function resource(path) {
-  return {
-    list: (filters, signal) => request(`${path}${query(filters)}`, { signal }),
-    get: (id, signal) => request(`${path}/${encodeURIComponent(id)}`, { signal }),
-    create: (body) => request(path, { method: "POST", body }),
-    update: (id, body) => request(`${path}/${encodeURIComponent(id)}`, { method: "PUT", body }),
-  };
+function resource(path, connection = {})
+{
+    return {
+        list: (filters, signal) => request(`${path}${query(filters)}`, {
+            ...connection,
+            signal
+        }),
+        get: (id, signal) => request(`${path}/${encodeURIComponent(id)}`, {
+            ...connection,
+            signal
+        }),
+        create: body => request(path, {
+            ...connection,
+            method: "POST",
+            body
+        }),
+        update: (id, body) => request(`${path}/${encodeURIComponent(id)}`, {
+            ...connection,
+            method: "PUT",
+            body
+        })
+    };
 }
-
 export const financeApi = {
-  exchangeRates: (signal) => request("exchange-rates/latest", { live: true, useProxy: true, signal, timeoutMs: 15000 }),
-  currencies: () => request("currencies"),
-  saveRate: body => request("currencies", { method: "POST", body }),
-  workspace: (kind) => ({ ...resource(`workspace/${kind}`), changeStatus: (id, body) => request(`workspace/${kind}/${id}/status`, { method: "PATCH", body }) }),
-  expenses: (kind) => ({ ...resource(`expenses/${kind}`), changeStatus: (id, body) => request(`expenses/${kind}/${id}/status`, { method: "PATCH", body }) }),
-  ledger: (filters) => request(`accounting/ledger${query(filters)}`),
-  accounting: (filters) => request(`accounting/reports${query(filters)}`),
-  audit: (filters) => request(`accounting/audit${query(filters)}`),
-  attachments: (source, id) => ({
-    list: () => request(`attachments/${source}/${id}`),
-    upload: (body) => request(`attachments/${source}/${id}`, { method: "POST", body }),
-    async download(attachment) {
-      const response = await fetch(`${baseUrl}/api/attachments/${source}/${id}/${attachment.id}`);
-      if (!response.ok) throw new Error(`Download failed (${response.status}).`);
-      const url = URL.createObjectURL(await response.blob()); const link = document.createElement("a"); link.href = url; link.download = attachment.fileName; link.click(); URL.revokeObjectURL(url);
-    },
-  }),
-  reconciliations: {
-    ...resource("reconciliations"),
-    match: (id, lineId, body) => request(`reconciliations/${id}/lines/${lineId}`, { method: "PATCH", body }),
-    complete: (id, body) => request(`reconciliations/${id}/complete`, { method: "PATCH", body }),
-  },
-  clients: resource("clients"),
-  customers: resource("clients"),
-  vendors: resource("parties/Vendor"),
-  documents: (kind) => ({
-    ...resource(`documents/${encodeURIComponent(kind)}`),
-    changeStatus: (id, status, rowVersion) => request(`documents/${encodeURIComponent(kind)}/${encodeURIComponent(id)}/status`, {
-      method: "PATCH", body: { status, rowVersion },
+    exchangeRates: signal => request("exchange-rates/latest", {
+        live: true,
+        useProxy: true,
+        signal,
+        timeoutMs: 15000
     }),
-  }),
-  payments: (direction) => {
-    const { list, get, create } = resource(`payments/${encodeURIComponent(direction)}`);
-    return { list, get, create };
-  },
-  dashboard: (filters, signal) => request(`dashboard${query(filters)}`, { live: true, useProxy: true, signal, timeoutMs: 45000 }),
-  activity: (signal) => request("dashboard/activity", { live: true, useProxy: true, signal, timeoutMs: 45000 }),
+    currencies: () => request("currencies"),
+    saveRate: body => request("currencies", {
+        method: "POST",
+        body
+    }),
+    workspace: kind => ({
+        ...resource(
+            kind === "organization" ? "organization-profiles" : `workspace/${kind}`,
+            kind === "organization" ? { live: true, useProxy: true } : {}
+        ),
+        changeStatus: (id, body) => request(`workspace/${kind}/${id}/status`, {
+            method: "PATCH",
+            body
+        })
+    }),
+    expenses: kind => ({
+        ...resource(`expenses/${kind}`),
+        changeStatus: (id, body) => request(`expenses/${kind}/${id}/status`, {
+            method: "PATCH",
+            body
+        })
+    }),
+    ledger: filters => request(`accounting/ledger${query(filters)}`),
+    accounting: filters => request(`accounting/reports${query(filters)}`),
+    audit: filters => request(`accounting/audit${query(filters)}`),
+    attachments: (source, id) => ({
+        list: () => request(`attachments/${source}/${id}`),
+        upload: body => request(`attachments/${source}/${id}`, {
+            method: "POST",
+            body
+        }),
+        async download(attachment)
+        {
+            const response = await fetch(`${baseUrl}/api/attachments/${source}/${id}/${attachment.id}`);
+            if (!response.ok) throw new Error(`Download failed (${response.status}).`);
+            const url = URL.createObjectURL(await response.blob());
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = attachment.fileName;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+    }),
+    reconciliations: {
+        ...resource("reconciliations"),
+        match: (id, lineId, body) => request(`reconciliations/${id}/lines/${lineId}`, {
+            method: "PATCH",
+            body
+        }),
+        complete: (id, body) => request(`reconciliations/${id}/complete`, {
+            method: "PATCH",
+            body
+        })
+    },
+    clients: resource("clients"),
+    customers: resource("clients"),
+    vendors: resource("parties/Vendor"),
+    documents: kind => ({
+        ...resource(`documents/${encodeURIComponent(kind)}`),
+        changeStatus: (id, status, rowVersion) => request(`documents/${encodeURIComponent(kind)}/${encodeURIComponent(id)}/status`, {
+            method: "PATCH",
+            body: {
+                status,
+                rowVersion
+            }
+        })
+    }),
+    payments: direction =>
+    {
+        const {
+            list,
+            get,
+            create
+        } = resource(`payments/${encodeURIComponent(direction)}`);
+        return {
+            list,
+            get,
+            create
+        };
+    },
+    dashboard: (filters, signal) => request(`dashboard${query(filters)}`, {
+        live: true,
+        useProxy: true,
+        signal,
+        timeoutMs: 45000
+    }),
+    activity: signal => request("dashboard/activity", {
+        live: true,
+        useProxy: true,
+        signal,
+        timeoutMs: 45000
+    })
 };
-
-export async function allRecords(api, filters = {}, signal) {
-  const records = [];
-  for (let page = 1; ; page++) {
-    const result = await api.list({ ...filters, page, pageSize: 100 }, signal);
-    records.push(...result.data);
-    if (records.length >= result.total || result.data.length === 0) return records;
-  }
+export async function allRecords(api, filters = {}, signal)
+{
+    const records = [];
+    for (let page = 1;; page++)
+    {
+        const result = await api.list({
+            ...filters,
+            page,
+            pageSize: 100
+        }, signal);
+        records.push(...result.data);
+        if (records.length >= result.total || result.data.length === 0) return records;
+    }
 }
-
