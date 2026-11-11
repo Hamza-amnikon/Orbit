@@ -444,7 +444,7 @@ function DocumentEditor({
       <TextField
                 select
                 required
-                label="Managing branch"
+                label="Billing Branch"
                 disabled={isCredit}
                 value={value.branch || (isPurchase ? "Turbhe" : "Dubai")}
                 onChange={e => setValue({

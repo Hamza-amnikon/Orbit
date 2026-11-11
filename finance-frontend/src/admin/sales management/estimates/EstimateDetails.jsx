@@ -256,7 +256,7 @@ const EstimateDetails = ({
             {loading && <CircularProgress aria-label="Loading estimate details" />}
             {estimate && !loading && !error && <Card className="estimate-preview-card"><CardContent>
                 <Box className="estimate-preview-header">
-                    <Box><Typography className="estimate-company-name">Sales Estimate</Typography><Typography className="estimate-company-details">Managing branch: {estimate.branch}</Typography><Typography className="estimate-company-details">Currency: {estimate.currency}</Typography></Box>
+                    <Box><Typography className="estimate-company-name">Sales Estimate</Typography><Typography className="estimate-company-details">Billing Branch: {estimate.branch}</Typography><Typography className="estimate-company-details">Currency: {estimate.currency}</Typography></Box>
                     <Box className="estimate-preview-meta"><Typography className="estimate-preview-label">ESTIMATE</Typography><Typography className="estimate-preview-number">{estimate.estimateNumber || `Draft #${estimate.id}`}</Typography><Typography className="estimate-preview-status">{status}</Typography></Box>
                 </Box>
                 <Divider className="estimate-divider" />
@@ -277,7 +277,10 @@ const EstimateDetails = ({
                             <td><strong>{item.serviceName}</strong>{item.description && <div className="estimate-line-description">{item.description}</div>}</td>
                             <td>{item.quantity}<div className="estimate-line-description">{serviceUnits[item.unit] || item.unit}</div></td>
                             <td>{formatAmount(item.unitPrice, estimate.currency)}</td>
-                            {hasDiscount && <td>{item.discountEnabled ? formatAmount(item.discountAmount, estimate.currency) : "—"}</td>}
+                            {hasDiscount && <td>
+                                {item.discountEnabled ? formatAmount(item.discountAmount, estimate.currency) : "—"}
+                                {item.discountEnabled && item.discountType === "Percentage" && <small> ({item.discountValue}%)</small>}
+                            </td>}
                             <td>{item.taxRate}%<div className="estimate-line-description">{formatAmount(item.taxAmount, estimate.currency)}</div></td>
                             <td><strong>{formatAmount(item.lineTotal, estimate.currency)}</strong></td>
                         </tr>)}</tbody>
@@ -286,7 +289,7 @@ const EstimateDetails = ({
                 <Box className="estimate-details-total-wrapper"><Box className="estimate-details-totals">
                     <Box className="estimate-details-total-row"><Typography>Subtotal</Typography><Typography>{formatAmount(estimate.subTotal, estimate.currency)}</Typography></Box>
                     {Number(estimate.discountTotal) > 0 && <Box className="estimate-details-total-row"><Typography>Discount</Typography><Typography>{formatAmount(estimate.discountTotal, estimate.currency)}</Typography></Box>}
-                    <Box className="estimate-details-total-row"><Typography>Tax</Typography><Typography>{formatAmount(estimate.taxTotal, estimate.currency)}</Typography></Box>
+                    {Number(estimate.taxTotal) > 0 && <Box className="estimate-details-total-row"><Typography>Tax</Typography><Typography>{formatAmount(estimate.taxTotal, estimate.currency)}</Typography></Box>}
                     <Box className="estimate-details-grand-total"><Typography>Grand Total</Typography><Typography>{formatAmount(estimate.grandTotal, estimate.currency)}</Typography></Box>
                 </Box></Box>
                 {estimate.notes && <Box className="estimate-notes-section"><Typography className="estimate-section-title">Notes</Typography><Typography className="estimate-notes" sx={{

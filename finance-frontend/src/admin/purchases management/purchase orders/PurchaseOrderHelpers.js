@@ -1,3 +1,5 @@
+import { discountInput, discountPayload } from "../../../live/lineDiscount.js";
+import { savedTaxSelection } from "../../../live/taxSettings.js";
 export const purchaseOrderStatuses = ["Draft", "Issued", "Cancelled"];
 export const purchaseUnits = ["Hour", "Day", "Month", "Fixed fee", "Piece"];
 export function orderStatus(value)
@@ -56,8 +58,8 @@ export function newOrderLine()
         quantity: "1",
         unitPrice: "0",
         discountEnabled: false,
-        discountAmount: "0",
-        taxRate: "0"
+        ...discountInput(),
+        ...savedTaxSelection()
     };
 }
 export function orderValues(order)
@@ -80,8 +82,8 @@ export function orderValues(order)
             key: crypto.randomUUID(),
             quantity: String(item.quantity),
             unitPrice: String(item.unitPrice),
-            discountAmount: String(item.discountAmount),
-            taxRate: String(item.taxRate)
+            ...discountInput(item),
+            ...savedTaxSelection(item)
         })) : [newOrderLine()]
     };
 }
@@ -99,8 +101,9 @@ export function orderPayload(value)
             quantity: Number(item.quantity),
             unitPrice: Number(item.unitPrice),
             discountEnabled: item.discountEnabled,
-            discountAmount: item.discountEnabled ? Number(item.discountAmount) : 0,
-            taxRate: Number(item.taxRate)
+            ...discountPayload(item),
+            taxSettingId: item.taxSettingId ? Number(item.taxSettingId) : null,
+            taxSettingRowVersion: item.taxSettingRowVersion
         }))
     };
 }

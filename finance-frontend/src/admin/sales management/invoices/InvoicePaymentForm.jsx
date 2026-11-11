@@ -76,7 +76,14 @@ const InvoicePaymentForm = ({
                 }
             }
         }
-        loadOptions();
+        // Skip the first development-only effect if React cleans it up immediately.
+        Promise.resolve().then(() =>
+        {
+            if (!controller.signal.aborted)
+            {
+                return loadOptions();
+            }
+        });
         return () => controller.abort();
     }, [invoice.id, reload]);
     const currency = summary?.currency || invoice.currency;

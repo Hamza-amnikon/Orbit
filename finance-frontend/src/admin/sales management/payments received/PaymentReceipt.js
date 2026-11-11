@@ -101,7 +101,7 @@ export function printPaymentReceipt(payment)
     addElement("h1", "Payment Receipt");
     addElement("p", payment.paymentNumber, "number");
     const date = payment.paymentDate ? payment.paymentDate.slice(0, 10).split("-").reverse().join("/") : "—";
-    const fields = [["Received from", payment.clientName], ["Invoice", payment.invoiceNumber], ["Payment date", date], ["Managing branch", payment.branch], ["Currency", payment.currency], ["Payment mode", payment.paymentMode], ["Reference", payment.reference], ["Notes", payment.notes]];
+    const fields = [["Received from", payment.clientName], ["Invoice", payment.invoiceNumber], ["Payment date", date], ["Billing Branch", payment.branch], ["Currency", payment.currency], ["Payment mode", payment.paymentMode], ["Reference", payment.reference], ["Notes", payment.notes]];
     const details = doc.createElement("dl");
     for (const [label, value] of fields)
     {

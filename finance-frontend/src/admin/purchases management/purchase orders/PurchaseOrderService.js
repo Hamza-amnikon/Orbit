@@ -174,3 +174,14 @@ export async function convertPurchaseOrderToBill(id, rowVersion)
     }
     return result;
 }
+
+export async function getPurchaseOrderTaxSettings(branch, orderDate, signal)
+{
+    const query = new URLSearchParams({ branch, orderDate });
+    const rows = await request("/tax-settings?" + query, { signal });
+    if (!Array.isArray(rows))
+    {
+        throw new Error("Invalid purchase order tax settings response.");
+    }
+    return rows;
+}

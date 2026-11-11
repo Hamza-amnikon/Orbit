@@ -1,0 +1,247 @@
+.merit-login {
+    --login-background: #f4f6fa;
+    --login-surface: #ffffff;
+    --login-text: #17233c;
+    --login-muted: #67738a;
+    --login-border: #e3e8f0;
+    --login-accent: #6645d8;
+    --login-hover: #f7f5ff;
+    --login-glow-purple: rgba(113, 73, 221, 0.07);
+    --login-glow-blue: rgba(45, 113, 232, 0.06);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 88px 24px 40px;
+
+    background:
+        radial-gradient(ellipse 440px 360px at 38% 38%, var(--login-glow-purple), transparent 100%),
+        radial-gradient(ellipse 460px 380px at 64% 68%, var(--login-glow-blue), transparent 100%),
+        var(--login-background);
+    color: var(--login-text);
+}
+
+.merit-login[data-mode="dark"] {
+    --login-background: #0b1220;
+    --login-surface: #131e30;
+    --login-text: #edf2fc;
+    --login-muted: #a5b2c8;
+    --login-border: #2c3950;
+    --login-accent: #b6a0ff;
+    --login-hover: #1c2940;
+    --login-glow-purple: rgba(113, 73, 221, 0.1);
+    --login-glow-blue: rgba(45, 113, 232, 0.08);
+}
+
+.merit-login-theme {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+}
+
+.merit-login .merit-login-theme .MuiIconButton-root {
+    width: 42px;
+    height: 42px;
+
+    border: 1px solid var(--login-border);
+    background: var(--login-surface);
+    color: var(--login-muted);
+}
+
+.merit-login-card {
+    width: 100%;
+    max-width: 560px;
+    padding: 36px 40px;
+
+    border: 1px solid var(--login-border);
+    border-radius: 20px;
+
+    background: var(--login-surface);
+    box-shadow:
+        0 28px 72px rgba(39, 43, 92, 0.17),
+        0 6px 20px rgba(24, 39, 75, 0.07);
+}
+
+.merit-login[data-mode="dark"] .merit-login-card {
+    box-shadow:
+        0 30px 78px rgba(0, 0, 0, 0.42),
+        0 0 52px rgba(100, 73, 200, 0.08);
+}
+
+.merit-login-brand {
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--login-border);
+    text-align: center;
+}
+
+.merit-login-logo {
+    display: block;
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+
+
+.merit-login-full-form {
+    max-width: 330px;
+    margin: 12px auto 0;
+
+    color: var(--login-muted);
+    font-size: 13px;
+    line-height: 1.9;
+    text-wrap: balance;
+}
+
+.merit-login-word {
+    white-space: nowrap;
+}
+
+.merit-login-full-form strong {
+    color: var(--login-accent);
+    font-weight: 700;
+}
+
+.merit-login-heading {
+    margin: 28px 0;
+    text-align: center;
+}
+
+.merit-login-heading h1 {
+    margin: 0 0 12px;
+
+    color: var(--login-text);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.6px;
+}
+
+.merit-login-heading p {
+    margin: 0;
+
+    color: var(--login-muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.merit-login .merit-login-button {
+    min-height: 52px;
+    padding: 12px 18px;
+
+    border: 1px solid var(--login-border);
+    border-radius: 10px;
+
+    background: var(--login-surface);
+    color: var(--login-text);
+
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: none;
+}
+
+.merit-login .merit-login-button:hover {
+    border-color: var(--login-accent);
+    background: var(--login-hover);
+}
+
+.merit-login .merit-login-button:focus-visible {
+    outline: 3px solid var(--login-accent);
+    outline-offset: 3px;
+}
+
+.merit-microsoft-mark {
+    display: grid;
+    grid-template-columns: repeat(2, 9px);
+    grid-template-rows: repeat(2, 9px);
+    gap: 2px;
+
+    margin-right: 6px;
+}
+
+.merit-microsoft-mark span:nth-child(1) {
+    background: #f25022;
+}
+
+.merit-microsoft-mark span:nth-child(2) {
+    background: #7fba00;
+}
+
+.merit-microsoft-mark span:nth-child(3) {
+    background: #00a4ef;
+}
+
+.merit-microsoft-mark span:nth-child(4) {
+    background: #ffb900;
+}
+
+.merit-login-alert {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.merit-login-access {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    margin-top: 26px;
+
+    color: var(--login-muted);
+}
+
+.merit-login-access svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.merit-login-access p {
+    margin: 0;
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.merit-login-help {
+    margin: 10px 0 0;
+
+    color: var(--login-muted);
+    font-size: 12px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+.merit-login-footer {
+    color: var(--login-muted);
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    .merit-login {
+        padding: 80px 16px 28px;
+    }
+
+    .merit-login-card {
+        padding: 28px 24px;
+        border-radius: 16px;
+    }
+
+    .merit-login-theme {
+        top: 16px;
+        right: 16px;
+    }
+
+    .merit-login-heading h1 {
+        font-size: 24px;
+    }
+}

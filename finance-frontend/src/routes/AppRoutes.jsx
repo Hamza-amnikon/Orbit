@@ -4,6 +4,7 @@ import {
     Route,
     Routes
 } from "react-router-dom";
+import Login from "../auth/Login";
 import DashboardLayout from "../components/layout/DashboardLayout/DashboardLayout";
 import { FinanceAuth } from "../live/Auth";
 import FinanceDashboard from "../live/Dashboard";
@@ -31,6 +32,7 @@ function AppRoutes()
     return <BrowserRouter>
             <FinanceAuth>
                 <Routes>
+                    <Route path="/login" element={<Login />} />
                     <Route element={<DashboardLayout />}>
                         <Route path="/" element={<FinanceDashboard />} />
 

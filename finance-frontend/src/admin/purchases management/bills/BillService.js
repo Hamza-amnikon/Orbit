@@ -85,12 +85,13 @@ export function updateBill(id, body)
         body
     });
 }
-export function changeBillStatus(id, action, rowVersion)
+export function changeBillStatus(id, action, rowVersion, issueDetails = {})
 {
     return request("/" + encodeURIComponent(id) + "/" + action, {
         method: "POST",
         body: {
-            rowVersion
+            rowVersion,
+            ...(action === "issue" ? issueDetails : {})
         }
     });
 }
@@ -135,4 +136,15 @@ export async function getBillAccounts(companyId, signal)
     if (!response.ok) throw new Error(data?.message || data?.title || "Could not load accounting accounts.");
     if (!Array.isArray(data?.data)) throw new Error("Invalid accounting account response.");
     return data.data.filter(account => account.type === "Expense" || account.type === "Asset");
+}
+
+export async function getBillTaxSettings(branch, billDate, signal)
+{
+    const query = new URLSearchParams({ branch, billDate });
+    const rows = await request("/tax-settings?" + query, { signal });
+    if (!Array.isArray(rows))
+    {
+        throw new Error("Invalid bill tax settings response.");
+    }
+    return rows;
 }

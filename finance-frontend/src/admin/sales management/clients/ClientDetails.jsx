@@ -136,7 +136,7 @@ function ClientDetailsPage({
                                 </Box>)}
 
                             <Box>
-                                <Typography color="text.secondary" variant="body2">Managing branch</Typography>
+                                <Typography color="text.secondary" variant="body2">Billing Branch</Typography>
                                 <Typography>{client.branch}</Typography>
                             </Box>
 

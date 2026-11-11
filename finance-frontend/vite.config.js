@@ -18,6 +18,11 @@ export default defineConfig({
 
     server: {
         proxy: {
+            "/api/development-admin": {
+                target: "https://localhost:7198",
+                changeOrigin: true,
+                secure: false
+            },
             "/api/reconciliation-reports": {
                 ...accountingProxy,
             },
@@ -41,6 +46,10 @@ export default defineConfig({
                 ...invoiceProxy,
             },
             "/api/financial-reports": {
+                ...accountingProxy,
+            },
+
+            "/api/tax-settings": {
                 ...accountingProxy,
             },
 
@@ -149,6 +158,12 @@ export default defineConfig({
                 target: "https://localhost:7051",
                 changeOrigin: true,
                 secure: false,
+            },
+
+            "/api/role": {
+             target: "https://localhost:7198",
+             changeOrigin: true,
+             secure: false
             },
 
             "/api/organization-profiles": {

@@ -359,7 +359,7 @@
     width: min(100%, 1000px);
     max-height: calc(100vh - 60px);
 
-    overflow-y: auto;
+    overflow: hidden;
 
     border-radius: 10px;
 }

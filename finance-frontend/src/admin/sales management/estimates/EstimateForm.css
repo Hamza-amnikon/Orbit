@@ -313,3 +313,65 @@
     padding: 18px;
     border-radius: 10px;
 }
+
+/* Keep the actions visible while only the form body scrolls. */
+.estimate-form-dialog .MuiDialog-paper {
+    overflow: hidden;
+}
+
+.estimate-form-dialog .estimate-form-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    max-height: calc(100dvh - 64px);
+    padding: 0;
+}
+
+.estimate-form-dialog .estimate-form-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.estimate-form-dialog .estimate-form-header {
+    flex-shrink: 0;
+}
+
+.estimate-form-card .estimate-form-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 0 !important;
+}
+
+.estimate-form-dialog .estimate-form {
+    min-height: 0;
+    gap: 0;
+}
+
+.estimate-form-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 28px;
+}
+
+.estimate-form-dialog .estimate-form-actions {
+    flex-shrink: 0;
+    padding: 16px 28px;
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+}
+
+@media (max-width: 600px) {
+    .estimate-form-scroll {
+        padding: 20px;
+    }
+
+    .estimate-form-dialog .estimate-form-actions {
+        padding: 12px 20px;
+    }
+}

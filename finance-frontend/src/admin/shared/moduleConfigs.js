@@ -234,35 +234,6 @@ export const moduleConfigs = {
             }),
             notes
         ]
-    },
-    tax: {
-        title: "Tax Settings",
-        singular: "Tax Rate",
-        subtitle: "Prepare tax rates for future configuration",
-        adminOnly: true,
-        fields: [
-            text("code", "Tax code"),
-            text("name", "Tax name"),
-            text("rate", "Rate (%)", true, {
-                type: "number",
-                min: 0
-            }),
-            select("type", "Tax type", [
-                "GST",
-                "CGST",
-                "SGST",
-                "IGST",
-                "Other"
-            ]),
-            status([
-                "Draft",
-                "Ready for review"
-            ]),
-            notes
-        ],
-        validate: (row, rows) => Number(row.rate) > 100
-            ? "Tax rate cannot exceed 100%."
-            : uniqueCode(row, rows)
     }
 };
 
@@ -336,7 +307,7 @@ moduleConfigs.claims.fields.push(
     ])
 );
 
-for (const key of ["accounts", "chart", "tax"])
+for (const key of ["accounts", "chart"])
 {
     moduleConfigs[key].fields = moduleConfigs[key].fields
         .filter(field => field.name !== "status")

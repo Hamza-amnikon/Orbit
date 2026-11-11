@@ -74,7 +74,7 @@ const InvoiceDetails = ({
     const status = invoice ? statusNames[invoice.status] || invoice.status || "Unknown" : "";
     const showIssuedTemplate = status !== "Draft" && invoice?.issuer && invoice?.invoiceTemplateVersion === "amnikon-v1";
     const items = [...(invoice?.items || [])].sort((first, second) => first.lineNumber - second.lineNumber);
-    const metadata = invoice ? [["Invoice Date", formatDate(invoice.invoiceDate)], ["Due Date", formatDate(invoice.dueDate)], ["Managing Branch", invoice.branch], ["Currency", invoice.currency], ["Preferred Payment Mode", invoice.preferredPaymentMode || "—"], ["Service Period", invoice.servicePeriodStart && invoice.servicePeriodEnd ? `${formatDate(invoice.servicePeriodStart)} to ${formatDate(invoice.servicePeriodEnd)}` : "—"]] : [];
+    const metadata = invoice ? [["Invoice Date", formatDate(invoice.invoiceDate)], ["Due Date", formatDate(invoice.dueDate)], ["Billing Branch", invoice.branch], ["Currency", invoice.currency], ["Preferred Payment Mode", invoice.preferredPaymentMode || "—"], ["Service Period", invoice.servicePeriodStart && invoice.servicePeriodEnd ? `${formatDate(invoice.servicePeriodStart)} to ${formatDate(invoice.servicePeriodEnd)}` : "—"]] : [];
     return <Box className="invoice-details-page">
             <Box className="invoice-details-topbar">
                 <Button
@@ -207,7 +207,7 @@ const InvoiceDetails = ({
                             </Typography>
 
                             <Typography className="invoice-company-details">
-                                Managing branch: {invoice.branch}
+                                Billing Branch: {invoice.branch}
                             </Typography>
                         </Box>
 
@@ -299,7 +299,7 @@ const InvoiceDetails = ({
                                                 </Typography>
 
                                                 {item.discountEnabled !== false && item.discountAmount > 0 && <Typography variant="caption" color="text.secondary">
-                                                            Discount:{" "}
+                                                            Discount{item.discountType === "Percentage" ? ` (${item.discountValue}%)` : ""}:{" "}
                                                             {formatAmount(item.discountAmount, invoice.currency)}
                                                         </Typography>}
                                             </Box>
@@ -323,7 +323,7 @@ const InvoiceDetails = ({
                         </Box>
 
                         <Box className="invoice-total-section">
-                            {[["Subtotal", invoice.subTotal], ...(invoice.discountTotal > 0 ? [["Discount", invoice.discountTotal]] : []), ["Tax", invoice.taxTotal]].map(([label, value]) => <Box key={label} className="invoice-total-row">
+                            {[["Subtotal", invoice.subTotal], ...(invoice.discountTotal > 0 ? [["Discount", invoice.discountTotal]] : []), ...(invoice.taxTotal > 0 ? [["Tax", invoice.taxTotal]] : [])].map(([label, value]) => <Box key={label} className="invoice-total-row">
                                     <Typography>{label}</Typography>
 
                                     <Typography>

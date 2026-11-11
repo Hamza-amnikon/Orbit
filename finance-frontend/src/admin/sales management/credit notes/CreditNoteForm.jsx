@@ -330,7 +330,7 @@ const CreditNoteForm = ({
                                             slotProps={readOnly}
                                         />
                     <TextField
-                                            label="Managing branch"
+                                            label="Billing Branch"
                                             value={invoice?.branch || ""}
                                             slotProps={readOnly}
                                         />

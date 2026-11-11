@@ -22,7 +22,8 @@ import { money, useLoad } from "../../../live/data";
 import {
     getReceivedPayments,
     getPaymentFilterOptions,
-    resolveReceivedPayment
+    resolveReceivedPayment,
+    voidReceivedPayment
 } from "./PaymentReceivedService";
 import BankPaymentFields from "../../banking management/payment banking/BankPaymentFields";
 function formatDate(value)
@@ -46,6 +47,10 @@ export default function PaymentReceived()
     const [filters, setFilters] = useState(emptyFilters);
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [resolvingPayment, setResolvingPayment] = useState(null);
+    const [voidingPayment, setVoidingPayment] = useState(null);
+    const [voidReason, setVoidReason] = useState("");
+    const [voidBusy, setVoidBusy] = useState(false);
+    const [voidError, setVoidError] = useState("");
     const [settlement, setSettlement] = useState({
         settlementType: "Bank",
         bankAccountId: "",
@@ -71,6 +76,27 @@ export default function PaymentReceived()
             ...filters
         }, signal);
     }, [page, search, fromDate, toDate, filters.clientId, filters.branch, filters.currency, filters.paymentMode]);
+    async function handleVoid()
+    {
+        setVoidBusy(true);
+        setVoidError("");
+        try
+        {
+            await voidReceivedPayment(voidingPayment.id, voidReason.trim());
+            setVoidingPayment(null);
+            setSelectedPayment(null);
+            list.refresh();
+        }
+        catch (failure)
+        {
+            setVoidError(failure.message);
+        }
+        finally
+        {
+            setVoidBusy(false);
+        }
+    }
+
     function changeFilter(name, value)
     {
         setFilters(previous => ({
@@ -210,6 +236,9 @@ export default function PaymentReceived()
         label: "Payment mode",
         render: payment => payment.paymentMode
     }, {
+        label: "Status",
+        render: payment => payment.status || "Recorded"
+    }, {
         label: "Reference",
         render: payment => payment.reference || "—"
     }, {
@@ -224,7 +253,7 @@ export default function PaymentReceived()
                     </Button>
                 </Stack>
     }];
-    const detailFields = selectedPayment ? [["Client", selectedPayment.clientName], ["Invoice", selectedPayment.invoiceNumber], ["Date", formatDate(selectedPayment.paymentDate)], ["Branch", selectedPayment.branch], ["Currency", selectedPayment.currency], ["Amount", money(selectedPayment.amount, selectedPayment.currency)], ["Payment mode", selectedPayment.paymentMode], ["Receiving bank", selectedPayment.bankAccountName], ["Actual bank credit", selectedPayment.bankAmount == null ? "—" : money(selectedPayment.bankAmount, selectedPayment.bankCurrency)], ["Bank charges", selectedPayment.bankAccountId == null ? "—" : money(selectedPayment.bankChargeAmount || 0, selectedPayment.bankCurrency)], ["Reference", selectedPayment.reference], ["Notes", selectedPayment.notes]] : [];
+    const detailFields = selectedPayment ? [["Status", selectedPayment.status || "Recorded"], ["Void reason", selectedPayment.voidReason || "—"], ["Client", selectedPayment.clientName], ["Invoice", selectedPayment.invoiceNumber], ["Date", formatDate(selectedPayment.paymentDate)], ["Branch", selectedPayment.branch], ["Currency", selectedPayment.currency], ["Amount", money(selectedPayment.amount, selectedPayment.currency)], ["Payment mode", selectedPayment.paymentMode], ["Receiving bank", selectedPayment.bankAccountName], ["Actual bank credit", selectedPayment.bankAmount == null ? "—" : money(selectedPayment.bankAmount, selectedPayment.bankCurrency)], ["Bank charges", selectedPayment.bankAccountId == null ? "—" : money(selectedPayment.bankChargeAmount || 0, selectedPayment.bankCurrency)], ["Reference", selectedPayment.reference], ["Notes", selectedPayment.notes]] : [];
     return <Page title="Payments Received" subtitle="Payments recorded against your sales invoices">
             <Feedback
                             loading={options.loading}
@@ -342,19 +371,31 @@ export default function PaymentReceived()
                 flexWrap: "wrap",
                 gap: 1
             }}>
+    {selectedPayment && selectedPayment.status !== "Voided" && <Button
+        color="error"
+        onClick={() =>
+        {
+            setVoidingPayment(selectedPayment);
+            setVoidReason("");
+            setVoidError("");
+        }}
+    >
+        Void Unposted Payment
+    </Button>}
+
     <Button onClick={() => setSelectedPayment(null)}>
         Close
     </Button>
 
     <Button
             variant="outlined"
-            disabled={!selectedPayment}
+            disabled={!selectedPayment || selectedPayment.status === "Voided"}
             onClick={handlePrintReceipt}
         >
         Print Receipt
     </Button>
 
-    {selectedPayment && String(selectedPayment.paymentMode).toLowerCase() !== "cash" && !selectedPayment.bankAccountId && <Button
+    {selectedPayment && selectedPayment.status !== "Voided" && String(selectedPayment.paymentMode).toLowerCase() !== "cash" && !selectedPayment.bankAccountId && <Button
             color="warning"
             variant="outlined"
             onClick={() => openResolve(selectedPayment)}
@@ -370,6 +411,32 @@ export default function PaymentReceived()
         View Invoice
     </Button>
 </DialogActions>
+            </Dialog>
+
+            <Dialog open={Boolean(voidingPayment)} onClose={() =>
+            {
+                if (!voidBusy) setVoidingPayment(null);
+            }} fullWidth maxWidth="sm">
+                <DialogTitle>Void {voidingPayment?.paymentNumber}?</DialogTitle>
+                <DialogContent dividers>
+                    <Stack spacing={2}>
+                        <Alert severity="warning">
+                            This cancels an unposted payment and its bank draft, restores the invoice balance,
+                            and keeps the original payment in history. Posted payments require a reviewed reversal.
+                        </Alert>
+                        {voidError && <Alert severity="error">{voidError}</Alert>}
+                        <TextField label="Void reason" required multiline rows={3} value={voidReason}
+                            disabled={voidBusy} onChange={event => setVoidReason(event.target.value)}
+                            slotProps={{ htmlInput: { maxLength: 1000 } }} />
+                    </Stack>
+                </DialogContent>
+                <DialogActions>
+                    <Button disabled={voidBusy} onClick={() => setVoidingPayment(null)}>Back</Button>
+                    <Button color="error" variant="contained" disabled={voidBusy || !voidReason.trim()}
+                        onClick={handleVoid}>
+                        {voidBusy ? "Voiding…" : "Confirm Void"}
+                    </Button>
+                </DialogActions>
             </Dialog>
 
             <Dialog

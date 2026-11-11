@@ -144,7 +144,7 @@ export default function Parties({
             />
       <TextField
                 select
-                label="Managing branch"
+                label="Billing Branch"
                 fullWidth
                 value={edit.branch || "Turbhe"}
                 onChange={e => setEdit({

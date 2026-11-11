@@ -19,7 +19,8 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Typography
+    Typography,
+    TextField
 } from "@mui/material";
 import { useAuth } from "../../../context/AuthContext";
 import { Feedback, Page } from "../../../live/shared";
@@ -52,22 +53,43 @@ export default function BillDetails()
     const [error, setError] = useState("");
     const [conflict, setConflict] = useState(false);
     const [notice, setNotice] = useState("");
+    const [vendorInvoiceNumber, setVendorInvoiceNumber] = useState("");
+    const [dueDate, setDueDate] = useState("");
     const locked = useRef(false);
     async function confirmAction()
     {
         if (locked.current || !order) return;
+        if (action === "issue")
+        {
+            if (!vendorInvoiceNumber.trim())
+            {
+                setError("Enter the vendor invoice number.");
+                return;
+            }
+            if (!dueDate || dueDate < order.billDate.slice(0, 10))
+            {
+                setError("Choose a due date on or after the bill date.");
+                return;
+            }
+        }
         locked.current = true;
         setBusy(true);
         setError("");
         try
         {
-            await changeBillStatus(order.id, action, order.rowVersion);
+            await changeBillStatus(order.id, action, order.rowVersion, {
+                vendorInvoiceNumber: vendorInvoiceNumber.trim(),
+                dueDate
+            });
             setAction(null);
-            setNotice(action === "issue" ? "Bill issued." : "Bill cancelled.");
+            setNotice(action === "issue" ? "Bill issued." : "Bill cancelled. Any linked accounting posting has been reversed.");
             detail.refresh();
         } catch (actionError)
         {
-            setError(actionError.message);
+            setError(action === "cancel"
+                ? actionError.message + " Refresh the bill to check its cancellation and accounting status before retrying."
+                : actionError.message);
+            detail.refresh();
             setConflict(actionError.status === 409);
         } finally
         {
@@ -79,6 +101,8 @@ export default function BillDetails()
     {
         setError("");
         setConflict(false);
+        setVendorInvoiceNumber(order?.vendorInvoiceNumber || "");
+        setDueDate(order?.dueDate?.slice(0, 10) || "");
         setAction(next);
     }
     return <Page
@@ -101,14 +125,21 @@ export default function BillDetails()
                 {canWrite && order.status === 1 && paymentBalance.data?.outstandingAmount > 0 && <Button variant="contained" onClick={() => navigate("/purchases/payments?billId=" + order.id)}>
                         Record Payment
                     </Button>}
-                {canWrite && order.status !== 2 && <Button
+                {canWrite && (order.status !== 2 || order.accountingReversalPending) && <Button
                                     variant="outlined"
                                     color="error"
                                     onClick={() => openAction("cancel")}
-                                >Cancel Bill</Button>}
+                                >{order.accountingReversalPending ? "Retry Accounting Reversal" : "Cancel Bill"}</Button>}
             </>}
         </>}
     >
+        {order?.accountingReversalPending && (
+            <Alert severity="warning" sx={{ mb: 2 }}>
+                This bill is cancelled, but its accounting reversal is pending.
+                The backend retries automatically. You can also select Retry Accounting Reversal.
+                Ledger and tax balances may still include the original posting until this completes.
+            </Alert>
+        )}
         {notice && <Alert
                     className="bill-screen-only"
                     severity="success"
@@ -131,7 +162,7 @@ export default function BillDetails()
                                 >Bill</Typography>
                     <Typography color="text.secondary" sx={{
                         mt: 1
-                    }}>Managing branch: {order.branch}</Typography>
+                    }}>Billing Branch: {order.branch}</Typography>
                     <Typography color="text.secondary">Currency: {order.currency}</Typography></Box>
                 <Box sx={{
                     textAlign: {
@@ -185,7 +216,9 @@ export default function BillDetails()
                             <Typography variant="body2" color="text.secondary">{item.description}</Typography></TableCell>
                         <TableCell>{purchaseUnits[item.unit] || "—"}</TableCell><TableCell>{item.quantity}</TableCell>
                         <TableCell>{money(item.unitPrice, order.currency, order.currencyDecimalPlaces)}</TableCell>
-                        {order.items.some(line => Number(line.discountAmount) > 0) && <TableCell>{Number(item.discountAmount) > 0 ? money(item.discountAmount, order.currency, order.currencyDecimalPlaces) : "—"}</TableCell>}
+                        {order.items.some(line => Number(line.discountAmount) > 0) && <TableCell>{Number(item.discountAmount) > 0 ? money(item.discountAmount, order.currency, order.currencyDecimalPlaces) : "—"}
+                            {item.discountEnabled && item.discountType === "Percentage" && <small> ({item.discountValue}%)</small>}
+                        </TableCell>}
                         <TableCell>{item.taxRate}%<Typography variant="caption" display="block">
                             {money(item.taxAmount, order.currency, order.currencyDecimalPlaces)}</Typography></TableCell>
                         <TableCell>{money(item.lineTotal, order.currency, order.currencyDecimalPlaces)}</TableCell>
@@ -193,7 +226,7 @@ export default function BillDetails()
                 </Table>
             </TableContainer>
             <Box className="bill-totals">
-                {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].filter(([, name]) => name !== "discountTotal" || Number(order.discountTotal) > 0).map(([label, name]) => <Box key={name} className="bill-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
+                {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].filter(([, name]) => !["discountTotal", "taxTotal"].includes(name) || Number(order[name]) > 0).map(([label, name]) => <Box key={name} className="bill-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
                         <Typography fontWeight={name === "grandTotal" ? 700 : 400}>
                             {money(order[name], order.currency, order.currencyDecimalPlaces)}</Typography></Box>)}
             </Box>
@@ -242,7 +275,31 @@ export default function BillDetails()
                 >
             <DialogTitle id="bill-action-title">{action === "issue" ? "Issue bill?" : "Cancel bill?"}</DialogTitle>
             <DialogContent>
-                <DialogContentText>{action === "issue" ? "Issuing assigns a bill number and freezes the bill details. It does not record a payment." : "The bill will be marked cancelled and its record will be retained."}</DialogContentText>
+                <DialogContentText>{action === "issue" ? "Issuing assigns a bill number and freezes the bill details. It does not record a payment." : "The bill will be marked cancelled and its linked posted journal will be reversed. Both records are retained. If Accounting is unavailable, the reversal remains pending and retries automatically."}</DialogContentText>
+                {action === "issue" && <Stack spacing={2} sx={{ mt: 2 }}>
+                    <TextField
+                        label="Vendor invoice number"
+                        required
+                        fullWidth
+                        value={vendorInvoiceNumber}
+                        disabled={busy || conflict}
+                        onChange={event => setVendorInvoiceNumber(event.target.value)}
+                        slotProps={{ htmlInput: { maxLength: 200 } }}
+                    />
+                    <TextField
+                        label="Due date"
+                        type="date"
+                        required
+                        fullWidth
+                        value={dueDate}
+                        disabled={busy || conflict}
+                        onChange={event => setDueDate(event.target.value)}
+                        slotProps={{
+                            inputLabel: { shrink: true },
+                            htmlInput: { min: order?.billDate?.slice(0, 10) }
+                        }}
+                    />
+                </Stack>}
                 {error && <Alert severity="error" sx={{
                     mt: 2
                 }}>{error}</Alert>}

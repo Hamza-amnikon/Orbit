@@ -1,3 +1,5 @@
+import LineDiscountFields from "../../../live/LineDiscountFields";
+import { validateLineDiscount } from "../../../live/lineDiscount";
 import {
     useEffect,
     useRef,
@@ -22,11 +24,13 @@ import {
     Typography
 } from "@mui/material";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import { validateTaxSelections } from "../../../live/taxSettings";
 import { useLoad } from "../../../live/data";
 import {
     createPurchaseOrder,
     getPurchaseChoices,
     getPurchaseOrder,
+    getPurchaseOrderTaxSettings,
     getPurchaseVendors,
     previewPurchaseOrder,
     updatePurchaseOrder
@@ -73,6 +77,15 @@ export default function PurchaseOrderForm({
     });
     const [vendorRevision, setVendorRevision] = useState(0);
     const choices = useLoad(getPurchaseChoices, []);
+    const taxKey = JSON.stringify([value.branch, value.orderDate]);
+    const taxOptions = useLoad(async signal =>
+    {
+        const rows = value.branch && value.orderDate
+            ? await getPurchaseOrderTaxSettings(value.branch, value.orderDate, signal)
+            : [];
+        return { key: taxKey, rows };
+    }, [value.branch, value.orderDate]);
+    const taxChoices = taxOptions.data?.key === taxKey ? taxOptions.data.rows : [];
     const [preview, setPreview] = useState(null);
     const [error, setError] = useState("");
     const [conflict, setConflict] = useState(false);
@@ -125,7 +138,14 @@ export default function PurchaseOrderForm({
     {
         setValue(previous => ({
             ...previous,
-            [name]: next
+            [name]: next,
+            ...(["branch", "orderDate"].includes(name) ? {
+                items: previous.items.map(item => ({
+                    ...item,
+                    taxSettingId: "",
+                    taxSettingRowVersion: ""
+                }))
+            } : {})
         }));
         setPreview(null);
     }
@@ -150,6 +170,19 @@ export default function PurchaseOrderForm({
         }));
         setPreview(null);
     }
+    function selectTax(key, selectedId)
+    {
+        const selected = taxChoices.find(row => String(row.id) === String(selectedId));
+        setValue(previous => ({
+            ...previous,
+            items: previous.items.map(item => item.key === key ? {
+                ...item,
+                taxSettingId: selected?.id || "",
+                taxSettingRowVersion: selected?.rowVersion || ""
+            } : item)
+        }));
+        setPreview(null);
+    }
     function chooseVendor(next)
     {
         setVendor(next);
@@ -157,6 +190,11 @@ export default function PurchaseOrderForm({
             ...previous,
             vendorId: next?.id || "",
             branch: next?.branch || "",
+            items: previous.items.map(item => ({
+                ...item,
+                taxSettingId: "",
+                taxSettingRowVersion: ""
+            })),
             currency: next?.currency || "",
             paymentTerms: next?.paymentTerms || "",
             billingAddress: next ? vendorAddress(next) : ""
@@ -179,7 +217,7 @@ export default function PurchaseOrderForm({
         }
         if (!choices.data?.branches.some(branch => branch.name === value.branch))
         {
-            return "Select an active managing branch.";
+            return "Select an active Billing Branch.";
         }
         if (!choices.data?.currencies.some(currency => currency.currencyCode === value.currency))
         {
@@ -195,7 +233,7 @@ export default function PurchaseOrderForm({
             {
                 return `Enter an item or service name on line ${index + 1}.`;
             }
-            const numericFields = ["quantity", "unitPrice", "taxRate", ...(item.discountEnabled ? ["discountAmount"] : [])];
+            const numericFields = ["quantity", "unitPrice", ...(item.discountEnabled ? ["discountValue"] : [])];
             for (const name of numericFields)
             {
                 if (item[name] === "" || !Number.isFinite(Number(item[name])) || Number(item[name]) < 0)
@@ -207,10 +245,27 @@ export default function PurchaseOrderForm({
             {
                 return "Quantity must be greater than zero.";
             }
-            if (Number(item.taxRate) > 100)
-            {
-                return "Tax cannot exceed 100%.";
-            }
+
+        }
+        try
+        {
+            value.items.forEach(validateLineDiscount);
+        }
+        catch (discountError)
+        {
+            return discountError.message;
+        }
+        if (taxOptions.loading || taxOptions.error || taxOptions.data?.key !== taxKey)
+        {
+            return taxOptions.error || "Wait for company tax settings to load.";
+        }
+        try
+        {
+            validateTaxSelections(value.items, taxChoices);
+        }
+        catch (taxError)
+        {
+            return taxError.message;
         }
         return "";
     }
@@ -317,6 +372,16 @@ export default function PurchaseOrderForm({
                 </DialogTitle>
 
                 <DialogContent dividers>
+                {taxOptions.error && (
+                    <Alert severity="error" action={<Button onClick={taxOptions.refresh}>Retry tax settings</Button>}>
+                        {taxOptions.error}
+                    </Alert>
+                )}
+                {value.items.some(item => item.taxSettingId === "legacy") && (
+                    <Alert severity="info">
+                        This draft has previously recorded tax. Select a saved setting or No tax before saving.
+                    </Alert>
+                )}
                     {(choices.error || vendorError) && <Alert
                                             severity="error"
                                             sx={{
@@ -402,7 +467,7 @@ export default function PurchaseOrderForm({
 
                         <TextField
                                                     select
-                                                    label="Managing branch"
+                                                    label="Billing Branch"
                                                     required
                                                     value={value.branch}
                                                     disabled={busy || choices.loading}
@@ -606,7 +671,27 @@ export default function PurchaseOrderForm({
                                                 </MenuItem>)}
                                     </TextField>
 
-                                    {[["quantity", "Quantity", "0.0001", undefined], ["unitPrice", "Unit price", "0", undefined], ["taxRate", "Tax %", "0", "100"]].map(([name, label, min, max]) => <TextField
+                                    <TextField
+                                        label="Saved tax setting"
+                                        select
+                                        value={item.taxSettingId}
+                                        disabled={busy || taxOptions.loading || !!taxOptions.error}
+                                        helperText="Active settings for this company and order date"
+                                        onChange={event => selectTax(item.key, event.target.value)}
+                                    >
+                                        <MenuItem value="">No tax</MenuItem>
+                                        {item.taxSettingId && !taxChoices.some(row => row.id === Number(item.taxSettingId)) && (
+                                            <MenuItem value={item.taxSettingId} disabled>
+                                                Recorded tax unavailable - select a saved setting or No tax
+                                            </MenuItem>
+                                        )}
+                                        {taxChoices.map(rate => (
+                                            <MenuItem key={rate.id} value={rate.id} onClick={() => selectTax(item.key, rate.id)}>
+                                                {rate.code} - {rate.name} ({rate.rate}%)
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+                                    {[["quantity", "Quantity", "0.0001", undefined], ["unitPrice", "Unit price", "0", undefined]].map(([name, label, min, max]) => <TextField
                                                                             key={name}
                                                                             label={label}
                                                                             required
@@ -650,22 +735,15 @@ export default function PurchaseOrderForm({
                             }}
                                                                         />} />
 
-                                    {item.discountEnabled && <TextField
-                                                                            label="Discount amount"
-                                                                            type="number"
-                                                                            value={item.discountAmount}
-                                                                            disabled={busy || !item.discountEnabled}
-                                                                            slotProps={{
-                                htmlInput: {
-                                    min: 0,
-                                    step: "0.0001"
-                                }
-                            }}
-                                                                            onChange={event =>
-                            {
-                                changeLine(item.key, "discountAmount", event.target.value);
-                            }}
-                                                                        />}
+                                    {item.discountEnabled && <LineDiscountFields
+                                type={item.discountType}
+                                value={item.discountValue}
+                                enabled={item.discountEnabled}
+                                disabled={busy}
+                                currency={value.currency}
+                                onTypeChange={next => changeLine(item.key, "discountType", next)}
+                                onValueChange={next => changeLine(item.key, "discountValue", next)}
+                            />}
                                 </Box>
                             </Box>)}
 

@@ -1,8 +1,10 @@
+import { useState } from "react";
 import {
     AppBar,
     Toolbar,
     Box,
     Typography,
+    Button,
     IconButton,
     Autocomplete,
     TextField
@@ -13,6 +15,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { adminModuleRoutes } from "../admin/moduleRoutes";
 import ThemeToggle from "./ThemeToggle";
 import { previewMode } from "../services/preview";
+import { useAuth } from "../live/AuthContext";
 const pages = [["Dashboard", "/"], ["Clients", "/sales/clients"], ["Estimates", "/sales/estimates"], ["Sales Orders", "/sales/orders"], ["Invoices", "/sales/invoices"], ["Credit Notes", "/sales/credit-notes"], ["Payments Received", "/sales/payments"], ["Vendors", "/purchases/vendors"], ["Purchase Orders", "/purchases/orders"], ["Bills", "/purchases/bills"], ["Vendor Credits", "/purchases/vendor-credits"], ["Payments Made", "/purchases/payments"], ...adminModuleRoutes.map(([label, path]) => [label, path])].map(([label, path]) => ({
     label,
     path
@@ -26,13 +29,35 @@ export default function Header({
         pathname
     } = useLocation();
     const navigate = useNavigate();
+    const { signOut } = useAuth();
+    const [signingOut, setSigningOut] = useState(false);
+    const [signOutError, setSignOutError] = useState("");
+
+    async function handleSignOut()
+    {
+        setSigningOut(true);
+        setSignOutError("");
+
+        try
+        {
+            await signOut();
+        }
+        catch
+        {
+            setSignOutError("Sign-out failed. Try again.");
+        }
+        finally
+        {
+            setSigningOut(false);
+        }
+    }
     const vendorPage = pathname === "/purchases/vendors" || pathname.startsWith("/purchases/vendors/");
     const billPage = pathname === "/purchases/bills" || pathname.startsWith("/purchases/bills/");
     const purchaseOrderPage = pathname === "/purchases/orders" || pathname.startsWith("/purchases/orders/");
     const dashboardPage = pathname === "/";
     const exchangeRatePage = pathname === "/settings/exchange-rates";
     const current = pages.find(page => page.path === pathname) || (vendorPage ? pages.find(page => page.path === "/purchases/vendors") : purchaseOrderPage ? pages.find(page => page.path === "/purchases/orders") : billPage ? pages.find(page => page.path === "/purchases/bills") : pathname.startsWith("/purchases/payments/") ? pages.find(page => page.path === "/purchases/payments") : undefined);
-    const subtitle = pathname === "/settings/organization" ? "Organization profiles and branch invoice settings" : exchangeRatePage ? "Daily exchange-rate monitoring · Read only" : vendorPage ? "Vendor management" : purchaseOrderPage ? "Purchase order management" : billPage ? "Manage vendor bills" : pathname.startsWith("/purchases/payments") ? "Manage vendor payments" : pathname.startsWith("/purchases/vendor-credits") ? "Manage vendor credits" : pathname === "/expenses" ? "Manage company expenses" : dashboardPage && previewMode ? "Dashboard uses live totals · Other pages use preview data" : previewMode ? "Frontend preview · API not connected" : "Finance workspace";
+    const subtitle = pathname === "/settings/tax" ? "Company tax configuration" : pathname === "/settings/organization" ? "Organization profiles and branch invoice settings" : exchangeRatePage ? "Daily exchange-rate monitoring · Read only" : vendorPage ? "Vendor management" : purchaseOrderPage ? "Purchase order management" : billPage ? "Manage vendor bills" : pathname.startsWith("/purchases/payments") ? "Manage vendor payments" : pathname.startsWith("/purchases/vendor-credits") ? "Manage vendor credits" : pathname === "/expenses" ? "Manage company expenses" : dashboardPage && previewMode ? "Dashboard uses live totals · Other pages use preview data" : previewMode ? "Frontend preview · API not connected" : "Finance workspace";
     return <AppBar
         position="fixed"
         elevation={0}
@@ -107,6 +132,15 @@ export default function Header({
             />}
                 />
         <ThemeToggle />
+        {signOut && (
+            <Button
+                onClick={handleSignOut}
+                disabled={signingOut}
+                color={signOutError ? "error" : "primary"}
+            >
+                {signOutError || "Sign out"}
+            </Button>
+        )}
       </Toolbar>
     </AppBar>;
 }

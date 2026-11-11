@@ -71,7 +71,7 @@ const IssuedInvoice = ({
                                 <td>{item.quantity}<small>{unitNames[item.unit] || item.unit}</small></td>
                                 <td>
                                     {money(item.unitPrice)}
-                                    {item.discountEnabled !== false && item.discountAmount > 0 && <small>Discount: {money(item.discountAmount)}</small>}
+                                    {item.discountEnabled !== false && item.discountAmount > 0 && <small>Discount{item.discountType === "Percentage" ? ` (${item.discountValue}%)` : ""}: {money(item.discountAmount)}</small>}
                                     {item.taxRate > 0 && <small>Tax: {item.taxRate}%</small>}
                                 </td>
                                 <td><strong>{money(item.lineTotal)}</strong></td>

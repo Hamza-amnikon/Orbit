@@ -1,3 +1,5 @@
+import LineDiscountFields from "../../../live/LineDiscountFields";
+import { discountInput, discountPayload, validateLineDiscount } from "../../../live/lineDiscount";
 import React, {
     useEffect,
     useRef,
@@ -20,6 +22,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import {
     getEstimateClients,
+    getEstimateTaxSettings,
     previewEstimate,
     saveEstimate
 } from "./SalesEstimateService";
@@ -30,6 +33,8 @@ import {
     today
 } from "./EstimateHelpers";
 import "./EstimateForm.css";
+import { useLoad } from "../../../live/data";
+import { savedTaxSelection, validateTaxSelections } from "../../../live/taxSettings";
 function newItem(item)
 {
     return {
@@ -40,8 +45,8 @@ function newItem(item)
         quantity: String(item?.quantity ?? 1),
         unitPrice: item?.unitPrice == null ? "" : String(item.unitPrice),
         discountEnabled: item?.discountEnabled === true,
-        discountAmount: String(item?.discountEnabled ? item.discountAmount : 0),
-        taxRate: String(item?.taxRate ?? 0)
+        ...discountInput(item),
+        ...savedTaxSelection(item)
     };
 }
 const EstimateForm = ({
@@ -90,10 +95,38 @@ const EstimateForm = ({
         });
         return () => controller.abort();
     }, [revision]);
+    const taxKey = JSON.stringify([form.branch, form.estimateDate]);
+    const taxOptions = useLoad(async signal =>
+    {
+        const rows = form.branch && form.estimateDate
+            ? await getEstimateTaxSettings(form.branch, form.estimateDate, signal)
+            : [];
+        return { key: taxKey, rows };
+    }, [form.branch, form.estimateDate]);
+    const taxChoices = taxOptions.data?.key === taxKey ? taxOptions.data.rows : [];
+    function clearTaxSelections()
+    {
+        setItems(previous => previous.map(item => ({
+            ...item,
+            taxSettingId: "",
+            taxSettingRowVersion: ""
+        })));
+    }
+    function selectTax(key, selectedId)
+    {
+        const selected = taxChoices.find(row => String(row.id) === String(selectedId));
+        setItems(previous => previous.map(item => item.key === key ? {
+            ...item,
+            taxSettingId: selected?.id || "",
+            taxSettingRowVersion: selected?.rowVersion || ""
+        } : item));
+        setTotals(null);
+    }
     const client = clients.find(record => record.id === form.clientId);
     const changedClient = client && (client.branch !== form.branch || client.currency !== form.currency);
     function selectClient(id)
     {
+        clearTaxSelections();
         const selected = clients.find(record => record.id === id);
         setForm(previous => ({
             ...previous,
@@ -106,6 +139,10 @@ const EstimateForm = ({
     }
     function change(name, value)
     {
+        if (name === "estimateDate")
+        {
+            clearTaxSelections();
+        }
         setForm(previous => ({
             ...previous,
             [name]: value
@@ -121,7 +158,7 @@ const EstimateForm = ({
                 ...item,
                 [name]: value
             };
-            if (name === "discountEnabled" && !value) next.discountAmount = "0";
+            if (name === "discountEnabled" && !value) next.discountValue = "0";
             if (name === "unit" && Number(value) === 3) next.quantity = "1";
             return next;
         }));
@@ -138,6 +175,12 @@ const EstimateForm = ({
             if (!form.branch || !form.currency || changedClient) throw new Error("Use the selected client's current branch and currency before saving.");
             if (Boolean(form.servicePeriodStart) !== Boolean(form.servicePeriodEnd)) throw new Error("Provide both service period dates, or leave both empty.");
             if (form.servicePeriodEnd && form.servicePeriodEnd < form.servicePeriodStart) throw new Error("Service period end cannot be before its start.");
+            if (taxOptions.loading || taxOptions.error || taxOptions.data?.key !== taxKey)
+            {
+                throw new Error(taxOptions.error || "Wait for company tax settings to load.");
+            }
+            validateTaxSelections(items, taxChoices);
+            items.forEach(validateLineDiscount);
             const body = {
                 ...form,
                 servicePeriodStart: form.servicePeriodStart || null,
@@ -149,8 +192,9 @@ const EstimateForm = ({
                     quantity: Number(item.quantity),
                     unitPrice: Number(item.unitPrice),
                     discountEnabled: item.discountEnabled,
-                    discountAmount: item.discountEnabled ? Number(item.discountAmount) : 0,
-                    taxRate: Number(item.taxRate)
+                    ...discountPayload(item),
+                    taxSettingId: item.taxSettingId ? Number(item.taxSettingId) : null,
+                    taxSettingRowVersion: item.taxSettingRowVersion
                 })),
                 ...(estimate ? {
                     rowVersion: estimate.rowVersion
@@ -205,6 +249,7 @@ const EstimateForm = ({
     }}
     />;
     return <Dialog
+        className="estimate-form-dialog"
         open
         fullWidth
         maxWidth="md"
@@ -221,7 +266,7 @@ const EstimateForm = ({
                                             disabled={busy}
                                         ><CloseRoundedIcon /></Button>
                 </Box>
-                <CardContent><Box
+                <CardContent className="estimate-form-content"><Box
                                     component="form"
                                     className="estimate-form"
                                     onSubmit={event =>
@@ -230,7 +275,18 @@ const EstimateForm = ({
                         submit(false);
                     }}
                                 >
+                    <Box className="estimate-form-scroll">
                     {error && <Alert severity="error">{error}</Alert>}
+                    {taxOptions.error && (
+                        <Alert severity="error" action={<Button onClick={taxOptions.refresh}>Retry tax settings</Button>}>
+                            {taxOptions.error}
+                        </Alert>
+                    )}
+                    {items.some(item => item.taxSettingId === "legacy") && (
+                        <Alert severity="info">
+                            This draft has previously recorded tax. Select a saved setting or No tax on each affected line before saving.
+                        </Alert>
+                    )}
                     {conflict && <Alert severity="info" action={<Button onClick={onReload || onClose}>Reload details</Button>}>Reload the saved estimate before editing again. Unsaved changes in this form will be discarded.</Alert>}
                     {loadError && <Alert severity="error" action={<Button onClick={() => setRevision(value => value + 1)}>Retry</Button>}>{loadError}</Alert>}
                     {changedClient && <Alert severity="warning" action={<Button onClick={() => selectClient(form.clientId)}>Use current details</Button>}>The client's branch or currency changed. Review the rates before saving.</Alert>}
@@ -267,7 +323,7 @@ const EstimateForm = ({
                         <Box className="estimate-form-row">{date("servicePeriodStart", "Service period start")}{date("servicePeriodEnd", "Service period end", false, form.servicePeriodStart || undefined)}</Box>
                         <Box className="estimate-form-row">
                             <TextField
-                                                            label="Managing branch"
+                                                            label="Billing Branch"
                                                             value={form.branch}
                                                             fullWidth
                                                             slotProps={{
@@ -367,20 +423,26 @@ const EstimateForm = ({
                                     }}
                                                                         />
                                     <TextField
-                                                                            name={`taxRate-${index}`}
-                                                                            label="Tax %"
-                                                                            type="number"
-                                                                            value={item.taxRate}
-                                                                            onChange={event => changeItem(item.key, "taxRate", event.target.value)}
-                                                                            disabled={busy}
-                                                                            slotProps={{
-                                        htmlInput: {
-                                            min: 0,
-                                            max: 100,
-                                            step: "0.0001"
-                                        }
-                                    }}
-                                                                        />
+                                        label="Saved tax setting"
+                                        select
+                                        value={item.taxSettingId}
+                                        disabled={busy || taxOptions.loading || !!taxOptions.error}
+                                        onChange={event => selectTax(item.key, event.target.value)}
+                                        helperText="Active settings for this company and estimate date"
+                                        fullWidth
+                                    >
+                                        <MenuItem value="">No tax</MenuItem>
+                                        {item.taxSettingId && !taxChoices.some(row => row.id === Number(item.taxSettingId)) && (
+                                            <MenuItem value={item.taxSettingId} disabled>
+                                                Recorded tax unavailable - select a saved setting or No tax
+                                            </MenuItem>
+                                        )}
+                                        {taxChoices.map(rate => (
+                                            <MenuItem key={rate.id} value={rate.id} onClick={() => selectTax(item.key, rate.id)}>
+                                                {rate.code} - {rate.name} ({rate.rate}%)
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
                                 </Box>
                                 <Box className="estimate-form-row">
                                     <FormControlLabel control={<Switch
@@ -388,21 +450,15 @@ const EstimateForm = ({
                                                                             onChange={event => changeItem(item.key, "discountEnabled", event.target.checked)}
                                                                             disabled={busy}
                                                                         />} label={`Enable discount for line ${index + 1}`} />
-                                    {item.discountEnabled && <TextField
-                                                                            name={`discountAmount-${index}`}
-                                                                            label="Discount amount"
-                                                                            type="number"
-                                                                            value={item.discountAmount}
-                                                                            onChange={event => changeItem(item.key, "discountAmount", event.target.value)}
-                                                                            disabled={busy || !item.discountEnabled}
-                                                                            slotProps={{
-                                        htmlInput: {
-                                            min: 0,
-                                            max: 99999999999999,
-                                            step: "0.0001"
-                                        }
-                                    }}
-                                                                        />}
+                                    {item.discountEnabled && <LineDiscountFields
+                                        type={item.discountType}
+                                        value={item.discountValue}
+                                        enabled={item.discountEnabled}
+                                        disabled={busy}
+                                        currency={form.currency}
+                                        onTypeChange={next => changeItem(item.key, "discountType", next)}
+                                        onValueChange={next => changeItem(item.key, "discountValue", next)}
+                                    />}
                                 </Box>
                                 <Button
                                                                     color="error"
@@ -429,10 +485,12 @@ const EstimateForm = ({
                         {totals ? <>
                             <Box className="estimate-total-row"><Typography>Subtotal</Typography><Typography>{formatAmount(totals.subTotal, totals.currency)}</Typography></Box>
                             {Number(totals.discountTotal) > 0 && <Box className="estimate-total-row"><Typography>Discount</Typography><Typography>{formatAmount(totals.discountTotal, totals.currency)}</Typography></Box>}
-                            <Box className="estimate-total-row"><Typography>Tax</Typography><Typography>{formatAmount(totals.taxTotal, totals.currency)}</Typography></Box>
+                            {Number(totals.taxTotal) > 0 && <Box className="estimate-total-row"><Typography>Tax</Typography><Typography>{formatAmount(totals.taxTotal, totals.currency)}</Typography></Box>}
                             <Box className="estimate-grand-total"><Typography className="estimate-grand-total-label">Grand Total</Typography><Typography className="estimate-grand-total-value">{formatAmount(totals.grandTotal, totals.currency)}</Typography></Box>
                         </> : <Typography>Click Preview totals to calculate this estimate. Saving also calculates the final totals.</Typography>}
                     </Box>
+                    </Box>
+
                     <Box className="estimate-form-actions">
                         <Button
                                                     variant="outlined"

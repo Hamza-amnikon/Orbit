@@ -319,7 +319,7 @@ export default function PaymentMadeForm({
                                                 />
 
                         <TextField
-                                                    label="Managing branch"
+                                                    label="Billing Branch"
                                                     value={bill?.branch || ""}
                                                     slotProps={{
                         input: {

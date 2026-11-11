@@ -108,3 +108,20 @@ export async function resolveReceivedPayment(paymentId, settlement)
     }
     return result;
 }
+
+export async function voidReceivedPayment(paymentId, reason)
+{
+    const response = await fetch(`${endpoint}/${encodeURIComponent(paymentId)}/void`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reason })
+    });
+    const result = await response.json().catch(() => null);
+    if (!response.ok)
+    {
+        throw new Error(result?.message || result?.title || "The payment could not be voided.");
+    }
+    return result;
+}

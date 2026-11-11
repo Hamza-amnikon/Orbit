@@ -1,3 +1,5 @@
+import LineDiscountFields from "../../../live/LineDiscountFields";
+import { validateLineDiscount } from "../../../live/lineDiscount";
 import {
     useEffect,
     useRef,
@@ -29,6 +31,7 @@ import {
     getBill,
     getPurchaseVendors,
     getBillAccounts,
+    getBillTaxSettings,
     previewBill,
     updateBill
 } from "./BillService";
@@ -67,8 +70,15 @@ export default function BillForm({
     const branches = choices.data?.branches ?? [];
     const currencies = choices.data?.currencies ?? [];
     const selectedBranch = branches.find(branch => branch.name === value.branch);
-    const branchCountry = selectedBranch?.countryCode?.toUpperCase() || "";
-    const hasTax = value.items.some(item => Number(item.taxRate || 0) > 0);
+    const taxKey = JSON.stringify([value.branch, value.billDate]);
+    const taxOptions = useLoad(async signal =>
+    {
+        const rows = value.branch && value.billDate
+            ? await getBillTaxSettings(value.branch, value.billDate, signal)
+            : [];
+        return { key: taxKey, rows };
+    }, [value.branch, value.billDate]);
+    const taxChoices = taxOptions.data?.key === taxKey ? taxOptions.data.rows : [];
     const [accounts, setAccounts] = useState([]);
     const [accountError, setAccountError] = useState("");
     const [preview, setPreview] = useState(null);
@@ -131,7 +141,14 @@ export default function BillForm({
     {
         setValue(previous => ({
             ...previous,
-            [name]: next
+            [name]: next,
+            ...(["branch", "billDate"].includes(name) ? {
+                items: previous.items.map(item => ({
+                    ...item,
+                    taxSettingId: "",
+                    taxSettingRowVersion: ""
+                }))
+            } : {})
         }));
         setPreview(null);
     }
@@ -149,6 +166,19 @@ export default function BillForm({
         }));
         setPreview(null);
     }
+    function selectTax(key, selectedId)
+    {
+        const selected = taxChoices.find(row => String(row.id) === String(selectedId));
+        setValue(previous => ({
+            ...previous,
+            items: previous.items.map(item => item.key === key ? {
+                ...item,
+                taxSettingId: selected?.id || "",
+                taxSettingRowVersion: selected?.rowVersion || ""
+            } : item)
+        }));
+        setPreview(null);
+    }
     function chooseVendor(next)
     {
         setVendor(next);
@@ -159,7 +189,9 @@ export default function BillForm({
             taxTreatment: "",
             items: previous.items.map(item => ({
                 ...item,
-                accountCode: ""
+                accountCode: "",
+                taxSettingId: "",
+                taxSettingRowVersion: ""
             })),
             currency: next?.currency || "",
             paymentTerms: next?.paymentTerms || "",
@@ -172,23 +204,46 @@ export default function BillForm({
         if (!value.vendorId) return "Select a vendor.";
         if (!value.billDate) return "Bill date is required.";
         if (value.dueDate && value.dueDate < value.billDate) return "Due date cannot precede the bill date.";
-        if (!choices.data?.branches.some(branch => branch.name === value.branch)) return "Select an active managing branch.";
-        if (!selectedBranch?.accountingCompanyId) return "Link the managing branch to an accounting company.";
+        if (!choices.data?.branches.some(branch => branch.name === value.branch)) return "Select an active Billing Branch.";
+        if (!selectedBranch?.accountingCompanyId) return "Link the Billing Branch to an accounting company.";
         if (!choices.data?.currencies.some(currency => currency.currencyCode === value.currency)) return "Select an active currency.";
         if (!value.items.length || value.items.length > 100) return "Provide between 1 and 100 items.";
         for (const [index, item] of value.items.entries())
         {
             if (!item.itemName.trim()) return `Enter an item or service name on line ${index + 1}.`;
             if (!item.accountCode.trim()) return `Select an expense or asset account on line ${index + 1}.`;
-            for (const name of ["quantity", "unitPrice", "taxRate", ...(item.discountEnabled ? ["discountAmount"] : [])])
+            for (const name of ["quantity", "unitPrice", ...(item.discountEnabled ? ["discountValue"] : [])])
             {
                 if (item[name] === "" || !Number.isFinite(Number(item[name])) || Number(item[name]) < 0) return `Enter a valid ${name} on line ${index + 1}.`;
             }
             if (Number(item.quantity) <= 0) return "Quantity must be greater than zero.";
-            if (Number(item.taxRate) > 100) return "Tax cannot exceed 100%.";
+            if (item.taxSettingId)
+            {
+                const selected = taxChoices.find(row => row.id === Number(item.taxSettingId));
+                if (!selected || selected.rowVersion !== item.taxSettingRowVersion)
+                {
+                    return `Select a currently valid saved tax setting or No tax on line ${index + 1}.`;
+                }
+            }
         }
-        if (hasTax && branchCountry === "IN" && value.taxTreatment !== "IndiaCgstSgst" && value.taxTreatment !== "IndiaIgst") return "Select CGST + SGST or IGST for this India bill.";
-        if (hasTax && branchCountry !== "AE" && branchCountry !== "IN") return "Tax treatment is not configured for the selected branch country.";
+        try
+        {
+            value.items.forEach(validateLineDiscount);
+        }
+        catch (discountError)
+        {
+            return discountError.message;
+        }
+        if (taxOptions.loading || taxOptions.error || taxOptions.data?.key !== taxKey)
+        {
+            return taxOptions.error || "Wait for the company tax settings to load.";
+        }
+        const treatments = new Set(value.items.filter(item => item.taxSettingId)
+            .map(item => taxChoices.find(row => row.id === Number(item.taxSettingId))?.treatment));
+        if (treatments.size > 1)
+        {
+            return "Use the same tax treatment on all taxed lines of the bill.";
+        }
         return "";
     }
     async function submit(event, previewOnly = false)
@@ -282,6 +337,17 @@ export default function BillForm({
                 }}
                 >Retry choices</Button>}
                                 >{choices.error || vendorError || accountError}</Alert>}
+                {taxOptions.error && (
+                    <Alert severity="error" action={<Button onClick={taxOptions.refresh}>Retry tax settings</Button>}>
+                        {taxOptions.error}
+                    </Alert>
+                )}
+                {value.items.some(item => item.taxSettingId === "legacy") && (
+                    <Alert severity="info">
+                        This draft has recorded tax from before the settings connection.
+                        Select a saved setting or No tax for each affected line before saving.
+                    </Alert>
+                )}
                 <Typography
                                     component="h3"
                                     variant="subtitle1"
@@ -332,19 +398,18 @@ export default function BillForm({
                                         />)}
                     <TextField
                                             select
-                                            label="Managing branch"
+                                            label="Billing Branch"
                                             required
                                             value={value.branch}
                                             disabled={busy || choices.loading || !!current?.sourcePurchaseOrderId}
-                                            onChange={event => setValue(previous => ({
-                        ...previous,
-                        branch: event.target.value,
-                        taxTreatment: "",
-                        items: previous.items.map(item => ({
-                            ...item,
-                            accountCode: ""
-                        }))
-                    }))}
+                                            onChange={event =>
+                                            {
+                                                change("branch", event.target.value);
+                                                setValue(previous => ({
+                                                    ...previous,
+                                                    items: previous.items.map(item => ({ ...item, accountCode: "" }))
+                                                }));
+                                            }}
                                         >
                         {value.branch && !branches.some(branch => branch.name === value.branch) && <MenuItem value={value.branch} disabled>{value.branch} (unavailable)</MenuItem>}
                         {branches.map(branch => <MenuItem key={branch.id} value={branch.name}>{branch.name}</MenuItem>)}
@@ -360,27 +425,11 @@ export default function BillForm({
                         {value.currency && !currencies.some(currency => currency.currencyCode === value.currency) && <MenuItem value={value.currency} disabled>{value.currency} (unavailable)</MenuItem>}
                         {currencies.map(currency => <MenuItem key={currency.currencyCode} value={currency.currencyCode}>{currency.currencyCode}</MenuItem>)}
                     </TextField>
-                    {branchCountry === "IN" && hasTax ? <TextField
-                                            select
-                                            required
-                                            label="Tax treatment"
-                                            value={value.taxTreatment}
-                                            disabled={busy}
-                                            helperText="Choose based on the vendor place of supply"
-                                            onChange={event => change("taxTreatment", event.target.value)}
-                                        >
-                            <MenuItem value="IndiaCgstSgst">CGST + SGST (within the same state)</MenuItem>
-                            <MenuItem value="IndiaIgst">IGST (between different states)</MenuItem>
-                        </TextField> : <TextField
-                                                    label="Tax treatment"
-                                                    value={!hasTax ? "No Tax" : branchCountry === "AE" ? "UAE VAT" : "Select a branch"}
-                                                    helperText={!hasTax ? "All tax rates are zero" : branchCountry === "AE" ? "Automatically selected for UAE" : "Based on branch country"}
-                                                    slotProps={{
-                        input: {
-                            readOnly: true
-                        }
-                    }}
-                                                />}
+                    <TextField
+                        label="Tax treatment"
+                        value="Derived from saved tax settings selected on bill lines"
+                        slotProps={{ input: { readOnly: true } }}
+                    />
                     {[["vendorInvoiceNumber", "Vendor invoice number", 200], ["reference", "Reference", 200], ["paymentTerms", "Payment terms", 200], ["billingAddress", "Vendor billing address", 1000], ["shippingAddress", "Delivery address", 1000]].map(([name, label, maxLength]) => <TextField
                                             key={name}
                                             label={label}
@@ -468,7 +517,7 @@ export default function BillForm({
                                                         >
                                 {purchaseUnits.map((label, unit) => <MenuItem key={label} value={unit}>{label}</MenuItem>)}
                             </TextField>
-                            {[["quantity", "Quantity", "0.0001", undefined], ["unitPrice", "Unit price", "0", undefined], ["taxRate", "Tax %", "0", "100"]].map(([name, label, min, max]) => <TextField
+                            {[["quantity", "Quantity", "0.0001", undefined], ["unitPrice", "Unit price", "0", undefined]].map(([name, label, min, max]) => <TextField
                                                             key={name}
                                                             label={label}
                                                             required
@@ -485,6 +534,26 @@ export default function BillForm({
                                                             onChange={event => changeLine(item.key, name, event.target.value)}
                                                         />)}
                             <TextField
+                                label="Saved tax setting"
+                                select
+                                value={item.taxSettingId}
+                                disabled={busy || taxOptions.loading || !!taxOptions.error}
+                                helperText="Active settings for this branch company and bill date"
+                                onChange={event => selectTax(item.key, event.target.value)}
+                            >
+                                <MenuItem value="">No tax</MenuItem>
+                                {item.taxSettingId && !taxChoices.some(row => row.id === Number(item.taxSettingId)) && (
+                                    <MenuItem value={item.taxSettingId} disabled>
+                                        Recorded tax unavailable - select a saved setting or No tax
+                                    </MenuItem>
+                                )}
+                                {taxChoices.map(rate => (
+                                    <MenuItem key={rate.id} value={rate.id} onClick={() => selectTax(item.key, rate.id)}>
+                                        {rate.code} - {rate.name} ({rate.rate}%)
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                            <TextField
                                                             label="Description"
                                                             value={item.description}
                                                             disabled={busy}
@@ -500,19 +569,15 @@ export default function BillForm({
                                                             disabled={busy}
                                                             onChange={event => changeLine(item.key, "discountEnabled", event.target.checked)}
                                                         />} />
-                            {item.discountEnabled && <TextField
-                                                            label="Discount amount"
-                                                            type="number"
-                                                            value={item.discountAmount}
-                                                            disabled={busy || !item.discountEnabled}
-                                                            slotProps={{
-                                htmlInput: {
-                                    min: 0,
-                                    step: "0.0001"
-                                }
-                            }}
-                                                            onChange={event => changeLine(item.key, "discountAmount", event.target.value)}
-                                                        />}
+                            {item.discountEnabled && <LineDiscountFields
+                                type={item.discountType}
+                                value={item.discountValue}
+                                enabled={item.discountEnabled}
+                                disabled={busy}
+                                currency={value.currency}
+                                onTypeChange={next => changeLine(item.key, "discountType", next)}
+                                onValueChange={next => changeLine(item.key, "discountValue", next)}
+                            />}
                         </Box>
                     </Box>)}
                     <Button
@@ -548,7 +613,7 @@ export default function BillForm({
                     borderRadius: 2
                 }}>
                     <Typography fontWeight={700}>Bill Preview</Typography>
-                    {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].filter(([, name]) => name !== "discountTotal" || Number(preview.discountTotal) > 0).map(([label, name]) => <Box key={name} className="bill-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
+                    {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].filter(([, name]) => !["discountTotal", "taxTotal"].includes(name) || Number(preview[name]) > 0).map(([label, name]) => <Box key={name} className="bill-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
                             <Typography fontWeight={name === "grandTotal" ? 700 : 400}>
                                 {money(preview[name], preview.currency, preview.currencyDecimalPlaces)}</Typography></Box>)}
                 </Box>}

@@ -1,3 +1,5 @@
+import LineDiscountFields from "../../../live/LineDiscountFields";
+import { discountInput, discountPayload, validateLineDiscount } from "../../../live/lineDiscount";
 import React, { useEffect, useState } from "react";
 import {
     Alert,
@@ -14,6 +16,7 @@ import {
     Typography
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { useLoad } from "../../../live/data";
 import "./InvoiceForm.css";
 function today()
 {
@@ -30,8 +33,9 @@ function newItem()
         quantity: "",
         unitPrice: "",
         discountEnabled: false,
-        discountAmount: "",
-        taxRate: ""
+        ...discountInput(),
+        taxSettingId: "",
+        taxSettingRowVersion: ""
     };
 }
 async function apiRequest(url, options = {})
@@ -156,13 +160,53 @@ const InvoiceForm = ({
                 }
             }
         }
-        loadOptions();
+        // Skip the first development-only effect if React cleans it up immediately.
+        Promise.resolve().then(() =>
+        {
+            if (!controller.signal.aborted)
+            {
+                return loadOptions();
+            }
+        });
         return () => controller.abort();
     }, [reload]);
+    const taxKey = JSON.stringify([form.branch, form.invoiceDate]);
+    const taxOptions = useLoad(async signal =>
+    {
+        if (!form.branch || !form.invoiceDate)
+        {
+            return { key: taxKey, rows: [] };
+        }
+
+        const query = new URLSearchParams({ branch: form.branch, invoiceDate: form.invoiceDate });
+        const rows = await apiRequest(`/api/sales-invoices/tax-settings?${query}`, { signal });
+        return { key: taxKey, rows };
+    }, [form.branch, form.invoiceDate]);
+    const taxChoices = taxOptions.data?.key === taxKey ? taxOptions.data.rows : [];
     const disabled = loading || busy || Boolean(savedInvoice);
-    const selectedBranch = branches.find(branch => branch.name === form.branch);
-    const branchCountry = selectedBranch?.countryCode?.toUpperCase() || "";
-    const hasTax = items.some(item => Number(item.taxRate || 0) > 0);
+
+    function clearTaxSelections()
+    {
+        setItems(previous => previous.map(item => ({
+            ...item,
+            taxSettingId: "",
+            taxSettingRowVersion: ""
+        })));
+    }
+
+    function selectTax(key, selectedId)
+    {
+        const selected = taxChoices.find(row => String(row.id) === String(selectedId));
+        clearPreview();
+        setItems(previous => previous.map(item => item.key === key
+            ? {
+                ...item,
+                taxSettingId: selected?.id || "",
+                taxSettingRowVersion: selected?.rowVersion || ""
+            }
+            : item
+        ));
+    }
     function clearPreview()
     {
         setTotals(null);
@@ -175,6 +219,10 @@ const InvoiceForm = ({
             value
         } = event.target;
         clearPreview();
+        if (name === "invoiceDate" || name === "branch")
+        {
+            clearTaxSelections();
+        }
         setForm(previous => ({
             ...previous,
             [name]: value
@@ -184,6 +232,7 @@ const InvoiceForm = ({
     {
         const client = clients.find(entry => entry.id === event.target.value);
         clearPreview();
+        clearTaxSelections();
         setForm(previous => ({
             ...previous,
             clientId: client?.id || "",
@@ -207,7 +256,7 @@ const InvoiceForm = ({
         setItems(previous => previous.map(item => item.key === key ? {
             ...item,
             discountEnabled: enabled,
-            discountAmount: enabled ? item.discountAmount : ""
+            discountValue: enabled ? item.discountValue : "0"
         } : item));
     }
     function addItem()
@@ -237,29 +286,33 @@ const InvoiceForm = ({
         const client = clients.find(entry => entry.id === form.clientId);
         if (!client || form.branch !== client.branch)
         {
-            throw new Error("Select a client to use its managing branch.");
+            throw new Error("Select a client to use its Billing Branch.");
         }
         if (!branches.some(branch => branch.name === form.branch))
         {
-            throw new Error("The client's managing branch is unavailable. Update the client before creating an invoice.");
+            throw new Error("The client's Billing Branch is unavailable. Update the client before creating an invoice.");
         }
-        let taxTreatment = "NoTax";
-        if (hasTax && branchCountry === "AE")
+        if (taxOptions.loading || taxOptions.error || taxOptions.data?.key !== taxKey)
         {
-            taxTreatment = "UaeVat";
+            throw new Error(taxOptions.error || "Wait for the invoice's tax choices to load.");
         }
-        if (hasTax && branchCountry === "IN")
+
+        const selectedTaxes = items.filter(item => item.taxSettingId).map(item =>
         {
-            if (form.taxTreatment !== "IndiaCgstSgst" && form.taxTreatment !== "IndiaIgst")
+            const selected = taxChoices.find(row => row.id === Number(item.taxSettingId));
+            if (!selected || selected.rowVersion !== item.taxSettingRowVersion)
             {
-                throw new Error("Select CGST + SGST or IGST for this India invoice.");
+                throw new Error("A selected tax rate is no longer available. Reload tax choices and select it again.");
             }
-            taxTreatment = form.taxTreatment;
-        }
-        if (hasTax && branchCountry !== "AE" && branchCountry !== "IN")
+            return selected;
+        });
+        const treatments = [...new Set(selectedTaxes.map(row => row.treatment))];
+        if (treatments.length > 1)
         {
-            throw new Error("Tax treatment is not configured for the selected branch country.");
+            throw new Error("Use the same tax treatment on all taxed lines of this invoice.");
         }
+        const taxTreatment = treatments[0] || "NoTax";
+        items.forEach(validateLineDiscount);
         return {
             ...form,
             taxTreatment,
@@ -272,8 +325,9 @@ const InvoiceForm = ({
                 quantity: Number(item.quantity),
                 unitPrice: Number(item.unitPrice),
                 discountEnabled: item.discountEnabled,
-                discountAmount: item.discountEnabled ? Number(item.discountAmount || 0) : 0,
-                taxRate: Number(item.taxRate || 0)
+                ...discountPayload(item),
+                taxSettingId: item.taxSettingId ? Number(item.taxSettingId) : null,
+                taxSettingRowVersion: item.taxSettingRowVersion
             }))
         };
     }
@@ -387,6 +441,8 @@ const InvoiceForm = ({
                 </IconButton>
             </Box>
 
+            <form className="invoice-form-layout" onSubmit={handleSubmit}>
+                <Box className="invoice-form-scroll">
             {loadError && <Alert
                             severity="error"
                             sx={{
@@ -433,7 +489,6 @@ const InvoiceForm = ({
                     Add an active branch before creating an invoice.
                 </Alert>}
 
-            <form onSubmit={handleSubmit}>
                 <Card className="invoice-form-card">
                     <CardContent>
                         <Typography className="invoice-form-section-title">
@@ -509,7 +564,7 @@ const InvoiceForm = ({
 
                             <TextField
                                                             name="branch"
-                                                            label="Managing branch"
+                                                            label="Billing Branch"
                                                             value={form.branch}
                                                             disabled={disabled}
                                                             helperText={form.clientId ? "From the selected client" : "Select a client first"}
@@ -560,34 +615,12 @@ const InvoiceForm = ({
                                     </MenuItem>)}
                             </TextField>
 
-                            {branchCountry === "IN" && hasTax ? <TextField
-                                                            name="taxTreatment"
-                                                            label="Tax treatment"
-                                                            select
-                                                            value={form.taxTreatment}
-                                                            onChange={changeField}
-                                                            disabled={disabled}
-                                                            helperText="Choose based on the customer place of supply"
-                                                            required
-                                                            fullWidth
-                                                        >
-                                    <MenuItem value="IndiaCgstSgst">
-                                        CGST + SGST (within the same state)
-                                    </MenuItem>
-                                    <MenuItem value="IndiaIgst">
-                                        IGST (between different states)
-                                    </MenuItem>
-                                </TextField> : <TextField
-                                                                    label="Tax treatment"
-                                                                    value={!hasTax ? "No Tax" : branchCountry === "AE" ? "UAE VAT" : "Select a branch"}
-                                                                    helperText={!hasTax ? "Automatically selected because all tax rates are zero" : branchCountry === "AE" ? "Automatically selected for the UAE branch" : "Tax treatment depends on the branch country"}
-                                                                    slotProps={{
-                            input: {
-                                readOnly: true
-                            }
-                        }}
-                                                                    fullWidth
-                                                                />}
+                            <TextField
+                                label="Tax treatment"
+                                value="Derived from the saved tax settings selected on service lines"
+                                slotProps={{ input: { readOnly: true } }}
+                                fullWidth
+                            />
                         </Box>
                     </CardContent>
                 </Card>
@@ -597,6 +630,17 @@ const InvoiceForm = ({
                         <Typography className="invoice-form-section-title">
                             Services
                         </Typography>
+                        {taxOptions.error && (
+                            <Alert severity="error" action={<Button onClick={taxOptions.refresh}>Retry</Button>} sx={{ mb: 2 }}>
+                                {taxOptions.error}
+                            </Alert>
+                        )}
+                        {form.branch && !taxOptions.loading && !taxOptions.error && !taxChoices.length && (
+                            <Alert severity="info" sx={{ mb: 2 }}>
+                                No active tax settings cover this invoice date for the branch company.
+                                Configure a valid rate in Tax Settings if tax is required.
+                            </Alert>
+                        )}
 
                         {items.map((item, index) => <Box key={item.key} sx={{
                         mb: 3
@@ -691,37 +735,35 @@ const InvoiceForm = ({
                                                                                     onChange={event => toggleDiscount(item.key, event.target.checked)}
                                                                                     disabled={disabled}
                                                                                 />} label="Enable discount" />
-                                        <TextField
-                                                                                    label="Discount amount"
-                                                                                    type="number"
-                                                                                    value={item.discountAmount}
-                                                                                    onChange={event => changeItem(item.key, "discountAmount", event.target.value)}
-                                                                                    disabled={disabled || !item.discountEnabled}
-                                                                                    fullWidth
-                                                                                    slotProps={{
-                                    htmlInput: {
-                                        min: 0,
-                                        step: 0.0001
-                                    }
-                                }}
-                                                                                />
+                                        <LineDiscountFields
+                                        type={item.discountType}
+                                        value={item.discountValue}
+                                        enabled={item.discountEnabled}
+                                        disabled={disabled}
+                                        currency={form.currency}
+                                        onTypeChange={next => changeItem(item.key, "discountType", next)}
+                                        onValueChange={next => changeItem(item.key, "discountValue", next)}
+                                    />
                                     </Box>
 
                                     <TextField
-                                                                            label="Tax %"
-                                                                            type="number"
-                                                                            value={item.taxRate}
-                                                                            onChange={event => changeItem(item.key, "taxRate", event.target.value)}
-                                                                            disabled={disabled}
-                                                                            fullWidth
-                                                                            slotProps={{
-                                htmlInput: {
-                                    min: 0,
-                                    max: 100,
-                                    step: 0.0001
-                                }
-                            }}
-                                                                        />
+                                        label="Saved tax setting"
+                                        select
+                                        value={item.taxSettingId}
+                                        onChange={event => selectTax(item.key, event.target.value)}
+                                        disabled={disabled || taxOptions.loading || !!taxOptions.error}
+                                        helperText={taxOptions.loading
+                                            ? "Loading company tax settings…"
+                                            : taxOptions.error || "Active settings for this branch company and invoice date"}
+                                        fullWidth
+                                    >
+                                        <MenuItem value="">No tax</MenuItem>
+                                        {taxChoices.map(rate => (
+                                            <MenuItem key={rate.id} value={rate.id} onClick={() => selectTax(item.key, rate.id)}>
+                                                {rate.code} - {rate.name} ({rate.rate}%)
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
                                 </Box>
 
                                 <Button
@@ -823,13 +865,15 @@ const InvoiceForm = ({
                                     </Typography>
                                 </Box>}
 
-                            <Box className="invoice-form-summary-row">
-                                <Typography>Tax</Typography>
+                            {Number(totals?.taxTotal) > 0 && (
+                                <Box className="invoice-form-summary-row">
+                                    <Typography>Tax</Typography>
 
-                                <Typography>
-                                    {amount(totals?.taxTotal)}
-                                </Typography>
-                            </Box>
+                                    <Typography>
+                                        {amount(totals.taxTotal)}
+                                    </Typography>
+                                </Box>
+                            )}
 
                             <Divider />
 
@@ -843,6 +887,8 @@ const InvoiceForm = ({
                         </Box>
                     </CardContent>
                 </Card>
+
+                </Box>
 
                 <Box className="invoice-form-actions">
                     <Button

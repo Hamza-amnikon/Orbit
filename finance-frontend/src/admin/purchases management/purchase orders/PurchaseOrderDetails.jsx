@@ -136,7 +136,7 @@ export default function PurchaseOrderDetails()
                                 >Purchase Order</Typography>
                     <Typography color="text.secondary" sx={{
                         mt: 1
-                    }}>Managing branch: {order.branch}</Typography>
+                    }}>Billing Branch: {order.branch}</Typography>
                     <Typography color="text.secondary">Currency: {order.currency}</Typography></Box>
                 <Box sx={{
                     textAlign: {
@@ -190,7 +190,9 @@ export default function PurchaseOrderDetails()
                             <Typography variant="body2" color="text.secondary">{item.description}</Typography></TableCell>
                         <TableCell>{purchaseUnits[item.unit] || "—"}</TableCell><TableCell>{item.quantity}</TableCell>
                         <TableCell>{money(item.unitPrice, order.currency, order.currencyDecimalPlaces)}</TableCell>
-                        {order.items.some(line => Number(line.discountAmount) > 0) && <TableCell>{Number(item.discountAmount) > 0 ? money(item.discountAmount, order.currency, order.currencyDecimalPlaces) : "—"}</TableCell>}
+                        {order.items.some(line => Number(line.discountAmount) > 0) && <TableCell>{Number(item.discountAmount) > 0 ? money(item.discountAmount, order.currency, order.currencyDecimalPlaces) : "—"}
+                            {item.discountEnabled && item.discountType === "Percentage" && <small> ({item.discountValue}%)</small>}
+                        </TableCell>}
                         <TableCell>{item.taxRate}%<Typography variant="caption" display="block">
                             {money(item.taxAmount, order.currency, order.currencyDecimalPlaces)}</Typography></TableCell>
                         <TableCell>{money(item.lineTotal, order.currency, order.currencyDecimalPlaces)}</TableCell>
@@ -198,7 +200,7 @@ export default function PurchaseOrderDetails()
                 </Table>
             </TableContainer>
             <Box className="po-totals">
-                {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].filter(([, name]) => name !== "discountTotal" || Number(order.discountTotal) > 0).map(([label, name]) => <Box key={name} className="po-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
+                {[["Subtotal", "subTotal"], ["Discount", "discountTotal"], ["Tax", "taxTotal"], ["Total Amount", "grandTotal"]].filter(([, name]) => !["discountTotal", "taxTotal"].includes(name) || Number(order[name]) > 0).map(([label, name]) => <Box key={name} className="po-total-row"><Typography fontWeight={name === "grandTotal" ? 700 : 400}>{label}</Typography>
                         <Typography fontWeight={name === "grandTotal" ? 700 : 400}>
                             {money(order[name], order.currency, order.currencyDecimalPlaces)}</Typography></Box>)}
             </Box>

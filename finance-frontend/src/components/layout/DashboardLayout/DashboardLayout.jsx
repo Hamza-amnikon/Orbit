@@ -4,16 +4,33 @@ import {
     useMediaQuery,
     useTheme
 } from "@mui/material";
-import { Outlet, useLocation } from "react-router-dom";
+import {
+    Navigate,
+    Outlet,
+    useLocation
+} from "react-router-dom";
+import { useAuth } from "../../../live/AuthContext";
 import Sidebar from "../../Sidebar";
 import Header from "../../Header";
 export default function DashboardLayout()
 {
     const [menuPath, setMenuPath] = useState(null);
     const desktop = useMediaQuery(useTheme().breakpoints.up("lg"));
+    const { user, loading } = useAuth();
     const {
         pathname
     } = useLocation();
+
+    if (loading)
+    {
+        return <Box role="status">Checking sign-in…</Box>;
+    }
+
+    if (!user)
+    {
+        return <Navigate to="/login" replace />;
+    }
+
     return <Box className="main-layout">
       <Sidebar
                 desktop={desktop}

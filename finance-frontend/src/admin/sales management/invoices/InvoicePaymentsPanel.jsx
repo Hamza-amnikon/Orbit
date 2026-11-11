@@ -332,6 +332,7 @@ const InvoicePaymentsPanel = ({
                                     <TableCell align="right">
                                         Amount
                                     </TableCell>
+                                    <TableCell>Status</TableCell>
                                     <TableCell>Reference</TableCell>
                                     <TableCell>Action</TableCell>
                                 </TableRow>
@@ -356,11 +357,15 @@ const InvoicePaymentsPanel = ({
                                         </TableCell>
 
                                         <TableCell>
+                                            {payment.status || "Recorded"}
+                                        </TableCell>
+
+                                        <TableCell>
                                             {payment.reference || "—"}
                                         </TableCell>
 
                                         <TableCell>
-                                            <Button onClick={() => setViewPayment(payment)}>
+                                            <Button disabled={payment.status === "Voided"} onClick={() => setViewPayment(payment)}>
                                                 View
                                             </Button>
                                         </TableCell>
@@ -398,8 +403,8 @@ const InvoicePaymentsPanel = ({
                                                             unitNames={unitNames}
                                                             paymentSummary={{
                         paymentAmount: viewPayment.amount,
-                        paidAmount: summary.payments.filter(payment => payment.paymentDate < viewPayment.paymentDate || payment.paymentDate === viewPayment.paymentDate && payment.id <= viewPayment.id).reduce((total, payment) => total + payment.amount, 0),
-                        balanceDue: Math.max(0, (summary.adjustedInvoiceTotal ?? summary.invoiceTotal) - summary.payments.filter(payment => payment.paymentDate < viewPayment.paymentDate || payment.paymentDate === viewPayment.paymentDate && payment.id <= viewPayment.id).reduce((total, payment) => total + payment.amount, 0))
+                        paidAmount: summary.payments.filter(payment => payment.status !== "Voided" && (payment.paymentDate < viewPayment.paymentDate || payment.paymentDate === viewPayment.paymentDate && payment.id <= viewPayment.id)).reduce((total, payment) => total + payment.amount, 0),
+                        balanceDue: Math.max(0, (summary.adjustedInvoiceTotal ?? summary.invoiceTotal) - summary.payments.filter(payment => payment.status !== "Voided" && (payment.paymentDate < viewPayment.paymentDate || payment.paymentDate === viewPayment.paymentDate && payment.id <= viewPayment.id)).reduce((total, payment) => total + payment.amount, 0))
                     }}
                                                         />
                         </div>

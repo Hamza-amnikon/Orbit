@@ -386,7 +386,7 @@ const CreditNoteDetails = ({
                 <Box className="credit-note-document-header">
                     <Box>
                         <Typography className="credit-note-company-name">Sales Credit Note</Typography>
-                        <Typography className="credit-note-company-info">Managing branch: {creditNote.branch}</Typography>
+                        <Typography className="credit-note-company-info">Billing Branch: {creditNote.branch}</Typography>
                         <Typography className="credit-note-company-info">Currency: {creditNote.currency}</Typography>
                     </Box>
                     <Box className="credit-note-document-number">

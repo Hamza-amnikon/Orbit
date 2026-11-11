@@ -192,7 +192,7 @@ export default function VendorCreditForm({
         }
         if (!branches.some(row => row.name === value.branch))
         {
-            return "Select an active managing branch.";
+            return "Select an active Billing Branch.";
         }
         if (!currencies.some(row => row.currencyCode === value.currency))
         {
@@ -469,7 +469,7 @@ export default function VendorCreditForm({
                             <TextField
                                                             select
                                                             required
-                                                            label="Managing branch"
+                                                            label="Billing Branch"
                                                             value={value.branch}
                                                             disabled={busy || choices.loading || conflict}
                                                             onChange={event =>

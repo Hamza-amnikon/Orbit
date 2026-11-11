@@ -135,7 +135,7 @@ function ClientForm({
                 const data = await response.json().catch(() => null);
                 if (!response.ok)
                 {
-                    throw new Error(data?.message || "Unable to load managing branches.");
+                    throw new Error(data?.message || "Unable to load Billing Branches.");
                 }
                 if (!Array.isArray(data) || data.some(branch => !branch || typeof branch.id !== "number" || typeof branch.name !== "string"))
                 {
@@ -239,7 +239,7 @@ function ClientForm({
         event.preventDefault();
         if (branchesLoading || branchError || !validBranch)
         {
-            setError(branchError || "Select an active managing branch.");
+            setError(branchError || "Select an active Billing Branch.");
             return;
         }
         setSaving(true);
@@ -415,7 +415,7 @@ function ClientForm({
                         <TextField
                                                     select
                                                     name="branch"
-                                                    label="Managing branch"
+                                                    label="Billing Branch"
                                                     value={formData.branch}
                                                     onChange={handleChange}
                                                     disabled={saving || branchesLoading}
@@ -424,7 +424,7 @@ function ClientForm({
                                                     required
                                                     fullWidth
                                                 >
-                            <MenuItem value="">Select managing branch</MenuItem>
+                            <MenuItem value="">Select Billing Branch</MenuItem>
 
                             {formData.branch && !validBranch && <MenuItem value={formData.branch} disabled>
                                     {formData.branch} (unavailable)

@@ -121,3 +121,14 @@ export async function getConversionPaymentModes(signal)
     if (!Array.isArray(modes)) throw new Error("Payment modes could not be loaded.");
     return modes.filter(mode => mode.isActive !== false);
 }
+
+export async function getEstimateTaxSettings(branch, estimateDate, signal)
+{
+    const query = new URLSearchParams({ branch, estimateDate });
+    const rows = await request(`${endpoint}/tax-settings?${query}`, { signal });
+    if (!Array.isArray(rows))
+    {
+        throw new Error("Invalid estimate tax settings response.");
+    }
+    return rows;
+}

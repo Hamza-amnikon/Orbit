@@ -294,7 +294,7 @@ export default function VendorCreditDetails({
                             </Typography>
 
                             <Typography className="vendor-credit-company-address">
-                                Managing branch: {credit.branch}
+                                Billing Branch: {credit.branch}
                             </Typography>
 
                             <Typography className="vendor-credit-company-address">
