@@ -861,8 +861,13 @@ function Attendance() {
                 getStatus(record)
             ).toLowerCase();
 
+        // Early and Late are attendance classifications, not non-attendance
+        // states. Keep their detailed labels in the log, but mark those days
+        // as Present on the calendar.
         if (
-            status.includes("present")
+            status.includes("present") ||
+            status.includes("early") ||
+            status.includes("late")
         ) {
             return "present";
         }
