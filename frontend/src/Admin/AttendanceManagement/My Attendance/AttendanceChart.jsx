@@ -1393,6 +1393,7 @@ function AttendanceChart({
                         "work from home";
 
                 const isWeeklyOff =
+                    status === "off" ||
                     status === "week off" ||
                     status === "weekly off" ||
                     status === "weekend";
