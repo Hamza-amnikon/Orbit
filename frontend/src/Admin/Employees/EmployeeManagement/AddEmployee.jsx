@@ -75,7 +75,6 @@ function AddEmployee() {
   const [lastName, setLastName] = useState("");
   const [managerId, setManagerId] = useState("");
 
-  const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [gender, setGender] = useState("");
 
@@ -424,7 +423,6 @@ function AddEmployee() {
       lastName,
       managerId,
 
-      email,
       mobile,
       gender,
 
@@ -558,7 +556,9 @@ function AddEmployee() {
       // ----------------------------------------
 
       await showReactAlert(
-        "Employee Added Successfully"
+        response.data?.email
+          ? `Employee added successfully. Work email: ${response.data.email}`
+          : "Employee added successfully."
       );
 
       // ----------------------------------------
@@ -569,7 +569,6 @@ function AddEmployee() {
       setLastName("");
       setManagerId("");
 
-      setEmail("");
       setMobile("");
       setGender("");
 
@@ -697,9 +696,6 @@ function AddEmployee() {
 
       managerId={managerId}
       setManagerId={setManagerId}
-
-      email={email}
-      setEmail={setEmail}
 
       mobile={mobile}
       setMobile={setMobile}
