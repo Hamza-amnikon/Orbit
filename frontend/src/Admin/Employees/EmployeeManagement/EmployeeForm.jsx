@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 
 import {
   Save,
-  Email,
+  Badge,
   Phone,
   Apartment,
   Work,
@@ -43,9 +43,6 @@ function EmployeeForm({
 
   lastName = "",
   setLastName,
-
-  email = "",
-  setEmail,
 
   mobile = "",
   setMobile,
@@ -156,7 +153,6 @@ function EmployeeForm({
   const isFormValid =
     firstName.trim() !== "" &&
     lastName.trim() !== "" &&
-    email.trim() !== "" &&
     mobile.trim() !== "" &&
     gender.trim() !== "" &&
     managerId.trim() !== "" &&
@@ -307,7 +303,7 @@ function EmployeeForm({
           <MuiLayoutBox className="form-section-icon" component="div" aria-hidden="true"><Person /></MuiLayoutBox>
           <MuiLayoutBox component="div">
             <MuiText id="add-employee-personal-heading" component="h3" variant="h6">Personal Information</MuiText>
-            <MuiText component="p" variant="body2">Enter the employee’s contact and identity details.</MuiText>
+            <MuiText component="p" variant="body2">Enter the employee’s contact and identity details. Work email is generated from their first and last name.</MuiText>
           </MuiLayoutBox>
         </MuiLayoutBox>
 
@@ -317,11 +313,10 @@ function EmployeeForm({
 
           {/* Employee ID */}
 
-          {/*
           <TextField
             fullWidth
             label="Employee ID"
-            value={AzureEmployeeId}
+            value={AzureEmployeeId || "Auto Generated"}
             InputProps={{
               readOnly: true,
               startAdornment: (
@@ -331,7 +326,6 @@ function EmployeeForm({
               ),
             }}
           />
-          */}
 
 
           {/* Employee First Name */}
@@ -368,27 +362,6 @@ function EmployeeForm({
               startAdornment: (
                 <InputAdornment position="start">
                   <Person />
-                </InputAdornment>
-              ),
-            } }}
-          />
-
-
-          {/* Email */}
-
-          <TextField
-            fullWidth
-            required
-            type="email"
-            label="Email Address"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-            slotProps={{ input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Email />
                 </InputAdornment>
               ),
             } }}
