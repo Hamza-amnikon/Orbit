@@ -1330,6 +1330,9 @@ approvedByEmployeeCode: currentEmployeeCode,
                                     <MuiText component="p" variant="body2">Review the employee’s leave information</MuiText>
                                 </MuiLayoutBox>
                             </MuiLayoutBox>
+                            <IconButton className="leave-modal-close" aria-label="Close leave details" onClick={closeViewLeave}>
+                                <CloseRounded />
+                            </IconButton>
 
                         </MuiLayoutBox>
 
@@ -1402,8 +1405,7 @@ approvedByEmployeeCode: currentEmployeeCode,
 
                             </MuiLayoutBox>
 
-{/* Supporting Document - show only when a document exists */}
-{(viewDocumentLoading || viewDocumentUrl || viewDocumentError) && (
+{/* Supporting Document */}
     <MuiLayoutBox
         className="leave-detail-section"
      component="div">
@@ -1434,9 +1436,10 @@ approvedByEmployeeCode: currentEmployeeCode,
             >
                 View Document
             </Button>
-        ) : null}
+        ) : (
+            <Typography variant="body2">No supporting document is attached to this leave request.</Typography>
+        )}
     </MuiLayoutBox>
-)}
 
 {/* Approval / Rejection Information */}
 

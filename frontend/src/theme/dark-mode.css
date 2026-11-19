@@ -337,8 +337,11 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendanc
   color: #dce6f4;
 }
 
-html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day:hover,
-html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day.weekend:hover {
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day:not(.present, .half, .absent, .leave, .weekend, .muted) {
+  background: var(--spark-surface);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day:not(.present, .half, .absent, .leave, .weekend, .muted):hover {
   background: var(--spark-hover);
 }
 
@@ -360,24 +363,90 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendanc
   color: #718198;
 }
 
-html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day.weekend {
-  color: #a9bad2;
+html[data-color-mode="dark"] .employee-attendance-page .attendance-calendar-card {
+  --attendance-present-fill: #26785a;
+  --attendance-present-text: #f0fff6;
+  --attendance-half-fill: #956015;
+  --attendance-half-text: #fff6dd;
+  --attendance-absent-fill: #a23d4d;
+  --attendance-absent-text: #fff2f3;
+  --attendance-leave-fill: #704ba9;
+  --attendance-leave-text: #fcf5ff;
+  --attendance-off-fill: #46566c;
+  --attendance-off-text: #f0f5fc;
+  --attendance-calendar-ring: #a1c2ff;
 }
 
-html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day.selected:not(.today) {
-  color: #cfe0ff;
-  background: rgba(75, 125, 255, .18);
-  box-shadow: inset 0 0 0 1px rgba(117, 157, 255, .45);
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .attendance-calendar-card .calendar-day:is(.present, .half, .absent, .leave, .weekend) {
+  background-color: var(--attendance-day-fill);
+  color: var(--attendance-day-text);
 }
 
-html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day.today {
-  color: #fff !important;
-  background: #3978f6 !important;
-  box-shadow: 0 0 0 2px rgba(75, 125, 255, .22) !important;
+html[data-color-mode="dark"] .employee-attendance-page .attendance-calendar-card .calendar-legend {
+  border-color: var(--spark-border);
 }
 
-html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .calendar-day.today:hover {
-  background: #4a86ff !important;
+html[data-color-mode="dark"] .employee-attendance-page .attendance-calendar-card .legend-dot.present-dot { background: #4ade80; }
+html[data-color-mode="dark"] .employee-attendance-page .attendance-calendar-card .legend-dot.half-dot { background: #fbbf24; }
+html[data-color-mode="dark"] .employee-attendance-page .attendance-calendar-card .legend-dot.absent-dot { background: #fb7185; }
+html[data-color-mode="dark"] .employee-attendance-page .attendance-calendar-card .legend-dot.leave-dot { background: #c4a8ff; }
+html[data-color-mode="dark"] .employee-attendance-page .attendance-calendar-card .legend-dot.weekend-dot { background: #a8bad0; }
+
+html[data-color-mode="dark"] .employee-attendance-page :is(.attendance-history-filters, .attendance-history-pagination) {
+  background: var(--spark-surface-raised);
+  color: var(--spark-text);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .attendance-history-filters .MuiPickersOutlinedInput-root {
+  color: var(--spark-text);
+  background: var(--spark-surface);
+}
+
+html[data-color-mode="dark"] .employee-attendance-page .attendance-history-filters .MuiPickersOutlinedInput-notchedOutline {
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .employee-attendance-page .attendance-history-filters .MuiPickersOutlinedInput-root:hover .MuiPickersOutlinedInput-notchedOutline {
+  border-color: #506581;
+}
+
+html[data-color-mode="dark"] .employee-attendance-page .attendance-history-filters .MuiPickersOutlinedInput-root.Mui-focused .MuiPickersOutlinedInput-notchedOutline {
+  border-color: #a1c2ff;
+}
+
+html[data-color-mode="dark"] :is(.attendance-history-status-menu, .profile-cover-menu) .MuiMenu-paper,
+html[data-color-mode="dark"] :is(.profile-cover-editor, .profile-project-dialog, .pr-bank-salary-dialog) .MuiDialog-paper {
+  color: var(--spark-text);
+  background: var(--spark-surface-raised);
+  border: 1px solid var(--spark-border);
+}
+
+html[data-color-mode="dark"] :is(.profile-cover-editor, .profile-project-dialog, .pr-bank-salary-dialog) .MuiOutlinedInput-root {
+  color: var(--spark-text);
+  background: var(--spark-surface);
+}
+
+html[data-color-mode="dark"] :is(.profile-cover-editor, .profile-project-dialog, .pr-bank-salary-dialog) .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #a1c2ff;
+}
+
+html[data-color-mode="dark"] .profile-cover-editor .MuiSlider-root {
+  color: #9abaff;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .profile-skills-panel.MuiPaper-root {
+  background: var(--spark-surface-raised);
+  border-color: var(--spark-border);
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .profile-cover .profile-cover-control.MuiButton-root {
+  background: #172236 !important;
+  color: #f2f5fb !important;
+  border: 1px solid #637fa8 !important;
+}
+
+html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .profile-cover .profile-cover-control.MuiButton-root:hover:not(.Mui-disabled) {
+  background: #253a57 !important;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .employee-attendance-page .today-card-header,
@@ -3654,21 +3723,31 @@ html[data-color-mode="dark"] .attendance-date-popover :is(.MuiPaper-root, .MuiDa
 html[data-color-mode="dark"] .attendance-date-popover :is(
   .MuiPickersCalendarHeader-label,
   .MuiDayCalendar-weekDayLabel,
-  .MuiPickersDay-root
+  .MuiPickersDay-root,
+  .MuiPickerDay-root
 ) {
   color: var(--spark-text) !important;
 }
 
-html[data-color-mode="dark"] .attendance-date-popover .MuiPickersDay-root:hover {
+html[data-color-mode="dark"] .attendance-date-popover :is(.MuiPickersDay-root, .MuiPickerDay-root):hover {
   background: var(--spark-hover) !important;
 }
 
-html[data-color-mode="dark"] .attendance-date-popover .MuiPickersDay-root.Mui-selected {
+html[data-color-mode="dark"] .attendance-date-popover :is(.MuiPickersDay-root, .MuiPickerDay-root).Mui-selected {
   color: #fff !important;
   background: #3978f6 !important;
 }
 
 /* The employee identity in the global navbar also needs light text on its dark surface. */
+html[data-color-mode="dark"] .navbar .avatar {
+  background: var(--spark-surface-raised);
+  border-color: #536780;
+}
+
+html[data-color-mode="dark"] .navbar .navbar-avatar-initial {
+  color: #c6d9fa;
+}
+
 html[data-color-mode="dark"] .navbar .user-info :is(h4, p),
 html[data-color-mode="dark"] .navbar .profile-arrow {
   color: var(--spark-text);
@@ -6920,9 +6999,13 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .stat-icon {
-  background: color-mix(in srgb, var(--settings-accent) 20%, var(--spark-surface-raised)) !important;
-  color: var(--settings-accent);
+  background: color-mix(in srgb, var(--settings-icon-color, #9abaff) 18%, var(--spark-surface-raised)) !important;
+  color: var(--settings-icon-color, #9abaff);
 }
+
+html[data-color-mode="dark"] .settings-dashboard .stat-card:nth-child(1) { --settings-icon-color: #6ee7a6; }
+html[data-color-mode="dark"] .settings-dashboard .stat-card:nth-child(3) { --settings-icon-color: #ffc875; }
+html[data-color-mode="dark"] .settings-dashboard .stat-card:nth-child(4) { --settings-icon-color: #c9acff; }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .settings-dashboard .profile-tab {
   color: var(--spark-muted);
@@ -8576,6 +8659,12 @@ html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-dashboard-page 
   background: var(--spark-surface-raised);
   color: var(--spark-text);
   box-shadow: 0 12px 28px rgba(0, 0, 0, .3);
+}
+
+html[data-color-mode="dark"] .my-dashboard-page {
+  --attendance-chart-muted: #a8b6cb;
+  --attendance-chart-text: #e4edf9;
+  --attendance-chart-weekend: #96aac5;
 }
 
 html[data-color-mode="dark"] .dashboard-content.workspace-ui .my-dashboard-page :is(

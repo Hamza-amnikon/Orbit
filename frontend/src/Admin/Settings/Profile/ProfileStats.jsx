@@ -10,53 +10,39 @@ import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getEmployeeAttendance } from "../../Services/AttendanceService";
 import LeaveService from "../../Services/LeaveService";
-import { indiaDateKey } from "../../../utils/indiaTime";
+import ShiftService from "../../AttendanceManagement/services/ShiftService";
+import { attendanceCalendarDate, attendanceDateKey } from "../../AttendanceManagement/attendanceDate";
+import { getMonthlyAttendancePercentage } from "../../AttendanceManagement/attendanceSummary";
 
 function ProfileStats({ profile }) {
     const [attendanceValue, setAttendanceValue] = useState("—");
     const [leaveValue, setLeaveValue] = useState("—");
-    const currentMonthKey = indiaDateKey().slice(0, 7);
-    const [currentYear, currentMonth] = currentMonthKey.split("-").map(Number);
+    const todayKey = attendanceDateKey(new Date());
+    const [currentYear, currentMonth] = todayKey.slice(0, 7).split("-").map(Number);
+    const employeeId = profile?.employeeId ?? profile?.EmployeeId ?? profile?.employeeID ?? profile?.EmployeeID;
+    const joinDate = profile?.joiningDate ?? profile?.JoiningDate ?? profile?.joinDate ?? profile?.JoinDate;
     const attendanceMonthLabel = new Intl.DateTimeFormat(undefined, {
         month: "long",
         year: "numeric",
-    }).format(new Date(currentYear, currentMonth - 1, 1));
+    }).format(attendanceCalendarDate(todayKey));
 
     useEffect(() => {
-        const employeeId = profile?.employeeId ?? profile?.EmployeeId ?? profile?.employeeID ?? profile?.EmployeeID;
         if (employeeId === undefined || employeeId === null || employeeId === "") return undefined;
 
         let mounted = true;
         const loadStats = async () => {
-            const [attendanceResult, leaveResult] = await Promise.allSettled([
+            const [attendanceResult, leaveResult, shiftResult] = await Promise.allSettled([
                 getEmployeeAttendance(employeeId),
                 LeaveService.getEmployeeLeaveBalances(employeeId),
+                ShiftService.getEmployeeShifts(employeeId),
             ]);
 
             if (!mounted) return;
 
-            if (attendanceResult.status === "fulfilled") {
-                const records = Array.isArray(attendanceResult.value) ? attendanceResult.value : [];
-                const thisMonthRecords = records.filter((record) => {
-                    const dateValue = record?.attendanceDate ?? record?.date ?? record?.AttendanceDate ?? record?.Date;
-                    if (!dateValue) return false;
-
-                    // Prefer the date portion of ISO values so UTC timestamps near
-                    // month boundaries are grouped by their recorded calendar date.
-                    return indiaDateKey(dateValue).slice(0, 7) === currentMonthKey;
-                });
-                const counted = thisMonthRecords.filter((record) => {
-                    const status = String(record?.status ?? record?.attendanceStatus ?? "").toLowerCase();
-                    return status && !status.includes("leave") && !status.includes("weekly off") && !status.includes("holiday");
-                });
-                const attended = counted.reduce((total, record) => {
-                    const status = String(record?.status ?? record?.attendanceStatus ?? "").toLowerCase();
-                    if (status.includes("present")) return total + 1;
-                    if (status.includes("half")) return total + 0.5;
-                    return total;
-                }, 0);
-                setAttendanceValue(counted.length ? `${Math.round((attended / counted.length) * 100)}%` : "—");
-            }
+            const percentage = attendanceResult.status === "fulfilled" && shiftResult.status === "fulfilled"
+                ? getMonthlyAttendancePercentage(attendanceResult.value, todayKey, shiftResult.value, joinDate)
+                : null;
+            setAttendanceValue(percentage === null ? "—" : `${percentage}%`);
 
             if (leaveResult.status === "fulfilled") {
                 const balances = Array.isArray(leaveResult.value) ? leaveResult.value : [];
@@ -67,12 +53,11 @@ function ProfileStats({ profile }) {
 
         loadStats();
         return () => { mounted = false; };
-    }, [profile, currentMonthKey]);
+    }, [employeeId, joinDate, todayKey]);
 
-    const joinDate = profile?.joiningDate ?? profile?.JoiningDate ?? profile?.joinDate ?? profile?.JoinDate;
     const experience = (() => {
         if (!joinDate) return "—";
-        const started = indiaDateKey(joinDate);
+        const started = attendanceDateKey(joinDate);
         if (!started) return "—";
         const months = Math.max(0, (currentYear - Number(started.slice(0, 4))) * 12 + currentMonth - Number(started.slice(5, 7)));
         const years = Math.floor(months / 12);
@@ -86,25 +71,21 @@ function ProfileStats({ profile }) {
             icon: <EventAvailable />,
             title: `Attendance (${attendanceMonthLabel})`,
             value: attendanceValue,
-            color: "#22c55e"
         },
         {
             icon: <CalendarMonth />,
             title: "Leave Balance",
             value: leaveValue,
-            color: "#2563eb"
         },
         {
             icon: <WorkHistory />,
             title: "Experience In Amnikon",
             value: experience,
-            color: "#f59e0b"
         },
         {
             icon: <AssignmentTurnedIn />,
             title: "Projects",
             value: projectCount === null || projectCount === undefined ? "—" : String(projectCount).padStart(2, "0"),
-            color: "#8b5cf6"
         }
     ];
 
@@ -118,7 +99,6 @@ function ProfileStats({ profile }) {
 
                     <MuiLayoutBox
                         className="stat-icon"
-                        style={{ background: item.color }}
                      component="div">
                         {item.icon}
                     </MuiLayoutBox>

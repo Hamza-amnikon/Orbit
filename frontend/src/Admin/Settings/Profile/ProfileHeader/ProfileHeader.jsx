@@ -4,6 +4,7 @@ import { Alert, Button, Chip, CircularProgress, Dialog, DialogActions, DialogCon
 import { useRef, useState } from "react";
 
 import ProfileAvatar from "./ProfileAvatar";
+import ProfileCover from "./ProfileCover";
 import ProfileDetails from "./ProfileDetails";
 import { Box as MuiLayoutBox } from "@mui/material";
 
@@ -23,19 +24,7 @@ function ProfileHeader({ profile, onPhotoUpload, photoUploading, photoMessage })
 
             {/* Cover Section */}
 
-            <MuiLayoutBox className="profile-cover" component="div">
-
-                <MuiLayoutBox className="cover-overlay" component="div"></MuiLayoutBox>
-
-                {/* <button className="edit-profile-btn">
-
-                    <Edit fontSize="small" />
-
-                    Edit Profile
-
-                </button> */}
-
-            </MuiLayoutBox>
+            <ProfileCover key={profile.employeeId ?? profile.EmployeeId ?? profile.azureEmployeeId} />
 
             {/* Main Body */}
 

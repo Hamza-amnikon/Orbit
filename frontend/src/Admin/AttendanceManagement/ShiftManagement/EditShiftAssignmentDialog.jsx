@@ -441,7 +441,7 @@ export default function EditShiftAssignmentDialog({
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label="Employee Code"
+              label="Employee ID"
               value={
                 form.AzureEmployeeId
               }

@@ -1,10 +1,15 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import darkLogo from "../../assets/logo/spark-logo-sidebar.png";
+import lightLogo from "../../assets/logo/spark-logo-sidebar-light.png";
+import { useColorMode } from "../../context/ColorModeContext";
 
 /** Branded, accessible loading state for auth and route checks. */
 export default function SparkLoadingScreen({
     title = "Preparing your workspace",
     description = "We’re getting everything ready for you.",
 }) {
+    const { mode } = useColorMode();
+
     return (
         <Box
             role="status"
@@ -37,41 +42,22 @@ export default function SparkLoadingScreen({
                 }}
             >
                 <Box
-                    aria-hidden="true"
+                    component="img"
+                    src={mode === "dark" ? darkLogo : lightLogo}
+                    alt="SPARK"
                     sx={{
-                        width: 56,
-                        height: 56,
-                        mb: 2.5,
-                        display: "grid",
-                        placeItems: "center",
-                        borderRadius: 2.5,
-                        color: "#fff",
-                        fontSize: 24,
-                        fontWeight: 800,
-                        letterSpacing: "-.08em",
-                        background: "linear-gradient(145deg, #2563eb, #7138d7)",
-                        boxShadow: "0 8px 22px rgba(37, 99, 235, .28)",
+                        width: { xs: 112, sm: 136 },
+                        height: 90,
+                        objectFit: "contain",
+                        mb: 2.25,
+                        "@keyframes spark-logo-pulse": {
+                            "0%, 100%": { opacity: 1 },
+                            "50%": { opacity: 0.62 },
+                        },
+                        "@media (prefers-reduced-motion: no-preference)": {
+                            animation: "spark-logo-pulse 1.8s ease-in-out infinite",
+                        },
                     }}
-                >
-                    S
-                </Box>
-                <Typography
-                    component="div"
-                    sx={{
-                        mb: 2.5,
-                        color: "#2563eb",
-                        fontSize: 12,
-                        fontWeight: 800,
-                        letterSpacing: ".2em",
-                    }}
-                >
-                    SPARK
-                </Typography>
-                <CircularProgress
-                    size={32}
-                    thickness={4.5}
-                    aria-label={title}
-                    sx={{ mb: 2.25, color: "#2563eb" }}
                 />
                 <Typography
                     component="h1"

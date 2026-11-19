@@ -27,6 +27,7 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    TextField,
     Typography,
 } from "@mui/material";
 
@@ -47,12 +48,14 @@ import "./PayrollProcess.css";
 import "./PayrollProcess.refinement.css";
 import { Typography as MuiText } from "@mui/material";
 import { loadXlsx } from "../../../utils/exportLibraries";
+import { createBankSalarySheet } from "./bankSalaryExport";
 
 const EMPLOYEE_API = `${import.meta.env.VITE_EMPLOYEE_API_BASE_URL}/api/Employee`;
 const PAYROLL_API_BASE_URL = String(
     import.meta.env.VITE_PAYROLL_API_BASE_URL || ""
 ).replace(/\/+$/, "");
 const PAYROLL_API = `${PAYROLL_API_BASE_URL}/api`;
+const DOCUMENT_API_BASE_URL = String(import.meta.env.VITE_DOCUMENT_API_BASE_URL || "").replace(/\/+$/, "");
 
 const getMonthLabel = (date) =>
     date.toLocaleDateString("en-US", {
@@ -190,7 +193,7 @@ const normalizePayslip = (payslip) => {
         payslipNumber: getValue(payslip, "payslipNumber", "PayslipNumber") || "",
         payrollYear: Number(getValue(payslip, "payrollYear", "PayrollYear") || 0),
         payrollMonth: Number(getValue(payslip, "payrollMonth", "PayrollMonth") || 0),
-        employeeCode: getValue(payslip, "employeeCode", "EmployeeCode") || "",
+        AzureEmployeeId: getValue(payslip, "AzureEmployeeId", "AzureEmployeeId") || "",
         employeeName: getValue(payslip, "employeeName", "EmployeeName") || "",
         department: getValue(payslip, "department", "Department") || "",
         designation: getValue(payslip, "designation", "Designation") || "",
@@ -311,6 +314,11 @@ const PayrollProcess = () => {
     const [payrollRunError, setPayrollRunError] = useState("");
     const [payrollRunResult, setPayrollRunResult] = useState(null);
     const [exportMessage, setExportMessage] = useState("");
+    const [bankExportOpen, setBankExportOpen] = useState(false);
+    const [bankExportError, setBankExportError] = useState("");
+    const [bankExportOptions, setBankExportOptions] = useState({
+        activationDate: "", paymentMethod: "", debitAccount: "", savingsCode: "", currentCode: "",
+    });
 
     const getPayrollList = async (url) => {
         try {
@@ -688,6 +696,52 @@ const PayrollProcess = () => {
         }
     };
 
+    const handleBankSalaryExport = async () => {
+        if (!canExport || exporting) return;
+        setBankExportError("");
+        setExportMessage("");
+        if (!payrollProcessed || payslipsLoading) {
+            setBankExportError("Process payroll for every listed employee before downloading the bank payment file.");
+            return;
+        }
+        if (!DOCUMENT_API_BASE_URL) {
+            setBankExportError("The Document API URL is not configured for this frontend build.");
+            return;
+        }
+        setExporting(true);
+        try {
+            const payableEmployees = payrollEmployees.filter((employee) => Number(employee.payslip?.netSalary) > 0);
+            if (!payableEmployees.length) throw new Error("There are no positive net salary payments to export.");
+            const documentsById = {};
+            const missing = [];
+            await Promise.all(payableEmployees.map(async (employee) => {
+                try {
+                    const response = await axios.get(`${DOCUMENT_API_BASE_URL}/api/Document/employee/${employee.employeeId}`);
+                    const body = response?.data;
+                    documentsById[String(employee.employeeId)] = Array.isArray(body) ? body : body?.data || body?.items || [];
+                } catch (err) {
+                    if (err?.response?.status === 404) {
+                        documentsById[String(employee.employeeId)] = [];
+                    } else {
+                        missing.push(employee.name);
+                    }
+                }
+            }));
+            if (missing.length) throw new Error(`Could not load bank documents for: ${missing.join(", ")}. Try again.`);
+            const XLSX = await loadXlsx();
+            const worksheet = createBankSalarySheet(XLSX, payableEmployees, documentsById, bankExportOptions, selectedMonth);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+            XLSX.writeFile(workbook, `Salary_Bank_Format_${selectedMonth.replace(/\s+/g, "_")}.xlsx`);
+            setBankExportOpen(false);
+            setExportMessage(`Bank salary format exported for ${selectedMonth}: ${payableEmployees.length} payments.`);
+        } catch (err) {
+            setBankExportError(err?.message || "Unable to export the bank salary format.");
+        } finally {
+            setExporting(false);
+        }
+    };
+
     if (!canView) {
         return (
             <Box className="pr-payroll-process-page" sx={{ padding: "60px", textAlign: "center" }}>
@@ -750,7 +804,22 @@ const PayrollProcess = () => {
                             onClick={handleExportPayroll}
                             disabled={exporting}
                         >
-                            {exporting ? "Exporting…" : "Export Excel"}
+                            {exporting ? "Exporting…" : "Export Page Excel"}
+                        </Button>
+                    )}
+                    {canExport && (
+                        <Button
+                            className="pr-export-payroll-button"
+                            variant="outlined"
+                            startIcon={<FileDownloadOutlinedIcon />}
+                            onClick={() => {
+                                setBankExportError("");
+                                setBankExportOptions({ activationDate: "", paymentMethod: "", debitAccount: "", savingsCode: "", currentCode: "" });
+                                setBankExportOpen(true);
+                            }}
+                            disabled={exporting || payslipsLoading || !payrollEmployees.length}
+                        >
+                            Bank Salary Format
                         </Button>
                     )}
                     <Button
@@ -990,6 +1059,31 @@ const PayrollProcess = () => {
                 <DialogActions className="pr-dialog-actions">
                     <Button onClick={() => setRunDialogOpen(false)} variant="outlined" disabled={payrollRunning}>Cancel</Button>
                     <Button onClick={handleRunPayroll} variant="contained" startIcon={payrollRunning ? <CircularProgress size={16} color="inherit" /> : <PlayArrowIcon />} disabled={payrollRunning || !payrollEmployees.length}>{payrollRunning ? "Processing..." : "Run Payroll"}</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog className="pr-bank-salary-dialog" open={bankExportOpen && canExport} onClose={() => !exporting && setBankExportOpen(false)} fullWidth maxWidth="sm">
+                <DialogTitle>Download bank salary format</DialogTitle>
+                <DialogContent>
+                    <Typography sx={{ mb: 2 }}>
+                        {selectedMonth} processed net pay will be exported using approved employee bank documents.
+                        Enter the bank upload values before downloading. Review the file before submitting it to the bank.
+                    </Typography>
+                    <Stack spacing={2} sx={{ pt: 1 }}>
+                        <TextField label="Activation Date" type="date" value={bankExportOptions.activationDate} onChange={(event) => setBankExportOptions((old) => ({ ...old, activationDate: event.target.value }))} slotProps={{ inputLabel: { shrink: true } }} required fullWidth />
+                        <TextField label="Payment Method Name / Code" value={bankExportOptions.paymentMethod} onChange={(event) => setBankExportOptions((old) => ({ ...old, paymentMethod: event.target.value }))} required fullWidth />
+                        <TextField label="Debit Account No" value={bankExportOptions.debitAccount} onChange={(event) => setBankExportOptions((old) => ({ ...old, debitAccount: event.target.value }))} slotProps={{ htmlInput: { inputMode: "numeric" } }} required fullWidth />
+                        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                            <TextField label="Savings Account Type Code" value={bankExportOptions.savingsCode} onChange={(event) => setBankExportOptions((old) => ({ ...old, savingsCode: event.target.value }))} fullWidth />
+                            <TextField label="Current Account Type Code" value={bankExportOptions.currentCode} onChange={(event) => setBankExportOptions((old) => ({ ...old, currentCode: event.target.value }))} fullWidth />
+                        </Stack>
+                    </Stack>
+                    {bankExportError && <Alert severity="error" sx={{ mt: 2 }}>{bankExportError}</Alert>}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setBankExportOpen(false)} disabled={exporting}>Cancel</Button>
+                    <Button onClick={handleBankSalaryExport} variant="contained" disabled={exporting} startIcon={exporting ? <CircularProgress size={16} color="inherit" /> : <FileDownloadOutlinedIcon />}>
+                        {exporting ? "Preparing…" : "Download Excel"}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </Box>

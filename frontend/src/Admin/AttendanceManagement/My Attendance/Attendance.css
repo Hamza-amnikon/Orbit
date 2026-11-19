@@ -455,31 +455,7 @@
 
     border-radius: 50% !important;
 
-    background: #2f80ed !important;
-    color: #ffffff !important;
-
-    box-shadow: 0 3px 8px rgba(47, 128, 237, 0.22);
-
     box-sizing: border-box;
-}
-
-.calendar-day.today:hover {
-    background: #2674db !important;
-}
-
-.calendar-day.today .calendar-dot {
-    background: #ffffff !important;
-}
-
-/* =========================================================
-   SELECTED DAY
-   ========================================================= */
-
-.calendar-day.selected:not(.today) {
-    background: #edf4ff;
-
-    box-shadow:
-        inset 0 0 0 1px #b8d2fb;
 }
 
 /* =========================================================
@@ -522,13 +498,30 @@
     padding: 0 !important;
 }
 .calendar-day > span { font-size: 14px; line-height: 18px; font-weight: 600; }
-.calendar-day.selected:not(.today) { background:#eaf2ff; box-shadow:inset 0 0 0 1px #a9c7f7; color:#2458a6; }
+
+.calendar-day.present { --attendance-day-fill: var(--attendance-present-fill, #bbf0d2); --attendance-day-text: var(--attendance-present-text, #065437); }
+.calendar-day.half { --attendance-day-fill: var(--attendance-half-fill, #ffe1a3); --attendance-day-text: var(--attendance-half-text, #713703); }
+.calendar-day.absent { --attendance-day-fill: var(--attendance-absent-fill, #ffc9c6); --attendance-day-text: var(--attendance-absent-text, #881b20); }
+.calendar-day.leave { --attendance-day-fill: var(--attendance-leave-fill, #e2d6ff); --attendance-day-text: var(--attendance-leave-text, #5429a5); }
+.calendar-day.weekend { --attendance-day-fill: var(--attendance-off-fill, #e5eaf2); --attendance-day-text: var(--attendance-off-text, #475569); }
+
+.attendance-calendar-card .calendar-day:is(.present, .half, .absent, .leave, .weekend) {
+    background-color: var(--attendance-day-fill);
+    color: var(--attendance-day-text);
+}
+
+.attendance-calendar-card .calendar-day.today {
+    box-shadow: inset 0 0 0 1px var(--attendance-calendar-ring, #2563eb);
+}
+
+.attendance-calendar-card .calendar-day.selected {
+    box-shadow: inset 0 0 0 2px var(--attendance-calendar-ring, #2563eb);
+}
 
 /* =========================================================
    STATUS DOTS
    ========================================================= */
 
-.calendar-dot,
 .legend-dot {
     display: block;
 
@@ -644,6 +637,48 @@
     width: 100%;
     margin-top: 14px;
     overflow: hidden;
+}
+
+.attendance-history-filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--spark-border, #e6edf6);
+}
+
+.attendance-history-filters :is(.MuiTextField-root, .MuiPickersTextField-root) {
+    flex: 0 1 164px;
+    min-width: 0;
+}
+
+.attendance-history-filters :is(.MuiOutlinedInput-root, .MuiPickersOutlinedInput-root) {
+    min-height: 40px;
+}
+
+.attendance-history-filters .MuiSelect-select {
+    text-transform: capitalize;
+}
+
+.attendance-history-pagination {
+    border-top: 1px solid var(--spark-border, #e6edf6);
+}
+
+@media (max-width: 600px) {
+    .attendance-history-filters {
+        padding: 14px;
+    }
+
+    .attendance-history-filters :is(.MuiTextField-root, .MuiPickersTextField-root) {
+        flex: 1 1 132px;
+    }
+
+    .attendance-history-pagination .MuiTablePagination-toolbar {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        padding: 4px 8px;
+    }
 }
 
 /* =========================================================

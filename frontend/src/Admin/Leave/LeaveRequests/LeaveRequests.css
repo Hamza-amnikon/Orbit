@@ -1187,3 +1187,49 @@
 .leave-reject-dialog .MuiDialog-paper{width:min(600px,calc(100% - 32px));max-width:600px;margin:16px;border:1px solid #eadfe0;border-radius:16px;background:#fff;box-shadow:0 24px 70px rgba(45,25,30,.2);overflow:hidden}
 .leave-reject-dialog .MuiDialogContent-root{overflow-x:hidden}
 @media(max-width:600px){.leave-reject-dialog .MuiDialog-paper{width:calc(100% - 20px);margin:10px;border-radius:13px}}
+
+/* Compact leave details, with the same surface across the header, body and footer. */
+.leave-details-dialog .MuiDialog-paper{width:min(680px,calc(100% - 32px));max-width:680px;border:1px solid #dce5f0;border-radius:18px;background:#fff}
+.leave-details-dialog .leave-details-dialog-paper{background:#fff}
+.leave-details-dialog .leave-modal-header{display:flex;align-items:center;justify-content:space-between;min-height:0;padding:22px 26px;border-bottom:1px solid #e6ebf2;background:#fff}
+.leave-details-dialog .leave-details-title{gap:14px}
+.leave-details-dialog .leave-details-title-icon{width:46px;height:46px;flex-basis:46px;border-radius:12px;background:#e9f1ff;color:#3269e8}
+.leave-details-dialog .leave-details-title-icon svg{font-size:25px}
+.leave-details-dialog .leave-modal-header h2{font-size:21px;color:#172c4d}
+.leave-details-dialog .leave-modal-header p{margin-top:3px;font-size:13px;color:#667b98}
+.leave-details-dialog .leave-modal-close.MuiIconButton-root{width:34px;height:34px;align-self:flex-start;color:#667b98}
+.leave-details-dialog .leave-modal-body{max-height:min(68vh,620px);padding:22px 26px;background:#fff}
+.leave-details-dialog .leave-details-grid{gap:0 24px}
+.leave-details-dialog .leave-detail-item,.leave-details-dialog .leave-detail-item:hover{min-height:65px;gap:5px;padding:11px 0;border:0;border-bottom:1px solid #edf0f5;border-radius:0;background:transparent;box-shadow:none}
+.leave-details-dialog .leave-detail-item>span:first-child{font-size:11px;color:#7183a0}
+.leave-details-dialog .leave-detail-item strong{font-size:15px;font-weight:650;color:#182e50}
+.leave-details-dialog .leave-detail-notes-grid{gap:12px;margin-top:20px}
+.leave-details-dialog .leave-detail-notes-grid .leave-detail-section{min-height:90px;padding:15px 17px;border:1px solid #e3eaf4;border-radius:11px;background:#f6f8fc}
+.leave-details-dialog .leave-detail-section p{font-size:14px;font-weight:500;line-height:1.5}
+.leave-details-dialog .leave-modal-body>.leave-detail-section{margin-top:20px}
+.leave-details-dialog .leave-modal-actions{display:flex;justify-content:flex-start;min-height:0;padding:14px 26px;border-top:1px solid #e6ebf2;background:#fff}
+.leave-details-dialog .leave-modal-actions .MuiButton-root{min-width:94px;min-height:38px;border-radius:9px;font-size:13px}
+
+html[data-color-mode="dark"] .leave-details-dialog .MuiDialog-paper,
+html[data-color-mode="dark"] .leave-details-dialog .leave-details-dialog-paper,
+html[data-color-mode="dark"] .leave-details-dialog .leave-modal-header,
+html[data-color-mode="dark"] .leave-details-dialog .leave-modal-body,
+html[data-color-mode="dark"] .leave-details-dialog .leave-modal-actions{background:#0b0b0d !important;border-color:#2d2d31 !important;color:#f1f1f3 !important}
+html[data-color-mode="dark"] .leave-details-dialog .MuiDialog-paper,
+html[data-color-mode="dark"] .leave-details-dialog .leave-details-dialog-paper,
+html[data-color-mode="dark"] .leave-details-dialog .leave-modal-header,
+html[data-color-mode="dark"] .leave-details-dialog .leave-modal-body{background:#0b0b0d !important;border-color:#2d2d31 !important;color:#f1f1f3 !important}
+html[data-color-mode="dark"] .leave-details-dialog .leave-modal-header h2{color:#f3f6fc !important}
+html[data-color-mode="dark"] .leave-details-dialog .leave-modal-header p,
+html[data-color-mode="dark"] .leave-details-dialog .leave-modal-close.MuiIconButton-root{color:#a7b5cb !important}
+html[data-color-mode="dark"] .leave-details-dialog .leave-details-title-icon{background:#1e2e4b !important;color:#a9c8ff !important}
+html[data-color-mode="dark"] .leave-details-dialog .leave-detail-item,
+html[data-color-mode="dark"] .leave-details-dialog .leave-detail-item:hover{background:transparent !important;border:0 !important;border-bottom:1px solid #2d2d31 !important;box-shadow:none !important}
+html[data-color-mode="dark"] .leave-details-dialog .leave-detail-item>span:first-child,
+html[data-color-mode="dark"] .leave-details-dialog .leave-detail-notes-grid .leave-note-heading>span{color:#9baec9 !important}
+html[data-color-mode="dark"] .leave-details-dialog .leave-detail-item strong,
+html[data-color-mode="dark"] .leave-details-dialog .leave-detail-section p{color:#edf2fb !important}
+html[data-color-mode="dark"] .leave-details-dialog .leave-detail-notes-grid .leave-detail-section{background:#171719 !important;border:1px solid #333338 !important}
+html[data-color-mode="dark"] .leave-details-dialog .leave-modal-body>.leave-detail-section{background:transparent !important;border:0 !important}
+html[data-color-mode="dark"] .leave-details-dialog .leave-modal-actions .MuiButton-root{background:#171719 !important;border:1px solid #44444b !important;color:#f1f1f3 !important}
+@media(max-width:600px){.leave-details-dialog .leave-modal-header{padding:16px 18px}.leave-details-dialog .leave-modal-body{padding:12px 18px}.leave-details-dialog .leave-modal-actions{padding:12px 18px}.leave-details-dialog .leave-details-grid,.leave-details-dialog .leave-detail-notes-grid{grid-template-columns:1fr;gap:0}.leave-details-dialog .leave-detail-notes-grid{gap:10px}.leave-details-dialog .leave-detail-item{min-height:59px}.leave-details-dialog .leave-modal-header h2{font-size:18px}}

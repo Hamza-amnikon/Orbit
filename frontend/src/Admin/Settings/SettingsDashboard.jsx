@@ -8,6 +8,7 @@ import ProfileHeader from "./Profile/ProfileHeader/ProfileHeader";
 import ProfileStats from "./Profile/ProfileStats";
 import ProfileTabs from "./Profile/ProfileTabs";
 import ProfileInfo from "./Profile/ProfileInfo";
+import ProfileSkills from "./Profile/ProfileSkills";
 import EmploymentInfo from "./Profile/EmploymentInfo";
 import ContactInfo from "./Profile/ContactInfo";
 import EmergencyContact from "./Profile/EmergencyContact";
@@ -566,21 +567,7 @@ export default function SettingsDashboard() {
                 SKILLS
             ================================================= */}
 
-            {activeTab === "skills" && (
-
-                <MuiLayoutBox className="coming-soon-card" component="div">
-
-                    <MuiText component="h2" variant="h5">
-                        Page is under construction
-                    </MuiText>
-
-                    <MuiText component="p" variant="body1">
-                        Skills and certifications are being prepared for your profile. Please check back soon.
-                    </MuiText>
-
-                </MuiLayoutBox>
-
-            )}
+            {activeTab === "skills" && <ProfileSkills />}
 
 
             {/* =================================================

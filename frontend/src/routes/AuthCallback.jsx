@@ -1,9 +1,10 @@
 import { MuiButtonMigration } from "../components/ui/MuiCompat.jsx";
+import SparkLoadingScreen from "../components/ui/SparkLoadingScreen.jsx";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
-import { Box as MuiLayoutBox, GlobalStyles as MuiGlobalStyles, Typography as MuiText } from "@mui/material";
+import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 
 function AuthCallback() {
 
@@ -125,7 +126,7 @@ function AuthCallback() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    background: "#f5f7fb",
+                    background: "var(--spark-page, #f5f7fb)",
                     padding: "24px"
                 }}
              component="div">
@@ -134,7 +135,8 @@ function AuthCallback() {
                     style={{
                         width: "100%",
                         maxWidth: "500px",
-                        background: "#ffffff",
+                        background: "var(--spark-surface-raised, #ffffff)",
+                        border: "1px solid var(--spark-border, #e2e8f0)",
                         borderRadius: "16px",
                         padding: "40px",
                         textAlign: "center",
@@ -146,7 +148,7 @@ function AuthCallback() {
                     <MuiText
                         style={{
                             marginBottom: "12px",
-                            color: "#111827"
+                            color: "var(--spark-text, #111827)"
                         }}
                      component="h2" variant="h5">
                         Authentication Failed
@@ -155,7 +157,7 @@ function AuthCallback() {
 
                     <MuiText
                         style={{
-                            color: "#6b7280",
+                            color: "var(--spark-muted, #6b7280)",
                             marginBottom: "24px"
                         }}
                      component="p" variant="body1">
@@ -197,68 +199,10 @@ function AuthCallback() {
     */
 
     return (
-
-        <MuiLayoutBox
-            style={{
-                minHeight: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#f5f7fb"
-            }}
-         component="div">
-
-            <MuiLayoutBox
-                style={{
-                    textAlign: "center"
-                }}
-             component="div">
-
-                <MuiLayoutBox
-                    style={{
-                        width: "38px",
-                        height: "38px",
-                        border: "4px solid #e5e7eb",
-                        borderTopColor: "#2563eb",
-                        borderRadius: "50%",
-                        animation:
-                            "auth-callback-spin 0.8s linear infinite",
-                        margin: "0 auto 20px"
-                    }}
-                 component="div"/>
-
-                <MuiText
-                    style={{
-                        margin: 0,
-                        color: "#111827"
-                    }}
-                 component="h2" variant="h5">
-                    Signing you in...
-                </MuiText>
-
-
-                <MuiText
-                    style={{
-                        marginTop: "8px",
-                        color: "#6b7280"
-                    }}
-                 component="p" variant="body1">
-                    Loading your employee profile.
-                </MuiText>
-
-            </MuiLayoutBox>
-
-
-            <MuiGlobalStyles
-                styles={{
-                    "@keyframes auth-callback-spin": {
-                        to: { transform: "rotate(360deg)" },
-                    },
-                }}
-            />
-
-        </MuiLayoutBox>
-
+        <SparkLoadingScreen
+            title="Signing you in"
+            description="Loading your employee profile."
+        />
     );
 
 }

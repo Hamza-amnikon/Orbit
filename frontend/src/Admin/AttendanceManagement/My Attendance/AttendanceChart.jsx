@@ -33,6 +33,7 @@ import { getProfile } from "../../Services/ProfileService";
 import LeaveService from "../../Services/LeaveService";
 import { Box as MuiLayoutBox, Typography as MuiText } from "@mui/material";
 import { attendanceCalendarDate, attendanceDateKey } from "../attendanceDate";
+import { attendanceByDate, getAttendanceSummaryStatus } from "../attendanceSummary";
 
 
 /* =========================================================
@@ -132,24 +133,13 @@ function AttendanceChart({
        HELPERS
     ========================================================= */
 
-    const getDate = (record) => {
-
-        return (
-            record?.attendanceDate ??
-            record?.date ??
-            record?.AttendanceDate ??
-            record?.Date ??
-            null
-        );
-
-    };
-
-
     const getStatus = (record) => {
 
         return (
             record?.status ??
             record?.Status ??
+            record?.attendanceStatus ??
+            record?.AttendanceStatus ??
             ""
         );
 
@@ -200,17 +190,6 @@ function AttendanceChart({
 
 
         return Number(value) || 0;
-
-    };
-
-
-    const normalizeStatus = (status) => {
-
-        return String(status || "")
-            .trim()
-            .toLowerCase()
-            .replace(/[_-]/g, " ")
-            .replace(/\s+/g, " ");
 
     };
 
@@ -266,14 +245,14 @@ function AttendanceChart({
 
     /* =========================================================
        LOAD ASSIGNED SHIFT
-       
+
        Shift API:
        https://sparkapi.amnikontechnologies.com:7292/api/Shift
-       
+
        The API response contains:
-       
+
        employeeId
-       employeeCode
+       AzureEmployeeId
        employeeName
        weeklyOff1
        weeklyOff2
@@ -330,8 +309,8 @@ function AttendanceChart({
 
 
                 const profileCode =
-                    profile?.employeeCode ??
-                    profile?.EmployeeCode;
+                    profile?.AzureEmployeeId ??
+                    profile?.AzureEmployeeId;
 
 
                 const profileName =
@@ -352,7 +331,7 @@ function AttendanceChart({
                             profileEmployeeId,
                         azureEmployeeId:
                             profileAzureEmployeeId,
-                        employeeCode:
+                        AzureEmployeeId:
                             profileCode,
                         employeeName:
                             profileName
@@ -439,12 +418,12 @@ function AttendanceChart({
 
                 /* =================================================
                    MATCH EMPLOYEE
-                   
+
                    Priority:
-                   
+
                    1. Employee ID
                    2. Azure Employee ID
-                   3. Employee Code
+                   3. Employee ID
                    4. Employee Name
                 ================================================= */
 
@@ -466,8 +445,8 @@ function AttendanceChart({
 
 
                             const shiftCode =
-                                item?.employeeCode ??
-                                item?.EmployeeCode;
+                                item?.AzureEmployeeId ??
+                                item?.AzureEmployeeId;
 
 
                             const shiftName =
@@ -512,7 +491,7 @@ function AttendanceChart({
                             }
 
 
-                            /* Employee Code */
+                            /* Employee ID */
 
                             if (
                                 profileCode &&
@@ -862,7 +841,7 @@ function AttendanceChart({
 
     /* =========================================================
        WEEKLY OFF DAYS
-       
+
        SOURCE OF TRUTH:
        Shift API weeklyOff1 / weeklyOff2
     ========================================================= */
@@ -1053,83 +1032,17 @@ function AttendanceChart({
        ATTENDANCE MAP
     ========================================================= */
 
-    const attendanceMap = useMemo(() => {
-
-        const map = new Map();
-
-
-        if (
-            !Array.isArray(attendance)
-        ) {
-
-            return map;
-
-        }
-
-
-        attendance.forEach(
-            (record) => {
-
-                const dateValue =
-                    getDate(record);
-
-
-                if (!dateValue) {
-                    return;
-                }
-
-                const calendarKey = attendanceDateKey(dateValue);
-                if (calendarKey) {
-                    map.set(calendarKey, record);
-                    return;
-                }
-
-
-                const date =
-                    new Date(dateValue);
-
-
-                if (
-                    Number.isNaN(
-                        date.getTime()
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                const key =
-                    `${date.getFullYear()}-${String(
-                        date.getMonth() + 1
-                    ).padStart(2, "0")}-${String(
-                        date.getDate()
-                    ).padStart(2, "0")}`;
-
-
-                map.set(
-                    key,
-                    record
-                );
-
-            }
-        );
-
-
-        return map;
-
-    }, [attendance]);
+    const attendanceMap = useMemo(() => attendanceByDate(attendance), [attendance]);
 
 
     /* =========================================================
        CHART DATA
-       
+
        IMPORTANT:
-       
+
        Weekend:
            Comes from Shift API.
-       
+
        Completed assigned shifts without a record are shown as
        absent while the backend catches up. This does not create
        or change an attendance record.
@@ -1199,7 +1112,7 @@ function AttendanceChart({
 
                 /* =================================================
                    WEEKEND
-                   
+
                    Shift API decides this.
                 ================================================= */
 
@@ -1254,7 +1167,7 @@ function AttendanceChart({
 
                 /* =================================================
                    NO ATTENDANCE RECORD
-                   
+
                    Approved leave takes precedence. A completed
                    assigned work shift with no record is absent.
                 ================================================= */
@@ -1333,10 +1246,7 @@ function AttendanceChart({
                     getStatus(record);
 
 
-                const status =
-                    normalizeStatus(
-                        rawStatus
-                    );
+                const { status, category } = getAttendanceSummaryStatus(record);
 
 
                 const hours =
@@ -1345,75 +1255,24 @@ function AttendanceChart({
 
                 /* =================================================
                    ABSENT
-                   
+
                    ONLY Attendance API.
                 ================================================= */
 
-                const isAbsent =
-                    status === "absent" ||
-                    status === "absent day" ||
-                    status === "absentday" ||
-                    record?.isAbsent === true ||
-                    record?.IsAbsent === true;
+                const isWeeklyOff = category === "weekend";
+                const isHoliday = category === "holiday";
+                const isLeave = !isWeeklyOff && !isHoliday && (category === "leave" || Boolean(approvedLeave));
+                const isAbsent = category === "absent" && !isLeave;
 
 
-                /* =================================================
-                   LEAVE
-
-                   Broadened to match any status containing
-                   "leave" (e.g. "Leave", "On Leave",
-                   "Leave Approved", "Casual Leave",
-                   "Sick Leave"), plus a boolean-flag fallback
-                   in case the API also/instead sends isLeave.
-                ================================================= */
-
-                const isLeave =
-                    status.includes("leave") ||
-                    record?.isLeave === true ||
-                    record?.IsLeave === true ||
-                    Boolean(approvedLeave);
-
-
-                /* =================================================
-                   HALF DAY
-                ================================================= */
-
-                const isHalfDay =
-                    status === "half day" ||
-                    status === "halfday";
-
-
-                /* =================================================
-                   WFH
-                ================================================= */
-
-                const isWfh =
-                    status === "wfh" ||
-                    status ===
-                        "work from home";
-
-                const isWeeklyOff =
-                    status === "off" ||
-                    status === "week off" ||
-                    status === "weekly off" ||
-                    status === "weekend";
-
-
-                /* =================================================
-                   PRESENT
-                ================================================= */
-
-                const isPresent =
-                    status === "present" ||
-                    status === "present day" ||
-                    status === "on time" ||
-                    isHalfDay ||
-                    isWfh;
+                const isHalfDay = category === "halfDay" && !isLeave;
+                const isPresent = !isLeave && (category === "present" || isHalfDay);
+                const isWfh = isPresent && (status === "wfh" || status === "work from home");
 
 
                 let finalStatus =
                     rawStatus ||
-                    "Present";
+                    "Not Marked";
 
 
                 if (isAbsent) {
@@ -1427,9 +1286,7 @@ function AttendanceChart({
                 }
                 else if (isLeave) {
 
-                    finalStatus =
-                        rawStatus ||
-                        "Leave";
+                    finalStatus = "Leave";
 
                 }
                 else if (isHalfDay) {
@@ -1444,7 +1301,7 @@ function AttendanceChart({
                         "WFH";
 
                 }
-                else if (isPresent) {
+                else if (isPresent && status !== "early" && status !== "late") {
 
                     finalStatus =
                         "Present";
@@ -1471,6 +1328,10 @@ function AttendanceChart({
                 }
 
                 else if (isWeeklyOff) {
+                    displayHours = 0.65;
+                }
+
+                else if (isHoliday) {
                     displayHours = 0.65;
                 }
 
@@ -1727,7 +1588,7 @@ function AttendanceChart({
         /*
          * PRESENT = GREEN
          */
-        return "#22c55e";
+        return entry.isPresent ? "#22c55e" : "#94a3b8";
 
     };
 
@@ -1846,7 +1707,7 @@ function AttendanceChart({
 
                     <MuiLayoutBox className="attendance-tooltip-message" component="div">
 
-                         Absent 
+                         Absent
 
                     </MuiLayoutBox>
 
@@ -1857,7 +1718,7 @@ function AttendanceChart({
 
                     <MuiLayoutBox className="attendance-tooltip-message" component="div">
 
-                        Weekly off 
+                        Weekly off
 
                     </MuiLayoutBox>
 
@@ -2119,8 +1980,8 @@ function AttendanceChart({
                                                 textAnchor="middle"
                                                 fill={
                                                     weekend
-                                                        ? "#94a3b8"
-                                                        : "#64748b"
+                                                        ? "var(--attendance-chart-weekend, #94a3b8)"
+                                                        : "var(--attendance-chart-muted, #64748b)"
                                                 }
                                                 fontSize={10}
                                                 fontWeight={500}
@@ -2136,8 +1997,8 @@ function AttendanceChart({
                                                 textAnchor="middle"
                                                 fill={
                                                     weekend
-                                                        ? "#94a3b8"
-                                                        : "#1e293b"
+                                                        ? "var(--attendance-chart-weekend, #94a3b8)"
+                                                        : "var(--attendance-chart-text, #1e293b)"
                                                 }
                                                 fontSize={10}
                                                 fontWeight={700}

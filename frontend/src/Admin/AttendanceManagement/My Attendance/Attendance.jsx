@@ -8,6 +8,7 @@ import {
     Alert,
     Box,
     Button,
+    ButtonBase,
     Chip,
     CircularProgress,
     Paper,
@@ -20,8 +21,13 @@ import {
     DialogContent,
     DialogActions,
     TextField,
+    TablePagination,
     Tooltip,
 } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs from "dayjs";
 
 import {
     AccessTimeOutlined,
@@ -49,6 +55,25 @@ import { exportRowsToExcel } from "../../../utils/exportExcel";
 import { getAttendanceStatusForDuration } from "../AttendanceLogs/attendanceRules";
 import { attendanceCalendarDate, attendanceDateKey } from "../attendanceDate";
 import { formatIndiaDate } from "../../../utils/indiaTime";
+import { getAttendanceSummaryStatus } from "../attendanceSummary";
+
+const emptyHistoryFilters = { from: "", to: "", status: "" };
+const calendarStatusLabels = { present: "Present", half: "Half Day", absent: "Absent", leave: "Leave", weekend: "Weekly Off" };
+
+const getStatus = (item) => getAttendanceStatusForDuration(
+    item?.status || item?.attendanceStatus || item?.Status || "Not Marked",
+    item?.checkIn || item?.checkInTime || item?.inTime,
+    item?.checkOut || item?.checkOutTime || item?.outTime,
+    item?.totalHours
+);
+
+const getDateValue = (item) => item?.attendanceDate || item?.date || item?.AttendanceDate || item?.createdAt;
+
+const historyStatusKey = (status) => {
+    const key = String(status).trim().toLowerCase().replace(/[_-]/g, " ").replace(/\s+/g, " ");
+    if (["off", "week off", "weekly off", "weekend"].includes(key)) return "weekly off";
+    return key === "halfday" ? "half day" : key;
+};
 
 
 function Attendance() {
@@ -81,6 +106,40 @@ function Attendance() {
     const [regularizationForm, setRegularizationForm] = useState({ checkIn: "", checkOut: "", reason: "" });
     const [submittingRegularization, setSubmittingRegularization] = useState(false);
     const [regularizationMessage, setRegularizationMessage] = useState("");
+    const [historyFilters, setHistoryFilters] = useState(emptyHistoryFilters);
+    const [historyPage, setHistoryPage] = useState(0);
+    const [historyPageSize, setHistoryPageSize] = useState(10);
+
+    const historyRecords = useMemo(() => attendance.map((item) => ({
+        item,
+        date: attendanceDateKey(getDateValue(item)),
+        status: historyStatusKey(getStatus(item)),
+    })).sort((a, b) => b.date.localeCompare(a.date)), [attendance]);
+
+    const historyStatuses = useMemo(() => [...new Set([
+        ...historyRecords.map((record) => record.status), historyFilters.status,
+    ])].filter(Boolean).sort(), [historyRecords, historyFilters.status]);
+    const invalidHistoryRange = Boolean(historyFilters.from && historyFilters.to && historyFilters.from > historyFilters.to);
+    const matchingHistory = invalidHistoryRange ? [] : historyRecords.filter(({ date, status }) => (
+        (!historyFilters.from || date >= historyFilters.from) &&
+        (!historyFilters.to || (date && date <= historyFilters.to)) &&
+        (!historyFilters.status || status === historyFilters.status)
+    ));
+    const visibleHistoryPage = historyPageSize === -1 ? 0 : Math.min(
+        historyPage, Math.max(0, Math.ceil(matchingHistory.length / historyPageSize) - 1)
+    );
+    const visibleHistory = historyPageSize === -1 ? matchingHistory : matchingHistory.slice(
+        visibleHistoryPage * historyPageSize, (visibleHistoryPage + 1) * historyPageSize
+    );
+    const hasHistoryFilters = Object.values(historyFilters).some(Boolean);
+    const updateHistoryFilter = (key, value) => {
+        setHistoryFilters((filters) => ({ ...filters, [key]: value }));
+        setHistoryPage(0);
+    };
+    const clearHistoryFilters = () => {
+        setHistoryFilters(emptyHistoryFilters);
+        setHistoryPage(0);
+    };
 
     const handleExport = async () => {
         try {
@@ -99,11 +158,11 @@ function Attendance() {
        LOAD ATTENDANCE
     ========================================================= */
 
-    const loadAttendance = async () => {
+    const loadAttendance = async (showLoading = true) => {
 
         try {
 
-            setLoading(true);
+            if (showLoading) setLoading(true);
             setError("");
 
             const employee = await getProfile();
@@ -168,7 +227,7 @@ function Attendance() {
                     employee?.azureEmployeeID;
 
                 const profileCode =
-                    employee?.employeeCode;
+                    employee?.AzureEmployeeId;
 
                 const profileName =
                     employee?.displayName ||
@@ -239,7 +298,7 @@ function Attendance() {
 
                         if (
                             profileCode &&
-                            normalizeIdentity(shift?.employeeCode) ===
+                            normalizeIdentity(shift?.AzureEmployeeId) ===
                                 normalizeIdentity(profileCode)
                         ) {
                             score += 20;
@@ -376,13 +435,15 @@ function Attendance() {
                 "Unable to load attendance."
             );
 
-            setAttendance([]);
-            setTodayAttendance(null);
+            if (showLoading) {
+                setAttendance([]);
+                setTodayAttendance(null);
+            }
 
         }
         finally {
 
-            setLoading(false);
+            if (showLoading) setLoading(false);
 
         }
 
@@ -470,7 +531,7 @@ function Attendance() {
 
         loadAttendance();
         const refreshWhenVisible = () => {
-            if (document.visibilityState === "visible") loadAttendance();
+            if (document.visibilityState === "visible") loadAttendance(false);
         };
         const timer = window.setInterval(refreshWhenVisible, 30000);
         document.addEventListener("visibilitychange", refreshWhenVisible);
@@ -484,19 +545,6 @@ function Attendance() {
     /* =========================================================
        HELPERS
     ========================================================= */
-
-    const getStatus = (item) => {
-
-        const status = item?.status || item?.attendanceStatus || "Not Marked";
-        return getAttendanceStatusForDuration(
-            status,
-            item?.checkIn || item?.checkInTime || item?.inTime,
-            item?.checkOut || item?.checkOutTime || item?.outTime,
-            item?.totalHours
-        );
-
-    };
-
 
     const getCheckIn = (item) => {
 
@@ -522,17 +570,8 @@ function Attendance() {
     };
 
 
-    const getDateValue = (item) => {
-
-        return (
-            item?.attendanceDate ||
-            item?.date ||
-            item?.createdAt
-        );
-
-    };
-
     const parseAttendanceCalendarDate = attendanceCalendarDate;
+
 
 
     const getDate = (item) => {
@@ -856,41 +895,9 @@ function Attendance() {
 
         }
 
-        const status =
-            String(
-                getStatus(record)
-            ).toLowerCase();
-
-        // Early and Late are attendance classifications, not non-attendance
-        // states. Keep their detailed labels in the log, but mark those days
-        // as Present on the calendar.
-        if (
-            status.includes("present") ||
-            status.includes("early") ||
-            status.includes("late")
-        ) {
-            return "present";
-        }
-
-        if (
-            status.includes("absent")
-        ) {
-            return "absent";
-        }
-
-        if (
-            status.includes("half")
-        ) {
-            return "half";
-        }
-
-        if (
-            status.includes("leave")
-        ) {
-            return "leave";
-        }
-
-        return "";
+        const { category } = getAttendanceSummaryStatus({ ...record, status: getStatus(record) });
+        if (category === "halfDay") return "half";
+        return calendarStatusLabels[category] ? category : "";
 
     };
 
@@ -1103,9 +1110,7 @@ function Attendance() {
                         startIcon={
                             <RefreshOutlined />
                         }
-                        onClick={
-                            loadAttendance
-                        }
+                        onClick={() => loadAttendance()}
                         className="attendance-refresh-button"
                     >
                         Refresh
@@ -1382,8 +1387,12 @@ function Attendance() {
                                         item.day
                                     );
                                 return (
-                                    <MuiButtonMigration
+                                    <ButtonBase
                                         key={index}
+                                        type="button"
+                                        aria-label={`${item.day}, ${calendarStatusLabels[status] ?? "No attendance status"}`}
+                                        aria-current={isToday(item.day) ? "date" : undefined}
+                                        aria-pressed={isSelected(item.day)}
                                         className={`
                                             calendar-day
                                             ${status}
@@ -1404,22 +1413,7 @@ function Attendance() {
                                             {item.day}
                                         </MuiText>
 
-                                        {status === "present" && (
-                                            <MuiLayoutBox className="calendar-dot present-dot" component="span" />
-                                        )}
-
-                                        {status === "absent" && (
-                                            <MuiLayoutBox className="calendar-dot absent-dot" component="span" />
-                                        )}
-
-                                        {status === "half" && (
-                                            <MuiLayoutBox className="calendar-dot half-dot" component="span" />
-                                        )}
-
-                                        {status === "leave" && (
-                                            <MuiLayoutBox className="calendar-dot leave-dot" component="span" />
-                                        )}
-                                    </MuiButtonMigration>
+                                    </ButtonBase>
                                 );
 
                             }
@@ -1448,6 +1442,11 @@ function Attendance() {
                         <MuiText component="span" variant="inherit">
                             <MuiLayoutBox className="legend-dot weekend-dot"  component="span"/>
                             Weekly Off
+                        </MuiText>
+
+                        <MuiText component="span" variant="inherit">
+                            <MuiLayoutBox className="legend-dot leave-dot" component="span" />
+                            Leave
                         </MuiText>
 
                     </Box>
@@ -1633,25 +1632,66 @@ function Attendance() {
                         <Box>
 
                         <Typography>
-                            Recent Attendance
+                            Attendance History
                         </Typography>
 
                         <MuiText component="span" variant="inherit">
-                            Your latest attendance records
+                            Browse your attendance records
                         </MuiText>
                         </Box>
 
                     </Box>
 
                     <Chip
-                        label={`${attendance.length} Records`}
+                        label={hasHistoryFilters ? `${matchingHistory.length} of ${attendance.length} records` : `${attendance.length} records`}
                         className="record-count-chip"
                     />
 
                 </Box>
 
+                <Box className="attendance-history-filters" role="group" aria-label="Attendance history filters">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="From date"
+                            format="DD-MM-YYYY"
+                            value={historyFilters.from ? dayjs(historyFilters.from) : null}
+                            onChange={(value) => {
+                                if (value === null || value.isValid()) updateHistoryFilter("from", value?.format("YYYY-MM-DD") ?? "");
+                            }}
+                            slotProps={{ textField: { size: "small", error: invalidHistoryRange || undefined },
+                                popper: { className: "attendance-date-popover" }, dialog: { className: "attendance-date-popover" } }}
+                        />
+                        <DatePicker
+                            label="To date"
+                            format="DD-MM-YYYY"
+                            value={historyFilters.to ? dayjs(historyFilters.to) : null}
+                            onChange={(value) => {
+                                if (value === null || value.isValid()) updateHistoryFilter("to", value?.format("YYYY-MM-DD") ?? "");
+                            }}
+                            slotProps={{ textField: { size: "small", error: invalidHistoryRange || undefined },
+                                popper: { className: "attendance-date-popover" }, dialog: { className: "attendance-date-popover" } }}
+                        />
+                    </LocalizationProvider>
+                    <TextField
+                        select
+                        label="Status"
+                        size="small"
+                        value={historyFilters.status}
+                        onChange={(event) => updateHistoryFilter("status", event.target.value)}
+                        slotProps={{ inputLabel: { shrink: true }, select: { displayEmpty: true,
+                            MenuProps: { className: "attendance-history-status-menu" } } }}
+                    >
+                        <MenuItem value="">All statuses</MenuItem>
+                        {historyStatuses.map((status) => (
+                            <MenuItem key={status} value={status} sx={{ textTransform: "capitalize" }}>
+                                {status}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <Button onClick={clearHistoryFilters} disabled={!hasHistoryFilters}>Clear filters</Button>
+                </Box>
 
-                {attendance.length === 0 ? (
+                {matchingHistory.length === 0 ? (
 
                     <Box className="attendance-empty">
 
@@ -1660,18 +1700,20 @@ function Attendance() {
                         </Box>
 
                         <MuiText component="strong" variant="inherit">
-                            No attendance records
+                            {invalidHistoryRange ? "Check the date range" : hasHistoryFilters ? "No matching records" : "No attendance records"}
                         </MuiText>
 
                         <MuiText component="span" variant="inherit">
-                            There are no attendance records
-                            available for your account.
+                            {invalidHistoryRange ? "The from date must be on or before the to date."
+                                : hasHistoryFilters ? "Try a different date range or status."
+                                : "There are no attendance records available for your account."}
                         </MuiText>
 
                     </Box>
 
                 ) : (
 
+                    <>
                     <Box className="attendance-table-wrapper">
 
                         <MuiTableMigration className="attendance-table">
@@ -1701,10 +1743,8 @@ function Attendance() {
 
                             <MuiTableBodyMigration>
 
-                                {attendance
-                                    .slice(0, 10)
-                                    .map(
-                                        (item, index) => {
+                                {visibleHistory.map(
+                                        ({ item }, index) => {
 
                                             const status =
                                                 getStatus(item);
@@ -1837,6 +1877,20 @@ function Attendance() {
                         </MuiTableMigration>
 
                     </Box>
+                    <TablePagination
+                        component="div"
+                        className="attendance-history-pagination"
+                        count={matchingHistory.length}
+                        page={visibleHistoryPage}
+                        rowsPerPage={historyPageSize}
+                        rowsPerPageOptions={[10, 25, 50, 100, { value: -1, label: "All" }]}
+                        onPageChange={(_, page) => setHistoryPage(page)}
+                        onRowsPerPageChange={(event) => {
+                            setHistoryPageSize(Number(event.target.value));
+                            setHistoryPage(0);
+                        }}
+                    />
+                    </>
 
                 )}
 

@@ -24,7 +24,7 @@ export default function AddAttendanceDialog({ open, onClose, onSaved }) {
 
     azureEmployeeId: "",
 
-    employeeCode: "",
+
 
     employeeName: "",
 
@@ -77,8 +77,6 @@ export default function AddAttendanceDialog({ open, onClose, onSaved }) {
       console.log("Status:", error.response?.status);
 
       console.log("Response:", error.response?.data);
-
-      console.log("Payload:", payload);
     } finally {
       setEmployeeLoading(false);
     }
@@ -108,9 +106,8 @@ const handleChange = (e) => {
 
       employeeId: selectedEmployee.employeeId,
 
-      azureEmployeeId: selectedEmployee.azureEmployeeId,
+      azureEmployeeId: selectedEmployee.azureEmployeeId ?? selectedEmployee.AzureEmployeeId,
 
-      employeeCode: selectedEmployee.employeeCode,
 
       employeeName: selectedEmployee.employeeName,
 
@@ -240,7 +237,6 @@ const handleChange = (e) => {
 
         azureEmployeeId: form.azureEmployeeId,
 
-        employeeCode: form.employeeCode,
 
         employeeName: form.employeeName,
 
@@ -278,8 +274,6 @@ const handleChange = (e) => {
       console.log("Status:", error.response?.status);
 
       console.log("Response:", error.response?.data);
-
-      console.log("Payload:", payload);
     }
   };
 
@@ -319,7 +313,7 @@ const handleChange = (e) => {
                     key={employee.employeeId}
                     value={employee.employeeId}
                   >
-                    {employee.employeeCode}
+                    {employee.azureEmployeeId ?? employee.AzureEmployeeId}
                     {" - "}
                     {employee.employeeName}
                   </MenuItem>
