@@ -81,7 +81,7 @@
 
 .team-attendance-filter-card.MuiPaper-root {
   display: grid;
-  grid-template-columns: minmax(240px, 2fr) repeat(3, minmax(130px, 1fr)) auto;
+  grid-template-columns: minmax(220px, 2fr) repeat(4, minmax(130px, 1fr)) auto;
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;

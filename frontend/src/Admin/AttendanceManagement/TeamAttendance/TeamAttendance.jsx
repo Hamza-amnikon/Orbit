@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Alert,
@@ -16,13 +16,17 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
   TextField,
   Typography,
 } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
-import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs from "dayjs";
 import Groups2RoundedIcon from "@mui/icons-material/Groups2Rounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
@@ -35,11 +39,14 @@ import AttendanceService from "../services/AttendanceService";
 import HierarchyService from "../services/HierarchyService";
 import { exportRowsToExcel } from "../../../utils/exportExcel";
 import { getAttendanceStatusForDuration } from "../AttendanceLogs/attendanceRules";
+import { attendanceCalendarDate, attendanceDateKey } from "../attendanceDate";
 import EditAttendanceDialog from "../AttendanceLogs/EditAttendanceDialog";
 import "./TeamAttendance.css";
 
 const TEAM_ROUTE = "/attendance/team-logs";
 const EXISTING_LOGS_ROUTE = "/attendance/logs";
+const currentMonth = () => attendanceDateKey(new Date()).slice(0, 7);
+const pickerSlotProps = { textField: { fullWidth: true }, popper: { className: "attendance-date-popover" } };
 
 const valueOf = (row, camelCase, pascalCase) => row?.[camelCase] ?? row?.[pascalCase];
 
@@ -74,7 +81,7 @@ const getSubordinateIds = (hierarchy, managerId) => {
 
 const formatDate = (value) => {
   if (!value) return "—";
-  const date = new Date(value);
+  const date = attendanceCalendarDate(value);
   return Number.isNaN(date.getTime())
     ? "—"
     : date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
@@ -99,6 +106,7 @@ export default function TeamAttendance() {
   const { employeeId, hasPermission } = useAuth();
   const canView = hasPermission(TEAM_ROUTE, "view") || hasPermission(EXISTING_LOGS_ROUTE, "view");
   const canExport = hasPermission(TEAM_ROUTE, "export") || hasPermission(EXISTING_LOGS_ROUTE, "export");
+
   const canEdit = hasPermission(TEAM_ROUTE, "edit") || hasPermission(EXISTING_LOGS_ROUTE, "edit");
 
   const [rows, setRows] = useState([]);
@@ -108,13 +116,21 @@ export default function TeamAttendance() {
   const [search, setSearch] = useState("");
   const [shift, setShift] = useState("");
   const [status, setStatus] = useState("");
+  const [month, setMonth] = useState(currentMonth);
   const [date, setDate] = useState("");
   const [editingAttendance, setEditingAttendance] = useState(null);
   const [saveMessage, setSaveMessage] = useState("");
+  const [refreshVersion, setRefreshVersion] = useState(0);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const monthStart = dayjs(`${month}-01`);
 
-  const loadTeamAttendance = useCallback(async () => {
+  useEffect(() => {
+    if (!canView) return;
+
+    let active = true;
     const currentEmployeeId = Number(employeeId);
-    if (!Number.isFinite(currentEmployeeId) || currentEmployeeId <= 0) {
+    if (!Number.isSafeInteger(currentEmployeeId) || currentEmployeeId <= 0) {
       setRows([]);
       setMemberCount(0);
       setError("Your employee profile could not be matched to the reporting hierarchy.");
@@ -122,48 +138,55 @@ export default function TeamAttendance() {
       return;
     }
 
-    setLoading(true);
-    setError("");
-    try {
-      const [hierarchyResult, attendanceResult] = await Promise.all([
-        HierarchyService.getHierarchy(),
-        date ? AttendanceService.getByDate(date) : AttendanceService.getAll(),
-      ]);
-      const hierarchy = Array.isArray(hierarchyResult) ? hierarchyResult : [];
-      const attendance = Array.isArray(attendanceResult) ? attendanceResult : [];
-      const subordinateIds = getSubordinateIds(hierarchy, currentEmployeeId);
-      const teamAttendance = attendance
-        .filter((item) => subordinateIds.has(Number(valueOf(item, "employeeId", "EmployeeId"))))
-        .map((item) => ({
-          ...item,
-          status: getAttendanceStatusForDuration(
-            valueOf(item, "status", "Status"),
-            valueOf(item, "checkIn", "CheckIn"),
-            valueOf(item, "checkOut", "CheckOut"),
-            valueOf(item, "totalHours", "TotalHours"),
-          ),
-        }))
-        .sort((left, right) => new Date(valueOf(right, "attendanceDate", "AttendanceDate") ?? 0) - new Date(valueOf(left, "attendanceDate", "AttendanceDate") ?? 0));
+    const loadTeamAttendance = async () => {
+      setLoading(true);
+      setError("");
+      const start = dayjs(`${month}-01`);
+      try {
+        const [hierarchyResult, attendanceResult] = await Promise.all([
+          HierarchyService.getHierarchy(),
+          date
+            ? AttendanceService.getByDate(date)
+            : AttendanceService.getByDateRange(start.format("YYYY-MM-DD"), start.add(1, "month").format("YYYY-MM-DD")),
+        ]);
+        if (!active) return;
 
-      setMemberCount(subordinateIds.size);
-      setRows(teamAttendance);
-    } catch (loadError) {
-      console.error("Team attendance load error:", loadError);
-      setError("Team attendance could not be loaded. Check the hierarchy and attendance services, then refresh.");
-      setRows([]);
-      setMemberCount(0);
-    } finally {
-      setLoading(false);
-    }
-  }, [employeeId, date]);
+        const hierarchy = Array.isArray(hierarchyResult) ? hierarchyResult : [];
+        const attendance = Array.isArray(attendanceResult) ? attendanceResult : [];
+        const subordinateIds = getSubordinateIds(hierarchy, currentEmployeeId);
+        const teamAttendance = attendance
+          .filter((item) => subordinateIds.has(Number(valueOf(item, "employeeId", "EmployeeId"))))
+          .map((item) => ({
+            ...item,
+            status: getAttendanceStatusForDuration(
+              valueOf(item, "status", "Status"),
+              valueOf(item, "checkIn", "CheckIn"),
+              valueOf(item, "checkOut", "CheckOut"),
+              valueOf(item, "totalHours", "TotalHours"),
+            ),
+          }))
+          .sort((left, right) => new Date(valueOf(right, "attendanceDate", "AttendanceDate") ?? 0) - new Date(valueOf(left, "attendanceDate", "AttendanceDate") ?? 0));
 
-  useEffect(() => {
-    if (canView) loadTeamAttendance();
-  }, [canView, loadTeamAttendance]);
+        setMemberCount(subordinateIds.size);
+        setRows(teamAttendance);
+      } catch (loadError) {
+        if (!active) return;
+        console.error("Team attendance load error:", loadError);
+        setError("Team attendance could not be loaded. Check the hierarchy and attendance services, then refresh.");
+        setRows([]);
+        setMemberCount(0);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    loadTeamAttendance();
+    return () => { active = false; };
+  }, [canView, employeeId, month, date, refreshVersion]);
 
   const shifts = useMemo(
-    () => [...new Set(rows.map((row) => valueOf(row, "shift", "Shift")).filter(Boolean))].sort(),
-    [rows],
+    () => [...new Set([shift, ...rows.map((row) => valueOf(row, "shift", "Shift"))].filter(Boolean))].sort(),
+    [rows, shift],
   );
 
   const filteredBySearch = useMemo(() => {
@@ -180,14 +203,17 @@ export default function TeamAttendance() {
 
       return (!keyword || searchable) &&
         (!shift || valueOf(row, "shift", "Shift") === shift) &&
-        (!date || String(rowDate ?? "").slice(0, 10) === date);
+        attendanceDateKey(rowDate).startsWith(date || month);
     });
-  }, [rows, search, shift, date]);
+  }, [rows, search, shift, date, month]);
 
   const filteredRows = useMemo(
     () => filteredBySearch.filter((row) => !status || normalizeStatus(row.status) === normalizeStatus(status)),
     [filteredBySearch, status],
   );
+
+  const visiblePage = Math.min(page, Math.max(0, Math.ceil(filteredRows.length / rowsPerPage) - 1));
+  const visibleRows = filteredRows.slice(visiblePage * rowsPerPage, (visiblePage + 1) * rowsPerPage);
 
   const summary = useMemo(() => ({
     present: filteredBySearch.filter((row) => normalizeStatus(row.status) === "present").length,
@@ -227,12 +253,13 @@ export default function TeamAttendance() {
           </Box>
         </Box>
         <Box className="team-attendance-actions">
-          <Button className="team-attendance-secondary" startIcon={<RefreshRoundedIcon />} onClick={loadTeamAttendance} disabled={loading}>Refresh</Button>
-          {canExport && <Button className="team-attendance-primary" startIcon={<DownloadRoundedIcon />} onClick={exportTeamAttendance} disabled={!filteredRows.length}>Export Excel</Button>}
+          <Button className="team-attendance-secondary" startIcon={<RefreshRoundedIcon />} onClick={() => setRefreshVersion((version) => version + 1)} disabled={loading}>Refresh</Button>
+          {canExport && <Button className="team-attendance-primary" startIcon={<DownloadRoundedIcon />} onClick={exportTeamAttendance} disabled={loading || !filteredRows.length}>Export Excel</Button>}
         </Box>
       </Box>
 
       {error && <Alert severity="error" className="team-attendance-alert">{error}</Alert>}
+
       {saveMessage && <Alert severity="success" className="team-attendance-alert" onClose={() => setSaveMessage("")}>{saveMessage}</Alert>}
 
       <Grid container spacing={2} className="team-attendance-summary">
@@ -268,27 +295,55 @@ export default function TeamAttendance() {
           className="team-attendance-search"
           placeholder="Search employee, ID or department"
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) => { setSearch(event.target.value); setPage(0); }}
           slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRoundedIcon /></InputAdornment> } }}
           inputProps={{ "aria-label": "Search team attendance" }}
         />
-        <TextField select fullWidth label="Shift" value={shift} onChange={(event) => setShift(event.target.value)}>
+        <TextField select fullWidth label="Shift" value={shift} onChange={(event) => { setShift(event.target.value); setPage(0); }}>
           <MenuItem value="">All shifts</MenuItem>
           {shifts.map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
         </TextField>
-        <TextField select fullWidth label="Status" value={status} onChange={(event) => setStatus(event.target.value)}>
+        <TextField select fullWidth label="Status" value={status} onChange={(event) => { setStatus(event.target.value); setPage(0); }}>
           <MenuItem value="">All statuses</MenuItem>
           {["Present", "Early", "Half Day", "Absent", "Late", "Leave", "WFH"].map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
         </TextField>
-        <TextField
-          fullWidth
-          label="Date"
-          type="date"
-          value={date}
-          onChange={(event) => setDate(event.target.value)}
-          slotProps={{ inputLabel: { shrink: true }, input: { startAdornment: <InputAdornment position="start"><CalendarMonthRoundedIcon /></InputAdornment> } }}
-        />
-        <Button className="team-attendance-reset" onClick={() => { setSearch(""); setShift(""); setStatus(""); setDate(""); }}>Reset</Button>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Month"
+            views={["year", "month"]}
+            value={monthStart}
+            format="MMMM YYYY"
+            onChange={(value) => {
+              if (!value?.isValid()) return;
+              setMonth(value.format("YYYY-MM"));
+              setDate("");
+              setPage(0);
+            }}
+            slotProps={pickerSlotProps}
+          />
+          <DatePicker
+            label="Date"
+            value={date ? dayjs(date) : null}
+            minDate={monthStart}
+            maxDate={monthStart.endOf("month")}
+            format="DD-MM-YYYY"
+            clearable
+            onChange={(value, context) => {
+              if (context.validationError) return;
+              setDate(value ? value.format("YYYY-MM-DD") : "");
+              setPage(0);
+            }}
+            slotProps={pickerSlotProps}
+          />
+        </LocalizationProvider>
+        <Button className="team-attendance-reset" onClick={() => {
+          setSearch("");
+          setShift("");
+          setStatus("");
+          setMonth(currentMonth());
+          setDate("");
+          setPage(0);
+        }}>Reset</Button>
       </Paper>
 
       <Paper className="team-attendance-table-card" elevation={0}>
@@ -313,7 +368,7 @@ export default function TeamAttendance() {
               <TableHead><TableRow>
                 <TableCell>Employee</TableCell><TableCell>Department</TableCell><TableCell>Date</TableCell><TableCell>Shift</TableCell><TableCell>Check in</TableCell><TableCell>Check out</TableCell><TableCell>Working hours</TableCell><TableCell>Status</TableCell>{canEdit && <TableCell>Action</TableCell>}
               </TableRow></TableHead>
-              <TableBody>{filteredRows.map((row, index) => {
+              <TableBody>{visibleRows.map((row, index) => {
                 const rowId = valueOf(row, "attendanceId", "AttendanceId") ?? `${valueOf(row, "employeeId", "EmployeeId")}-${valueOf(row, "attendanceDate", "AttendanceDate")}-${index}`;
                 const name = valueOf(row, "employeeName", "EmployeeName") || "Employee";
                 const employeeRef = valueOf(row, "azureEmployeeId", "AzureEmployeeId") || valueOf(row, "employeeCode", "EmployeeCode") || `#${valueOf(row, "employeeId", "EmployeeId") ?? "—"}`;
@@ -332,7 +387,21 @@ export default function TeamAttendance() {
             </Table>
           </TableContainer>
         )}
-        <Box className="team-attendance-table-footer">{filteredRows.length} of {rows.length} team attendance records</Box>
+        {!loading && filteredRows.length > 0 && (
+          <TablePagination
+            className="team-attendance-table-footer"
+            component="div"
+            count={filteredRows.length}
+            page={visiblePage}
+            rowsPerPage={rowsPerPage}
+            rowsPerPageOptions={[10, 25, 50, 100]}
+            onPageChange={(_, nextPage) => setPage(nextPage)}
+            onRowsPerPageChange={(event) => {
+              setRowsPerPage(Number(event.target.value));
+              setPage(0);
+            }}
+          />
+        )}
       </Paper>
       {canEdit && <EditAttendanceDialog
         open={Boolean(editingAttendance)}
@@ -342,7 +411,7 @@ export default function TeamAttendance() {
         onUpdated={() => {
           setEditingAttendance(null);
           setSaveMessage("Team attendance updated.");
-          loadTeamAttendance();
+          setRefreshVersion((version) => version + 1);
         }}
       />}
     </Box>
