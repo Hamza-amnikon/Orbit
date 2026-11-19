@@ -4,7 +4,7 @@ import { Alert, Box as MuiLayoutBox, Button, Typography as MuiText } from "@mui/
 const getTicketPortalUrl = () => {
     const configuredUrl = String(
         import.meta.env.VITE_TICKETING_PORTAL_URL ||
-        "https://ticketing-lab.amnikon.net/"
+        "https://astra.amnikontechnologies.com/"
     ).trim();
     if (!configuredUrl) return null;
 
